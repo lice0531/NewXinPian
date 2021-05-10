@@ -1,0 +1,105 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.objectbox'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '29.0.2'
+
+//    dexOptions {
+//        javaMaxHeapSize "4g"
+//    }
+
+    defaultConfig {
+        applicationId "android_serialport_api.xingbang"
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 22
+        versionName "3.21"
+
+        multiDexEnabled true
+
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // 不加 无法引用.so库
+    sourceSets {
+        main() {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    useLibrary 'org.apache.http.legacy'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+//    /**
+//     * 生成outputFileName： xingbang_new-2020-11-20 10/38.apk
+//     */
+//    android.applicationVariants.all { variant ->
+//        variant.outputs.all { output ->
+//            def outputFile = output.outputFile
+//            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//
+//                outputFileName = defaultConfig.applicationId.subSequence(
+//                        defaultConfig.applicationId.lastIndexOf(".") + 1,
+//                        defaultConfig.applicationId.length()) +
+//                        "-" + releaseTime() + ".apk"
+//            }
+//        }
+//    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    viewBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
+
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+
+
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.4.1'
+    implementation 'org.litepal.guolindev:core:3.2.1'
+    implementation 'com.tencent:mmkv-static:1.1.2'
+    implementation 'org.greenrobot:greendao:3.3.0'
+    implementation 'com.orhanobut:dialogplus:1.11@aar'
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+//    debugImplementation 'com.glance.guolindev:glance:1.0.0-alpha01'
+}
+
+greendao {
+    schemaVersion 21 //数据库版本号
+    targetGenDir 'src/main/java'
+    // 设置DaoMaster、DaoSession、Dao 包名
+    daoPackage 'android_serialport_api.xingbang.db.greenDao'
+    //设置DaoMaster、DaoSession、Dao目录,请注意，这里路径用/不要用.
+//        generateTests false //设置为true以自动生成单元测试。
+//        targetGenDirTests 'src/main/java' //应存储生成的单元测试的基本目录。默认为 src / androidTest / java。
+}

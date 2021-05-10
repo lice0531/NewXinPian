@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/textview_border"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:id="@+id/ly_his"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+    <!-- 序号 -->
+    <TextView
+        android:id="@+id/serialNo"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        style="@style/alltextstyle"/>
+    <!-- 起爆日期 -->
+    <TextView
+        android:id="@+id/fireDate"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        style="@style/alltextstyle" />
+    <!-- 状态-->
+    <TextView
+        android:id="@+id/txtstatus"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        style="@style/alltextstyle" />
+
+        <!-- 操作-->
+
+        <Button
+            android:id="@+id/bt_operat"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            android:gravity="center"
+            android:minHeight="0dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</LinearLayout>

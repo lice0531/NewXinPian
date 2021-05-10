@@ -1,0 +1,145 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/denator_del_mainpage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/child_pg_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="android_serialport_api.xingbang.firingdevice.SetDelayTime"
+    tools:ignore="MergeRootFrame">
+
+    <LinearLayout
+        android:id="@+id/denator_del_func"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_del_return"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_return"
+                style="@style/allbtntstyle"/>
+
+            <Button
+                android:id="@+id/btn_del_all"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:text="全部删除"
+                style="@style/allbtntstyle"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tx_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_total"
+            android:layout_gravity="left"
+            style="@style/alltextstyle"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/denator_del_func"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_height="30dp"
+                    android:background="@drawable/textview_border"
+                    android:gravity="center"
+                    android:text="注册时间"
+                    style="@style/alltextstyle" />
+                <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:background="@drawable/textview_border"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/text_list_Serial"-->
+                    <!--android:textSize="12sp" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:background="@drawable/textview_border"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/text_list_kong"-->
+                    <!--android:textSize="12sp" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:background="@drawable/textview_border"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/text_list_delay"-->
+                    <!--android:textSize="12sp" />-->
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="30dp"
+                    android:background="@drawable/textview_border"
+                    android:text="@string/text_list_guan"
+                    style="@style/alltextstyle" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.8"
+                    android:layout_height="30dp"
+                    android:background="@drawable/textview_border"
+                    android:text="@string/text_list_state"
+                    style="@style/alltextstyle" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1.2"
+                    android:layout_height="30dp"
+                    android:background="@drawable/textview_border"
+                    android:text="检测结果"
+                    android:textSize="18sp"
+                    style="@style/alltextstyle"/>
+
+            </LinearLayout>
+
+            <android_serialport_api.xingbang.custom.LoadListView
+                android:id="@+id/denator_query_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="#00000000"
+
+                android:fadeScrollbars="false"
+                android:fadingEdge="none"
+                android:scrollbarFadeDuration="0" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

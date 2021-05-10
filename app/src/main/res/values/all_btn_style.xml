@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="allbtntstyle" parent="@android:style/Widget.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">23sp</item>
+        <item name="android:textColor">@color/bt_fg_base</item>
+        <item name="android:background">@drawable/bt_mainpage_style</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

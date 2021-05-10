@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    >
+    <LinearLayout
+        android:id="@+id/ll_log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/app_color_theme_4">
+        <TextView
+            android:id="@+id/item_syslog_name"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:text="21-03-01程序日志"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle"/>
+
+        <TextView
+            android:id="@+id/item_syslog_stata"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="上传状态"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle"/>
+        <!-- 上传-->
+        <Button
+            android:id="@+id/lf_bt_upload"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            android:gravity="center"
+            android:minHeight="0dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="上传"/>
+
+        <Button
+            android:id="@+id/lf_bt_delete"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            android:gravity="center"
+            android:minHeight="0dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="删除" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

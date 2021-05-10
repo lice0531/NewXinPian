@@ -1,0 +1,159 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/child_pg_bg"
+    tools:context="android_serialport_api.xingbang.firingdevice.SetEnvMainActivity"
+    tools:ignore="MergeRootFrame">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_set_user"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_user" />
+
+            <Button
+                android:id="@+id/btn_set_onlineuprade"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_onlineuprade" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_set_netmodel"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_netmodel" />
+
+            <Button
+                android:id="@+id/btn_set_upload"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_upload" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_set_warrant"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_warrant" />
+
+            <Button
+                android:id="@+id/btn_set_dechip"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_dechip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_set_facCode"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_facCode" />
+
+            <Button
+                android:id="@+id/btn_set_flow"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_flow" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_set_ver"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_ver" />
+
+            <Button
+                android:id="@+id/btn_set_system"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_system" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_upload"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="信息采集"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/btn_set_exit"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_exit" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
+

@@ -1,0 +1,693 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/child_pg_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="android_serialport_api.xingbang.SimpleCheckReisterMainActivity"
+    tools:ignore="MergeRootFrame">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/mainBasicPage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/ll_start"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/childReisterPageLineHeight"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/text_start"
+                    style="@style/alltextstyle"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="@string/text_reister_start" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/entBF2Bit_st"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_2b"
+                        android:maxLength="2"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/rangle_fc_base" />
+
+                    <EditText
+                        android:id="@+id/entproduceDate_st"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_5b"
+                        android:maxLength="5"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/rangle_fc_base" />
+
+                    <EditText
+                        android:id="@+id/entAT1Bit_st"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_1b"
+                        android:maxLength="1"
+                        android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/rangle_fc_base" />
+
+                    <EditText
+                        android:id="@+id/entboxNoAndSerial_st"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_5b"
+                        android:maxLength="5"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/rangle_fc_base" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_ReisterScanStart_st"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.5"
+                    android:text="@string/text_reister_scan" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_end"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/childReisterPageLineHeight"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="@string/text_reister_end" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/entBF2Bit_ed"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_2b"
+                        android:maxLength="2"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true"
+
+                        />
+
+                    <EditText
+                        android:id="@+id/entproduceDate_ed"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_5b"
+                        android:maxLength="5"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/entAT1Bit_ed"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_1b"
+                        android:maxLength="1"
+                        android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/entboxNoAndSerial_ed"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_5b"
+                        android:maxLength="5"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_ReisterScanStart_ed"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.5"
+                    android:text="@string/text_reister_scan" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_num"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/childReisterPageLineHeight"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="连续注册个数" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/et_num"
+                        style="@style/alltextstyle"
+                        android:layout_width="100dp"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="连续个数"
+                        android:maxLength="5"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="/个数" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_setDelay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="8dp">
+
+                        <TextView
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="@string/text_delay_start" />
+
+                        <EditText
+                            android:id="@+id/setDelayTime_startDelaytime"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1.5"
+                            android:background="@drawable/translucent"
+                            android:gravity="left"
+                            android:hint="@string/text_delay_start"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize" />
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/text_unit_hm"
+                            android:textSize="@dimen/childPageEditFontSize" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f1"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="F1延时" />
+
+                        <EditText
+                            android:id="@+id/re_et_f1"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1.5"
+                            android:background="@drawable/translucent"
+                            android:gravity="left"
+                            android:hint="F1延时"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/text_unit_hm"
+                            android:textSize="@dimen/childPageEditFontSize" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f2"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="F2延时" />
+
+                        <EditText
+                            android:id="@+id/re_et_f2"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1.5"
+                            android:background="@drawable/translucent"
+                            android:gravity="left"
+                            android:hint="F2延时"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize" />
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/text_unit_hm"
+                            android:textSize="@dimen/childPageEditFontSize" />
+                    </TableRow>
+                    <!-- 测试扫描头,每次扫描成功都输入-->
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/et_test"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1.5" />
+                    </TableRow>
+                </TableLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_single"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="单发"
+                    android:textSize="@dimen/childReisterPageLabelFontSize"
+
+                    />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/edit_scan_changjia"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_2b"
+                        android:maxLength="2"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true"
+
+                        />
+
+                    <EditText
+                        android:id="@+id/edit_scan_riqi"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_5b"
+                        android:maxLength="5"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/edit_scan_tezheng"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="@string/text_reister_1b"
+                        android:maxLength="1"
+                        android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/edit_scan_hehao"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="2位"
+                        android:maxLength="2"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/edit_scan_liushui"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="3位"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:selectAllOnFocus="true" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/childReisterPageLineHeight"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_return"
+                    style="@style/allbtntstyle"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="4dp"
+                    android:text="@string/text_return" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/childReisterPageLineHeight"
+                android:layout_marginTop="3dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btn_singleReister"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="@string/text_singleReister"
+                    android:textColor="@color/bt_fg_base"
+                    android:textSize="@dimen/childReisterPageBtnFontSize"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_scanReister"
+                    style="@style/allbtntstyle"
+                    android:layout_width="90dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="2dp"
+                    android:text="@string/text_reister_scanReister"
+                    android:textSize="20sp" />
+
+
+                <Button
+                    android:id="@+id/btn_input"
+                    style="@style/allbtntstyle"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:text="手动输入"
+                    android:visibility="gone" />
+
+
+                <Button
+                    android:id="@+id/btn_setdelay"
+                    style="@style/allbtntstyle"
+                    android:layout_width="90dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="修改延时"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btn_single"
+                    style="@style/allbtntstyle"
+                    android:layout_width="90dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="手动输入"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btn_inputOk"
+                    style="@style/allbtntstyle"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="@string/text_sure"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_showData"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="25dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_currentVolt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/text_reister_vol"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txt_currentIC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/text_reister_ele"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txt_reisteramount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="已注册:"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:text="@string/text_list_Serial" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:text="@string/text_list_kong" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:text="延时" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:text="@string/text_list_guan" />
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/factory_listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbarFadeDuration="0"
+                    android:scrollbars="none" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

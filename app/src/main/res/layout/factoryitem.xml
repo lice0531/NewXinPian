@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <!-- 厂家名 -->
+    <TextView
+        android:id="@+id/deName"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="3"
+        android:background="@drawable/textview_border"
+        android:gravity="center" />
+    <!-- 厂家代码 -->
+    <TextView
+        android:id="@+id/deEntCode"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:background="@drawable/textview_border"
+        android:gravity="center" />
+    <!-- 特征码-->
+    <TextView
+        android:id="@+id/deFeatureCode"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:background="@drawable/textview_border"
+        android:gravity="center" />
+    <!-- 是否选中-->
+    <TextView
+        android:id="@+id/isSelected"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="2dp"
+        android:layout_weight="1"
+        android:background="@drawable/textview_border"
+        android:gravity="center" />
+</LinearLayout>

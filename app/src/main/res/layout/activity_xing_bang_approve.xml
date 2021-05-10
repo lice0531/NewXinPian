@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="进行安全认证"
+            android:textColor="@color/bt_bg_base"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_ocation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="地理位置"
+            android:textColor="@color/bt_bg_base"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:textColor="@color/bt_bg_base" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/tv_approve_name1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="技术员"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_approve_sfz1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:hint="请输入身份证号"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/bt_approve1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.7"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="认证"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/tv_approve_name2"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="爆破员"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_approve_sfz2"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:hint="请输入身份证号"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/bt_approve2"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.7"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="认证"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/tv_approve_name3"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="安全员"
+                android:textSize="16sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_approve_sfz3"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:hint="请输入身份证号"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/bt_approve3"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.7"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="认证"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+
+
+        <Button
+            android:id="@+id/bt_all"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/bt_mainpage_style"
+            android:text="认证通过，点击进入作业"
+            android:textColor="@color/bt_fg_base"
+            android:visibility="gone" />
+        <LinearLayout
+            android:id="@+id/rl_del_his_1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:id="@+id/btn_del_his_1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="清除记录1"
+                android:textSize="15sp"
+                android:textColor="@color/bt_fg_base"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/btn_del_his_2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="清除记录2"
+                android:textSize="15sp"
+                android:textColor="@color/bt_fg_base"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/btn_del_his_3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="清除记录3"
+                android:textSize="15sp"
+                android:textColor="@color/bt_fg_base"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/btn_del_his_4"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="清除记录"
+                android:textSize="15sp"
+                android:textColor="@color/bt_fg_base" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

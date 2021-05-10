@@ -1,0 +1,108 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/denator_del_mainpage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:orientation="vertical" 
+     android:focusable="true"
+    android:focusableInTouchMode="true"
+     android:background="@color/child_pg_bg"
+    tools:context="android_serialport_api.xingbang.firingdevice.SetDelayTime"
+    tools:ignore="MergeRootFrame" >
+
+	<LinearLayout	    
+	    android:id="@+id/denator_del_func"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" 
+        android:layout_marginTop="10dp"
+        > 
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp" 
+            android:divider="@drawable/spacer_medium"
+	        android:showDividers="middle"  
+	        android:orientation="horizontal"
+            android:gravity="center_horizontal"             
+            >    
+	        <Button
+	            android:id="@+id/btn_del_return"
+	            android:layout_width="70dp"
+	            android:layout_height="40dp"	            
+	            style="@style/allbtntstyle"
+	            android:text="@string/text_return" />
+	        <Button
+	            android:id="@+id/btn_del_all"
+	            android:layout_width="140dp"
+	            android:layout_height="40dp"	            
+	            android:textColor="@color/bt_fg_base"
+				style="@style/allbtntstyle"
+	            android:text="@string/text_del_all" />
+        </LinearLayout>
+       
+  </LinearLayout>
+
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@+id/denator_del_func"
+		android:orientation="vertical">
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:orientation="vertical">
+
+			<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="40dp"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+				<TextView
+					style="@style/alltextstyle"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:background="@drawable/textview_border"
+					android:text="@string/text_list_Serial" />
+
+				<TextView
+					style="@style/alltextstyle"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="2"
+					android:background="@drawable/textview_border"
+					android:text="@string/text_list_qibao_data" />
+
+				<TextView
+					style="@style/alltextstyle"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:background="@drawable/textview_border"
+					android:text="@string/text_list_state" />
+
+				<TextView
+					style="@style/alltextstyle"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:background="@drawable/textview_border"
+					android:text="删除" />
+			</LinearLayout>
+
+			<android_serialport_api.xingbang.custom.LoadListView
+				android:id="@+id/denator_query_his_listview"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:divider="#00000000"
+				android:dividerHeight="1px"
+				android:fadeScrollbars="false"
+				android:fadingEdge="none"
+				android:scrollbarFadeDuration="0" />
+		</LinearLayout>
+	</RelativeLayout>
+
+</LinearLayout>

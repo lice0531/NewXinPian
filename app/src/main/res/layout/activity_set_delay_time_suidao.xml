@@ -1,0 +1,1969 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setDelayTimeMainPage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/child_pg_bg"
+    android:fillViewport="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="android_serialport_api.xingbang.firingdevice.SetDelayTime"
+    tools:ignore="MergeRootFrame">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="1dip">
+
+        <LinearLayout
+            android:id="@+id/ly_setUpdata"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:divider="@drawable/spacer_medium"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <Button
+                    android:id="@+id/btn_setDelayTime_return"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="@string/text_return"
+                    style="@style/allbtntstyle" />
+
+                <Button
+                    android:id="@+id/btn_setDelayTime_inputOK"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="@string/text_sure"
+                    style="@style/allbtntstyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/text_delay_start"
+                    android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                <EditText
+                    android:id="@+id/setDelayTime_startDelaytime_1"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/translucent"
+                    android:gravity="left"
+                    android:hint="@string/text_delay_start"
+                    android:maxLength="6"
+                    android:numeric="integer"
+                    android:padding="5dp"
+                    android:text="10"
+                    android:textColor="@color/rangle_fc_base"
+                    android:textSize="@dimen/childPageEditFontSize" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="@string/text_unit_hm"
+                    android:textSize="@dimen/childPageEditFontSize" />
+            </LinearLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_num_1"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:focusable="false"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="1"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_1"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_delaytime_1"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:layout_marginRight="5dp"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_2"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="2"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_2"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_2"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_3"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="3"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_3"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_3"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_4"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="4"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_4"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_delaytime_4"
+                        android:layout_marginRight="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_5"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="5"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_5"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_delaytime_5"
+                        android:layout_marginRight="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_6"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="6"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_6"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_6"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_7"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="7"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_7"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_7"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_8"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="8"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_8"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_8"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_9"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="9"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_9"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_9"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_10"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="10"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_10"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_10"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_11"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="11"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_11"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_11"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_12"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="12"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_12"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_12"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_13"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="13"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_13"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_13"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_14"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="14"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_14"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_14"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_15"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="15"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_15"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_15"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_16"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="16"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_16"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_16"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_17"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="17"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_17"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_17"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_18"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="18"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_18"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_18"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_19"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="19"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_19"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_19"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="段号"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:focusable="false"
+                        android:id="@+id/et_duan_num_20"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:text="20"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="数量"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/et_duan_total_20"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="数量"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="间隔"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/et_duan_delaytime_20"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="间隔"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_delay_startnum"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/setDelayTime_FirstNo"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="50dp"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="@string/text_delay_startnum"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_delay_endnum"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/setDelayTime_EndNo"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="50dp"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="@string/text_delay_endnum"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                </TableRow>
+
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_delay_det_num"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/setDelayTime_holedetonator"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="@string/text_delay_det_num"
+                        android:maxLength="3"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:paddingRight="15dp"
+                        android:text="@string/text_unit_fa"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_delay_start"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/setDelayTime_startDelaytime"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="@string/text_delay_start"
+                        android:maxLength="6"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/text_unit_hm"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_delay_kong_de"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/setDelayTime_holein_Delaytime"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="@string/text_delay_kong_de"
+                        android:maxLength="6"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/text_unit_hm"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_delay_kong_2"
+                        android:textSize="@dimen/childReisterPageEditFontSize" />
+
+                    <EditText
+                        android:id="@+id/setDelayTime_holemiddle_Delaytime"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1.5"
+                        android:background="@drawable/translucent"
+                        android:gravity="left"
+                        android:hint="@string/text_delay_kong_2"
+                        android:maxLength="6"
+                        android:numeric="integer"
+                        android:padding="5dp"
+                        android:textColor="@color/rangle_fc_base"
+                        android:textSize="@dimen/childPageEditFontSize" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/text_unit_hm"
+                        android:textSize="@dimen/childPageEditFontSize" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/setDelayTime_tipinfo_fragement"
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/ly_setUpdata"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/setDelayTime_deAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@string/text_delay_total"
+                android:textSize="@dimen/childReisterPageTipFontSize" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/setDelayTime_tipinfo_fragement"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:gravity="center"
+                        android:text="@string/text_list_Serial" />
+
+                    <TextView
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:gravity="center"
+                        android:text="孔号" />
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:gravity="center"
+                        android:text="@string/text_list_delay" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/textview_border"
+                        android:gravity="center"
+                        android:text="@string/text_list_guan" />
+                </LinearLayout>
+
+                <android_serialport_api.xingbang.custom.MlistView
+                    android:id="@+id/setDelayMainlistView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="#00000000"
+                    android:dividerHeight="1dp"
+                    android:fadeScrollbars="false"
+
+                    android:fadingEdge="none"
+                    android:scrollbarFadeDuration="0" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

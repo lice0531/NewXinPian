@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="android_serialport_api.xingbang">
+
+    <!-- 往sdcard中写入数据的权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- 定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于申请调用A-GPS模块 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
+    <!-- 用于申请获取蓝牙信息进行室内定位 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- 开机启动权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:name=".Application"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:screenOrientation="portrait">
+
+        <activity android:name=".SerialPortPreferences" />
+        <activity android:name=".firingdevice.DenatorTotalDelaySet" />
+        <activity
+            android:name=".firingdevice.ReisterMainPage_scan"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_reister_main_page"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.ReisterMainPage_line"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_reister_main_page"
+            android:theme="@style/blackActivityTheme" />
+
+        <activity
+            android:name=".firingdevice.XingbangMain"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+
+        <activity
+            android:name=".firingdevice.ZiJianActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/blackActivityTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".firingdevice.SetDelayTime"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_set_delay_time"
+            android:theme="@style/blackActivityTheme" />
+        <!-- <activity android:name="android_serialport_api.xingbang.ScanMainActivity" > -->
+        <!-- </activity> -->
+
+        <activity
+            android:name=".firingdevice.SetEnvMainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_set_page_time"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SetFactoryActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_set_factory_page"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.FiringMainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_firingpage"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.DelDenatorMainPage"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/t_xingbang_main_page_btn_del"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.QueryMainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/t_xingbang_main_page_btn_query"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.QueryCurrentDetail"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/xingbang_main_page_btn_query_current"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.QueryCurrentDetail_All"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/xingbang_main_page_btn_query_current"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.QueryHisDetail"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/xingbang_main_page_btn_query_his"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.QueryHisDetail_all"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/xingbang_main_page_btn_query_his"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SetUserActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/t_xingbang_set_page_btn_user"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.TestDenatorActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/t_xingbang_main_page_btn_test"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SetDenatorTypeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/xingbang_set_page_title_dechip"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.DownWorkCode"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/t_xingbang_main_page_btn_downworkcode"
+            android:theme="@style/blackActivityTheme" />
+        <activity android:name=".firingdevice.HotManagerActivity" />
+
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="E6zOg0dIA7iW4IAVZ7isv4ylAoA2bhaY" />
+
+        <activity
+            android:name=".firingdevice.SetSystemActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_set_page_system"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SetLanguageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_set_languages"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.XingBangApproveActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_shibie"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.PracticeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.ShouQuanLegActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_shouquan_lg"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.VerificationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_yanzheng"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.UploadFaceDataActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="信息采集"
+            android:theme="@style/blackActivityTheme" />
+        <!-- 腾讯自动更新设置 -->
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <!-- <service android:name="com.amap.api.location.APSService" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.amap.api.v2.apikey" -->
+        <!-- android:value="d9b27383b779a0dbd48c7c1f088be8cb"></meta-data> -->
+        <!-- BootReceiver是上面建的广播类 -->
+        <receiver android:name=".firingdevice.BootReceiver">
+            <intent-filter>
+                <!-- 注册开机广播地址 -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".firingdevice.UploadMessageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="数据上传"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SetVoltageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="设置电压"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SaveProjectActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="保存项目数据"
+            android:theme="@style/blackActivityTheme"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity
+            android:name=".firingdevice.WriteLogActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="错误日志"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SystemVersionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="系统版本号"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.SetDelayTime_suidao"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="设置隧道延时"
+            android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".firingdevice.DownOfflineActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="离线下载"
+            android:theme="@style/blackActivityTheme" />
+        <activity android:name=".firingdevice.TestActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="测试"
+            android:theme="@style/blackActivityTheme" />
+
+        <activity android:name=".firingdevice.UpLoadLogActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_set_page_time"
+            android:theme="@style/blackActivityTheme" />
+
+    </application>
+
+</manifest>

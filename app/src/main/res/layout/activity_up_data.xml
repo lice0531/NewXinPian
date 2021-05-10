@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="android_serialport_api.xingbang.firingdevice.UploadMessageActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="本页面只显示已起爆项目数据"
+        style="@style/alltextstyle"/>
+    <ListView
+        android:id="@+id/lv_updata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:divider="@drawable/spacer_medium"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <Button
+            android:id="@+id/btn_del_return"
+            style="@style/allbtntstyle"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:text="@string/text_return" />
+        <Button
+            android:id="@+id/btn_del_reduction"
+            style="@style/allbtntstyle"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:text="还原" />
+    </LinearLayout>
+
+</LinearLayout>

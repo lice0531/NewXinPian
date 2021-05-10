@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">煋邦科技KT50起爆器</string>
+    <string name="error_configuration">Please configure your serial port first.</string>
+    <string name="error_security">You do not have read/write permission to the serialport.</string>
+    <string name="error_unknown">The serial port can not be opened for an unknownreason.</string>
+    <string name="title_activity_reister_main_page">雷管注册</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_xingbang_main">煋邦起爆系统/XB-E300Ⅲ</string>
+    <string name="xingbang_main_page_btn_reister">注册</string>
+    <string name="xingbang_main_page_btn_test">测试</string>
+    <string name="xingbang_main_page_btn_delay">延时</string>
+    <string name="xingbang_main_page_btn_del">删除</string>
+    <string name="xingbang_main_page_btn_blast">起爆</string>
+    <string name="xingbang_main_page_btn_query">查看</string>
+    <string name="xingbang_main_page_btn_setevn">设置</string>
+    <string name="xingbang_main_page_btn_help">帮助</string>
+    <string name="xingbang_main_page_btn_downworkcode">项目</string>
+    <string name="xingbang_main_page_btn_exit">退出</string>
+
+    <string name="t_xingbang_main_page_btn_reister">注册</string>
+    <string name="t_xingbang_main_page_btn_test">测试</string>
+    <string name="t_xingbang_main_page_btn_delay">延时</string>
+    <string name="t_xingbang_main_page_btn_del">删除</string>
+    <string name="t_xingbang_main_page_btn_blast">起爆</string>
+    <string name="t_xingbang_main_page_btn_query">查看</string>
+    <string name="t_xingbang_main_page_btn_setevn">设置</string>
+    <string name="t_xingbang_main_page_btn_help">帮助</string>
+    <string name="t_xingbang_main_page_btn_downworkcode">项目信息</string>
+
+    <string name="title_activity_set_delay_time">设置延时</string>
+    <string name="xingbang_main_page_btn_query_current">查看当前雷管</string>
+    <string name="xingbang_main_page_btn_query_his">查看历史记录</string>
+
+    <string name="xingbang_set_page_btn_user">用户管理</string>
+    <string name="xingbang_set_page_btn_onlineuprade">在线更新</string>
+    <string name="xingbang_set_page_btn_netmodel">错误日志</string>
+    <string name="xingbang_set_page_btn_upload">上传设置</string>
+    <string name="xingbang_set_page_btn_warrant">授码管理</string>
+    <string name="xingbang_set_page_btn_dechip">雷管芯片</string>
+    <string name="xingbang_set_page_btn_facCode">厂家管码</string>
+    <string name="xingbang_set_page_btn_flow">设备编号</string>
+    <string name="xingbang_set_page_btn_ver">版&#160;本&#160;号</string>
+    <string name="xingbang_set_page_btn_system">系统设置</string>
+    <string name="xingbang_set_page_btn_exit">退&#160;&#160;&#160;&#160;&#160;&#160;&#160;出</string>
+
+    <string name="xingbang_set_page_title_dechip">雷管芯片</string>
+
+    <string name="t_xingbang_set_page_btn_user">用户管理</string>
+
+    <string name="title_activity_set_page_time">设置</string>
+    <string name="title_activity_UpLoadLog">上传日志</string>
+    <string name="title_activity_zijian">设备初始化</string>
+    <string name="title_activity_set_page_system">系统设置</string>
+    <string name="title_activity_shibie">人脸识别</string>
+    <string name="title_activity_shouquan_lg">授权雷管</string>
+    <string name="title_activity_yanzheng">验证起爆范围</string>
+    <string name="title_activity_set_factory_page">厂家管理</string>
+    <string name="title_activity_simplecheckReisterMain">注册</string>
+    <string name="title_activity_firingpage">雷管起爆</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+    <string name="button_ok">OK</string>
+
+
+    <string name="blast_shellBlastNo_field">管壳号</string>
+    <string name="blast_delay_field">延时</string>
+
+    <string name="create_hostspot">创建WIFI热点</string>
+    <string name="close_hostspot">关闭WIFI热点</string>
+    <string name="send_data_wifi">发送数据</string>
+    <string name="search_wifi">搜索WIFI</string>
+
+    <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
+    <string name="viewfinderview_status_text2">即可自动扫描</string>
+    <string name="set_qiaosi">是否检测桥丝</string>
+    <string name="set_ceshi_time">设置测试准备时间/s</string>
+    <string name="set_chongdian_time">设置充电检测时间/s</string>
+    <string name="set_language">设置语言</string>
+    <string name="set_save">保存设置</string>
+
+    <string name="user_select_language">当前用户选择语言: %s</string>
+    <string name="language_cn">中文</string>
+    <string name="language_en">ENGLISH</string>
+    <string name="language_auto">自动</string>
+    <string name="language_traditional">繁體</string>
+
+    <string name="language_select">当前选择的语言: %s</string>
+    <string name="title_activity_set_languages">语言设置</string>
+    <string name="et_hint_ceshi">默认18s</string>
+    <string name="et_hint_chongdian">默认5s</string>
+
+    <string name="text_tip_delete">删除</string>
+    <string name="text_tip_modify">修改</string>
+    <string name="text_tip_handle">处理</string>
+    <string name="text_tip_network">开启网络服务</string>
+
+    <string name="text_alert_sure">确定</string>
+    <string name="text_alert_cancel">取消</string>
+    <string name="text_alert_tip">提示</string>
+    <string name="text_alert_sw">说明</string>
+    <string name="text_alert_tablename1">错误雷管列表</string>
+    <string name="text_alert_del_all">是否全部删除注册雷管数？</string>
+    <string name="text_alert_user">请输入用户名和密码</string>
+    <string name="text_alert_tip1">检测命令尚未完成，请查看总线上是否存在有未注册的雷管，是否继续起爆？</string>
+    <string name="text_alert_tip2">请检查雷管总数是否正确,确认无误后可忽略本提示</string>
+    <string name="text_alert_tip3">当前雷管记录</string>
+    <string name="text_alert_tip4">雷管总数:</string>
+    <string name="text_alert_tip5">当前雷管列表</string>
+    <string name="text_alert_tip6">已爆雷管列表</string>
+    <string name="text_alert_username">请输入用户名</string>
+    <string name="text_alert_password">请输入密码</string>
+    <string name="text_alert_login_tip">是否登录过</string>
+    <string name="text_alert_xiugai">修改信息</string>
+    <string name="text_alert_sbbh">设备编号设置</string>
+    <string name="text_alert_fwqsz">服务器设置</string>
+    <string name="text_alert_bbxx">版本信息</string>
+    <string name="text_alert_xbkjqbq">煋邦科技起爆器系统V2.0</string>
+
+    <string name="text_error_tip1">雷管信息有误，管厂码不正确，请检查</string>
+    <string name="text_error_tip2">雷管信息有误，特征码不正确，请检查</string>
+    <string name="text_error_tip3">管壳码: </string>
+    <string name="text_error_tip4">已注册</string>
+    <string name="text_error_tip5">未收到关闭电源命令</string>
+    <string name="text_error_tip6">未收到打开电源命令</string>
+    <string name="text_error_tip7">桥丝异常</string>
+    <string name="text_error_tip8">输入管壳信息错误，请检查</string>
+    <string name="text_error_tip9">已注册，请继续</string>
+    <string name="text_error_tip10">管壳码：</string>
+    <string name="text_error_tip11">起始厂家码不能为空</string>
+    <string name="text_error_tip12">起始生产日期不能为空</string>
+    <string name="text_error_tip13">起始特征码不能为空</string>
+    <string name="text_error_tip14">起始序号不能为空</string>
+    <string name="text_error_tip15">结束厂家码不能为空</string>
+    <string name="text_error_tip16">结束生产日期不能为空</string>
+    <string name="text_error_tip17">结束特征码不能为空</string>
+    <string name="text_error_tip18">结束序列号不能为空</string>
+    <string name="text_error_tip19">管厂码不一致</string>
+    <string name="text_error_tip20">练习</string>
+    <string name="text_error_tip21">管厂码与系统中定义的管厂码不一致</string>
+    <string name="text_error_tip22">日期不一致</string>
+    <string name="text_error_tip23">特征码不一致</string>
+    <string name="text_error_tip24">特征码与系统中定义的特征码不一致</string>
+    <string name="text_error_tip25">开始序号不是数字</string>
+    <string name="text_error_tip26">结束序号不是数字</string>
+    <string name="text_error_tip27">结束序号不能小于开始序号</string>
+    <string name="text_error_tip28">结束序号不符合要求</string>
+    <string name="text_error_tip29">每一次注册数量不能大于1000</string>
+    <string name="text_error_tip30">没有雷管数据可测试，请先注册雷管！</string>
+    <string name="text_error_tip31">电流过大</string>
+    <string name="text_error_tip32">未收到关闭电源命令</string>
+    <string name="text_error_tip33">未收到打开电源命令</string>
+    <string name="text_error_tip34">未收到开启测试命令</string>
+    <string name="text_error_tip35">延时设置超限</string>
+    <string name="text_error_tip36">设置成功</string>
+    <string name="text_error_tip37">延时为空或大于最大设定延时，修改失败！</string>
+    <string name="text_error_tip38">修改成功</string>
+    <string name="text_error_tip39">延时设置超限</string>
+    <string name="text_error_tip40">起始/结束序号不符合要求</string>
+    <string name="text_error_tip41">孔内雷管数不是数字</string>
+    <string name="text_error_tip42">开始延时不是数字</string>
+    <string name="text_error_tip43">孔内延时不是数字</string>
+    <string name="text_error_tip44">孔间延时不是数字</string>
+    <string name="text_error_tip45">开始延时超出最大设定时间</string>
+    <string name="text_error_tip46">孔内延时超出最大设定时间</string>
+    <string name="text_error_tip47">孔间延时超出最大设定时间</string>
+    <string name="text_error_tip48">没有数据可加载了</string>
+    <string name="text_error_tip49">用户校验成功</string>
+    <string name="text_error_tip50">用户校验错误</string>
+    <string name="text_error_tip51">桥丝检测不正常</string>
+    <string name="text_error_tip52">不能删除本信息</string>
+    <string name="text_error_tip53">GPS 定位失败，由于设备当前 GPS 状态差,建议持设备到相对开阔的露天场所再次尝试</string>
+    <string name="text_error_tip54">错误的记录</string>
+    <string name="text_error_tip55">没有数据，不能执行上传 </string>
+    <string name="text_error_tip56">再点击一次退出应用程序 </string>
+    <string name="text_error_tip57">此功能暂时未开放</string>
+    <string name="text_error_tip58">厂家名不能为空</string>
+    <string name="text_error_tip59">代码不能为空</string>
+    <string name="text_error_tip60">类别名不能为空</string>
+    <string name="text_error_tip61">秒数不能为空</string>
+    <string name="text_error_tip62">网络没有连接，请到设置进行网络设置！</string>
+
+    <string name="text_uploda_tip1">上传成功</string>
+    <string name="text_uploda_tip2">非法申请信息</string>
+    <string name="text_uploda_tip3">起爆器未备案或未设置作业任务</string>
+
+    <string name="text_communication_state1">雷管通信失败</string>
+    <string name="text_communication_state2">延时写入不一致</string>
+    <string name="text_communication_state3">下位机未返回</string>
+    <string name="text_communication_state4">通信成功</string>
+    <string name="text_communication_state5">未知</string>
+    <string name="text_communication_state6">雷管正常</string>
+
+    <string name="text_singleReister_stop">停止注册</string>
+    <string name="text_singleReister">单发注册</string>
+    <string name="text_reister_scan">扫</string>
+    <string name="text_return">返回</string>
+    <string name="text_sure">确定</string>
+    <string name="text_success">成功</string>
+    <string name="text_reister_barcode">扫描信息:</string>
+    <string name="text_reister_start">起</string>
+    <string name="text_reister_end">止</string>
+    <string name="text_reister_2b">2位</string>
+    <string name="text_reister_5b">5位</string>
+    <string name="text_reister_1b">1位</string>
+    <string name="text_reister_scanReister">扫码注册</string>
+    <string name="text_reister_scaning">正在扫码</string>
+    <string name="text_reister_vol">当前电压:</string>
+    <string name="text_reister_ele">当前电流:</string>
+
+    <string name="text_list_Serial">序号</string>
+    <string name="text_list_kong">孔号</string>
+    <string name="text_list_guan">管壳码</string>
+    <string name="text_list_delay">延时</string>
+    <string name="text_list_state">状态</string>
+    <string name="text_list_qibao_data">起爆日期</string>
+    <string name="text_list_factory_name">厂家名</string>
+    <string name="text_list_fac_num">厂家代码</string>
+    <string name="text_list_fac_code">特征码</string>
+    <string name="text_list_check">是否选中</string>
+
+    <string name="text_test_vol">总线电压:</string>
+    <string name="text_test_ele">总线电流:</string>
+    <string name="text_test_num">雷管数量:</string>
+    <string name="text_test_errnum">错误数量:</string>
+    <string name="text_test_hint">信息提示:</string>
+    <string name="text_test_see">查看</string>
+    <string name="text_test_exit">退出</string>
+    <string name="text_test_tip1">等待总线稳定:</string>
+    <string name="text_test_tip2">正在检测第 (</string>
+    <string name="text_test_tip3">)雷管</string>
+    <string name="text_test_tip4">检测完毕</string>
+
+    <string name="text_unit_fa">发</string>
+    <string name="text_unit_hm">毫秒</string>
+
+    <string name="text_delay_startnum">起始序号</string>
+    <string name="text_delay_endnum">终止序号</string>
+    <string name="text_delay_det_num">孔内雷管</string>
+    <string name="text_delay_start">起始延时</string>
+    <string name="text_delay_kong_de">孔内延时</string>
+    <string name="text_delay_kong_2">孔间延时</string>
+    <string name="text_delay_total">总数:</string>
+
+    <string name="text_del_all">全部删除</string>
+    <string name="text_del_err">删除错误雷管</string>
+    <string name="text_del_ser">按序号删除</string>
+    <string name="text_del_start">起号</string>
+    <string name="text_del_end">终号</string>
+    <string name="text_del_ok">删除成功</string>
+
+    <string name="text_firing_tip1">等待总线稳定</string>
+    <string name="text_firing_num">待测雷管数量:</string>
+    <string name="text_firing_errnum">错误数量 :</string>
+    <string name="text_firing_tip2">测试准备...</string>
+    <string name="text_firing_tip3">是否进入充电模式？</string>
+    <string name="text_firing_err_lg">错误雷管</string>
+    <string name="text_firing_jixu">继续</string>
+    <string name="text_firing_tip4">正在充电，请稍后(</string>
+    <string name="text_firing_qibao_vol">起爆电压 :</string>
+    <string name="text_firing_tip5">雷管是否起爆 (按1+5组合键起爆雷管)</string>
+    <string name="text_firing_tip6">倒计时</string>
+    <string name="text_firing_tip7">测试准备 (</string>
+    <string name="text_firing_tip8">写入未返回:</string>
+    <string name="text_firing_tip9">正在检测第 (</string>
+    <string name="text_firing_tip10">)雷管</string>
+    <string name="text_firing_tip11">充电检测 (</string>
+    <string name="text_firing_tip12">正在充电，请稍后 \n</string>
+    <string name="text_firing_tip13">倒计时\n</string>
+    <string name="text_firing_tip14">起爆成功！</string>
+    <string name="text_firing_tip15">成功起爆</string>
+    <string name="text_firing_tip16">本次任务成功起爆！</string>
+    <string name="text_firing_tip17">上传数据</string>
+
+    <string name="text_query_dqlg_data">当前注册雷管数据</string>
+    <string name="text_query_dqlg">当前雷管信息</string>
+    <string name="text_query_lslg_data">历史雷管数据</string>
+    <string name="text_query_lslg">历史雷管</string>
+    <string name="text_query_lon">经度坐标：</string>
+    <string name="text_query_lat">纬度坐标：</string>
+    <string name="text_query_num">设备编号：</string>
+    <string name="text_query_uploda">上传</string>
+    <string name="text_query_operation">操作</string>
+    <string name="text_query_uploaded">已上传</string>
+    <string name="text_query_up">未上传</string>
+    <string name="text_query_failure">上传失败</string>
+    <string name="text_query_chong">重传</string>
+
+    <string name="text_fac_factory_name">厂家名称</string>
+    <string name="text_fac_factory_num">厂家代码</string>
+    <string name="text_fac_code">厂家特征码</string>
+    <string name="text_fac_default">厂家</string>
+    <string name="text_fac_tip1">增加成功</string>
+    <string name="text_fac_tip2">已被选中</string>
+    <string name="text_fac_tip3">请修改厂家信息</string>
+    <string name="text_fac_tip4">已添加</string>
+    <string name="text_lgxp_lglb">雷管类别名</string>
+    <string name="text_lgxp_mms">延期范围</string>
+    <string name="text_lgxp_default">默认类别</string>
+    <string name="text_lgxp_setFac">厂家设置</string>
+    <string name="text_list_ms">秒数/ms</string>
+
+    <string name="text_help_tip1">雷管正常</string>
+    <string name="text_help_tip2">未发现雷管</string>
+    <string name="text_help_tip3">已注册</string>
+    <string name="text_help_tip4">雷管通信错误</string>
+    <string name="text_help_tip5">雷管充电错误</string>
+    <string name="text_help_tip6">雷管时钟错误</string>
+    <string name="text_help_tip7">雷管桥头错误</string>
+    <string name="text_help_tip8">雷管放电错误</string>
+    <string name="text_help_tip9">设置延期错误</string>
+    <string name="text_help_tip10">注册时读序列号失败</string>
+    <string name="text_help_tip11">电流过大</string>
+    <string name="text_help_tip12">单发雷管电流大</string>
+    <string name="text_help_tip13">芯片未初始化</string>
+    <string name="text_help_tip14">EDETCOMM模块故障或丢失</string>
+    <string name="text_help_tip15">设备已注册满</string>
+    <string name="text_help_xuhao">序号</string>
+    <string name="text_help_state">状态值</string>
+    <string name="text_help_miaoshu">描述</string>
+    <string name="text_btn_add">增加</string>
+    <string name="text_user_username">用户名</string>
+    <string name="text_user_password">密码</string>
+    <string name="text_alert_nowNum">当前编号</string>
+    <string name="text_alert_newNum">新编号</string>
+    <string name="text_total">总数:</string>
+    <string name="text_systip_1">保存成功</string>
+    <string name="text_systip_2">检测时间请大于5s</string>
+    <string name="text_systip_3">准备时间请大于18s</string>
+    <string name="text_systip_4">厂家名</string>
+    <string name="text_systip_5">厂家码</string>
+    <string name="text_systip_6">特征码</string>
+    <string name="text_systip_7">默认选定</string>
+    <string name="text_systip_8">雷管类别名</string>
+    <string name="text_systip_9"><![CDATA[秒    码    数]]></string>
+    <string name="text_systip_10"><![CDATA[默 认  类 别]]></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_title">煋邦起爆系统/ST-327/  版本3.22</string>
+
+</resources>

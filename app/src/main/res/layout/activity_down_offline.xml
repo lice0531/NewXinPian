@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="android_serialport_api.xingbang.firingdevice.DownOfflineActivity">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+    <LinearLayout
+        android:id="@+id/ly_setUpdata"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="visible"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="本功能用于在网站下载的TXT密码文档生成一条新的下载记录"
+            android:textSize="18sp"
+            style="@style/alltextstyle"/>
+        <LinearLayout
+            android:id="@+id/ll_1"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/textView12"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/downworkcode_pg_left"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="合同编号" />
+
+            <AutoCompleteTextView
+                android:id="@+id/df_at_htid"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@drawable/translucent"
+                android:gravity="center_vertical"
+                style="@style/alltextstyle"
+                android:hint="15位数字"
+                android:inputType="number"
+                android:digits="0123456789"
+                android:maxLength="15"
+                android:padding="5dp"
+
+                />
+
+            <Button
+                android:visibility="invisible"
+                android:id="@+id/btn_clear_htid"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                style="@style/allbtntstyle"
+                android:text="清空"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_2"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="@dimen/downworkcode_pg_left"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                style="@style/alltextstyle"
+                android:text="项目编号"
+                />
+
+            <AutoCompleteTextView
+                android:id="@+id/df_at_xmbh"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@drawable/translucent"
+                android:inputType="textNoSuggestions"
+                android:gravity="center_vertical"
+                android:hint="15位数字或字母"
+                android:maxLength="15"
+                android:padding="5dp"
+                android:text=""
+                android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                style="@style/alltextstyle" />
+
+            <Button
+                android:visibility="invisible"
+                android:id="@+id/btn_clear_xmbh"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                style="@style/allbtntstyle"
+                android:text="清空"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_3"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/textView13"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/downworkcode_pg_left"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="单位代码" />
+
+            <AutoCompleteTextView
+                android:id="@+id/df_at_dwdm"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@drawable/translucent"
+                android:gravity="center_vertical"
+                android:hint="13位数字"
+                android:maxLength="13"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:padding="5dp"
+                style="@style/alltextstyle"/>
+
+            <Button
+                android:visibility="invisible"
+                android:id="@+id/btn_clear_dwdm"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                style="@style/allbtntstyle"
+                android:text="清空"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_5"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="@dimen/downworkcode_pg_left"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                style="@style/alltextstyle"
+                android:text="身份证号"
+                />
+
+            <AutoCompleteTextView
+                android:id="@+id/df_at_bprysfz"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@drawable/translucent"
+                android:inputType="textNoSuggestions"
+                android:gravity="center_vertical"
+                android:hint="爆破人员身份证"
+                android:maxLength="18"
+                android:padding="5dp"
+                android:digits="0123456789X"
+                android:textSize="18sp"
+                style="@style/alltextstyle"/>
+
+            <Button
+                android:visibility="invisible"
+                android:id="@+id/btn_clear_sfz"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                style="@style/allbtntstyle"
+                android:text="清空"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        style="@style/alltextstyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1.请输入在网站获取的6位密码"/>
+
+    <EditText
+        android:id="@+id/edit_mima"
+        style="@style/alltextstyle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:hint="6位密码"
+        android:numeric="integer" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/alltextstyle"
+        android:text="2.选择从网站下载的txt文件" />
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:id="@+id/btn_openFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/allbtntstyle"
+        android:text="打开文件管理器" />
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/text_filePath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/alltextstyle"
+        android:text="文件路径" />
+    <Button
+        android:id="@+id/btn_OK"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/allbtntstyle"
+        android:text="确定" />
+
+
+    </LinearLayout>
+</LinearLayout>

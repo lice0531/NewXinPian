@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    >
+    <!-- 序号 -->
+    <TextView
+        android:id="@+id/blastserial"
+        android:layout_width="55dp"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:text="序号"
+        android:background="@drawable/textview_border"
+        android:textStyle="bold"
+        android:gravity="center" />
+    <!-- 孔号 -->
+    <TextView
+        android:id="@+id/sithole"
+        android:layout_width="55dp"
+        android:layout_height="match_parent"
+        android:text="孔号"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border"
+        android:textStyle="bold"
+        android:gravity="center" />
+    <!-- 桥丝-->
+    <!--<TextView-->
+        <!--android:id="@+id/wire"-->
+        <!--android:layout_width="55dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@drawable/textview_border"-->
+        <!--android:gravity="center" />-->
+    <!-- 管壳号-->
+    <TextView
+        android:id="@+id/delay"
+        android:layout_width="55dp"
+        android:layout_height="match_parent"
+        android:text="延时"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border"
+        android:textStyle="bold"
+        android:gravity="center" />
+    <!-- 管壳号-->
+    <TextView
+        android:id="@+id/shellBlastNo"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:text="管壳码"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+
+
+</LinearLayout>

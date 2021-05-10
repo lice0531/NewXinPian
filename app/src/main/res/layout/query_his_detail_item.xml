@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/X_item_no"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="序号" />
+
+    <TextView
+        android:id="@+id/X_item_shellno"
+        android:layout_width="110dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="管壳码" />
+
+    <TextView
+        android:id="@+id/X_item_delay"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="延时" />
+
+    <TextView
+        android:id="@+id/X_item_errorname"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="状态" />
+
+</LinearLayout>

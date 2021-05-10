@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Serial Port</string>
+    <string name="error_configuration">Please configure your serial port first.</string>
+    <string name="error_security">You do not have read/write permission to the serial
+		port.</string>
+    <string name="error_unknown">The serial port can not be opened for an unknown
+		reason.</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_reister_main_page">Login</string>
+    <string name="title_activity_xingbang_main">XingBang Detonating systemV2</string>
+    <string name="xingbang_main_page_btn_reister">Login</string>
+    <string name="xingbang_main_page_btn_test">Net-test</string>
+    <string name="xingbang_main_page_btn_delay">Time Set</string>
+    <string name="xingbang_main_page_btn_del">Delete</string>
+    <string name="xingbang_main_page_btn_blast">Blasting</string>
+    <string name="xingbang_main_page_btn_query">Information</string>
+    <string name="xingbang_main_page_btn_setevn">Sys Set</string>
+    <string name="xingbang_main_page_btn_help">Help</string>
+    <string name="xingbang_main_page_btn_downworkcode">Project</string>
+    <string name="xingbang_main_page_btn_exit">Exit</string>
+
+    <string name="t_xingbang_main_page_btn_reister">Registration</string>
+    <string name="t_xingbang_main_page_btn_test">Net-test</string>
+    <string name="t_xingbang_main_page_btn_delay">Delay Settings</string>
+    <string name="t_xingbang_main_page_btn_del">Delete</string>
+    <string name="t_xingbang_main_page_btn_blast">Initiation Procedure</string>
+    <string name="t_xingbang_main_page_btn_query">View historical data</string>
+    <string name="t_xingbang_main_page_btn_setevn">System Settings</string>
+    <string name="t_xingbang_main_page_btn_help">Help</string>
+    <string name="t_xingbang_main_page_btn_downworkcode">Project information</string>
+
+    <string name="title_activity_set_delay_time">Time Set</string>
+    <string name="xingbang_main_page_btn_query_current">View the current detonator</string>
+    <string name="xingbang_main_page_btn_query_his">View history</string>
+
+    <string name="xingbang_set_page_btn_user">Management</string>
+    <string name="xingbang_set_page_btn_onlineuprade">Online updating</string>
+    <string name="xingbang_set_page_btn_netmodel">Network mode</string>
+    <string name="xingbang_set_page_btn_upload">Upload settings</string>
+    <string name="xingbang_set_page_btn_warrant">Code management</string>
+    <string name="xingbang_set_page_btn_dechip">Detonator chip</string>
+    <string name="xingbang_set_page_btn_facCode">Manufacturer\'s code</string>
+    <string name="xingbang_set_page_btn_flow">Equipment number</string>
+    <string name="xingbang_set_page_btn_ver">Version Number</string>
+    <string name="xingbang_set_page_btn_system">System setup</string>
+    <string name="xingbang_set_page_btn_exit">Exit</string>
+
+    <string name="xingbang_set_page_title_dechip">Detonator chip</string>
+    <string name="t_xingbang_set_page_btn_user">User Management</string>
+
+    <string name="title_activity_set_page_time">Set up</string>
+    <string name="title_activity_set_page_system">System setup</string>
+    <string name="title_activity_shibie">Face recognition</string>
+    <string name="title_activity_shouquan_lg">Authorized detonator</string>
+    <string name="title_activity_yanzheng">Verify the initiation range</string>
+    <string name="title_activity_set_factory_page">Factory management</string>
+    <string name="title_activity_simplecheckReisterMain">Login</string>
+    <string name="title_activity_firingpage">Blasting</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+    <string name="button_ok">OK</string>
+
+
+    <string name="blast_shellBlastNo_field">Shell and tube number</string>
+    <string name="blast_delay_field">delayed</string>
+
+    <string name="create_hostspot">Creating WIFI Hotspots</string>
+    <string name="close_hostspot">Turn off WIFI Hotspots</string>
+    <string name="send_data_wifi">Send Data</string>
+    <string name="search_wifi">Search WIFI</string>
+
+    <string name="viewfinderview_status_text1">Put the two-dimensional code/bar code in the viewfinder</string>
+    <string name="viewfinderview_status_text2">can scan automatically</string>
+    <string name="set_qiaosi">whether to detect bridge wire</string>
+    <string name="set_ceshi_time">Setting test preparation time/s</string>
+    <string name="set_chongdian_time">Setting Charging Detection Time/s</string>
+    <string name="set_language">Setup language</string>
+    <string name="set_save">Save settings</string>
+
+    <string name="user_select_language">Current User Selection Language: %s</string>
+    <string name="language_cn">中文</string>
+    <string name="language_en">ENGLISH</string>
+    <string name="language_auto">automatic</string>
+    <string name="language_traditional">繁體</string>
+
+    <string name="language_select">Current User Selection Language: %s</string>
+    <string name="title_activity_set_languages">Language settings</string>
+    <string name="et_hint_ceshi">Default 18s</string>
+    <string name="et_hint_chongdian">Default 5s</string>
+
+    <string name="text_tip_delete">Delete</string>
+    <string name="text_tip_modify">Modify</string>
+    <string name="text_tip_handle">Handle</string>
+    <string name="text_tip_network">Open Network Services</string>
+
+    <string name="text_alert_sure">YES</string>
+    <string name="text_alert_cancel">Cancel</string>
+    <string name="text_alert_tip">Tips</string>
+    <string name="text_alert_sw">Explain</string>
+    <string name="text_alert_tablename1">Error Detonator List</string>
+    <string name="text_alert_del_all">delete all detonators?</string>
+    <string name="text_alert_user">Please enter a username and password</string>
+    <string name="text_alert_tip1">The detection command has not been completed yet. Please check whether there are unregistered detonators on the bus and whether they continue to detonate.</string>
+    <string name="text_alert_tip2">There are unprocessed detonators on the bus. Will they continue to detonate?</string>
+    <string name="text_alert_tip3">Current detonator records</string>
+    <string name="text_alert_tip4">Total detonator:</string>
+    <string name="text_alert_tip5">Current detonator list</string>
+    <string name="text_alert_tip6">List of Exploded Detonators</string>
+    <string name="text_alert_username">Please enter the username</string>
+    <string name="text_alert_password">Please input a password</string>
+    <string name="text_alert_login_tip">Have you logged in?</string>
+    <string name="text_alert_xiugai">Modify information</string>
+    <string name="text_alert_sbbh">Equipment Number Settings</string>
+    <string name="text_alert_fwqsz">server setting</string>
+    <string name="text_alert_bbxx">Version information</string>
+    <string name="text_alert_xbkjqbq">Xingbang Technological Initiator System V2.0</string>
+
+    <string name="text_error_tip1">The information of detonator is incorrect and the factory code is incorrect. Please check it.</string>
+    <string name="text_error_tip2">The information of detonator is incorrect and the signature is incorrect. Please check it.</string>
+    <string name="text_error_tip3">Shell code: </string>
+    <string name="text_error_tip4">Registered</string>
+    <string name="text_error_tip5">No power-off command was received</string>
+    <string name="text_error_tip6">No power on command was received</string>
+    <string name="text_error_tip7">Bridge wire abnormality</string>
+    <string name="text_error_tip8">Error in inputting shell information, please check</string>
+    <string name="text_error_tip9">Registered, please continue</string>
+    <string name="text_error_tip10">Shell code：</string>
+    <string name="text_error_tip11">Starting manufacturer code cannot be empty</string>
+    <string name="text_error_tip12">Initial production date cannot be empty</string>
+    <string name="text_error_tip13">Initial signature cannot be empty</string>
+    <string name="text_error_tip14">The starting number cannot be empty</string>
+    <string name="text_error_tip15">End manufacturer code cannot be empty</string>
+    <string name="text_error_tip16">The end date of production cannot be empty</string>
+    <string name="text_error_tip17">End signature cannot be empty</string>
+    <string name="text_error_tip18">End serial number cannot be empty</string>
+    <string name="text_error_tip19">Pipe factory code inconsistency</string>
+    <string name="text_error_tip20">Practice</string>
+    <string name="text_error_tip21">The pipe factory code is not consistent with the pipe factory code defined in the system.</string>
+    <string name="text_error_tip22">Date inconsistency</string>
+    <string name="text_error_tip23">Signature inconsistency</string>
+    <string name="text_error_tip24">Character codes are inconsistent with those defined in the system</string>
+    <string name="text_error_tip25">The starting number is not a number</string>
+    <string name="text_error_tip26">End Number is not Number</string>
+    <string name="text_error_tip27">The ending number should not be less than the beginning number.</string>
+    <string name="text_error_tip28">The end number does not meet the requirement</string>
+    <string name="text_error_tip29">The number of registrations per time should not exceed 1000</string>
+    <string name="text_error_tip30">There is no detonator data to be tested. Please register the detonator first！</string>
+    <string name="text_error_tip31">Overcurrent</string>
+    <string name="text_error_tip32">No power-off command was received</string>
+    <string name="text_error_tip33">No power on command was received</string>
+    <string name="text_error_tip34">No open test command was received</string>
+    <string name="text_error_tip35">Delay Setting Out of Limit</string>
+    <string name="text_error_tip36">Set up successfully</string>
+    <string name="text_error_tip37">Delay is empty or greater than the maximum set delay, modification failure！</string>
+    <string name="text_error_tip38">Modified success</string>
+    <string name="text_error_tip39">Delay Setting Out of Limit</string>
+    <string name="text_error_tip40">Incompatible start/end serial number</string>
+    <string name="text_error_tip41">The number of in-hole detonators is not a number</string>
+    <string name="text_error_tip42">Beginning delay is not a number</string>
+    <string name="text_error_tip43">Hole delay is not a number</string>
+    <string name="text_error_tip44">Inter-hole delay is not a number</string>
+    <string name="text_error_tip45">Start Delay Exceeding Maximum Setting Time</string>
+    <string name="text_error_tip46">In-hole delay exceeds maximum set time</string>
+    <string name="text_error_tip47">Inter-hole delay exceeds maximum set time</string>
+    <string name="text_error_tip48">No data to load</string>
+    <string name="text_error_tip49">User Verification Successful</string>
+    <string name="text_error_tip50">User Check Error</string>
+    <string name="text_error_tip51">Abnormal detection of bridge wire</string>
+    <string name="text_error_tip52">Cannot delete this information</string>
+    <string name="text_error_tip53">GPS positioning fails. Due to the poor GPS status of the equipment, it is suggested to hold the equipment in relatively open open open air and try again.</string>
+    <string name="text_error_tip54">Wrong Records</string>
+    <string name="text_error_tip55">No data,no upload</string>
+    <string name="text_error_tip56">Click again to exit the application </string>
+    <string name="text_error_tip57">Not available.</string>
+    <string name="text_error_tip58">The name of the manufacturer cannot be empty</string>
+    <string name="text_error_tip59">Code cannot be empty</string>
+    <string name="text_error_tip60">Category name cannot be empty</string>
+    <string name="text_error_tip61">Seconds cannot be empty</string>
+    <string name="text_error_tip62">The network is not connected. Please go to Settings to set up the network.！</string>
+
+    <string name="text_uploda_tip1">Upload success</string>
+    <string name="text_uploda_tip2">Illegal application information</string>
+    <string name="text_uploda_tip3">Initiator not filed or set up operation task</string>
+
+    <string name="text_communication_state1">Communication Failure</string>
+    <string name="text_communication_state2">Delayed write inconsistency</string>
+    <string name="text_communication_state3">The lower computer did not return</string>
+    <string name="text_communication_state4">Successful communication</string>
+    <string name="text_communication_state5">Unknown</string>
+    <string name="text_communication_state6">Detonator normal</string>
+
+    <string name="text_singleReister_stop">Stop registration</string>
+    <string name="text_singleReister">Manually login</string>
+    <string name="text_reister_scan">Scan</string>
+    <string name="text_return">Return</string>
+    <string name="text_sure">OK</string>
+    <string name="text_success">Success</string>
+    <string name="text_reister_barcode">Scan information:</string>
+    <string name="text_reister_start">Start</string>
+    <string name="text_reister_end">End</string>
+    <string name="text_reister_2b">2</string>
+    <string name="text_reister_5b">5</string>
+    <string name="text_reister_1b">1</string>
+    <string name="text_reister_scanReister">Scan</string>
+    <string name="text_reister_scaning">Sweeping code</string>
+    <string name="text_reister_vol">bus voltage:</string>
+    <string name="text_reister_ele">bus current:</string>
+
+    <string name="text_list_Serial">serial</string>
+    <string name="text_list_kong">number</string>
+    <string name="text_list_guan">shell code</string>
+    <string name="text_list_delay">delay</string>
+    <string name="text_list_state">login</string>
+    <string name="text_list_qibao_data">Detonating date</string>
+    <string name="text_list_factory_name">Manufacturer\'s name</string>
+    <string name="text_list_fac_num">factory code</string>
+    <string name="text_list_fac_code">signature code</string>
+    <string name="text_list_check">checked</string>
+
+    <string name="text_test_vol">Bus voltage:</string>
+    <string name="text_test_ele">Bus current:</string>
+    <string name="text_test_num">Detonator:</string>
+    <string name="text_test_errnum">Error:</string>
+    <string name="text_test_hint">Message hint:</string>
+    <string name="text_test_see">Check</string>
+    <string name="text_test_exit">Exit</string>
+    <string name="text_test_tip1">Waiting Bus Stability:</string>
+    <string name="text_test_tip2">Testing (</string>
+    <string name="text_test_tip3">)detonator</string>
+    <string name="text_test_tip4">test complete</string>
+
+    <string name="text_unit_fa">piece </string>
+    <string name="text_unit_hm">ms</string>
+
+    <string name="text_delay_startnum">START</string>
+    <string name="text_delay_endnum">END</string>
+    <string name="text_delay_det_num">hole detonator</string>
+    <string name="text_delay_start">initial delay</string>
+    <string name="text_delay_kong_de">hole delay</string>
+    <string name="text_delay_kong_2">delay between holes</string>
+    <string name="text_delay_total">total:0</string>
+
+    <string name="text_del_all">Delete all</string>
+    <string name="text_del_err">Delete error</string>
+    <string name="text_del_ser">Delete by serial number</string>
+    <string name="text_del_start">START</string>
+    <string name="text_del_end">END</string>
+    <string name="text_del_ok">Delete successful</string>
+
+    <string name="text_firing_tip1">Waiting Bus Stability</string>
+    <string name="text_firing_num">Detonators number:</string>
+    <string name="text_firing_errnum">Error :</string>
+    <string name="text_firing_tip2">Test preparation...</string>
+    <string name="text_firing_tip3">Enter the charging process？</string>
+    <string name="text_firing_err_lg">Error List</string>
+    <string name="text_firing_jixu">Continue</string>
+    <string name="text_firing_tip4">Charging, please wait a moment(</string>
+    <string name="text_firing_qibao_vol">Detonation voltage :</string>
+    <string name="text_firing_tip5">Ready（press 1&amp;5 together to blast）</string>
+    <string name="text_firing_tip6">Count down</string>
+    <string name="text_firing_tip7">preparing to test(</string>
+    <string name="text_firing_tip8">Write not returned:</string>
+    <string name="text_firing_tip9">Testing (</string>
+    <string name="text_firing_tip10">)detonator</string>
+    <string name="text_firing_tip11">Charge detection (</string>
+    <string name="text_firing_tip12">Charging, please wait a moment. \n</string>
+    <string name="text_firing_tip13">Count down\n</string>
+    <string name="text_firing_tip14">Initiation success！</string>
+    <string name="text_firing_tip15">tips</string>
+    <string name="text_firing_tip16">success！</string>
+    <string name="text_firing_tip17">Upload data</string>
+
+    <string name="text_query_dqlg_data">Current data</string>
+    <string name="text_query_dqlg">Current detonator information</string>
+    <string name="text_query_lslg_data">Historical data</string>
+    <string name="text_query_lslg">Historical detonator</string>
+    <string name="text_query_lon">Longtitude:</string>
+    <string name="text_query_lat">Latitude:</string>
+    <string name="text_query_num">Equipment number:</string>
+    <string name="text_query_uploda">upload</string>
+    <string name="text_query_operation">operation</string>
+    <string name="text_query_uploaded">Uploaded</string>
+    <string name="text_query_up">Not uploaded</string>
+    <string name="text_query_failure">Upload failure</string>
+    <string name="text_query_chong">Re upload</string>
+
+    <string name="text_fac_factory_name">Manufacturer\'s name</string>
+    <string name="text_fac_factory_num">Manufacturer code</string>
+    <string name="text_fac_code">Manufacturer\'s signature</string>
+    <string name="text_fac_default">Default manufacturer</string>
+    <string name="text_fac_tip1">Increase success</string>
+    <string name="text_fac_tip2">repeat</string>
+    <string name="text_fac_tip3">Please revise the manufacturer\'s information</string>
+    <string name="text_lgxp_lglb">Detonator Category Name</string>
+    <string name="text_lgxp_mms">Second code</string>
+    <string name="text_lgxp_default">Default category</string>
+    <string name="text_lgxp_setFac">Factory setup</string>
+    <string name="text_list_ms">Seconds</string>
+
+    <string name="text_help_tip1">normal</string>
+    <string name="text_help_tip2">no detonator was found</string>
+    <string name="text_help_tip3">registered</string>
+    <string name="text_help_tip4">communication error</string>
+    <string name="text_help_tip5">charging error</string>
+    <string name="text_help_tip6">clock error</string>
+    <string name="text_help_tip7">bridge Error</string>
+    <string name="text_help_tip8">discharge error</string>
+    <string name="text_help_tip9">setting Delay Error</string>
+    <string name="text_help_tip10">failed to read serial number at Registration</string>
+    <string name="text_help_tip11">overcurrent</string>
+    <string name="text_help_tip12">single detonator has high current</string>
+    <string name="text_help_tip13">chip uninitialized</string>
+    <string name="text_help_tip14">failure or loss of EDETCOMM module</string>
+    <string name="text_help_tip15">equipment is fully registered</string>
+    <string name="text_help_xuhao">Serial</string>
+    <string name="text_help_state">State value</string>
+    <string name="text_help_miaoshu">Describe</string>
+    <string name="text_btn_add">Add</string>
+    <string name="text_user_username">username</string>
+    <string name="text_user_password">password</string>
+    <string name="text_alert_nowNum">number</string>
+    <string name="text_alert_newNum">new number</string>
+    <string name="text_total">total:</string>
+    <string name="text_systip_1">Successfully saved</string>
+    <string name="text_systip_2">Detection time is greater than 5s</string>
+    <string name="text_systip_3">Preparation time is greater than 18s</string>
+    <string name="text_systip_4">Manufacturer name</string>
+    <string name="text_systip_5">Manufacturer code</string>
+    <string name="text_systip_6">Signature</string>
+    <string name="text_systip_7">Default selected</string>
+    <string name="text_systip_8">Detonator category name</string>
+    <string name="text_systip_9">Second code</string>
+    <string name="text_systip_10">Default category</string>
+    <string name="title_activity_UpLoadLog">upload log</string>
+    <string name="title_activity_zijian">Device initialization</string>
+    <string name="app_title">XingBang Detonating system</string>
+    <string name="text_fac_tip4">added</string>
+
+</resources>

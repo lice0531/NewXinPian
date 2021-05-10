@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:orientation="horizontal"   >
+
+   <ProgressBar
+  	android:id="@+id/reg_req_code_gif_view"
+    android:layout_width="@dimen/pb_progressBar"
+    android:layout_height="@dimen/pb_progressBar"
+    android:indeterminateDrawable="@drawable/base_loading_large_anim"
+    android:indeterminateBehavior="repeat"/>
+   <TextView        
+       android:layout_width="wrap_content"        
+       android:layout_height="wrap_content"        
+        
+       android:layout_marginTop="5dp"        
+       android:text="加载中..." />
+
+</LinearLayout>

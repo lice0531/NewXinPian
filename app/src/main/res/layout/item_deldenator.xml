@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal">
+
+        <!-- 序号 -->
+        <TextView
+            android:id="@+id/blastserial"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle" />
+        <!-- 孔号 -->
+        <TextView
+            android:id="@+id/sithole"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle"/>
+        <!-- 延时-->
+        <TextView
+            android:id="@+id/setdelaytxt"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle"/>
+
+        <!-- 管壳号-->
+        <TextView
+            android:id="@+id/shellBlastNo"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle" />
+        <!-- 状态-->
+        <TextView
+            android:id="@+id/txtstatus"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            style="@style/alltextstyle" />
+</LinearLayout>

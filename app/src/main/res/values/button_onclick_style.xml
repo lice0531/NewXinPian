@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<style name="buttononclick">
+    <item name="android:gravity">center</item>
+    <item name="android:layout_gravity">center</item>
+    <item name="android:textSize">23sp</item>
+    <item name="android:textColor">@color/bt_fg_base</item>
+    <item name="android:background">@drawable/button_shape</item>
+</style>
+</resources>
