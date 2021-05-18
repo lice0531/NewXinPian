@@ -208,7 +208,7 @@ public class SetEnvMainActivity extends BaseActivity {
             public void onClick(View v) {
                 if (cb_test.isChecked()) {
                     denator_danling_cs.setVisibility(View.VISIBLE);
-                    et_server_http_test.setText(Utils.httpurl_down);
+                    et_server_http_test.setText(Utils.httpurl_down_test);
                 } else {
                     denator_danling_cs.setVisibility(View.GONE);
                 }

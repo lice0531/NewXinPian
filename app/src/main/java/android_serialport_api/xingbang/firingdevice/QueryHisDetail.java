@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,13 +37,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
-import android_serialport_api.xingbang.custom.LoadListView;
 import android_serialport_api.xingbang.custom.LoadingDialog;
+import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
+import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
+import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.MyUtils;
@@ -68,7 +69,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
  * 查看历史记录
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadMoreListener, LoadHisFireAdapter.InnerItemOnclickListener,
+public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.InnerItemOnclickListener,
         OnItemClickListener {
     @BindView(R.id.btn_del_return)
     Button btnDelReturn;
@@ -77,7 +78,7 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
     @BindView(R.id.denator_del_func)
     LinearLayout denatorDelFunc;
     @BindView(R.id.denator_query_his_listview)
-    LoadListView denatorQueryHisListview;
+    MlistView denatorQueryHisListview;
     @BindView(R.id.denator_del_mainpage)
     LinearLayout denatorDelMainpage;
     private List<VoFireHisMain> list_savedate = new ArrayList<>();
@@ -131,7 +132,7 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
         mAdapter = new LoadHisFireAdapter(this, list_savedate, R.layout.item_query_his, 1);
         mAdapter.setOnInnerItemOnClickListener(this);
         denatorQueryHisListview.setAdapter(mAdapter);
-        denatorQueryHisListview.setLoadMoreListener(this);
+//        denatorQueryHisListview.setLoadMoreListener(this);
         denatorQueryHisListview.setOnItemClickListener(this);
 
         mHandler_2 = new Handler(this.getMainLooper()) {
@@ -251,7 +252,7 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
 
     private void loadMoreData(int cp) {
         list_savedate.clear();
-        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().loadAll();
+        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
         for (int i=0;i<list.size();i++){
             VoFireHisMain item = new VoFireHisMain();
             item.setBlastdate(list.get(i).getBlastdate());
@@ -270,24 +271,6 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
         }
     }
 
-    @Override
-    public void loadMore() {
-        if (currentPage <= totalPage) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadMoreData(currentPage);
-                    showLoadMore();
-                }
-            }, 1000);
-        } else {
-            denatorQueryHisListview.setFooterGone();
-            if (!isBottom) {
-                show_Toast(getString(R.string.text_error_tip48));
-                isBottom = true;
-            }
-        }
-    }
 
     private void showLoadMore() {//刷新页面
         mAdapter.notifyDataSetChanged();
@@ -396,7 +379,7 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
                 String xmbh = list_savedate.get(pos).getXmbh();//项目编号
                 String jd = list_savedate.get(pos).getLongitude();//经度
                 String wd = list_savedate.get(pos).getLatitude();//纬度
-                String name = list_savedate.get(pos).getLatitude();//纬度
+                String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
                 mAdapter.notifyDataSetChanged();
                 getHisDetailList(blastdate, 0);//获取起爆历史详细信息
                 if (blastdate == null || blastdate.trim().length() < 8) {
@@ -423,19 +406,13 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
                pb_show = 1;
                 runPbDialog();//loading画面
-//                if (server_type1.equals("1")) {
-//                    upload(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//丹灵上传信息
-//
-//                }
-//                if (server_type2.equals("2")) {
-//                    performUp(blastdate,htbh,jd,wd);//中爆上传
-//                }
-                upload_my(blastdate, htbh,jd,wd,xmbh,dwdm);//上传煋邦服务器
-//                if(server_type1.equals("1")){
-//                    upload_my(blastdate, htbh,jd,wd,xmbh,dwdm);//上传煋邦服务器
-//                }else {
-//                    upload_my(blastdate, htbh,jd,wd,"0","0");//上传煋邦服务器
-//                }
+                if (server_type1.equals("1")) {
+                    upload(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//丹灵上传信息
+                }
+                if (server_type2.equals("2")) {
+                    performUp(blastdate,htbh,jd,wd);//中爆上传
+                }
+                upload_xingbang(blastdate, htbh,jd,wd,xmbh,dwdm,qbxm_id);//上传煋邦服务器
                 break;
             case R.id.bt_operat:
                 AlertDialog dialog = new AlertDialog.Builder(this)
@@ -833,7 +810,7 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
         });
     }
 
-    private void upload_my(final String blastdate,final String htid,final String jd,final String wd,final String xmbh,final String dwdm) {
+    private void upload_xingbang(final String blastdate, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_id) {
         final String key = "jadl12345678912345678912";
         String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
 //        String url = "http://192.168.191.3/XB/DataUpload";//公司服务器上传
@@ -868,7 +845,11 @@ public class QueryHisDetail extends BaseActivity implements LoadListView.OnLoadM
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
-//            object.put("name", "测试name");//name
+            ShouQuan sq = getDaoSession().getShouQuanDao().queryBuilder().where(ShouQuanDao.Properties.Id.eq(qbxm_id)).unique();
+            if(sq!=null){
+                object.put("name", sq.getSpare1());//项目编号
+                Log.e("上传信息", object.toString());
+            }
             Log.e("上传信息", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();

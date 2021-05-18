@@ -69,10 +69,10 @@ import sun.misc.BASE64Encoder;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 public class Utils {
-    public static String httpurl_down = "http://test.mbdzlg.com/mbdzlgtxzx/servlet/DzlgMmxzJsonServlert";//在线下载测试
+    public static String httpurl_down_test = "http://test.mbdzlg.com/mbdzlgtxzx/servlet/DzlgMmxzJsonServlert";//在线下载测试
     public static String httpurl_down_dl = "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgMmxzJsonServlert";//王工给的在线下载
     public static String httpurl_down_dl_new = "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgMmxzJsonServlert";//王工给的在线下载
-    public static String httpurl_upload = "http://test.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert";//上传测试
+    public static String httpurl_upload_test = "http://test.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert";//上传测试
     public static String httpurl_upload_dl = "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert";//王工给的丹灵上传
     public static String httpurl_off = "http://139.129.216.133:8080/mbdzlgtxzx/servlet/DzlgMmlxxzJsonServlert";//离线下载
     public static String httpurl_zbw = "14.23.69.2";

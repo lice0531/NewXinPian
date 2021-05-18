@@ -127,6 +127,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int secondCmdFlag = 0;//发出进入起爆模式命令是否返回
     private volatile int fourthDisplay = 0;//第4步，是否显示
     private volatile int thirdWriteCount;//雷管发送计数器
+    private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
     private volatile int sixExchangeCount = 280;//第6阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
@@ -139,8 +140,11 @@ public class FiringMainActivity extends SerialPortActivity {
     private String userId = "";
 
     private volatile int revPowerFlag = 0;
+    private volatile int jixu = 0;
     private volatile int reThirdWriteCount = 0;//当芯片返回命令时,数量加一,用以防止上一条命令未返回,
+    private volatile int reThirdWriteCount2 = 0;//当芯片返回命令时,数量加一,用以防止上一条命令未返回,
     private VoFiringTestError thirdWriteErrorDenator;//写入错误雷管
+    private VoFiringTestError thirdWriteErrorDenator2;//写入错误雷管
     private int fourOnlineDenatorFlag = -1;//是否存在未注册雷管 1:36命令未返回 2:存在 3:不存在
     private int twoErrorDenatorFlag = 0;//错误雷管
     private int denatorCount = 0;//雷管总数
@@ -157,6 +161,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private static VoDenatorBaseInfo writeDenator;
     private ConcurrentLinkedQueue<VoDenatorBaseInfo> allBlastQu;//雷管队列
     private ConcurrentLinkedQueue<VoFiringTestError> errorList;//错误雷管队列
+    private ConcurrentLinkedQueue<VoFiringTestError> errorList2;//错误雷管队列
     private List<VoFireHisMain> denatorHis_Main_list = new ArrayList<>();//起爆雷管历史集合
     int m6KeyDown_Action, m6KeyUp_Action;
     int m0KeyDown_Action, m0KeyUp_Action;
@@ -201,6 +206,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (qbxm_id == null) {
             qbxm_id = "-1";
         }
+        Log.e(TAG, "qbxm_id: "+qbxm_id );
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_id);
         startFlag = 1;
         initView();
@@ -213,112 +219,81 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private void initView() {
 
-        ll_1 = (LinearLayout) findViewById(R.id.ll_firing_1);
-        ll_2 = (LinearLayout) findViewById(R.id.ll_firing_2);
-        ll_4 = (LinearLayout) findViewById(R.id.ll_firing_4);
-        ll_6 = (LinearLayout) findViewById(R.id.ll_firing_6);
-        ll_7 = (LinearLayout) findViewById(R.id.ll_firing_7);
-        ll_8 = (LinearLayout) findViewById(R.id.ll_firing_8);
-        firstTxt = (TextView) findViewById(R.id.ll_waiting_txt_firing_1);
-        secondTxt = (TextView) findViewById(R.id.ll_txt_firing_2);
-        fourTxt = (TextView) findViewById(R.id.ll_txt_firing_4);
-        sixTxt = (TextView) findViewById(R.id.ll_txt_firing_6);
-        eightTxt = (TextView) findViewById(R.id.ll_txt_firing_8);
+        ll_1 = findViewById(R.id.ll_firing_1);
+        ll_2 =  findViewById(R.id.ll_firing_2);
+        ll_4 =  findViewById(R.id.ll_firing_4);
+        ll_6 = findViewById(R.id.ll_firing_6);
+        ll_7 =  findViewById(R.id.ll_firing_7);
+        ll_8 =  findViewById(R.id.ll_firing_8);
+        firstTxt = findViewById(R.id.ll_waiting_txt_firing_1);
+        secondTxt =  findViewById(R.id.ll_txt_firing_2);
+        fourTxt =  findViewById(R.id.ll_txt_firing_4);
+        sixTxt =  findViewById(R.id.ll_txt_firing_6);
+        eightTxt = findViewById(R.id.ll_txt_firing_8);
 
         firstTxt.setText("" + firstWaitCount);
-        ll_firing_Volt_2 = (TextView) findViewById(R.id.ll_firing_Volt_2);
-        ll_firing_IC_2 = (TextView) findViewById(R.id.ll_firing_IC_2);
-        ll_firing_Volt_4 = (TextView) findViewById(R.id.ll_firing_Volt_4);
-        ll_firing_IC_4 = (TextView) findViewById(R.id.ll_firing_IC_4);
-        ll_firing_Volt_5 = (TextView) findViewById(R.id.ll_firing_Volt_5);
-        ll_firing_IC_5 = (TextView) findViewById(R.id.ll_firing_IC_5);
-        ll_firing_deAmount_4 = (TextView) findViewById(R.id.ll_firing_deAmount_4);//雷管数
-        ll_firing_deAmount_2 = (TextView) findViewById(R.id.ll_firing_deAmount_2);//雷管数
-        ll_firing_errorAmount_2 = (TextView) findViewById(R.id.ll_firing_errorAmount_2);//错误数
-        ll_firing_errorAmount_4 = (TextView) findViewById(R.id.ll_firing_errorAmount_4);//错误数
-        tv__qb_dianliu_1 = (TextView) findViewById(R.id.tv__qb_dianliu_1);//错误数
-        tv__qb_dianliu_2 = (TextView) findViewById(R.id.tv__qb_dianliu_2);//错误数
-        ll_firing_Volt_6 = (TextView) findViewById(R.id.ll_firing_Volt_6);
-        ll_firing_IC_6 = (TextView) findViewById(R.id.ll_firing_IC_6);
-        ll_firing_Volt_7 = (TextView) findViewById(R.id.ll_firing_Volt_7);
-        ll_firing_IC_7 = (TextView) findViewById(R.id.ll_firing_IC_7);
-        ll_firing_Hv_7 = (TextView) findViewById(R.id.ll_firing_Hv_7);//起爆电压
-        ll_firing_Hv_6 = (TextView) findViewById(R.id.ll_firing_Hv_6);//起爆电压
+        ll_firing_Volt_2 =  findViewById(R.id.ll_firing_Volt_2);
+        ll_firing_IC_2 =  findViewById(R.id.ll_firing_IC_2);
+        ll_firing_Volt_4 =  findViewById(R.id.ll_firing_Volt_4);
+        ll_firing_IC_4 =  findViewById(R.id.ll_firing_IC_4);
+        ll_firing_Volt_5 =  findViewById(R.id.ll_firing_Volt_5);
+        ll_firing_IC_5 = findViewById(R.id.ll_firing_IC_5);
+        ll_firing_deAmount_4 =  findViewById(R.id.ll_firing_deAmount_4);//雷管数
+        ll_firing_deAmount_2 =  findViewById(R.id.ll_firing_deAmount_2);//雷管数
+        ll_firing_errorAmount_2 =  findViewById(R.id.ll_firing_errorAmount_2);//错误数
+        ll_firing_errorAmount_4 = findViewById(R.id.ll_firing_errorAmount_4);//错误数
+        tv__qb_dianliu_1 =  findViewById(R.id.tv__qb_dianliu_1);//错误数
+        tv__qb_dianliu_2 =  findViewById(R.id.tv__qb_dianliu_2);//错误数
+        ll_firing_Volt_6 =  findViewById(R.id.ll_firing_Volt_6);
+        ll_firing_IC_6 =  findViewById(R.id.ll_firing_IC_6);
+        ll_firing_Volt_7 =  findViewById(R.id.ll_firing_Volt_7);
+        ll_firing_IC_7 = findViewById(R.id.ll_firing_IC_7);
+        ll_firing_Hv_7 = findViewById(R.id.ll_firing_Hv_7);//起爆电压
+        ll_firing_Hv_6 = findViewById(R.id.ll_firing_Hv_6);//起爆电压
 
-        btn_fir_over = (Button) findViewById(R.id.btn_fir);//起爆电压
-        btn_fir_over.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                keyFireCmd = 1;
-            }
-        });
+        btn_fir_over =  findViewById(R.id.btn_fir);//起爆电压
+        btn_fir_over.setOnClickListener(view -> keyFireCmd = 1);
         // threadTest = new ThreadTest();
         //busInfoThread = new GetBusInfoThread();
-        btn_return1 = (Button) findViewById(R.id.btn_firing_return_1);
-        btn_return1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeThread();
-                closeForm();
-                // mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            }
+        btn_return1 = findViewById(R.id.btn_firing_return_1);
+        btn_return1.setOnClickListener(v -> {
+            closeThread();
+            closeForm();
+            // mHandler_1.sendMessage(mHandler_1.obtainMessage());
         });
-        btn_return2 = (Button) findViewById(R.id.btn_firing_return_2);
-        btn_return2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeThread();
-                closeForm();
-            }
+        btn_return2 = findViewById(R.id.btn_firing_return_2);
+        btn_return2.setOnClickListener(v -> {
+            closeThread();
+            closeForm();
         });
-        btn_return4 = (Button) findViewById(R.id.btn_firing_return_4);
-        btn_return4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeThread();
-                closeForm();
-            }
+        btn_return4 = findViewById(R.id.btn_firing_return_4);
+        btn_return4.setOnClickListener(v -> {
+            closeThread();
+            closeForm();
         });
-        btn_return6 = (Button) findViewById(R.id.btn_firing_return_6);
-        btn_return6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeThread();
-                closeForm();
-            }
+        btn_return6 = findViewById(R.id.btn_firing_return_6);
+        btn_return6.setOnClickListener(v -> {
+            closeThread();
+            closeForm();
         });
-        btn_return7 = (Button) findViewById(R.id.btn_firing_return_7);
-        btn_return7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeThread();
-                closeForm();
-            }
+        btn_return7 = findViewById(R.id.btn_firing_return_7);
+        btn_return7.setOnClickListener(v -> {
+            closeThread();
+            closeForm();
         });
-        btn_return8 = (Button) findViewById(R.id.btn_firing_return_8);
-        btn_return8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeThread();
-                closeForm();
-            }
+        btn_return8 = findViewById(R.id.btn_firing_return_8);
+        btn_return8.setOnClickListener(v -> {
+            closeThread();
+            closeForm();
         });
-        btn_firing_lookError_4 = (Button) findViewById(R.id.btn_test_lookError);
-        btn_firing_lookError_4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadErrorBlastModel();
-                createDialog();
-            }
+        btn_firing_lookError_4 = findViewById(R.id.btn_test_lookError);
+        btn_firing_lookError_4.setOnClickListener(v -> {
+            loadErrorBlastModel();
+            createDialog();
         });
         //继续起爆
-        btn_continueOk_4 = (Button) findViewById(R.id.btn_firing_continue_4);
-        btn_continueOk_4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                increase(6);
-            }
-        });
+        btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
+        btn_continueOk_4.setOnClickListener(v -> increase(6));
     }
 
     private void initHandle() {
@@ -810,7 +785,6 @@ public class FiringMainActivity extends SerialPortActivity {
                 short delay = cursor.getShort(5);//获取第三列的值
                 VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
                 vo.setBlastserial(serialNo);
-
                 vo.setDelay(delay);
                 vo.setShellBlastNo(shellNo);
                 allBlastQu.offer(vo);
@@ -830,6 +804,7 @@ public class FiringMainActivity extends SerialPortActivity {
         stage = val;
     }
 
+    @SuppressLint("SetTextI18n")
     public void execStage(Message msg) {//页面切换
         switch (stage) {
             case 0:
@@ -906,7 +881,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fourthDisplay = 0;
                 ctlLinePanel(6);
                 if(sixExchangeCount%10==0||sixExchangeCount==0){
-                    sixTxt.setText(getString(R.string.text_firing_tip4) + sixExchangeCount/10 + ") ");//"正在充电，请稍后 \n"
+                    sixTxt.setText(getString(R.string.text_firing_tip4) + "("+sixExchangeCount/10 + ")");//"正在充电，请稍后 \n"
                 }
 
 
@@ -1001,6 +976,29 @@ public class FiringMainActivity extends SerialPortActivity {
                 getErrorBlastCount();
                 fourthDisplay = 1;
                 break;
+
+            case 33:
+                if (thirdWriteErrorDenator2 != null) {//写入未返回的错误雷管
+                    show_Toast(thirdWriteErrorDenator2.getShellBlastNo() + "芯片写入命令未返回");
+                    thirdWriteErrorDenator2 = null;//设置错误雷管
+                }
+                if (errorList != null && errorList.size() >= 0) {
+                    int errLoop = 0;
+                    while (!errorList.isEmpty()) {//写入错误雷管
+                        VoFiringTestError er = errorList.poll();
+                        if (er != null) {
+                            From32DenatorFiring df = new From32DenatorFiring();
+                            df.setShellNo(er.getShellBlastNo());
+                            df.setCommicationStatus("AF");
+                            df.setDelayTime(er.getDelay());
+                            this.updateDenator(df, er.getDelay());
+                        }
+                    }
+                }
+                secondTxt.setText(getString(R.string.text_firing_tip9) + thirdWriteCount + getString(R.string.text_firing_tip10));
+                //写入通信未返回
+
+                break;
             default:
 
         }
@@ -1073,7 +1071,7 @@ public class FiringMainActivity extends SerialPortActivity {
         his.setRemark("已起爆");
         his.setUserid(userId);
         his.setEqu_no(equ_no);
-        his.setSerialNo(maxNo);
+        his.setSerialNo(Integer.parseInt(qbxm_id));
         his.setPro_htid(pro_htid);
         his.setPro_xmbh(pro_xmbh);
         his.setPro_dwdm(pro_dwdm);
@@ -1333,7 +1331,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             assert fromData != null;
-            Log.e(TAG, "雷管状态fromData.getCommicationStatus(): "+fromData.toString());
+//            Log.e(TAG, "雷管状态fromData.getCommicationStatus(): "+fromData.toString());
             if(FiringMainActivity.stage == 6&&!fromData.getCommicationStatus().equals("FF")){
 //                showdialog();
             }
@@ -1427,6 +1425,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private class ThreadFirst extends Thread {
         public volatile boolean exit = false;
         private VoDenatorBaseInfo tempBaseInfo = null;
+        private VoDenatorBaseInfo tempBaseInfo2 = null;
         private ConcurrentLinkedQueue<VoDenatorBaseInfo> blastQueue;//雷管队列
 
         public ThreadFirst(ConcurrentLinkedQueue<VoDenatorBaseInfo> queue) {
@@ -1476,6 +1475,14 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e("第5阶段-increase", "5");
                                 Log.e("充电检测WaitCount", Wait_Count + "");
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            }else if(secondCount == 10){
+                                if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
+                                    byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
+                                    sendCmd(initBuf2);
+                                } else {
+                                    byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
+                                    sendCmd(initBuf2);
+                                }
                             } else {
                                 //得到电流电压信息
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
@@ -1491,22 +1498,34 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {
+                                    //检测一次
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
-                                    try {
-                                        Thread.sleep(1000);
-                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36在网检测
-                                        sendCmd(initBuf);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
                                     fourOnlineDenatorFlag = 0;
+                                    //检测两次
+//                                    allBlastQu = new ConcurrentLinkedQueue<>();
+//                                    errorList = new ConcurrentLinkedQueue<>();
+//                                    List<DenatorBaseinfo> list=getDaoSession().getDenatorBaseinfoDao().loadAll();
+//                                    for (DenatorBaseinfo denatorBaseinfo:list) {
+//                                        int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
+//                                        String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
+//                                        short delay = (short)denatorBaseinfo.getDelay();//获取第三列的值
+//                                        VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
+//                                        vo.setBlastserial(serialNo);
+//                                        vo.setDelay(delay);
+//                                        vo.setShellBlastNo(shellNo);
+//                                        allBlastQu.offer(vo);
+//                                    }
+//                                    reThirdWriteCount=0;
+//                                    thirdWriteCount=0;
+//                                    firstThread.blastQueue=allBlastQu;
+//                                    increase(33);//之前是4
+//                                    fourOnlineDenatorFlag = 0;
                                     break;
                                 }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
 
-                                String data = "";
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
@@ -1522,22 +1541,13 @@ public class FiringMainActivity extends SerialPortActivity {
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                data = denatorId + delayStr;
+                                String data = denatorId + delayStr;
                                 //发送31命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
                                 sendCmd(initBuf);
-
-                                // Utils.writeLog("tname:" + Thread.currentThread().getName() + ",bl:" + blastQueue.size() + ",tount=" + thirdWriteCount + ",no=" + shellStr);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
-
-
-                                /**
-                                 Message message = Message.obtain();
-                                 message.what = 1;
-                                 message.obj = thirdWriteCount;
-                                 **/
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
 
                             } else {
@@ -1689,6 +1699,71 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
                             neightCount++;
+                            break;
+
+                        case 33://写入延时时间，检测结果看雷管是否正常
+                            if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
+//                                Thread.sleep(50);
+                                thirdStartTime = 0;
+                                writeDenator = null;
+                                if (blastQueue == null || blastQueue.size() < 1) {
+                                    increase(4);//之前是4
+                                    Log.e("第4阶段-increase", "4-2");
+                                    try {
+                                        Thread.sleep(1000);
+                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36在网检测
+                                        sendCmd(initBuf);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    fourOnlineDenatorFlag = 0;
+                                    break;
+                                }
+                                VoDenatorBaseInfo write = blastQueue.poll();
+                                tempBaseInfo2 = write;
+
+                                String data = "";
+                                String shellStr = write.getShellBlastNo();
+                                if (shellStr == null || shellStr.length() != 13)
+                                    continue;//// 判读是否是十三位
+
+//                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
+                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
+                                denatorId = Utils.getReverseDetonatorNo(denatorId);
+                                short delayTime = write.getDelay();
+                                byte[] delayBye = Utils.shortToByte(delayTime);
+                                String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
+                                data = denatorId + delayStr;
+                                //发送31命令---------------------------------------------
+                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                sendCmd(initBuf);
+                                thirdStartTime = System.currentTimeMillis();
+                                writeDenator = write;
+                                thirdWriteCount++;
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            } else {
+                                long thirdEnd = System.currentTimeMillis();
+                                long spanTime = thirdEnd - thirdStartTime;
+                                if (spanTime > 4000 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
+                                    thirdStartTime = 0;
+                                    //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
+//                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
+                                    VoFiringTestError errorDe = new VoFiringTestError();
+                                    errorDe.setBlastserial(tempBaseInfo2.getBlastserial());//
+                                    errorDe.setShellBlastNo(tempBaseInfo2.getShellBlastNo());
+                                    errorDe.setDelay(tempBaseInfo2.getDelay());
+                                    errorDe.setError(1);
+                                    thirdWriteErrorDenator = errorDe;
+                                    errorList.offer(errorDe);
+                                    //发出错误
+                                    //mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    //writeDenator = null;
+                                    tempBaseInfo2 = null;
+                                    reThirdWriteCount++;
+                                } else {
+                                    Thread.sleep(20);
+                                }
+                            }
                             break;
                     }
                 }

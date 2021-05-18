@@ -234,13 +234,9 @@ public class XingbangMain extends BaseActivity {
 //        }
 //        pb_show = 0;
 //    }
-    /**
-     * 0318
-     * 为什么初次安装时GreenDAO就报错,重新安装就出问题????
-     * */
+
     private void getUserMessage() {
-        GreenDaoMaster master = new GreenDaoMaster();
-        List<MessageBean> message = master.queryUsetMessgae();
+        List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
         Log.e(TAG, "message: "+message.toString() );
         if(message.size()>0){
             pro_bprysfz = message.get(0).getPro_bprysfz();

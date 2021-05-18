@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "latitude text, "    //纬度
             + "userid text, "    //操作人
             + "equ_no text, "    //起爆器编号
-            + "serialNo integer, "    //序号
+            + "serialNo integer, "    //验证页面选择的id
             + "pro_xmbh text, "    //项目编号
             + "pro_htid text, "    //合同编号
             + "pro_dwdm text, "    //单位代码

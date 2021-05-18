@@ -359,9 +359,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mHandler_1 = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (tipInfoFlag == 3) {//未收到关闭电源命令
+
+                //未收到关闭电源命令
+                if (tipInfoFlag == 3)
                     show_Toast(getResources().getString(R.string.text_error_tip5));
-                }
                 if (tipInfoFlag == 4) {//未收到打开电源命令
                     show_Toast(getResources().getString(R.string.text_error_tip6));
                 }
@@ -856,10 +857,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private void upload() {
         pb_show = 1;
         runPbDialog();//loading画面
-
         final String key = "jadl12345678912345678912";
-//        String url = Utils.httpurl_down_dl;//丹灵下载
-        String url = Utils.httpurl_down;//丹灵下载
+        String url = Utils.httpurl_down_dl;//丹灵下载
+//        String url = Utils.httpurl_down;//丹灵下载
         OkHttpClient client = new OkHttpClient();
 
         JSONObject object = new JSONObject();
