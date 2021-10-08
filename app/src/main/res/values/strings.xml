@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">煋邦科技KT50起爆器</string>
-    <string name="error_configuration">Please configure your serial port first.</string>
-    <string name="error_security">You do not have read/write permission to the serialport.</string>
-    <string name="error_unknown">The serial port can not be opened for an unknownreason.</string>
+    <string name="error_configuration">请先配置你的串口.</string>
+    <string name="error_security">您没有串行端口的读/写权限.</string>
+    <string name="error_unknown">未知原因无法打开串口.</string>
     <string name="title_activity_reister_main_page">雷管注册</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -75,8 +75,8 @@
     <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
     <string name="viewfinderview_status_text2">即可自动扫描</string>
     <string name="set_qiaosi">是否检测桥丝</string>
-    <string name="set_ceshi_time">设置测试准备时间/s</string>
-    <string name="set_chongdian_time">设置充电检测时间/s</string>
+    <string name="set_ceshi_time">设置起爆测试准备时间/s</string>
+    <string name="set_chongdian_time">设置网络测试检测时间/s</string>
     <string name="set_language">设置语言</string>
     <string name="set_save">保存设置</string>
 
@@ -89,7 +89,8 @@
     <string name="language_select">当前选择的语言: %s</string>
     <string name="title_activity_set_languages">语言设置</string>
     <string name="et_hint_ceshi">默认18s</string>
-    <string name="et_hint_chongdian">默认5s</string>
+    <string name="et_hint_chongdian">默认28s</string>
+    <string name="et_hint_zuwang">默认40s</string>
 
     <string name="text_tip_delete">删除</string>
     <string name="text_tip_modify">修改</string>
@@ -191,6 +192,7 @@
     <string name="text_communication_state4">通信成功</string>
     <string name="text_communication_state5">未知</string>
     <string name="text_communication_state6">雷管正常</string>
+    <string name="text_communication_state7">桥丝异常</string>
 
     <string name="text_singleReister_stop">停止注册</string>
     <string name="text_singleReister">单发注册</string>
@@ -250,10 +252,10 @@
     <string name="text_del_end">终号</string>
     <string name="text_del_ok">删除成功</string>
 
-    <string name="text_firing_tip1">等待总线稳定</string>
+    <string name="text_firing_tip1">测试准备1阶段</string>
     <string name="text_firing_num">待测雷管数量:</string>
     <string name="text_firing_errnum">错误数量 :</string>
-    <string name="text_firing_tip2">测试准备...</string>
+    <string name="text_firing_tip2">测试准备2阶段</string>
     <string name="text_firing_tip3">是否进入充电模式？</string>
     <string name="text_firing_err_lg">错误雷管</string>
     <string name="text_firing_jixu">继续</string>
@@ -261,7 +263,7 @@
     <string name="text_firing_qibao_vol">起爆电压 :</string>
     <string name="text_firing_tip5">雷管是否起爆 (按1+5组合键起爆雷管)</string>
     <string name="text_firing_tip6">倒计时</string>
-    <string name="text_firing_tip7">测试准备 (</string>
+    <string name="text_firing_tip7">测试准备2阶段 (</string>
     <string name="text_firing_tip8">写入未返回:</string>
     <string name="text_firing_tip9">正在检测第 (</string>
     <string name="text_firing_tip10">)雷管</string>
@@ -327,7 +329,7 @@
     <string name="text_total">总数:</string>
     <string name="text_systip_1">保存成功</string>
     <string name="text_systip_2">检测时间请大于5s</string>
-    <string name="text_systip_3">准备时间请大于18s</string>
+    <string name="text_systip_3">准备时间请大于10s</string>
     <string name="text_systip_4">厂家名</string>
     <string name="text_systip_5">厂家码</string>
     <string name="text_systip_6">特征码</string>
@@ -337,7 +339,6 @@
     <string name="text_systip_10"><![CDATA[默 认  类 别]]></string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="app_title">煋邦起爆系统/ST-327/  版本3.22</string>
+    <string name="app_title">煋邦起爆系统   /  版本3.25</string>
 
 </resources>

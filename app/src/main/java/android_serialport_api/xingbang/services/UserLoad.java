@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -24,12 +25,12 @@ public class UserLoad extends AsyncTaskLoader<Cursor> {
         if(bundle != null){  
         	querykey = bundle.getString("key");
         }
-        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, Application.db_version);
     }  
   
     public UserLoad(Context context) {  
         super(context);  
-        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, Application.db_version);
     }  
   
     @Override  

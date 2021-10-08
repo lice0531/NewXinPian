@@ -99,7 +99,7 @@ public class QueryMainActivity extends BaseActivity {
         setContentView(R.layout.activity_query_main);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();
         txtFireno.setText(getString(R.string.text_query_num) + equ_no);

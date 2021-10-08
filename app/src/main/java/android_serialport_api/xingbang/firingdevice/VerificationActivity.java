@@ -89,7 +89,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         setContentView(R.layout.activity_verification);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_SHOUQUAN, null);
         totalNum = cursor.getCount();//得到数据的总条数
@@ -111,16 +111,11 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 //        dingwei();//高德定位
 
 //        baidudingwei();//百度定位
-
-        mHandler_httpresult = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle bundle = msg.getData();
-                mAdapter.notifyDataSetChanged();
-            }
-        };
+        mHandler_httpresult = new Handler(msg -> {
+            Bundle bundle = msg.getData();
+            mAdapter.notifyDataSetChanged();
+            return false;
+        });
 
     }
 
@@ -354,8 +349,9 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 
         }
         for (int i = 0; i < list_data.size(); i++) {
-            list_lg2.add(Utils.ShellNo13toSiChuan(list_data.get(i).getShellBlastNo()));
-//            list_lg2.add(Utils.ShellNo13toSiChuan_new(list_data.get(i).getShellBlastNo()));
+//            list_lg2.add(list_data.get(i).getShellBlastNo());//UID和管壳码一致
+            list_lg2.add(Utils.ShellNo13toSiChuan(list_data.get(i).getShellBlastNo()));//四川编码规则
+//            list_lg2.add(Utils.ShellNo13toSiChuan_new(list_data.get(i).getShellBlastNo()));//四川包工定的编码规则
         }
         for (int i = 0; i < list_lg2.size(); i++) {
             if (!list_lg1.contains(list_lg2.get(i))) {

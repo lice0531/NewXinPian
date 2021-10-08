@@ -24,12 +24,18 @@ import com.tencent.bugly.Bugly;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.MyDB;
+import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tencent.bugly.beta.Beta.checkUpgrade;
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import java.util.List;
 
 /**
  * 设置页面
@@ -37,27 +43,27 @@ import static com.tencent.bugly.beta.Beta.checkUpgrade;
 public class SetEnvMainActivity extends BaseActivity {
 
     @BindView(R.id.btn_set_user)//用户管理
-            Button btnSetUser;
+    Button btnSetUser;
     @BindView(R.id.btn_set_onlineuprade)//在线升级
-            Button btnSetOnlineuprade;
+    Button btnSetOnlineuprade;
     @BindView(R.id.btn_set_netmodel)//网络模式
-            Button btnSetNetmodel;
+    Button btnSetNetmodel;
     @BindView(R.id.btn_set_upload)//上传数据
-            Button btnSetUpload;
+    Button btnSetUpload;
     @BindView(R.id.btn_set_warrant)//授权码数据
-            Button btnSetWarrant;
+    Button btnSetWarrant;
     @BindView(R.id.btn_set_dechip)//雷管芯片
-            Button btnSetDechip;
+    Button btnSetDechip;
     @BindView(R.id.btn_set_facCode)//厂家码
-            Button btnSetFacCode;
+    Button btnSetFacCode;
     @BindView(R.id.btn_set_flow)//设备编号
-            Button btnSetFlow;
+    Button btnSetFlow;
     @BindView(R.id.btn_set_ver)//版本
-            Button btnSetVer;
+    Button btnSetVer;
     @BindView(R.id.btn_set_system)//系统设置
-            Button btnSetSystem;
+    Button btnSetSystem;
     @BindView(R.id.btn_set_exit)//退出
-            Button btnSetExit;
+    Button btnSetExit;
     @BindView(R.id.container)
     FrameLayout container;
     @BindView(R.id.btn_upload)
@@ -65,21 +71,21 @@ public class SetEnvMainActivity extends BaseActivity {
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
     private String equ_no = "";//设备编码
-    private String pro_bprysfz= "";//证件号码
-    private String pro_htid= "";//合同号码
-    private String pro_xmbh= "";//项目编号
-    private String pro_coordxy="";//经纬度
-    private String pro_dwdm= "";//单位代码
-    private String server_addr= "";
-    private String server_port= "";
-    private String server_http= "";
-    private String server_ip= "";
-    private String server_type1= "";
-    private String server_type2= "";
-    private String denator_Type_isSelected= "";//是否设置雷管最大延时
+    private String pro_bprysfz = "";//证件号码
+    private String pro_htid = "";//合同号码
+    private String pro_xmbh = "";//项目编号
+    private String pro_coordxy = "";//经纬度
+    private String pro_dwdm = "";//单位代码
+    private String server_addr = "";
+    private String server_port = "";
+    private String server_http = "";
+    private String server_ip = "";
+    private String server_type1 = "";
+    private String server_type2 = "";
+    private String denator_Type_isSelected = "";//是否设置雷管最大延时
     private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
-    private String qiaosi_set= "";//是否检测桥丝
+    private String qiaosi_set = "";//是否检测桥丝
 
 
     @Override
@@ -87,33 +93,29 @@ public class SetEnvMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setvpage);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();
     }
-    private void getUserMessage() {
-        String selection = "id = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
-            pro_bprysfz = cursor.getString(1);
-            pro_htid = cursor.getString(2);
-            pro_xmbh = cursor.getString(3);
-            equ_no = cursor.getString(4);
-            pro_coordxy = cursor.getString(5);
-            server_addr = cursor.getString(6);
-            server_port = cursor.getString(7);
-            server_http = cursor.getString(8);
-            server_ip = cursor.getString(9);
-            qiaosi_set = cursor.getString(10);
-            Preparation_time = Integer.parseInt(cursor.getString(11));
-            ChongDian_time = Integer.parseInt(cursor.getString(12));
-            server_type1 = cursor.getString(13);
-            server_type2 = cursor.getString(14);
-            cursor.close();
-        }
-    }
 
+    private void getUserMessage() {
+        MessageBean bean = MyDB.getAllFromInfo_bean();
+//            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());
+        Preparation_time = Integer.parseInt(bean.getPreparation_time());//跟起爆测试一样
+        pro_bprysfz = bean.getPro_bprysfz();
+        pro_htid = bean.getPro_htid();
+        pro_xmbh = bean.getPro_xmbh();
+        equ_no = bean.getEqu_no();
+        pro_coordxy = bean.getPro_coordxy();
+        server_addr = bean.getServer_addr();
+        server_port = bean.getServer_port();
+        server_http = bean.getServer_http();
+        server_ip = bean.getServer_ip();
+        qiaosi_set = bean.getQiaosi_set();
+        ChongDian_time = Integer.parseInt(bean.getChongdian_time());
+        server_type1 = bean.getServer_type1();
+        server_type2 = bean.getServer_type2();
+    }
 
 
     @Override
@@ -238,12 +240,12 @@ public class SetEnvMainActivity extends BaseActivity {
                 values.put("server_type2", type2);
                 if (!TextUtils.isEmpty(server_ip)) {
                     values.put("server_ip", server_ip);//中爆网址
-                }else {
+                } else {
                     show_Toast("ip地址不能为空");
                 }
                 if (!TextUtils.isEmpty(server_port)) {
                     values.put("server_port", server_port);//中爆端口
-                }else {
+                } else {
                     show_Toast("ip端口不能为空");
                 }
                 if (!TextUtils.isEmpty(server_http)) {
@@ -285,7 +287,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 ContentValues values = new ContentValues();
                 if (!TextUtils.isEmpty(b)) {
                     values.put("equ_no", b);//设备编号
-                }else {
+                } else {
                     values.put("equ_no", "");//设备编号
                     show_Toast("请注意,您已设置设备编号为空");
                 }
@@ -326,7 +328,7 @@ public class SetEnvMainActivity extends BaseActivity {
 
     @OnClick({R.id.btn_set_user, R.id.btn_set_onlineuprade, R.id.btn_set_netmodel,
             R.id.btn_set_upload, R.id.btn_set_warrant, R.id.btn_set_dechip, R.id.btn_set_facCode,
-            R.id.btn_set_flow, R.id.btn_set_ver, R.id.btn_set_system, R.id.btn_set_exit,R.id.btn_upload})
+            R.id.btn_set_flow, R.id.btn_set_ver, R.id.btn_set_system, R.id.btn_set_exit, R.id.btn_upload})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_set_user:
@@ -338,7 +340,7 @@ public class SetEnvMainActivity extends BaseActivity {
             case R.id.btn_set_onlineuprade://在线升级
 //                show_Toast(getString(R.string.text_error_tip57));
                 checkUpgrade();
-                Log.e("版本号", "Bugly.getAppChannel(): "+Bugly.getAppChannel() );
+                Log.e("版本号", "Bugly.getAppChannel(): " + Bugly.getAppChannel());
                 break;
             case R.id.btn_set_netmodel://网络模式
                 Intent intent5 = new Intent(SetEnvMainActivity.this, WriteLogActivity.class);
@@ -364,7 +366,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 break;
             case R.id.btn_set_ver://查看版本号
                 Intent intent6 = new Intent(SetEnvMainActivity.this, SystemVersionActivity.class);
-                startActivityForResult(intent6,1);
+                startActivityForResult(intent6, 1);
                 break;
             case R.id.btn_set_system:
                 Intent intent3 = new Intent(SetEnvMainActivity.this, SetSystemActivity.class);
@@ -379,7 +381,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_upload:
-                Intent intent4 =  new Intent(SetEnvMainActivity.this, UploadFaceDataActivity.class);
+                Intent intent4 = new Intent(SetEnvMainActivity.this, UploadFaceDataActivity.class);
                 startActivity(intent4);
                 break;
         }

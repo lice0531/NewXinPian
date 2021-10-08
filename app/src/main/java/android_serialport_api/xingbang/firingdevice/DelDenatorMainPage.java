@@ -83,7 +83,7 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
         ButterKnife.bind(this);
         //点击其他地方隐藏输入框
         //db实例化
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         int totalNum = (int) Application.getDaoSession().getDenatorBaseinfoDao().count();
@@ -134,6 +134,7 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
                 deleteListErrorDel();
 
                 Utils.deleteData(DelDenatorMainPage.this);//重新排序雷管
+
                 loadMoreData();//获取数据保存到list
 
                 refreshData();
@@ -142,12 +143,7 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
@@ -158,7 +154,6 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
     private void loadMoreData() {
 //        list_lg.clear();
         list_lg = Application.getDaoSession().getDenatorBaseinfoDao().loadAll();
-        Log.e(TAG, "list_lg.toString(): "+list_lg.toString() );
     }
 
     @Override
@@ -181,7 +176,6 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
     }
 
     private void refreshData() {
-        Log.e("排序雷管", "list_lg: "+list_lg.toString() );
         mAdapter.notifyDataSetChanged();
     }
 

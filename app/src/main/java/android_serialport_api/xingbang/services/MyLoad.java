@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -27,12 +28,12 @@ public class MyLoad extends AsyncTaskLoader<Cursor> {
         if(bundle != null){  
         	querykey = bundle.getString("key");
         }
-        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, Application.db_version);
     }  
   
     public MyLoad(Context context) {  
         super(context);  
-        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, Application.db_version);
     }  
   
     @Override  

@@ -98,11 +98,7 @@ public class ThreeFiringCmd {
 				vo.setDelayTime(ia);
 				
 				return vo;
-			}else{
-				
-			}			
-		}else{
-			
+			}
 		}
 		return null;
 	}

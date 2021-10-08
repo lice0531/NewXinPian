@@ -14,7 +14,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 
 public class LoadHisFireAdapter extends BaseAdapter implements OnClickListener {
@@ -62,12 +61,12 @@ public class LoadHisFireAdapter extends BaseAdapter implements OnClickListener {
         if(convertView==null){
             viewHolder  = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(itemListId,null);
-            viewHolder.serialNo = (TextView) convertView.findViewById(R.id.serialNo);
-            viewHolder.fireDate = (TextView)convertView.findViewById(R.id.fireDate);
-            viewHolder.txtstatus = (TextView) convertView.findViewById(R.id.txtstatus);
-            viewHolder.bt_upload = (Button)convertView.findViewById(R.id.bt_upload);
-            viewHolder.bt_operat = (Button) convertView.findViewById(R.id.bt_operat);
-            viewHolder.ly_his = (LinearLayout) convertView.findViewById(R.id.ly_his);
+            viewHolder.serialNo =  convertView.findViewById(R.id.serialNo);
+            viewHolder.fireDate = convertView.findViewById(R.id.fireDate);
+            viewHolder.txtstatus = convertView.findViewById(R.id.txtstatus);
+            viewHolder.bt_upload = convertView.findViewById(R.id.bt_upload);
+            viewHolder.bt_delete =  convertView.findViewById(R.id.bt_delete);
+            viewHolder.ly_his =  convertView.findViewById(R.id.ly_his);
             convertView.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -78,11 +77,11 @@ public class LoadHisFireAdapter extends BaseAdapter implements OnClickListener {
 //        }
         viewHolder.serialNo.setText(""+position);
         viewHolder.fireDate.setText(""+ list_his.get(position).getBlastdate());
-        viewHolder.bt_operat.setText(mContext.getString(R.string.text_tip_delete));
+        viewHolder.bt_delete.setText(mContext.getString(R.string.text_tip_delete));
         viewHolder.bt_upload.setOnClickListener(this);
-        viewHolder.bt_operat.setOnClickListener(this);
+        viewHolder.bt_delete.setOnClickListener(this);
         //viewHolder.bt_operat.setTag(R.id.bt_operat,list_his.get(position).getId());
-        viewHolder.bt_operat.setTag(R.id.bt_operat, list_his.get(position).getBlastdate());
+        viewHolder.bt_delete.setTag(R.id.bt_delete, list_his.get(position).getBlastdate());
         viewHolder.bt_upload.setTag(R.id.bt_upload,position);
 //        if(position==0){
 //            viewHolder.bt_upload.setVisibility(View.INVISIBLE);
@@ -113,7 +112,7 @@ public class LoadHisFireAdapter extends BaseAdapter implements OnClickListener {
         private TextView fireDate;
         private TextView txtstatus;
         private Button bt_upload;
-        private Button bt_operat;
+        private Button bt_delete;
         private LinearLayout ly_his;
     }
 

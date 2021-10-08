@@ -22,10 +22,10 @@ import org.litepal.LitePal;
 
 import android_serialport_api.SerialPort;
 import android_serialport_api.SerialPortFinder;
+import android_serialport_api.xingbang.db.MyOpenHelper;
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DaoSession;
 import android_serialport_api.xingbang.services.LocationService;
-import android_serialport_api.xingbang.utils.MyCrashHandler;
 
 public class Application extends MultiDexApplication {
 
@@ -33,24 +33,15 @@ public class Application extends MultiDexApplication {
     private SerialPort mSerialPort = null;
     public LocationService locationService;
     public static Context mContext;
+    public static int db_version = 22;
 
     public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
         if (mSerialPort == null) {
-            /* Read serial port parameters */
-            SharedPreferences sp = getSharedPreferences("android_serialport_api.sample_preferences", MODE_PRIVATE);
-            String path = sp.getString("DEVICE", "");
-            //0614增加
+            String path;
             path = "/dev/ttyMT1";//KT50
-            //path="/dev/ttyS2";
-            //path="dev/ttys1";
+//            path = "/dev/ttyS2";
+//            path = "dev/ttys1";
             int baudrate = 115200;
-            //0614增加
-            /* Check parameters */
-            if ((path.length() == 0) || (baudrate == -1)) {
-                throw new InvalidParameterException();
-            }
-
-            /* Open the serial port */
             mSerialPort = new SerialPort(new File(path), baudrate, 0, 8, 1);
         }
         return mSerialPort;
@@ -73,7 +64,6 @@ public class Application extends MultiDexApplication {
 
     @Override
     public void onCreate() {
-        // TODO Auto-generated method stub
         super.onCreate();
         mContext = getApplicationContext();
         oList = new ArrayList<>();
@@ -84,8 +74,8 @@ public class Application extends MultiDexApplication {
         locationService = new LocationService(getApplicationContext());
         //数据库实例化
 //      打开错误日志，保存到sd卡
-        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
-        crashHandler.init(this);
+//        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
+//        crashHandler.init(this);
 
         initGreenDao();
         LitePal.initialize(getBaseContext());//数据存储工具
@@ -95,9 +85,11 @@ public class Application extends MultiDexApplication {
      * 初始化GreenDao,直接在Application中进行初始化操作
      */
     private void initGreenDao() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "denatorSys.db");
-        SQLiteDatabase db = helper.getWritableDatabase();
-        DaoMaster daoMaster = new DaoMaster(db);
+        MyOpenHelper helper = new MyOpenHelper(this, "denatorSys.db", null);
+        DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
+
+//        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "denatorSys.db");
+//        DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());
         daoSession = daoMaster.newSession(IdentityScopeType.None);
     }
 

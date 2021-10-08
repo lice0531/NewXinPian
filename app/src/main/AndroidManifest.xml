@@ -4,7 +4,8 @@
     package="android_serialport_api.xingbang">
 
     <!-- 往sdcard中写入数据的权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <!-- 在sdcard中创建/删除文件的权限 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
@@ -19,7 +20,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
@@ -28,7 +29,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- 开机启动权限 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <!-- 声音权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
         android:name=".Application"
         android:icon="@drawable/logo"
@@ -47,7 +49,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_reister_main_page"
             android:theme="@style/blackActivityTheme" />
-
         <activity
             android:name=".firingdevice.XingbangMain"
             android:configChanges="orientation|keyboardHidden"

@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +17,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -26,6 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,15 +42,15 @@ import java.util.Map;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.custom.LoadHisDetailRecyclerAdapter;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
-import android_serialport_api.xingbang.custom.MlistView;
+import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
-import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.Utils;
@@ -69,8 +72,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
  * 查看历史记录
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.InnerItemOnclickListener,
-        OnItemClickListener {
+public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.InnerItemOnclickListener, OnItemClickListener {
     @BindView(R.id.btn_del_return)
     Button btnDelReturn;
     @BindView(R.id.btn_del_all)
@@ -78,7 +80,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
     @BindView(R.id.denator_del_func)
     LinearLayout denatorDelFunc;
     @BindView(R.id.denator_query_his_listview)
-    MlistView denatorQueryHisListview;
+    RecyclerView denatorQueryHisListview;
     @BindView(R.id.denator_del_mainpage)
     LinearLayout denatorDelMainpage;
     private List<VoFireHisMain> list_savedate = new ArrayList<>();
@@ -100,7 +102,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
     private String server_ip = "";
     private String server_type1 = "";
     private String server_type2 = "";
-    private String Shangchuan ;
+    private String Shangchuan;
     private Button btn_del_all;
 
     private Handler mHandler_2 = new Handler();//显示进度条
@@ -109,32 +111,115 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
     private int pb_show = 0;
     private ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//错误雷管
     private LoadHisFireAdapter mAdapter;
+    private LoadHisDetailRecyclerAdapter hisAdapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_query_hisinfo);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
 
-        totalNum =getDaoSession().getDenatorHis_DetailDao().loadAll().size();//得到数据的总条数
+        totalNum = getDaoSession().getDenatorHis_DetailDao().loadAll().size();//得到数据的总条数
         totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
         if (1 == currentPage) {
             loadMoreData(currentPage);//读取数据
         }
         //初始化listview
-        mAdapter = new LoadHisFireAdapter(this, list_savedate, R.layout.item_query_his, 1);
-        mAdapter.setOnInnerItemOnClickListener(this);
-        denatorQueryHisListview.setAdapter(mAdapter);
-//        denatorQueryHisListview.setLoadMoreListener(this);
-        denatorQueryHisListview.setOnItemClickListener(this);
+//        mAdapter = new LoadHisFireAdapter(this, list_savedate, R.layout.item_query_his, 1);
+//        mAdapter.setOnInnerItemOnClickListener(this);
 
+//        denatorQueryHisListview.setAdapter(mAdapter);
+//        denatorQueryHisListview.setLoadMoreListener(this);
+//        denatorQueryHisListview.setOnItemClickListener(this);
+
+        // 线性布局
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        denatorQueryHisListview.setLayoutManager(linearLayoutManager);
+        hisAdapter = new LoadHisDetailRecyclerAdapter(this, list_savedate);
+        denatorQueryHisListview.setAdapter(hisAdapter);
+        hisAdapter.setOnItemClickListener(new LoadHisDetailRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onButtonClicked(View v, int position) {
+                switch (v.getId()) {
+                    case R.id.bt_upload://上传按钮
+                        int pos = (Integer) v.getTag(R.id.bt_upload);//位置
+                        String blastdate = list_savedate.get(pos).getBlastdate();//日期
+                        String htbh = list_savedate.get(pos).getProjectNo();//合同编号
+                        String dwdm = list_savedate.get(pos).getDwdm();//单位代码
+                        String xmbh = list_savedate.get(pos).getXmbh();//项目编号
+                        String jd = list_savedate.get(pos).getLongitude();//经度
+                        String wd = list_savedate.get(pos).getLatitude();//纬度
+                        String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
+//                        mAdapter.notifyDataSetChanged();
+                        getHisDetailList(blastdate, 0);//获取起爆历史详细信息
+                        if (blastdate == null || blastdate.trim().length() < 8) {
+                            int count = getBlastModelCount();
+                            if (count < 1) {
+                                show_Toast("没有数据，不能执行上传");
+                                return;
+                            }
+                            String fireDate = Utils.getDateFormatToFileName();
+                            saveFireResult(fireDate);
+                            blastdate = fireDate;
+                        }
+                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
+                        if (pro_coordxy.length() < 2 && jd != null) {
+                            show_Toast("经纬度为空，不能执行上传");
+                            return;
+                        }
+
+                        if (server_type2.equals("0") && server_type1.equals("0")) {
+                            show_Toast("设备当前未设置上传网址,请先设置上传网址");
+                        }
+//                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
+                        pb_show = 1;
+                        runPbDialog();//loading画面
+                        if (server_type1.equals("1")) {
+                            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+                        }
+                        if (server_type2.equals("2")) {
+                            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
+                        }
+                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_id);//我们自己的网址
+
+                        break;
+                    case R.id.bt_delete:
+                        AlertDialog dialog = new AlertDialog.Builder(QueryHisDetail.this)
+                                .setTitle("删除提示")//设置对话框的标题//"成功起爆"
+                                .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
+                                //设置对话框的按钮
+                                .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+                                .setPositiveButton("确认删除", (dialog12, which) -> {
+                                    String t = (String) v.getTag(R.id.bt_delete);
+                                    if (delHisInfo(t) == 0) {
+                                        show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
+                                    }
+                                    dialog12.dismiss();
+                                }).create();
+                        dialog.show();
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onItemClick(View view, int position) {
+                VoFireHisMain vo = list_savedate.get(position);
+                if (vo != null) {
+                    createDialog(vo.getBlastdate());//
+                } else {
+                    show_Toast(getString(R.string.text_error_tip54));
+                }
+            }
+        });
         mHandler_2 = new Handler(this.getMainLooper()) {
             @SuppressLint("HandlerLeak")
             @Override
@@ -147,25 +232,32 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
                 }
             }
         };
-        mHandler_update = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Object result = msg.obj;
-                updataState(result + "");//更新上传状态
-                int pos = msg.arg1;
-                list_savedate.get(pos).setUploadStatus("已上传");
-                loadMoreData(currentPage);//读取历史记录列表数据
-                mAdapter.notifyDataSetChanged();
-            }
-        };
+        mHandler_update = new Handler(msg -> {
+            Object result = msg.obj;
+            updataState(result + "");//更新上传状态
+            updataState_sq_dl(result + "");
+            int pos = msg.arg1;
+            list_savedate.get(pos).setUploadStatus("已上传");
+            hisAdapter.setDataSource(list_savedate);
+//            showLoadMore();
+            hisAdapter.notifyItemChanged(pos);
+//            mAdapter.notifyDataSetChanged();
+            return false;
+        });
+        hideInputKeyboard();
+    }
+
+    public void hideInputKeyboard() {
+        denatorDelMainpage.requestFocus();//获取焦点,
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
 
     //获取配置文件中的值
     private void getPropertiesData() {
         mProp = PropertiesUtil.getInstance(this);
         mProp.open();
-        Shangchuan= mProp.readString("Shangchuan", "是");
+        Shangchuan = mProp.readString("Shangchuan", "是");
     }
 
     private void getUserMessage() {
@@ -200,24 +292,21 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         //tipDlg.setMessage("正在操作,请等待...").show();
         // tipDlg.show();
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                mHandler_2.sendMessage(mHandler_2.obtainMessage());
-                //builder.show();
-                try {
-                    while (pb_show == 1) {
-                        Thread.sleep(100);
-                    }
-                    //builder.dismiss();
-                    mHandler_2.sendMessage(mHandler_2.obtainMessage());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            //builder.show();
+            try {
+                while (pb_show == 1) {
+                    Thread.sleep(100);
                 }
+                //builder.dismiss();
+                mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
+
     /**
      * 更新历史记录的上传信息状态
      */
@@ -228,6 +317,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         Utils.saveFile();//把软存中的数据存入磁盘中
         return 1;
     }
+
     /**
      * 更新丹灵网上传信息状态
      */
@@ -242,38 +332,47 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
     /**
      * 更新中爆网上传信息状态
      */
-    public void updataState_sq_zb(String blastdate) {
+    public void updataState_sq_zb(String blastdate, int pos) {
         Log.e("更新起爆状态-中爆", "id: " + blastdate);
         ContentValues values = new ContentValues();
         values.put("zb_state", "已上传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
+
+        Message message = new Message();
+        message.obj = blastdate;
+        message.arg1 = pos;
+        mHandler_update.sendMessage(message);
     }
 
     private void loadMoreData(int cp) {
         list_savedate.clear();
+        getDaoSession().clear();
         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
-        for (int i=0;i<list.size();i++){
+        for (int i = 0; i < list.size(); i++) {
             VoFireHisMain item = new VoFireHisMain();
             item.setBlastdate(list.get(i).getBlastdate());
             item.setFiredNo(list.get(i).getEqu_no());
             item.setLatitude(list.get(i).getLatitude());
             item.setLongitude(list.get(i).getLongitude());
             item.setRemark(list.get(i).getRemark());
-            item.setSerialNo(list.get(i).getSerialNo()+"");
+            item.setSerialNo(list.get(i).getSerialNo() + "");
             item.setUploadStatus(list.get(i).getUploadStatus());
             item.setUserid(list.get(i).getUserid());
-            item.setId(list.get(i).getId()+"");
+            item.setId(list.get(i).getId() + "");
             item.setProjectNo(list.get(i).getPro_htid());
             item.setDwdm(list.get(i).getPro_dwdm());
             item.setXmbh(list.get(i).getPro_xmbh());
             list_savedate.add(item);
         }
+        Log.e("历史记录", "list_savedate: " + list_savedate);
     }
 
 
     private void showLoadMore() {//刷新页面
-        mAdapter.notifyDataSetChanged();
+//        loadMoreData(currentPage);
+        hisAdapter.setDataSource(list_savedate);
+//        mAdapter.notifyDataSetChanged();
     }
 
     //整体item
@@ -292,15 +391,15 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         for (int i = 1; i < hisListData.size(); i++) {
             list_uid.add(hisListData.get(i).get("shellNo") + "O");//中爆网雷管以O为分割(英文O)
         }
-        if(htid==null){
-            htid=pro_htid;
+        if (htid == null) {
+            htid = pro_htid;
         }
         if (equ_no.length() > 8) {//中爆网起爆器编号8位
 //            String qbq_no = equ_no.substring(0, 5) + equ_no.substring(8);//截取起爆器编号前5位和后3位
             String qbq_no = equ_no.substring(1, 3) + equ_no.substring(5);//截取起爆器编号前23位和后6位
-            return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd+","+wd), server_type2, qbq_no, server_ip, server_port, server_http, blastdate);
+            return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, qbq_no, server_ip, server_port, server_http, blastdate);
         }
-        return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd+","+wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
+        return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
 
     }
 
@@ -329,9 +428,10 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         showLoadMore();
         return 0;
     }
+
     /**
      * 上传核对
-     * */
+     */
     private void modifyFactoryInfo(final String blastdate, final int id, final String htbh, final String jd, final String wd, final String xmbh, final String dwdm) {
         AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
         // builder.setIcon(R.drawable.ic_launcher);
@@ -349,20 +449,14 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         dialog_xmbh.setText(xmbh);
         dialog_htbh.setText(htbh);
         dialog_dwdm.setText(dwdm);
-        dialog_jwd.setText(jd+","+wd);
+        dialog_jwd.setText(jd + "," + wd);
         dialog_sfz.setText(pro_bprysfz);
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
 
 
-            }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
-            }
         });
         builder.show();
     }
@@ -392,48 +486,38 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
                     saveFireResult(fireDate);
                     blastdate = fireDate;
                 }
-                Utils.writeLog("项目上传信息:"+list_savedate.get(pos));
-                if(pro_coordxy.length()<2){
+                Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
+                if (pro_coordxy.length() < 2 && jd != null) {
                     show_Toast("经纬度为空，不能执行上传");
                     return;
-                }else if(jd.length()<1&&wd.length()<1){
-                    show_Toast("经纬度为空，不能执行上传");
                 }
 
                 if (server_type2.equals("0") && server_type1.equals("0")) {
                     show_Toast("设备当前未设置上传网址,请先设置上传网址");
                 }
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
-               pb_show = 1;
+                pb_show = 1;
                 runPbDialog();//loading画面
                 if (server_type1.equals("1")) {
-                    upload(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//丹灵上传信息
+                    upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
                 }
                 if (server_type2.equals("2")) {
-                    performUp(blastdate,htbh,jd,wd);//中爆上传
+                    performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                 }
-                upload_xingbang(blastdate, htbh,jd,wd,xmbh,dwdm,qbxm_id);//上传煋邦服务器
+                upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_id);//我们自己的网址
                 break;
-            case R.id.bt_operat:
+            case R.id.bt_delete:
                 AlertDialog dialog = new AlertDialog.Builder(this)
                         .setTitle("删除提示")//设置对话框的标题//"成功起爆"
                         .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
+                        .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton("确认删除", (dialog12, which) -> {
+                            String t = (String) v.getTag(R.id.bt_delete);
+                            if (delHisInfo(t) == 0) {
+                                show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
                             }
-                        })
-                        .setPositiveButton("确认删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String t = (String) v.getTag(R.id.bt_operat);
-                                if (delHisInfo(t) == 0) {
-                                    show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
-                                }
-                                dialog.dismiss();
-                            }
+                            dialog12.dismiss();
                         }).create();
                 dialog.show();
 
@@ -449,27 +533,24 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
      *
      * @param fireDateId
      */
-    private void performUp(final String fireDateId,final String htid,final String jd,final String wd) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                if (updata(fireDateId,htid,jd,wd) .equals("0")) {//updata是上传中爆网方法成功返回0
-                    modifyUploadStatus(fireDateId, getString(R.string.text_query_uploaded));//
-                    updataState_sq_zb(fireDateId);
+    private void performUp(final String fireDateId, final int pos, final String htid, final String jd, final String wd) {
+        new Thread(() -> {
+            Looper.prepare();
+            if (updata(fireDateId, htid, jd, wd).equals("0")) {//updata是上传中爆网方法成功返回0
+                modifyUploadStatus(fireDateId, getString(R.string.text_query_uploaded));//
+                updataState_sq_zb(fireDateId, pos);
 
-                    if (list_savedate != null && list_savedate.size() > 0) {
-                        for (int i = list_savedate.size() - 1; i >= 0; i--) {
-                            VoFireHisMain vo = list_savedate.get(i);
-                            if (fireDateId.equals(vo.getBlastdate())) {
-                                vo.setUploadStatus(getString(R.string.text_query_uploaded));
-                            }
+                if (list_savedate != null && list_savedate.size() > 0) {
+                    for (int i = list_savedate.size() - 1; i >= 0; i--) {
+                        VoFireHisMain vo = list_savedate.get(i);
+                        if (fireDateId.equals(vo.getBlastdate())) {
+                            vo.setUploadStatus(getString(R.string.text_query_uploaded));
                         }
                     }
                 }
-                pb_show = 0;
-                Looper.loop();
             }
+            pb_show = 0;
+            Looper.loop();
         }).start();
     }
 
@@ -484,17 +565,17 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         item.put("delay", "" + getString(R.string.text_list_delay));//"延时"
         item.put("errorName", getString(R.string.text_list_state));//"状态"
         hisListData.add(item);
-        Cursor cursor ;
+        Cursor cursor;
         if (type == 1) {
             cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null, null, null, null, null);
         } else {
-            if(Shangchuan.equals("是")){
+            if (Shangchuan.equals("是")) {
                 String selection = "blastdate = ?"; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
                 String[] selectionArgs = {blastdate};//选择条件参数,会把选择条件中的？替换成这个数组中的值
                 cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
-            }else {
+            } else {
                 String selection = "blastdate = ?and errorCode = ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
-                String[] selectionArgs = {blastdate,"FF"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+                String[] selectionArgs = {blastdate, "FF"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
                 cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
             }
         }
@@ -558,12 +639,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         else
             builder.setTitle(getString(R.string.text_alert_tip6));//"已爆雷管列表"
         builder.setView(getlistview);
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> dialog.dismiss());
         builder.create().show();
 
     }
@@ -591,9 +667,8 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO, null);
         int totalNum = cursor.getCount();//得到数据的总条数
 
-        if (cursor != null) {  //cursor不位空,可以移动到第一行
-            cursor.close();
-        }
+        //cursor不位空,可以移动到第一行
+        cursor.close();
         return totalNum;
     }
 
@@ -696,7 +771,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
     /**
      * 丹灵上传方法
      */
-    private void upload(final String blastdate, final int pos,final String htid,final String jd,final String wd,final String xmbh,final String dwdm) {
+    private void upload(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_upload_dl;//丹灵上传
         OkHttpClient client = new OkHttpClient();
@@ -705,14 +780,12 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         for (int i = 1; i < hisListData.size(); i++) {
             list_uid.add(hisListData.get(i).get("shellNo") + "");
         }
-        String uid = list_uid.toString().replace("[", "").replace("]", "").trim();
+
         //四川uid转换规则
-        if (uid.length() > 10) {
-            if (list_uid != null && list_uid.get(0).length() < 14) {
-                for (int i = 0; i < list_uid.size(); i++) {
-                    Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
+        if (list_uid.get(0).length() < 14) {
+            for (int i = 0; i < list_uid.size(); i++) {
+                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
 //                    Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
-                }
             }
         }
         //丹灵新uid转换规则
@@ -722,24 +795,24 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
 //            }
 //        }
 
-        uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
+        String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);
         String xy[] = pro_coordxy.split(",");//经纬度
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
-            if(jd!=null){
+            if (jd != null) {
                 object.put("jd", jd);//经度
-            }else {
+            } else {
                 object.put("jd", xy[0]);//经度
             }
-            if(wd!=null){
+            if (wd != null) {
                 object.put("wd", wd);//纬度
-            }else {
+            } else {
                 object.put("wd", xy[1]);//纬度
             }
-            if (htid!=null){
+            if (htid != null) {
                 object.put("htid", htid);//合同编号
-            }else {
+            } else {
                 object.put("htid", pro_htid);//合同编号
             }
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
@@ -775,27 +848,25 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
                 try {
-                    if(!server_type2.equals("2")){
+                    if (!server_type2.equals("2")) {
                         pb_show = 0;
                     }
                     object = new JSONObject(response.body().string());
                     Log.e("上传", "丹灵返回: " + object.toString());
                     String success = object.getString("success");
                     if (success.equals("true")) {
-                        updataState_sq_dl(blastdate);
-
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
                         mHandler_update.sendMessage(message);
-                        if(!server_type2.equals("2")){
+                        if (!server_type2.equals("2")) {
                             pb_show = 0;
                         }
                         show_Toast_ui("丹灵上传成功");
                     } else if (success.equals("fail")) {
                         String cwxx = object.getString("cwxx");
                         if (cwxx.equals("1")) {
-                            show_Toast_ui("错误信息:"+ object.getString("cwxxms"));
+                            show_Toast_ui("错误信息:" + object.getString("cwxxms"));
                         } else if (cwxx.equals("2")) {
                             show_Toast_ui("起爆器未备案或未设置作业任务");
                         } else {
@@ -810,10 +881,9 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         });
     }
 
-    private void upload_xingbang(final String blastdate, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_id) {
+    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_id) {
         final String key = "jadl12345678912345678912";
         String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-//        String url = "http://192.168.191.3/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -825,19 +895,19 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         String xy[] = pro_coordxy.split(",");//经纬度
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
-            if(jd!=null){
+            if (jd != null) {
                 object.put("jd", jd);//经度
-            }else {
+            } else {
                 object.put("jd", xy[0]);//经度
             }
-            if(wd!=null){
+            if (wd != null) {
                 object.put("wd", wd);//纬度
-            }else {
+            } else {
                 object.put("wd", xy[1]);//纬度
             }
-            if (htid!=null){
+            if (htid != null) {
                 object.put("htid", htid);//合同编号
-            }else {
+            } else {
                 object.put("htid", pro_htid);//合同编号
             }
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
@@ -845,19 +915,21 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
+            String log = Utils.readLog();
+            object.put("log", log);//日志
             ShouQuan sq = getDaoSession().getShouQuanDao().queryBuilder().where(ShouQuanDao.Properties.Id.eq(qbxm_id)).unique();
-            if(sq!=null){
+            if (sq != null) {
                 object.put("name", sq.getSpare1());//项目编号
                 Log.e("上传信息", object.toString());
             }
-            Log.e("上传信息", object.toString());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON,"{'param':'"+ json +"'}");
+        RequestBody requestBody = FormBody.create(JSON, "{'param':'" + json + "'}");
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)
@@ -896,27 +968,19 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
                         .setTitle("删除提示")//设置对话框的标题//"成功起爆"
                         .setMessage("该操作会按清空当前列表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("确认删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, null, null);
-                                //主表
-                                db.delete(DatabaseHelper.TABLE_NAME_HISMAIN, null, null);
-                                if (list_savedate != null && list_savedate.size() > 0) {
-                                    for (int i = list_savedate.size() - 1; i > 0; i--) {
-                                        VoFireHisMain vo = list_savedate.get(i);
-                                        list_savedate.remove(vo);
-                                    }
+                        .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton("确认删除", (dialog12, which) -> {
+                            dialog12.dismiss();
+                            db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, null, null);
+                            //主表
+                            db.delete(DatabaseHelper.TABLE_NAME_HISMAIN, null, null);
+                            if (list_savedate != null && list_savedate.size() > 0) {
+                                for (int i = list_savedate.size() - 1; i > 0; i--) {
+                                    VoFireHisMain vo = list_savedate.get(i);
+                                    list_savedate.remove(vo);
                                 }
-                                showLoadMore();
                             }
+                            showLoadMore();
                         }).create();
                 dialog.show();
 

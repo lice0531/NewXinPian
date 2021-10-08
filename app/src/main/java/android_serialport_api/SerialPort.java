@@ -100,4 +100,5 @@ public class SerialPort {
 			ex.printStackTrace();
 		}
 	}
+
 }

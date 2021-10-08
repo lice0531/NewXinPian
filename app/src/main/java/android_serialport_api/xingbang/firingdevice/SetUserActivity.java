@@ -81,7 +81,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	           }  
 	     });  
 		
-		 mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+		 mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
 		 db = mMyDatabaseHelper.getReadableDatabase();
 		ListView listView = (ListView) this.findViewById(R.id.setenv_user_listview); 
 		adapter = new SimpleCursorAdapter(SetUserActivity.this, R.layout.item_user,

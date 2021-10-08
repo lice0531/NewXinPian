@@ -42,24 +42,17 @@ public class WriteLogActivity extends BaseActivity {
         setContentView(R.layout.activity_write_log);
         ButterKnife.bind(this);
 
-        mHandler_loding = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
-                super.handleMessage(msg);
-            }
-        };
+        mHandler_loding = new Handler(message -> {
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
         pb_show = 1;
         runPbDialog();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String log = Utils.readLog();
-                tvLog.setText(log);
-                pb_show = 0;
-            }
+        new Thread(() -> {
+            String log = Utils.readLog();
+            tvLog.setText(log);
+            pb_show = 0;
         }).start();
 
     }

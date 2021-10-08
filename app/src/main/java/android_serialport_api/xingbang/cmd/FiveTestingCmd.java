@@ -331,8 +331,8 @@ public class FiveTestingCmd {
 	public static String decodeCmd5B(String addr , byte[] cmd){
 		String fromCommad =  Utils.bytesToHexFun(cmd);
 		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-
-		if("-1".equals(realyCmd1)||"-2".equals(realyCmd1)){
+		Log.e("5B命令", "realyCmd1: "+realyCmd1 );
+		if("-1".equals(realyCmd1)||"-2".equals(realyCmd1)||realyCmd1.length()<7){
 			return null;
 		}
 		return decode5B(realyCmd1);

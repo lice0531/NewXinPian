@@ -6,6 +6,7 @@ public class VoDenatorBaseInfo  {
 
 	private int blastserial;//序号	
 	private String shellBlastNo;//管壳号
+	private String denatorId;//芯片码
 	private short delay;//延时
 	public int getBlastserial() {
 		return blastserial;
@@ -26,12 +27,21 @@ public class VoDenatorBaseInfo  {
 		this.delay = delay;
 	}
 
+	public String getDenatorId() {
+		return denatorId;
+	}
+
+	public void setDenatorId(String denatorId) {
+		this.denatorId = denatorId;
+	}
+
 	@Override
 	public String toString() {
 		return "VoDenatorBaseInfo{" +
 				"blastserial=" + blastserial +
 				", shellBlastNo='" + shellBlastNo + '\'' +
 				", delay=" + delay +
+				", denatorId=" + denatorId +
 				'}';
 	}
 }

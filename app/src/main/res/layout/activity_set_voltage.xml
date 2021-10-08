@@ -16,7 +16,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设置低压电压7V-10V(初始值为7V)"
+            android:text="设置低压电压7V-10V(初始值为8.5V)"
             android:textSize="20sp"/>
 
         <EditText
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:inputType="number|numberDecimal"
-            android:hint="默认7V"/>
+            android:hint="默认8.5V"/>
         <Button
             android:id="@+id/btn_lowVoltage"
             android:layout_width="wrap_content"

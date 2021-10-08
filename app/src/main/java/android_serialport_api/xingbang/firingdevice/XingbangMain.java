@@ -48,6 +48,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
+import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
 import butterknife.BindView;
@@ -59,28 +60,29 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 
 
 public class XingbangMain extends BaseActivity {
+
     @BindView(R.id.tv_main_no)
     TextView tvMainNo;
     @BindView(R.id.btn_main_reister)//注册
-            Button btnMainReister;
+    Button btnMainReister;
     @BindView(R.id.btn_main_test)//测试
-            Button btnMainTest;
+    Button btnMainTest;
     @BindView(R.id.btn_main_delayTime)//延时
-            Button btnMainDelayTime;
+    Button btnMainDelayTime;
     @BindView(R.id.btn_main_del)//删除
-            Button btnMainDel;
+    Button btnMainDel;
     @BindView(R.id.btn_main_blast)//起爆
-            Button btnMainBlast;
+    Button btnMainBlast;
     @BindView(R.id.btn_main_query)//查询
-            Button btnMainQuery;
+    Button btnMainQuery;
     @BindView(R.id.btn_main_setevn)//设置
-            Button btnMainSetevn;
+    Button btnMainSetevn;
     @BindView(R.id.btn_main_help)//帮助
-            Button btnMainHelp;
+    Button btnMainHelp;
     @BindView(R.id.btn_main_downWorkCode)//项目管理
-            Button btnMainDownWorkCode;
+    Button btnMainDownWorkCode;
     @BindView(R.id.btn_main_exit)//退出
-            Button btnMainExit;
+    Button btnMainExit;
     @BindView(R.id.btn_main_exit2)
     Button btnMainExit2;
     @BindView(R.id.container)
@@ -132,8 +134,7 @@ public class XingbangMain extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
 //        db = mMyDatabaseHelper.getReadableDatabase();
 
         tipDlg = new LoadingDialog(XingbangMain.this);
@@ -154,7 +155,7 @@ public class XingbangMain extends BaseActivity {
         loadMoreData_all_lg();//查询雷管延时是否为0
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
-
+        Utils.writeRecord("---进入主页面---");
     }
 
     private void initHandler() {
@@ -189,7 +190,7 @@ public class XingbangMain extends BaseActivity {
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         //tipDlg.setMessage("正在操作,请等待...").show();
         new Thread(new Runnable() {
 
@@ -208,37 +209,10 @@ public class XingbangMain extends BaseActivity {
         }).start();
     }
 
-//    private void getUserMessage() {
-//        String selection = "id = ?"; // 选择条件，给null查询所有
-//        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-//        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
-//        if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
-//            //int _id = cursor.getInt(0);
-//            pro_bprysfz = cursor.getString(1);
-//            pro_htid = cursor.getString(2);
-//            pro_xmbh = cursor.getString(3);
-//            equ_no = cursor.getString(4);
-//            pro_coordxy = cursor.getString(5);
-//            server_addr = cursor.getString(6);
-//            server_port = cursor.getString(7);
-//            server_http = cursor.getString(8);
-//            server_ip = cursor.getString(9);
-//            qiaosi_set = cursor.getString(10);
-//            Preparation_time = Integer.parseInt(cursor.getString(11));
-//            ChongDian_time = Integer.parseInt(cursor.getString(12));
-//            server_type1 = cursor.getString(13);
-//            server_type2 = cursor.getString(14);
-//            cursor.close();
-//        } else {
-//            setUserMessage();//如果为空就新建一个
-//        }
-//        pb_show = 0;
-//    }
-
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
-        Log.e(TAG, "message: "+message.toString() );
-        if(message.size()>0){
+//        Log.e(TAG, "message: " + message.toString());
+        if (message.size() > 0) {
             pro_bprysfz = message.get(0).getPro_bprysfz();
             pro_htid = message.get(0).getPro_htid();
             pro_xmbh = message.get(0).getPro_xmbh();
@@ -282,7 +256,7 @@ public class XingbangMain extends BaseActivity {
         pro_dwdm = mProp.readString("pro_dwdm", "");
         jiance_time = mProp.readInt("jiance_time", 5);
         Yanzheng = mProp.readString("Yanzheng", "验证");
-        Log.e(TAG, "Yanzheng: "+Yanzheng );
+        Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
 
     private void setUserMessage() {
@@ -343,7 +317,7 @@ public class XingbangMain extends BaseActivity {
                     return;
                 }
                 if (a.equals("xingbang") && b.equals("123456")) {
-                    String str1 = new String(getString(R.string.xingbang_main_page_btn_setevn));//设置
+                    String str1 = "设置";
                     Intent intent = new Intent(XingbangMain.this, SetEnvMainActivity.class);
                     intent.putExtra("dataSend", str1);
                     startActivityForResult(intent, 1);
@@ -357,21 +331,17 @@ public class XingbangMain extends BaseActivity {
                 } else {
                     show_Toast(getString(R.string.text_error_tip50));
                     dialogOn(dialog);
-
 //                    dialog.dismiss();
                 }
 
                 //  builder.
             }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //builder.
-                dialogOFF(dialog);
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            //builder.
+            dialogOFF(dialog);
 //                finish();
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
 
@@ -399,15 +369,7 @@ public class XingbangMain extends BaseActivity {
     }
 
     /**
-     * public void powerOn(){
-     * try {
-     * DeviceControl deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
-     * // deviceControl.PowerOnDevice();//上电
-     * //deviceControl.PowerOffDevice();//下电
-     * } catch (IOException e) {
-     * e.printStackTrace();
-     * }
-     * }
+     *
      **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -501,7 +463,7 @@ public class XingbangMain extends BaseActivity {
 
     @Override
     protected void onRestart() {
-        Log.e(TAG, "onRestart: " );
+        Log.e(TAG, "onRestart: ");
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -519,7 +481,7 @@ public class XingbangMain extends BaseActivity {
 
     @Override
     protected void onResume() {
-        Log.e(TAG, "onResume: " );
+        Log.e(TAG, "onResume: ");
 //        getPropertiesData();
         super.onResume();
 
@@ -527,7 +489,7 @@ public class XingbangMain extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy: " );
+        Log.e(TAG, "onDestroy: ");
         SQLiteStudioService.instance().stop();
 //        if (db != null) db.close();
 //        if (tipDlg != null) {
@@ -539,33 +501,35 @@ public class XingbangMain extends BaseActivity {
 
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
+
         switch (view.getId()) {
+
             case R.id.btn_main_reister://注册
-                String str1 = new String("注册");
+                String str1 = "注册";
                 Intent intent = new Intent(XingbangMain.this, ReisterMainPage_scan.class);//金建华
                 intent.putExtra("dataSend", str1);
                 startActivityForResult(intent, 1);
                 break;
+
             case R.id.btn_main_test://测试
                 Log.e("测试页面", "测试: ");
-                String str2 = new String("测试");
+                String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);//金建华
                 intent2.putExtra("dataSend", str2);
                 startActivityForResult(intent2, 1);
                 break;
-            case R.id.btn_main_delayTime://单发检测
-                String str3 = new String("单发检测");
-                Intent intent3 = new Intent(XingbangMain.this, ReisterMainPage_line.class);//金建华
-                intent3.putExtra("dataSend", str3);
-                startActivityForResult(intent3, 1);
 
+                // 单发检测
+            case R.id.btn_main_delayTime:
+                Intent intent3 = new Intent(this, ReisterMainPage_line.class);//金建华
+                startActivityForResult(intent3, 1);
                 break;
-            case R.id.btn_main_del://删除
-                String str4 = new String("删除");
-                Intent intent4 = new Intent(XingbangMain.this, DelDenatorMainPage.class);
-                intent4.putExtra("dataSend", str4);
-                startActivityForResult(intent4, 1);
+
+                // 删除
+            case R.id.btn_main_del:
+                startActivityForResult(new Intent(this, DelDenatorMainPage.class), 1);
                 break;
+
             case R.id.btn_main_blast://起爆
                 for (int i = 0; i < lg2_yanshi.size(); i++) {
                     if (lg2_yanshi.get(i).equals("0")) {
@@ -575,42 +539,45 @@ public class XingbangMain extends BaseActivity {
                 }
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
+                Intent intent5;//金建华
                 if (Yanzheng.equals("验证")) {
                     //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
+                    intent5 = new Intent(this, VerificationActivity.class);
                 } else {
-                    Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
+                    intent5 = new Intent(this, FiringMainActivity.class);
                 }
-
+                intent5.putExtra("dataSend", str5);
+                startActivityForResult(intent5, 1);
                 break;
+
             case R.id.btn_main_query://查看
-                String str6 = new String("查看雷管");
+                String str6 = "查看雷管";
                 Intent intent6 = new Intent(XingbangMain.this, QueryMainActivity.class);
                 intent6.putExtra("dataSend", str6);
                 startActivityForResult(intent6, 1);
                 break;
+
             case R.id.btn_main_setevn://设置
                 loginToSetEnv();
                 break;
-            case R.id.btn_main_help://帮助
+
+            case R.id.btn_main_help://辅助功能
 //                createHelpDialog();
-                String str8 = new String("查看雷管");
-                Intent intent8 = new Intent(XingbangMain.this, PracticeActivity.class);
+                String str8 = "查看雷管";
+                Intent intent8 = new Intent(this, PracticeActivity.class);
                 intent8.putExtra("dataSend", str8);
                 startActivityForResult(intent8, 1);
                 break;
+
             case R.id.btn_main_downWorkCode://下载
-                String str7 = new String("下载");
+                String str7 = "下载";
                 Intent intent7 = new Intent(XingbangMain.this, DownWorkCode.class);
                 intent7.putExtra("dataSend", str7);
                 startActivityForResult(intent7, 1);
 //            Intent intent7 = new Intent(XingbangMain.this, SetDelayTime.class);
 //            startActivity(intent7);
                 break;
+
             case R.id.btn_main_exit://退出
                 exit();//退出方法
                 break;
@@ -676,12 +643,12 @@ public class XingbangMain extends BaseActivity {
                 Log.e("读取备份", "readCVS: 3");
             }
         }
-        if (i < 2) {
-            String leiguan = Utils.readFile();
-            if (!leiguan.equals("0") && leiguan.length() > 10) {
-                insertDenator(leiguan);
-            }
-        }
+//        if (i < 2) {
+//            String leiguan = Utils.readFile();
+//            if (!leiguan.equals("0") && leiguan.length() > 10) {
+//                insertDenator(leiguan);
+//            }
+//        }
         Log.e("读取数据", "readCVS: ");
     }
 
@@ -709,6 +676,7 @@ public class XingbangMain extends BaseActivity {
         message.setServer_type2(server_type2);
         message.setPro_dwdm(pro_dwdm);
         message.setJiance_time(String.valueOf(jiance_time));
+        message.setVersion("");//单片机系统版本/旧01/新02
         if (queryMessage() == 1) {
             message.setId((long) 1);
             getDaoSession().getMessageBeanDao().update(message);
@@ -727,7 +695,7 @@ public class XingbangMain extends BaseActivity {
         for (int i = 0; i < list_data.size(); i++) {
             lg2_yanshi.add(list_data.get(i).getDelay() + "");
         }
-        Log.e("起爆延时验证", lg2_yanshi.toString());
+//        Log.e("起爆延时验证", lg2_yanshi.toString());
     }
 
 //    private void loadMoreData_all_lg() {
@@ -777,29 +745,21 @@ public class XingbangMain extends BaseActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提醒");//"说明"
         builder.setMessage("有未设置延时的雷管,是否继续起爆?");
-        builder.setPositiveButton("继续起爆", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String str5 = "起爆";
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
-                } else {
-                    Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
-                }
-                dialog.dismiss();
+        builder.setPositiveButton("继续起爆", (dialog, which) -> {
+            String str5 = "起爆";
+            if (Yanzheng.equals("验证")) {
+                //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
+                intent5.putExtra("dataSend", str5);
+                startActivityForResult(intent5, 1);
+            } else {
+                Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
+                intent5.putExtra("dataSend", str5);
+                startActivityForResult(intent5, 1);
             }
+            dialog.dismiss();
         });
-        builder.setNegativeButton("返回查看", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -863,7 +823,6 @@ public class XingbangMain extends BaseActivity {
      * 检查重复的数据
      *
      * @param shellBlastNo
-     * @return
      */
     public int checkRepeatShellNo(String shellBlastNo) {
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();

@@ -69,7 +69,7 @@ public class ZiJianActivity extends SerialPortActivity {
         initHandler();
         ziJianThread = new ZiJianThread();
         ziJianThread.start();
-
+        Utils.writeRecord("--进入起爆器--");
     }
 
     //退出方法
@@ -126,6 +126,7 @@ public class ZiJianActivity extends SerialPortActivity {
         String e=delayStr1.substring(2);
         Log.e("低压", "c+b: "+ c+b);
         Log.e("高压", "e+d: "+ e+d);
+        Utils.writeRecord("设置低压"+(c+b)+"--设置高压"+(e+d));
         byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c+b)+(e+d));//14
         sendCmd(powerCmd);
     }
@@ -137,90 +138,85 @@ public class ZiJianActivity extends SerialPortActivity {
     }
 
     private void initHandler() {
-        busHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                tvZjNum.setText(firstCount + "s");
-//                if (dianya_low != 0) {
-//                    Log.e("低压", "电压: " + dianya_low);
-//                    tvZjDy.setText(dianya_low + "V");
+        busHandler = new Handler(message -> {
+            tvZjNum.setText(firstCount + "s");
+//            if (dianya_low != 0) {
+//                Log.e("低压", "电压: " + dianya_low);
+//                tvZjDy.setText(dianya_low + "V");
+//            }
+//            if (dianya_high != 0) {
+//                tvZjGy.setText(dianya_high + "V");
+//                Log.e("高压", "电压: " + dianya_high);
+//            }
+//            if (firstCount == 0) {
+//                ziJianThread.exit = true;
+//                if(lowTiaoZheng.equals("0")&&highTiaoZheng.equals("0")){
+//                    AlertDialog dialog = new AlertDialog.Builder(ZiJianActivity.this)
+//                            .setTitle("当前设备还未进行电压调整")//设置对话框的标题//"成功起爆"
+//                            .setMessage("请先到设置中设置电压,再进行操作")//设置对话框的内容"本次任务成功起爆！"
+//                            //设置对话框的按钮
+//                            .setNeutralButton("确定", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
+//                            })
+//                            .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                    exit();
+//                                    finish();
+//                                }
+//                            })
+//                            .create();
+//                    dialog.show();
+//                }else if ((lowVoltage+0.5) > dianya_low && dianya_low > (lowVoltage-0.5) && dianya_high < (highVoltage+0.5) && dianya_high > (highVoltage-0.5)) {
+//                    show_Toast("设备运行正常");
+//                    Log.e("自检页面", "跳转到主页面");
+//                    Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
+//                    startActivity(intent);
+//                    finish();
+//                } else if((lowVoltage+0.5) < dianya_low || dianya_low < (lowVoltage-0.5)){
+//                    AlertDialog dialog = new AlertDialog.Builder(ZiJianActivity.this)
+//                            .setTitle("当前设备运行异常")//设置对话框的标题//"成功起爆"
+//                            .setMessage("起爆器低压异常:输出低压数值不正常,请检测设备后再进行操作")//设置对话框的内容"本次任务成功起爆！"
+//                            //设置对话框的按钮
+//                            .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                    exit();
+//                                    finish();
+//                                }
+//                            })
+//                            .create();
+//                    dialog.show();
+//                }else if(dianya_high > (highVoltage+0.5) || dianya_high < (highVoltage-0.5)){
+//                    AlertDialog dialog = new AlertDialog.Builder(ZiJianActivity.this)
+//                            .setTitle("当前设备运行异常")//设置对话框的标题//"成功起爆"
+//                            .setMessage("起爆器高压异常:设备输出高压数值不正常,请检测设备后再进行操作")//设置对话框的内容"本次任务成功起爆！"
+//                            //设置对话框的按钮
+//                            .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                    exit();
+//                                    finish();
+//                                }
+//                            })
+//                            .create();
+//                    dialog.show();
+//                }else {
+//                    Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
+//                    startActivity(intent);
+//                    finish();
 //                }
-//                if (dianya_high != 0) {
-//                    tvZjGy.setText(dianya_high + "V");
-//                    Log.e("高压", "电压: " + dianya_high);
-//                }
-//                if (firstCount == 0) {
-//                    ziJianThread.exit = true;
-//                    if(lowTiaoZheng.equals("0")&&highTiaoZheng.equals("0")){
-//                        AlertDialog dialog = new AlertDialog.Builder(ZiJianActivity.this)
-//                                .setTitle("当前设备还未进行电压调整")//设置对话框的标题//"成功起爆"
-//                                .setMessage("请先到设置中设置电压,再进行操作")//设置对话框的内容"本次任务成功起爆！"
-//                                //设置对话框的按钮
-//                                .setNeutralButton("确定", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialogInterface, int i) {
-//                                        Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
-//                                        startActivity(intent);
-//                                        finish();
-//                                    }
-//                                })
-//                                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        dialog.dismiss();
-//                                        exit();
-//                                        finish();
-//                                    }
-//                                })
-//                                .create();
-//                        dialog.show();
-//                    }else if ((lowVoltage+0.5) > dianya_low && dianya_low > (lowVoltage-0.5) && dianya_high < (highVoltage+0.5) && dianya_high > (highVoltage-0.5)) {
-//                        show_Toast("设备运行正常");
-//                        Log.e("自检页面", "跳转到主页面");
-//                        Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
-//                        startActivity(intent);
-//                        finish();
-//                    } else if((lowVoltage+0.5) < dianya_low || dianya_low < (lowVoltage-0.5)){
-//                        AlertDialog dialog = new AlertDialog.Builder(ZiJianActivity.this)
-//                                .setTitle("当前设备运行异常")//设置对话框的标题//"成功起爆"
-//                                .setMessage("起爆器低压异常:输出低压数值不正常,请检测设备后再进行操作")//设置对话框的内容"本次任务成功起爆！"
-//                                //设置对话框的按钮
-//                                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        dialog.dismiss();
-//                                        exit();
-//                                        finish();
-//                                    }
-//                                })
-//                                .create();
-//                        dialog.show();
-//                    }else if(dianya_high > (highVoltage+0.5) || dianya_high < (highVoltage-0.5)){
-//                        AlertDialog dialog = new AlertDialog.Builder(ZiJianActivity.this)
-//                                .setTitle("当前设备运行异常")//设置对话框的标题//"成功起爆"
-//                                .setMessage("起爆器高压异常:设备输出高压数值不正常,请检测设备后再进行操作")//设置对话框的内容"本次任务成功起爆！"
-//                                //设置对话框的按钮
-//                                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        dialog.dismiss();
-//                                        exit();
-//                                        finish();
-//                                    }
-//                                })
-//                                .create();
-//                        dialog.show();
-//                    }else {
-//                        Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                }
-
-            }
-        };
-
+//            }
+            return false;
+        });
     }
 
     @Override
@@ -285,9 +281,9 @@ public class ZiJianActivity extends SerialPortActivity {
             String c1=realyCmd1.substring(16);
             double voltLow =(Integer.parseInt(a1, 16)*256+Integer.parseInt(a, 16))/4.095*3.0 * 0.006;
             double voltHeigh =(Integer.parseInt(b1, 16)*256+Integer.parseInt(b, 16))/4.095*3.0 * 0.006;
-            Log.e("核心板自检", "voltLow: " +voltLow);
-            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
-
+//            Log.e("核心板自检", "voltLow: " +voltLow);
+//            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
+            Utils.writeRecord("单片机返回的设置电压--低压:"+voltLow+"--高压:"+voltHeigh);
             dianya_low = Utils.getFloatToFormat((float)voltLow, 2, 4);
             dianya_high = Utils.getFloatToFormat((float)voltHeigh, 2, 4);
             byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式

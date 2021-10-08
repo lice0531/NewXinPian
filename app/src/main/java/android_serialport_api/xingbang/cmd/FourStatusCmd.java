@@ -38,7 +38,8 @@ public class FourStatusCmd {
 	 * @return
 	 */
 	public static From42Power decodeFromReceiveDataPower24_1(String addr , byte[] cmd){
-		
+		//C0 00 40 08 00 00 0900 0100 0900 240B C0
+		//C0 00 40 08 00 00 BB00 0000 BB00 1375 C0
 		String fromCommad =  Utils.bytesToHexFun(cmd);
 		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
 	
@@ -63,21 +64,30 @@ public class FourStatusCmd {
 				int volthigh=Integer.parseInt(strHigh, 16)*256;
 				int  voltLowInt = Integer.parseInt(strLow, 16);
 				//可调电压版本,系数为0.011,不可调为0.006
-				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
+//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
+				double voltTotal =(volthigh+voltLowInt)*3.0* 11/4.096/1000 ;//新芯片
 //				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.011;//可调电压
 				float busVoltage = (float)voltTotal;
 				busVoltage = Utils.getFloatToFormat(busVoltage, 2, 4);
 				vo.setBusVoltage(busVoltage);
 
 				tempData = dataHex.substring(8,12);//总线电流
-				strLow = tempData.substring(0,2);
-				strHigh =  tempData.substring(2);
-				int ichigh=Integer.parseInt(strHigh, 16)*256;
-				int icLowInt = Integer.parseInt(strLow, 16);				
-				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;
+				String strLow2 = tempData.substring(0,2);
+				String strHigh2 =  tempData.substring(2);
+				if(strLow2.isEmpty()){
+					strLow2="00";
+				}
+				if(strHigh2.isEmpty()){
+					strHigh2="00";
+				}
+				int ichigh=Integer.parseInt(strHigh2, 16)*256;
+				int icLowInt = Integer.parseInt(strLow2, 16);
+//				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
+				double icTotal =(ichigh+ icLowInt)*3.0/(4.096 * 0.35);//新芯片
 				float busCurrent = (float)icTotal;
-				busCurrent = Utils.getFloatToFormat(busCurrent, 3, 4);
+				busCurrent = Utils.getFloatToFormat(busCurrent, 2, 4);
 				vo.setBusCurrentIa(busCurrent);//设置总线电流
+
 				
 				tempData = dataHex.substring(12);//起爆电压	
 				strLow = tempData.substring(0,2);
@@ -212,6 +222,18 @@ public class FourStatusCmd {
 	 * */
 	public static byte[] setHardVersion(String addr,String data){
 		String command = addr + DefCommand.CMD_4_XBSTATUS_6+"04"+data;//5B02
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 *4.6、切换模块版本
+	 * @param addr
+	 * @param version
+	 * @return
+	 */
+	public static byte[] send46(String addr,String version){
+
+		String command = addr + DefCommand.CMD_4_XBSTATUS_7+"01"+version;//46
 		return DefCommand.getCommadBytes(command);
 	}
 	

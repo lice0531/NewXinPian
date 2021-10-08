@@ -73,7 +73,7 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_delay_time);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
         startNoTxt = (TextView) findViewById(R.id.setDelayTime_FirstNo);
@@ -114,8 +114,8 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
                 String checstr = checkData();
                 if (checstr == null || checstr.trim().length() < 1) {
                     int maxDelay = getComputerDenDelay();
-                    Log.e("延时", "maxSecond: "+maxSecond );
-                    if (maxSecond > 0 && maxSecond < maxDelay||8000 < maxDelay) {
+                    Log.e("延时", "maxSecond: " + maxSecond);
+                    if (maxSecond > 0 && maxSecond < maxDelay && maxSecond > 15000) {
                         show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
                         return;
                     }

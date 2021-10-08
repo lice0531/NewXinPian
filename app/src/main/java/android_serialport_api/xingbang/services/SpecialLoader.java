@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan;
 
@@ -23,7 +24,7 @@ public class SpecialLoader extends SimpleCursorLoader {
 
     @Override
     public Cursor loadInBackground() {
-        DatabaseHelper dh = new DatabaseHelper(this.context, "denatorSys.db", null, 21);
+        DatabaseHelper dh = new DatabaseHelper(this.context, "denatorSys.db", null, Application.db_version);
         
         SQLiteDatabase database = dh.getReadableDatabase();
         String table = "denatorBaseinfo";

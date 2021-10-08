@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.cmd.vo;
 
 import android.content.Context;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 
 public class From32DenatorFiring {
@@ -57,24 +58,24 @@ public class From32DenatorFiring {
 	 * 得到通信状态
 	 * @return
 	 */
-	public String getCommicationStatusName(Context context){
+	public String getCommicationStatusName(){
 		String name="";
 		if("00".equals(this.getCommicationStatus())){
-			name="雷管通信失败";
+			name=Application.getContext().getString(R.string.text_communication_state1);//"雷管通信失败"
 			return name;
 		}
 		if("01".equals(this.getCommicationStatus())){
-			name="延时写入不一致";
+			name=Application.getContext().getString(R.string.text_communication_state2);//"延时写入不一致";
 			return name;
 		}
 		if("02".equals(this.getCommicationStatus())){
-			return "桥丝异常";
+			return Application.getContext().getString(R.string.text_communication_state7);// "桥丝异常";
 		}
 		if("03".equals(this.getCommicationStatus())){
 			return "充电不正常";
 		}
 		if("04".equals(this.getCommicationStatus())){
-			return "延时未设置";
+			return "延时写入失败";
 		}
 		if("05".equals(this.getCommicationStatus())){
 			return "延时同步不正确";
@@ -83,36 +84,35 @@ public class From32DenatorFiring {
 			return "其他错误";
 		}
 		if("AF".equals(this.getCommicationStatus())){
-			name=context.getString(R.string.text_communication_state3);
+			name=Application.getContext().getString(R.string.text_communication_state3);
 			return name;
 		}
 		if("FF".equals(this.getCommicationStatus())){
-			name=context.getString(R.string.text_communication_state4);
+			name=Application.getContext().getString(R.string.text_communication_state4);//通讯成功
 			return name;
 		}
-		return context.getString(R.string.text_communication_state5);
+		return Application.getContext().getString(R.string.text_communication_state5);//"未知";
 	}
 	/***
 	 * 得到雷管状态
 	 * @return
 	 */
-	public String getDenatorStatusName(Context context){
+	public String getDenatorStatusName(){
 		String name="";
 		if("00".equals(this.getCommicationStatus())){
-			name=context.getString(R.string.text_communication_state6);
+			name="雷管正常";
 			return name;
 		}
-		return context.getString(R.string.text_communication_state5);
+		return Application.getContext().getString(R.string.text_communication_state5);
 	}
 
 	@Override
 	public String toString() {
 		return "From32DenatorFiring{" +
-				"denaId='" + denaId + '\'' +
-				", denatorStatus='" + denatorStatus + '\'' +
-				", commicationStatus='" + commicationStatus + '\'' +
-				", shellNo='" + shellNo + '\'' +
-				", delayTime=" + delayTime +
+				", 通信状态='" + getCommicationStatusName() + '\'' +
+				", 管壳码='" + shellNo + '\'' +
+				", 芯片码='" + denaId + '\'' +
+				", 延时=" + delayTime +
 				'}';
 	}
 }

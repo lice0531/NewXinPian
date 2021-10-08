@@ -66,7 +66,7 @@ public class QueryCurrentDetail extends BaseActivity implements LoadListView.OnL
             }
         });
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         int totalNum = (int) Application.getDaoSession().getDenatorBaseinfoDao().count();

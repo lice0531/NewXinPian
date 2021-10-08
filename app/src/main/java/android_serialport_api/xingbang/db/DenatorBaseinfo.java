@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity(nameInDb = "denatorBaseinfo")
 public class DenatorBaseinfo extends LitePalSupport {
+
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
     private Long id;

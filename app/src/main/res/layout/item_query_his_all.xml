@@ -36,7 +36,7 @@
         <!-- 操作-->
 
         <Button
-            android:id="@+id/bt_operat"
+            android:id="@+id/bt_delete"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"

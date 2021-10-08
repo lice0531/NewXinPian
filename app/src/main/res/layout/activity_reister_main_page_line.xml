@@ -7,7 +7,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="android_serialport_api.xingbang.SimpleCheckReisterMainActivity"
+    tools:context="android_serialport_api.xingbang.firingdevice.ReisterMainPage_line"
     tools:ignore="MergeRootFrame">
 
     <LinearLayout

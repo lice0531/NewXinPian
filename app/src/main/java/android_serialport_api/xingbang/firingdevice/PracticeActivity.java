@@ -1,9 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.DeviceControl;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -30,26 +28,29 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 import org.litepal.LitePal;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -59,10 +60,9 @@ import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoBlastModel;
-import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
-import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,8 +70,11 @@ import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-//实验发送命令页面
+/**
+ * 实验发送命令页面
+ */
 public class PracticeActivity extends SerialPortActivity {
+
     @BindView(R.id.tv_ceshi_dianliu)
     TextView tvCeshiDianliu;
     @BindView(R.id.tv_ceshi_dianya)
@@ -84,14 +87,18 @@ public class PracticeActivity extends SerialPortActivity {
     ScrollView activityPractice;
     @BindView(R.id.but_write)
     Button butWrite;
-    @BindView(R.id.but_read)
+    @BindView(R.id.btn_read)
     Button butRead;
+    @BindView(R.id.btn_read_log)
+    Button butReadLog;
     @BindView(R.id.text_android_ip)
     TextView textAndroidIp;
     @BindView(R.id.text_setvice_ip)
     EditText textSetviceIp;
     @BindView(R.id.but_receive)
     Button butReceive;
+    @BindView(R.id.but_lianjie)
+    Button butLianjie;
     @BindView(R.id.but_send)
     Button butSend;
     @BindView(R.id.btn_openFile)
@@ -100,57 +107,39 @@ public class PracticeActivity extends SerialPortActivity {
     TextView textFilePath;
     @BindView(R.id.but_test)
     Button butTest;
-    private EditText edit_pra;
-    private Button btn_pra;
-    private Button btn_pra1;
-    private TextView ll_firing_Volt_4;
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<VoBlastModel> list_uid = new ArrayList<>();
     private SQLiteDatabase db;
-    private static int tipInfoFlag = 0;
     private Handler mHandler_1 = null;//总线稳定
     private Handler busHandler = null;//总线信息
-    private Handler errHandler = null;//总线信息
     private static volatile int stage;
     private volatile int firstCount = 0;
-    private volatile VoDenatorBaseInfo writeDenator;
-    private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
-    private VoFiringTestError thirdWriteErrorDenator;//写入错误雷管
-    private DeviceControl deviceControl;
-    private Queue<VoDenatorBaseInfo> blastQueue;//雷管队列
-
-    private Queue<VoFiringTestError> errorList;//错误雷管队列
-    private volatile int thirdWriteCount;//雷管发送计数器
-    private volatile int reThirdWriteCount;//获得 返回 数量
 
     private From42Power busInfo;
-
     private ThreadFirst firstThread;
 
-    private ArrayList<Map<String, Object>> errDeData = new ArrayList<Map<String, Object>>();//错误雷管
     private SendOpenPower sendOpenThread;//打开电源
     private CloseOpenPower closeOpenThread;//关闭电源
 
     private volatile int initCloseCmdReFlag = 0;
-    private volatile int initOpenCmdReFlag = 0;
     private volatile int revCloseCmdReFlag = 0;
     private volatile int revOpenCmdReFlag = 0;
     private volatile int revOpenCmdTestFlag = 0;//收到了打开测试命令
     private Handler handler_zhuce;
     private SendPower sendPower;
-    //写入和读取操作
+
+    // 写入和读取操作
     private int currentPage = 1;//当前页数
-    private int pageSize = 600;//每页显示的数据
     private int pb_show = 0;
-    private ProgressDialog builder = null;
     private LoadingDialog tipDlg = null;
     private Handler mHandler_2 = new Handler();//显示进度条
 
     private static int StringProt = 30000;
-    //存放接收到的文字信息
 
+    // 存放接收到的文字信息
     private boolean revice_type = true;
+
     /**
      * 线程池
      */
@@ -163,7 +152,7 @@ public class PracticeActivity extends SerialPortActivity {
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText("本机IP地址:" + getlocalip());
@@ -178,70 +167,56 @@ public class PracticeActivity extends SerialPortActivity {
     }
 
     private void initHandle() {
-        handler_zhuce = new Handler() {
-            @Override
-            public void handleMessage(final Message msg) {
-                super.handleMessage(msg);
-//                show_Toast(buffer.toString());
-                final String lg = msg.obj.toString();
-                switch (msg.what) {
-                    case 1:
-                        //从客户端接收到消息
-//                        pb_show = 1;
-//                        runPbDialog();
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String leiguan = Utils.replace(lg);//去除回车
-                                Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
-                                if (leiguan != null) {
-                                    insertDenator(leiguan);
-                                } else {
-//                                    tipDlg.dismiss();
-//                                    pb_show = 0;
-                                    show_Toast("没有接收到数据");
-                                }
-                            }
-                        }).start();
-                        break;
-                    case 2:
-                        show_Toast(msg.obj.toString());
-                        break;
-                    default:
-                        break;
-                }
+        handler_zhuce = new Handler(msg -> {
 
+            final String lg = msg.obj.toString();
+            switch (msg.what) {
+                case 1:
+                    // 从客户端接收到消息
+//                    runPbDialog();
+                    new Thread(() -> {
+                        String leiguan = Utils.replace(lg);//去除回车
+                        Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
+                        if (leiguan != null) {
+                            // 注册雷管
+                            registerDetonator(leiguan);
+                        } else {
+//                            tipDlg.dismiss();
+                            show_Toast("没有接收到数据");
+                        }
+                    }).start();
+                    break;
+
+                case 2:
+                    show_Toast(msg.obj.toString());
+                    break;
+
+                default:
+                    break;
             }
-        };
-        busHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {//更新电流状态
-                super.handleMessage(msg);
-                if (busInfo != null) {
-                    float f = busInfo.getBusCurrentIa() * 1000;
-                    BigDecimal b = new BigDecimal(f);//处理大额数据专用类
-                    String displayIcStr = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "μA";//保留两位小数
-                    tvCeshiDianliu.setText("" + displayIcStr);
-                    tvCeshiDianya.setText("" + busInfo.getBusVoltage() + "V");
-                    if (busInfo.getPowerStatusName().trim().length() > 0) {
-                        /**
-                         Toast.makeText(FiringMainActivity.this,busInfo.getPowerStatusName(),
-                         Toast.LENGTH_SHORT).show();
-                         **/
-                    }
-                }
-                busInfo = null;
+
+
+            return false;
+        });
+
+        busHandler = new Handler(msg -> {
+            if (busInfo != null) {
+                BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa() );//处理大额数据专用类
+                String displayIcStr = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "μA";// 保留两位小数
+                tvCeshiDianliu.setText(displayIcStr);
+                tvCeshiDianya.setText(busInfo.getBusVoltage() + "V");
             }
-        };
-        mHandler_2 = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
-                super.handleMessage(msg);
-            }
-        };
+            busInfo = null;
+            return false;
+        });
+
+        mHandler_2 = new Handler(msg -> {
+            if (pb_show == 1 && tipDlg != null)
+                tipDlg.show();
+            if (pb_show == 0 && tipDlg != null)
+                tipDlg.dismiss();
+            return false;
+        });
     }
 
     private void runPbDialog() {
@@ -251,22 +226,15 @@ public class PracticeActivity extends SerialPortActivity {
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
         divider.setBackgroundColor(Color.TRANSPARENT);
-        //tipDlg.setMessage("正在操作,请等待...").show();
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                mHandler_2.sendMessage(mHandler_2.obtainMessage());
-                //builder.show();
-                try {
-                    while (pb_show == 1) {
-                        Thread.sleep(100);
-                    }
-                    //builder.dismiss();
-                    mHandler_2.sendMessage(mHandler_2.obtainMessage());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            try {
+                while (pb_show == 1) {
+                    Thread.sleep(100);
                 }
+                mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -274,8 +242,8 @@ public class PracticeActivity extends SerialPortActivity {
     private void loadMoreData() {
         list_uid.clear();
 
-        List<DenatorBaseinfo> list =getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (int i=0;i<list.size();i++){
+        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        for (int i = 0; i < list.size(); i++) {
             VoBlastModel item = new VoBlastModel();
             item.setBlastserial(list.get(i).getBlastserial());
             item.setSithole(list.get(i).getSithole());
@@ -290,13 +258,12 @@ public class PracticeActivity extends SerialPortActivity {
 
     }
 
-    private void loadMoreData_out(int cp) {
+    private void loadMoreData_out() {
         list_uid.clear();
-        StringBuffer sb = new StringBuffer();
-        List<DenatorBaseinfo> list =getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (int i=0;i<list.size();i++){
-            sb.append(list.get(i).getShellBlastNo() + "#" + list.get(i).getDelay() + ",");
-
+        StringBuilder sb = new StringBuilder();
+        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i).getShellBlastNo()).append("#").append(list.get(i).getDelay()).append(",");
             VoBlastModel item = new VoBlastModel();
             item.setBlastserial(list.get(i).getBlastserial());
             item.setSithole(list.get(i).getSithole());
@@ -313,64 +280,71 @@ public class PracticeActivity extends SerialPortActivity {
         show_Toast("写入成功");
     }
 
-    /***
-     * 手动输入注册
+    /**
+     * 读取输入注册
      */
-    private int insertDenator(String leiguan) {
+    private void registerDetonator(String leiguan) {
         String[] lg = leiguan.split(",");
-        String shellNo ;
-        int index = -1;
+        String shellNo;
         int maxNo = getMaxNumberNo();
-        int reCount = 0;
-        for (int i = lg.length; i > 0; i--) {
-            shellNo = lg[i - 1];
+
+        for (int i = 0; i < lg.length; i++) {
+            shellNo = lg[i];
             String[] a = shellNo.split("#");
-            if (checkRepeatShellNo(a[0]) == 1) {//检查重复数据
-                reCount++;
+            Log.e("注册", "管壳码 a[0]: " + a[0]);
+            Log.e("注册", "芯片码 a[1]: " + a[1]);
+            // 检查重复数据
+            if (checkRepeatShellBlastNo(a[0])) {
                 continue;
             }
-            if (index < 0) {//说明没有空余的序号可用
-                maxNo++;
-                DenatorBaseinfo denator = new DenatorBaseinfo();
-                denator.setBlastserial(maxNo);
-                denator.setSithole(maxNo);
-                denator.setShellBlastNo(a[0]);
-                denator.setDelay(Integer.parseInt(a[1]));
-                denator.setRegdate(Utils.getDateFormatLong(new Date()));
-                denator.setStatusCode("02");
-                denator.setStatusName("已注册");
-                denator.setErrorCode("FF");
-                denator.setErrorName("");
-                denator.setWire("");
-                denator.save();
-
-            }
-            reCount++;
+            // 雷管类型_新
+            DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
+            detonatorTypeNew.setShellBlastNo(a[0]);
+            detonatorTypeNew.setDetonatorId(a[1]);
+            getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
         show_Toast_ui("接收成功");
-        return reCount;
+    }
+
+    /**
+     * 读取输入注册
+     */
+    private void registerLog(String logstr) {
+        String[] log = logstr.split(",");
+        String shellNo;
+        Log.e("分析日志", "log: " + log);
+        for (int i = 0; i < log.length; i++) {
+            shellNo = log[i];
+            String[] ml = shellNo.split(":");
+            Log.e("分析日志", "ml: " + ml[2]);
+            String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
+            if (cmd != null) {
+                int localSize = ml[2].length() / 2;
+                byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
+                doWithReceivData_fenxi(cmd, localBuf, localSize);
+            }
+        }
+        show_Toast("解析成功");
     }
 
     /**
      * 检查重复的数据
      *
-     * @param shellBlastNo
-     * @return
+     * @param ShellBlastNo
      */
-    public int checkRepeatShellNo(String shellBlastNo) {
-        List<DenatorBaseinfo> denator = LitePal.where("shellBlastNo = ?", shellBlastNo).find(DenatorBaseinfo.class);
-        if (denator.size() > 0) {
-            Log.e("注册", "denator: " + denator.toString());
-            return 1;//重复
-        } else {
-            return 0;
+    public boolean checkRepeatShellBlastNo(String ShellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        DetonatorTypeNew detonatorTypeNew = master.checkRepeat_DetonatorTypeNew(ShellBlastNo);
+        if(detonatorTypeNew != null){
+            return true;
+        }else {
+            return false;
         }
     }
 
-    /***
+    /**
      * 得到最大序号
-     * @return
      */
     private int getMaxNumberNo() {
         return LitePal.max(DenatorBaseinfo.class, "blastserial", int.class);
@@ -383,6 +357,7 @@ public class PracticeActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//将数组转化为16进制字符串
+
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) {
@@ -392,7 +367,7 @@ public class PracticeActivity extends SerialPortActivity {
             }
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);//返回命令解码
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
+
             } else {
                 String cmd = DefCommand.getCmd(fromCommad);//得到 返回命令
                 if (cmd != null) {
@@ -409,34 +384,30 @@ public class PracticeActivity extends SerialPortActivity {
      */
     private void doWithReceivData(String cmd, byte[] cmdBuf, int size) {
         byte[] locatBuf = new byte[size];
-        System.arraycopy(cmdBuf, 0, locatBuf, 0, size);//将cmdBuf数组复制到locatBuf数组
+        System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
 
         if (DefCommand.CMD_2_NETTEST_1.equals(cmd)) {//进入测试模式
             //stage=3;
             revOpenCmdTestFlag = 1;
 
 
-        } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {
-            if (cmdBuf == null) {
-                writeDenator = null;
-                return;
-            }
-            From42Power fromData = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            busInfo = fromData;
+        } else if ("40".equals(cmd)) {
+            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            Log.e("命令", "busInfo: "+busInfo.toString() );
             busHandler.sendMessage(busHandler.obtainMessage());
-        } else if (DefCommand.CMD_2_NETTEST_3.equals(cmd)) {//关闭测试
-            //发出关闭获取得到电压电流
-            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");
-            sendCmd(powerCmd);
 
-        } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//关闭电源
-            if (initCloseCmdReFlag == 1) {//打开电源
+        } else if ("22".equals(cmd)) { // 关闭测试
+            //发出关闭获取得到电压电流
+            sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));
+
+        } else if ("13".equals(cmd)) { // 关闭电源
+            if (initCloseCmdReFlag == 1) { // 打开电源
                 revCloseCmdReFlag = 1;
                 closeOpenThread.exit = true;
                 sendOpenThread = new SendOpenPower();
                 sendOpenThread.start();
             }
-        } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//开启总线电源指令
+        } else if ("41".equals(cmd)) { // 开启总线电源指令
 //            sendOpenThread = new SendOpenPower();
 //            sendOpenThread.start();
 //            sendOpenThread.exit = true;
@@ -444,8 +415,27 @@ public class PracticeActivity extends SerialPortActivity {
         }
     }
 
+    /**
+     * 处理接收到的cmd命令
+     */
+    private void doWithReceivData_fenxi(String cmd, byte[] cmdBuf, int size) {
+        byte[] locatBuf = new byte[size];
+        System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
 
-    //发送命令
+        if ("20".equals(cmd)) {//进入测试模式
+        } else if ("40".equals(cmd)) {
+            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            Log.e("40命令", "busInfo: "+busInfo.toString());
+        } else if ("22".equals(cmd)) { // 关闭测试
+        } else if ("13".equals(cmd)) { // 关闭电源
+        } else if ("41".equals(cmd)) { // 开启总线电源指令
+        }
+    }
+
+
+    /**
+     * 发送命令
+     */
     public void sendCmd(byte[] mBuffer) {
         if (mSerialPort != null && mOutputStream != null) {
             try {
@@ -457,15 +447,14 @@ public class PracticeActivity extends SerialPortActivity {
                 e.printStackTrace();
             }
 
-        } else {
-            return;
         }
     }
 
 
-    @OnClick({R.id.but_pre, R.id.but_write, R.id.but_read, R.id.but_send, R.id.but_receive, R.id.btn_openFile,R.id.but_test})
+    @OnClick({R.id.but_pre, R.id.but_write, R.id.btn_read,R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+
             case R.id.but_pre://开启测试
 
                 if (revOpenCmdTestFlag == 0) {
@@ -496,34 +485,41 @@ public class PracticeActivity extends SerialPortActivity {
                     tvCeshiDianya.setText("0.0V");
                     revOpenCmdTestFlag = 0;
                 }
-
                 break;
+
             case R.id.but_write://写入雷管
-                if (1 == currentPage) {
-                    loadMoreData_out(currentPage);
+                if (currentPage == 1) {
+                    loadMoreData_out();
                 }
                 break;
-            case R.id.but_read://读取雷管
+
+            // 读取雷管
+            case R.id.btn_read:
                 pb_show = 1;
                 runPbDialog();
+
                 if (TextUtils.isEmpty(path)) {
                     show_Toast("请选择雷管列表文件");
                     return;
                 }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String leiguan = Utils.readFile(path);
-                        Log.e("读取到的雷管", "leiguan: " + leiguan);
-                        if (!leiguan.equals("0")) {
-                            insertDenator(leiguan);
-                        } else {
-                            tipDlg.dismiss();
-                            pb_show = 0;
-                            show_Toast_ui("当前文件目录里没有leiguan.txt文件");
-                        }
+
+                new Thread(() -> {
+                    String detonator = Utils.readFile(path);
+//                    Log.e("读取到的雷管", "雷管: " + detonator);
+
+                    if (!detonator.equals("0")) {
+                        registerDetonator(detonator);
+
+                    } else {
+                        tipDlg.dismiss();
+                        pb_show = 0;
+                        show_Toast_ui("当前文件目录里没有 雷管文件.txt");
                     }
                 }).start();
+                break;
+            case R.id.btn_read_log:
+                String log = Utils.readLog(path);
+                registerLog(log);
                 break;
             case R.id.but_send://发送
                 StringBuffer sb = new StringBuffer();
@@ -542,12 +538,20 @@ public class PracticeActivity extends SerialPortActivity {
                     return;
                 }
                 Log.e("发送消息", "sb: " + sb.toString());
-                //启动线程 向服务器发送信息//需要换成服务器端的IP地址
-                sendStringMessage(sb.toString(), ip);
-
+                //与刘鹏飞通讯级联发送
+                strMessage = sb.toString();
+                new Thread(sendThread).start();
+                // 启动线程 向服务器发送信息//需要换成服务器端的IP地址
+//                sendStringMessage(sb.toString(), ip);
 //                Utils.sendMessage("F5310000",ip,30000,list_upload_uid);
-
                 break;
+
+            case R.id.but_lianjie:
+                if (!isConnect) {
+                    new Thread(connectThread).start();
+                }
+                break;
+
             case R.id.but_receive://接收
                 if (revice_type) {
                     //创建接收文本消息的服务//作为接收端的手机，需要放开。
@@ -559,15 +563,16 @@ public class PracticeActivity extends SerialPortActivity {
                     revice_type = true;
                 }
                 break;
+
             case R.id.btn_openFile:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("text/plain");//txt文件
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
                 break;
+
             case R.id.but_test:
-                Intent intent1=new Intent(this,TestActivity.class);
-                startActivity(intent1);
+                startActivity(new Intent(this, TestActivity.class));
                 break;
         }
     }
@@ -586,6 +591,7 @@ public class PracticeActivity extends SerialPortActivity {
                 path = getPath(this, uri);
                 textFilePath.setText(path);
                 Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+
             } else {//4.4以下下系统调用方法
                 path = getRealPathFromURI(uri);
                 textFilePath.setText(path);
@@ -609,24 +615,23 @@ public class PracticeActivity extends SerialPortActivity {
     }
 
 
-
     /**
      * 自定义一个线程
      */
     private class ThreadFirst extends Thread {
         public volatile boolean exit = false;
-        private VoDenatorBaseInfo tempBaseInfo = null;
 
         public void run() {
-            byte[] initBuf = null;
+
             while (!exit) {
                 try {
 
                     switch (stage) {
+
                         case 1:
                             Thread.sleep(1000);
-                            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40
-                            sendCmd(powerCmd);
+                            // 40
+                            sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));
                             firstCount++;
                             if (firstCount >= 40) {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -660,8 +665,8 @@ public class PracticeActivity extends SerialPortActivity {
             while (!exit) {
                 try {
                     if (zeroCount == 0) {
-                        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-                        sendCmd(powerCmd);
+                        // 41
+                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));
                     }
                     if (revOpenCmdReFlag == 1) {
                         exit = true;
@@ -669,7 +674,6 @@ public class PracticeActivity extends SerialPortActivity {
                     }
                     Thread.sleep(500);
                     if (zeroCount > 100) {
-                        tipInfoFlag = 4;
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         exit = true;
                         break;
@@ -694,8 +698,7 @@ public class PracticeActivity extends SerialPortActivity {
             while (!exit) {
                 try {
                     //发送获取电源信息
-                    byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40
-                    sendCmd(reCmd);
+                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -719,8 +722,7 @@ public class PracticeActivity extends SerialPortActivity {
                 try {
                     if (zeroCount == 0) {
                         initCloseCmdReFlag = 1;
-                        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
-                        sendCmd(powerCmd);
+                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
                     }
                     if (revCloseCmdReFlag == 1) {
                         exit = true;
@@ -728,14 +730,13 @@ public class PracticeActivity extends SerialPortActivity {
                     }
                     Thread.sleep(100);
                     if (zeroCount > 80) {
-                        tipInfoFlag = 3;
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         exit = true;
                         break;
                     }
                     zeroCount++;
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
+                    // TODO Auto-generatedx catch block
                     e.printStackTrace();
                 }
             }
@@ -794,49 +795,47 @@ public class PracticeActivity extends SerialPortActivity {
      * 接收文本消息
      */
     private void createStringServerSocket() {
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                Bundle bundle = new Bundle();
-                bundle.clear();
-                OutputStream out;
-                //给发送端返回一个消息，告诉他链接接收成功。
-                String str = "发送成功";
-                try {
-                    ServerSocket serverSocket = new ServerSocket(StringProt);
-                    while (true) {
-                        try {
-                            //此处是线程阻塞的,所以需要在子线程中
-                            Socket socket = serverSocket.accept();
-                            //请求成功，响应客户端的请求
-                            out = socket.getOutputStream();
-                            out.write(str.getBytes("utf-8"));
-                            out.flush();
-                            socket.shutdownOutput();
-                            //获取输入流,读取客户端发送来的文本消息
-                            BufferedReader bf_read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                            String line = null;
-                            StringBuffer buffer = new StringBuffer();
-                            while ((line = bf_read.readLine()) != null) {
-                                buffer.append(line);
-                            }
-                            buffer.append("\n");
-                            //
-                            Message m = new Message();
-                            m.what = 1;
-                            m.obj = buffer.toString();
-                            handler_zhuce.sendMessage(m);
-                            bf_read.close();
-                            out.close();
-                            socket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+        Runnable run = () -> {
+            Bundle bundle = new Bundle();
+            bundle.clear();
+            OutputStream out;
+            //给发送端返回一个消息，告诉他链接接收成功。
+            String str = "发送成功";
+            try {
+                ServerSocket serverSocket = new ServerSocket(StringProt);
+                while (true) {
+                    try {
+                        //此处是线程阻塞的,所以需要在子线程中
+                        Socket socket = serverSocket.accept();
+                        //请求成功，响应客户端的请求
+                        out = socket.getOutputStream();
+                        out.write(str.getBytes("utf-8"));
+                        out.flush();
+                        socket.shutdownOutput();
+                        //获取输入流,读取客户端发送来的文本消息
+                        BufferedReader bf_read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                        String line;
+                        StringBuilder buffer = new StringBuilder();
+                        while ((line = bf_read.readLine()) != null) {
+                            buffer.append(line);
                         }
+                        buffer.append("\n");
+                        //
+                        Log.e("接收消息", "buffer.toString(): " + buffer.toString());
+                        Message m = new Message();
+                        m.what = 1;
+                        m.obj = buffer.toString();
+                        handler_zhuce.sendMessage(m);
+                        bf_read.close();
+                        out.close();
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
                 }
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
         };
         executorService.execute(run);
@@ -846,37 +845,34 @@ public class PracticeActivity extends SerialPortActivity {
      * 启动线程 向服务器发送文本消息
      */
     private void sendStringMessage(final String txt1, final String ip) {
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Socket socket = new Socket();
-                    //端口号为30000
-                    socket.connect(new InetSocketAddress(ip, StringProt));
-                    //获取输出流
-                    OutputStream ou = socket.getOutputStream();
-                    //读取服务器响应
-                    BufferedReader bff = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String line;
-                    String buffer = "";
-                    while ((line = bff.readLine()) != null) {
-                        buffer = line + buffer;
-                    }
-                    //向服务器发送文本信息
-                    ou.write(txt1.getBytes("utf-8"));
-                    //关闭各种输入输出流
-                    ou.flush();
-                    bff.close();
-                    ou.close();
-                    socket.close();
-                    //服务器返回
-                    Message message = new Message();
-                    message.what = 2;
-                    message.obj = buffer;
-                    handler_zhuce.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        Runnable run = () -> {
+            try {
+                Socket socket = new Socket();
+                //端口号为30000
+                socket.connect(new InetSocketAddress(ip, StringProt));
+                //获取输出流
+                OutputStream ou = socket.getOutputStream();
+                //读取服务器响应
+                BufferedReader bff = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String line;
+                String buffer = "";
+                while ((line = bff.readLine()) != null) {
+                    buffer = line + buffer;
                 }
+                //向服务器发送文本信息
+                ou.write(txt1.getBytes(StandardCharsets.UTF_8));
+                //关闭各种输入输出流
+                ou.flush();
+//                bff.close();
+//                ou.close();
+//                socket.close();
+                // 服务器返回
+                Message message = new Message();
+                message.what = 2;
+                message.obj = buffer;
+                handler_zhuce.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
         executorService.execute(run);
@@ -892,9 +888,6 @@ public class PracticeActivity extends SerialPortActivity {
 
     @Override
     protected void onStart() {
-        /***
-         * 发送初始化命令
-         */
         hideInputKeyboard();
         activityPractice.setFocusable(true);
         activityPractice.setFocusableInTouchMode(true);
@@ -1049,4 +1042,96 @@ public class PracticeActivity extends SerialPortActivity {
         }
         super.sendInterruptCmd();
     }
+
+    private Socket socket = null;
+    private String strMessage;
+    private boolean isConnect = false;
+    private OutputStream outStream;
+    private boolean isReceive = false;
+    private ReceiveThread receiveThread = null;
+    Runnable connectThread = () -> {
+        // TODO Auto-generated method stub
+        try {
+            socket = new Socket(textSetviceIp.getText().toString(), 30000);
+            isConnect = true;
+            isReceive = true;
+            receiveThread = new ReceiveThread(socket);
+            receiveThread.start();
+            System.out.println("----connected success----");
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.out.println("UnknownHostException-->" + e.toString());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.out.println("IOException" + e.toString());
+        }
+    };
+
+    Runnable sendThread = new Runnable() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            byte[] sendBuffer = null;
+            try {
+                sendBuffer = strMessage.getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            try {
+                outStream = socket.getOutputStream();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            try {
+                outStream.write(sendBuffer);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private class ReceiveThread extends Thread {
+        private InputStream inStream = null;
+
+        private byte[] buffer;
+        private String str = null;
+
+        ReceiveThread(Socket socket) {
+            try {
+                inStream = socket.getInputStream();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            while (isReceive) {
+                buffer = new byte[512];
+                try {
+                    inStream.read(buffer);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                try {
+                    str = new String(buffer, "UTF-8").trim();
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                Message msg = new Message();
+                msg.obj = str;
+//                myHandler.sendMessage(msg);
+            }
+        }
+    }
+
 }

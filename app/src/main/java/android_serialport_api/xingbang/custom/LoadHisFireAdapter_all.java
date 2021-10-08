@@ -8,7 +8,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -64,14 +63,14 @@ public class LoadHisFireAdapter_all extends BaseAdapter implements OnClickListen
             viewHolder.serialNo = (TextView) convertView.findViewById(R.id.serialNo);
             viewHolder.fireDate = (TextView)convertView.findViewById(R.id.fireDate);
             viewHolder.txtstatus = (TextView) convertView.findViewById(R.id.txtstatus);
-            viewHolder.bt_operat = (Button) convertView.findViewById(R.id.bt_operat);
+            viewHolder.bt_operat = (Button) convertView.findViewById(R.id.bt_delete);
             convertView.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.bt_operat.setText(mContext.getString(R.string.text_tip_delete));
         viewHolder.bt_operat.setOnClickListener(this);
-        viewHolder.bt_operat.setTag(R.id.bt_operat,list.get(position).getBlastdate());
+        viewHolder.bt_operat.setTag(R.id.bt_delete,list.get(position).getBlastdate());
         viewHolder.serialNo.setText(""+position);
         viewHolder.fireDate.setText(""+list.get(position).getBlastdate());
         viewHolder.txtstatus.setText(list.get(position).getRemark());

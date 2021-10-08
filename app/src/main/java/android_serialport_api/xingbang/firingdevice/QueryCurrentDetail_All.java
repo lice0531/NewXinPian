@@ -69,7 +69,7 @@ public class QueryCurrentDetail_All extends BaseActivity implements LoadListView
         setContentView(R.layout.activity_query_currentinfo_all);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("Select * from denatorBaseinfo_all ", null);

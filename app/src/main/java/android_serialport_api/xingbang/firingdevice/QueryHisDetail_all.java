@@ -101,7 +101,7 @@ public class QueryHisDetail_all extends BaseActivity implements LoadListView.OnL
         setContentView(R.layout.activity_query_hisinfo_all);
         ButterKnife.bind(this);
         tipDlg = new LoadingDialog(QueryHisDetail_all.this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select* from " + DatabaseHelper.TABLE_NAME_HISMAIN_ALL+" where remark=?", new String[]{"未注册"});
         totalNum = cursor.getCount();//得到数据的总条数
@@ -260,8 +260,8 @@ public class QueryHisDetail_all extends BaseActivity implements LoadListView.OnL
     public void itemClick(View v) {
         switch (v.getId()) {
 
-            case R.id.bt_operat:
-                String t = (String) v.getTag(R.id.bt_operat);
+            case R.id.bt_delete:
+                String t = (String) v.getTag(R.id.bt_delete);
                 if (delHisInfo(t) == 0) {
                     show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
                 }

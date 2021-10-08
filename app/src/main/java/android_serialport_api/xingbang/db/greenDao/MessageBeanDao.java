@@ -41,6 +41,7 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         public final static Property Server_type2 = new Property(14, String.class, "server_type2", false, "server_type2");
         public final static Property Pro_dwdm = new Property(15, String.class, "pro_dwdm", false, "pro_dwdm");
         public final static Property Jiance_time = new Property(16, String.class, "jiance_time", false, "jiance_time");
+        public final static Property Version = new Property(17, String.class, "version", false, "version");
     }
 
 
@@ -72,7 +73,8 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
                 "\"server_type1\" TEXT," + // 13: server_type1
                 "\"server_type2\" TEXT," + // 14: server_type2
                 "\"pro_dwdm\" TEXT," + // 15: pro_dwdm
-                "\"jiance_time\" TEXT);"); // 16: jiance_time
+                "\"jiance_time\" TEXT," + // 16: jiance_time
+                "\"version\" TEXT);"); // 17: version
     }
 
     /** Drops the underlying database table. */
@@ -169,6 +171,11 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         if (jiance_time != null) {
             stmt.bindString(17, jiance_time);
         }
+ 
+        String version = entity.getVersion();
+        if (version != null) {
+            stmt.bindString(18, version);
+        }
     }
 
     @Override
@@ -259,6 +266,11 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         if (jiance_time != null) {
             stmt.bindString(17, jiance_time);
         }
+ 
+        String version = entity.getVersion();
+        if (version != null) {
+            stmt.bindString(18, version);
+        }
     }
 
     @Override
@@ -285,7 +297,8 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // server_type1
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // server_type2
             cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // pro_dwdm
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16) // jiance_time
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // jiance_time
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // version
         );
         return entity;
     }
@@ -309,6 +322,7 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         entity.setServer_type2(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setPro_dwdm(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
         entity.setJiance_time(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setVersion(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     @Override

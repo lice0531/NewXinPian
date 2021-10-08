@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.cmd.vo;
 
 import android.content.Context;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 
 
@@ -10,10 +11,7 @@ public class From22WriteDelay {
 	private String denaId;//雷管id
 	private String denatorStatus;//雷管状态 
 	private String commicationStatus;//通信状态 ,00--（与雷管通信失败）01--延期写入不一致	FF--通信成功。AF:未返回命令
-
-	
-	private String shellNo;//管壳码 
-	
+	private String shellNo;//管壳码
     private int  delayTime;//延时
 
 	public String getShellNo() {
@@ -59,14 +57,14 @@ public class From22WriteDelay {
      * 得到通信状态
      * @return
      */
-	public String getCommicationStatusName(Context context){
+	public String getCommicationStatusName(){
 		String name="";
 		if("00".equals(this.getCommicationStatus())){
-			name=context.getString(R.string.text_communication_state1);
+			name= Application.getContext().getString(R.string.text_communication_state1);
 			return name;
 		}
 		if("01".equals(this.getCommicationStatus())){
-			name=context.getString(R.string.text_communication_state2);
+			name=Application.getContext().getString(R.string.text_communication_state2);
 			return name;
 		}
 		if("02".equals(this.getCommicationStatus())){
@@ -76,7 +74,7 @@ public class From22WriteDelay {
 			return "充电不正常";
 		}
 		if("04".equals(this.getCommicationStatus())){
-			return "延时未设置";
+			return "延时写入失败";
 		}
 		if("05".equals(this.getCommicationStatus())){
 			return "延时同步不正确";
@@ -89,10 +87,10 @@ public class From22WriteDelay {
 //			return name;
 //		}
 		if("FF".equals(this.getCommicationStatus())){
-			name=context.getString(R.string.text_communication_state4);
+			name=Application.getContext().getString(R.string.text_communication_state4);
 			return name;
 		}
-		return context.getString(R.string.text_communication_state5);
+		return Application.getContext().getString(R.string.text_communication_state5);
 	}
     /***
      * 得到雷管状态
@@ -107,12 +105,11 @@ public class From22WriteDelay {
 
 	@Override
 	public String toString() {
-		return "From22WriteDelay{" +
-				"denaId='" + denaId + '\'' +
-				", denatorStatus='" + denatorStatus + '\'' +
-				", commicationStatus='" + commicationStatus + '\'' +
-				", shellNo='" + shellNo + '\'' +
-				", delayTime=" + delayTime +
+		return "测试数据{" +
+				", 通信状态='" + this.getCommicationStatusName() + '\'' +
+				", 管壳码='" + shellNo + '\'' +
+				", 芯片码='" + denaId + '\'' +
+				", 延时=" + delayTime +
 				'}';
 	}
 }

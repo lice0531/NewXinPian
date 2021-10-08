@@ -65,11 +65,11 @@ public class From42Power {
 	@Override
 	public String toString() {
 		return "From42Power{" +
-				"powerStatus='" + powerStatus + '\'' +
-				", denatorIa=" + denatorIa +
-				", busVoltage=" + busVoltage +
-				", busCurrentIa=" + busCurrentIa +
-				", firingVoltage=" + firingVoltage +
+				"电流状态='" + powerStatus + '\'' +
+				", 雷管电流=" + denatorIa +
+				", 总线电压=" + busVoltage +
+				", 总线电流=" + busCurrentIa +
+				", 起爆电压=" + firingVoltage +
 				'}';
 	}
 }

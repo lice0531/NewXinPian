@@ -118,20 +118,16 @@ public class Utils {
         //INT转换为字节
         byte[] bytes = intToByteArray(serialId);
         //byte转换为16进制
-        String str = bytesToHexFun(bytes);
-
-        return str;
+        return bytesToHexFun(bytes);
     }
 
     //新规则得到的管壳码转换雷管序号Id
     public static String DetonatorShellToSerialNo_new(String shellStr) {
-        Log.e("测试21延时", "denatorId  " + shellStr);
         String yearStr = shellStr.substring(2, 3);
         String monthStr = shellStr.substring(3, 5);
         String dayStr = shellStr.substring(5, 7);
         String teStr = shellStr.substring(7, 8);
         String noStr = shellStr.substring(8, 13);
-        Log.e("管壳码转换芯片面", "yearStr: " + yearStr);
         int day = Integer.parseInt(dayStr);
         int month = Integer.parseInt(monthStr);
         if (month < 8 && yearStr.equals("9")) {
@@ -147,14 +143,24 @@ public class Utils {
         int year = Integer.parseInt(yearStr);
         int no = Integer.parseInt(noStr);
         int te = Integer.parseInt(teStr, 16);
-        Log.e("雷管转化", "teStr: " + teStr);
-        Log.e("雷管转化", "te: " + te);
         int serialId2 = GetSerialNo_new(te, month, day, no, year);
         //INT转换为字节
         byte[] bytes = intToByteArray(serialId2);
         //byte转换为16进制
         String str = bytesToHexFun(bytes);
         return str;
+    }
+
+    //截取芯片码中的雷管id(后6位)
+    public static String DetonatorShellToSerialNo_newXinPian(String shellStr) {
+        //A6 2 1 407FFFDE5
+//        Log.e("处理雷管id", "shellStr: "+shellStr );
+        if(shellStr.length()==8){
+            return shellStr;
+        }else {
+            return shellStr.substring(5);
+        }
+
     }
 
     /***
@@ -166,6 +172,15 @@ public class Utils {
 
         String deid = id.substring(6) + id.substring(4, 6) + id.substring(2, 4) + id.substring(0, 2);
         return deid;
+    }
+
+    /***
+     * 反转雷管ID
+     * @param id
+     * @return
+     */
+    public static String getReverseDetonatorNo_newXinPian(String id) {
+        return id.substring(6)+id.substring(4,6) + id.substring(2, 4) + id.substring(0, 2);
     }
 
     /**
@@ -370,6 +385,23 @@ public class Utils {
         Log.e("新的编码规则", "shellNo2: " + shellNo2);
         return shellNo2;
     }
+
+
+    /**
+     * 新 芯片
+     * @param facode
+     * @param feature
+     * @param denatorId
+     */
+    public static String GetShellNoById_newXinPian(String facode,String feature,String denatorId){
+        //C0AA51170C090009003204E5FDFF0641A600330000E5FDFF064D96F5ECC0
+        Log.e("ID转换", "facode: "+facode+",feature: "+feature+",denatorId: " +denatorId);
+        String a=feature.substring(0,1);
+        String b=feature.substring(1);
+        //从20年开始为2,到30年要改为3
+        return facode + "2"+b+a+denatorId;
+    }
+
 
     //int To byte[]
     public static byte[] intToByteArray(int a) {
@@ -818,6 +850,82 @@ public class Utils {
     }
 
     /***
+     * 写入日志
+     * @param str
+     */
+    public static void writeRecord(String str) {
+
+        String filePath;
+        String oldPath;
+        String withDate = getDateFormat_log(new Date()) + " " + str + "\r";
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        //filePath: /storage/emulated/0//XB程序日志/21-03-08程序日志.txt
+        if (hasSDCard) {
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
+            oldPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + "_" + Utils.getDate(new Date()) + ".txt";
+        } else {
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
+            oldPath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + "_" + Utils.getDate(new Date()) + ".txt";
+        }
+        try {
+            File file = new File(filePath);
+
+            if (!file.exists()) {
+                File dir = new File(file.getParent());
+                boolean a=dir.mkdirs();
+                boolean b=file.createNewFile();
+                //把文件名存入到数据库中
+                SysLog sysLog = new SysLog();
+                sysLog.setFilename(Utils.getDate(new Date()));
+                sysLog.setPath(filePath);
+                sysLog.setUpdataState("否");
+                sysLog.setUpdataTime("");
+                Application.getDaoSession().getSysLogDao().insert(sysLog);
+            } else {
+                long fileS = getFileSize(file);
+                if (fileS > 1073741824) {//大于1M，
+                    boolean ret = file.renameTo(new File(oldPath));
+                }
+            }
+            RandomAccessFile raf = null;
+            FileOutputStream out = null;
+            try {
+                long fileS = getFileSize(file);
+                if (fileS > 1073741824) {//大于1M，
+                    FileOutputStream outStream = new FileOutputStream(file);
+                    outStream.write(withDate.getBytes());
+                    outStream.write("\n".getBytes());
+                    outStream.close();
+                } else {
+                    raf = new RandomAccessFile(file, "rw");
+                    raf.seek(file.length());
+                    raf.write(withDate.getBytes());
+                    raf.write("\n".getBytes());
+                    raf.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (raf != null) {
+                        raf.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            /**
+             FileOutputStream outStream = new FileOutputStream(file);
+             outStream.write(str.getBytes());
+             outStream.close();
+             ***/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /***
      * 把雷管写到本地
      * @param str
      */
@@ -930,13 +1038,12 @@ public class Utils {
      * 读入TXT文件
      */
     public static String readFile(String path) {
-        String pathname = path;
         // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件
         //防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw;
         //不关闭文件会导致资源的泄露，读写文件都同理
         //Java7的try-with-resources可以优雅关闭文件，异常时自动关闭文件；详细解读https://stackoverflow.com/a/12665271
         try (
-                FileReader reader = new FileReader(pathname);
+                FileReader reader = new FileReader(path);
                 BufferedReader br = new BufferedReader(reader) // 建立一个对象，它把文件内容转成计算机能读懂的语言
         ) {
 
@@ -953,12 +1060,37 @@ public class Utils {
         }
         return "0";
     }
+    /**
+     * 读入TXT文件
+     */
+    public static String readLog(String path) {
+        // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件
+        //防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw;
+        //不关闭文件会导致资源的泄露，读写文件都同理
+        //Java7的try-with-resources可以优雅关闭文件，异常时自动关闭文件；详细解读https://stackoverflow.com/a/12665271
+        try (
+                FileReader reader = new FileReader(path);
+                BufferedReader br = new BufferedReader(reader) // 建立一个对象，它把文件内容转成计算机能读懂的语言
+        ) {
 
+            String line;
+            StringBuffer sb = new StringBuffer();
+            //网友推荐更加简洁的写法
+            while ((line = br.readLine()) != null) {
+                // 一次读入一行数据
+                sb.append(line+ ",");
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "0";
+    }
     /**
      * 读入TXT文件
      */
     public static String readLog() {
-        String pathname = Environment.getExternalStorageDirectory().toString() + File.separator + "XingBang" + File.separator + "错误日志.txt";
+        String pathname = Environment.getExternalStorageDirectory().toString() + File.separator + "程序运行日志" + File.separator + Utils.getDate(new Date()) + ".txt";
         // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件
         //防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw;
         //不关闭文件会导致资源的泄露，读写文件都同理

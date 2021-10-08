@@ -15,6 +15,11 @@ public class SecondNetTestCmd {
 		String command = addr + DefCommand.CMD_2_NETTEST_1+"00";
 		return DefCommand.getCommadBytes(command);
 	}
+	public static byte[] send21(String addr,String qiaosi,String version){
+
+		String command = addr + DefCommand.CMD_2_NETTEST_1+"01"+version+qiaosi;
+		return DefCommand.getCommadBytes(command);
+	}
 	/***
 	 * 2.1处理返回,获取检测状态
 	 * @param addr
@@ -83,35 +88,31 @@ public class SecondNetTestCmd {
 		
 		if(from==null)return -1;
 		String command = addr + DefCommand.CMD_2_NETTEST_2+"04";
-		//String realyCmd1 =DefCommand.getCommadHex(command);
-		
-		if(from.indexOf(command)>=0)return 0;
+		if(from.contains(command))return 0;
 		else return -1;
 	}
 	
 	/***
 	 * 解码检测返回的22命令
 	 * @param addr
-	 * @param fromCommad
+	 * @param cmd
 	 * @return
 	 */
 	public static From22WriteDelay decodeFromReceiveDataWriteCommand22(String addr , byte[] cmd){
 		
 		String fromCommad =  Utils.bytesToHexFun(cmd);
-		//Utils.writeLog("fromCommad-1:"+fromCommad);
 		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-		//Utils.writeLog("fromCommad-2:"+fromCommad+",realyCmd1="+realyCmd1);
 		if("-1".equals(realyCmd1)||"-2".equals(realyCmd1)){
 			return null;
 		}
 		if(isCorrectFromXbCommon_WriteDelay22(addr,realyCmd1)==0){
-			//Utils.writeLog("99999-realyCmd1="+realyCmd1);
-			if(realyCmd1!=null&&realyCmd1.length()==14){
+			if(realyCmd1.length() == 14){
+
 				String dataHex =  realyCmd1.substring(6, 14);//取得返回数据
 				From22WriteDelay vo = new From22WriteDelay();
 				String writeStatus = dataHex.substring(0,2);//写入状态
 				vo.setCommicationStatus(writeStatus);
-				//Utils.writeLog("99999-writeStatus="+writeStatus);
+
 				String denatorStatus = dataHex.substring(2,4);//雷管状态
 				vo.setDenatorStatus(denatorStatus);
 				
@@ -120,13 +121,8 @@ public class SecondNetTestCmd {
 				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
 				int dyt = Utils.byte2ToUnsignedShort(dataBytes, 0);
 				vo.setDelayTime(dyt);
-				//Utils.writeLog("99999-delayTime="+delayTime);
 				return vo;
-			}else{
-				//Utils.writeLog("6666666:");
-			}			
-		}else{
-			//Utils.writeLog("888888:");
+			}
 		}
 		return null;
 	}

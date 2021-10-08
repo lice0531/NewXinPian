@@ -101,7 +101,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_project);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         loadMoreData();

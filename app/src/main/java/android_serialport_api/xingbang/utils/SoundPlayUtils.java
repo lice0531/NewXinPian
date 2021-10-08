@@ -3,12 +3,13 @@ package android_serialport_api.xingbang.utils;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.Log;
 
 import android_serialport_api.xingbang.R;
 
 public class SoundPlayUtils {
     // SoundPool对象
-    public static SoundPool mSoundPlayer = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
+    public static SoundPool mSoundPlayer = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
     public static SoundPlayUtils soundPlayUtils;
     // 上下文
     static Context mContext;
@@ -30,7 +31,6 @@ public class SoundPlayUtils {
         mSoundPlayer.load(mContext, R.raw.success, 2);// 2成功
         mSoundPlayer.load(mContext, R.raw.fail, 3);// 3失败
         mSoundPlayer.load(mContext, R.raw.blippy1, 4);// 3失败
-
         return soundPlayUtils;
     }
 

@@ -34,7 +34,8 @@ public class DefCommand {
 	public static String CMD_4_XBSTATUS_4="43";//获取软件版本
 	public static String CMD_4_XBSTATUS_5="44";//获取硬件版本
 	public static String CMD_4_XBSTATUS_6="45";//设置单片机版本
-	
+	public static String CMD_4_XBSTATUS_7="46";//设置模块芯片版本
+
 	public static String CMD_5_TEST_1="50";//进入检测模式
 	public static String CMD_5_TEST_2="51";//写入ID
 	public static String CMD_5_TEST_3="52";//写入ID查询（多通道）
@@ -150,7 +151,6 @@ public class DefCommand {
 			String ocrc = subStr.substring(subStr.length()-4);
 			String inInfo = subStr.substring(0, subStr.length()-4);
 			String dcrc = getLowByteBeforeCRCCode(inInfo);
-			if(dcrc==null)return "-1";
 			if(!dcrc.equals(ocrc))return "-2";
 			else{
 				return inInfo;
@@ -163,7 +163,6 @@ public class DefCommand {
 	 public static void main(String args[]) { 
 		String cmd = "";
 		 decodeCommand(cmd);
-	    System.out.println("Hello World!"); 
-	    
+
 	    } 
 }

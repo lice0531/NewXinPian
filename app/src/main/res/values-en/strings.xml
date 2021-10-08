@@ -337,5 +337,7 @@
     <string name="title_activity_zijian">Device initialization</string>
     <string name="app_title">XingBang Detonating system</string>
     <string name="text_fac_tip4">added</string>
+    <string name="text_communication_state7">Bridge wire abnormality</string>
+    <string name="et_hint_zuwang">Default 40s</string>
 
 </resources>

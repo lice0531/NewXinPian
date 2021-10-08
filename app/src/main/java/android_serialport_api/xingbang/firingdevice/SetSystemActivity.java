@@ -68,7 +68,7 @@ public class SetSystemActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_system);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
         mProp = PropertiesUtil.getInstance(this).init();
         mProp.open();
@@ -99,7 +99,7 @@ public class SetSystemActivity extends BaseActivity {
                 }else if(msg.arg1 == 2) {
                     show_Toast(getString(R.string.text_systip_2));
                 }else if(msg.arg1 == 3) {
-                    show_Toast("充电时间请大于28s");
+                    show_Toast("充电时间请大于8s");
                 }else if(msg.arg1 == 4){
                     show_Toast(getString(R.string.text_systip_1));
                 }
@@ -131,12 +131,6 @@ public class SetSystemActivity extends BaseActivity {
                 SetLanguageActivity.enter(SetSystemActivity.this);
                 break;
             case R.id.set_save://保存设置
-                ContentValues values = new ContentValues();
-                if (swSetsys.isChecked()) {
-                    values.put("qiaosi_set", "true");
-                } else {
-                    values.put("qiaosi_set", "false");
-                }
                 if (swYanzheng.isChecked()) {
                     mProp.writeString("Yanzheng", "验证");
                 } else {
@@ -148,14 +142,18 @@ public class SetSystemActivity extends BaseActivity {
                     mProp.writeString("Shangchuan", "否");
                 }
                 mProp.commit();
+
+                ContentValues values = new ContentValues();
+                if (swSetsys.isChecked()) {
+                    values.put("qiaosi_set", "true");
+                } else {
+                    values.put("qiaosi_set", "false");
+                }
+
                 int flag1 = 0,flag2=0,flag3=0;
                 if (!TextUtils.isEmpty(etSetPreparation.getText())) {//准备时间
-                    if (Integer.parseInt(etSetPreparation.getText().toString()) >= 18) {
                         Log.e("准备时间", "Preparation_time: " + etSetPreparation.getText().toString());
                         values.put("Preparation_time", etSetPreparation.getText().toString());
-                    } else {
-                        flag1=1;
-                    }
                 }
                 if (!TextUtils.isEmpty(etSetJiancetime.getText())) {//充电检测时间
                     if (Integer.parseInt(etSetJiancetime.getText().toString()) >= 5) {
@@ -166,7 +164,7 @@ public class SetSystemActivity extends BaseActivity {
                     }
                 }
                 if (!TextUtils.isEmpty(etSetChongdiantime.getText())) {//充电时间
-                    if (Integer.parseInt(etSetChongdiantime.getText().toString()) >= 28) {
+                    if (Integer.parseInt(etSetChongdiantime.getText().toString()) >= 8) {
                         Log.e("充电时间", "etSetChongdiantime: " + etSetChongdiantime.getText().toString());
                         values.put("chongdian_time", etSetChongdiantime.getText().toString());
                     } else {
@@ -200,19 +198,6 @@ public class SetSystemActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent myIntent = new Intent(SetSystemActivity.this, SetEnvMainActivity.class);
-            startActivity(myIntent);
-            this.finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @OnClick(R.id.et_set_chongdiantime)
-    public void onViewClicked() {
-    }
 
     @Override
     protected void onDestroy() {

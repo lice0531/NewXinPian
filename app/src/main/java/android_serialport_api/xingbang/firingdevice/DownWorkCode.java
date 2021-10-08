@@ -41,7 +41,6 @@ import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
@@ -49,12 +48,10 @@ import com.google.gson.Gson;
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
 import com.tencent.mmkv.MMKV;
-
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePal;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,7 +61,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -95,7 +91,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
 import static android_serialport_api.xingbang.Application.getContext;
 
 
@@ -187,7 +182,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private Handler mHandler_1 = new Handler();//提示电源信息
     private Handler mHandler2;
     private String selectDenatorId;
-
     private List<Map<String, Object>> map_dl = new ArrayList<>();
     private int pageSize = 500;//每页显示的数据
     private int currentPage = 1;//当前页数
@@ -233,7 +227,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_workcode);
         ButterKnife.bind(this);
-        DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 21);
+        DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         baidudingwei();
         getUserMessage();//获取用户信息
@@ -877,7 +871,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         }
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
-        Log.e("uid4", uid);
+        Log.e("uid", uid);
         try {
             object.put("sbbh", equ_no);//起爆器设备编号XBTS0003
             object.put("jd", xy[0]);//经度
