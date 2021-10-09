@@ -277,11 +277,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         showDenatorSum();//显示雷管总数
         Utils.writeRecord("---进入单发注册页面---");
-        if (version.equals("01")) {
-            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-        } else {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-        }
+//        if (version.equals("01")) {
+//            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+//        } else {
+//            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//        }
     }
 
     private void getUserMessage() {

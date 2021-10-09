@@ -1546,7 +1546,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e("第5阶段-increase", "5");
                                 Log.e("充电检测WaitCount", Wait_Count + "");
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            } else  {//if (secondCount <= Preparation_time * 0.2)
+                            } else if (secondCount <= Preparation_time * 0.2) {//
                                 //得到电流电压信息
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
                                 sendCmd(powerCmd);

@@ -523,7 +523,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         show_Toast(getString(R.string.text_error_tip34));
                     break;
                 }
-                if (busInfo != null ) {//8秒后再显示电压电流
+                if (busInfo != null && firstCount > Preparation_time * 0.8) {//8秒后再显示电压电流
                     String displayIcStr = "" + busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
                     //displayIc =
@@ -538,7 +538,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (busInfo.getBusVoltage() < 6 && firstCount >5) {
+                    if (busInfo.getBusVoltage() < 6 && firstCount > Preparation_time * 0.85) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
                         show_Toast("当前电压异常,请检查线路是否出现短路等情况");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -547,7 +547,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > (denatorCount * 75) && firstCount > 5) {
+                    if (displayIc > (denatorCount * 75) && firstCount > Preparation_time * 0.85) {//5
                         Log.e(TAG, "电流过大: ");
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         show_Toast("当前电流过大,请检查线路是否正确连接");
@@ -561,7 +561,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }
                     //电流大于4500
                     Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 4000 && firstCount >5) {
+                    if (displayIc > 4000 && firstCount >Preparation_time * 0.85) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         if (!chongfu) {
@@ -777,14 +777,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                 try {
                     switch (stage) {
                         case 1:
-                            if (firstCount == 0) {//经过测试初始化命令需要6秒
-                                //切换模块芯片版本
-                                if(version.equals("01")){
-                                    sendCmd(FourStatusCmd.send46("00","01"));//20(第一代)
-                                }else {
-                                    sendCmd(FourStatusCmd.send46("00","02"));//20(第二代)
-                                }
-                            }
+//                            if (firstCount == 0) {//经过测试初始化命令需要6秒
+//                                //切换模块芯片版本
+//                                if(version.equals("01")){
+//                                    sendCmd(FourStatusCmd.send46("00","01"));//20(第一代)
+//                                }else {
+//                                    sendCmd(FourStatusCmd.send46("00","02"));//20(第二代)
+//                                }
+//                            }
                             Thread.sleep(1000);
                             if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //进入测试模式
@@ -799,9 +799,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == Preparation_time) {
                                 revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
                             }
-                            if (firstCount < Preparation_time-1) {
-                                byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40
-                                sendCmd(powerCmd);
+                            if (firstCount > Preparation_time * 0.8) {//Preparation_time-1
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
                             if (revOpenCmdTestFlag == 1) {
