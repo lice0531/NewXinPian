@@ -217,6 +217,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ctlLinePanel(1);//初始化页面
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
+        Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
     }
 
     private void initView() {
@@ -1579,6 +1580,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
                                     //检测两次
                                     getblastQueue();
+                                    Thread.sleep(1000);//在第二次检测前等待1s
                                     increase(33);//之前是4
                                     totalerrorNum=0;//重置错误数量
 //                                  }
