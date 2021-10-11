@@ -538,6 +538,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
+                    if (displayIc < denatorCount*12*0.5) {//总线电流小于参考值一半,可能出现断路
+                        ll_firing_IC_4.setTextColor(Color.RED);
+                        show_Toast("当前电流过小,请检查线路是否出现断路");
+                        stage = 5;
+                        Utils.writeRecord("总线电流小于参考值一半,可能出现断路");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                        return;
+                    }
                     if (busInfo.getBusVoltage() < 6 && firstCount > Preparation_time * 0.85) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
                         show_Toast("当前电压异常,请检查线路是否出现短路等情况");
@@ -547,7 +555,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > (denatorCount * 75) && firstCount > Preparation_time * 0.85) {//5
+                    if (displayIc > (denatorCount * 75) && firstCount > Preparation_time * 0.9) {//5
                         Log.e(TAG, "电流过大: ");
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         show_Toast("当前电流过大,请检查线路是否正确连接");
