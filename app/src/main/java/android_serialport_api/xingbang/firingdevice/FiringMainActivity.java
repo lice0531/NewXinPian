@@ -133,7 +133,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int thirdWriteCount;//雷管发送计数器
     private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
-    private volatile int sixExchangeCount = 280;//第6阶段计时
+    private volatile int sixExchangeCount = 28;//第6阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
     private volatile int eightCmdFlag = 0;//第八阶段命令发出起爆
@@ -413,7 +413,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (sixExchangeCount == 100 && busInfo.getBusVoltage() < 15) {
+            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 15) {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -544,7 +544,7 @@ public class FiringMainActivity extends SerialPortActivity {
         fourthDisplay = 0;//第4步，是否显示
         thirdWriteCount = 0;//雷管发送计数器
         sevenDisplay = 0;//第7步，是否显示
-        sixExchangeCount = ChongDian_time * 10;//第6阶段计时(充电时间)
+        sixExchangeCount = ChongDian_time;//第6阶段计时(充电时间)
         sixCmdSerial = 1;//命令倒计时
         eightCount = 5;//第8阶段
         neightCount = 0;//
@@ -995,9 +995,14 @@ public class FiringMainActivity extends SerialPortActivity {
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
         denator.setErrorCode(fromData.getCommicationStatus());
         denator.setErrorName(fromData.getCommicationStatusName());
+        //判断雷管状态是否是错误和延时和写入的是否一致
+        if("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()){
+            denator.setErrorCode("01");
+            denator.setErrorName("延时写入不一致");
+        }
         Application.getDaoSession().update(denator);
 
-        //判断雷管状态是否是错误和延时和写入的是否一致
+        //判断雷管状态是否正价错误数量
         if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
@@ -1006,9 +1011,8 @@ public class FiringMainActivity extends SerialPortActivity {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
             Utils.writeRecord("--起爆检测错误:" + fromData.toString());
         }
+
         Utils.writeLog("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
-//        Log.e("写入延时时间", "返回延时" +fromData.getDelayTime());
-//        Log.e("写入延时时间", "写入延时" +writeDelay);
         //db.close();
     }
 
@@ -1339,9 +1343,9 @@ public class FiringMainActivity extends SerialPortActivity {
             case 6://
                 fourthDisplay = 0;
                 ctlLinePanel(6);
-                if (sixExchangeCount % 10 == 0 || sixExchangeCount == 0) {
-                    sixTxt.setText(getString(R.string.text_firing_tip4) + "(" + sixExchangeCount / 10 + ")");//"正在充电，请稍后 \n"
-                }
+//                if (sixExchangeCount % 10 == 0 || sixExchangeCount == 0) {
+                    sixTxt.setText(getString(R.string.text_firing_tip4) + "(" + sixExchangeCount + ")");//"正在充电，请稍后 \n"
+//                }
                 if (sixExchangeCount == -1) {
                     AlertDialog dialog = new Builder(this)
                             .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
@@ -1656,12 +1660,12 @@ public class FiringMainActivity extends SerialPortActivity {
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 6://充电阶段
-                            if (sixExchangeCount == ChongDian_time * 10) {
+                            if (sixExchangeCount == ChongDian_time) {
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
                             //跳转高压前要再检测一次列表的第一发雷管,如果正确就继续,错误就提示
-                            if (sixExchangeCount == (ChongDian_time - 8) * 10) {//第8秒时,发送高压充电指令,继电器应该响
+                            if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
                                 byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00");//33高压输出
                                 sendCmd(reCmd);
                             }
@@ -1682,15 +1686,14 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 break;
                             }
-                            Thread.sleep(100);
+                            Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
-                            if (sixExchangeCount % 5 == 0 && (sixExchangeCount > (ChongDian_time - 7) * 10 || sixExchangeCount < (ChongDian_time - 9) * 10)) {
+                            if (sixExchangeCount != (ChongDian_time - 9) && sixExchangeCount != (ChongDian_time - 8)&&sixExchangeCount<ChongDian_time-1) {
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
-
                             break;
                         case 7:
                             if (sevenDisplay == 0)
@@ -1851,18 +1854,15 @@ public class FiringMainActivity extends SerialPortActivity {
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-            Log.e("起爆页面", "m0UpTime: " + m0UpTime);
         } else if (keyCode == KeyEvent.KEYCODE_5) {
             m5DownTime = System.currentTimeMillis();
-            Log.e("起爆页面", "m5DownTime: " + m5DownTime);
             long spanTime = m5DownTime - m0UpTime;
-            Log.e("起爆页面", "spanTime: " + spanTime);
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;
                     Utils.writeRecord("--按1+5起爆--");
                 }
-                Log.e("起爆页面", "keyFlag: " + keyFlag);
+                Log.e("起爆页面", "按1+5起爆--keyFlag: " + keyFlag);
             }
         }
 
