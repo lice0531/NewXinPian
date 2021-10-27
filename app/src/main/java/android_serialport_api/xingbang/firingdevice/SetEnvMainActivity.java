@@ -24,18 +24,14 @@ import com.tencent.bugly.Bugly;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.MyDB;
-import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tencent.bugly.beta.Beta.checkUpgrade;
-import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import java.util.List;
 
 /**
  * 设置页面
@@ -99,7 +95,7 @@ public class SetEnvMainActivity extends BaseActivity {
     }
 
     private void getUserMessage() {
-        MessageBean bean = MyDB.getAllFromInfo_bean();
+        MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
 //            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());
         Preparation_time = Integer.parseInt(bean.getPreparation_time());//跟起爆测试一样
         pro_bprysfz = bean.getPro_bprysfz();

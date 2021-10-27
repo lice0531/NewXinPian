@@ -140,6 +140,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int qibaoNoFlag = 1;//第八阶段命令发出起爆
     private volatile int eightCmdExchangePower = 0;//切换电源命令
     private volatile int neightCount = 0;//
+    private int elevenCount = 10;//
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
     private String userId = "";
 
@@ -369,7 +370,7 @@ public class FiringMainActivity extends SerialPortActivity {
             return false;
         });
         busHandler = new Handler(msg -> {
-            if (busInfo != null && firstWaitCount < 2 ) {
+            if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
@@ -552,7 +553,7 @@ public class FiringMainActivity extends SerialPortActivity {
         thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
         isshow = 0;//弹窗标志
         reThirdWriteCount = 0;
-        totalerrorNum=0;
+        totalerrorNum = 0;
     }
 
     private void getUserMessage() {
@@ -568,9 +569,9 @@ public class FiringMainActivity extends SerialPortActivity {
             Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());
             ChongDian_time = Integer.parseInt(message.get(0).getChongdian_time());
             pro_dwdm = message.get(0).getPro_dwdm();
-            JianCe_time=Integer.parseInt(message.get(0).getJiance_time());
+            JianCe_time = Integer.parseInt(message.get(0).getJiance_time());
             version = message.get(0).getVersion();
-            Log.e(TAG, "version: "+version );
+            Log.e(TAG, "version: " + version);
         }
 
 
@@ -856,7 +857,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (totalNum < 1) return;
         //如果总数大于30,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
-        Log.e(TAG, "saveFireResult-雷管总数hisTotalNum: " + hisTotalNum);
+        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
         if (hisTotalNum > 30) {
             String time = loadHisMainData();
             Message message = new Message();
@@ -996,7 +997,7 @@ public class FiringMainActivity extends SerialPortActivity {
         denator.setErrorCode(fromData.getCommicationStatus());
         denator.setErrorName(fromData.getCommicationStatusName());
         //判断雷管状态是否是错误和延时和写入的是否一致
-        if("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()){
+        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
             denator.setErrorCode("01");
             denator.setErrorName("延时写入不一致");
         }
@@ -1006,7 +1007,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
-            Log.e("更新雷管状态", "雷管错误状态" +fromData.getCommicationStatus()+"--writeDelay:"+writeDelay+"--fromData.getDelayTime()"+fromData.getDelayTime());
+            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
         } else if ("02".equals(fromData.getCommicationStatus())) {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
             Utils.writeRecord("--起爆检测错误:" + fromData.toString());
@@ -1133,7 +1134,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 writeDenator = null;
                 reThirdWriteCount++;
             }
-            Log.e(TAG, "错误雷管数量totalerrorNum: "+totalerrorNum );
+            Log.e(TAG, "错误雷管数量totalerrorNum: " + totalerrorNum);
             assert fromData != null;
 //            Log.e(TAG, "雷管状态fromData.getCommicationStatus(): "+fromData.toString());
             if (FiringMainActivity.stage == 6 && !fromData.getCommicationStatus().equals("FF")) {
@@ -1167,15 +1168,15 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (!qbxm_id.equals("-1")) {
                     updataState(qbxm_id);
                 }
-                increase(9);//跳到第9阶段
+                increase(11);//跳到第9阶段
                 Log.e("increase", "9");
-                try {
-                    Thread.sleep(50);
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
-                    sendCmd(reCmd);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(50);
+//                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+//                    sendCmd(reCmd);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
 
         } else if (DefCommand.CMD_3_DETONATE_6.equals(cmd)) {//35 退出起爆模式
@@ -1199,12 +1200,12 @@ public class FiringMainActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
-            if (FiringMainActivity.stage == 1){
+            if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
-                if(version.equals("01")){
-                    sendCmd(FourStatusCmd.send46("00","01"));//20(第一代)
-                }else {
-                    sendCmd(FourStatusCmd.send46("00","02"));//20(第二代)
+                if (version.equals("01")) {
+                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+                } else {
+                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
                 }
             }
             if (FiringMainActivity.stage == 8) {
@@ -1293,9 +1294,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 ctlLinePanel(4);//修改页面显示项
                 getErrorBlastCount();
                 fourthDisplay = 1;
-                Log.e("错误数量", "totalerrorNum: "+totalerrorNum );
+                Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
-                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa());
+                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
                 if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
                     if (chongfu) {
@@ -1312,7 +1313,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() <( denatorCount * 12 + 100)) {//小于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 12 + 100)) {//小于参考值 ，部分错
                     if (chongfu) {
                         initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
                     } else {
@@ -1344,7 +1345,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fourthDisplay = 0;
                 ctlLinePanel(6);
 //                if (sixExchangeCount % 10 == 0 || sixExchangeCount == 0) {
-                    sixTxt.setText(getString(R.string.text_firing_tip4) + "(" + sixExchangeCount + ")");//"正在充电，请稍后 \n"
+                sixTxt.setText(getString(R.string.text_firing_tip4) + "(" + sixExchangeCount + ")");//"正在充电，请稍后 \n"
 //                }
                 if (sixExchangeCount == -1) {
                     AlertDialog dialog = new Builder(this)
@@ -1413,7 +1414,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 break;
             case 10://跳转到查看错误雷管和继续阶段
-                Log.e(TAG, "execStage: 10" );
+                Log.e(TAG, "execStage: 10");
                 if (totalerrorNum == 0) {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4500u ，全错
@@ -1435,7 +1436,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount&& totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
@@ -1457,7 +1458,8 @@ public class FiringMainActivity extends SerialPortActivity {
                     stopXunHuan();//检测完成
                 }
                 break;
-            case 11:
+            case 11://给范总加的起爆后的放电阶段
+                eightTxt.setText("正在放电,请稍等" + elevenCount + "s");
                 break;
             case 33:
                 if (thirdWriteCount == 1) {
@@ -1582,11 +1584,12 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                        Log.e("第4阶段-increase", "4-2");
 //                                    }else {
                                     Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
+                                    Utils.writeRecord("--第一轮检测结束-------------");
                                     //检测两次
                                     getblastQueue();
                                     Thread.sleep(1000);//在第二次检测前等待1s
                                     increase(33);//之前是4
-                                    totalerrorNum=0;//重置错误数量
+                                    totalerrorNum = 0;//重置错误数量
 //                                  }
 
                                     fourOnlineDenatorFlag = 0;
@@ -1689,7 +1692,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
-                            if (sixExchangeCount != (ChongDian_time - 9) && sixExchangeCount != (ChongDian_time - 8)&&sixExchangeCount<ChongDian_time-1) {
+                            if (sixExchangeCount != (ChongDian_time - 9) && sixExchangeCount != (ChongDian_time - 8) && sixExchangeCount < ChongDian_time - 1) {
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
@@ -1745,12 +1748,22 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 9:
                             if (neightCount == 0) {
+                                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+                                sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
                             neightCount++;
                             break;
                         case 10://暂停阶段
 
+                            break;
+                        case 11://暂停阶段
+                            Thread.sleep(1000);
+                            elevenCount--;
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            if (elevenCount == 0) {
+                                increase(9);
+                            }
                             break;
 
                         case 33://写入延时时间，检测结果看雷管是否正常
@@ -1759,6 +1772,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {
+                                    Utils.writeRecord("--第二轮检测结束-------------");
                                     //检测一次
                                     increase(4);//之前是4
                                     Log.e("第4阶段-检测阶段-increase", "4-2");
@@ -2035,6 +2049,9 @@ public class FiringMainActivity extends SerialPortActivity {
                     dialog12.cancel();
                     closeThread();
                     closeForm();
+                })
+                .setPositiveButton("继续", (dialog12, which) -> {
+                    dialog12.cancel();
                 })
                 .create();
         dialog.show();

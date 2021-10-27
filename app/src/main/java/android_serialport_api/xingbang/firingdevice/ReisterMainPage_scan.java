@@ -1,8 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -15,7 +13,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,20 +45,17 @@ import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.MyDB;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
-import android_serialport_api.xingbang.cmd.vo.From12Reister;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
-import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.SharedPreferencesHelper;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
@@ -264,7 +258,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private void updateMessage(String version) {
-        MessageBean bean = MyDB.getAllFromInfo_bean();
+        MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
         bean.setVersion(version);
         getDaoSession().getMessageBeanDao().update(bean);
         Utils.saveFile_Message();

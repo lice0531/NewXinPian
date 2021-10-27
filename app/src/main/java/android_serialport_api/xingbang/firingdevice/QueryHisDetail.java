@@ -47,10 +47,13 @@ import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.Utils;
@@ -255,31 +258,23 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        mProp = PropertiesUtil.getInstance(this);
-        mProp.open();
-        Shangchuan = mProp.readString("Shangchuan", "是");
+        Shangchuan = (String) MmkvUtils.decode("Shangchuan","是");
     }
 
     private void getUserMessage() {
-        String selection = "id = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
-            //int _id = cursor.getInt(0);
-            pro_bprysfz = cursor.getString(1);
-            pro_htid = cursor.getString(2);
-            pro_xmbh = cursor.getString(3);
-            equ_no = cursor.getString(4);
-            pro_coordxy = cursor.getString(5);
-            server_addr = cursor.getString(6);
-            server_port = cursor.getString(7);
-            server_http = cursor.getString(8);
-            server_ip = cursor.getString(9);
-            server_type1 = cursor.getString(13);
-            server_type2 = cursor.getString(14);
-            pro_dwdm = cursor.getString(15);
-            cursor.close();
-        }
+        MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
+        pro_bprysfz = bean.getPro_bprysfz();
+        pro_htid = bean.getPro_htid();
+        pro_xmbh = bean.getPro_xmbh();
+        equ_no = bean.getEqu_no();
+        pro_coordxy = bean.getPro_coordxy();
+        server_addr = bean.getServer_addr();
+        server_port = bean.getServer_port();
+        server_http = bean.getServer_http();
+        server_ip = bean.getServer_ip();
+        server_type1 = bean.getServer_type1();
+        server_type2 = bean.getServer_type2();
+        pro_dwdm = bean.getPro_dwdm();
     }
 
     private void runPbDialog() {//Loading界面

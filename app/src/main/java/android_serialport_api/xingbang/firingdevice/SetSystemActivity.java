@@ -3,14 +3,12 @@ package android_serialport_api.xingbang.firingdevice;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,12 +17,12 @@ import com.suke.widget.SwitchButton;
 
 import java.util.List;
 
-import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.utils.PropertiesUtil;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +59,6 @@ public class SetSystemActivity extends BaseActivity {
     private String Shangchuan = "";//是否上传错误雷管
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
-    private PropertiesUtil mProp;
     private Handler Handler_tip = null;//提示信息
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +67,8 @@ public class SetSystemActivity extends BaseActivity {
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
-        mProp = PropertiesUtil.getInstance(this).init();
-        mProp.open();
-        Yanzheng = mProp.readString("Yanzheng", "验证");
-        Shangchuan = mProp.readString("Shangchuan", "是");
-        Log.e("验证", "Yanzheng: " + Yanzheng);
-        Log.e("上传", "Shangchuan: " + Shangchuan);
+        Yanzheng = (String) MmkvUtils.decode("Yanzheng","验证");
+        Shangchuan = (String) MmkvUtils.decode("Shangchuan","是");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         if (qiaosi_set.equals("true")) {
@@ -131,47 +124,49 @@ public class SetSystemActivity extends BaseActivity {
                 SetLanguageActivity.enter(SetSystemActivity.this);
                 break;
             case R.id.set_save://保存设置
+                ContentValues values = new ContentValues();
+                MessageBean message = GreenDaoMaster.getAllFromInfo_bean();
                 if (swYanzheng.isChecked()) {
-                    mProp.writeString("Yanzheng", "验证");
+                    MmkvUtils.encode("Yanzheng","验证");
                 } else {
-                    mProp.writeString("Yanzheng", "不验证");
+                    MmkvUtils.encode("Yanzheng","不验证");
                 }
                 if (swShangchuan.isChecked()) {
-                    mProp.writeString("Shangchuan", "是");
+                    MmkvUtils.encode("Shangchuan","是");
                 } else {
-                    mProp.writeString("Shangchuan", "否");
+                    MmkvUtils.encode("Shangchuan","否");
                 }
-                mProp.commit();
 
-                ContentValues values = new ContentValues();
                 if (swSetsys.isChecked()) {
                     values.put("qiaosi_set", "true");
                 } else {
                     values.put("qiaosi_set", "false");
                 }
 
-                int flag1 = 0,flag2=0,flag3=0;
+                int flag1 = 0, flag2 = 0, flag3 = 0;
                 if (!TextUtils.isEmpty(etSetPreparation.getText())) {//准备时间
-                        Log.e("准备时间", "Preparation_time: " + etSetPreparation.getText().toString());
-                        values.put("Preparation_time", etSetPreparation.getText().toString());
+                    message.setPreparation_time(etSetPreparation.getText().toString());
+                    Log.e("准备时间", "Preparation_time: " + etSetPreparation.getText().toString());
+                } else {
+                    flag1 = 1;
                 }
-                if (!TextUtils.isEmpty(etSetJiancetime.getText())) {//充电检测时间
-                    if (Integer.parseInt(etSetJiancetime.getText().toString()) >= 5) {
-                        Log.e("检测时间", "etSetJiancetime: " + etSetJiancetime.getText().toString());
-                        values.put("jiance_time", etSetJiancetime.getText().toString());
-                    } else {
-                        flag2=1;
-                    }
+                if (!TextUtils.isEmpty(etSetJiancetime.getText())) {//组网检测时间
+                    Log.e("组网检测时间", "etSetJiancetime: " + etSetJiancetime.getText().toString());
+                    message.setJiance_time(etSetJiancetime.getText().toString());
+                } else {
+                    flag2 = 1;
                 }
-                if (!TextUtils.isEmpty(etSetChongdiantime.getText())) {//充电时间
+                if (!TextUtils.isEmpty(etSetChongdiantime.getText())) {//低压充电时间
                     if (Integer.parseInt(etSetChongdiantime.getText().toString()) >= 8) {
                         Log.e("充电时间", "etSetChongdiantime: " + etSetChongdiantime.getText().toString());
-                        values.put("chongdian_time", etSetChongdiantime.getText().toString());
+                        message.setChongdian_time(etSetChongdiantime.getText().toString());
                     } else {
-                        flag3=1;
+                        flag3 = 1;
                     }
                 }
-                db.update(DatabaseHelper.TABLE_NAME_USER_MESSQGE, values, "id=?", new String[]{"1"});
+                message.setId((long) 1);
+                getDaoSession().getMessageBeanDao().update(message);
+
                 Utils.saveFile_Message();
                 if(flag1==1){
                     Message msg = Handler_tip.obtainMessage();

@@ -47,6 +47,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -233,29 +234,23 @@ public class XingbangMain extends BaseActivity {
     }
 
     private void getPropertiesData() {
-        PropertiesUtil mProp = PropertiesUtil.getInstance(this).init();
-        mProp.open();
-
-        MMKV kv = MMKV.defaultMMKV();
-        kv.encode("bool", true);
-
-        pro_bprysfz = mProp.readString("pro_bprysfz", "");
-        pro_htid = mProp.readString("pro_htid", "");
-        pro_xmbh = mProp.readString("pro_xmbh", "");
-        equ_no = mProp.readString("equ_no", "");
-        pro_coordxy = mProp.readString("pro_coordxy", "");
-        server_addr = mProp.readString("server_addr", "");
-        server_port = mProp.readString("server_port", "6088");
-        server_http = mProp.readString("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
-        server_ip = mProp.readString("server_ip", "119.29.111.172");
-        qiaosi_set = mProp.readString("qiaosi_set", "false");
-        Preparation_time = mProp.readInt("preparation_time", 20);
-        ChongDian_time = mProp.readInt("chongdian_time", 28);
-        server_type1 = mProp.readString("server_type1", "1");
-        server_type2 = mProp.readString("server_type2", "0");
-        pro_dwdm = mProp.readString("pro_dwdm", "");
-        jiance_time = mProp.readInt("jiance_time", 5);
-        Yanzheng = mProp.readString("Yanzheng", "验证");
+        pro_bprysfz = (String) MmkvUtils.decode("pro_bprysfz", "");
+        pro_htid = (String) MmkvUtils.decode("pro_htid", "");
+        pro_xmbh = (String) MmkvUtils.decode("pro_xmbh", "");
+        equ_no = (String) MmkvUtils.decode("equ_no", "");
+        pro_coordxy = (String) MmkvUtils.decode("pro_coordxy", "");
+        server_addr = (String) MmkvUtils.decode("server_addr", "");
+        server_port = (String) MmkvUtils.decode("server_port", "6088");
+        server_http = (String) MmkvUtils.decode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
+        server_ip = (String) MmkvUtils.decode("server_ip", "119.29.111.172");
+        qiaosi_set = (String) MmkvUtils.decode("qiaosi_set", "false");
+        Preparation_time = (int) MmkvUtils.decode("preparation_time", 20);
+        ChongDian_time = (int) MmkvUtils.decode("chongdian_time", 28);
+        server_type1 = (String) MmkvUtils.decode("server_type1", "1");
+        server_type2 = (String) MmkvUtils.decode("server_type2", "0");
+        pro_dwdm = (String) MmkvUtils.decode("pro_dwdm", "");
+        jiance_time = (int) MmkvUtils.decode("jiance_time", 5);
+        Yanzheng = (String) MmkvUtils.decode("Yanzheng","验证");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
 
@@ -463,9 +458,8 @@ public class XingbangMain extends BaseActivity {
 
     @Override
     protected void onRestart() {
-        Log.e(TAG, "onRestart: ");
         try {
-            Thread.sleep(500);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -481,8 +475,7 @@ public class XingbangMain extends BaseActivity {
 
     @Override
     protected void onResume() {
-        Log.e(TAG, "onResume: ");
-//        getPropertiesData();
+//        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
         super.onResume();
 
     }

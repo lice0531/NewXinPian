@@ -1,11 +1,9 @@
 package android_serialport_api.xingbang.utils;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -37,7 +35,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -54,15 +51,11 @@ import javax.crypto.spec.DESedeKeySpec;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.ErrLog;
-import android_serialport_api.xingbang.db.MyDB;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.SysLog;
-import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.outface.FinishDenatorToUpMain;
-import android_serialport_api.xingbang.services.outface.PekingDanlingOutInterFace;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -79,7 +72,6 @@ public class Utils {
     public static String httpurl_zbw_port = "1088";
     public static String httpurl_face = "http://125.77.73.145:8180/entweb/WSPROXY.do";
     private static SQLiteDatabase db;
-    private static PropertiesUtil mProp;
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -1777,7 +1769,7 @@ public class Utils {
      */
     public static void saveFile() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String content = MyDB.getAllFromInfo();
+            String content = GreenDaoMaster.getAllFromInfo();
             if (!content.equals("")) {
                 //列表中有数据
                 File file = new File(Environment.getExternalStorageDirectory() + "/xb/");
@@ -1799,57 +1791,27 @@ public class Utils {
     /**
      * 保存用户文件
      */
-    public static void saveFile_Message_2() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String content = MyDB.getAllFromInfo_Message();
-            if (!content.equals("")) {
-                //列表中有数据
-                File file = new File(Environment.getExternalStorageDirectory() + "/xb/");
-                if (!file.exists()) {
-                    file.mkdir();
-                }
-                String path = Environment.getExternalStorageDirectory() + "/xb/" + "list_message.csv";
-//                FileUtil fileUtil = new FileUtil(this);
-                try {
-                    FileOutputStream fos = new FileOutputStream(new File(path));
-                    fos.write(content.getBytes());
-                    fos.close();
-//                    Utils.showTs("保存成功");
-//                    fileUtil.save(Environment.getExternalStorageDirectory() + "/xb/" + System.currentTimeMillis() + ".txt", "haha");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * 保存用户文件
-     */
     public static void saveFile_Message() {
-        MessageBean bean = MyDB.getAllFromInfo_bean();
-        mProp = PropertiesUtil.getInstance(Application.getContext()).init();
-        mProp.open();
-        mProp.writeInt("id", bean.getId().intValue());
-        mProp.writeString("pro_bprysfz", bean.getPro_bprysfz());
-        mProp.writeString("pro_htid", bean.getPro_htid());
-        mProp.writeString("pro_xmbh", bean.getPro_xmbh());
-        mProp.writeString("equ_no", bean.getEqu_no());
+        MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
+        MmkvUtils.encode("id", bean.getId().intValue());
+        MmkvUtils.encode("pro_bprysfz", bean.getPro_bprysfz());
+        MmkvUtils.encode("pro_htid", bean.getPro_htid());
+        MmkvUtils.encode("pro_xmbh", bean.getPro_xmbh());
+        MmkvUtils.encode("equ_no", bean.getEqu_no());
         if (bean.getPro_coordxy() != null) {
-            mProp.writeString("pro_coordxy", bean.getPro_coordxy());
+            MmkvUtils.encode("pro_coordxy", bean.getPro_coordxy());
         }
-        mProp.writeString("server_addr", bean.getServer_addr());
-        mProp.writeString("server_port", bean.getServer_port());
-        mProp.writeString("server_http", bean.getServer_http());
-        mProp.writeString("server_ip", bean.getServer_ip());
-        mProp.writeString("qiaosi_set", bean.getQiaosi_set());
-        mProp.writeInt("preparation_time", Integer.parseInt(bean.getPreparation_time()));
-        mProp.writeInt("chongdian_time", Integer.parseInt(bean.getChongdian_time()));
-        mProp.writeString("server_type1", bean.getServer_type1());
-        mProp.writeString("server_type2", bean.getServer_type2());
-        mProp.writeString("pro_dwdm", bean.getPro_dwdm());
-        mProp.writeInt("jiance_time", Integer.parseInt(bean.getJiance_time()));
-        mProp.commit();
+        MmkvUtils.encode("server_addr", bean.getServer_addr());
+        MmkvUtils.encode("server_port", bean.getServer_port());
+        MmkvUtils.encode("server_http", bean.getServer_http());
+        MmkvUtils.encode("server_ip", bean.getServer_ip());
+        MmkvUtils.encode("qiaosi_set", bean.getQiaosi_set());
+        MmkvUtils.encode("preparation_time", Integer.parseInt(bean.getPreparation_time()));
+        MmkvUtils.encode("chongdian_time", Integer.parseInt(bean.getChongdian_time()));
+        MmkvUtils.encode("server_type1", bean.getServer_type1());
+        MmkvUtils.encode("server_type2", bean.getServer_type2());
+        MmkvUtils.encode("pro_dwdm", bean.getPro_dwdm());
+        MmkvUtils.encode("jiance_time", Integer.parseInt(bean.getJiance_time()));
     }
 
     /**

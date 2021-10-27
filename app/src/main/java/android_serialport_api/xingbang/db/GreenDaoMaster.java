@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.db;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.content.Context;
 import android.os.Message;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -161,5 +163,23 @@ public class GreenDaoMaster {
                 .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(ShellBlastNo))
                 .unique();
     }
+    /**
+     * 从数据库表中拿数据
+     *
+     * @return
+     */
+    public static MessageBean getAllFromInfo_bean() {
+        return getDaoSession().getMessageBeanDao().loadAll().get(0);
+    }
 
+    public static String getAllFromInfo() {
+        List<DenatorBaseinfo> list=getDaoSession().getDenatorBaseinfoDao().loadAll();
+        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称\n";
+        String content ;
+        for(int i=0;i<list.size();i++){
+            content = list.get(i).getId() + "," + list.get(i).getBlastserial() + "," + list.get(i).getSithole() + "," + list.get(i).getShellBlastNo() + "," +list.get(i).getDenatorId() + "," + list.get(i).getDelay() + "," + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName()+ "," + list.get(i).getErrorCode() + "," +list.get(i).getAuthorization()+ "," + list.get(i).getRemark() + "," + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + "\n";
+            str = str + content;
+        }
+        return str;
+    }
 }

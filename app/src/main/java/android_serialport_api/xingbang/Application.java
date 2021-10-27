@@ -8,8 +8,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -26,6 +25,7 @@ import android_serialport_api.xingbang.db.MyOpenHelper;
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DaoSession;
 import android_serialport_api.xingbang.services.LocationService;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 
 public class Application extends MultiDexApplication {
 
@@ -69,7 +69,10 @@ public class Application extends MultiDexApplication {
         oList = new ArrayList<>();
 
         Bugly.init(this, "e43df75202", false);//四川id
-        MMKV.initialize(this);//替代SharedPreferences
+
+        String dir = Environment.getExternalStorageDirectory() +  File.separator +"Xingbang"+ "/mmkv";
+        MMKV.initialize(dir);//替代SharedPreferences
+        MmkvUtils.getInstance();
         //定位初始化
         locationService = new LocationService(getApplicationContext());
         //数据库实例化

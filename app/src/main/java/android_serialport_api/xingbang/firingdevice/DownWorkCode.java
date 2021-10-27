@@ -77,6 +77,7 @@ import android_serialport_api.xingbang.services.LocationService;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
@@ -419,14 +420,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        mProp = PropertiesUtil.getInstance(this);
-        mProp.open();
-        pro_bprysfz = mProp.readString("pro_bprysfz", "");//证件号码
-        pro_htid = mProp.readString("pro_htid", "");//合同号码
-        pro_xmbh = mProp.readString("pro_xmbh", "");//项目编号
-        pro_coordxy = mProp.readString("pro_coordxy", "");//经纬度
-        pro_dwdm = mProp.readString("pro_dwdm", "");//单位代码
-        equ_no = mProp.readString("equ_no", "");//设备编号
+        pro_bprysfz = (String) MmkvUtils.decode("pro_bprysfz", "");//证件号码
+        pro_htid = (String) MmkvUtils.decode("pro_htid", "");//合同号码
+        pro_xmbh = (String) MmkvUtils.decode("pro_xmbh", "");//项目编号
+        pro_coordxy = (String) MmkvUtils.decode("pro_coordxy", "");//经纬度
+        pro_dwdm = (String) MmkvUtils.decode("pro_dwdm", "");//单位代码
+        equ_no = (String) MmkvUtils.decode("equ_no", "");//设备编号
 
         at_bprysfz.setText(pro_bprysfz);
         at_htid.setText(pro_htid);
