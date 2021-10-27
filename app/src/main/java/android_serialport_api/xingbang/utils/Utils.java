@@ -158,26 +158,14 @@ public class Utils {
     /***
      * 反转雷管ID
      * @param id
-     * @return
+     * @return 反序id
      */
     public static String getReverseDetonatorNo(String id) {
-
-        String deid = id.substring(6) + id.substring(4, 6) + id.substring(2, 4) + id.substring(0, 2);
-        return deid;
-    }
-
-    /***
-     * 反转雷管ID
-     * @param id
-     * @return
-     */
-    public static String getReverseDetonatorNo_newXinPian(String id) {
-        return id.substring(6)+id.substring(4,6) + id.substring(2, 4) + id.substring(0, 2);
+        return id.substring(6) + id.substring(4, 6) + id.substring(2, 4) + id.substring(0, 2);
     }
 
     /**
      * 得到管壳码的字节
-     *
      * @param shellStr
      * @return
      */
@@ -505,9 +493,7 @@ public class Utils {
         int index = 0;
         int bitData = 0;
         for (int i = len - 1; i >= 0; i--) {
-
             int j = Integer.parseInt(str.substring(index, index + 2), 16);
-
             bitData = Integer.parseInt(String.valueOf((char) j));
             data = data + (int) Math.pow(10, i) * bitData;
             index += 2;

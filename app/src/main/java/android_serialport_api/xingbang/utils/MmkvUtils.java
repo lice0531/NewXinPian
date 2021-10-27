@@ -109,8 +109,8 @@ public class MmkvUtils {
         return mkv.decodeBytes(key);
     }
 
-    public static String decodeString(String key) {
-        return mkv.decodeString(key, "");
+    public static String decodeString(String key,String defaultValue) {
+        return mkv.decodeString(key, defaultValue);
     }
 
     public static Set<String> decodeStringSet(String key) {

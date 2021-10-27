@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.cmd;
 
+import android.util.Log;
+
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
 import android_serialport_api.xingbang.utils.Utils;
@@ -46,10 +48,14 @@ public class ThreeFiringCmd {
 	 * @return
 	 */
 	public static byte[] setToXbCommon_CheckDenator23_2(String addr,String data){
-		/***
-		 * 
-		 */
-		String command = addr + DefCommand.CMD_3_DETONATE_2+"06"+data;
+		//C0 00 31 06 14E0FF000000 D2D4 C0
+		String command;
+		Log.e("长度", "data: "+data.length() );
+		if(data.length()==12){
+			command = addr + DefCommand.CMD_3_DETONATE_2+"06"+data;
+		}else {
+			command = addr + DefCommand.CMD_3_DETONATE_2+"0C"+data;
+		}
 		return DefCommand.getCommadBytes(command);
 	}
 	/***

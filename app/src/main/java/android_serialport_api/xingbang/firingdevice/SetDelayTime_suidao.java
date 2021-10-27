@@ -39,6 +39,7 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.services.MyLoad;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SharedPreferencesHelper;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -1161,132 +1162,132 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
         if(etDuanTotal20.length()<1){
             etDuanTotal20.setText("0");
         }
-        sharedPreferencesHelper.put("setDelayTimeStartDelaytime1", setDelayTimeStartDelaytime1.getText().toString());//开始时间
+        MmkvUtils.encode("setDelayTimeStartDelaytime1", setDelayTimeStartDelaytime1.getText().toString());//开始时间
 
-        sharedPreferencesHelper.put("etDuanDelaytime1", etDuanDelaytime1.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal1", etDuanTotal1.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime1", etDuanDelaytime1.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal1", etDuanTotal1.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime2", etDuanDelaytime2.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal2", etDuanTotal2.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime2", etDuanDelaytime2.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal2", etDuanTotal2.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime3", etDuanDelaytime3.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal3", etDuanTotal3.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime3", etDuanDelaytime3.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal3", etDuanTotal3.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime4", etDuanDelaytime4.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal4", etDuanTotal4.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime4", etDuanDelaytime4.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal4", etDuanTotal4.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime5", etDuanDelaytime5.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal5", etDuanTotal5.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime5", etDuanDelaytime5.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal5", etDuanTotal5.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime6", etDuanDelaytime6.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal6", etDuanTotal6.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime6", etDuanDelaytime6.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal6", etDuanTotal6.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime7", etDuanDelaytime7.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal7", etDuanTotal7.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime7", etDuanDelaytime7.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal7", etDuanTotal7.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime8", etDuanDelaytime8.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal8", etDuanTotal8.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime8", etDuanDelaytime8.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal8", etDuanTotal8.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime9", etDuanDelaytime9.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal9", etDuanTotal9.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime9", etDuanDelaytime9.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal9", etDuanTotal9.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime10", etDuanDelaytime10.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal10", etDuanTotal10.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime10", etDuanDelaytime10.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal10", etDuanTotal10.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime11", etDuanDelaytime11.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal11", etDuanTotal11.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime11", etDuanDelaytime11.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal11", etDuanTotal11.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime12", etDuanDelaytime12.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal12", etDuanTotal12.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime12", etDuanDelaytime12.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal12", etDuanTotal12.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime13", etDuanDelaytime13.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal13", etDuanTotal13.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime13", etDuanDelaytime13.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal13", etDuanTotal13.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime14", etDuanDelaytime14.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal14", etDuanTotal14.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime14", etDuanDelaytime14.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal14", etDuanTotal14.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime15", etDuanDelaytime15.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal15", etDuanTotal15.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime15", etDuanDelaytime15.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal15", etDuanTotal15.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime16", etDuanDelaytime16.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal16", etDuanTotal16.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime16", etDuanDelaytime16.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal16", etDuanTotal16.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime17", etDuanDelaytime17.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal17", etDuanTotal17.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime17", etDuanDelaytime17.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal17", etDuanTotal17.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime18", etDuanDelaytime18.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal18", etDuanTotal18.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime18", etDuanDelaytime18.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal18", etDuanTotal18.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime19", etDuanDelaytime19.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal19", etDuanTotal19.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime19", etDuanDelaytime19.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal19", etDuanTotal19.getText().toString());//段中雷管数
 
-        sharedPreferencesHelper.put("etDuanDelaytime20", etDuanDelaytime20.getText().toString());//间隔时间
-        sharedPreferencesHelper.put("etDuanTotal20", etDuanTotal20.getText().toString());//段中雷管数
+        MmkvUtils.encode("etDuanDelaytime20", etDuanDelaytime20.getText().toString());//间隔时间
+        MmkvUtils.encode("etDuanTotal20", etDuanTotal20.getText().toString());//段中雷管数
 
     }
 
     private void setData() {
-        setDelayTimeStartDelaytime1.setText(sharedPreferencesHelper.getString("setDelayTimeStartDelaytime1", "10"));//开始时间
+        setDelayTimeStartDelaytime1.setText(MmkvUtils.decodeString("setDelayTimeStartDelaytime1", "10"));//开始时间
 
-        etDuanDelaytime1.setText(sharedPreferencesHelper.getString("etDuanDelaytime1", "0"));//间隔时间
-        etDuanTotal1.setText(sharedPreferencesHelper.getString("etDuanTotal1", "0"));//段中雷管数
+        etDuanDelaytime1.setText(MmkvUtils.decodeString("etDuanDelaytime1", "0"));//间隔时间
+        etDuanTotal1.setText(MmkvUtils.decodeString("etDuanTotal1", "0"));//段中雷管数
 
-        etDuanDelaytime2.setText(sharedPreferencesHelper.getString("etDuanDelaytime2", "0"));//间隔时间
-        etDuanTotal2.setText(sharedPreferencesHelper.getString("etDuanTotal2", "0"));//段中雷管数
+        etDuanDelaytime2.setText(MmkvUtils.decodeString("etDuanDelaytime2", "0"));//间隔时间
+        etDuanTotal2.setText(MmkvUtils.decodeString("etDuanTotal2", "0"));//段中雷管数
 
-        etDuanDelaytime3.setText(sharedPreferencesHelper.getString("etDuanDelaytime3", "0"));//间隔时间
-        etDuanTotal3.setText(sharedPreferencesHelper.getString("etDuanTotal3", "0"));//段中雷管数
+        etDuanDelaytime3.setText(MmkvUtils.decodeString("etDuanDelaytime3", "0"));//间隔时间
+        etDuanTotal3.setText(MmkvUtils.decodeString("etDuanTotal3", "0"));//段中雷管数
 
-        etDuanDelaytime4.setText(sharedPreferencesHelper.getString("etDuanDelaytime4", "0"));//间隔时间
-        etDuanTotal4.setText(sharedPreferencesHelper.getString("etDuanTotal4", "0"));//段中雷管数
+        etDuanDelaytime4.setText(MmkvUtils.decodeString("etDuanDelaytime4", "0"));//间隔时间
+        etDuanTotal4.setText(MmkvUtils.decodeString("etDuanTotal4", "0"));//段中雷管数
 
-        etDuanDelaytime5.setText(sharedPreferencesHelper.getString("etDuanDelaytime5", "0"));//间隔时间
-        etDuanTotal5.setText(sharedPreferencesHelper.getString("etDuanTotal5", "0"));//段中雷管数
+        etDuanDelaytime5.setText(MmkvUtils.decodeString("etDuanDelaytime5", "0"));//间隔时间
+        etDuanTotal5.setText(MmkvUtils.decodeString("etDuanTotal5", "0"));//段中雷管数
 
-        etDuanDelaytime6.setText(sharedPreferencesHelper.getString("etDuanDelaytime6", "0"));//间隔时间
-        etDuanTotal6.setText(sharedPreferencesHelper.getString("etDuanTotal6", "0"));//段中雷管数
+        etDuanDelaytime6.setText(MmkvUtils.decodeString("etDuanDelaytime6", "0"));//间隔时间
+        etDuanTotal6.setText(MmkvUtils.decodeString("etDuanTotal6", "0"));//段中雷管数
 
-        etDuanDelaytime7.setText(sharedPreferencesHelper.getString("etDuanDelaytime7", "0"));//间隔时间
-        etDuanTotal7.setText(sharedPreferencesHelper.getString("etDuanTotal7", "0"));//段中雷管数
+        etDuanDelaytime7.setText(MmkvUtils.decodeString("etDuanDelaytime7", "0"));//间隔时间
+        etDuanTotal7.setText(MmkvUtils.decodeString("etDuanTotal7", "0"));//段中雷管数
 
-        etDuanDelaytime8.setText(sharedPreferencesHelper.getString("etDuanDelaytime8", "0"));//间隔时间
-        etDuanTotal8.setText(sharedPreferencesHelper.getString("etDuanTotal8", "0"));//段中雷管数
+        etDuanDelaytime8.setText(MmkvUtils.decodeString("etDuanDelaytime8", "0"));//间隔时间
+        etDuanTotal8.setText(MmkvUtils.decodeString("etDuanTotal8", "0"));//段中雷管数
 
-        etDuanDelaytime9.setText(sharedPreferencesHelper.getString("etDuanDelaytime9", "0"));//间隔时间
-        etDuanTotal9.setText(sharedPreferencesHelper.getString("etDuanTotal9", "0"));//段中雷管数
+        etDuanDelaytime9.setText(MmkvUtils.decodeString("etDuanDelaytime9", "0"));//间隔时间
+        etDuanTotal9.setText(MmkvUtils.decodeString("etDuanTotal9", "0"));//段中雷管数
 
-        etDuanDelaytime10.setText(sharedPreferencesHelper.getString("etDuanDelaytime10", "0"));//间隔时间
-        etDuanTotal10.setText(sharedPreferencesHelper.getString("etDuanTotal10", "0"));//段中雷管数
+        etDuanDelaytime10.setText(MmkvUtils.decodeString("etDuanDelaytime10", "0"));//间隔时间
+        etDuanTotal10.setText(MmkvUtils.decodeString("etDuanTotal10", "0"));//段中雷管数
 
-        etDuanDelaytime11.setText(sharedPreferencesHelper.getString("etDuanDelaytime11", "0"));//间隔时间
-        etDuanTotal11.setText(sharedPreferencesHelper.getString("etDuanTotal11", "0"));//段中雷管数
+        etDuanDelaytime11.setText(MmkvUtils.decodeString("etDuanDelaytime11", "0"));//间隔时间
+        etDuanTotal11.setText(MmkvUtils.decodeString("etDuanTotal11", "0"));//段中雷管数
 
-        etDuanDelaytime12.setText(sharedPreferencesHelper.getString("etDuanDelaytime12", "0"));//间隔时间
-        etDuanTotal12.setText(sharedPreferencesHelper.getString("etDuanTotal12", "0"));//段中雷管数
+        etDuanDelaytime12.setText(MmkvUtils.decodeString("etDuanDelaytime12", "0"));//间隔时间
+        etDuanTotal12.setText(MmkvUtils.decodeString("etDuanTotal12", "0"));//段中雷管数
 
-        etDuanDelaytime13.setText(sharedPreferencesHelper.getString("etDuanDelaytime13", "0"));//间隔时间
-        etDuanTotal13.setText(sharedPreferencesHelper.getString("etDuanTotal13", "0"));//段中雷管数
+        etDuanDelaytime13.setText(MmkvUtils.decodeString("etDuanDelaytime13", "0"));//间隔时间
+        etDuanTotal13.setText(MmkvUtils.decodeString("etDuanTotal13", "0"));//段中雷管数
 
-        etDuanDelaytime14.setText(sharedPreferencesHelper.getString("etDuanDelaytime14", "0"));//间隔时间
-        etDuanTotal14.setText(sharedPreferencesHelper.getString("etDuanTotal14", "0"));//段中雷管数
+        etDuanDelaytime14.setText(MmkvUtils.decodeString("etDuanDelaytime14", "0"));//间隔时间
+        etDuanTotal14.setText(MmkvUtils.decodeString("etDuanTotal14", "0"));//段中雷管数
 
-        etDuanDelaytime15.setText(sharedPreferencesHelper.getString("etDuanDelaytime15", "0"));//间隔时间
-        etDuanTotal15.setText(sharedPreferencesHelper.getString("etDuanTotal15", "0"));//段中雷管数
+        etDuanDelaytime15.setText(MmkvUtils.decodeString("etDuanDelaytime15", "0"));//间隔时间
+        etDuanTotal15.setText(MmkvUtils.decodeString("etDuanTotal15", "0"));//段中雷管数
 
-        etDuanDelaytime16.setText(sharedPreferencesHelper.getString("etDuanDelaytime16", "0"));//间隔时间
-        etDuanTotal16.setText(sharedPreferencesHelper.getString("etDuanTotal16", "0"));//段中雷管数
+        etDuanDelaytime16.setText(MmkvUtils.decodeString("etDuanDelaytime16", "0"));//间隔时间
+        etDuanTotal16.setText(MmkvUtils.decodeString("etDuanTotal16", "0"));//段中雷管数
 
-        etDuanDelaytime17.setText(sharedPreferencesHelper.getString("etDuanDelaytime17", "0"));//间隔时间
-        etDuanTotal17.setText(sharedPreferencesHelper.getString("etDuanTotal17", "0"));//段中雷管数
+        etDuanDelaytime17.setText(MmkvUtils.decodeString("etDuanDelaytime17", "0"));//间隔时间
+        etDuanTotal17.setText(MmkvUtils.decodeString("etDuanTotal17", "0"));//段中雷管数
 
-        etDuanDelaytime18.setText(sharedPreferencesHelper.getString("etDuanDelaytime18", "0"));//间隔时间
-        etDuanTotal18.setText(sharedPreferencesHelper.getString("etDuanTotal18", "0"));//段中雷管数
+        etDuanDelaytime18.setText(MmkvUtils.decodeString("etDuanDelaytime18", "0"));//间隔时间
+        etDuanTotal18.setText(MmkvUtils.decodeString("etDuanTotal18", "0"));//段中雷管数
 
-        etDuanDelaytime19.setText(sharedPreferencesHelper.getString("etDuanDelaytime19", "0"));//间隔时间
-        etDuanTotal19.setText(sharedPreferencesHelper.getString("etDuanTotal19", "0"));//段中雷管数
+        etDuanDelaytime19.setText(MmkvUtils.decodeString("etDuanDelaytime19", "0"));//间隔时间
+        etDuanTotal19.setText(MmkvUtils.decodeString("etDuanTotal19", "0"));//段中雷管数
 
-        etDuanDelaytime20.setText(sharedPreferencesHelper.getString("etDuanDelaytime20", "0"));//间隔时间
-        etDuanTotal20.setText(sharedPreferencesHelper.getString("etDuanTotal20", "0"));//段中雷管数
+        etDuanDelaytime20.setText(MmkvUtils.decodeString("etDuanDelaytime20", "0"));//间隔时间
+        etDuanTotal20.setText(MmkvUtils.decodeString("etDuanTotal20", "0"));//段中雷管数
 
     }
 }

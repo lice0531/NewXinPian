@@ -57,7 +57,7 @@ import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
-import android_serialport_api.xingbang.utils.SharedPreferencesHelper;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
@@ -211,7 +211,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int pb_show = 0;
     private String delay_set = "0";//是f1还是f2
     private String selectDenatorId;//选择的管壳码
-    private SharedPreferencesHelper sharedPreferencesHelper;
     //这是注册了一个观察者模式
     public static final Uri uri = Uri.parse("content://android_serialport_api.xingbang.denatorBaseinfo");
     private String qiaosi_set = "";//是否检测桥丝
@@ -225,7 +224,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         SoundPlayUtils.init(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
-        sharedPreferencesHelper = new SharedPreferencesHelper(this, getApplicationContext().getPackageName());
         getUserMessage();
         getFactoryType();//获取延期最大值
         showDenatorSum();//显示雷管总数
@@ -394,9 +392,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void btn_onClick() {
         //设置延时
-        String save_f1 = sharedPreferencesHelper.getString("f1", "1");
-        String save_f2 = sharedPreferencesHelper.getString("f2", "1");
-        String save_start = sharedPreferencesHelper.getString("start", "1");
+        String save_f1 = (String) MmkvUtils.decode("f1", "1");
+        String save_f2 = (String) MmkvUtils.decode("f2", "1");
+        String save_start = (String) MmkvUtils.decode("start", "1");
         if (!save_f1.equals("1")) {
             reEtF1.setText(save_f1);
         } else {
@@ -825,13 +823,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
-            sharedPreferencesHelper.put("f1", reEtF1.getText().toString());
+            MmkvUtils.encode("f1", reEtF1.getText().toString());
         }
         if (reEtF2.getText().length() > 0) {
-            sharedPreferencesHelper.put("f2", reEtF2.getText().toString());
+            MmkvUtils.encode("f2", reEtF1.getText().toString());
         }
-
-//        sharedPreferencesHelper.put("start", et_startDelay.getText().toString());
+        MmkvUtils.encode("start", et_startDelay.getText().toString());
         scanDecode.onDestroy();//回复初始状态
 
         super.onDestroy();

@@ -862,7 +862,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧编码
                                 String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
 //                                Log.e("写入延时", "denatorId: " + denatorId);
-                                denatorId = Utils.getReverseDetonatorNo_newXinPian(denatorId);
+                                denatorId = Utils.getReverseDetonatorNo(denatorId);
 
                                 short delayTime = 66;
                                 byte[] delayBye = Utils.shortToByte(delayTime);

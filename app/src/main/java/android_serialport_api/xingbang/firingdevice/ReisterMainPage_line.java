@@ -70,7 +70,7 @@ import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.services.MyLoad;
-import android_serialport_api.xingbang.utils.SharedPreferencesHelper;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
@@ -203,7 +203,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private int pb_show = 0;
     private String delay_set = "0";//是f1还是f2
     private String selectDenatorId;//选择的管壳码
-    private SharedPreferencesHelper sharedPreferencesHelper;
     //这是注册了一个观察者模式
     public static final Uri uri = Uri.parse("content://android_serialport_api.xingbang.denatorBaseinfo");
     private String qiaosi_set = "";//是否检测桥丝
@@ -222,7 +221,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         ButterKnife.bind(this);
         SoundPlayUtils.init(this);
 
-        sharedPreferencesHelper = new SharedPreferencesHelper(this, getApplicationContext().getPackageName());
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         //扫描参数设置
@@ -419,13 +417,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     private void btn_onClick() {
         //设置延时
-        f1DelayTxt = (TextView) findViewById(R.id.re_et_f1);//F1延时
-        f2DelayTxt = (TextView) findViewById(R.id.re_et_f2);//F2延时
-        ly_setDelay = (LinearLayout) findViewById(R.id.ly_setDelay);
-        ly_showData = (LinearLayout) findViewById(R.id.ly_showData);
-        String save_f1 = sharedPreferencesHelper.getString("f1", "1");
-        String save_f2 = sharedPreferencesHelper.getString("f2", "1");
-        String save_start = sharedPreferencesHelper.getString("start", "1");
+        f1DelayTxt = findViewById(R.id.re_et_f1);//F1延时
+        f2DelayTxt = findViewById(R.id.re_et_f2);//F2延时
+        ly_setDelay = findViewById(R.id.ly_setDelay);
+        ly_showData = findViewById(R.id.ly_showData);
+        String save_f1 = (String) MmkvUtils.decode("f1", "1");
+        String save_f2 = (String) MmkvUtils.decode("f2", "1");
+        String save_start = (String) MmkvUtils.decode("start", "1");
         if (!save_f1.equals("1")) {
             f1DelayTxt.setText(save_f1);
         } else {
@@ -706,12 +704,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     @Override
     protected void onDestroy() {
         if (reEtF1.getText().length() > 0) {
-            sharedPreferencesHelper.put("f1", reEtF1.getText().toString());
+            MmkvUtils.encode("f1", reEtF1.getText().toString());
         }
         if (reEtF2.getText().length() > 0) {
-            sharedPreferencesHelper.put("f2", reEtF2.getText().toString());
+            MmkvUtils.encode("f2", reEtF1.getText().toString());
         }
-        sharedPreferencesHelper.put("start", setDelayTimeStartDelaytime.getText().toString());
+        MmkvUtils.encode("start", setDelayTimeStartDelaytime.getText().toString());
         scanDecode.onDestroy();//回复初始状态
         Utils.saveFile();//把软存中的数据存入磁盘中
 //        loadMoreData_all_lg();//
@@ -1258,7 +1256,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     values.put("shellBlastNo", "A6214" + zhuce_form.getDenaId());
                 }
                 Utils.writeRecord("--单发注册--" + "注册雷管码:" + shellBlastNo + "芯片码:" + zhuce_form.getDenaId());
-                values.put("denatorId", zhuce_form.getDenaId());
+                values.put("denatorId", zhuce_form.getDenaId());//主芯片
+                values.put("denatorId2", zhuce_form.getDenaId2());//从芯片
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
