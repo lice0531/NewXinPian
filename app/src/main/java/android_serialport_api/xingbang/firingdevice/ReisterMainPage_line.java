@@ -930,10 +930,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     protected void onDataReceived(byte[] buffer, int size) {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        //String crs16 = CRC16.bytesToHexString(cmdBuf);
-        //System.out.println(crs16);
 
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        Log.e("注册", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
 //            fromCommad = this.revCmd;//如果revcmd不清空,会导致收到40,但却变成上次的13,先屏蔽
 //            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -1257,7 +1256,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 }
                 Utils.writeRecord("--单发注册--" + "注册雷管码:" + shellBlastNo + "芯片码:" + zhuce_form.getDenaId());
                 values.put("denatorId", zhuce_form.getDenaId());//主芯片
-                values.put("denatorId2", zhuce_form.getDenaId2());//从芯片
+                if(zhuce_form.getDenaId2()!=null){
+                    values.put("denatorId2", zhuce_form.getDenaId2());//从芯片
+                }
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");

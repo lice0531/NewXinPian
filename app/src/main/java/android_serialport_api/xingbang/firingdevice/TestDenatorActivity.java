@@ -787,14 +787,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                 try {
                     switch (stage) {
                         case 1:
-//                            if (firstCount == 0) {//经过测试初始化命令需要6秒
-//                                //切换模块芯片版本
-//                                if(version.equals("01")){
-//                                    sendCmd(FourStatusCmd.send46("00","01"));//20(第一代)
-//                                }else {
-//                                    sendCmd(FourStatusCmd.send46("00","02"));//20(第二代)
-//                                }
-//                            }
+                            if (firstCount == 0) {//经过测试初始化命令需要6秒
+                                //切换模块芯片版本
+                                if(version.equals("01")){
+                                    sendCmd(FourStatusCmd.send46("00","01"));//20(第一代)
+                                }else {
+                                    sendCmd(FourStatusCmd.send46("00","02"));//20(第二代)
+                                }
+                            }
                             Thread.sleep(1000);
                             if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //进入测试模式

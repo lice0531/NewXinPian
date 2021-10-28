@@ -1012,6 +1012,7 @@ public class FiringMainActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+//        Log.e(TAG, "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -1599,10 +1600,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
-                            //跳转高压前要再检测一次列表的第一发雷管,如果正确就继续,错误就提示
                             if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
-                                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00");//33高压输出
-                                sendCmd(reCmd);
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
                             if (sixExchangeCount == 0) {
                                 if (sixCmdSerial == 3) {
@@ -1655,11 +1654,12 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 if (eightCmdFlag == 0) {
                                     if (eightCmdExchangePower == 1) {//
-                                        byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
-                                        sendCmd(reCmd);
+                                        //2代芯片不切换低压
+//                                        byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
+//                                        sendCmd(reCmd);
                                         //发出34 起爆命令
-//                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
-//                                        sendCmd(initBuf);
+                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
+                                        sendCmd(initBuf);
                                         Log.e("起爆", "第一次发送起爆指令: ");
                                         eightCmdFlag = 1;
                                     } else {
