@@ -250,7 +250,7 @@ public class XingbangMain extends BaseActivity {
         server_type2 = (String) MmkvUtils.decode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.decode("pro_dwdm", "");
         jiance_time = (int) MmkvUtils.decode("jiance_time", 50);
-        Yanzheng = (String) MmkvUtils.decode("Yanzheng","验证");
+        Yanzheng = (String) MmkvUtils.decode("Yanzheng", "验证");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
 
@@ -512,13 +512,13 @@ public class XingbangMain extends BaseActivity {
                 startActivityForResult(intent2, 1);
                 break;
 
-                // 单发检测
+            // 单发检测
             case R.id.btn_main_delayTime:
                 Intent intent3 = new Intent(this, ReisterMainPage_line.class);//金建华
                 startActivityForResult(intent3, 1);
                 break;
 
-                // 删除
+            // 删除
             case R.id.btn_main_del:
                 startActivityForResult(new Intent(this, DelDenatorMainPage.class), 1);
                 break;
@@ -601,7 +601,6 @@ public class XingbangMain extends BaseActivity {
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
                 //向数据库插入数据
-
                 DenatorBaseinfo baseinfo = new DenatorBaseinfo();
                 baseinfo.setBlastserial(Integer.parseInt(a[1]));
                 baseinfo.setSithole(Integer.parseInt(a[2]));
@@ -617,6 +616,9 @@ public class XingbangMain extends BaseActivity {
                 baseinfo.setRegdate(a[12]);
                 baseinfo.setWire(a[13]);
                 baseinfo.setName(a[14]);
+                if (a.length == 16) {
+                    baseinfo.setDenatorIdSup(a[15]);
+                }
                 getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 i++;
             }
