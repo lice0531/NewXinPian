@@ -8,7 +8,7 @@ public class From12Reister {
     private String facCode;//管厂码
     private String feature;//特征码    
     private String wire;//桥丝
-	private String denaId2;//雷管id
+	private String denaIdSup;//雷管id
 
 	public String getWire() {
 		return wire;
@@ -26,12 +26,12 @@ public class From12Reister {
 		this.denaId = denaId;
 	}
 
-	public String getDenaId2() {
-		return denaId2;
+	public String getDenaIdSup() {
+		return denaIdSup;
 	}
 
-	public void setDenaId2(String denaId2) {
-		this.denaId2 = denaId2;
+	public void setDenaIdSup(String denaIdSup) {
+		this.denaIdSup = denaIdSup;
 	}
 
 	public String getFacCode() {

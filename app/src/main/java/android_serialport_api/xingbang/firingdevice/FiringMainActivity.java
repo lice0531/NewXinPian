@@ -30,6 +30,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -332,7 +333,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     ll_firing_IC_5.setTextColor(Color.RED);
                     ll_firing_IC_6.setTextColor(Color.RED);
                     ll_firing_IC_7.setTextColor(Color.RED);
-                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当期电压:" + busInfo.getBusVoltage() + "V,电流过大");
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else {
                     ll_firing_IC_2.setTextColor(Color.GREEN);
                     ll_firing_IC_4.setTextColor(Color.GREEN);
@@ -340,10 +341,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     ll_firing_IC_6.setTextColor(Color.GREEN);
                     ll_firing_IC_7.setTextColor(Color.GREEN);
                     if (displayIc < 1) {
-                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当期电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
                     } else {
-                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当期电压:" + busInfo.getBusVoltage() + "V,电流正常");
+                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流正常");
                     }
                 }
                 ll_firing_IC_2.setText("" + displayIcStr);
@@ -738,7 +739,7 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setDelay((short) d.getDelay());
             vo.setShellBlastNo(d.getShellBlastNo());
             vo.setDenatorId(d.getDenatorId());
-            vo.setDenatorId2(d.getDenatorId2());
+            vo.setDenatorIdSup(d.getDenatorIdSup());
 
             allBlastQu.offer(vo);
             list_all_lg.add(vo);
@@ -822,11 +823,13 @@ public class FiringMainActivity extends SerialPortActivity {
         his.setPro_htid(pro_htid);
         his.setPro_xmbh(pro_xmbh);
         his.setPro_dwdm(pro_dwdm);
+        his.setLog(Utils.readLog(Utils.getDate(new Date())));
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);
         }
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
+        Utils.deleteRecord();//删除日志
 
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
         for (DenatorBaseinfo dbf : list) {
@@ -1055,7 +1058,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            thirdWriteCount = 0;
 //            increase(3);
 
-        }  else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
+        } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
 //            Log.e("起爆测试结果", "fromData.toString(): "+fromData.toString() );
             if (fromData != null && writeDenator != null) {
@@ -1063,6 +1066,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String fromCommad = Utils.bytesToHexFun(locatBuf);
                 short writeDelay = temp.getDelay();
                 fromData.setShellNo(temp.getShellBlastNo());
+                fromData.setDenaId(temp.getDenatorId());//芯片码
                 Utils.writeRecord("--起爆测试结果:" + fromData.toString());
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
@@ -1124,7 +1128,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
 
-        }else if (DefCommand.CMD_3_DETONATE_9.equals(cmd)) {//38 进入充电检测模式
+        } else if (DefCommand.CMD_3_DETONATE_9.equals(cmd)) {//38 进入充电检测模式
             //处理返回的起爆模式命令
 //            secondCmdFlag = 1;
 //            thirdWriteCount = 0;
@@ -1154,10 +1158,11 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("第一次发送起爆指令--");
             }
         } else {
-            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: "+ cmd);
+            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
 
     }
+
     public synchronized void increase(int val) {
 //        Log.e(TAG, "increase--改变stage: " + val);
         stage = val;
@@ -1538,10 +1543,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr;
-                                if (write.getDenatorId2()!=null&&write.getDenatorId2().length() > 0) {
-                                    String denatorId2 = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId2());//新芯片
-                                    denatorId2 = Utils.getReverseDetonatorNo(denatorId2);
-                                    data = denatorId + delayStr + denatorId2;
+                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 0) {
+                                    String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
+                                    denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
+                                    data = denatorId + delayStr + denatorIdSup;
+                                    Utils.writeRecord("--设置雷管延时:" + "主芯片:" + denatorId + "延时:" + delayStr + "从芯片:" + denatorIdSup);
                                 }
                                 //发送31命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
@@ -1566,8 +1572,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                     thirdWriteErrorDenator = errorDe;
                                     errorList.offer(errorDe);
                                     //发出错误
-                                    //mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                    //writeDenator = null;
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    writeDenator = null;
                                     tempBaseInfo = null;
                                     reThirdWriteCount++;
                                 } else {
@@ -1729,10 +1735,10 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr;
-                                if (write.getDenatorId2()!=null&&write.getDenatorId2().length() > 0) {
-                                    String denatorId2 = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId2());//新芯片
-                                    denatorId2 = Utils.getReverseDetonatorNo(denatorId2);
-                                    data = denatorId + delayStr + denatorId2;
+                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 0) {
+                                    String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
+                                    denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
+                                    data = denatorId + delayStr + denatorIdSup;
                                 }
                                 //发送31命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
@@ -1746,7 +1752,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 long spanTime = thirdEnd - thirdStartTime;
                                 if (spanTime > 4000 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
-                                    //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
+                                    //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 单片机未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
                                     VoFiringTestError errorDe = new VoFiringTestError();
                                     errorDe.setBlastserial(tempBaseInfo2.getBlastserial());//
@@ -1756,8 +1762,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                     thirdWriteErrorDenator = errorDe;
                                     errorList.offer(errorDe);
                                     //发出错误
-                                    //mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                    //writeDenator = null;
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    writeDenator = null;
+
                                     tempBaseInfo2 = null;
                                     reThirdWriteCount++;
                                 } else {
@@ -1774,6 +1781,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     }
 
+    //C000310C 3D EA FF 00 0A 00 00 00 00 00 A21E C0
     private void getblastQueue() {
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
@@ -1782,12 +1790,14 @@ public class FiringMainActivity extends SerialPortActivity {
             int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
             String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
             String denatorId = denatorBaseinfo.getDenatorId();//管壳号
+            String denatorIdSup = denatorBaseinfo.getDenatorIdSup();//管壳号
             short delay = (short) denatorBaseinfo.getDelay();//获取第三列的值
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
             vo.setBlastserial(serialNo);
             vo.setDelay(delay);
             vo.setShellBlastNo(shellNo);
             vo.setDenatorId(denatorId);
+            vo.setDenatorIdSup(denatorIdSup);
             allBlastQu.offer(vo);
         }
         reThirdWriteCount = 0;

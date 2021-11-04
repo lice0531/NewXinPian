@@ -7,15 +7,15 @@ public class VoDenatorBaseInfo  {
 	private int blastserial;//序号	
 	private String shellBlastNo;//管壳号
 	private String denatorId;//芯片码
-	private String denatorId2;//从芯片码
+	private String denatorIdSup;//从芯片码
 	private short delay;//延时
 
-	public String getDenatorId2() {
-		return denatorId2;
+	public String getDenatorIdSup() {
+		return denatorIdSup;
 	}
 
-	public void setDenatorId2(String denatorId2) {
-		this.denatorId2 = denatorId2;
+	public void setDenatorIdSup(String denatorIdSup) {
+		this.denatorIdSup = denatorIdSup;
 	}
 
 	public int getBlastserial() {

@@ -39,6 +39,7 @@ public class DenatorBaseinfo_allDao extends AbstractDao<DenatorBaseinfo_all, Lon
         public final static Property Regdate = new Property(12, String.class, "regdate", false, "regdate");
         public final static Property Wire = new Property(13, String.class, "wire", false, "wire");
         public final static Property Name = new Property(14, String.class, "name", false, "name");
+        public final static Property DenatorIdSup = new Property(15, String.class, "denatorIdSup", false, "denatorIdSup");
     }
 
 
@@ -68,7 +69,8 @@ public class DenatorBaseinfo_allDao extends AbstractDao<DenatorBaseinfo_all, Lon
                 "\"remark\" TEXT," + // 11: remark
                 "\"regdate\" TEXT," + // 12: regdate
                 "\"wire\" TEXT," + // 13: wire
-                "\"name\" TEXT);"); // 14: name
+                "\"name\" TEXT," + // 14: name
+                "\"denatorIdSup\" TEXT);"); // 15: denatorIdSup
     }
 
     /** Drops the underlying database table. */
@@ -143,6 +145,11 @@ public class DenatorBaseinfo_allDao extends AbstractDao<DenatorBaseinfo_all, Lon
         if (name != null) {
             stmt.bindString(15, name);
         }
+ 
+        String denatorIdSup = entity.getDenatorIdSup();
+        if (denatorIdSup != null) {
+            stmt.bindString(16, denatorIdSup);
+        }
     }
 
     @Override
@@ -211,6 +218,11 @@ public class DenatorBaseinfo_allDao extends AbstractDao<DenatorBaseinfo_all, Lon
         if (name != null) {
             stmt.bindString(15, name);
         }
+ 
+        String denatorIdSup = entity.getDenatorIdSup();
+        if (denatorIdSup != null) {
+            stmt.bindString(16, denatorIdSup);
+        }
     }
 
     @Override
@@ -235,7 +247,8 @@ public class DenatorBaseinfo_allDao extends AbstractDao<DenatorBaseinfo_all, Lon
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // remark
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // regdate
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // wire
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // name
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // name
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // denatorIdSup
         );
         return entity;
     }
@@ -257,6 +270,7 @@ public class DenatorBaseinfo_allDao extends AbstractDao<DenatorBaseinfo_all, Lon
         entity.setRegdate(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setWire(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setName(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setDenatorIdSup(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
      }
     
     @Override

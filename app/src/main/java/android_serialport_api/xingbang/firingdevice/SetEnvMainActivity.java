@@ -311,16 +311,6 @@ public class SetEnvMainActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent myIntent = new Intent();
-            myIntent = new Intent(SetEnvMainActivity.this, XingbangMain.class);
-            startActivity(myIntent);
-            this.finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     @OnClick({R.id.btn_set_user, R.id.btn_set_onlineuprade, R.id.btn_set_netmodel,
             R.id.btn_set_upload, R.id.btn_set_warrant, R.id.btn_set_dechip, R.id.btn_set_facCode,

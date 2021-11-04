@@ -54,7 +54,7 @@ public class ThreeFiringCmd {
 		if(data.length()==12){
 			command = addr + DefCommand.CMD_3_DETONATE_2+"06"+data;
 		}else {
-			command = addr + DefCommand.CMD_3_DETONATE_2+"0C"+data;
+			command = addr + DefCommand.CMD_3_DETONATE_2+"0A"+data;
 		}
 		return DefCommand.getCommadBytes(command);
 	}

@@ -45,6 +45,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -280,10 +281,48 @@ public class PracticeActivity extends SerialPortActivity {
         show_Toast("写入成功");
     }
 
+    private int registerDetonator(String leiguan) {
+        String[] lg = leiguan.split(",");
+        String shellNo;
+        int index = -1;
+        int maxNo = getMaxNumberNo();
+        int reCount = 0;
+        Log.e("接收注册", "lg.length: "+lg.length );
+        for (int i = lg.length; i > 0; i--) {
+            shellNo = lg[i - 1];
+            String[] a = shellNo.split("#");
+            if (checkRepeatShellBlastNo(a[0])) {//检查重复数据
+                reCount++;
+                continue;
+            }
+            if (index < 0) {//说明没有空余的序号可用
+                maxNo++;
+                DenatorBaseinfo denator = new DenatorBaseinfo();
+                denator.setBlastserial(maxNo);
+                denator.setSithole(maxNo);
+                denator.setShellBlastNo(a[0]);
+                denator.setDelay(Integer.parseInt(a[1]));
+                denator.setRegdate(Utils.getDateFormatLong(new Date()));
+                denator.setStatusCode("02");
+                denator.setStatusName("已注册");
+                denator.setErrorCode("FF");
+                denator.setErrorName("");
+                denator.setWire("");
+                Log.e("接收注册", "denator: "+denator.toString() );
+                getDaoSession().getDenatorBaseinfoDao().insert(denator);
+            }
+            reCount++;
+        }
+        pb_show = 0;
+        show_Toast_ui("接收成功");
+        return reCount;
+    }
+
+
     /**
      * 读取输入注册
      */
-    private void registerDetonator(String leiguan) {
+    private void registerDetonator_typeNew(String leiguan) {
         String[] lg = leiguan.split(",");
         String shellNo;
         int maxNo = getMaxNumberNo();
@@ -293,19 +332,26 @@ public class PracticeActivity extends SerialPortActivity {
             String[] a = shellNo.split("#");
             Log.e("注册", "管壳码 a[0]: " + a[0]);
             Log.e("注册", "芯片码 a[1]: " + a[1]);
+            Log.e("注册", "a.length: " + a.length);
+
             // 检查重复数据
-            if (checkRepeatShellBlastNo(a[0])) {
+            if (checkRepeatShellBlastNo_typeNew(a[0])) {
                 continue;
             }
             // 雷管类型_新
             DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
+            if(a.length==3){
+                detonatorTypeNew.setDetonatorIdSup(a[2]);
+            }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
         show_Toast_ui("接收成功");
     }
+
+
 
     /**
      * 读取输入注册
@@ -328,12 +374,29 @@ public class PracticeActivity extends SerialPortActivity {
         show_Toast("解析成功");
     }
 
+    //C000120CFF000BE6FF0041A6A2DEFF00028DC0
+    //C000310C0BE6FF000A00A2DEFF00E20FC0
     /**
      * 检查重复的数据
      *
      * @param ShellBlastNo
      */
     public boolean checkRepeatShellBlastNo(String ShellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatShellNo(ShellBlastNo);
+        if(denatorBaseinfo.size()>0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * 检查重复的数据
+     *
+     * @param ShellBlastNo
+     */
+    public boolean checkRepeatShellBlastNo_typeNew(String ShellBlastNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         DetonatorTypeNew detonatorTypeNew = master.checkRepeat_DetonatorTypeNew(ShellBlastNo);
         if(detonatorTypeNew != null){
@@ -508,7 +571,7 @@ public class PracticeActivity extends SerialPortActivity {
 //                    Log.e("读取到的雷管", "雷管: " + detonator);
 
                     if (!detonator.equals("0")) {
-                        registerDetonator(detonator);
+                        registerDetonator_typeNew(detonator);
 
                     } else {
                         tipDlg.dismiss();
@@ -518,7 +581,7 @@ public class PracticeActivity extends SerialPortActivity {
                 }).start();
                 break;
             case R.id.btn_read_log:
-                String log = Utils.readLog(path);
+                String log = Utils.fenxiLog(path);
                 registerLog(log);
                 break;
             case R.id.but_send://发送
@@ -539,10 +602,11 @@ public class PracticeActivity extends SerialPortActivity {
                 }
                 Log.e("发送消息", "sb: " + sb.toString());
                 //与刘鹏飞通讯级联发送
-                strMessage = sb.toString();
-                new Thread(sendThread).start();
+//                strMessage = sb.toString();
+//                new Thread(sendThread).start();
+
                 // 启动线程 向服务器发送信息//需要换成服务器端的IP地址
-//                sendStringMessage(sb.toString(), ip);
+                sendStringMessage(sb.toString(), ip);
 //                Utils.sendMessage("F5310000",ip,30000,list_upload_uid);
                 break;
 

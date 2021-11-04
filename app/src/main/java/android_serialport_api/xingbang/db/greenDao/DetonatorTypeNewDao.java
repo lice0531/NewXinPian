@@ -27,6 +27,7 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         public final static Property Id = new Property(0, Long.class, "Id", true, "id");
         public final static Property ShellBlastNo = new Property(1, String.class, "shellBlastNo", false, "shellBlastNo");
         public final static Property DetonatorId = new Property(2, String.class, "detonatorId", false, "denatorId");
+        public final static Property DetonatorIdSup = new Property(3, String.class, "detonatorIdSup", false, "denatorIdSup");
     }
 
 
@@ -44,7 +45,8 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"DetonatorTypeNew\" (" + //
                 "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: Id
                 "\"shellBlastNo\" TEXT," + // 1: shellBlastNo
-                "\"denatorId\" TEXT);"); // 2: detonatorId
+                "\"denatorId\" TEXT," + // 2: detonatorId
+                "\"denatorIdSup\" TEXT);"); // 3: detonatorIdSup
     }
 
     /** Drops the underlying database table. */
@@ -71,6 +73,11 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         if (detonatorId != null) {
             stmt.bindString(3, detonatorId);
         }
+ 
+        String detonatorIdSup = entity.getDetonatorIdSup();
+        if (detonatorIdSup != null) {
+            stmt.bindString(4, detonatorIdSup);
+        }
     }
 
     @Override
@@ -91,6 +98,11 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         if (detonatorId != null) {
             stmt.bindString(3, detonatorId);
         }
+ 
+        String detonatorIdSup = entity.getDetonatorIdSup();
+        if (detonatorIdSup != null) {
+            stmt.bindString(4, detonatorIdSup);
+        }
     }
 
     @Override
@@ -103,7 +115,8 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         DetonatorTypeNew entity = new DetonatorTypeNew( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // Id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // shellBlastNo
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // detonatorId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // detonatorId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // detonatorIdSup
         );
         return entity;
     }
@@ -113,6 +126,7 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setShellBlastNo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setDetonatorId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDetonatorIdSup(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     @Override

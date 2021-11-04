@@ -35,11 +35,13 @@ public class DenatorHis_Main {
     private String pro_dwdm;
     @Property(nameInDb = "remark")
     private String remark;
-    @Generated(hash = 387914901)
+    @Property(nameInDb = "log")
+    private String log;
+    @Generated(hash = 960757556)
     public DenatorHis_Main(Long id, String blastdate, String uploadStatus,
             String longitude, String latitude, String userid, String equ_no,
             int serialNo, String pro_xmbh, String pro_htid, String pro_dwdm,
-            String remark) {
+            String remark, String log) {
         this.id = id;
         this.blastdate = blastdate;
         this.uploadStatus = uploadStatus;
@@ -52,6 +54,7 @@ public class DenatorHis_Main {
         this.pro_htid = pro_htid;
         this.pro_dwdm = pro_dwdm;
         this.remark = remark;
+        this.log = log;
     }
     @Generated(hash = 812921624)
     public DenatorHis_Main() {
@@ -128,6 +131,12 @@ public class DenatorHis_Main {
     public void setRemark(String remark) {
         this.remark = remark;
     }
-
+    public String getLog() {
+        return this.log;
+    }
+    public void setLog(String log) {
+        this.log = log;
+    }
+   
 
 }

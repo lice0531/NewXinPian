@@ -75,7 +75,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
  * 查看历史记录
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.InnerItemOnclickListener, OnItemClickListener {
+public class QueryHisDetail extends BaseActivity {
     @BindView(R.id.btn_del_return)
     Button btnDelReturn;
     @BindView(R.id.btn_del_all)
@@ -161,6 +161,8 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
                         String jd = list_savedate.get(pos).getLongitude();//经度
                         String wd = list_savedate.get(pos).getLatitude();//纬度
                         String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
+                        String log = list_savedate.get(pos).getLog();//日志
+                        Log.e("上传", "log: "+log );
 //                        mAdapter.notifyDataSetChanged();
                         getHisDetailList(blastdate, 0);//获取起爆历史详细信息
                         if (blastdate == null || blastdate.trim().length() < 8) {
@@ -191,7 +193,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
                         if (server_type2.equals("2")) {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
-                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_id);//我们自己的网址
+                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_id,log);//我们自己的网址
 
                         break;
                     case R.id.bt_delete:
@@ -358,6 +360,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
             item.setProjectNo(list.get(i).getPro_htid());
             item.setDwdm(list.get(i).getPro_dwdm());
             item.setXmbh(list.get(i).getPro_xmbh());
+            item.setLog(list.get(i).getLog());
             list_savedate.add(item);
         }
         Log.e("历史记录", "list_savedate: " + list_savedate);
@@ -370,16 +373,6 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
 //        mAdapter.notifyDataSetChanged();
     }
 
-    //整体item
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        VoFireHisMain vo = list_savedate.get(position);
-        if (vo != null) {
-            createDialog(vo.getBlastdate());//
-        } else {
-            show_Toast(getString(R.string.text_error_tip54));
-        }
-    }
 
     private String updata(String blastdate, String htid, final String jd, final String wd) {
         ArrayList<String> list_uid = new ArrayList<>();
@@ -456,72 +449,6 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         builder.show();
     }
 
-
-    @Override
-    public void itemClick(final View v) {
-        switch (v.getId()) {
-            case R.id.bt_upload://上传按钮
-                int pos = (Integer) v.getTag(R.id.bt_upload);//位置
-                String blastdate = list_savedate.get(pos).getBlastdate();//日期
-                String htbh = list_savedate.get(pos).getProjectNo();//合同编号
-                String dwdm = list_savedate.get(pos).getDwdm();//单位代码
-                String xmbh = list_savedate.get(pos).getXmbh();//项目编号
-                String jd = list_savedate.get(pos).getLongitude();//经度
-                String wd = list_savedate.get(pos).getLatitude();//纬度
-                String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
-                mAdapter.notifyDataSetChanged();
-                getHisDetailList(blastdate, 0);//获取起爆历史详细信息
-                if (blastdate == null || blastdate.trim().length() < 8) {
-                    int count = getBlastModelCount();
-                    if (count < 1) {
-                        show_Toast("没有数据，不能执行上传");
-                        return;
-                    }
-                    String fireDate = Utils.getDateFormatToFileName();
-                    saveFireResult(fireDate);
-                    blastdate = fireDate;
-                }
-                Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
-                if (pro_coordxy.length() < 2 && jd != null) {
-                    show_Toast("经纬度为空，不能执行上传");
-                    return;
-                }
-
-                if (server_type2.equals("0") && server_type1.equals("0")) {
-                    show_Toast("设备当前未设置上传网址,请先设置上传网址");
-                }
-//                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
-                pb_show = 1;
-                runPbDialog();//loading画面
-                if (server_type1.equals("1")) {
-                    upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
-                }
-                if (server_type2.equals("2")) {
-                    performUp(blastdate, pos, htbh, jd, wd);//中爆上传
-                }
-                upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_id);//我们自己的网址
-                break;
-            case R.id.bt_delete:
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
-                        //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
-                        .setPositiveButton("确认删除", (dialog12, which) -> {
-                            String t = (String) v.getTag(R.id.bt_delete);
-                            if (delHisInfo(t) == 0) {
-                                show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
-                            }
-                            dialog12.dismiss();
-                        }).create();
-                dialog.show();
-
-                break;
-            default:
-                break;
-        }
-        //Toast.makeText(QueryHisDetail.this,""+ position, Toast.LENGTH_SHORT).show();
-    }
 
     /**
      * 更新上传状态
@@ -876,7 +803,7 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
         });
     }
 
-    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_id) {
+    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_id, final String log) {
         final String key = "jadl12345678912345678912";
         String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
@@ -892,12 +819,12 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
             object.put("sbbh", equ_no);//起爆器设备编号
             if (jd != null) {
                 object.put("jd", jd);//经度
-            } else {
+            } else if(pro_coordxy.length()>5){
                 object.put("jd", xy[0]);//经度
             }
             if (wd != null) {
                 object.put("wd", wd);//纬度
-            } else {
+            } else if(pro_coordxy.length()>5){
                 object.put("wd", xy[1]);//纬度
             }
             if (htid != null) {
@@ -910,8 +837,8 @@ public class QueryHisDetail extends BaseActivity implements LoadHisFireAdapter.I
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
-            String log = Utils.readLog();
             object.put("log", log);//日志
+            Log.e("上传信息", log);
             ShouQuan sq = getDaoSession().getShouQuanDao().queryBuilder().where(ShouQuanDao.Properties.Id.eq(qbxm_id)).unique();
             if (sq != null) {
                 object.put("name", sq.getSpare1());//项目编号

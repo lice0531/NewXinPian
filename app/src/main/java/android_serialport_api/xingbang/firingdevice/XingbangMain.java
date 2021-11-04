@@ -177,7 +177,7 @@ public class XingbangMain extends BaseActivity {
                 super.handleMessage(msg);
                 Log.e("起爆器编号", "equ_no: " + equ_no);
                 if (!equ_no.equals("")) {
-                    tvMainNo.setText("设备编号:" + equ_no.toString());
+                    tvMainNo.setText("设备编号:" + equ_no);
                     CrashReport.setUserId(equ_no);
                 }
             }
@@ -244,12 +244,12 @@ public class XingbangMain extends BaseActivity {
         server_http = (String) MmkvUtils.decode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         server_ip = (String) MmkvUtils.decode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.decode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.decode("preparation_time", 20);
+        Preparation_time = (int) MmkvUtils.decode("preparation_time", 50);
         ChongDian_time = (int) MmkvUtils.decode("chongdian_time", 28);
         server_type1 = (String) MmkvUtils.decode("server_type1", "1");
         server_type2 = (String) MmkvUtils.decode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.decode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.decode("jiance_time", 5);
+        jiance_time = (int) MmkvUtils.decode("jiance_time", 50);
         Yanzheng = (String) MmkvUtils.decode("Yanzheng","验证");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
@@ -636,13 +636,6 @@ public class XingbangMain extends BaseActivity {
                 Log.e("读取备份", "readCVS: 3");
             }
         }
-//        if (i < 2) {
-//            String leiguan = Utils.readFile();
-//            if (!leiguan.equals("0") && leiguan.length() > 10) {
-//                insertDenator(leiguan);
-//            }
-//        }
-        Log.e("读取数据", "readCVS: ");
     }
 
     private void readCVS_pro() {

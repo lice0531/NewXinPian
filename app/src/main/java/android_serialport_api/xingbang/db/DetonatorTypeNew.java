@@ -21,12 +21,15 @@ public class DetonatorTypeNew {
     private String shellBlastNo;   // 管壳码——1
     @Property(nameInDb = "denatorId")
     private String detonatorId;    // 芯片码——2
-
-    @Generated(hash = 1483443620)
-    public DetonatorTypeNew(Long Id, String shellBlastNo, String detonatorId) {
+    @Property(nameInDb = "denatorIdSup")
+    private String detonatorIdSup;    // 从芯片码——3
+    @Generated(hash = 1466071313)
+    public DetonatorTypeNew(Long Id, String shellBlastNo, String detonatorId,
+            String detonatorIdSup) {
         this.Id = Id;
         this.shellBlastNo = shellBlastNo;
         this.detonatorId = detonatorId;
+        this.detonatorIdSup = detonatorIdSup;
     }
     @Generated(hash = 1791749386)
     public DetonatorTypeNew() {
@@ -49,6 +52,13 @@ public class DetonatorTypeNew {
     public void setDetonatorId(String detonatorId) {
         this.detonatorId = detonatorId;
     }
+    public String getDetonatorIdSup() {
+        return this.detonatorIdSup;
+    }
+    public void setDetonatorIdSup(String detonatorIdSup) {
+        this.detonatorIdSup = detonatorIdSup;
+    }
+
 
  
 

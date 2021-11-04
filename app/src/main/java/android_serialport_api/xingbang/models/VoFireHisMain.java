@@ -16,6 +16,7 @@ public class VoFireHisMain {
 	private String projectNo;//合同编号
 	private String dwdm;//单位代码
 	private String xmbh;//项目编号
+	private String log;//日志
 
 	public String getId() {
 		return id;
@@ -90,6 +91,14 @@ public class VoFireHisMain {
 		this.xmbh = xmbh;
 	}
 
+	public String getLog() {
+		return log;
+	}
+
+	public void setLog(String log) {
+		this.log = log;
+	}
+
 	@Override
 	public String toString() {
 		return "VoFireHisMain{" +
@@ -103,6 +112,9 @@ public class VoFireHisMain {
 				", serialNo='" + serialNo + '\'' +
 				", remark='" + remark + '\'' +
 				", projectNo='" + projectNo + '\'' +
+				", dwdm='" + dwdm + '\'' +
+				", xmbh='" + xmbh + '\'' +
+				", log='" + log + '\'' +
 				'}';
 	}
 }

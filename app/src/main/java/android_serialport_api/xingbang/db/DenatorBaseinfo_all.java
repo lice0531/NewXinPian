@@ -41,12 +41,14 @@ public class DenatorBaseinfo_all {
     private String wire;
     @Property(nameInDb = "name")
     private String name;
-    @Generated(hash = 326485104)
+    @Property(nameInDb = "denatorIdSup")
+    private String denatorIdSup;
+    @Generated(hash = 1355422650)
     public DenatorBaseinfo_all(Long id, int blastserial, int sithole,
             String shellBlastNo, String denatorId, int delay, String statusCode,
             String statusName, String errorName, String errorCode,
             String authorization, String remark, String regdate, String wire,
-            String name) {
+            String name, String denatorIdSup) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -62,6 +64,7 @@ public class DenatorBaseinfo_all {
         this.regdate = regdate;
         this.wire = wire;
         this.name = name;
+        this.denatorIdSup = denatorIdSup;
     }
     @Generated(hash = 266999082)
     public DenatorBaseinfo_all() {
@@ -156,5 +159,12 @@ public class DenatorBaseinfo_all {
     public void setName(String name) {
         this.name = name;
     }
+    public String getDenatorIdSup() {
+        return this.denatorIdSup;
+    }
+    public void setDenatorIdSup(String denatorIdSup) {
+        this.denatorIdSup = denatorIdSup;
+    }
+   
 
 }

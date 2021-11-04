@@ -2,27 +2,22 @@ package android_serialport_api.xingbang.firingdevice;
 
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,13 +31,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
 
 import org.apache.commons.lang.StringUtils;
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,9 +43,6 @@ import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
-import android_serialport_api.xingbang.db.DetonatorTypeNew;
-import android_serialport_api.xingbang.db.greenDao.DaoMaster;
-import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.SerialPortActivity;
@@ -65,7 +55,6 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -275,11 +264,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         showDenatorSum();//显示雷管总数
         Utils.writeRecord("---进入单发注册页面---");
-//        if (version.equals("01")) {
-//            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-//        } else {
-//            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-//        }
+        if (version.equals("01")) {
+            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+        } else {
+            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+        }
     }
 
     private void getUserMessage() {
@@ -998,6 +987,17 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             return;
         }
     }
+    //模拟
+    private void send12(){
+        String subStr ="00120CFF00B6E6FF0041A6B6E6FF001503";
+        String inInfo = subStr.substring(0, subStr.length()-4);
+        String dcrc = DefCommand.getLowByteBeforeCRCCode(inInfo);
+        String fromCommad = "C0" +"00120CFF00B6E6FF0041A6B6E6FF00"+dcrc+"C0";
+        byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+        String cmd = DefCommand.getCmd(fromCommad);
+        doWithReceivData(cmd, localBuf);//处理cmd命令
+        //C00031 0C B6E6FF00 0A00 B6E6FF00 2473 C0
+    }
 
     /**
      * 处理芯片返回命令
@@ -1023,6 +1023,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendCmd(reCmd);
 
         } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 有雷管接入
+            //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
+            //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
 //            try {
 //                Thread.sleep(500);//
 //            } catch (InterruptedException e) {
@@ -1254,10 +1256,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 } else {
                     values.put("shellBlastNo", "A6214" + zhuce_form.getDenaId());
                 }
-                Utils.writeRecord("--单发注册--" + "注册雷管码:" + shellBlastNo + "芯片码:" + zhuce_form.getDenaId());
+                Utils.writeRecord("--单发注册--" + "注册雷管码:" + shellBlastNo + " --芯片码:" + zhuce_form.getDenaId());
                 values.put("denatorId", zhuce_form.getDenaId());//主芯片
-                if(zhuce_form.getDenaId2()!=null){
-                    values.put("denatorId2", zhuce_form.getDenaId2());//从芯片
+                if(zhuce_form.getDenaIdSup()!=null){
+                    values.put("denatorIdSup", zhuce_form.getDenaIdSup());//从芯片
+                    Utils.writeRecord("--单发注册: 从芯片码:" +zhuce_form.getDenaIdSup());
                 }
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
@@ -1600,6 +1603,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 Intent intent3 = new Intent(this, SetDelayTime.class);
                 intent3.putExtra("dataSend", "设置延时");
                 startActivityForResult(intent3, 1);
+
+//                send12();
                 break;
 
             case R.id.btn_ReisterScanStart_st:

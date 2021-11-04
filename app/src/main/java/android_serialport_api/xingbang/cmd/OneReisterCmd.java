@@ -1,7 +1,6 @@
 package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import android_serialport_api.xingbang.cmd.vo.From12Reister;
 import android_serialport_api.xingbang.utils.Utils;
@@ -250,7 +249,7 @@ public class OneReisterCmd {
 
             String denaId2 = dataHex.substring(16);//从雷管id
             denaId2 = Utils.swop4ByteOrder(denaId2);//字节码换位
-            vo.setDenaId2(denaId2);
+            vo.setDenaIdSup(denaId2);
 //				Log.e("自动返回雷管id", "10进制管厂码 facCode: "+Integer.parseInt(facCode, 16) );
             return vo;
         }

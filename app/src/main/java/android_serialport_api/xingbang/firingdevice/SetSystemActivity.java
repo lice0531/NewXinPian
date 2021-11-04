@@ -60,6 +60,7 @@ public class SetSystemActivity extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +68,8 @@ public class SetSystemActivity extends BaseActivity {
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
-        Yanzheng = (String) MmkvUtils.decode("Yanzheng","验证");
-        Shangchuan = (String) MmkvUtils.decode("Shangchuan","是");
+        Yanzheng = (String) MmkvUtils.decode("Yanzheng", "验证");
+        Shangchuan = (String) MmkvUtils.decode("Shangchuan", "是");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         if (qiaosi_set.equals("true")) {
@@ -89,11 +90,11 @@ public class SetSystemActivity extends BaseActivity {
                 String shellStr = b.getString("shellStr");
                 if (msg.arg1 == 1) {
                     show_Toast(getString(R.string.text_systip_3));
-                }else if(msg.arg1 == 2) {
+                } else if (msg.arg1 == 2) {
                     show_Toast(getString(R.string.text_systip_2));
-                }else if(msg.arg1 == 3) {
+                } else if (msg.arg1 == 3) {
                     show_Toast("充电时间请大于8s");
-                }else if(msg.arg1 == 4){
+                } else if (msg.arg1 == 4) {
                     show_Toast(getString(R.string.text_systip_1));
                 }
 
@@ -124,23 +125,22 @@ public class SetSystemActivity extends BaseActivity {
                 SetLanguageActivity.enter(SetSystemActivity.this);
                 break;
             case R.id.set_save://保存设置
-                ContentValues values = new ContentValues();
                 MessageBean message = GreenDaoMaster.getAllFromInfo_bean();
                 if (swYanzheng.isChecked()) {
-                    MmkvUtils.encode("Yanzheng","验证");
+                    MmkvUtils.encode("Yanzheng", "验证");
                 } else {
-                    MmkvUtils.encode("Yanzheng","不验证");
+                    MmkvUtils.encode("Yanzheng", "不验证");
                 }
                 if (swShangchuan.isChecked()) {
-                    MmkvUtils.encode("Shangchuan","是");
+                    MmkvUtils.encode("Shangchuan", "是");
                 } else {
-                    MmkvUtils.encode("Shangchuan","否");
+                    MmkvUtils.encode("Shangchuan", "否");
                 }
 
                 if (swSetsys.isChecked()) {
-                    values.put("qiaosi_set", "true");
+                    message.setQiaosi_set("true");
                 } else {
-                    values.put("qiaosi_set", "false");
+                    message.setQiaosi_set("false");
                 }
 
                 int flag1 = 0, flag2 = 0, flag3 = 0;
@@ -168,22 +168,22 @@ public class SetSystemActivity extends BaseActivity {
                 getDaoSession().getMessageBeanDao().update(message);
 
                 Utils.saveFile_Message();
-                if(flag1==1){
+                if (flag1 == 1) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.arg1 = 1;
                     Handler_tip.sendMessage(msg);
                 }
-                if(flag2==1){
+                if (flag2 == 1) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.arg1 = 2;
                     Handler_tip.sendMessage(msg);
                 }
-                if(flag3==1){
+                if (flag3 == 1) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.arg1 = 3;
                     Handler_tip.sendMessage(msg);
                 }
-                if(flag1==0&&flag2==0&&flag3==0){
+                if (flag1 == 0 && flag2 == 0 && flag3 == 0) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.arg1 = 4;
                     Handler_tip.sendMessage(msg);
