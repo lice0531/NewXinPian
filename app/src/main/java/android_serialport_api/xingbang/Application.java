@@ -9,6 +9,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -36,11 +37,21 @@ public class Application extends MultiDexApplication {
     public static int db_version = 22;
 
     public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
+//        SerialPortFinder finder= new SerialPortFinder();
+//        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
         if (mSerialPort == null) {
             String path;
-            path = "/dev/ttyMT1";//KT50
+//            path = "/dev/ttyMT1";//KT50
 //            path = "/dev/ttyS2";
 //            path = "dev/ttys1";
+//            path = "dev/ttyS0";//FG50地址
+            path = "dev/ttyS1";//FG50地址
+//            2021-11-05 09:46:49.850 E/串口: value: ttyGS3 (g_serial)
+//            2021-11-05 09:46:49.850 E/串口: value: ttyGS2 (g_serial)
+//            2021-11-05 09:46:49.851 E/串口: value: ttyGS1 (g_serial)
+//            2021-11-05 09:46:49.851 E/串口: value: ttyGS0 (g_serial)
+//            2021-11-05 09:46:49.852 E/串口: value: ttyS0 (serial)
+//            2021-11-05 09:46:49.852 E/串口: value: ttyS1 (serial)
             int baudrate = 115200;
             mSerialPort = new SerialPort(new File(path), baudrate, 0, 8, 1);
         }

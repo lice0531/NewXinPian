@@ -31,7 +31,7 @@ public class SerialPortFinder {
 
                     for (i = 0; i < files.length; i++) {
                         if (files[i].getAbsolutePath().startsWith(mDeviceRoot)) {
-                            Log.d(TAG, "Found new device: " + files[i]);
+                            Log.d("串口地址", "Found new device: " + files[i]);
                             mDevices.add(files[i]);
                         }
                     }
@@ -81,6 +81,7 @@ public class SerialPortFinder {
                 while (itdev.hasNext()) {
                     String device = itdev.next().getName();
                     String value = String.format("%s (%s)", device, driver.getName());
+                    Log.e("串口", "value: "+value);
                     devices.add(value);
                 }
             }
