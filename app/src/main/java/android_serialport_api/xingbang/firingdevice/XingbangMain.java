@@ -1,19 +1,16 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.DeviceControl;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.serialport.DeviceControlSpd;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,7 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.mmkv.MMKV;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,16 +36,12 @@ import java.util.Map;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
-import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.MmkvUtils;
-import android_serialport_api.xingbang.utils.PropertiesUtil;
-import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
 import butterknife.BindView;
@@ -93,7 +85,7 @@ public class XingbangMain extends BaseActivity {
     @BindView(R.id.btn_main_lianxi)
     Button btnMainLianxi;
     private long time = 0;
-    private DeviceControl deviceControl;
+    private DeviceControlSpd deviceControl;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
@@ -111,6 +103,7 @@ public class XingbangMain extends BaseActivity {
     private String server_type1 = "";
     private String server_type2 = "";
     private String Yanzheng = "";//是否验证地理位置
+    private String version = "";//版本号
     private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
     private int jiance_time;//检测时间
@@ -130,7 +123,8 @@ public class XingbangMain extends BaseActivity {
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
         try {
-            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
+            deviceControl = new DeviceControlSpd("NEW_MAIN_FG", 108);
+//            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
 //            deviceControl.PowerOnDevice();//主板上电
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,6 +142,7 @@ public class XingbangMain extends BaseActivity {
                 if (queryTotal() == 0) {
                     readCVS();//读取雷管列表
                 }
+                Log.e("读取数据", "version: "+version);
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
@@ -234,23 +229,24 @@ public class XingbangMain extends BaseActivity {
     }
 
     private void getPropertiesData() {
-        pro_bprysfz = (String) MmkvUtils.decode("pro_bprysfz", "");
-        pro_htid = (String) MmkvUtils.decode("pro_htid", "");
-        pro_xmbh = (String) MmkvUtils.decode("pro_xmbh", "");
-        equ_no = (String) MmkvUtils.decode("equ_no", "");
-        pro_coordxy = (String) MmkvUtils.decode("pro_coordxy", "");
-        server_addr = (String) MmkvUtils.decode("server_addr", "");
-        server_port = (String) MmkvUtils.decode("server_port", "6088");
-        server_http = (String) MmkvUtils.decode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
-        server_ip = (String) MmkvUtils.decode("server_ip", "119.29.111.172");
-        qiaosi_set = (String) MmkvUtils.decode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.decode("preparation_time", 50);
-        ChongDian_time = (int) MmkvUtils.decode("chongdian_time", 28);
-        server_type1 = (String) MmkvUtils.decode("server_type1", "1");
-        server_type2 = (String) MmkvUtils.decode("server_type2", "0");
-        pro_dwdm = (String) MmkvUtils.decode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.decode("jiance_time", 50);
-        Yanzheng = (String) MmkvUtils.decode("Yanzheng", "验证");
+        pro_bprysfz = (String) MmkvUtils.getcode("pro_bprysfz", "");
+        pro_htid = (String) MmkvUtils.getcode("pro_htid", "");
+        pro_xmbh = (String) MmkvUtils.getcode("pro_xmbh", "");
+        equ_no = (String) MmkvUtils.getcode("equ_no", "");
+        pro_coordxy = (String) MmkvUtils.getcode("pro_coordxy", "");
+        server_addr = (String) MmkvUtils.getcode("server_addr", "");
+        server_port = (String) MmkvUtils.getcode("server_port", "6088");
+        server_http = (String) MmkvUtils.getcode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
+        server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
+        qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
+        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 50);
+        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 28);
+        server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
+        server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
+        pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
+        jiance_time = (int) MmkvUtils.getcode("jiance_time", 50);
+        Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
+        version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
 
@@ -273,8 +269,9 @@ public class XingbangMain extends BaseActivity {
         message.setServer_type2("0");
         message.setPro_dwdm("");
         message.setJiance_time("5");
+        message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
-        Utils.saveFile();//把软存中的数据存入磁盘中
+        Utils.saveFile_Message();//把软存中的数据存入磁盘中
     }
 
 
@@ -535,7 +532,8 @@ public class XingbangMain extends BaseActivity {
                 Intent intent5;//金建华
                 if (Yanzheng.equals("验证")) {
                     //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent5 = new Intent(this, VerificationActivity.class);
+//                    intent5 = new Intent(this, VerificationActivity.class);
+                    intent5 = new Intent(this, FiringMainActivity.class);
                 } else {
                     intent5 = new Intent(this, FiringMainActivity.class);
                 }
@@ -642,6 +640,7 @@ public class XingbangMain extends BaseActivity {
 
     private void readCVS_pro() {
         getPropertiesData();//读取偏好存储
+        Log.e("读取数据", "version: "+version);
         String path = Environment.getExternalStorageDirectory() + "/Xingbang/" + "properties.ini";
         File f = new File(path);
         if (!f.exists()) {
@@ -664,7 +663,8 @@ public class XingbangMain extends BaseActivity {
         message.setServer_type2(server_type2);
         message.setPro_dwdm(pro_dwdm);
         message.setJiance_time(String.valueOf(jiance_time));
-        message.setVersion("");//单片机系统版本/旧01/新02
+        message.setVersion(version);//单片机系统版本/旧01/新02
+        Log.e("读取数据", "version: "+version);
         if (queryMessage() == 1) {
             message.setId((long) 1);
             getDaoSession().getMessageBeanDao().update(message);

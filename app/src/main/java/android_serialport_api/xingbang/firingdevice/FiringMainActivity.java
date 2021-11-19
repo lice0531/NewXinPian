@@ -385,7 +385,8 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于4000,重启检测阶段
-            if (secondCount < Preparation_time * 0.1) {
+            if (secondCount < Preparation_time * 0.1&&busInfo!=null) {
+                Log.e(TAG, "busInfo: "+busInfo.toString() );
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 4500) {
                     increase(11);
@@ -456,9 +457,9 @@ public class FiringMainActivity extends SerialPortActivity {
 //
 //            }
 
-            if (stage == 2) {
-                cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
-            }
+//            if (stage == 2) {
+//                cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
+//            }
 //            busInfo = null;
             return false;
         });
@@ -946,6 +947,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
             denator.setErrorCode("01");
             denator.setErrorName("延时写入不一致");
+            Log.e("延时不一致", "fromData.getDelayTime(): "+fromData.getDelayTime()+"--writeDelay:"+writeDelay );
         }
         Application.getDaoSession().update(denator);
 
@@ -1157,6 +1159,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 sendCmd(initBuf);
                 Utils.writeRecord("第一次发送起爆指令--");
             }
+        }else if(DefCommand.CMD_4_XBSTATUS_7.equals(cmd)){
+            Log.e("起爆页面", "成功切换版本" );
         } else {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
@@ -1813,11 +1817,15 @@ public class FiringMainActivity extends SerialPortActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         int keyCode = event.getKeyCode();
+        Log.e(TAG, "按键-keyCode: "+keyCode);
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
         } else if (keyCode == KeyEvent.KEYCODE_5) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
+            Log.e("起爆页面", "m5DownTime: " + m5DownTime);
+            Log.e("起爆页面", "m0UpTime: " + m0UpTime);
+            Log.e("起爆页面", "spanTime: " + spanTime);
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;

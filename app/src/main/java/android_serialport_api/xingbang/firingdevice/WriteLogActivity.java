@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -49,12 +50,16 @@ public class WriteLogActivity extends BaseActivity {
         });
         pb_show = 1;
         runPbDialog();
-        new Thread(() -> {
-            String log = Utils.readLog();
-            tvLog.setText(log);
-            pb_show = 0;
-        }).start();
-
+//        new Thread(() -> {
+//            String log = Utils.readLog();
+//            tvLog.setText(log);
+//            pb_show = 0;
+//        }).start();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String log =bundle.getString("log");
+        Log.e("日志", "log: "+log );
+        tvLog.setText(log);
     }
 
     private void runPbDialog() {

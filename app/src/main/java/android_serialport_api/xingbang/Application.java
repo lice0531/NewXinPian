@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -8,12 +9,15 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 import com.tencent.bugly.Bugly;
 import com.tencent.mmkv.MMKV;
 
@@ -35,24 +39,20 @@ public class Application extends MultiDexApplication {
     public LocationService locationService;
     public static Context mContext;
     public static int db_version = 22;
+    private static String TAG = "煋邦起爆器";
 
     public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
 //        SerialPortFinder finder= new SerialPortFinder();
 //        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
         if (mSerialPort == null) {
             String path;
+//            int baudrate = 115200;
 //            path = "/dev/ttyMT1";//KT50
 //            path = "/dev/ttyS2";
 //            path = "dev/ttys1";
-//            path = "dev/ttyS0";//FG50地址
-            path = "dev/ttyS1";//FG50地址
-//            2021-11-05 09:46:49.850 E/串口: value: ttyGS3 (g_serial)
-//            2021-11-05 09:46:49.850 E/串口: value: ttyGS2 (g_serial)
-//            2021-11-05 09:46:49.851 E/串口: value: ttyGS1 (g_serial)
-//            2021-11-05 09:46:49.851 E/串口: value: ttyGS0 (g_serial)
-//            2021-11-05 09:46:49.852 E/串口: value: ttyS0 (serial)
-//            2021-11-05 09:46:49.852 E/串口: value: ttyS1 (serial)
-            int baudrate = 115200;
+
+            int baudrate = 230400;
+            path = "dev/ttyS0";//FG50地址
             mSerialPort = new SerialPort(new File(path), baudrate, 0, 8, 1);
         }
         return mSerialPort;
@@ -79,20 +79,24 @@ public class Application extends MultiDexApplication {
         mContext = getApplicationContext();
         oList = new ArrayList<>();
 
-        Bugly.init(this, "e43df75202", false);//四川id
-
-        String dir = Environment.getExternalStorageDirectory() +  File.separator +"Xingbang"+ "/mmkv";
-        MMKV.initialize(dir);//替代SharedPreferences
-        MmkvUtils.getInstance();
+        Log.e("啊", "设备型号: " + Build.DEVICE);
         //定位初始化
         locationService = new LocationService(getApplicationContext());
         //数据库实例化
 //      打开错误日志，保存到sd卡
 //        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
 //        crashHandler.init(this);
+        Bugly.init(this, "e43df75202", false);//四川id(腾讯错误日志)
+        String aaa = Environment.getExternalStorageDirectory() + File.separator;
+        Log.e(TAG, "存储地址: " + aaa);
 
-        initGreenDao();
+        String dir = Environment.getExternalStorageDirectory() + File.separator + "Xingbang" + "/mmkv";
+        MMKV.initialize(dir);//替代SharedPreferences(腾讯工具)
+        MmkvUtils.getInstance();
+        initGreenDao();//数据存储工具
         LitePal.initialize(getBaseContext());//数据存储工具
+        Logger.t(TAG);
+        Logger.addLogAdapter(new AndroidLogAdapter());//日志工具
     }
 
     /**

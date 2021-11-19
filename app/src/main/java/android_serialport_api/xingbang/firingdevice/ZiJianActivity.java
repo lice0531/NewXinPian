@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
 import android.DeviceControl;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,10 +9,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.serialport.DeviceControlSpd;
 import android.util.Log;
 import android.widget.TextView;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
@@ -23,6 +26,9 @@ import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.weyye.hipermission.HiPermission;
+import me.weyye.hipermission.PermissionCallback;
+import me.weyye.hipermission.PermissonItem;
 
 public class ZiJianActivity extends SerialPortActivity {
 
@@ -41,7 +47,7 @@ public class ZiJianActivity extends SerialPortActivity {
     private double highVoltage;
     private From42Power busInfo;
     private Handler busHandler = null;//总线信息
-    private DeviceControl deviceControl;
+    private DeviceControlSpd deviceControl;
     private int flag = 0;
     private ZiJianThread ziJianThread;
     private volatile int firstCount = 4;
@@ -52,7 +58,8 @@ public class ZiJianActivity extends SerialPortActivity {
         setContentView(R.layout.activity_zi_jian);
         ButterKnife.bind(this);
         try {
-            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
+            deviceControl = new DeviceControlSpd("NEW_MAIN_FG", 108);
+//            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
             deviceControl.PowerOnDevice();//主板上电
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,8 +75,43 @@ public class ZiJianActivity extends SerialPortActivity {
         highTiaoZheng=sp.getString("highTiaoZheng", "0");
         initHandler();
         ziJianThread = new ZiJianThread();
-        ziJianThread.start();
+//        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
+        quanxian();//申请权限
+    }
+    private void quanxian() {
+        final String TAG = "权限";
+        List<PermissonItem> permissonItems = new ArrayList<>();
+        permissonItems.add(new PermissonItem(Manifest.permission.CAMERA, "照相机", R.drawable.permission_ic_memory));
+        permissonItems.add(new PermissonItem(Manifest.permission.ACCESS_FINE_LOCATION, "定位", R.drawable.permission_ic_location));
+        permissonItems.add(new PermissonItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, "写", R.drawable.permission_ic_memory));
+        permissonItems.add(new PermissonItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读", R.drawable.permission_ic_memory));
+        permissonItems.add(new PermissonItem(Manifest.permission.INTERNET, "网络", R.drawable.permission_ic_memory));
+        permissonItems.add(new PermissonItem(Manifest.permission.RECEIVE_BOOT_COMPLETED, "网络", R.drawable.permission_ic_memory));
+        HiPermission.create(this)
+                .permissions(permissonItems)
+                .title("用户您好")
+                .checkMutiPermission(new PermissionCallback() {
+                    @Override
+                    public void onClose() {
+                        show_Toast("用户关闭权限申请");
+                    }
+
+                    @Override
+                    public void onFinish() {
+//                        show_Toast("所有权限申请完成");
+                        ziJianThread.start();
+                    }
+
+                    @Override
+                    public void onDeny(String permisson, int position) {
+                        Log.i(TAG, "onDeny");
+                    }
+
+                    @Override
+                    public void onGuarantee(String permisson, int position) {
+                    }
+                });
     }
 
     //退出方法

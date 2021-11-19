@@ -2,6 +2,9 @@ package android;
 
 
 import android.os.SystemClock;
+import android.serialport.DeviceControlSpd;
+
+import com.speedata.libutils.GpioUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,6 +25,7 @@ public class DeviceControl {
     //新设备上电路径
     public static final String POWER_NEWMAIN = "/sys/bus/platform/drivers/mediatek-pinctrl/10005000.pinctrl/mt_gpio";
 
+    public static final String POWER_NEWMAIN_FG = "/sys/devices/platform/pinctrl/mt_gpio";
     /**
      * 上电类型
      */
@@ -42,6 +46,10 @@ public class DeviceControl {
          * 新设备 sd55上电
          */
         NEW_MAIN,
+        /**
+         * 新设备 FG50上电
+         */
+        POWER_NEWMAIN_FG,
         /**
          * 9524上电sk80使用
          */
@@ -127,6 +135,9 @@ public class DeviceControl {
                 break;
             case "MAIN_AND_EXPAND2":
                 this.power_type = PowerType.MAIN_AND_EXPAND2;
+                break;
+            case "POWER_NEWMAIN_FG":
+                this.power_type = PowerType.POWER_NEWMAIN_FG;
                 break;
 
         }
@@ -253,6 +264,12 @@ public class DeviceControl {
                     SystemClock.sleep(100);
                 }
                 break;
+            case POWER_NEWMAIN_FG:
+                for(int i = 0; i < this.gpios.length; ++i) {
+                    this.newFgSetGpioOn(this.gpios[i]);
+                    SystemClock.sleep(100);
+                }
+                break;
             case EXPAND2:
                 for (int i = 0; i < gpios.length; i++) {
                     Expand2PowerOn(gpios[i]);
@@ -271,8 +288,30 @@ public class DeviceControl {
                 break;
         }
     }
+    public void newFgSetGpioOn(int gpio) throws IOException {
+        DeviceControl deviceControl = new DeviceControl("/sys/devices/platform/pinctrl/mt_gpio");
+        deviceControl.CtrlFile.write("out " + GpioUtils.getRealGpioFg(gpio) + " 1");
+        deviceControl.CtrlFile.flush();
+        this.newFgSetMode(gpio);
+        this.newFgSetDir(gpio, 1);
+    }
 
+    public void newFgSetGpioOff(int gpio) throws IOException {
+        DeviceControl deviceControl = new DeviceControl("/sys/devices/platform/pinctrl/mt_gpio");
+        deviceControl.CtrlFile.write("out " + GpioUtils.getRealGpioFg(gpio) + " 0");
+        deviceControl.CtrlFile.flush();
+    }
+    public void newFgSetMode(int gpio) throws IOException {
+        DeviceControl deviceControl = new DeviceControl("/sys/devices/platform/pinctrl/mt_gpio");
+        deviceControl.CtrlFile.write("mode " + GpioUtils.getRealGpioFg(gpio) + " 0");
+        deviceControl.CtrlFile.flush();
+    }
 
+    public void newFgSetDir(int gpio, int dir) throws IOException {
+        DeviceControl deviceControl = new DeviceControl("/sys/devices/platform/pinctrl/mt_gpio");
+        deviceControl.CtrlFile.write("dir " + GpioUtils.getRealGpioFg(gpio) + " " + dir);
+        deviceControl.CtrlFile.flush();
+    }
     /**
      * 构造函数后 程序退出时可调用此方法下电
      *
@@ -315,6 +354,12 @@ public class DeviceControl {
                 for (int i = 0; i < gpios.length; i++) {
                     newSetGpioOff(gpios[i]);
                 }
+                break;
+            case POWER_NEWMAIN_FG:
+                for(int i = 0; i < this.gpios.length; i++) {
+                    this.newFgSetGpioOff(this.gpios[i]);
+                }
+
                 break;
             default:
                 break;
@@ -393,6 +438,21 @@ public class DeviceControl {
     }
 
     /**
+     * 设置新设备上电 例如sd55 sd60
+     *
+     * @param gpio
+     * @throws IOException
+     */
+    public void newSetGpioOn_new(int gpio) throws IOException {
+        DeviceControl deviceControl = new DeviceControl(POWER_NEWMAIN_FG);
+        deviceControl.CtrlFile.write("out " + gpio + " 1");//将GPIO设置为高电平
+        deviceControl.CtrlFile.flush();
+        newSetMode_new(gpio);
+        newSetDir_new(gpio, 1);
+
+    }
+
+    /**
      * 设置新设备下点 例如sd55 sd60
      *
      * @param gpio
@@ -418,6 +478,13 @@ public class DeviceControl {
 
     }
 
+    public void newSetMode_new(int gpio) throws IOException {
+        DeviceControl deviceControl = new DeviceControl(POWER_NEWMAIN_FG);
+        deviceControl.CtrlFile.write("mode " + gpio + " 0");//将GPIO设置为GPIO模式
+        deviceControl.CtrlFile.flush();
+
+    }
+
     /**
      * 设置gpio为输入/输出模式 例如sd55 sd60
      *
@@ -427,6 +494,12 @@ public class DeviceControl {
      */
     public void newSetDir(int gpio, int dir) throws IOException {
         DeviceControl deviceControl = new DeviceControl(POWER_NEWMAIN);
+        deviceControl.CtrlFile.write("dir " + gpio + " " + dir);//将GPIO99设置为输出模式
+        deviceControl.CtrlFile.flush();
+
+    }
+    public void newSetDir_new(int gpio, int dir) throws IOException {
+        DeviceControl deviceControl = new DeviceControl(POWER_NEWMAIN_FG);
         deviceControl.CtrlFile.write("dir " + gpio + " " + dir);//将GPIO99设置为输出模式
         deviceControl.CtrlFile.flush();
 

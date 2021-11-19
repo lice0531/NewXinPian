@@ -1162,67 +1162,67 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
         if(etDuanTotal20.length()<1){
             etDuanTotal20.setText("0");
         }
-        MmkvUtils.encode("setDelayTimeStartDelaytime1", setDelayTimeStartDelaytime1.getText().toString());//开始时间
+        MmkvUtils.savecode("setDelayTimeStartDelaytime1", setDelayTimeStartDelaytime1.getText().toString());//开始时间
 
-        MmkvUtils.encode("etDuanDelaytime1", etDuanDelaytime1.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal1", etDuanTotal1.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime1", etDuanDelaytime1.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal1", etDuanTotal1.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime2", etDuanDelaytime2.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal2", etDuanTotal2.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime2", etDuanDelaytime2.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal2", etDuanTotal2.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime3", etDuanDelaytime3.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal3", etDuanTotal3.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime3", etDuanDelaytime3.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal3", etDuanTotal3.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime4", etDuanDelaytime4.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal4", etDuanTotal4.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime4", etDuanDelaytime4.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal4", etDuanTotal4.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime5", etDuanDelaytime5.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal5", etDuanTotal5.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime5", etDuanDelaytime5.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal5", etDuanTotal5.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime6", etDuanDelaytime6.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal6", etDuanTotal6.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime6", etDuanDelaytime6.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal6", etDuanTotal6.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime7", etDuanDelaytime7.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal7", etDuanTotal7.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime7", etDuanDelaytime7.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal7", etDuanTotal7.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime8", etDuanDelaytime8.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal8", etDuanTotal8.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime8", etDuanDelaytime8.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal8", etDuanTotal8.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime9", etDuanDelaytime9.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal9", etDuanTotal9.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime9", etDuanDelaytime9.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal9", etDuanTotal9.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime10", etDuanDelaytime10.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal10", etDuanTotal10.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime10", etDuanDelaytime10.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal10", etDuanTotal10.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime11", etDuanDelaytime11.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal11", etDuanTotal11.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime11", etDuanDelaytime11.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal11", etDuanTotal11.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime12", etDuanDelaytime12.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal12", etDuanTotal12.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime12", etDuanDelaytime12.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal12", etDuanTotal12.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime13", etDuanDelaytime13.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal13", etDuanTotal13.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime13", etDuanDelaytime13.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal13", etDuanTotal13.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime14", etDuanDelaytime14.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal14", etDuanTotal14.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime14", etDuanDelaytime14.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal14", etDuanTotal14.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime15", etDuanDelaytime15.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal15", etDuanTotal15.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime15", etDuanDelaytime15.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal15", etDuanTotal15.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime16", etDuanDelaytime16.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal16", etDuanTotal16.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime16", etDuanDelaytime16.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal16", etDuanTotal16.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime17", etDuanDelaytime17.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal17", etDuanTotal17.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime17", etDuanDelaytime17.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal17", etDuanTotal17.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime18", etDuanDelaytime18.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal18", etDuanTotal18.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime18", etDuanDelaytime18.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal18", etDuanTotal18.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime19", etDuanDelaytime19.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal19", etDuanTotal19.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime19", etDuanDelaytime19.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal19", etDuanTotal19.getText().toString());//段中雷管数
 
-        MmkvUtils.encode("etDuanDelaytime20", etDuanDelaytime20.getText().toString());//间隔时间
-        MmkvUtils.encode("etDuanTotal20", etDuanTotal20.getText().toString());//段中雷管数
+        MmkvUtils.savecode("etDuanDelaytime20", etDuanDelaytime20.getText().toString());//间隔时间
+        MmkvUtils.savecode("etDuanTotal20", etDuanTotal20.getText().toString());//段中雷管数
 
     }
 

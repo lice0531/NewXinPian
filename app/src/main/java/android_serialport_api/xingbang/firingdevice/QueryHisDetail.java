@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -18,8 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadHisDetailRecyclerAdapter;
@@ -219,7 +220,7 @@ public class QueryHisDetail extends BaseActivity {
             public void onItemClick(View view, int position) {
                 VoFireHisMain vo = list_savedate.get(position);
                 if (vo != null) {
-                    createDialog(vo.getBlastdate());//
+                    createDialog(vo);//
                 } else {
                     show_Toast(getString(R.string.text_error_tip54));
                 }
@@ -260,7 +261,7 @@ public class QueryHisDetail extends BaseActivity {
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        Shangchuan = (String) MmkvUtils.decode("Shangchuan","是");
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","是");
     }
 
     private void getUserMessage() {
@@ -535,17 +536,17 @@ public class QueryHisDetail extends BaseActivity {
     /***
      * 建立雷管信息表对话框
      */
-    public void createDialog(String blastdate) {
+    public void createDialog(VoFireHisMain voFireHisMain) {
         LayoutInflater inflater = LayoutInflater.from(QueryHisDetail.this);
         getlistview = inflater.inflate(R.layout.query_his_detail_listview, null);
         int flag = 0;
-        if (getString(R.string.text_alert_tip3).equals(blastdate)) {//"当前雷管记录"
+        if (getString(R.string.text_alert_tip3).equals(voFireHisMain.getBlastdate())) {//"当前雷管记录"
             flag = 1;
         }
-        getHisDetailList(blastdate, flag);//获取起爆历史详细信息
+        getHisDetailList(voFireHisMain.getBlastdate(), flag);//获取起爆历史详细信息
         // 给ListView绑定内容
-        ListView listview = (ListView) getlistview.findViewById(R.id.his_detail_listview);
-        TextView txtView = (TextView) getlistview.findViewById(R.id.his_detail_count);
+        ListView listview = getlistview.findViewById(R.id.his_detail_listview);
+        TextView txtView = getlistview.findViewById(R.id.his_detail_count);
         int count = hisListData.size();
         if (count > 0) count -= 1;
         txtView.setText(getString(R.string.text_alert_tip4) + count);//"雷管总数:"
@@ -562,10 +563,16 @@ public class QueryHisDetail extends BaseActivity {
             builder.setTitle(getString(R.string.text_alert_tip6));//"已爆雷管列表"
         builder.setView(getlistview);
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton("日志", (dialog, which) -> {
+            Intent intent = new Intent(QueryHisDetail.this, WriteLogActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("log",voFireHisMain.getLog());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
         builder.create().show();
 
     }
-
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
@@ -839,13 +846,16 @@ public class QueryHisDetail extends BaseActivity {
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
             Log.e("上传信息", log);
+            object.put("yj_version", MmkvUtils.getcode("yj_version", 2020120201));//项目编号
+            PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
+            object.put("rj_version", pi.versionName);//项目编号
             ShouQuan sq = getDaoSession().getShouQuanDao().queryBuilder().where(ShouQuanDao.Properties.Id.eq(qbxm_id)).unique();
             if (sq != null) {
                 object.put("name", sq.getSpare1());//项目编号
                 Log.e("上传信息", object.toString());
             }
 
-        } catch (JSONException e) {
+        } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         //3des加密

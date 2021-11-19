@@ -410,9 +410,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         f2DelayTxt = findViewById(R.id.re_et_f2);//F2延时
         ly_setDelay = findViewById(R.id.ly_setDelay);
         ly_showData = findViewById(R.id.ly_showData);
-        String save_f1 = (String) MmkvUtils.decode("f1", "1");
-        String save_f2 = (String) MmkvUtils.decode("f2", "1");
-        String save_start = (String) MmkvUtils.decode("start", "1");
+        String save_f1 = (String) MmkvUtils.getcode("f1", "1");
+        String save_f2 = (String) MmkvUtils.getcode("f2", "1");
+        String save_start = (String) MmkvUtils.getcode("start", "1");
         if (!save_f1.equals("1")) {
             f1DelayTxt.setText(save_f1);
         } else {
@@ -693,12 +693,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     @Override
     protected void onDestroy() {
         if (reEtF1.getText().length() > 0) {
-            MmkvUtils.encode("f1", reEtF1.getText().toString());
+            MmkvUtils.savecode("f1", reEtF1.getText().toString());
         }
         if (reEtF2.getText().length() > 0) {
-            MmkvUtils.encode("f2", reEtF1.getText().toString());
+            MmkvUtils.savecode("f2", reEtF1.getText().toString());
         }
-        MmkvUtils.encode("start", setDelayTimeStartDelaytime.getText().toString());
+        MmkvUtils.savecode("start", setDelayTimeStartDelaytime.getText().toString());
         scanDecode.onDestroy();//回复初始状态
         Utils.saveFile();//把软存中的数据存入磁盘中
 //        loadMoreData_all_lg();//

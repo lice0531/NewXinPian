@@ -1,7 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -68,10 +67,11 @@ public class SetSystemActivity extends BaseActivity {
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
-        Yanzheng = (String) MmkvUtils.decode("Yanzheng", "验证");
-        Shangchuan = (String) MmkvUtils.decode("Shangchuan", "是");
+        Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
+        Log.e("设置页面", "Shangchuan: " + Shangchuan);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -127,14 +127,14 @@ public class SetSystemActivity extends BaseActivity {
             case R.id.set_save://保存设置
                 MessageBean message = GreenDaoMaster.getAllFromInfo_bean();
                 if (swYanzheng.isChecked()) {
-                    MmkvUtils.encode("Yanzheng", "验证");
+                    MmkvUtils.savecode("Yanzheng", "验证");
                 } else {
-                    MmkvUtils.encode("Yanzheng", "不验证");
+                    MmkvUtils.savecode("Yanzheng", "不验证");
                 }
                 if (swShangchuan.isChecked()) {
-                    MmkvUtils.encode("Shangchuan", "是");
+                    MmkvUtils.savecode("Shangchuan", "是");
                 } else {
-                    MmkvUtils.encode("Shangchuan", "否");
+                    MmkvUtils.savecode("Shangchuan", "否");
                 }
 
                 if (swSetsys.isChecked()) {

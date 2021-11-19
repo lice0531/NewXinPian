@@ -1,10 +1,8 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +17,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,24 +47,18 @@ public class SystemVersionActivity extends SerialPortActivity {
         //获取偏好设置的编辑器
         edit = sp.edit();
         //赋值给控件
-        Handler_tip = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle b = msg.getData();
-                String ver = b.getString("版本号");
-                if (msg.arg1 == 1) {
-                    btnSoftVersion.setText(ver);
-                } else if(msg.arg1 == 2){
-                    btnHardwareVersion.setText(ver);
-                }else {
-                    show_Toast("切换的单片机本号:"+ver);
-                }
-
-
+        Handler_tip = new Handler(msg -> {
+            Bundle b = msg.getData();
+            String ver = b.getString("版本号");
+            if (msg.what == 1) {
+                btnSoftVersion.setText(msg.obj.toString());
+            } else if(msg.what == 2){
+                btnHardwareVersion.setText(msg.obj.toString());
+            }else {
+                show_Toast("切换的单片机本号:"+msg.obj.toString());
             }
-        };
+            return false;
+        });
         byte[] reCmd1 = FourStatusCmd.getSoftVersion("00");//43
         sendCmd(reCmd1);
     }
@@ -75,9 +68,6 @@ public class SystemVersionActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-        Log.e("返回命令", "fromCommad: "+fromCommad );
-        Log.e("返回命令", "cmdBuf.length: "+cmdBuf.length );
-        Log.e("返回命令", "size: "+size );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -113,15 +103,10 @@ public class SystemVersionActivity extends SerialPortActivity {
             String data4=a.substring(6);
             String data=data4+data3+data2+data1;
             int c = new BigInteger(data, 16).intValue();
-
-            Log.e("软件版本返回的命令", "a: "+a );
+            MmkvUtils.savecode("yj_version",c);
+//            Log.e("软件版本返回的命令", "a: "+a );
             Log.e("软件版本返回的命令", "c: "+c );
-            Message msg = Handler_tip.obtainMessage();
-            msg.arg1 = 1;
-            Bundle bundle = new Bundle();
-            bundle.putString("版本号",c+"");
-            msg.setData(bundle);
-            Handler_tip.sendMessage(msg);
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(1, c));
 
             byte[] reCmd2 = FourStatusCmd.getHardVersion("00");//44
             sendCmd(reCmd2);
@@ -134,12 +119,7 @@ public class SystemVersionActivity extends SerialPortActivity {
             String data=data4+data3+data2+data1;//反转命令
             int c = new BigInteger(data, 16).intValue();//16进制转10进制
 
-            Message msg = Handler_tip.obtainMessage();
-            msg.arg1 = 2;
-            Bundle bundle = new Bundle();
-            bundle.putString("版本号",c+"");
-            msg.setData(bundle);
-            Handler_tip.sendMessage(msg);
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(2, c));
         }else if (DefCommand.CMD_4_XBSTATUS_6.equals(cmd)) {//设置单片机版本
             String a =realyCmd1.substring(6);//2020031201
             String data1=a.substring(0,2);
@@ -151,12 +131,7 @@ public class SystemVersionActivity extends SerialPortActivity {
 
             Log.e("软件版本返回的命令", "a: "+a );
             Log.e("软件版本返回的命令", "c: "+c );
-            Message msg = Handler_tip.obtainMessage();
-            msg.arg1 = 3;
-            Bundle bundle = new Bundle();
-            bundle.putString("版本号",c+"");
-            msg.setData(bundle);
-            Handler_tip.sendMessage(msg);
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(3, c));
         }
     }
 

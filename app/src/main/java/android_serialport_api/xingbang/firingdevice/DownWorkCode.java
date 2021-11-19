@@ -47,7 +47,7 @@ import com.baidu.location.Poi;
 import com.google.gson.Gson;
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
-import com.tencent.mmkv.MMKV;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -420,12 +420,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        pro_bprysfz = (String) MmkvUtils.decode("pro_bprysfz", "");//证件号码
-        pro_htid = (String) MmkvUtils.decode("pro_htid", "");//合同号码
-        pro_xmbh = (String) MmkvUtils.decode("pro_xmbh", "");//项目编号
-        pro_coordxy = (String) MmkvUtils.decode("pro_coordxy", "");//经纬度
-        pro_dwdm = (String) MmkvUtils.decode("pro_dwdm", "");//单位代码
-        equ_no = (String) MmkvUtils.decode("equ_no", "");//设备编号
+        pro_bprysfz = (String) MmkvUtils.getcode("pro_bprysfz", "");//证件号码
+        pro_htid = (String) MmkvUtils.getcode("pro_htid", "");//合同号码
+        pro_xmbh = (String) MmkvUtils.getcode("pro_xmbh", "");//项目编号
+        pro_coordxy = (String) MmkvUtils.getcode("pro_coordxy", "");//经纬度
+        pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");//单位代码
+        equ_no = (String) MmkvUtils.getcode("equ_no", "");//设备编号
 
         at_bprysfz.setText(pro_bprysfz);
         at_htid.setText(pro_htid);

@@ -1730,7 +1730,7 @@ public class Utils {
 
         View inflate = layoutInflater.inflate(R.layout.toast_layout, null);
 
-        TextView toast_msg = (TextView) inflate.findViewById(R.id.toast_msg);
+        TextView toast_msg = inflate.findViewById(R.id.toast_msg);
 
         toast_msg.setText(msg);
 
@@ -1816,25 +1816,26 @@ public class Utils {
      */
     public static void saveFile_Message() {
         MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
-        MmkvUtils.encode("id", bean.getId().intValue());
-        MmkvUtils.encode("pro_bprysfz", bean.getPro_bprysfz());
-        MmkvUtils.encode("pro_htid", bean.getPro_htid());
-        MmkvUtils.encode("pro_xmbh", bean.getPro_xmbh());
-        MmkvUtils.encode("equ_no", bean.getEqu_no());
+        MmkvUtils.savecode("id", bean.getId().intValue());
+        MmkvUtils.savecode("pro_bprysfz", bean.getPro_bprysfz());
+        MmkvUtils.savecode("pro_htid", bean.getPro_htid());
+        MmkvUtils.savecode("pro_xmbh", bean.getPro_xmbh());
+        MmkvUtils.savecode("equ_no", bean.getEqu_no());
         if (bean.getPro_coordxy() != null) {
-            MmkvUtils.encode("pro_coordxy", bean.getPro_coordxy());
+            MmkvUtils.savecode("pro_coordxy", bean.getPro_coordxy());
         }
-        MmkvUtils.encode("server_addr", bean.getServer_addr());
-        MmkvUtils.encode("server_port", bean.getServer_port());
-        MmkvUtils.encode("server_http", bean.getServer_http());
-        MmkvUtils.encode("server_ip", bean.getServer_ip());
-        MmkvUtils.encode("qiaosi_set", bean.getQiaosi_set());
-        MmkvUtils.encode("preparation_time", Integer.parseInt(bean.getPreparation_time()));
-        MmkvUtils.encode("chongdian_time", Integer.parseInt(bean.getChongdian_time()));
-        MmkvUtils.encode("server_type1", bean.getServer_type1());
-        MmkvUtils.encode("server_type2", bean.getServer_type2());
-        MmkvUtils.encode("pro_dwdm", bean.getPro_dwdm());
-        MmkvUtils.encode("jiance_time", Integer.parseInt(bean.getJiance_time()));
+        MmkvUtils.savecode("server_addr", bean.getServer_addr());
+        MmkvUtils.savecode("server_port", bean.getServer_port());
+        MmkvUtils.savecode("server_http", bean.getServer_http());
+        MmkvUtils.savecode("server_ip", bean.getServer_ip());
+        MmkvUtils.savecode("qiaosi_set", bean.getQiaosi_set());
+        MmkvUtils.savecode("preparation_time", Integer.parseInt(bean.getPreparation_time()));
+        MmkvUtils.savecode("chongdian_time", Integer.parseInt(bean.getChongdian_time()));
+        MmkvUtils.savecode("server_type1", bean.getServer_type1());
+        MmkvUtils.savecode("server_type2", bean.getServer_type2());
+        MmkvUtils.savecode("pro_dwdm", bean.getPro_dwdm());
+        MmkvUtils.savecode("jiance_time", Integer.parseInt(bean.getJiance_time()));
+        MmkvUtils.savecode("version", bean.getVersion());
     }
 
     /**

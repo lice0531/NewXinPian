@@ -28,7 +28,7 @@ public class MmkvUtils {
      * @param key
      * @param object
      */
-    public static void encode(String key, Object object) {
+    public static void savecode(String key, Object object) {
         if (object instanceof String) {
             mkv.encode(key, (String) object);
         } else if (object instanceof Integer) {
@@ -63,7 +63,7 @@ public class MmkvUtils {
      * @param defaultObject
      * @return
      */
-    public static Object decode(String key, Object defaultObject) {
+    public static Object getcode(String key, Object defaultObject) {
         if (defaultObject instanceof String) {
             return mkv.decodeString(key, (String) defaultObject);
         } else if (defaultObject instanceof Integer) {
