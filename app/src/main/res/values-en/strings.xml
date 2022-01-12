@@ -258,7 +258,8 @@
     <string name="text_firing_jixu">Continue</string>
     <string name="text_firing_tip4">Charging, please wait a moment(</string>
     <string name="text_firing_qibao_vol">Detonation voltage :</string>
-    <string name="text_firing_tip5">Ready（press 1&amp;5 together to blast）</string>
+    <string name="text_firing_tip5">Ready（press 1&amp;3 together to blast）</string>
+    <string name="text_firing_tip5_2">Ready（press 1&amp;5 together to blast）</string>
     <string name="text_firing_tip6">Count down</string>
     <string name="text_firing_tip7">preparing to test(</string>
     <string name="text_firing_tip8">Write not returned:</string>
@@ -339,5 +340,6 @@
     <string name="text_fac_tip4">added</string>
     <string name="text_communication_state7">Bridge wire abnormality</string>
     <string name="et_hint_zuwang">Default 40s</string>
+    <string name="add_project_actv_hint">15位数字</string>
 
 </resources>

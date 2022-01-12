@@ -275,7 +275,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
         if (message.size() > 0) {
             qiaosi_set = message.get(0).getQiaosi_set();
-            version = message.get(0).getVersion();
+            version = message.get(0).getVersion()+"";
         }
     }
 
@@ -1039,7 +1039,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 tipInfoFlag = 5;//提示类型桥丝不正常
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo("A6214" + zhuce_form.getDenaId()) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+                Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
             }
             zhuce_Flag = 1;
 
@@ -1158,7 +1158,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //352841778FDE5
         //A62141778FDE5
         Log.e("注册", "detonatorId: " + detonatorId);
-        String shellBlastNo = serchShellBlastNo("A6214" + zhuce_form.getDenaId());//只能在21年用
+        String shellBlastNo = serchShellBlastNo(detonatorId);
         if (checkRepeatdenatorId(zhuce_form.getDenaId())) {//判断芯片码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
@@ -1254,7 +1254,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 if (shellBlastNo.length() == 13) {
                     values.put("shellBlastNo", shellBlastNo);
                 } else {
-                    values.put("shellBlastNo", "A6214" + zhuce_form.getDenaId());
+                    values.put("shellBlastNo", detonatorId);
                 }
                 Utils.writeRecord("--单发注册--" + "注册雷管码:" + shellBlastNo + " --芯片码:" + zhuce_form.getDenaId());
                 values.put("denatorId", zhuce_form.getDenaId());//主芯片

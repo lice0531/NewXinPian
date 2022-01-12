@@ -103,7 +103,6 @@ public abstract class SerialPortActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mApplication = (Application) getApplication();
         try {
             mSerialPort = mApplication.getSerialPort();
             mSerialPort.tcflush();

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.serialport.DeviceControlSpd;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -48,7 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
-
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 
@@ -85,7 +84,6 @@ public class XingbangMain extends BaseActivity {
     @BindView(R.id.btn_main_lianxi)
     Button btnMainLianxi;
     private long time = 0;
-    private DeviceControlSpd deviceControl;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
@@ -122,13 +120,8 @@ public class XingbangMain extends BaseActivity {
         setContentView(R.layout.activity_xingbang_main);
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
-        try {
-            deviceControl = new DeviceControlSpd("NEW_MAIN_FG", 108);
-//            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
-//            deviceControl.PowerOnDevice();//主板上电
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        initPower();                // 初始化上电方式()
 //        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
 //        db = mMyDatabaseHelper.getReadableDatabase();
 
@@ -378,11 +371,7 @@ public class XingbangMain extends BaseActivity {
             time = System.currentTimeMillis();
             show_Toast(getString(R.string.text_error_tip56));
         } else {
-            try {
-                if (deviceControl != null) deviceControl.PowerOffDevice();//主板下电
-            } catch (IOException e) {
-                e.printStackTrace();
-            }//下电
+            powerOffDevice(PIN_ADSL);//主板下电
             //点击在两秒以内
             removeALLActivity();//执行移除所以Activity方法
         }

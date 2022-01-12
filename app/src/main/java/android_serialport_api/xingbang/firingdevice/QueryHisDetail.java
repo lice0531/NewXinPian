@@ -162,8 +162,8 @@ public class QueryHisDetail extends BaseActivity {
                         String jd = list_savedate.get(pos).getLongitude();//经度
                         String wd = list_savedate.get(pos).getLatitude();//纬度
                         String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
+                        String qbxm_name = list_savedate.get(pos).getUserid();//项目名称
                         String log = list_savedate.get(pos).getLog();//日志
-                        Log.e("上传", "log: "+log );
 //                        mAdapter.notifyDataSetChanged();
                         getHisDetailList(blastdate, 0);//获取起爆历史详细信息
                         if (blastdate == null || blastdate.trim().length() < 8) {
@@ -194,7 +194,7 @@ public class QueryHisDetail extends BaseActivity {
                         if (server_type2.equals("2")) {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
-                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_id,log);//我们自己的网址
+                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
 
                         break;
                     case R.id.bt_delete:
@@ -364,7 +364,6 @@ public class QueryHisDetail extends BaseActivity {
             item.setLog(list.get(i).getLog());
             list_savedate.add(item);
         }
-        Log.e("历史记录", "list_savedate: " + list_savedate);
     }
 
 
@@ -810,7 +809,7 @@ public class QueryHisDetail extends BaseActivity {
         });
     }
 
-    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_id, final String log) {
+    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
         String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
@@ -845,16 +844,12 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            Log.e("上传信息", log);
+            Log.e("上传信息-日志", log);
             object.put("yj_version", MmkvUtils.getcode("yj_version", 2020120201));//项目编号
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("rj_version", pi.versionName);//项目编号
-            ShouQuan sq = getDaoSession().getShouQuanDao().queryBuilder().where(ShouQuanDao.Properties.Id.eq(qbxm_id)).unique();
-            if (sq != null) {
-                object.put("name", sq.getSpare1());//项目编号
-                Log.e("上传信息", object.toString());
-            }
-
+            object.put("name", qbxm_name);//项目名称
+            Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

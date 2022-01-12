@@ -155,6 +155,15 @@ public class GreenDaoMaster {
                 .list();
     }
     /**
+     * 检查重复雷管
+     */
+    public DenatorBaseinfo checkRepeatShellNo_2(String shellBlastNo) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shellBlastNo))
+                .unique();
+    }
+    /**
      * 查询生产列表中的重复雷管
      * */
     public DetonatorTypeNew checkRepeat_DetonatorTypeNew(String ShellBlastNo){

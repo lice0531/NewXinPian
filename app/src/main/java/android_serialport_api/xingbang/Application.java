@@ -41,21 +41,46 @@ public class Application extends MultiDexApplication {
     public static int db_version = 22;
     private static String TAG = "煋邦起爆器";
 
+    private String mSportName;
+    private int mPowerIndex;
+
     public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
 //        SerialPortFinder finder= new SerialPortFinder();
 //        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
         if (mSerialPort == null) {
-            String path;
-//            int baudrate = 115200;
-//            path = "/dev/ttyMT1";//KT50
-//            path = "/dev/ttyS2";
-//            path = "dev/ttys1";
-
-            int baudrate = 230400;
-            path = "dev/ttyS0";//FG50地址
-            mSerialPort = new SerialPort(new File(path), baudrate, 0, 8, 1);
+            switch (Build.DEVICE) {
+                // KT50 起爆器设备
+                case "KT50_B2": {
+                    mSportName = "/dev/ttyMT1";
+                    mPowerIndex = 0;
+                    break;
+                }
+                // ST327 S337 起爆器设备
+                case "ST327":
+                case "S337": {
+                    mSportName = "/dev/ttyMSM0";
+                    mPowerIndex = 1;
+                    break;
+                }
+                case "FG50": {//波特率230400
+                    mSportName = "/dev/ttyS0";
+                    mPowerIndex = 2;
+                    break;
+                }
+                default:
+                    Log.e("上电", "当前机型为: " + Build.DEVICE + " 该机型没有被适配");
+                    break;
+            }
+            Log.e("application", "device: " + Build.DEVICE + "串口号: " + mSportName+" mPowerIndex:"+mPowerIndex);
+            mSerialPort = new SerialPort(new File(mSportName), 115200, 0, 8, 1);
         }
         return mSerialPort;
+    }
+    /**
+     * 获取上电指数
+     */
+    public int getPowerIndex() {
+        return mPowerIndex;
     }
 
     public void serialFlush() {
@@ -79,7 +104,7 @@ public class Application extends MultiDexApplication {
         mContext = getApplicationContext();
         oList = new ArrayList<>();
 
-        Log.e("啊", "设备型号: " + Build.DEVICE);
+        Log.e("application", "设备型号: " + Build.DEVICE);
         //定位初始化
         locationService = new LocationService(getApplicationContext());
         //数据库实例化
@@ -87,14 +112,13 @@ public class Application extends MultiDexApplication {
 //        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
 //        crashHandler.init(this);
         Bugly.init(this, "e43df75202", false);//四川id(腾讯错误日志)
-        String aaa = Environment.getExternalStorageDirectory() + File.separator;
-        Log.e(TAG, "存储地址: " + aaa);
 
         String dir = Environment.getExternalStorageDirectory() + File.separator + "Xingbang" + "/mmkv";
         MMKV.initialize(dir);//替代SharedPreferences(腾讯工具)
         MmkvUtils.getInstance();
         initGreenDao();//数据存储工具
         LitePal.initialize(getBaseContext());//数据存储工具
+
         Logger.t(TAG);
         Logger.addLogAdapter(new AndroidLogAdapter());//日志工具
     }

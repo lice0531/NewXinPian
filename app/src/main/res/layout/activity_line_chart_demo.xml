@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.LineChartDemo">
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/demo_linechart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <CheckBox
+        android:id="@+id/demo_checkbox1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="折线1" />
+
+    <CheckBox
+        android:id="@+id/demo_checkbox2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="折线2" />
+
+    <CheckBox
+        android:id="@+id/demo_checkbox3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="折线3" />
+
+    <Button
+        android:id="@+id/demo_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开始"/>
+
+    <Button
+        android:id="@+id/demo_pause"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="暂停"/>
+
+</LinearLayout >

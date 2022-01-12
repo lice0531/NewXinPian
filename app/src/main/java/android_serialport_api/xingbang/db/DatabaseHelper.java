@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "regdate text, " //注册日期
             + "wire text, "//桥丝状态
             + "name text, "
-            + "denatorIdSup text "//芯片码
+            + "denatorIdSup text "//从芯片码
             +")";
     
     //用于创建爆炸雷管历史主表

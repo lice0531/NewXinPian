@@ -112,6 +112,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private TextView ll_firing_IC_7;
     private TextView ll_firing_Hv_7;
     private TextView ll_firing_Hv_6;
+    private TextView ll_txt_firing_7;
     private To52Test writeVo;
     private static volatile int stage;//
     private static volatile int startFlag = 0;
@@ -180,6 +181,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private ArrayList<Map<String, Object>> errDeData = new ArrayList<>();//错误雷管
     ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//起爆雷管
     private String qbxm_id = "-1";
+    private String qbxm_name = "";
     private int isshow = 0;
     private float cankao_ic = 0;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
@@ -199,10 +201,13 @@ public class FiringMainActivity extends SerialPortActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         qbxm_id = (String) bundle.get("qbxm_id");
+        qbxm_name = (String) bundle.get("qbxm_name");
         if (qbxm_id == null) {
             qbxm_id = "-1";
+            qbxm_name = " ";
         }
         Log.e(TAG, "qbxm_id: " + qbxm_id);
+        Log.e(TAG, "qbxm_name: " + qbxm_name);
 //        Utils.writeLog("起爆页面-qbxm_id:" + qbxm_id);
         startFlag = 1;
         initView();
@@ -248,6 +253,19 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_IC_7 = findViewById(R.id.ll_firing_IC_7);
         ll_firing_Hv_7 = findViewById(R.id.ll_firing_Hv_7);//起爆电压
         ll_firing_Hv_6 = findViewById(R.id.ll_firing_Hv_6);//起爆电压
+        ll_txt_firing_7 = (TextView) findViewById(R.id.ll_txt_firing_7);//起爆提示
+        String device = Build.DEVICE;
+        switch (device) {
+            case "KT50_B2": {
+                ll_txt_firing_7.setText(R.string.text_firing_tip5_2);
+                break;
+            }
+            case "ST327":
+            case "S337": {
+                ll_txt_firing_7.setText(R.string.text_firing_tip5);
+                break;
+            }
+        }
 
         btn_fir_over = findViewById(R.id.btn_fir);//起爆电压
         btn_fir_over.setOnClickListener(view -> keyFireCmd = 1);
@@ -818,12 +836,12 @@ public class FiringMainActivity extends SerialPortActivity {
         his.setBlastdate(fireDate);
         his.setUploadStatus("未上传");
         his.setRemark("已起爆");
-        his.setUserid(userId);
         his.setEqu_no(equ_no);
-        his.setSerialNo(Integer.parseInt(qbxm_id));
+        his.setUserid(qbxm_name);
         his.setPro_htid(pro_htid);
         his.setPro_xmbh(pro_xmbh);
         his.setPro_dwdm(pro_dwdm);
+        his.setSerialNo(Integer.parseInt(qbxm_id));
         his.setLog(Utils.readLog(Utils.getDate(new Date())));
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
@@ -986,8 +1004,10 @@ public class FiringMainActivity extends SerialPortActivity {
          */
         //	byte[] initBuf = FiveTestingCmd.setToXbCommon_InCheckModel_Init25("00");
         //sendCmd(initBuf);
-        if (!firstThread.isAlive())
+        if (!firstThread.isAlive()){
             firstThread.start();
+        }
+
         super.onStart();
     }
 
@@ -1233,37 +1253,37 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
                 Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
-                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
-                    Log.e(TAG, "大于4000u ，全错: ");
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
-                    }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4000u ，全错
-
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况");//弹出框
-                    }
-
-                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 12 + 100)) {//小于参考值 ，部分错
-                    if (chongfu) {
-                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
-                    } else {
-                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
-                    }
-                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
-                    if (chongfu) {
-                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行重新检测。");//弹出框
-                    } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
-                    }
-                    Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
-                }
+//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
+//                    Log.e(TAG, "大于4000u ，全错: ");
+//                    if (chongfu) {
+//                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
+//                    } else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+//                    }
+//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4000u ，全错
+//
+//                    if (chongfu) {
+//                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
+//                    } else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况");//弹出框
+//                    }
+//
+//                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 12 + 100)) {//小于参考值 ，部分错
+//                    if (chongfu) {
+//                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
+//                    } else {
+//                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
+//                    }
+//                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
+//                    if (chongfu) {
+//                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行重新检测。");//弹出框
+//                    } else {
+//                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+//                    }
+//                    Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
+//                }
 
                 break;
             case 5:
@@ -1481,7 +1501,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 2://
                             //发出进入起爆模式命令  准备测试计时器
-                            if (secondCount == 1 && secondCmdFlag == 0) {//
+                            if (secondCount == 0 && secondCmdFlag == 0) {//
                                 byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
                                 sendCmd(powerCmd);
                                 increase(5);
@@ -1817,24 +1837,29 @@ public class FiringMainActivity extends SerialPortActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         int keyCode = event.getKeyCode();
-        Log.e(TAG, "按键-keyCode: "+keyCode);
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-        } else if (keyCode == KeyEvent.KEYCODE_5) {
+            Log.e("起爆页面", "m0UpTime: " + m0UpTime);
+        } else if (keyCode == KeyEvent.KEYCODE_3&& !Build.DEVICE.equals("KT50_B2")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
-            Log.e("起爆页面", "m5DownTime: " + m5DownTime);
-            Log.e("起爆页面", "m0UpTime: " + m0UpTime);
-            Log.e("起爆页面", "spanTime: " + spanTime);
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;
-                    Utils.writeRecord("--按1+5起爆--");
+                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
                 }
-                Log.e("起爆页面", "按1+5起爆--keyFlag: " + keyFlag);
+            }
+        } else if (keyCode == KeyEvent.KEYCODE_5 && Build.DEVICE.equals("KT50_B2")) {
+            m5DownTime = System.currentTimeMillis();
+            long spanTime = m5DownTime - m0UpTime;
+            if (spanTime < 500) {
+                if (stage == 7) {
+                    keyFireCmd = 1;
+                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                }
             }
         }
-
+        Utils.writeRecord("--按组合键起爆--");
         return super.dispatchKeyEvent(event);
     }
 

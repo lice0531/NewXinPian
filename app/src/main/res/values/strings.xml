@@ -261,7 +261,8 @@
     <string name="text_firing_jixu">继续</string>
     <string name="text_firing_tip4">正在充电，请稍后</string>
     <string name="text_firing_qibao_vol">起爆电压 :</string>
-    <string name="text_firing_tip5">雷管是否起爆 (按1+5组合键起爆雷管)</string>
+    <string name="text_firing_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
+    <string name="text_firing_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
     <string name="text_firing_tip6">倒计时</string>
     <string name="text_firing_tip7">测试准备2阶段 (</string>
     <string name="text_firing_tip8">写入未返回:</string>
@@ -340,5 +341,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="app_title">煋邦起爆系统   /  版本3.25</string>
+    <string name="add_project_actv_hint">合同,项目,单位代码必填一项</string>
 
 </resources>

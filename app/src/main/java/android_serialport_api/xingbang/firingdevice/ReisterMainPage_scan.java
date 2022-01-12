@@ -1,6 +1,8 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
+
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -1100,6 +1102,31 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     doWithReceivData(cmd, cmdBuf);
                 }
             }
+        } else {
+            String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
+            Utils.writeLog("扫码结果:" + data);
+            //扫码注册
+            if (data.length() == 19) {//扫描箱号
+                addXiangHao(data);
+            }
+            if (sanButtonFlag > 0 && data.length() == 13) {
+//                optGpio_down(PIN_TRACKER_EN);//扫描头下电
+                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+
+//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1004, data));
+
+            } else {
+                String barCode = getContinueScanBlastNo(data);
+                if (barCode == null) return;
+                if (checkRepeatShellNo(barCode) ) {
+                    singleShellNo = barCode;
+                    isCorrectReisterFea = 4;
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
+                    return;
+                }
+                int a = insertSingleDenator(barCode);
+            }
+
         }
     }
 
@@ -1215,7 +1242,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return -1;
         }
         //检查重复数据
-        if (checkRepeatShellNo(shellNo) == 1) {
+        if (checkRepeatShellNo(shellNo)) {
             singleShellNo = "";
             singleShellNo = shellNo;
             isCorrectReisterFea = 4;
@@ -1437,7 +1464,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 "--结束后5位:" + end + "--开始延时:" + start_delay);
         for (int i = start; i <= end; i++) {
             shellNo = prex + String.format("%05d", i);
-            if (checkRepeatShellNo(shellNo) == 1) {
+            if (checkRepeatShellNo(shellNo)) {
                 singleShellNo = "";
                 singleShellNo = shellNo;
                 isCorrectReisterFea = 4;
@@ -1577,24 +1604,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * @param shellBlastNo
      * @return
      */
-    public int checkRepeatShellNo(String shellBlastNo) {
-        String selection = "shellBlastNo = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {shellBlastNo + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-        Cursor cursor = db.query("denatorBaseinfo", null, selection, selectionArgs, null, null, null);
-        if (cursor != null) {  //cursor不位空,可以移动到第一行
-            boolean flag = cursor.moveToFirst();
-            if (flag) {
-                lg_No = cursor.getString(1);
-                cursor.close();
-                return 1;//重复
-            } else {
-                cursor.close();
-                return 0;
-            }
-
+    public boolean checkRepeatShellNo(String shellBlastNo) {
+        DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().checkRepeatShellNo_2(shellBlastNo);
+        if (denatorBaseinfo != null) {
+            Log.e("注册", "denatorBaseinfo: " + denatorBaseinfo.toString());
+            lg_No = denatorBaseinfo.getBlastserial() + "";
+            return true;
         } else {
-            if (cursor != null) cursor.close();
-            return 0;
+            return false;
         }
     }
 
@@ -1629,9 +1646,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             e.printStackTrace();
                         }
                     }
+                    //kt50持续扫码线程
                     scanBarThread = new ScanBar();
                     scanBarThread.start();
-
+                    //st327上电
+                    powerOnScanDevice(PIN_TRACKER_EN);//扫码头上电
 
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scaning));//"正在扫码"
                     btnReisterScanStartEd.setEnabled(false);
@@ -1641,7 +1660,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
                     btnReisterScanStartEd.setEnabled(true);
                     btnReisterScanStartSt.setEnabled(true);
+                    //kt50停止扫码头方法
                     scanDecode.stopScan();//停止扫描
+                    //st327扫码下电
+                    powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
                         try {

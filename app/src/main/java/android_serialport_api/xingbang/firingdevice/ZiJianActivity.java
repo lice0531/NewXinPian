@@ -9,9 +9,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.serialport.DeviceControlSpd;
 import android.util.Log;
 import android.widget.TextView;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,8 @@ import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissonItem;
 
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
+
 public class ZiJianActivity extends SerialPortActivity {
 
     @BindView(R.id.tv_zj_num)
@@ -47,7 +49,6 @@ public class ZiJianActivity extends SerialPortActivity {
     private double highVoltage;
     private From42Power busInfo;
     private Handler busHandler = null;//总线信息
-    private DeviceControlSpd deviceControl;
     private int flag = 0;
     private ZiJianThread ziJianThread;
     private volatile int firstCount = 4;
@@ -57,13 +58,8 @@ public class ZiJianActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zi_jian);
         ButterKnife.bind(this);
-        try {
-            deviceControl = new DeviceControlSpd("NEW_MAIN_FG", 108);
-//            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
-            deviceControl.PowerOnDevice();//主板上电
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        initPower();                // 初始化上电方式()
+        powerOnDevice(PIN_ADSL);    // 上电
 
         //获取偏好设置的编辑器
         SharedPreferences sp = getSharedPreferences("config", 0);
@@ -71,14 +67,15 @@ public class ZiJianActivity extends SerialPortActivity {
         //获取低压高压值
         lowVoltage = Utils.convertToDouble(sp.getString("lowVoltage", "8.5"), 8.5);
         highVoltage = Utils.convertToDouble(sp.getString("highVoltage", "16"), 16);
-        lowTiaoZheng=sp.getString("lowTiaoZheng", "0");
-        highTiaoZheng=sp.getString("highTiaoZheng", "0");
+        lowTiaoZheng = sp.getString("lowTiaoZheng", "0");
+        highTiaoZheng = sp.getString("highTiaoZheng", "0");
         initHandler();
         ziJianThread = new ZiJianThread();
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
     }
+
     private void quanxian() {
         final String TAG = "权限";
         List<PermissonItem> permissonItems = new ArrayList<>();
@@ -116,14 +113,9 @@ public class ZiJianActivity extends SerialPortActivity {
 
     //退出方法
     private void exit() {
-
-            try {
-                if (deviceControl != null) deviceControl.PowerOffDevice();//主板下电
-            } catch (IOException e) {
-                e.printStackTrace();
-            }//下电
-            //点击在两秒以内
-            removeALLActivity();//执行移除所以Activity方法
+        powerOffDevice(PIN_ADSL);//主板下电
+        //点击在两秒以内
+        removeALLActivity();//执行移除所以Activity方法
     }
 
     private class ZiJianThread extends Thread {
@@ -158,18 +150,18 @@ public class ZiJianActivity extends SerialPortActivity {
         int a = Double.valueOf(lowVoltage * 10).intValue();
         byte[] delayBye = Utils.shortToByte((short) a);
         String delayStr = Utils.bytesToHexFun(delayBye);
-        String b=delayStr.substring(0,2);
-        String c=delayStr.substring(2);
+        String b = delayStr.substring(0, 2);
+        String c = delayStr.substring(2);
 
         int a2 = Double.valueOf(highVoltage * 10).intValue();
         byte[] delayBye2 = Utils.shortToByte((short) a2);
         String delayStr1 = Utils.bytesToHexFun(delayBye2);
-        String d=delayStr1.substring(0,2);
-        String e=delayStr1.substring(2);
-        Log.e("低压", "c+b: "+ c+b);
-        Log.e("高压", "e+d: "+ e+d);
-        Utils.writeRecord("设置低压"+(c+b)+"--设置高压"+(e+d));
-        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c+b)+(e+d));//14
+        String d = delayStr1.substring(0, 2);
+        String e = delayStr1.substring(2);
+        Log.e("低压", "c+b: " + c + b);
+        Log.e("高压", "e+d: " + e + d);
+        Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
+        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c + b) + (e + d));//14
         sendCmd(powerCmd);
     }
 
@@ -312,22 +304,21 @@ public class ZiJianActivity extends SerialPortActivity {
 //            busHandler.sendMessage(busHandler.obtainMessage());
         } else if (DefCommand.CMD_1_REISTER_5.equals(cmd)) {//14 核心板自检
 
-            String fromCommad =  Utils.bytesToHexFun(locatBuf);
+            String fromCommad = Utils.bytesToHexFun(locatBuf);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            Log.e("核心板自检", "realyCmd1: " + realyCmd1);//0014 06 9D02 D404 0000
-            String a=realyCmd1.substring(6,8);
-            String a1=realyCmd1.substring(8,10);
-            String b=realyCmd1.substring(10,12);
-            String b1=realyCmd1.substring(12,14);
-            String c=realyCmd1.substring(14,16);//总线电流
-            String c1=realyCmd1.substring(16);
-            double voltLow =(Integer.parseInt(a1, 16)*256+Integer.parseInt(a, 16))/4.095*3.0 * 0.006;
-            double voltHeigh =(Integer.parseInt(b1, 16)*256+Integer.parseInt(b, 16))/4.095*3.0 * 0.006;
+            String a = realyCmd1.substring(6, 8);
+            String a1 = realyCmd1.substring(8, 10);
+            String b = realyCmd1.substring(10, 12);
+            String b1 = realyCmd1.substring(12, 14);
+            String c = realyCmd1.substring(14, 16);//总线电流
+            String c1 = realyCmd1.substring(16);
+            double voltLow = (Integer.parseInt(a1, 16) * 256 + Integer.parseInt(a, 16)) / 4.095 * 3.0 * 0.006;
+            double voltHeigh = (Integer.parseInt(b1, 16) * 256 + Integer.parseInt(b, 16)) / 4.095 * 3.0 * 0.006;
 //            Log.e("核心板自检", "voltLow: " +voltLow);
 //            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
-            Utils.writeRecord("单片机返回的设置电压--低压:"+voltLow+"--高压:"+voltHeigh);
-            dianya_low = Utils.getFloatToFormat((float)voltLow, 2, 4);
-            dianya_high = Utils.getFloatToFormat((float)voltHeigh, 2, 4);
+            Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
+            dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
+            dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
             byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
             sendCmd(powerCmd);
         }

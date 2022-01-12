@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="cardview_style">
+        <item name="cardCornerRadius">6dp</item>
+        <item name="cardElevation">10dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="layout_constraintWidth_percent">0.9</item>
+        <item name="layout_constrainedHeight">true</item>
+        <item name="layout_constraintDimensionRatio">6</item>
+        <item name="layout_constraintLeft_toLeftOf">parent</item>
+        <item name="layout_constraintRight_toRightOf">parent</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintVertical_bias">0.8</item>
+        <item name="android:layout_marginTop">6.5dp</item>
+    </style>
+</resources>

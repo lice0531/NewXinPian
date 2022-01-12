@@ -323,6 +323,7 @@ public class PracticeActivity extends SerialPortActivity {
      * 读取输入注册
      */
     private void registerDetonator_typeNew(String leiguan) {
+        getDaoSession().getDetonatorTypeNewDao().deleteAll();//
         String[] lg = leiguan.split(",");
         String shellNo;
         int maxNo = getMaxNumberNo();

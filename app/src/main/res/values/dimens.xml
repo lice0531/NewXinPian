@@ -50,4 +50,8 @@
 
     <dimen name="pb_progressBar">50dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="menu_item_heigh">55dp</dimen>
+    <dimen name="addproject_heigh">60dp</dimen>
+    <dimen name="addproject_tv_left">10dp</dimen>
 </resources>
