@@ -208,7 +208,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         Log.e(TAG, "qbxm_id: " + qbxm_id);
         Log.e(TAG, "qbxm_name: " + qbxm_name);
-//        Utils.writeLog("起爆页面-qbxm_id:" + qbxm_id);
+        Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
         initView();
         initHandle();
