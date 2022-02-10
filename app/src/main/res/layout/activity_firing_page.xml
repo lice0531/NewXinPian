@@ -544,7 +544,6 @@
 
             <Button
                 android:id="@+id/btn_firing_continue_4"
-
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:background="@drawable/bt_mainpage_style"

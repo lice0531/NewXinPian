@@ -47,7 +47,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
     private Handler busHandler = null;//总线信息
     private int flag = 0;
     private ZiJianThread ziJianThread;
-    private volatile int firstCount = 4;
+    private volatile int firstCount = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +189,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
                     busHandler.sendMessage(busHandler.obtainMessage());
 
                     Thread.sleep(1000);
-                    if (firstCount == 2) {
+                    if (firstCount == 1) {
                         test();//检测设备是否正常
                     }
                     if (firstCount == 0) {

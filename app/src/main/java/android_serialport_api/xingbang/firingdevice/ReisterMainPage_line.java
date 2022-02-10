@@ -445,11 +445,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                insertDenator(prex, finalStrNo, finalEndNo);//添加
-            }
+        new Thread(() -> {
+            insertDenator(prex, finalStrNo, finalEndNo);//添加
         }).start();
     }
 
@@ -1065,7 +1062,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                     SoundPlayUtils.play(4);
                     zhuce_Flag = 0;
-                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo("A6214" + zhuce_form.getDenaId()) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
+                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                 } else {
                     if (zhuce_form != null) {//管厂码,特征码,雷管id
 //                        // 获取 管壳码
@@ -1409,8 +1406,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     /**
      * 检查重复的数据
      *
-     * @param shellBlastNo
-     * @return
+     * @param detonatorId 管壳码
+     * @return 是否重复
      */
     public boolean checkRepeatdenatorId(String detonatorId) {
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);

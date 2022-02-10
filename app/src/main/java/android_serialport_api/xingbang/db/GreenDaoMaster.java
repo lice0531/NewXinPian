@@ -4,6 +4,8 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.content.Context;
 import android.os.Message;
+import android.util.Log;
+
 import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.List;
 import android_serialport_api.xingbang.Application;
@@ -102,7 +104,9 @@ public class GreenDaoMaster {
      * 通过芯片码获取管壳码
      * */
     public String queryDetonatorTypeNew(String detonatorId) {
-        List<DetonatorTypeNew> dt =detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.eq(detonatorId)).list();
+        Log.e("模糊查询", "detonatorId.substring(7): "+detonatorId.substring(7) );
+        List<DetonatorTypeNew> dt =detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.like("%"+detonatorId.substring(7))).list();
+//        List<DetonatorTypeNew> dt =detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.eq(detonatorId)).list();
         if(dt.size()>=1){
             return dt.get(0).getShellBlastNo();
         }else {
@@ -140,10 +144,14 @@ public class GreenDaoMaster {
      * 查询注册列表中的重复芯片码
      * */
     public List<DenatorBaseinfo> checkRepeatdenatorId(String detonatorId){
+//        return mDeantorBaseDao
+//                .queryBuilder()
+//                .where(DenatorBaseinfoDao.Properties.DenatorId.eq(detonatorId))
+//                .list();
         return mDeantorBaseDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.DenatorId.eq(detonatorId))
-                .list();
+                .where(DenatorBaseinfoDao.Properties.DenatorId.like(detonatorId.substring(7)))
+                .list();//0209为李斌改的不用4字节的首字节进行的模糊查询
     }
     /**
      * 查询注册列表中的重复雷管

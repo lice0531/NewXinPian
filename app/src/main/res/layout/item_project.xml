@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ly_sq"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="6dp"
+        android:padding="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalbar"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_height="match_parent"
+                    android:text="项目名称:"
+                    android:gravity="start"
+                    android:textSize="@dimen/item_project_size"
+                     />
+
+                <TextView
+                    android:id="@+id/tv_sp_name"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:text="北京"
+                    android:gravity="start"
+                    android:textSize="@dimen/item_project_size"
+                     />
+
+                <CheckBox
+                    android:id="@+id/isChoice"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="2dp"
+                    />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:id="@+id/ll_htbh"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:text="合同编号:"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_sp_htbh"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="match_parent"
+                        android:text="合同编号"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                        />
+                    <TextView
+                        android:id="@+id/tv_sp_yyx_1"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:text="非营业性"
+                        android:gravity="end"
+                        android:textSize="@dimen/item_project_size"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_xmbh"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:text="项目编号:"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                         />
+
+                    <TextView
+                        android:id="@+id/tv_sp_xmbh"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="match_parent"
+                        android:text="项目编号"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                         />
+                    <TextView
+                        android:id="@+id/tv_sp_yyx_2"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:text="非营业性"
+                        android:gravity="end"
+                        android:textSize="@dimen/item_project_size"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_dwdm"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:text="单位代码:"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                         />
+
+                    <TextView
+                        android:id="@+id/tv_sp_dwdm"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="match_parent"
+                        android:text="单位代码"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                         />
+                    <TextView
+                        android:id="@+id/tv_sp_yyx_3"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:text="非营业性"
+                        android:gravity="end"
+                        android:textSize="@dimen/item_project_size"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="match_parent"
+                        android:gravity="start"
+                        android:text="身份证:"
+                        android:textSize="@dimen/item_project_size"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_sp_sfz"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="4"
+                        android:layout_height="wrap_content"
+                        android:text="身份证"
+                        android:gravity="start"
+                        android:textSize="@dimen/item_project_size"
+                        />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:src="@drawable/icon_xiugai2"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </LinearLayout>
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btn_del_name"
+            style="@style/allbtntstyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:textColor="#FF0000"
+            android:background="#E5E5E5"
+            android:text="删除"
+            android:ems="1"/>
+    </androidx.cardview.widget.CardView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="经纬度："
+             />
+
+        <TextView
+            android:id="@+id/tv_sp_coordxy"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="经纬度"
+             />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

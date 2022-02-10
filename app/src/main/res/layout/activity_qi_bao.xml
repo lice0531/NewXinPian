@@ -30,14 +30,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-
+            <TextView
+                android:id="@+id/qb_tv_tip"
+                style="@style/alltextstyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:text="测试准备" />
             <TextView
                 android:id="@+id/qb_tv_dianya"
                 style="@style/alltextstyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="16V" />
+                android:text="0V" />
 
             <TextView
                 android:id="@+id/qb_tv_dianliu"
@@ -45,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="10000μA" />
+                android:text="0μA" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -53,7 +59,7 @@
         android:id="@+id/cardView9"
         style="@style/cardview_style"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="正确:300" />
+                android:text="正确:0" />
 
             <View
                 android:layout_width="1dp"
@@ -86,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="错误:100" />
+                android:text="错误:0" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -95,15 +101,16 @@
         android:id="@+id/qb_icView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.175" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView9"
+        app:layout_constraintVertical_bias="0.027" />
 
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/mvDetailLineChart"
+        android:id="@+id/qb_dianliu_LC"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -111,26 +118,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qb_totalbar" />
 
+
     <Button
         android:id="@+id/qb_bt_jiance"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="456dp"
+        android:layout_marginTop="48dp"
         android:text="重新检测"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.302"
+        app:layout_constraintHorizontal_bias="0.301"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mvDetailLineChart" />
+        app:layout_constraintTop_toBottomOf="@+id/qb_icView" />
 
     <Button
         android:id="@+id/qb_bt_chongdian"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="456dp"
+        android:layout_marginTop="48dp"
         android:text="开始充电"
+        android:onClick="onClick"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.803"
+        app:layout_constraintHorizontal_bias="0.786"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mvDetailLineChart" />
+        app:layout_constraintTop_toBottomOf="@+id/qb_icView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

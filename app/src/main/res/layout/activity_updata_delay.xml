@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.UpdataDelayActivity">
+    <include
+        android:id="@+id/totalbar"
+        layout="@layout/title_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalbar"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="默认注册延时方案" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_marginStart="15dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical|start"
+            android:layout_height="match_parent"
+            android:text="起始延时" />
+
+        <EditText
+            android:id="@+id/ud_et_qsys"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:text="0" />
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:text="ms" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_marginStart="15dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical|start"
+            android:layout_height="match_parent"
+            android:text="排间延时" />
+
+        <EditText
+            android:id="@+id/ud_et_pjys"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:text="0" />
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:text="ms" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.003">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_marginStart="15dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical|start"
+            android:layout_height="match_parent"
+            android:text="孔间延时" />
+
+        <EditText
+            android:id="@+id/ud_et_kjys"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:text="60" />
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:text="ms" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_marginStart="15dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical|start"
+            android:layout_height="match_parent"
+            android:text="孔内延时" />
+
+        <EditText
+            android:id="@+id/ud_et_knys"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:text="0" />
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:text="ms" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="快捷键延时方案" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_marginStart="15dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical|start"
+            android:layout_height="match_parent"
+            android:text="F1键" />
+
+        <EditText
+            android:id="@+id/ud_et_f1ys"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:text="0" />
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:text="ms" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout8"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_marginStart="15dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical|start"
+            android:layout_height="match_parent"
+            android:text="F2键" />
+
+        <EditText
+            android:id="@+id/ud_et_f2ys"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:text="0" />
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:text="ms" />
+    </LinearLayout>
+
+    <Button
+        android:onClick="onClick"
+        android:id="@+id/ud_btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/allbtntstyle"
+        android:text="保存"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8" />
+</androidx.constraintlayout.widget.ConstraintLayout>

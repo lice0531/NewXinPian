@@ -142,8 +142,8 @@
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
-                android:text="信息采集"
-                android:visibility="invisible" />
+                android:text="辅助功能"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/btn_set_exit"

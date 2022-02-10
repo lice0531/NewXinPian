@@ -770,55 +770,42 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         }).start();
     }
 
-    /**
-     * 初始化AutoCompleteTextView，最多显示5项提示，使
-     * AutoCompleteTextView在一开始获得焦点时自动提示
-     *
-     * @param field 保存在sharedPreference中的字段名
-     * @param auto  要操作的AutoCompleteTextView
-     */
-    private void initAutoComplete(String field, AutoCompleteTextView auto) {
-        SharedPreferences sp = getSharedPreferences("network_url", 0);
-//        MMKV kv = MMKV.mmkvWithID("network_url");
-//        kv.importFromSharedPreferences(sp);
-        String longhistory = sp.getString(field, "当前无记录");
-        String[] hisArrays = longhistory.split("#");
+//    private void initAutoComplete(String field, AutoCompleteTextView auto) {
+//        SharedPreferences sp = getSharedPreferences("network_url", 0);
+////        MMKV kv = MMKV.mmkvWithID("network_url");
+////        kv.importFromSharedPreferences(sp);
+//        String longhistory = sp.getString(field, "当前无记录");
+//        String[] hisArrays = longhistory.split("#");
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
+//        auto.setAdapter(adapter);
+//        auto.setDropDownHeight(500);
+//        auto.setDropDownWidth(450);
+//        auto.setThreshold(1);
+//        auto.setCompletionHint("最近的20条记录");
+//        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                AutoCompleteTextView view = (AutoCompleteTextView) v;
+//                if (hasFocus) {
+//                    view.showDropDown();
+//                }
+//            }
+//        });
+//    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
-        auto.setAdapter(adapter);
-        auto.setDropDownHeight(500);
-        auto.setDropDownWidth(450);
-        auto.setThreshold(1);
-        auto.setCompletionHint("最近的20条记录");
-        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                AutoCompleteTextView view = (AutoCompleteTextView) v;
-                if (hasFocus) {
-                    view.showDropDown();
-                }
-            }
-        });
-    }
-
-    /**
-     * 把指定AutoCompleteTextView中内容保存到sharedPreference中指定的字符段
-     *
-     * @param field 保存在sharedPreference中的字段名
-     * @param auto  要操作的AutoCompleteTextView
-     */
-    private void saveHistory(String field, AutoCompleteTextView auto) {
-        String text = auto.getText().toString();
-        Log.e("保存输入框历史", "text: " + text);//MMKV保存为空,有空再排错
-//        MMKV mmkv_his = MMKV.mmkvWithID("network_url");
-        SharedPreferences sp = getSharedPreferences("network_url", 0);
-        String longhistory = sp.getString(field, "");
-        if (!longhistory.contains(text + "#")) {
-            StringBuilder sb = new StringBuilder(longhistory);
-            sb.insert(0, text + "#");
-            sp.edit().putString(field, sb.toString()).apply();
-        }
-    }
+//    private void saveHistory(String field, AutoCompleteTextView auto) {
+//        String text = auto.getText().toString();
+//        Log.e("保存输入框历史", "text: " + text);//MMKV保存为空,有空再排错
+////        MMKV mmkv_his = MMKV.mmkvWithID("network_url");
+//        SharedPreferences sp = getSharedPreferences("network_url", 0);
+//        String longhistory = sp.getString(field, "");
+//        if (!longhistory.contains(text + "#")) {
+//            StringBuilder sb = new StringBuilder(longhistory);
+//            sb.insert(0, text + "#");
+//            sp.edit().putString(field, sb.toString()).apply();
+//        }
+//    }
 
     //获取用户信息
     private void getUserMessage() {

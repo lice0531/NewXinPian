@@ -323,11 +323,10 @@ public class PracticeActivity extends SerialPortActivity {
      * 读取输入注册
      */
     private void registerDetonator_typeNew(String leiguan) {
-        getDaoSession().getDetonatorTypeNewDao().deleteAll();//
+        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         String[] lg = leiguan.split(",");
         String shellNo;
-        int maxNo = getMaxNumberNo();
-
+//        int maxNo = getMaxNumberNo();
         for (int i = 0; i < lg.length; i++) {
             shellNo = lg[i];
             String[] a = shellNo.split("#");
@@ -349,7 +348,7 @@ public class PracticeActivity extends SerialPortActivity {
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
-        show_Toast_ui("接收成功");
+        show_Toast_ui("读取成功");
     }
 
 

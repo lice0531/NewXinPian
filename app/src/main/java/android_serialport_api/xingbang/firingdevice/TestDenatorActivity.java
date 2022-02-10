@@ -523,7 +523,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         show_Toast(getString(R.string.text_error_tip34));
                     break;
                 }
-                if (busInfo != null && firstCount > Preparation_time * 0.8) {//8秒后再显示电压电流
+                if (busInfo != null && firstCount > Preparation_time * 0.5) {//8秒后再显示电压电流
                     String displayIcStr = "" + busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
                     //displayIc =
@@ -809,7 +809,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == Preparation_time) {
                                 revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
                             }
-                            if (firstCount > Preparation_time * 0.8) {//Preparation_time-1
+                            if (firstCount > Preparation_time * 0.5) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
@@ -871,7 +871,6 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                Log.e("测试21延时", "data  " + denatorId + "--" + delayStr);
                                 //发送命令21写入延时时间，检测结果看雷管是否正常
                                 initBuf = SecondNetTestCmd.setToXbCommon_WriteDelay22("00", data);//
-                                //sendCmd(initBuf);
                                 sendCmd(initBuf);//后面的shellStr没用上
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -1185,7 +1184,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         mOffTime = new Timer(true);
         TimerTask tt = new TimerTask() {
-            private int countTime = 120;
+            private int countTime = 5;
 
             public void run() {
                 if (countTime > 0) {

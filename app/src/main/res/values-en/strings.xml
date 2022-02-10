@@ -341,5 +341,15 @@
     <string name="text_communication_state7">Bridge wire abnormality</string>
     <string name="et_hint_zuwang">Default 40s</string>
     <string name="add_project_actv_hint">15位数字</string>
+    <string name="qb_tip_err">错误:</string>
+    <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
+    <string name="text_qb_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
+    <string name="start_one_Loc">开始单次定位</string>
+    <string name="PingFang_SC_Medium">PingFang-SC-Medium</string>
+    <string name="stop_one_Loc">停止单次定位</string>
+    <string name="start_continue_Loc">开始连续定位</string>
+    <string name="stop_continue_Loc">停止连续定位</string>
+    <string name="continue_Loc_tile">连续定位</string>
+    <string name="one_Loc_tile">单次定位</string>
 
 </resources>

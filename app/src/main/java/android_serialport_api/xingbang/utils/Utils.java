@@ -139,14 +139,14 @@ public class Utils {
         //INT转换为字节
         byte[] bytes = intToByteArray(serialId2);
         //byte转换为16进制
-        String str = bytesToHexFun(bytes);
-        return str;
+        return bytesToHexFun(bytes);
     }
 
     //截取芯片码中的雷管id(后6位)
     public static String DetonatorShellToSerialNo_newXinPian(String shellStr) {
-        //A6 2 1 407FFFDE5
-//        Log.e("处理雷管id", "shellStr: "+shellStr );
+        //A621407FFFDE5
+        //StringIndexOutOfBoundsException: length=4; index=5(直接注册会出现这个问题)
+        Log.e("处理雷管id", "shellStr: "+shellStr );
         if(shellStr.length()==8){
             return shellStr;
         }else {

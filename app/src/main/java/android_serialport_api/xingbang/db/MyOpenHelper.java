@@ -10,6 +10,7 @@ import org.greenrobot.greendao.database.Database;
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 
 /**
@@ -43,7 +44,7 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
             public void onDropAllTables(Database db, boolean ifExists) {
                 DaoMaster.dropAllTables(db, ifExists);
             }
-        }, MessageBeanDao.class);
+        }, MessageBeanDao.class, ProjectDao.class);
     }
 
 

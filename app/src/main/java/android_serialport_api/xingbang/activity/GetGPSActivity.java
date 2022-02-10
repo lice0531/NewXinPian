@@ -20,7 +20,7 @@ public class GetGPSActivity extends AppCompatActivity {
         binding = ActivityGetGpsactivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        mMapView = (MapView) findViewById(R.id.gps_mapView);
+        mMapView = findViewById(R.id.gps_mapView);
         //获取地图控件引用
         BaiduMap mBaiduMap = mMapView.getMap();
         //显示卫星图层

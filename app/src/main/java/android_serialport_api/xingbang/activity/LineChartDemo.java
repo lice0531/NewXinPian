@@ -20,9 +20,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import android_serialport_api.xingbang.R;
 
@@ -93,6 +91,7 @@ public class LineChartDemo extends AppCompatActivity implements View.OnClickList
         mDemoHandler = new DemoHandler(this);
         initView();
         initLineChart();
+
     }
 
 
@@ -128,7 +127,7 @@ public class LineChartDemo extends AppCompatActivity implements View.OnClickList
      * 功能：初始化LineChart
      */
     public void initLineChart() {
-        mLineChart = findViewById(R.id.demo_linechart);
+        mLineChart = findViewById(R.id.view_linechart);
         mXAxis = mLineChart.getXAxis(); // 得到x轴
         mLeftYAxis = mLineChart.getAxisLeft(); // 得到侧Y轴
         mRightYAxis = mLineChart.getAxisRight(); // 得到右侧Y轴
@@ -193,7 +192,7 @@ public class LineChartDemo extends AppCompatActivity implements View.OnClickList
         xAxis.setValueFormatter(new IndexAxisValueFormatter(){
             @Override
             public String getFormattedValue(float value) {
-                return String.valueOf(mlist.get((int)value)+"s");
+                return mlist.get((int) value) + "s";
             }
         });
         lineChart.setDrawBorders(false);

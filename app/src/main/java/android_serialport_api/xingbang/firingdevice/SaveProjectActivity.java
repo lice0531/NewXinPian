@@ -264,16 +264,16 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
      * @param field 保存在sharedPreference中的字段名
      * @param auto  要操作的AutoCompleteTextView
      */
-    private void saveHistory(String field, AutoCompleteTextView auto) {
-        String text = auto.getText().toString();
-        SharedPreferences sp = getSharedPreferences("network_url", 0);
-        String longhistory = sp.getString(field, "");
-        if (!longhistory.contains(text + "#")) {
-            StringBuilder sb = new StringBuilder(longhistory);
-            sb.insert(0, text + "#");
-            sp.edit().putString(field, sb.toString()).commit();
-        }
-    }
+//    private void saveHistory(String field, AutoCompleteTextView auto) {
+//        String text = auto.getText().toString();
+//        SharedPreferences sp = getSharedPreferences("network_url", 0);
+//        String longhistory = sp.getString(field, "");
+//        if (!longhistory.contains(text + "#")) {
+//            StringBuilder sb = new StringBuilder(longhistory);
+//            sb.insert(0, text + "#");
+//            sp.edit().putString(field, sb.toString()).commit();
+//        }
+//    }
 
     /**
      * 初始化AutoCompleteTextView，最多显示5项提示，使
@@ -282,33 +282,33 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
      * @param field 保存在sharedPreference中的字段名
      * @param auto  要操作的AutoCompleteTextView
      */
-    private void initAutoComplete(String field, AutoCompleteTextView auto) {
-        SharedPreferences sp = getSharedPreferences("network_url", 0);
-        String longhistory = sp.getString(field, "当前无记录");
-        String[] hisArrays = longhistory.split("#");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
-        //只保留最近的50条的记录
-        if (hisArrays.length > 20) {
-            String[] newArrays = new String[20];
-            System.arraycopy(hisArrays, 0, newArrays, 0, 20);
-            adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, newArrays);
-        }
-        auto.setAdapter(adapter);
-        auto.setDropDownHeight(500);
-        auto.setDropDownWidth(450);
-        auto.setThreshold(1);
-        auto.setCompletionHint("最近的20条记录");
-        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                AutoCompleteTextView view = (AutoCompleteTextView) v;
-                if (hasFocus) {
-                    view.showDropDown();
-                }
-            }
-        });
-    }
+//    private void initAutoComplete(String field, AutoCompleteTextView auto) {
+//        SharedPreferences sp = getSharedPreferences("network_url", 0);
+//        String longhistory = sp.getString(field, "当前无记录");
+//        String[] hisArrays = longhistory.split("#");
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
+//        //只保留最近的50条的记录
+//        if (hisArrays.length > 20) {
+//            String[] newArrays = new String[20];
+//            System.arraycopy(hisArrays, 0, newArrays, 0, 20);
+//            adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, newArrays);
+//        }
+//        auto.setAdapter(adapter);
+//        auto.setDropDownHeight(500);
+//        auto.setDropDownWidth(450);
+//        auto.setThreshold(1);
+//        auto.setCompletionHint("最近的20条记录");
+//        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                AutoCompleteTextView view = (AutoCompleteTextView) v;
+//                if (hasFocus) {
+//                    view.showDropDown();
+//                }
+//            }
+//        });
+//    }
 
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_clear_htid, R.id.btn_clear_xmbh,
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,

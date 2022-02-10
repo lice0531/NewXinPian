@@ -98,8 +98,6 @@
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
                     android:hint="项目名称"
-                    android:digits="1234567890"
-                    android:inputType="number"
                     android:padding="5dp" />
 
                 <Button

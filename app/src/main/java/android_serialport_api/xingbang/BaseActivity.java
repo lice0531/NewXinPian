@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import android.DeviceControl;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Looper;
@@ -15,6 +16,8 @@ import android.serialport.DeviceControlSpd;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.senter.pda.iam.libgpiot.Gpiot1;
@@ -89,10 +92,7 @@ public class  BaseActivity extends Activity {
 	                    f.set(imm, null); // 置空，破坏掉path to gc节点  
 	                } else {  
 	                    // 不是想要目标销毁的，即为又进了另一层界面了，不要处理，避免影响原逻辑,也就不用继续for循环了  
-	                   /** if (QLog.isColorLevel()) {  
-	                        QLog.d(ReflecterHelper.class.getSimpleName(), QLog.CLR, "fixInputMethodManagerLeak break, context is not suitable, get_context=" + v_get.getContext()+" dest_context=" + destContext);  
-	                    }  **/
-	                    break;  
+	                    break;
 	                }  
 	            }  
 	        }catch(Throwable t){  
@@ -245,6 +245,58 @@ public class  BaseActivity extends Activity {
 		mGpiot1.setEnable(name, !before);
 		Log.e("BaseActivity", "optGpio: " + name);
 		Toast.makeText(this, name + "由 " + (before ? "高" : "低") + "，变成 " + (!before ? "高" : "低"), Toast.LENGTH_LONG).show();
+	}
+
+	/**
+	 * 把指定AutoCompleteTextView中内容保存到sharedPreference中指定的字符段
+	 *
+	 * @param field 保存在sharedPreference中的字段名
+	 * @param auto  要操作的AutoCompleteTextView
+	 */
+	public void saveHistory(String field, AutoCompleteTextView auto) {
+		String text = auto.getText().toString();
+		SharedPreferences sp = getSharedPreferences("network_url", 0);
+		String longhistory = sp.getString(field, "");
+		if (!longhistory.contains(text + "#")) {
+			StringBuilder sb = new StringBuilder(longhistory);
+			sb.insert(0, text + "#");
+			sp.edit().putString(field, sb.toString()).commit();
+		}
+	}
+
+	/**
+	 * 初始化AutoCompleteTextView，最多显示5项提示，使
+	 * AutoCompleteTextView在一开始获得焦点时自动提示
+	 *
+	 * @param field 保存在sharedPreference中的字段名
+	 * @param auto  要操作的AutoCompleteTextView
+	 */
+	public void initAutoComplete(String field, AutoCompleteTextView auto) {
+		SharedPreferences sp = getSharedPreferences("network_url", 0);
+		String longhistory = sp.getString(field, "当前无记录");
+		String[] hisArrays = longhistory.split("#");
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
+		//只保留最近的50条的记录
+		if (hisArrays.length > 20) {
+			String[] newArrays = new String[20];
+			System.arraycopy(hisArrays, 0, newArrays, 0, 20);
+			adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, newArrays);
+		}
+		auto.setAdapter(adapter);
+		auto.setDropDownHeight(500);
+		auto.setDropDownWidth(450);
+		auto.setThreshold(1);
+		auto.setCompletionHint("最近的20条记录");
+		auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				AutoCompleteTextView view = (AutoCompleteTextView) v;
+				if (hasFocus) {
+					view.showDropDown();
+				}
+			}
+		});
 	}
 
 }

@@ -10,4 +10,16 @@
 
     <include layout="@layout/title_layout"
         android:id="@+id/totalbar"/>
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android_serialport_api.xingbang.custom.MlistView
+            android:id="@+id/lv_project"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android_serialport_api.xingbang.custom.MlistView>
+    </LinearLayout>
 </LinearLayout>

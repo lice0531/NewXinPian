@@ -97,8 +97,6 @@ public class SetSystemActivity extends BaseActivity {
                 } else if (msg.arg1 == 4) {
                     show_Toast(getString(R.string.text_systip_1));
                 }
-
-
             }
         };
     }

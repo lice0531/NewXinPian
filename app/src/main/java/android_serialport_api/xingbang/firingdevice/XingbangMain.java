@@ -521,8 +521,7 @@ public class XingbangMain extends BaseActivity {
                 Intent intent5;//金建华
                 if (Yanzheng.equals("验证")) {
                     //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-//                    intent5 = new Intent(this, VerificationActivity.class);
-                    intent5 = new Intent(this, FiringMainActivity.class);
+                    intent5 = new Intent(this, VerificationActivity.class);
                 } else {
                     intent5 = new Intent(this, FiringMainActivity.class);
                 }

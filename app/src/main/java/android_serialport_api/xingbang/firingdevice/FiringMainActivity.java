@@ -71,24 +71,13 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class FiringMainActivity extends SerialPortActivity {
-    private DatabaseHelper mMyDatabaseHelper;
-    private SQLiteDatabase db;
+
     private Button btn_return1;
     private Button btn_return2;
     private Button btn_return4;
     private Button btn_return6;
     private Button btn_return7;
     private Button btn_return8;
-
-    private Button btn_continueOk_4;//继续
-    private Button btn_pressbt_7;//起爆
-    private Button btn_firing_lookError_4;//查看错误
-    private Button btn_fir_over;//起爆按键
-
-    private Handler busHandler = null;//总线信息
-    private Handler mHandler_tip = null;//提示
-    private static Handler mHandler_1 = null;//更新视图
-    private static Handler noReisterHandler = null;//没有注册的雷管
     private TextView firstTxt;
     private TextView secondTxt;
     private TextView fourTxt;
@@ -113,6 +102,23 @@ public class FiringMainActivity extends SerialPortActivity {
     private TextView ll_firing_Hv_7;
     private TextView ll_firing_Hv_6;
     private TextView ll_txt_firing_7;
+    private Button btn_continueOk_4;//继续
+    private Button btn_pressbt_7;//起爆
+    private Button btn_firing_lookError_4;//查看错误
+    private Button btn_fir_over;//起爆按键
+    private LinearLayout ll_1;
+    private LinearLayout ll_2;
+    private LinearLayout ll_4;
+    private LinearLayout ll_6;
+    private LinearLayout ll_7;
+    private LinearLayout ll_8;
+
+    private DatabaseHelper mMyDatabaseHelper;
+    private SQLiteDatabase db;
+    private Handler busHandler = null;//总线信息
+    private Handler mHandler_tip = null;//提示
+    private static Handler mHandler_1 = null;//更新视图
+    private static Handler noReisterHandler = null;//没有注册的雷管
     private To52Test writeVo;
     private static volatile int stage;//
     private static volatile int startFlag = 0;
@@ -137,7 +143,6 @@ public class FiringMainActivity extends SerialPortActivity {
     private int elevenCount = 10;//
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
     private String userId = "";
-
     private volatile int revPowerFlag = 0;
     private volatile int jixu = 0;
     private volatile int reThirdWriteCount = 0;//当芯片返回命令时,数量加一,用以防止上一条命令未返回,
@@ -149,12 +154,6 @@ public class FiringMainActivity extends SerialPortActivity {
     private int denatorCount = 0;//雷管总数
     private ThreadFirst firstThread;
     private From42Power busInfo;
-    private LinearLayout ll_1;
-    private LinearLayout ll_2;
-    private LinearLayout ll_4;
-    private LinearLayout ll_6;
-    private LinearLayout ll_7;
-    private LinearLayout ll_8;
     private static VoDenatorBaseInfo writeDenator;
     private ConcurrentLinkedQueue<VoDenatorBaseInfo> allBlastQu;//雷管队列
     private ConcurrentLinkedQueue<VoFiringTestError> errorList;//错误雷管队列
@@ -187,6 +186,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
+    private String TAG = "起爆页面";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,7 +253,8 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_IC_7 = findViewById(R.id.ll_firing_IC_7);
         ll_firing_Hv_7 = findViewById(R.id.ll_firing_Hv_7);//起爆电压
         ll_firing_Hv_6 = findViewById(R.id.ll_firing_Hv_6);//起爆电压
-        ll_txt_firing_7 = (TextView) findViewById(R.id.ll_txt_firing_7);//起爆提示
+        ll_txt_firing_7 = findViewById(R.id.ll_txt_firing_7);//起爆提示
+
         String device = Build.DEVICE;
         switch (device) {
             case "KT50_B2": {
@@ -360,7 +361,6 @@ public class FiringMainActivity extends SerialPortActivity {
                     ll_firing_IC_7.setTextColor(Color.GREEN);
                     if (displayIc < 1) {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-
                     } else {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流正常");
                     }
@@ -544,24 +544,6 @@ public class FiringMainActivity extends SerialPortActivity {
             version = message.get(0).getVersion();
             Log.e(TAG, "version: " + version);
         }
-
-
-//        String selection = "id = ?"; // 选择条件，给null查询所有
-//        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-//        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
-//        if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
-//            pro_bprysfz = cursor.getString(1);
-//            pro_htid = cursor.getString(2);
-//            pro_xmbh = cursor.getString(3);
-//            equ_no = cursor.getString(4);
-//            pro_coordxy = cursor.getString(5);
-//            qiaosi_set = cursor.getString(10);
-//            Preparation_time = Integer.parseInt(cursor.getString(11));
-//            ChongDian_time = Integer.parseInt(cursor.getString(12));
-//            pro_dwdm = cursor.getString(15);
-//            JianCe_time = Integer.parseInt(cursor.getString(16));// java.lang.NumberFormatException: Invalid int: "null"
-//            cursor.close();
-//        }
         Log.e("Preparation_time", Preparation_time + "");
         Log.e("ChongDian_time", ChongDian_time + "");
         Log.e("JianCe_time", JianCe_time + "");
@@ -573,23 +555,17 @@ public class FiringMainActivity extends SerialPortActivity {
         Builder builder = new Builder(FiringMainActivity.this);
         builder.setTitle(getString(R.string.text_alert_tip));
         builder.setMessage(getString(R.string.text_alert_tip2));//"总线上有未处理的雷管，是否继续起爆？"
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (flag == 1) {
-                } else {
-                    fourOnlineDenatorFlag = 3;
-                }
-                dialog.dismiss();
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            if (flag == 1) {
+            } else {
+                fourOnlineDenatorFlag = 3;
             }
+            dialog.dismiss();
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                closeThread();
-                closeForm();
-            }
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+            closeThread();
+            closeForm();
         });
         builder.show();
         if (flag == 1) {
@@ -726,7 +702,7 @@ public class FiringMainActivity extends SerialPortActivity {
         LayoutInflater inflater = LayoutInflater.from(FiringMainActivity.this);
         View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
         // 给ListView绑定内容
-        ListView listview = (ListView) getlistview.findViewById(R.id.X_listview);
+        ListView listview = getlistview.findViewById(R.id.X_listview);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
                 new String[]{"serialNo", "shellNo", "errorName", "delay"},
                 new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
@@ -735,12 +711,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Builder builder = new Builder(this);
         builder.setTitle(getString(R.string.text_alert_tablename1));//错误雷管列表
         builder.setView(getlistview);
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -809,7 +780,7 @@ public class FiringMainActivity extends SerialPortActivity {
         return 1;
     }
 
-    private String TAG = "起爆页面";
+
 
     /**
      * 保存起爆数据
@@ -980,7 +951,6 @@ public class FiringMainActivity extends SerialPortActivity {
         }
 
         Utils.writeLog("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
-        //db.close();
     }
 
     public void displayInputKeyboard(View v, boolean hasFocus) {
@@ -1002,8 +972,6 @@ public class FiringMainActivity extends SerialPortActivity {
         /***
          * 发送初始化命令
          */
-        //	byte[] initBuf = FiveTestingCmd.setToXbCommon_InCheckModel_Init25("00");
-        //sendCmd(initBuf);
         if (!firstThread.isAlive()){
             firstThread.start();
         }
@@ -1037,7 +1005,6 @@ public class FiringMainActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-//        Log.e(TAG, "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -1232,7 +1199,6 @@ public class FiringMainActivity extends SerialPortActivity {
                     thirdWriteErrorDenator = null;//设置错误雷管
                 }
                 if (errorList != null && errorList.size() >= 0) {
-                    int errLoop = 0;
                     while (!errorList.isEmpty()) {//写入错误雷管
                         VoFiringTestError er = errorList.poll();
                         if (er != null) {
@@ -1426,7 +1392,6 @@ public class FiringMainActivity extends SerialPortActivity {
                     thirdWriteErrorDenator2 = null;//设置错误雷管
                 }
                 if (errorList != null && errorList.size() >= 0) {
-                    int errLoop = 0;
                     while (!errorList.isEmpty()) {//写入错误雷管
                         VoFiringTestError er = errorList.poll();
                         if (er != null) {
@@ -1508,7 +1473,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e("第5阶段-increase", "5");
                                 Log.e("充电检测WaitCount", Wait_Count + "");
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            } else if (secondCount <= Preparation_time * 0.2) {//
+                            } else if (secondCount <= Preparation_time * 0.5) {//
                                 //得到电流电压信息
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
                                 sendCmd(powerCmd);
@@ -1557,7 +1522,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-
+                                Log.e(TAG, "芯片码: "+write.getDenatorId() );
+                                Log.e(TAG, "芯片码: "+write.getDenatorId().length() );
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
                                 String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
@@ -1567,7 +1533,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr;
-                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 0) {
+                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
+                                    Log.e(TAG, "write.getDenatorIdSup(): "+write.getDenatorIdSup() );
+                                    Log.e(TAG, "write.getDenatorIdSup().length(): "+write.getDenatorIdSup().length() );
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
                                     data = denatorId + delayStr + denatorIdSup;
@@ -1759,7 +1727,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr;
-                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 0) {
+                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
                                     data = denatorId + delayStr + denatorIdSup;
@@ -1997,7 +1965,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         mOffTime = new Timer(true);
         TimerTask tt = new TimerTask() {
-            private int countTime = 120;
+            private int countTime = 5;
 
             public void run() {
                 if (countTime > 0) {

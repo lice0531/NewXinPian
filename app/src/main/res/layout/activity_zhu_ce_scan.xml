@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/result_minor_text"
+    android:orientation="vertical"
+    tools:context=".activity.ZhuCeActivity_scan">
+
+    <include
+        android:id="@+id/totalbar"
+        layout="@layout/title_layout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_weight="1.5"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/zc_txt_1"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="注册统计"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.058" />
+
+        <TextView
+            android:id="@+id/zc_txt_total"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="共:4发雷管"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.074"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.395" />
+
+        <TextView
+            android:id="@+id/zc_txt_totalPai"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="共:2排4孔"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.073"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.888" />
+
+        <TextView
+            android:id="@+id/zc_txt_minDealy"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最小延时:0"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.843"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.493" />
+
+        <TextView
+            android:id="@+id/zc_txt_maxDealy"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最大延时:100"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.895"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.987" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ExpandableListView
+        android:id="@+id/zc_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:background="@color/white" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/color_zhuce3"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/zc_btn_f1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F1:+20ms"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.113"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.515" />
+
+        <Button
+            android:id="@+id/zc_btn_addPai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="增加一排"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/zc_btn_f2"
+            app:layout_constraintStart_toEndOf="@+id/zc_btn_f1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/zc_btn_f2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F2:+50ms"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.927"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.515" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -120,4 +120,18 @@
     <color name="text_pressed">#ffffffff</color><!-- 白色 -->
 
     <color name="colorTransparent">#00000000</color>
+
+    <color name="colorPrimary2">#1F2131</color>
+    <color name="colorPrimaryDark2">#ED1F2131</color>
+    <color name="action_bar_devided_line">#FF232537</color>
+    <color name="color_layout">#CC22253D</color>
+    <color name="color_btn_press">#292B3C</color>
+    <color name="color_btn_nopress">#171924</color>
+    <color name="color_white">#fff</color>
+    <color name="color_black">#191919</color>
+    <color name="colorAccent2">#03DAC5</color>
+
+    <color name="color_zhuce1">#d9d6c3</color>
+    <color name="color_zhuce2">#f2eada</color>
+    <color name="color_zhuce3">#f6f5ec</color>
 </resources>

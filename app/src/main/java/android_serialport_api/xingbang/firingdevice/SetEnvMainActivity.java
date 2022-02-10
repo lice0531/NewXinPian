@@ -367,7 +367,9 @@ public class SetEnvMainActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_upload:
-                Intent intent4 = new Intent(SetEnvMainActivity.this, UploadFaceDataActivity.class);
+                //信息采集
+//                Intent intent4 = new Intent(SetEnvMainActivity.this, UploadFaceDataActivity.class);
+                Intent intent4 = new Intent(SetEnvMainActivity.this, PracticeActivity.class);
                 startActivity(intent4);
                 break;
         }
