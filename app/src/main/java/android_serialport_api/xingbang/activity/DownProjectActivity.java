@@ -52,6 +52,7 @@ public class DownProjectActivity extends BaseActivity implements ItemProjectAdap
         back.setOnClickListener(v -> finish());
         lvProject=findViewById(R.id.lv_project);
         loadMoreData();
+
         mAdapter = new ItemProjectAdapter(this, map_project, R.layout.item_project);
         mAdapter.setOnInnerItemOnClickListener(this);
         lvProject.setAdapter(mAdapter);

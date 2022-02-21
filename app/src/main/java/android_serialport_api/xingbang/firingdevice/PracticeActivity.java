@@ -326,7 +326,6 @@ public class PracticeActivity extends SerialPortActivity {
         getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         String[] lg = leiguan.split(",");
         String shellNo;
-//        int maxNo = getMaxNumberNo();
         for (int i = 0; i < lg.length; i++) {
             shellNo = lg[i];
             String[] a = shellNo.split("#");
@@ -342,8 +341,10 @@ public class PracticeActivity extends SerialPortActivity {
             DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
-            if(a.length==3){
-                detonatorTypeNew.setDetonatorIdSup(a[2]);
+            detonatorTypeNew.setZhu_yscs(a[2]);
+            if(a.length==5){
+                detonatorTypeNew.setDetonatorIdSup(a[3]);
+                detonatorTypeNew.setCong_yscs(a[4]);
             }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
@@ -636,7 +637,7 @@ public class PracticeActivity extends SerialPortActivity {
                 break;
 
             case R.id.but_test:
-                startActivity(new Intent(this, TestActivity.class));
+                
                 break;
         }
     }

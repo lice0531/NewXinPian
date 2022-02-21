@@ -35,6 +35,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.SaveProjectAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,34 +125,48 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
     private void loadMoreData() {
         map_project.clear();
-        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_PROJECT;//+" order by htbh "
-        Cursor cursor = db.rawQuery(sql, null);
-        //return getCursorTolist(cursor);
-        if (cursor != null) {
+//        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_PROJECT;//+" order by htbh "
+//        Cursor cursor = db.rawQuery(sql, null);
+//        //return getCursorTolist(cursor);
+//        if (cursor != null) {
+//
+//            while (cursor.moveToNext()) {
+//                String id = cursor.getString(0);
+//                String project_name = cursor.getString(1); //获取第二列的值 ,序号
+//                String xmbh = cursor.getString(2);
+//                String htbh = cursor.getString(3);//管壳号
+//                String dwdm = cursor.getString(4);//错误数量
+//                String bprysfz = cursor.getString(5);//起爆状态
+//                String coordxy = cursor.getString(6);//经纬度
+//
+//                Map<String, Object> item = new HashMap<String, Object>();
+//                item.put("id", id);
+//                item.put("project_name", project_name);
+//                item.put("xmbh", xmbh);
+//                item.put("htbh", htbh);
+//                item.put("dwdm", dwdm);
+//                item.put("bprysfz", bprysfz);
+//                item.put("coordxy", coordxy);
+//                map_project.add(item);
+//            }
+//            cursor.close();
+//        }
 
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
-                String project_name = cursor.getString(1); //获取第二列的值 ,序号
-                String xmbh = cursor.getString(2);
-                String htbh = cursor.getString(3);//管壳号
-                String dwdm = cursor.getString(4);//错误数量
-                String bprysfz = cursor.getString(5);//起爆状态
-                String coordxy = cursor.getString(6);//经纬度
-
-                Map<String, Object> item = new HashMap<String, Object>();
-                item.put("id", id);
-                item.put("project_name", project_name);
-                item.put("xmbh", xmbh);
-                item.put("htbh", htbh);
-                item.put("dwdm", dwdm);
-                item.put("bprysfz", bprysfz);
-                item.put("coordxy", coordxy);
-
-                map_project.add(item);
-            }
-            cursor.close();
+        GreenDaoMaster daoMaster = new GreenDaoMaster();
+        List<Project> list_pj = daoMaster.queryProject();
+        for (Project project : list_pj) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", project.getId());
+            item.put("htbh", project.getHtbh());
+            item.put("xmbh", project.getXmbh());
+            item.put("coordxy", project.getCoordxy());
+            item.put("project_name", project.getProject_name());
+            item.put("dwdm", project.getDwdm());
+            item.put("bprysfz", project.getBprysfz());
+            map_project.add(item);
         }
     }
+
 
     //隐藏键盘
     public void hideInputKeyboard() {

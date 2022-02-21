@@ -41,17 +41,15 @@ public class SecondNetTestCmd {
 	 * @param data：第1~4字节--雷管ID号 第5~6字节--延时时间，以毫秒为单位
 	 * @return
 	 */
-	public static byte[] setToXbCommon_WriteDelay22(String addr,String data){
-		
-		String command = addr + DefCommand.CMD_2_NETTEST_2+"06"+data;
-		
+	public static byte[] send21(String addr, String data){
+		String command = addr + DefCommand.CMD_2_NETTEST_2+"08"+data;
 		return DefCommand.getCommadBytes(command);
 	}
 	
 	/***
 	 * 得到发送写入延时命令数据
 	 * @param addr：设备地址
-	 * @param denatorShell,管壳码
+	 * @param denatorId,管壳码
 	 * @return
 	 */
 	public static To22WriteTest getSendWriteDelay22(String addr, String denatorId, short delayTime){
@@ -73,7 +71,7 @@ public class SecondNetTestCmd {
 		 dataBy[4] = delayBye[0];
 		 dataBy[5] = delayBye[1];
 		 String data = Utils.bytesToHexFun(dataBy);
-		 byte[] sendCmd = setToXbCommon_WriteDelay22(addr,data);
+		 byte[] sendCmd = send21(addr,data);
 		 vo.setSendCmd(sendCmd);
 		 return vo;
 	}

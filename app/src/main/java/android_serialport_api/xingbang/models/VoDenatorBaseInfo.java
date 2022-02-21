@@ -9,6 +9,24 @@ public class VoDenatorBaseInfo  {
 	private String denatorId;//芯片码
 	private String denatorIdSup;//从芯片码
 	private short delay;//延时
+	private String zhu_yscs;//主芯片延时参数
+	private String cong_yscs;//从芯片延时参数
+
+	public String getZhu_yscs() {
+		return zhu_yscs;
+	}
+
+	public void setZhu_yscs(String zhu_yscs) {
+		this.zhu_yscs = zhu_yscs;
+	}
+
+	public String getCong_yscs() {
+		return cong_yscs;
+	}
+
+	public void setCong_yscs(String cong_yscs) {
+		this.cong_yscs = cong_yscs;
+	}
 
 	public String getDenatorIdSup() {
 		return denatorIdSup;

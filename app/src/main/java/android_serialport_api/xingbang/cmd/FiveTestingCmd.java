@@ -199,9 +199,6 @@ public class FiveTestingCmd {
 	 * @return
 	 */
 	public static byte[] setToXbCommon_Testing25_4(String addr,String data){
-		/***
-		 * 
-		 */
 		String command = addr + "53"+"01"+data;
 		return DefCommand.getCommadBytes(command);
 	}

@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.SerialPortActivity;
@@ -1124,7 +1125,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
                     return;
                 }
-                int a = insertSingleDenator(barCode);
+                 insertSingleDenator(barCode);
             }
 
         }
@@ -1252,13 +1253,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return 0;
     }
 
-    private String serchDenatorId(String shellBlastNo) {
+    private DetonatorTypeNew serchDenatorId(String shellBlastNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         //        Log.e("查询生产数据库查管壳码", "denatorId: "+denatorId);
 //        Log.e("查询生产数据库查管壳码", "shellBlastNo: "+shellBlastNo);
         return master.queryShellBlastNoTypeNew(shellBlastNo);
     }
-
+    /**
+     * 查询生产表中对应的管壳码
+     * */
+    private DetonatorTypeNew serchDenatorForDetonatorTypeNew(String denatorId) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        return master.queryDetonatorForTypeNew(denatorId);
+    }
     /***
      * 单发注册(扫码注册,用到)
      */
@@ -1269,7 +1276,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (check(shellNo) == -1) {
             return -1;
         }
-        String denatorId = serchDenatorId(shellNo);
+//        String denatorId = serchDenatorId(shellNo);
+        DetonatorTypeNew detonatorTypeNew = serchDenatorId(shellNo);
         int index = getEmptyDenator(-1);
         int maxNo = getMaxNumberNo();
         int start_delay = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
@@ -1310,8 +1318,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             values.put("blastserial", maxNo);
             values.put("sithole", maxNo);
             values.put("shellBlastNo", shellNo);
-            if(!denatorId.equals("0")){
-                values.put("denatorId",denatorId);
+            if(!detonatorTypeNew.getDetonatorId().equals("0")){
+                values.put("denatorId",detonatorTypeNew.getDetonatorId());
             }
 
             values.put("delay", delay);
@@ -1321,6 +1329,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             values.put("errorCode", "FF");
             values.put("errorName", "");
             values.put("wire", "");
+            values.put("zhu_yscs",detonatorTypeNew.getZhu_yscs());
             //向数据库插入数据
             db.insert("denatorBaseinfo", null, values);
 
@@ -1471,7 +1480,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
                 break;
             }
-            String denatorId = serchDenatorId(shellNo);
+            DetonatorTypeNew detonatorTypeNew = serchDenatorId(shellNo);
             if (delay_set.equals("f1")) {//获取最大延时有问题
                 if (maxNo == 0) {
                     delay = delay + start_delay;
@@ -1490,8 +1499,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 values.put("blastserial", maxNo);
                 values.put("sithole", maxNo);
                 values.put("shellBlastNo", shellNo);
-                if(!denatorId.equals("0")){
-                    values.put("denatorId",denatorId);
+                if(!detonatorTypeNew.getDetonatorId().equals("0")){
+                    values.put("denatorId",detonatorTypeNew.getDetonatorId());
                 }
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
@@ -1500,6 +1509,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 values.put("errorCode", "FF");
                 values.put("errorName", "");
                 values.put("wire", "");//桥丝状态
+                values.put("zhu_yscs", detonatorTypeNew.getZhu_yscs());
                 //向数据库插入数据
                 db.insert("denatorBaseinfo", null, values);
             } else {

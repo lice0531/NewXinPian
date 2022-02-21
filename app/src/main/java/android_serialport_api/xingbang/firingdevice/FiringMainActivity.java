@@ -403,8 +403,8 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于4000,重启检测阶段
-            if (secondCount < Preparation_time * 0.1&&busInfo!=null) {
-                Log.e(TAG, "busInfo: "+busInfo.toString() );
+            if (secondCount < Preparation_time * 0.1 && busInfo != null) {
+                Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 4500) {
                     increase(11);
@@ -730,7 +730,8 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setShellBlastNo(d.getShellBlastNo());
             vo.setDenatorId(d.getDenatorId());
             vo.setDenatorIdSup(d.getDenatorIdSup());
-
+            vo.setZhu_yscs(d.getZhu_yscs());
+            vo.setCong_yscs(d.getCong_yscs());
             allBlastQu.offer(vo);
             list_all_lg.add(vo);
         }
@@ -779,7 +780,6 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         return 1;
     }
-
 
 
     /**
@@ -936,7 +936,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
             denator.setErrorCode("01");
             denator.setErrorName("延时写入不一致");
-            Log.e("延时不一致", "fromData.getDelayTime(): "+fromData.getDelayTime()+"--writeDelay:"+writeDelay );
+            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
         }
         Application.getDaoSession().update(denator);
 
@@ -972,7 +972,7 @@ public class FiringMainActivity extends SerialPortActivity {
         /***
          * 发送初始化命令
          */
-        if (!firstThread.isAlive()){
+        if (!firstThread.isAlive()) {
             firstThread.start();
         }
 
@@ -1146,8 +1146,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 sendCmd(initBuf);
                 Utils.writeRecord("第一次发送起爆指令--");
             }
-        }else if(DefCommand.CMD_4_XBSTATUS_7.equals(cmd)){
-            Log.e("起爆页面", "成功切换版本" );
+        } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
+            Log.e("起爆页面", "成功切换版本");
         } else {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
@@ -1522,8 +1522,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-                                Log.e(TAG, "芯片码: "+write.getDenatorId() );
-                                Log.e(TAG, "芯片码: "+write.getDenatorId().length() );
+                                Log.e(TAG, "芯片码: " + write.getDenatorId());
+                                Log.e(TAG, "芯片码: " + write.getDenatorId().length());
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
                                 String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
@@ -1532,17 +1532,17 @@ public class FiringMainActivity extends SerialPortActivity {
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                String data = denatorId + delayStr;
+                                String data = denatorId + delayStr + write.getZhu_yscs();
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
-                                    Log.e(TAG, "write.getDenatorIdSup(): "+write.getDenatorIdSup() );
-                                    Log.e(TAG, "write.getDenatorIdSup().length(): "+write.getDenatorIdSup().length() );
+                                    Log.e(TAG, "write.getDenatorIdSup(): " + write.getDenatorIdSup());
+                                    Log.e(TAG, "write.getDenatorIdSup().length(): " + write.getDenatorIdSup().length());
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
-                                    data = denatorId + delayStr + denatorIdSup;
+                                    data = denatorId + delayStr + write.getZhu_yscs() + denatorIdSup + write.getCong_yscs();
                                     Utils.writeRecord("--设置雷管延时:" + "主芯片:" + denatorId + "延时:" + delayStr + "从芯片:" + denatorIdSup);
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -1726,14 +1726,14 @@ public class FiringMainActivity extends SerialPortActivity {
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                String data = denatorId + delayStr;
+                                String data = denatorId + delayStr + write.getZhu_yscs();
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
-                                    data = denatorId + delayStr + denatorIdSup;
+                                    data = denatorId + delayStr + write.getZhu_yscs() + denatorIdSup + write.getCong_yscs();
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -1790,6 +1790,8 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setShellBlastNo(shellNo);
             vo.setDenatorId(denatorId);
             vo.setDenatorIdSup(denatorIdSup);
+            vo.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
+            vo.setCong_yscs(denatorBaseinfo.getCong_yscs());
             allBlastQu.offer(vo);
         }
         reThirdWriteCount = 0;
@@ -1808,7 +1810,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
             Log.e("起爆页面", "m0UpTime: " + m0UpTime);
-        } else if (keyCode == KeyEvent.KEYCODE_3&& !Build.DEVICE.equals("KT50_B2")) {
+        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {

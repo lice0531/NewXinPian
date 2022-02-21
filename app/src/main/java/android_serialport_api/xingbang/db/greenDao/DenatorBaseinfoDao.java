@@ -40,6 +40,8 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         public final static Property Wire = new Property(13, String.class, "wire", false, "wire");
         public final static Property Name = new Property(14, String.class, "name", false, "name");
         public final static Property DenatorIdSup = new Property(15, String.class, "denatorIdSup", false, "denatorIdSup");
+        public final static Property Zhu_yscs = new Property(16, String.class, "zhu_yscs", false, "zhu_yscs");
+        public final static Property Cong_yscs = new Property(17, String.class, "cong_yscs", false, "cong_yscs");
     }
 
 
@@ -70,7 +72,9 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
                 "\"regdate\" TEXT," + // 12: regdate
                 "\"wire\" TEXT," + // 13: wire
                 "\"name\" TEXT," + // 14: name
-                "\"denatorIdSup\" TEXT);"); // 15: denatorIdSup
+                "\"denatorIdSup\" TEXT," + // 15: denatorIdSup
+                "\"zhu_yscs\" TEXT," + // 16: zhu_yscs
+                "\"cong_yscs\" TEXT);"); // 17: cong_yscs
     }
 
     /** Drops the underlying database table. */
@@ -150,6 +154,16 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         if (denatorIdSup != null) {
             stmt.bindString(16, denatorIdSup);
         }
+ 
+        String zhu_yscs = entity.getZhu_yscs();
+        if (zhu_yscs != null) {
+            stmt.bindString(17, zhu_yscs);
+        }
+ 
+        String cong_yscs = entity.getCong_yscs();
+        if (cong_yscs != null) {
+            stmt.bindString(18, cong_yscs);
+        }
     }
 
     @Override
@@ -223,6 +237,16 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         if (denatorIdSup != null) {
             stmt.bindString(16, denatorIdSup);
         }
+ 
+        String zhu_yscs = entity.getZhu_yscs();
+        if (zhu_yscs != null) {
+            stmt.bindString(17, zhu_yscs);
+        }
+ 
+        String cong_yscs = entity.getCong_yscs();
+        if (cong_yscs != null) {
+            stmt.bindString(18, cong_yscs);
+        }
     }
 
     @Override
@@ -248,7 +272,9 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // regdate
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // wire
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // name
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // denatorIdSup
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // denatorIdSup
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // zhu_yscs
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // cong_yscs
         );
         return entity;
     }
@@ -271,6 +297,8 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         entity.setWire(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setName(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setDenatorIdSup(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setZhu_yscs(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setCong_yscs(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     @Override

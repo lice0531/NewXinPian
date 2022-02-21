@@ -47,14 +47,14 @@ public class ThreeFiringCmd {
 	 * @param data：共6字节，字节1，字节2，字节3，字节4为ID ，字节5，字节6为延期（ms，低字节在前）
 	 * @return
 	 */
-	public static byte[] setToXbCommon_CheckDenator23_2(String addr,String data){
+	public static byte[] send31(String addr, String data){
 		//C0 00 31 06 14E0FF000000 D2D4 C0
 		String command;
 		Log.e("长度", "data: "+data.length() );
-		if(data.length()==12){
-			command = addr + DefCommand.CMD_3_DETONATE_2+"06"+data;
+		if(data.length()==16){
+			command = addr + DefCommand.CMD_3_DETONATE_2+"08"+data;
 		}else {
-			command = addr + DefCommand.CMD_3_DETONATE_2+"0A"+data;
+			command = addr + DefCommand.CMD_3_DETONATE_2+"0E"+data;
 		}
 		return DefCommand.getCommadBytes(command);
 	}
@@ -136,7 +136,7 @@ public class ThreeFiringCmd {
 		 dataBy[4] = delayBye[0];
 		 dataBy[5] = delayBye[1];
 		 String data = Utils.bytesToHexFun(dataBy);
-		 byte[] sendCmd = setToXbCommon_CheckDenator23_2(addr,data);
+		 byte[] sendCmd = send31(addr,data);
 		 vo.setSendCmd(sendCmd);
 		 return vo;
 	}

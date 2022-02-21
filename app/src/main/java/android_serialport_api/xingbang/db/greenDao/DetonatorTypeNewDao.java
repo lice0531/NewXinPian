@@ -28,6 +28,8 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         public final static Property ShellBlastNo = new Property(1, String.class, "shellBlastNo", false, "shellBlastNo");
         public final static Property DetonatorId = new Property(2, String.class, "detonatorId", false, "denatorId");
         public final static Property DetonatorIdSup = new Property(3, String.class, "detonatorIdSup", false, "denatorIdSup");
+        public final static Property Zhu_yscs = new Property(4, String.class, "zhu_yscs", false, "zhu_yscs");
+        public final static Property Cong_yscs = new Property(5, String.class, "cong_yscs", false, "cong_yscs");
     }
 
 
@@ -46,7 +48,9 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
                 "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: Id
                 "\"shellBlastNo\" TEXT," + // 1: shellBlastNo
                 "\"denatorId\" TEXT," + // 2: detonatorId
-                "\"denatorIdSup\" TEXT);"); // 3: detonatorIdSup
+                "\"denatorIdSup\" TEXT," + // 3: detonatorIdSup
+                "\"zhu_yscs\" TEXT," + // 4: zhu_yscs
+                "\"cong_yscs\" TEXT);"); // 5: cong_yscs
     }
 
     /** Drops the underlying database table. */
@@ -78,6 +82,16 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         if (detonatorIdSup != null) {
             stmt.bindString(4, detonatorIdSup);
         }
+ 
+        String zhu_yscs = entity.getZhu_yscs();
+        if (zhu_yscs != null) {
+            stmt.bindString(5, zhu_yscs);
+        }
+ 
+        String cong_yscs = entity.getCong_yscs();
+        if (cong_yscs != null) {
+            stmt.bindString(6, cong_yscs);
+        }
     }
 
     @Override
@@ -103,6 +117,16 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         if (detonatorIdSup != null) {
             stmt.bindString(4, detonatorIdSup);
         }
+ 
+        String zhu_yscs = entity.getZhu_yscs();
+        if (zhu_yscs != null) {
+            stmt.bindString(5, zhu_yscs);
+        }
+ 
+        String cong_yscs = entity.getCong_yscs();
+        if (cong_yscs != null) {
+            stmt.bindString(6, cong_yscs);
+        }
     }
 
     @Override
@@ -116,7 +140,9 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // Id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // shellBlastNo
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // detonatorId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // detonatorIdSup
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // detonatorIdSup
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // zhu_yscs
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // cong_yscs
         );
         return entity;
     }
@@ -127,6 +153,8 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         entity.setShellBlastNo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setDetonatorId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setDetonatorIdSup(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setZhu_yscs(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setCong_yscs(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     @Override

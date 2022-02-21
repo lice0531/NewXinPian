@@ -45,12 +45,17 @@ public class DenatorBaseinfo extends LitePalSupport {
     private String name;
     @Property(nameInDb = "denatorIdSup")
     private String denatorIdSup;
-    @Generated(hash = 212817039)
+    @Property(nameInDb = "zhu_yscs")
+    private String zhu_yscs;//
+    @Property(nameInDb = "cong_yscs")
+    private String cong_yscs;//
+
+    @Generated(hash = 1185799516)
     public DenatorBaseinfo(Long id, int blastserial, int sithole,
             String shellBlastNo, String denatorId, int delay, String statusCode,
             String statusName, String errorName, String errorCode,
             String authorization, String remark, String regdate, String wire,
-            String name, String denatorIdSup) {
+            String name, String denatorIdSup, String zhu_yscs, String cong_yscs) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -67,6 +72,8 @@ public class DenatorBaseinfo extends LitePalSupport {
         this.wire = wire;
         this.name = name;
         this.denatorIdSup = denatorIdSup;
+        this.zhu_yscs = zhu_yscs;
+        this.cong_yscs = cong_yscs;
     }
     @Generated(hash = 1775503899)
     public DenatorBaseinfo() {
@@ -167,6 +174,18 @@ public class DenatorBaseinfo extends LitePalSupport {
     public void setDenatorIdSup(String denatorIdSup) {
         this.denatorIdSup = denatorIdSup;
     }
+    public String getZhu_yscs() {
+        return this.zhu_yscs;
+    }
+    public void setZhu_yscs(String zhu_yscs) {
+        this.zhu_yscs = zhu_yscs;
+    }
+    public String getCong_yscs() {
+        return this.cong_yscs;
+    }
+    public void setCong_yscs(String cong_yscs) {
+        this.cong_yscs = cong_yscs;
+    }
 
     @Override
     public String toString() {
@@ -187,6 +206,8 @@ public class DenatorBaseinfo extends LitePalSupport {
                 ", wire='" + wire + '\'' +
                 ", name='" + name + '\'' +
                 ", denatorIdSup='" + denatorIdSup + '\'' +
+                ", zhu_yscs='" + zhu_yscs + '\'' +
+                ", cong_yscs='" + cong_yscs + '\'' +
                 '}';
     }
 }

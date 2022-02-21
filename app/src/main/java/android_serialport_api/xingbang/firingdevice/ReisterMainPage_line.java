@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.SerialPortActivity;
@@ -1022,11 +1023,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 有雷管接入
             //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
             //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
-//            try {
-//                Thread.sleep(500);//
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
             //2  连续发三次询问电流指令
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
             sendCmd(reCmd);
@@ -1155,13 +1151,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //352841778FDE5
         //A62141778FDE5
         Log.e("注册", "detonatorId: " + detonatorId);
-        String shellBlastNo = serchShellBlastNo(detonatorId);
+//        String shellBlastNo = serchShellBlastNo(detonatorId);
+        DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
         if (checkRepeatdenatorId(zhuce_form.getDenaId())) {//判断芯片码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
             return -1;
         }
-        if (shellBlastNo.length() == 13 && checkRepeatShellNo(shellBlastNo)) {//判断管壳码
+        if (detonatorTypeNew!=null&&detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {//判断管壳码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
             return -1;
@@ -1248,15 +1245,19 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 maxNo++;
                 values.put("blastserial", maxNo);
                 values.put("sithole", maxNo);
-                if (shellBlastNo.length() == 13) {
-                    values.put("shellBlastNo", shellBlastNo);
+                if (detonatorTypeNew!=null&&detonatorTypeNew.getShellBlastNo().length() == 13) {
+                    values.put("shellBlastNo", detonatorTypeNew.getShellBlastNo());
+                    Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
                 } else {
                     values.put("shellBlastNo", detonatorId);
+                    Utils.writeRecord("--单发注册--"  + " --芯片码:" + zhuce_form.getDenaId());
                 }
-                Utils.writeRecord("--单发注册--" + "注册雷管码:" + shellBlastNo + " --芯片码:" + zhuce_form.getDenaId());
+                values.put("zhu_yscs", zhuce_form.getZhu_yscs());
+
                 values.put("denatorId", zhuce_form.getDenaId());//主芯片
                 if(zhuce_form.getDenaIdSup()!=null){
                     values.put("denatorIdSup", zhuce_form.getDenaIdSup());//从芯片
+                    values.put("cong_yscs", detonatorTypeNew.getCong_yscs());
                     Utils.writeRecord("--单发注册: 从芯片码:" +zhuce_form.getDenaIdSup());
                 }
                 values.put("delay", delay);
@@ -1268,7 +1269,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 values.put("wire", zhuce_form.getWire());//桥丝状态
                 //向数据库插入数据
                 db.insert("denatorBaseinfo", null, values);
-                db.insert("denatorBaseinfo_all", null, values);
+//                db.insert("denatorBaseinfo_all", null, values);
                 getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
             } else {
                 values.put("shellBlastNo", detonatorId);//key为字段名，value为值
@@ -1449,6 +1450,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private String serchShellBlastNo(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryDetonatorTypeNew(denatorId);
+    }
+
+    /**
+     * 查询生产表中对应的管壳码
+     * */
+    private DetonatorTypeNew serchDenatorForDetonatorTypeNew(String denatorId) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        return master.queryDetonatorForTypeNew(denatorId);
     }
 
 

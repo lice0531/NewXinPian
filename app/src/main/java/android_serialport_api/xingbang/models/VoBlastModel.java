@@ -15,6 +15,24 @@ public class VoBlastModel extends VoDenatorBaseInfo {
 	private String errorName;
 	private String errorCode;
 	private String wire;//桥丝
+	private String zhu_yscs;//主芯片延时参数
+	private String cong_yscs;//从芯片延时参数
+
+	public String getZhu_yscs() {
+		return zhu_yscs;
+	}
+
+	public void setZhu_yscs(String zhu_yscs) {
+		this.zhu_yscs = zhu_yscs;
+	}
+
+	public String getCong_yscs() {
+		return cong_yscs;
+	}
+
+	public void setCong_yscs(String cong_yscs) {
+		this.cong_yscs = cong_yscs;
+	}
 
 	public String getStatusCode() {
 		return statusCode;

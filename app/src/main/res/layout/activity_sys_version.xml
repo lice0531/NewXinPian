@@ -6,10 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="android_serialport_api.xingbang.firingdevice.SetVoltageActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="90dp"
+        android:orientation="vertical"
+        android:background="@drawable/textview_border"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="起爆程序版本号:"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="KT50_3.25_PT_220221_添加延时参数"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
         android:orientation="vertical">
 
         <TextView

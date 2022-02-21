@@ -6,7 +6,6 @@ import static android_serialport_api.xingbang.R.id.qb_bt_jiance;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,8 +19,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -41,13 +38,11 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -71,7 +66,6 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
-import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
 import android_serialport_api.xingbang.firingdevice.QueryHisDetail;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
@@ -774,7 +768,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     Utils.writeRecord("--设置雷管延时:" + "主芯片:" + denatorId + "延时:" + delayStr + "从芯片:" + denatorIdSup);
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -970,7 +964,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     data = denatorId + delayStr + denatorIdSup;
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
