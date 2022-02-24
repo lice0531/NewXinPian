@@ -66,6 +66,10 @@ public class GreenDaoMaster {
         return result.where(DenatorBaseinfoDao.Properties.StatusCode.eq(statusCode)).list();
     }
 
+    /**
+     * 查询所有雷管
+     * @return
+     */
     public List<DenatorBaseinfo> queryDenatorBaseinfo() {
         return mDeantorBaseDao.loadAll();
     }

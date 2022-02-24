@@ -206,8 +206,6 @@ public class FiringMainActivity extends SerialPortActivity {
             qbxm_id = "-1";
             qbxm_name = " ";
         }
-        Log.e(TAG, "qbxm_id: " + qbxm_id);
-        Log.e(TAG, "qbxm_name: " + qbxm_name);
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
         initView();
@@ -525,6 +523,7 @@ public class FiringMainActivity extends SerialPortActivity {
         isshow = 0;//弹窗标志
         reThirdWriteCount = 0;
         totalerrorNum = 0;
+        elevenCount = getMinDelay() / 1000 +1;
     }
 
     private void getUserMessage() {
@@ -1391,7 +1390,8 @@ public class FiringMainActivity extends SerialPortActivity {
                     show_Toast(thirdWriteErrorDenator2.getShellBlastNo() + "芯片写入命令未返回");
                     thirdWriteErrorDenator2 = null;//设置错误雷管
                 }
-                if (errorList != null && errorList.size() >= 0) {
+                if (errorList != null) {
+                    errorList.size();
                     while (!errorList.isEmpty()) {//写入错误雷管
                         VoFiringTestError er = errorList.poll();
                         if (er != null) {
@@ -2078,5 +2078,19 @@ public class FiringMainActivity extends SerialPortActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /***
+     * 得到最大序号
+     * @return
+     */
+    private int getMinDelay() {
+        Cursor cursor = db.rawQuery("select min(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null);
+        if (cursor != null && cursor.moveToNext()) {
+            int delayMin = cursor.getInt(0);
+            cursor.close();
+            return delayMin;
+        }
+        return 0;
     }
 }

@@ -94,6 +94,29 @@ public class Utils {
         return new String(buf);
     }
 
+    /**
+     * int转16进制,可以根据字符表转换
+     * 普通16进制转换可以用 Integer.toHexString(a).toUpperCase(Locale.ROOT);方法
+     */
+    public static String intToHex(int n) {
+        StringBuilder sb = new StringBuilder(8);
+        String a;
+        char[] b = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        while (n != 0) {
+            sb = sb.append(b[n % 16]);
+            n = n / 16;
+        }
+        a = sb.reverse().toString();
+        return a;
+    }
+
+    public static String addZero(String str, int lenght){
+        String shell=str;
+        for (int i=0;i<(lenght-str.length());i++){
+            shell="0"+shell;
+        }
+        return shell;
+    }
     //管壳码转换雷管序号Id
     public static String DetonatorShellToSerialNo(String shellStr) {
 
@@ -172,8 +195,7 @@ public class Utils {
     public static byte getDetonatorShellToFactoryCodeByte(String shellStr) {
 
         String code = getDetonatorShellToFactoryCodeStr(shellStr);
-        byte b = Byte.parseByte(code);
-        return b;
+        return Byte.parseByte(code);
     }
 
     /***
@@ -182,8 +204,7 @@ public class Utils {
      * @return
      */
     public static String getDetonatorShellToFactoryCodeStr(String shellStr) {
-        String code = shellStr.substring(0, 2);
-        return code;
+        return shellStr.substring(0, 2);
     }
 
     /***
@@ -192,8 +213,7 @@ public class Utils {
      * @return
      */
     public static String getDetonatorShellToFeatureStr(String shellStr) {
-        String code = shellStr.substring(7, 8);
-        return code;
+        return shellStr.substring(7, 8);
 
     }
 
@@ -203,11 +223,8 @@ public class Utils {
      * @return
      */
     public static byte getDetonatorShellToFeature(String shellStr) {
-
         String code = shellStr.substring(7, 8);
-
         return (byte) code.charAt(0);
-
     }
 
     //根据年月/序号得到雷管ID
@@ -244,12 +261,6 @@ public class Utils {
         te = te << 28;//0
         i = i << 28;//0
         yearStr = yearStr << 17;//9
-//        Log.e("测试21延时", "yearStr  " + year );
-//        Log.e("测试21延时", "monthStr  " + month );
-//        Log.e("测试21延时", "dayStr  " + day );
-//        Log.e("测试21延时", "te  " + te );
-//        Log.e("测试21延时", "c  " + c );
-//        Log.e("测试21延时", "i 后 " + i );
         Log.e("测试21延时", "noStr  " + serialNo);
         int tempNo = serialNo ^ yearStr;
         tempNo = tempNo ^ day;
@@ -395,8 +406,7 @@ public class Utils {
 
     public static String str2HexStr(String origin) {
         byte[] bytes = origin.getBytes();
-        String hex = bytesToHexString(bytes);
-        return hex;
+        return bytesToHexString(bytes);
     }
 
     /**

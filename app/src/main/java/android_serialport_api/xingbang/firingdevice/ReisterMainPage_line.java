@@ -273,11 +273,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void getUserMessage() {
-        List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
-        if (message.size() > 0) {
-            qiaosi_set = message.get(0).getQiaosi_set();
-            version = message.get(0).getVersion()+"";
-        }
+        MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
+        qiaosi_set = messageBean.getQiaosi_set();
+        version = messageBean.getVersion() + "";
     }
 
     private void scan() {
@@ -985,12 +983,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             return;
         }
     }
+
     //模拟
-    private void send12(){
-        String subStr ="00120CFF00B6E6FF0041A6B6E6FF001503";
-        String inInfo = subStr.substring(0, subStr.length()-4);
+    private void send12() {
+        String subStr = "00120CFF00B6E6FF0041A6B6E6FF001503";
+        String inInfo = subStr.substring(0, subStr.length() - 4);
         String dcrc = DefCommand.getLowByteBeforeCRCCode(inInfo);
-        String fromCommad = "C0" +"00120CFF00B6E6FF0041A6B6E6FF00"+dcrc+"C0";
+        String fromCommad = "C0" + "00120CFF00B6E6FF0041A6B6E6FF00" + dcrc + "C0";
         byte[] localBuf = Utils.hexStringToBytes(fromCommad);
         String cmd = DefCommand.getCmd(fromCommad);
         doWithReceivData(cmd, localBuf);//处理cmd命令
@@ -1158,7 +1157,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
             return -1;
         }
-        if (detonatorTypeNew!=null&&detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {//判断管壳码
+        if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {//判断管壳码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
             return -1;
@@ -1245,20 +1244,20 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 maxNo++;
                 values.put("blastserial", maxNo);
                 values.put("sithole", maxNo);
-                if (detonatorTypeNew!=null&&detonatorTypeNew.getShellBlastNo().length() == 13) {
+                if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
                     values.put("shellBlastNo", detonatorTypeNew.getShellBlastNo());
                     Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
                 } else {
                     values.put("shellBlastNo", detonatorId);
-                    Utils.writeRecord("--单发注册--"  + " --芯片码:" + zhuce_form.getDenaId());
+                    Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
                 }
                 values.put("zhu_yscs", zhuce_form.getZhu_yscs());
 
                 values.put("denatorId", zhuce_form.getDenaId());//主芯片
-                if(zhuce_form.getDenaIdSup()!=null){
+                if (zhuce_form.getDenaIdSup() != null) {
                     values.put("denatorIdSup", zhuce_form.getDenaIdSup());//从芯片
                     values.put("cong_yscs", detonatorTypeNew.getCong_yscs());
-                    Utils.writeRecord("--单发注册: 从芯片码:" +zhuce_form.getDenaIdSup());
+                    Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
                 }
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
@@ -1446,7 +1445,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     /**
      * 查询生产表中对应的管壳码
-     * */
+     */
     private String serchShellBlastNo(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryDetonatorTypeNew(denatorId);
@@ -1454,7 +1453,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     /**
      * 查询生产表中对应的管壳码
-     * */
+     */
     private DetonatorTypeNew serchDenatorForDetonatorTypeNew(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryDetonatorForTypeNew(denatorId);

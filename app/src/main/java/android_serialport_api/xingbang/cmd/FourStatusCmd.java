@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.cmd;
 import android.util.Log;
 
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class FourStatusCmd {
@@ -232,8 +233,12 @@ public class FourStatusCmd {
 	 * @return
 	 */
 	public static byte[] send46(String addr,String version){
-
-		String command = addr + DefCommand.CMD_4_XBSTATUS_7+"01"+version;//46
+		GreenDaoMaster master = new GreenDaoMaster();
+		int total = master.queryDenatorBaseinfo().size();
+		int a = total/50 +1;
+		String b = Utils.intToHex(a);
+		String c = Utils.addZero(b,2);
+		String command = addr + DefCommand.CMD_4_XBSTATUS_7+"02"+version+c;//46
 		return DefCommand.getCommadBytes(command);
 	}
 	
