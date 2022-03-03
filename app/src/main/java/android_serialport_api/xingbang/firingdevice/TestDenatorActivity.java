@@ -523,7 +523,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (displayIc < denatorCount * 12 * 0.5 && firstCount > Preparation_time * 0.9) {//总线电流小于参考值一半,可能出现断路
+                    if (displayIc < denatorCount * 12 * 0.25 && firstCount > Preparation_time * 0.9) {//总线电流小于参考值一半,可能出现断路
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流过小,请检查线路是否出现断路");
                         stage = 5;

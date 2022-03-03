@@ -186,10 +186,10 @@ public class GreenDaoMaster {
 //                .where(DenatorBaseinfoDao.Properties.DenatorId.eq(detonatorId))
 //                .list();
         Log.e("检测重复", "detonatorId: " + detonatorId);
-        Log.e("检测重复", "detonatorId.substring(7): " + detonatorId.substring(7));
+        Log.e("检测重复", "detonatorId.substring(5): " + detonatorId.substring(5));
         return mDeantorBaseDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.DenatorId.like(detonatorId.substring(7)))
+                .where(DenatorBaseinfoDao.Properties.DenatorId.like(detonatorId.substring(5)))
                 .list();//0209为李斌改的不用4字节的首字节进行的模糊查询
     }
 

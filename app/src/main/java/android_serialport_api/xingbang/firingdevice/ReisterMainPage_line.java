@@ -1098,7 +1098,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             return -1;
         }
         //检查重复数据
-        if (checkRepeatdenatorId(shellNo)) {
+        if (checkRepeatdenatorId(shellNo)) {//13位管壳码
             singleShellNo = shellNo;
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
@@ -1150,9 +1150,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //352841778FDE5
         //A62141778FDE5
         Log.e("注册", "detonatorId: " + detonatorId);
+        Log.e("注册", "facCode: " + facCode);
+        Log.e("注册", "facFea: " + facFea);
 //        String shellBlastNo = serchShellBlastNo(detonatorId);
         DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
-        if (checkRepeatdenatorId(zhuce_form.getDenaId())) {//判断芯片码
+        if (checkRepeatdenatorId(detonatorId)) {//判断8位芯片码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
             return -1;
@@ -1414,7 +1416,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
         if (list_lg.size() > 0) {
-            Log.e("注册", "list_lg: " + list_lg.toString());
+            Log.e("注册重复", "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";
             singleShellNo = list_lg.get(0).getShellBlastNo();
             return true;

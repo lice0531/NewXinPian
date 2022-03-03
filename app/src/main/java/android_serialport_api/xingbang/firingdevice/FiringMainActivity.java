@@ -215,6 +215,7 @@ public class FiringMainActivity extends SerialPortActivity {
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
+        elevenCount = getMinDelay() / 1000 +1;
     }
 
     private void initView() {
@@ -523,7 +524,7 @@ public class FiringMainActivity extends SerialPortActivity {
         isshow = 0;//弹窗标志
         reThirdWriteCount = 0;
         totalerrorNum = 0;
-        elevenCount = getMinDelay() / 1000 +1;
+
     }
 
     private void getUserMessage() {

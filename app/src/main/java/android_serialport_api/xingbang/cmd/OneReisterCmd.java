@@ -180,13 +180,12 @@ public class OneReisterCmd {
         //C0001208 FF 00 C5F97817 48 35 6EAAC0  新芯片
         String fromCommad = Utils.bytesToHexFun(cmd);
         String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-        Log.e("解析12指令", "realyCmd1: " + realyCmd1);
+        Log.e("自动返回雷管id", "realyCmd1: "+realyCmd1 );
         if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
             return null;
         }
         if (contains120A(addr, realyCmd1) == 0) {//单芯片长度
             String dataHex = realyCmd1.substring(6);//取得返回数据
-            Log.e("自动返回雷管id", "dataHex: " + dataHex);//FF019B9BFE0041A6
             From12Reister vo = new From12Reister();
 
             String readStatus = dataHex.substring(0, 2);//读取状态
@@ -214,7 +213,7 @@ public class OneReisterCmd {
 
             String zhu_yscs = dataHex.substring(16);//主延时参数
             vo.setZhu_yscs(zhu_yscs);
-				Log.e("自动返回雷管id", "zhu_yscs: "+zhu_yscs );
+//				Log.e("自动返回雷管id", "zhu_yscs: "+zhu_yscs );
             return vo;
         } else {
             //C0001208 FF 00 C5F97817 48 35 6EAAC0  新芯片
@@ -222,7 +221,7 @@ public class OneReisterCmd {
             String dataHex = realyCmd1.substring(6, 30);//取得返回数据
             From12Reister vo = new From12Reister();
             String readStatus = dataHex.substring(0, 2);//读取状态
-            Log.e("自动返回雷管id", "dataHex: " + dataHex);
+//            Log.e("自动返回雷管id", "dataHex: " + dataHex);
             vo.setReadStatus(readStatus);
             String wire = dataHex.substring(2, 4);//桥丝状态
 //				Log.e("自动返回雷管id", "桥丝状态wire: "+wire );

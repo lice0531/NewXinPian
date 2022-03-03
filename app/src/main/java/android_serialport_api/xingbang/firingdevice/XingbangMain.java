@@ -628,7 +628,6 @@ public class XingbangMain extends BaseActivity {
 
     private void readCVS_pro() {
         getPropertiesData();//读取偏好存储
-        Log.e("读取数据", "version: "+version);
         String path = Environment.getExternalStorageDirectory() + "/Xingbang/" + "properties.ini";
         File f = new File(path);
         if (!f.exists()) {
@@ -652,7 +651,6 @@ public class XingbangMain extends BaseActivity {
         message.setPro_dwdm(pro_dwdm);
         message.setJiance_time(String.valueOf(jiance_time));
         message.setVersion(version);//单片机系统版本/旧01/新02
-        Log.e("读取数据", "version: "+version);
         if (queryMessage() == 1) {
             message.setId((long) 1);
             getDaoSession().getMessageBeanDao().update(message);
