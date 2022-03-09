@@ -383,7 +383,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 15) {
+            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 14) {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
