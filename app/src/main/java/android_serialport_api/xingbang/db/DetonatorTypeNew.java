@@ -79,6 +79,15 @@ public class DetonatorTypeNew {
     }
 
 
- 
-
+    @Override
+    public String toString() {
+        return "DetonatorTypeNew{" +
+                "Id=" + Id +
+                ", shellBlastNo='" + shellBlastNo + '\'' +
+                ", detonatorId='" + detonatorId + '\'' +
+                ", detonatorIdSup='" + detonatorIdSup + '\'' +
+                ", zhu_yscs='" + zhu_yscs + '\'' +
+                ", cong_yscs='" + cong_yscs + '\'' +
+                '}';
+    }
 }

@@ -140,7 +140,10 @@ public class GreenDaoMaster {
      * 通过管壳码获取芯片码
      */
     public DetonatorTypeNew queryShellBlastNoTypeNew(String shellBlastNo) {
+        Log.e("通过管壳码获取芯片码", "shellBlastNo: "+shellBlastNo );
+
         List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
+        Log.e("通过管壳码获取芯片码", "dt.size(): "+dt.size() );
         if (dt.size() >= 1) {
             return dt.get(0);
         } else {

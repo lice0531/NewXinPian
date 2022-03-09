@@ -1720,6 +1720,9 @@ public class Utils {
             denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
             denatorBaseinfo.setWire(list_lg.get(i).getWire());
             denatorBaseinfo.setName(list_lg.get(i).getName());
+            denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
+            denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
+            denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
         }
         Utils.saveFile();//把软存中的数据存入磁盘中

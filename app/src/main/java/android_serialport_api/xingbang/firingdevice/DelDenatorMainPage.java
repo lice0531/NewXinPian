@@ -367,6 +367,9 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
                                     runPbDialog();
                                     Utils.deleteData(DelDenatorMainPage.this);//重新排序雷管
                                     loadMoreData();//获取数据保存到list
+                                    //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)
+//                                    mAdapter = new LoadAdapter(DelDenatorMainPage.this, list_lg, R.layout.item_deldenator, 0);//(手动输入管壳码之后,错误码为空,会报空指针)
+//                                    denatorDelListview.setAdapter(mAdapter);
                                     refreshData();//刷新列表
                                     tipDlg.dismiss();
                                     show_Toast(getString(R.string.text_del_ok));
