@@ -137,6 +137,23 @@ public class DenatorHis_Main {
     public void setLog(String log) {
         this.log = log;
     }
-   
 
+    @Override
+    public String toString() {
+        return "DenatorHis_Main{" +
+                "id=" + id +
+                ", blastdate='" + blastdate + '\'' +
+                ", uploadStatus='" + uploadStatus + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", userid='" + userid + '\'' +
+                ", equ_no='" + equ_no + '\'' +
+                ", serialNo=" + serialNo +
+                ", pro_xmbh='" + pro_xmbh + '\'' +
+                ", pro_htid='" + pro_htid + '\'' +
+                ", pro_dwdm='" + pro_dwdm + '\'' +
+                ", remark='" + remark + '\'' +
+                ", log='" + log + '\'' +
+                '}';
+    }
 }

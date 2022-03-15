@@ -50,7 +50,7 @@ public class ThreeFiringCmd {
 	public static byte[] send31(String addr, String data){
 		//C0 00 31 06 14E0FF000000 D2D4 C0
 		String command;
-		Log.e("长度", "data: "+data.length() );
+//		Log.e("长度", "data: "+data.length() );
 		if(data.length()==16){
 			command = addr + DefCommand.CMD_3_DETONATE_2+"08"+data;
 		}else {

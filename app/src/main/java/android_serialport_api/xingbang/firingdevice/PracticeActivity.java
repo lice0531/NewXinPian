@@ -341,7 +341,9 @@ public class PracticeActivity extends SerialPortActivity {
             DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
-            detonatorTypeNew.setZhu_yscs(a[2]);
+            if(a.length==3){//兼容旧的注码版本
+                detonatorTypeNew.setZhu_yscs(a[2]);
+            }
             if(a.length==5){
                 detonatorTypeNew.setDetonatorIdSup(a[3]);
                 detonatorTypeNew.setCong_yscs(a[4]);

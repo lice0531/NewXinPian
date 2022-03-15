@@ -169,7 +169,6 @@ public class Utils {
     public static String DetonatorShellToSerialNo_newXinPian(String shellStr) {
         //A621407FFFDE5
         //StringIndexOutOfBoundsException: length=4; index=5(直接注册会出现这个问题)
-        Log.e("处理雷管id", "shellStr: "+shellStr );
         if(shellStr.length()==8){
             return shellStr;
         }else {

@@ -252,10 +252,10 @@
     <string name="text_del_end">终号</string>
     <string name="text_del_ok">删除成功</string>
 
-    <string name="text_firing_tip1">测试准备1阶段</string>
+    <string name="text_firing_tip1">测试准备阶段</string>
     <string name="text_firing_num">待测雷管数量:</string>
     <string name="text_firing_errnum">错误数量 :</string>
-    <string name="text_firing_tip2">测试准备2阶段</string>
+    <string name="text_firing_tip2">测试准备阶段</string>
     <string name="text_firing_tip3">是否进入充电模式？</string>
     <string name="text_firing_err_lg">错误雷管</string>
     <string name="text_firing_jixu">继续</string>
@@ -264,7 +264,7 @@
     <string name="text_firing_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
     <string name="text_firing_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
     <string name="text_firing_tip6">倒计时</string>
-    <string name="text_firing_tip7">测试准备2阶段 (</string>
+    <string name="text_firing_tip7">测试准备阶段 (</string>
     <string name="text_firing_tip8">写入未返回:</string>
     <string name="text_firing_tip9">正在检测第 (</string>
     <string name="text_firing_tip10">)雷管</string>

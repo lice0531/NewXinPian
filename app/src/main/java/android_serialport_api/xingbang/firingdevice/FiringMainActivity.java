@@ -215,7 +215,7 @@ public class FiringMainActivity extends SerialPortActivity {
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
-        elevenCount = getMinDelay() / 1000 +1;
+        elevenCount = getMinDelay() / 1000 + 1;
     }
 
     private void initView() {
@@ -233,7 +233,8 @@ public class FiringMainActivity extends SerialPortActivity {
         sixTxt = findViewById(R.id.ll_txt_firing_6);
         eightTxt = findViewById(R.id.ll_txt_firing_8);
 
-        firstTxt.setText(firstWaitCount + "s");
+        firstTxt.setText((secondCount + firstWaitCount + Wait_Count) + "s");
+        secondTxt.setText("测试准备阶段 (" + (secondCount + Wait_Count) + "s)");
         ll_firing_Volt_2 = findViewById(R.id.ll_firing_Volt_2);
         ll_firing_IC_2 = findViewById(R.id.ll_firing_IC_2);
         ll_firing_Volt_4 = findViewById(R.id.ll_firing_Volt_4);
@@ -344,6 +345,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
+
                 if (displayIc > (denatorCount * 51)) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     ll_firing_IC_2.setTextColor(Color.RED);
@@ -375,12 +377,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_IC_7.setText("" + displayIcStr);
                 ll_firing_Hv_7.setText("" + busInfo.getFiringVoltage() + "V");
                 ll_firing_Hv_6.setText("" + busInfo.getFiringVoltage() + "V");
-                if (busInfo.getPowerStatusName().trim().length() > 0) {
-                    /**
-                     Toast.makeText(FiringMainActivity.this,busInfo.getPowerStatusName(),
-                     Toast.LENGTH_SHORT).show();
-                     **/
-                }
+
             }
 
             if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 14) {
@@ -402,7 +399,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于4000,重启检测阶段
-            if (secondCount < Preparation_time * 0.1 && busInfo != null) {
+            if (secondCount < Preparation_time * 0.1 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 4500) {
@@ -643,7 +640,7 @@ public class FiringMainActivity extends SerialPortActivity {
         switch (stage) {
             case 0:
                 ll_1.setVisibility(View.VISIBLE);
-                firstTxt.setText(firstWaitCount + "s");
+                firstTxt.setText((secondCount + Wait_Count + firstWaitCount) + "s");
                 break;
             case 1:
                 ll_1.setVisibility(View.VISIBLE);
@@ -1168,7 +1165,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 break;
             case 1:
-                firstTxt.setText(firstWaitCount + "s");
+                firstTxt.setText((secondCount + Wait_Count + firstWaitCount) + "s");
 
                 if (firstWaitCount <= 0) {//等待结束
                     //发出进入起爆模式命令,根据偏好设置,选择是否检测桥丝
@@ -1191,7 +1188,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 break;
             case 2:
-                secondTxt.setText(getString(R.string.text_firing_tip7) + secondCount + "s)");//"测试准备 ("
+                secondTxt.setText(getString(R.string.text_firing_tip7) + (Wait_Count + secondCount) + "s)");//"测试准备 ("
                 break;
             case 3:
                 if (thirdWriteErrorDenator != null) {//写入未返回的错误雷管
@@ -1218,7 +1215,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fourthDisplay = 1;
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
-                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
+//                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
 //                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
 //                    Log.e(TAG, "大于4000u ，全错: ");
 //                    if (chongfu) {
@@ -1253,7 +1250,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 break;
             case 5:
-                secondTxt.setText("测试准备3阶段(" + Wait_Count + "s)");//"充电检测 ("
+                secondTxt.setText("测试准备阶段 (" + Wait_Count + "s)");//"充电检测 ("
                 if (Wait_Count <= 0) {//等待结束
 //                    byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
 //                    sendCmd(powerCmd);
@@ -1459,13 +1456,14 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (firstCmdReFlag == 0 && firstWaitCount < 1) {
                                 exit = true;
                             }
-                            if (firstWaitCount > 8) {//新芯片8秒后显示电流
-                                byte[] Cmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40 获取电源状态指令
-                                sendCmd(Cmd);
+                            if(firstWaitCount>1){
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                             }
+
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 2://
+
                             //发出进入起爆模式命令  准备测试计时器
                             if (secondCount == 0 && secondCmdFlag == 0) {//
                                 byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
@@ -1474,10 +1472,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e("第5阶段-increase", "5");
                                 Log.e("充电检测WaitCount", Wait_Count + "");
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            } else if (secondCount <= Preparation_time * 0.5) {//
+                            } else {//
                                 //得到电流电压信息
-                                byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
-                                sendCmd(powerCmd);
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101获取电源状态指令
                             }
 
                             Thread.sleep(1000);
@@ -1869,6 +1866,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private String loadHisMainData() {
         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().loadAll();
+        Log.e(TAG, "查询第一条历史记录: "+list.get(0).toString() );
         return list.get(0).getBlastdate();
     }
 
