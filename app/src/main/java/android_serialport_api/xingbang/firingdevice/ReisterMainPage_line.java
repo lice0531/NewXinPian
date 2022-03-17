@@ -1233,23 +1233,25 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
             if (index < 0 && !zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
                 maxNo++;
-                values.put("blastserial", maxNo);
-                values.put("sithole", maxNo);
+                //从绑码库中获取到的数据
                 if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
                     values.put("shellBlastNo", detonatorTypeNew.getShellBlastNo());
+                    values.put("zhu_yscs", detonatorTypeNew.getZhu_yscs());
                     Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
                 } else {
                     values.put("shellBlastNo", detonatorId);
+                    values.put("zhu_yscs", zhuce_form.getZhu_yscs());
                     Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
                 }
-                values.put("zhu_yscs", zhuce_form.getZhu_yscs());
 
-                values.put("denatorId", zhuce_form.getDenaId());//主芯片
                 if (zhuce_form.getDenaIdSup() != null) {
                     values.put("denatorIdSup", zhuce_form.getDenaIdSup());//从芯片
                     values.put("cong_yscs", detonatorTypeNew.getCong_yscs());
                     Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
                 }
+                values.put("blastserial", maxNo);
+                values.put("sithole", maxNo);
+                values.put("denatorId", zhuce_form.getDenaId());//主芯片
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");

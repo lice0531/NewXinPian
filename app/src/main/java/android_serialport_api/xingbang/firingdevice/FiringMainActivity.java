@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
@@ -1072,13 +1073,13 @@ public class FiringMainActivity extends SerialPortActivity {
             sixCmdSerial = 3;
 
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
-            if (qibaoNoFlag < 5) {
-                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
-//                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
-                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34起爆
-                sendCmd(initBuf);
-                qibaoNoFlag++;
-            } else {
+//            if (qibaoNoFlag < 5) {
+//                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
+////                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
+//                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34起爆
+//                sendCmd(initBuf);
+//                qibaoNoFlag++;
+//            } else {
                 //stage=9;
                 eightCmdFlag = 2;
                 hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
@@ -1097,7 +1098,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-            }
+//            }
 
         } else if (DefCommand.CMD_3_DETONATE_6.equals(cmd)) {//35 退出起爆模式
             //发出关闭获取得到电压电流
@@ -1807,14 +1808,12 @@ public class FiringMainActivity extends SerialPortActivity {
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-            Log.e("起爆页面", "m0UpTime: " + m0UpTime);
         } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
                 }
             }
         } else if (keyCode == KeyEvent.KEYCODE_5 && Build.DEVICE.equals("KT50_B2")) {
@@ -1823,10 +1822,10 @@ public class FiringMainActivity extends SerialPortActivity {
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
                 }
             }
         }
+
         Utils.writeRecord("--按组合键起爆--");
         return super.dispatchKeyEvent(event);
     }
