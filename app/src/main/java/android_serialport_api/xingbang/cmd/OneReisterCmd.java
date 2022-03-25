@@ -68,7 +68,6 @@ public class OneReisterCmd {
 
         if (from == null) return -1;
         String command = addr + DefCommand.CMD_1_REISTER_3 + "0A";//添加检测桥丝前是07//08
-        //String realyCmd1 =DefCommand.getCommadHex(command);
         if (from.contains(command)) return 0;
         else return -1;
     }

@@ -604,6 +604,9 @@ public class XingbangMain extends BaseActivity {
                 baseinfo.setName(a[14]);
                 if (a.length == 16) {
                     baseinfo.setDenatorIdSup(a[15]);
+                }else if(a.length>16){
+                    baseinfo.setZhu_yscs(a[16]);
+                    baseinfo.setCong_yscs(a[17]);
                 }
                 getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 i++;

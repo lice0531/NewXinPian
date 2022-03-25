@@ -229,7 +229,7 @@
         <activity
             android:name=".firingdevice.WriteLogActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="错误日志"
+            android:label="程序日志"
             android:theme="@style/blackActivityTheme" />
         <activity
             android:name=".firingdevice.SystemVersionActivity"

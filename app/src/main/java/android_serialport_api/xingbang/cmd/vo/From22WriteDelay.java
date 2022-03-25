@@ -82,10 +82,10 @@ public class From22WriteDelay {
 		if("06".equals(this.getCommicationStatus())){
 			return "其他错误";
 		}
-//		if("AF".equals(this.getCommicationStatus())){
-//			name=context.getString(R.string.text_communication_state3);
-//			return name;
-//		}
+		if("AF".equals(this.getCommicationStatus())){
+			name=Application.getContext().getString(R.string.text_communication_state3);
+			return name;
+		}
 		if("FF".equals(this.getCommicationStatus())){
 			name=Application.getContext().getString(R.string.text_communication_state4);
 			return name;
@@ -100,7 +100,7 @@ public class From22WriteDelay {
 		if("00".equals(this.getCommicationStatus())){
 			return "雷管正常";
 		}
-		return "未知";
+		return "雷管通讯错误";
 	}
 
 	@Override

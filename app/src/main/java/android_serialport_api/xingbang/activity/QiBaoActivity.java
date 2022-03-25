@@ -373,19 +373,19 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                     show_Toast(thirdWriteErrorDenator.getShellBlastNo() + "芯片写入命令未返回");
                     thirdWriteErrorDenator = null;//设置错误雷管
                 }
-                if (errorList != null && errorList.size() >= 0) {
-                    int errLoop = 0;
-                    while (!errorList.isEmpty()) {//写入错误雷管
-                        VoFiringTestError er = errorList.poll();
-                        if (er != null) {
-                            From32DenatorFiring df = new From32DenatorFiring();
-                            df.setShellNo(er.getShellBlastNo());
-                            df.setCommicationStatus("AF");
-                            df.setDelayTime(er.getDelay());
-                            this.updateDenator(df, er.getDelay());
-                        }
-                    }
-                }
+//                if (errorList != null && errorList.size() >= 0) {
+//                    int errLoop = 0;
+//                    while (!errorList.isEmpty()) {//写入错误雷管
+//                        VoFiringTestError er = errorList.poll();
+//                        if (er != null) {
+//                            From32DenatorFiring df = new From32DenatorFiring();
+//                            df.setShellNo(er.getShellBlastNo());
+//                            df.setCommicationStatus("AF");
+//                            df.setDelayTime(er.getDelay());
+//                            this.updateDenator(df, er.getDelay());
+//                        }
+//                    }
+//                }
                 binding.qbTvTip.setText(getString(R.string.text_firing_tip9) + thirdWriteCount + getString(R.string.text_firing_tip10));
                 break;
             case 4:
@@ -549,19 +549,19 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                    show_Toast(thirdWriteErrorDenator2.getShellBlastNo() + "芯片写入命令未返回");
 //                    thirdWriteErrorDenator2 = null;//设置错误雷管
 //                }
-                if (errorList != null) {
-                    int errLoop = 0;
-                    while (!errorList.isEmpty()) {//写入错误雷管
-                        VoFiringTestError er = errorList.poll();
-                        if (er != null) {
-                            From32DenatorFiring df = new From32DenatorFiring();
-                            df.setShellNo(er.getShellBlastNo());
-                            df.setCommicationStatus("AF");
-                            df.setDelayTime(er.getDelay());
-                            this.updateDenator(df, er.getDelay());
-                        }
-                    }
-                }
+//                if (errorList != null) {
+//                    int errLoop = 0;
+//                    while (!errorList.isEmpty()) {//写入错误雷管
+//                        VoFiringTestError er = errorList.poll();
+//                        if (er != null) {
+//                            From32DenatorFiring df = new From32DenatorFiring();
+//                            df.setShellNo(er.getShellBlastNo());
+//                            df.setCommicationStatus("AF");
+//                            df.setDelayTime(er.getDelay());
+//                            this.updateDenator(df, er.getDelay());
+//                        }
+//                    }
+//                }
                 binding.qbTvTip.setText(getString(R.string.text_firing_tip9) + thirdWriteCount + getString(R.string.text_firing_tip10));
                 //写入通信未返回
                 break;

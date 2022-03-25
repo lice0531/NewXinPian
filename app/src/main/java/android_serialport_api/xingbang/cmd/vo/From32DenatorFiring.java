@@ -53,7 +53,7 @@ public class From32DenatorFiring {
 		this.delayTime = delayTime;
 	}
 	/***
-	 * 得到通信状态
+	 * 得到通信状态(主芯片)
 	 * @return
 	 */
 	public String getCommicationStatusName(){
@@ -92,7 +92,7 @@ public class From32DenatorFiring {
 		return Application.getContext().getString(R.string.text_communication_state5);//"未知";
 	}
 	/***
-	 * 得到通信状态
+	 * 得到通信状态(从芯片)
 	 * @return
 	 */
 	public String getCommicationStatusCong(){
@@ -146,7 +146,7 @@ public class From32DenatorFiring {
 	@Override
 	public String toString() {
 		return "雷管状态{" +
-				", 通信状态1='" + getCommicationStatusName() + '\'' +
+				"  通信状态1='" + getCommicationStatusName() + '\'' +
 				", 通信状态2='" + getCommicationStatusCong() + '\'' +
 				", 管壳码='" + shellNo + '\'' +
 				", 芯片码='" + denaId + '\'' +

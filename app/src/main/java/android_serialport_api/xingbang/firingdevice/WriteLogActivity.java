@@ -43,12 +43,12 @@ public class WriteLogActivity extends BaseActivity {
         setContentView(R.layout.activity_write_log);
         ButterKnife.bind(this);
 
-        mHandler_loding = new Handler(message -> {
-            if (pb_show == 1 && tipDlg != null) tipDlg.show();
-            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
-            return false;
-        });
-        pb_show = 1;
+//        mHandler_loding = new Handler(message -> {
+//            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+//            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+//            return false;
+//        });
+//        pb_show = 1;
         runPbDialog();
 //        new Thread(() -> {
 //            String log = Utils.readLog();
@@ -63,7 +63,7 @@ public class WriteLogActivity extends BaseActivity {
     }
 
     private void runPbDialog() {
-        pb_show = 1;
+//        pb_show = 1;
         //  builder = showPbDialog();
         tipDlg = new LoadingDialog(this);
         Context context = tipDlg.getContext();
@@ -72,23 +72,15 @@ public class WriteLogActivity extends BaseActivity {
         divider.setBackgroundColor(Color.TRANSPARENT);
         //tipDlg.setMessage("正在操作,请等待...").show();
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                //mHandler_2
-                mHandler_loding.sendMessage(mHandler_loding.obtainMessage());
-                //builder.show();
-                try {
-                    while (pb_show == 1) {
-                        Thread.sleep(100);
-                    }
-                    //builder.dismiss();
-                    mHandler_loding.sendMessage(mHandler_loding.obtainMessage());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            mHandler_loding.sendMessage(mHandler_loding.obtainMessage());
+            try {
+                while (pb_show == 1) {
+                    Thread.sleep(100);
                 }
+                mHandler_loding.sendMessage(mHandler_loding.obtainMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }

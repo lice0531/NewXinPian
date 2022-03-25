@@ -605,21 +605,21 @@ public class TestDenatorActivity extends SerialPortActivity {
                 if (thirdWriteErrorDenator != null) {//写入未返回的错误雷管
                     thirdWriteErrorDenator = null;//设置错误雷管
                 }
-                if (errorList != null && errorList.size() >= 0) {
-                    int iLoop = 0;
-                    while (!errorList.isEmpty()) {//写入错误雷管
-                        VoFiringTestError er = errorList.poll();
-                        if (er != null) {
-                            From22WriteDelay df = new From22WriteDelay();
-                            df.setShellNo(er.getShellBlastNo());
-                            df.setCommicationStatus("AF");
-                            df.setDelayTime(er.getDelay());
-                            this.updateDenator(df, er.getDelay());
-                            iLoop++;
-                        }
-                    }
-
-                }
+//                if (errorList != null && errorList.size() >= 0) {
+//                    int iLoop = 0;
+//                    while (!errorList.isEmpty()) {//写入错误雷管
+//                        VoFiringTestError er = errorList.poll();
+//                        if (er != null) {
+//                            From22WriteDelay df = new From22WriteDelay();
+//                            df.setShellNo(er.getShellBlastNo());
+//                            df.setCommicationStatus("AF");
+//                            df.setDelayTime(er.getDelay());
+//                            this.updateDenator(df, er.getDelay());
+//                            iLoop++;
+//                        }
+//                    }
+//
+//                }
                 secondTxt.setText(getString(R.string.text_test_tip2) + thirdWriteCount + getString(R.string.text_test_tip3));
 
                 break;

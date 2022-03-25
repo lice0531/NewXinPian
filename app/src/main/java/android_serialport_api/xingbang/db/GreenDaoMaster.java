@@ -237,14 +237,15 @@ public class GreenDaoMaster {
 
     public static String getAllFromInfo() {
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称,从芯片码\n";
+        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称,从芯片码,主延时参数,从延时参数\n";
         String content;
         for (int i = 0; i < list.size(); i++) {
             content = list.get(i).getId() + "," + list.get(i).getBlastserial() + "," + list.get(i).getSithole() + ","
                     + list.get(i).getShellBlastNo() + "," + list.get(i).getDenatorId() + "," + list.get(i).getDelay() + ","
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
-                    + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + "," + list.get(i).getDenatorIdSup() + "\n";
+                    + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
+                    + list.get(i).getDenatorIdSup() + ","+list.get(i).getZhu_yscs()+","+list.get(i).getCong_yscs()+ "\n";
             str = str + content;
         }
         return str;

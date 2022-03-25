@@ -68,19 +68,16 @@ public class ThreeFiringCmd {
 		
 		if(from==null)return -1;
 		String command = addr + DefCommand.CMD_3_DETONATE_2+"04";
-		//String realyCmd1 =DefCommand.getCommadHex(command);
-		
-		if(from.indexOf(command)>=0)return 0;
+		if(from.contains(command))return 0;
 		else return -1;
 	}
 	/***
 	 * 解码写入雷管延时
 	 * @param addr
-	 * @param fromCommad
 	 * @return
 	 */
 	public static From32DenatorFiring decodeFromReceiveDataWriteDelay23_2(String addr , byte[] cmd){
-		
+		//C00031 04 FF FF F4 01 0059 C0
 		String fromCommad =  Utils.bytesToHexFun(cmd);
 		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
 	
