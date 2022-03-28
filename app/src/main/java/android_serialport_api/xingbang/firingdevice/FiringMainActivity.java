@@ -1558,15 +1558,15 @@ public class FiringMainActivity extends SerialPortActivity {
                                     errorDe.setShellBlastNo(tempBaseInfo.getShellBlastNo());
                                     errorDe.setDelay(tempBaseInfo.getDelay());
                                     errorDe.setError(1);
-                                    thirdWriteErrorDenator = errorDe;
-                                    errorList.offer(errorDe);
+                                    thirdWriteErrorDenator = errorDe;//(应该只发个管壳码就可以)
+//                                    errorList.offer(errorDe);
                                     //尝试修改当单片机未返回时的更新错误状态方法,因为有可能会导致错误更新
-//                                    From32DenatorFiring fromDataErr = new From32DenatorFiring();
-//                                    fromDataErr.setShellNo(tempBaseInfo.getShellBlastNo());
-//                                    fromDataErr.setDenaId(tempBaseInfo.getDenatorId());
-//                                    fromDataErr.setDelayTime(tempBaseInfo.getDelay());
-//                                    fromDataErr.setCommicationStatus("AF");
-//                                    updateDenator(fromDataErr,tempBaseInfo.getDelay());
+                                    From32DenatorFiring fromDataErr = new From32DenatorFiring();
+                                    fromDataErr.setShellNo(tempBaseInfo.getShellBlastNo());
+                                    fromDataErr.setDenaId(tempBaseInfo.getDenatorId());
+                                    fromDataErr.setDelayTime(tempBaseInfo.getDelay());
+                                    fromDataErr.setCommicationStatus("AF");
+                                    updateDenator(fromDataErr,tempBaseInfo.getDelay());
                                     //发出错误
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     writeDenator = null;
