@@ -556,7 +556,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }
                     //电流大于4500
                     Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 4000 && firstCount > Preparation_time * 0.85) {
+                    if (displayIc > 4500 && firstCount > Preparation_time * 0.85) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         if (!chongfu) {
@@ -626,7 +626,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             case 4:
                 if (totalerrorNum == 0) {
                     stopXunHuan();
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4000) {//大于4500u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4500u ，全错
                     Log.e(TAG, "大于4500u ，全错: ");
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
@@ -635,7 +635,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     } else {
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
                     }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4000) {//小于4500u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4500u ，全错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
                     if (chongfu) {
