@@ -289,49 +289,46 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             edit_start_entBF2Bit_st.setText(factoryCode);
         }
 
-        at_projectName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                hideInputKeyboard();
-                String project_name = parent.getAdapter().getItem(position).toString();
-                Log.e("输入项目", "position: "+position );
-                Log.e("输入项目", "project_name: "+project_name );
-                Log.e("输入项目", "getItem(position): "+parent.getAdapter().getItem(position).toString() );
-                GreenDaoMaster master = new GreenDaoMaster();
-                List<Project> list = master.queryProjectToProject_name(project_name);
+        at_projectName.setOnItemClickListener((parent, view, position, id) -> {
+            hideInputKeyboard();
+            String project_name = parent.getAdapter().getItem(position).toString();
+            Log.e("输入项目", "position: "+position );
+            Log.e("输入项目", "project_name: "+project_name );
+            Log.e("输入项目", "getItem(position): "+parent.getAdapter().getItem(position).toString() );
+            GreenDaoMaster master = new GreenDaoMaster();
+            List<Project> list = master.queryProjectToProject_name(project_name);
 
-                Log.e("输入项目", "list: "+list.toString() );
-                if(list.size()>0){
-                    if (list.get(0).getHtbh().length() > 0) {
-                        at_htid.setText(list.get(0).getHtbh());
-                    }else {
-                        at_htid.setText("");
+            Log.e("输入项目", "list: "+list.toString() );
+            if(list.size()>0){
+                if (list.get(0).getHtbh().length() > 0) {
+                    at_htid.setText(list.get(0).getHtbh());
+                }else {
+                    at_htid.setText("");
 
-                    }
-                    if (list.get(0).getXmbh().length() > 0) {
-                        at_xmbh.setText(list.get(0).getXmbh());
-                    }else {
-                        at_xmbh.setText("");
-
-                    }
-                    if (list.get(0).getDwdm().length() > 0) {
-                        at_dwdm.setText(list.get(0).getDwdm());
-                    }else {
-                        at_dwdm.setText("");
-
-                    }
-                    if (list.get(0).getCoordxy().length() > 0) {
-                        at_coordxy.setText(list.get(0).getCoordxy());
-                    }else {
-                        at_coordxy.setText("");
-
-                    }
-                    at_bprysfz.setText(list.get(0).getBprysfz());
                 }
+                if (list.get(0).getXmbh().length() > 0) {
+                    at_xmbh.setText(list.get(0).getXmbh());
+                }else {
+                    at_xmbh.setText("");
 
-                saveData();
-                initView();//把输入框颜色初始化
+                }
+                if (list.get(0).getDwdm().length() > 0) {
+                    at_dwdm.setText(list.get(0).getDwdm());
+                }else {
+                    at_dwdm.setText("");
+
+                }
+                if (list.get(0).getCoordxy().length() > 0) {
+                    at_coordxy.setText(list.get(0).getCoordxy());
+                }else {
+                    at_coordxy.setText("");
+
+                }
+                at_bprysfz.setText(list.get(0).getBprysfz());
             }
+
+            saveData();
+            initView();//把输入框颜色初始化
         });
 
         at_htid.addTextChangedListener(htbh_watcher);//长度监听

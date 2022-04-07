@@ -1259,6 +1259,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryDetonatorForTypeNew(denatorId);
     }
+
     /***
      * 单发注册(扫码注册,用到)
      */

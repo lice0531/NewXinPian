@@ -215,6 +215,7 @@ public class OneReisterCmd {
 //				Log.e("自动返回雷管id", "zhu_yscs: "+zhu_yscs );
             return vo;
         } else {
+            //C0001208 FF 01 94EDFB00 41 A6 3223C0
             //C0001208 FF 00 C5F97817 48 35 6EAAC0  新芯片
             //C000120C FF 00 C5F97817 48 35 C5F97817 6EAAC0  新芯片
             String dataHex = realyCmd1.substring(6, 30);//取得返回数据
