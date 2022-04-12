@@ -299,10 +299,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else {
                 String barCode;
                 String denatorId;
-                if (data.length() == 28) {//PT5610902H00001A62141778F953
-                    barCode = data.substring(2, 15);
-                    denatorId = data.substring(15);
-                    insertSingleDenator_2(barCode, denatorId);//同时注册管壳码和芯片码
+                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+                    barCode = data.substring(0, 13);
+                    denatorId = data.substring(13,26);
+                    insertSingleDenator_2(barCode, denatorId,data.substring(26));//同时注册管壳码和芯片码
                 } else {
                     barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                     insertSingleDenator(barCode);
@@ -1350,7 +1350,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /***
      * 单发注册(同时注册管壳码和芯片码)
      */
-    private int insertSingleDenator_2(String shellNo, String denatorId) {
+    private int insertSingleDenator_2(String shellNo, String denatorId,String yscs) {
         if (shellNo.length() != 13) {
             return -1;
         }
@@ -1403,6 +1403,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             values.put("errorCode", "FF");
             values.put("errorName", "");
             values.put("wire", "");
+            values.put("yscs_zhu", yscs);
             //向数据库插入数据
             db.insert("denatorBaseinfo", null, values);
 
