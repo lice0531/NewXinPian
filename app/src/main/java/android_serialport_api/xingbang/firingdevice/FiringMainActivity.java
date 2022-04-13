@@ -1490,33 +1490,33 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 //检测一次
-                                if (blastQueue == null || blastQueue.size() < 1) {
-                                    increase(4);//之前是4
-                                    Log.e("第4阶段-increase", "4-2");
-                                    fourOnlineDenatorFlag = 0;
-                                    break;
-                                }
-
-                                //检测两次
-//                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
-//                                    //如果过错误数量不为为0才发第二次
-////                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
-////                                        //检测一次
-////                                        increase(4);//之前是4
-////                                        Log.e("第4阶段-increase", "4-2");
-////                                    }else {
-//                                    Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
-//                                    Utils.writeRecord("--第一轮检测结束-------------");
-//                                    //检测两次
-//                                    getblastQueue();
-//                                    Thread.sleep(1000);//在第二次检测前等待1s
-//                                    increase(33);//之前是4
-//                                    totalerrorNum = 0;//重置错误数量
-////                                  }
-//
+//                                if (blastQueue == null || blastQueue.size() < 1) {
+//                                    increase(4);//之前是4
+//                                    Log.e("第4阶段-increase", "4-2");
 //                                    fourOnlineDenatorFlag = 0;
 //                                    break;
 //                                }
+
+                                //检测两次
+                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
+                                    //如果过错误数量不为为0才发第二次
+//                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
+//                                        //检测一次
+//                                        increase(4);//之前是4
+//                                        Log.e("第4阶段-increase", "4-2");
+//                                    }else {
+                                    Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
+                                    Utils.writeRecord("--第一轮检测结束-------------");
+                                    //检测两次
+                                    getblastQueue();
+                                    Thread.sleep(1000);//在第二次检测前等待1s
+                                    increase(33);//之前是4
+                                    totalerrorNum = 0;//重置错误数量
+//                                  }
+
+                                    fourOnlineDenatorFlag = 0;
+                                    break;
+                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
 
