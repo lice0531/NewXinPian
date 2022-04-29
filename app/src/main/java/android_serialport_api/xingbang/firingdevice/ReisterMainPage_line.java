@@ -1088,6 +1088,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
             return -1;
         }
+
         //雷管信息有误，特征码不正确，请检查
         if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));

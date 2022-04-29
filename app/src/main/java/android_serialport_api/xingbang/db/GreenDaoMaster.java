@@ -18,6 +18,7 @@ import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.models.DanLingBean;
 
 /**
  * 管理GreenDao查询语句
@@ -39,6 +40,8 @@ public class GreenDaoMaster {
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
     }
+
+
 
     public List<Defactory> queryDefactoryToIsSelected(String selected) {
         QueryBuilder<Defactory> result = mDefactoryDao.queryBuilder();
@@ -249,5 +252,8 @@ public class GreenDaoMaster {
             str = str + content;
         }
         return str;
+    }
+
+    public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
     }
 }

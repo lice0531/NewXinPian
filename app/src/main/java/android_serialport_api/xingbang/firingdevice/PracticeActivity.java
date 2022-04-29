@@ -175,6 +175,7 @@ public class PracticeActivity extends SerialPortActivity {
                 case 1:
                     // 从客户端接收到消息
 //                    runPbDialog();
+                    show_Toast("接收成功,正在导入数据,请稍等");
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
                         Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
@@ -202,7 +203,7 @@ public class PracticeActivity extends SerialPortActivity {
 
         busHandler = new Handler(msg -> {
             if (busInfo != null) {
-                BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa() );//处理大额数据专用类
+                BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类
                 String displayIcStr = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "μA";// 保留两位小数
                 tvCeshiDianliu.setText(displayIcStr);
                 tvCeshiDianya.setText(busInfo.getBusVoltage() + "V");
@@ -254,6 +255,7 @@ public class PracticeActivity extends SerialPortActivity {
             item.setErrorName(list.get(i).getErrorName());
             item.setStatusCode(list.get(i).getStatusCode());
             item.setStatusName(list.get(i).getStatusName());
+            item.setDenatorId(list.get(i).getDenatorId());
             list_uid.add(item);
         }
 
@@ -284,37 +286,37 @@ public class PracticeActivity extends SerialPortActivity {
     private int registerDetonator(String leiguan) {
         String[] lg = leiguan.split(",");
         String shellNo;
-        int index = -1;
         int maxNo = getMaxNumberNo();
         int reCount = 0;
-        Log.e("接收注册", "lg.length: "+lg.length );
+        Log.e("接收注册", "lg.length: " + lg.length);
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");
-            if (checkRepeatShellBlastNo(a[0])) {//检查重复数据
+            if (checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
                 continue;
             }
-            if (index < 0) {//说明没有空余的序号可用
-                maxNo++;
-                DenatorBaseinfo denator = new DenatorBaseinfo();
-                denator.setBlastserial(maxNo);
-                denator.setSithole(maxNo);
-                denator.setShellBlastNo(a[0]);
-                denator.setDelay(Integer.parseInt(a[1]));
-                denator.setRegdate(Utils.getDateFormatLong(new Date()));
-                denator.setStatusCode("02");
-                denator.setStatusName("已注册");
-                denator.setErrorCode("FF");
-                denator.setErrorName("");
-                denator.setWire("");
-                Log.e("接收注册", "denator: "+denator.toString() );
-                getDaoSession().getDenatorBaseinfoDao().insert(denator);
+            maxNo++;
+            DenatorBaseinfo denator = new DenatorBaseinfo();
+            denator.setBlastserial(maxNo);
+            denator.setSithole(maxNo);
+            denator.setDenatorId(a[0]);
+            if (a.length == 3) {
+                denator.setShellBlastNo(a[2]);
             }
+            denator.setDelay(Integer.parseInt(a[1]));
+            denator.setRegdate(Utils.getDateFormatLong(new Date()));
+            denator.setStatusCode("02");
+            denator.setStatusName("已注册");
+            denator.setErrorCode("FF");
+            denator.setErrorName("");
+            denator.setWire("");
+            Log.e("接收注册", "denator: " + denator.toString());
+            getDaoSession().getDenatorBaseinfoDao().insert(denator);
             reCount++;
         }
         pb_show = 0;
-        show_Toast_ui("接收成功");
+        show_Toast_ui("导入成功");
         return reCount;
     }
 
@@ -326,6 +328,7 @@ public class PracticeActivity extends SerialPortActivity {
         getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         String[] lg = leiguan.split(",");
         String shellNo;
+//        int maxNo = getMaxNumberNo();
         for (int i = 0; i < lg.length; i++) {
             shellNo = lg[i];
             String[] a = shellNo.split("#");
@@ -341,19 +344,14 @@ public class PracticeActivity extends SerialPortActivity {
             DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
-            if(a.length==3){//兼容旧的注码版本
-                detonatorTypeNew.setZhu_yscs(a[2]);
-            }
-            if(a.length==5){
-                detonatorTypeNew.setDetonatorIdSup(a[3]);
-                detonatorTypeNew.setCong_yscs(a[4]);
+            if (a.length == 3) {
+                detonatorTypeNew.setDetonatorIdSup(a[2]);
             }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
         show_Toast_ui("读取成功");
     }
-
 
 
     /**
@@ -379,17 +377,18 @@ public class PracticeActivity extends SerialPortActivity {
 
     //C000120CFF000BE6FF0041A6A2DEFF00028DC0
     //C000310C0BE6FF000A00A2DEFF00E20FC0
+
     /**
      * 检查重复的数据
      *
-     * @param ShellBlastNo
+     * @param denatorId
      */
-    public boolean checkRepeatShellBlastNo(String ShellBlastNo) {
+    public boolean checkRepeatDenatorId(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatShellNo(ShellBlastNo);
-        if(denatorBaseinfo.size()>0){
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
+        if (denatorBaseinfo.size() > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -402,9 +401,9 @@ public class PracticeActivity extends SerialPortActivity {
     public boolean checkRepeatShellBlastNo_typeNew(String ShellBlastNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         DetonatorTypeNew detonatorTypeNew = master.checkRepeat_DetonatorTypeNew(ShellBlastNo);
-        if(detonatorTypeNew != null){
+        if (detonatorTypeNew != null) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -459,7 +458,7 @@ public class PracticeActivity extends SerialPortActivity {
 
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("命令", "busInfo: "+busInfo.toString() );
+            Log.e("命令", "busInfo: " + busInfo.toString());
             busHandler.sendMessage(busHandler.obtainMessage());
 
         } else if ("22".equals(cmd)) { // 关闭测试
@@ -491,7 +490,7 @@ public class PracticeActivity extends SerialPortActivity {
         if ("20".equals(cmd)) {//进入测试模式
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("40命令", "busInfo: "+busInfo.toString());
+            Log.e("40命令", "busInfo: " + busInfo.toString());
         } else if ("22".equals(cmd)) { // 关闭测试
         } else if ("13".equals(cmd)) { // 关闭电源
         } else if ("41".equals(cmd)) { // 开启总线电源指令
@@ -517,7 +516,7 @@ public class PracticeActivity extends SerialPortActivity {
     }
 
 
-    @OnClick({R.id.but_pre, R.id.but_write, R.id.btn_read,R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_test})
+    @OnClick({R.id.but_pre, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 
@@ -595,7 +594,12 @@ public class PracticeActivity extends SerialPortActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
-                    sb.append(list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ",");
+                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + ",");
+                    } else {
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
+                    }
+
 //                    Log.e("添加信息", "sb: " + (list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ","));
                 }
                 String ip = textSetviceIp.getText().toString();
@@ -639,7 +643,7 @@ public class PracticeActivity extends SerialPortActivity {
                 break;
 
             case R.id.but_test:
-                
+//                startActivity(new Intent(this, TestActivity.class));
                 break;
         }
     }

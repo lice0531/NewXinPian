@@ -932,6 +932,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                 }
                             }
                         }
+                        if(danLingBean.getLgs().getLg().size()>0){
+                            for (int i=0;i<danLingBean.getLgs().getLg().size();i++){
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                            }
+                        }
+
                         mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
                         if (err != 0) {
                             Log.e("下载", "err: " + err);
