@@ -254,6 +254,11 @@ public class GreenDaoMaster {
         return str;
     }
 
+    //更新雷管状态
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
+        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+        DenatorBaseinfo db =result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
+        db.setDenatorId(lgBean.getGzm());
+        getDaoSession().getDenatorBaseinfoDao().update(db);
     }
 }
