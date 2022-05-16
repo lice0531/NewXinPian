@@ -1020,6 +1020,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 有雷管接入
             //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
             //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
+            try {
+                Thread.sleep(500);//
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //2  连续发三次询问电流指令
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
             sendCmd(reCmd);
