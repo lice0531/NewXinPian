@@ -350,8 +350,8 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 
         }
         for (int i = 0; i < list_data.size(); i++) {
-//            list_lg2.add(list_data.get(i).getShellBlastNo());//UID和管壳码一致
-            list_lg2.add(Utils.ShellNo13toSiChuan(list_data.get(i).getShellBlastNo()));//四川编码规则
+            list_lg2.add(list_data.get(i).getShellBlastNo());//UID和管壳码一致
+//            list_lg2.add(Utils.ShellNo13toSiChuan(list_data.get(i).getShellBlastNo()));//四川编码规则
 //            list_lg2.add(Utils.ShellNo13toSiChuan_new(list_data.get(i).getShellBlastNo()));//四川包工定的编码规则
         }
         for (int i = 0; i < list_lg2.size(); i++) {

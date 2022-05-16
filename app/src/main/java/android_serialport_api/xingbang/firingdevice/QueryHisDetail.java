@@ -710,12 +710,12 @@ public class QueryHisDetail extends BaseActivity {
         }
 
         //四川uid转换规则
-        if (list_uid.get(0).length() < 14) {
-            for (int i = 0; i < list_uid.size(); i++) {
-                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
-//                    Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
-            }
-        }
+//        if (list_uid.get(0).length() < 14) {
+//            for (int i = 0; i < list_uid.size(); i++) {
+//                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
+////                    Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
+//            }
+//        }
         //丹灵新uid转换规则
 //        if (list_uid != null && list_uid.get(0).length() < 14) {
 //            for (int i = 0; i < list_uid.size(); i++) {

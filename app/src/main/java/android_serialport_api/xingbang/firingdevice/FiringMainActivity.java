@@ -915,7 +915,7 @@ public class FiringMainActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Log.e("发送命令", str);
-//                Utils.writeLog("发送命令:" + str);
+                Utils.writeLog("发送命令:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {

@@ -847,12 +847,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String tv_dwdm = at_dwdm.getText().toString().trim();//单位代码 13位
 
         //四川转换规则
-        if (list_uid != null && list_uid.get(0).length() < 14) {
-            for (int i = 0; i < list_uid.size(); i++) {
-                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
-//                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
-            }
-        }
+//        if (list_uid != null && list_uid.get(0).length() < 14) {
+//            for (int i = 0; i < list_uid.size(); i++) {
+//                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
+////                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
+//            }
+//        }
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("uid", uid);
         try {

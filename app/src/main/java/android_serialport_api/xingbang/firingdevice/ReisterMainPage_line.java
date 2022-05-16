@@ -960,8 +960,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("Reister sendTo:" + str);
-                Log.e("发送命令", str);
+                Utils.writeLog("发送命令:" + str);
                 if (str.contains("C00010")) {
                     send_10 = 1;
                 } else if (str.contains("C00041")) {
@@ -1152,20 +1151,21 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
 //            return -1;
 //        }
-        if (checkRepeatdenatorId(detonatorId)) {//判断8位芯片码
+        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
-        if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {//判断管壳码
+        //判断管壳码
+        if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
-        if (detonatorId.startsWith("00000", 2)) {
+        if (detonatorId.startsWith("00000", 2)) {//判断芯片码开头是否全为0
             tipInfoFlag = 8;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
             return -1;
         }
-        if (detonatorId.length() != 13) {
+        if (detonatorId.length() != 13) {//判断芯片码是否为13位
             tipInfoFlag = 9;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
             return -1;
@@ -1246,13 +1246,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 }
 
                 if (zhuce_form.getDenaIdSup() != null) {
-                    values.put("denatorIdSup", zhuce_form.getDenaIdSup());//从芯片
+                    String detonatorId_Sup = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaIdSup());
+                    values.put("denatorIdSup", detonatorId_Sup);//从芯片
                     values.put("cong_yscs", detonatorTypeNew.getCong_yscs());
                     Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
                 }
                 values.put("blastserial", maxNo);
                 values.put("sithole", maxNo);
-                values.put("denatorId", zhuce_form.getDenaId());//主芯片
+                values.put("denatorId", detonatorId);//主芯片
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
@@ -1405,7 +1406,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     public boolean checkRepeatdenatorId(String detonatorId) {
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
+        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));
         if (list_lg.size() > 0) {
             Log.e("注册重复", "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";

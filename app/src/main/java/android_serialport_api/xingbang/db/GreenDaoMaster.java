@@ -42,7 +42,6 @@ public class GreenDaoMaster {
     }
 
 
-
     public List<Defactory> queryDefactoryToIsSelected(String selected) {
         QueryBuilder<Defactory> result = mDefactoryDao.queryBuilder();
         result = result.where(DefactoryDao.Properties.IsSelected.eq(selected));
@@ -71,6 +70,7 @@ public class GreenDaoMaster {
 
     /**
      * 查询所有雷管
+     *
      * @return
      */
     public List<DenatorBaseinfo> queryDenatorBaseinfo() {
@@ -143,10 +143,10 @@ public class GreenDaoMaster {
      * 通过管壳码获取芯片码
      */
     public DetonatorTypeNew queryShellBlastNoTypeNew(String shellBlastNo) {
-        Log.e("通过管壳码获取芯片码", "shellBlastNo: "+shellBlastNo );
+        Log.e("通过管壳码获取芯片码", "shellBlastNo: " + shellBlastNo);
 
         List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
-        Log.e("通过管壳码获取芯片码", "dt.size(): "+dt.size() );
+        Log.e("通过管壳码获取芯片码", "dt.size(): " + dt.size());
         if (dt.size() >= 1) {
             return dt.get(0);
         } else {
@@ -248,7 +248,7 @@ public class GreenDaoMaster {
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
-                    + list.get(i).getDenatorIdSup() + ","+list.get(i).getZhu_yscs()+","+list.get(i).getCong_yscs()+ "\n";
+                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "\n";
             str = str + content;
         }
         return str;
@@ -256,9 +256,14 @@ public class GreenDaoMaster {
 
     //更新雷管状态
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
-        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
-        DenatorBaseinfo db =result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
-        db.setDenatorId(lgBean.getGzm());
-        getDaoSession().getDenatorBaseinfoDao().update(db);
+        if (lgBean.getGzmcwxx().equals("0")) {
+            String uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+            String yscs = lgBean.getGzm().substring(6);
+            QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+            DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
+            db.setDenatorId(uid);
+            db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+            getDaoSession().getDenatorBaseinfoDao().update(db);
+        }
     }
 }
