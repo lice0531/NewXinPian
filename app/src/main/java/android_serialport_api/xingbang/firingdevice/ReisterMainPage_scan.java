@@ -284,7 +284,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
             if (data.length() == 13) {
                 updateMessage("01");
-            } else if (data.length() == 28) {//P53904180500005390418050000
+            }else if (data.length() == 28) {//P53904180500005390418050000
+                updateMessage("02");
+            } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
                 updateMessage("02");
             }
             if (data.length() == 19) {//扫描箱号

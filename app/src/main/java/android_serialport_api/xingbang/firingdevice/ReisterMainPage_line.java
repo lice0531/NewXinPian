@@ -1368,8 +1368,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where blastserial =? ";
         Cursor cursor = db.rawQuery(sql, new String[]{no + ""});
         if (cursor != null && cursor.moveToNext()) {
-            Log.e("延时", "getMaxDelay: " + cursor.getInt(0));
-            Log.e("延时", "getMaxDelay: " + cursor.getInt(5));
+            Log.e("延时", "最大延时序号: " + cursor.getInt(0));
+            Log.e("延时", "最大延时: " + cursor.getInt(5));
             int maxDelay = cursor.getInt(5);
             cursor.close();
             return maxDelay;
@@ -1411,7 +1411,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     public boolean checkRepeatdenatorId(String detonatorId) {
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));
+        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
         if (list_lg.size() > 0) {
             Log.e("注册重复", "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";

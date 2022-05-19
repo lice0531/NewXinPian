@@ -344,8 +344,12 @@ public class PracticeActivity extends SerialPortActivity {
             DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
-            if (a.length == 3) {
+            if (a.length == 3) {//不算从芯片生产数据
+                detonatorTypeNew.setZhu_yscs(a[2]);
+            }else if(a.length == 5){
                 detonatorTypeNew.setDetonatorIdSup(a[2]);
+                detonatorTypeNew.setZhu_yscs(a[3]);
+                detonatorTypeNew.setCong_yscs(a[4]);
             }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
