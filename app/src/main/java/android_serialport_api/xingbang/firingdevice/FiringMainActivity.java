@@ -349,7 +349,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
 
-                if (displayIc > (denatorCount * 51)) {// "电流过大";
+                if (displayIc > (denatorCount * 51) && denatorCount != 0 && displayIc > 10) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     ll_firing_IC_2.setTextColor(Color.RED);
                     ll_firing_IC_4.setTextColor(Color.RED);
@@ -969,11 +969,31 @@ public class FiringMainActivity extends SerialPortActivity {
 
     @Override
     protected void onStart() {
+        Log.e(TAG, "denatorCount: " + denatorCount);
         /***
          * 发送初始化命令
          */
         if (!firstThread.isAlive()) {
-            firstThread.start();
+            if (denatorCount != 0) {
+                firstThread.start();
+            } else {
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog13, which) -> {
+                            dialog13.dismiss();
+                            finish();
+                        })
+                        .setNeutralButton("继续", (dialog2, which) -> {
+                            dialog2.dismiss();
+                            firstThread.start();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
+            }
+
         }
 
         super.onStart();
@@ -1049,7 +1069,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
-            Log.e("起爆测试结果", "fromData.toString(): "+fromData.toString() );
+            Log.e("起爆测试结果", "fromData.toString(): " + fromData.toString());
             if (fromData != null && writeDenator != null) {
                 VoDenatorBaseInfo temp = writeDenator;
                 String fromCommad = Utils.bytesToHexFun(locatBuf);
@@ -1081,17 +1101,17 @@ public class FiringMainActivity extends SerialPortActivity {
 //                sendCmd(initBuf);
 //                qibaoNoFlag++;
 //            } else {
-                //stage=9;
-                eightCmdFlag = 2;
-                hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
-                saveFireResult();
-                saveFireResult_All();
+            //stage=9;
+            eightCmdFlag = 2;
+            hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
+            saveFireResult();
+            saveFireResult_All();
 
-                if (!qbxm_id.equals("-1")) {
-                    updataState(qbxm_id);
-                }
-                increase(11);//跳到第9阶段
-                Log.e("increase", "9");
+            if (!qbxm_id.equals("-1")) {
+                updataState(qbxm_id);
+            }
+            increase(11);//跳到第9阶段
+            Log.e("increase", "9");
 //                try {
 //                    Thread.sleep(50);
 //                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
@@ -1274,14 +1294,11 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
                             .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    closeThread();
-                                    closeForm();
-                                    finish();
-                                }
+                            .setNegativeButton("退出", (dialog1, which) -> {
+                                dialog1.dismiss();
+                                closeThread();
+                                closeForm();
+                                finish();
                             })
                             .create();
                     dialog.show();
@@ -1459,7 +1476,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (firstCmdReFlag == 0 && firstWaitCount < 1) {
                                 exit = true;
                             }
-                            if(firstWaitCount>1){
+                            if (firstWaitCount > 1) {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                             }
 
@@ -1566,7 +1583,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     fromDataErr.setDenaId(tempBaseInfo.getDenatorId());
                                     fromDataErr.setDelayTime(tempBaseInfo.getDelay());
                                     fromDataErr.setCommicationStatus("AF");
-                                    updateDenator(fromDataErr,tempBaseInfo.getDelay());
+                                    updateDenator(fromDataErr, tempBaseInfo.getDelay());
                                     //发出错误
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     writeDenator = null;
@@ -1869,7 +1886,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private String loadHisMainData() {
         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().loadAll();
-        Log.e(TAG, "查询第一条历史记录: "+list.get(0).toString() );
+        Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
         return list.get(0).getBlastdate();
     }
 

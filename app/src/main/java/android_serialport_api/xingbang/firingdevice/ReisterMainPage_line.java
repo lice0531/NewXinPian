@@ -1411,7 +1411,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     public boolean checkRepeatdenatorId(String detonatorId) {
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
+        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));
         if (list_lg.size() > 0) {
             Log.e("注册重复", "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";
