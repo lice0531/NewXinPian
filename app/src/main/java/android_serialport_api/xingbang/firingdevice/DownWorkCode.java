@@ -335,8 +335,24 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
-
+//        test();//模拟下载
     }
+
+    private void test() {
+        //旧编码
+//        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"00000DB119124\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"70107707\",\"gzmcwxx\":\"0\"}]}}";
+        //新规则
+        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
+        Gson gson = new Gson();
+        DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
+        Log.e("测试", "danLingBean: "+danLingBean);
+        if(danLingBean.getLgs().getLg().size()>0){
+            for (int i=0;i<danLingBean.getLgs().getLg().size();i++){
+                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+            }
+        }
+    }
+
     private void initView(){
         Resources resources = getContext().getResources();
         Drawable btnDrawable = resources.getDrawable(R.drawable.translucent);
@@ -2002,6 +2018,18 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     lySetUpData.setVisibility(View.GONE);
                     btnDownReturn.setText("添加项目");
                 }
+//                AlertDialog dialog2 = new AlertDialog.Builder(this)
+//                        .setTitle("清空提示")//设置对话框的标题//"成功起爆"
+//                        .setMessage("请确认是否清空所有下载信息,点击确认清空")//设置对话框的内容"本次任务成功起爆！"
+//                        //设置对话框的按钮
+//                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
+//                        .setPositiveButton("确认", (dialog, which) -> {
+//                            dialog.dismiss();
+//                            GreenDaoMaster.delAllMessage();//清空数据
+//                            mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+//                        }).create();
+//                dialog2.show();
+
                 break;
             case R.id.btn_down_inputOK://保存
 //                hideInputKeyboard();//隐藏键盘
@@ -2018,23 +2046,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setTitle("下载提示")//设置对话框的标题//"成功起爆"
                         .setMessage("请确认项目编号,地理位置等信息输入无误后,点击确认下载")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("再次确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("确认下载", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                if (checkMessage()) {//校验输入的项目信息是否和法
-                                    upload();
-                                } else {
-                                    return;
-                                }
-
-
+                        .setNegativeButton("再次确认", (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton("确认下载", (dialog12, which) -> {
+                            dialog12.dismiss();
+                            if (checkMessage()) {//校验输入的项目信息是否和法
+                                upload();
                             }
                         }).create();
                 dialog.show();
