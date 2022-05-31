@@ -123,6 +123,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private SQLiteDatabase db;
     private Handler busHandler = null;//总线信息
     private Handler mHandler_tip = null;//提示
+    private Handler Handler_tip = null;//提示
     private static Handler mHandler_1 = null;//更新视图
     private static Handler noReisterHandler = null;//没有注册的雷管
     private To52Test writeVo;
@@ -324,6 +325,26 @@ public class FiringMainActivity extends SerialPortActivity {
 
     @SuppressLint("SetTextI18n")
     private void initHandle() {
+        Handler_tip = new Handler(msg -> {
+            Bundle b = msg.getData();
+            String shellStr = b.getString("shellStr");
+            if (msg.what == 1) {
+                show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
+            }else if(msg.what == 2){
+                AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                        .setTitle("当前雷管信息不完整")//设置对话框的标题
+                        .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            dialog1.dismiss();
+                            finish();
+                        })
+//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                        .create();
+                dialog.show();
+            }
+            return false;
+        });
         //接受消息之后更新imageview视图
         mHandler_1 = new Handler(msg -> {
             execStage(msg);
@@ -1549,6 +1570,15 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
+                                if (write.getDenatorId()==null) {
+                                    Message msg = Handler_tip.obtainMessage();
+                                    msg.what = 2;
+                                    Bundle b = new Bundle();
+                                    msg.setData(b);
+                                    Handler_tip.sendMessage(msg);
+                                    closeThread();
+                                    break;
+                                }
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
                                 String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
@@ -1745,7 +1775,15 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-
+                                if (write.getDenatorId()==null) {
+                                    Message msg = Handler_tip.obtainMessage();
+                                    msg.what = 2;
+                                    Bundle b = new Bundle();
+                                    msg.setData(b);
+                                    Handler_tip.sendMessage(msg);
+                                    closeThread();
+                                    break;
+                                }
                                 String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
 //                                Log.e("雷管转化", "denatorId: " + denatorId);
 //                                if(denatorId.equals("0")){

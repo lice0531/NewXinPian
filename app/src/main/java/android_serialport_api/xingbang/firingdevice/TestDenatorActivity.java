@@ -246,8 +246,20 @@ public class TestDenatorActivity extends SerialPortActivity {
         Handler_tip = new Handler(msg -> {
             Bundle b = msg.getData();
             String shellStr = b.getString("shellStr");
-            if (msg.arg1 == 1) {
+            if (msg.what == 1) {
                 show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
+            } else if (msg.what == 2) {
+                AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
+                        .setTitle("当前雷管信息不完整")//设置对话框的标题
+                        .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            dialog1.dismiss();
+                            finish();
+                        })
+//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                        .create();
+                dialog.show();
             }
             return false;
         });
@@ -827,6 +839,15 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 tempBaseInfo = write;
 
                                 String data = "";
+                                if (write.getDenatorId() == null) {
+                                    Message msg = Handler_tip.obtainMessage();
+                                    msg.what = 2;
+                                    Bundle b = new Bundle();
+                                    msg.setData(b);
+                                    Handler_tip.sendMessage(msg);
+                                    closeThread();
+                                    break;
+                                }
 //                                String shellStr = write.getShellBlastNo();
 //                                if (shellStr.substring(7, 8).getBytes()[0] > 70) {
 //                                    Message msg = Handler_tip.obtainMessage();
