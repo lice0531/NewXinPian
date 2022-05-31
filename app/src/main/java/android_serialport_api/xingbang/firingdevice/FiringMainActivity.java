@@ -57,6 +57,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
@@ -65,6 +66,10 @@ import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * @author lice
@@ -188,6 +193,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private String TAG = "起爆页面";
+    public static final int RESULT_SUCCESS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +223,9 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         elevenCount = getMinDelay() / 1000 + 1;
+
+        //级联接收命令注册的eventbus
+        EventBus.getDefault().register(this);
     }
 
     private void initView() {
@@ -349,7 +358,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
 
-                if (displayIc > (denatorCount * 51) && denatorCount != 0 && displayIc > 10) {// "电流过大";
+                if (displayIc > (denatorCount * 51) && displayIc > 10) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     ll_firing_IC_2.setTextColor(Color.RED);
                     ll_firing_IC_4.setTextColor(Color.RED);
@@ -915,7 +924,7 @@ public class FiringMainActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Log.e("发送命令", str);
-                Utils.writeLog("发送命令:" + str);
+                Utils.writeLog("起爆发送命令:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {
@@ -1606,7 +1615,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Log.e("充电检测WaitCount", Wait_Count + "");
                             //说明电源打开命令未返回
                             if (Wait_Count == 1) {
-//                                exit = true;
+//                              exit = true;
                                 secondCmdFlag = 1;
                                 thirdWriteCount = 0;
                                 increase(3);
@@ -2111,5 +2120,37 @@ public class FiringMainActivity extends SerialPortActivity {
             return delayMin;
         }
         return 0;
+    }
+
+    /**
+     * 级联接收命令代码 eventbus
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FirstEvent event) {
+        String msg = event.getMsg();
+        Log.e("起爆页面接收到的消息", "msg: " + msg);
+        Log.e("起爆页面接收到的消息", "Wait_Count: " + Wait_Count);
+        Log.e("起爆页面接收到的消息", "sixExchangeCount: " + sixExchangeCount);
+        if (msg.equals("jixu")) {
+            if (Wait_Count == 1) {
+                increase(6);
+                Utils.writeRecord("-------------------开始充电-------------------");
+            }
+
+        } else if (msg.equals("qibao")) {
+            if (sixExchangeCount == 0) {
+                if (stage == 7) {
+                    keyFireCmd = 1;
+                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                }
+            }
+
+        } else if (msg.equals("finish")) {
+            closeThread();
+            closeForm();
+            finish();
+        } else {
+            show_Toast("命令错误");
+        }
     }
 }

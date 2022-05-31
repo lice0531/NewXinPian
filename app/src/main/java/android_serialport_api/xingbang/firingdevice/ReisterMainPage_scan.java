@@ -1405,7 +1405,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             values.put("errorCode", "FF");
             values.put("errorName", "");
             values.put("wire", "");
-            values.put("yscs_zhu", yscs);
+            values.put("zhu_yscs", yscs);
             //向数据库插入数据
             db.insert("denatorBaseinfo", null, values);
 

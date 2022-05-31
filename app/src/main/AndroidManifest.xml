@@ -263,7 +263,16 @@
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
-
+        <activity
+            android:name=".jilian.SyncActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="级联"
+            android:theme="@style/blackActivityTheme"   />
+        <activity
+            android:name=".jilian.SettingActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="级联设置"
+            android:theme="@style/blackActivityTheme" /> <!-- BootReceiver是上面建的广播类 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

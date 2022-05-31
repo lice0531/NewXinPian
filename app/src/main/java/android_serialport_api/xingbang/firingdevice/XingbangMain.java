@@ -50,6 +50,8 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.annotation.NonNull;
+
 
 public class XingbangMain extends BaseActivity {
 
@@ -114,6 +116,48 @@ public class XingbangMain extends BaseActivity {
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
     private String TAG = "主页";
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
+        equ_no = messageBean.getEqu_no();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        loadMoreData_all_lg();
+        mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
+//        getPropertiesData();
+        getUserMessage();
+        super.onRestart();
+    }
+
+
+    @Override
+    protected void onResume() {
+//        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e(TAG, "onDestroy: ");
+        SQLiteStudioService.instance().stop();
+//        if (db != null) db.close();
+//        if (tipDlg != null) {
+//            tipDlg.dismiss();
+//            tipDlg = null;
+//        }
+        super.onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,17 +203,14 @@ public class XingbangMain extends BaseActivity {
                 }
             }
         };
-        mHandler_updata = new Handler(this.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Log.e("起爆器编号", "equ_no: " + equ_no);
-                if (!equ_no.equals("")) {
-                    tvMainNo.setText("设备编号:" + equ_no);
-                    CrashReport.setUserId(equ_no);
-                }
+        mHandler_updata = new Handler(msg -> {
+            Log.e("起爆器编号", "equ_no: " + equ_no);
+            if (!equ_no.equals("")) {
+                tvMainNo.setText("设备编号:" + equ_no);
+                CrashReport.setUserId(equ_no);
             }
-        };
+            return false;
+        });
     }
 
 
@@ -437,46 +478,7 @@ public class XingbangMain extends BaseActivity {
         context.startActivity(intent);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
-    @Override
-    protected void onRestart() {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        loadMoreData_all_lg();
-        if (!equ_no.equals("")) {
-            tvMainNo.setText("设备编号:" + equ_no);
-            CrashReport.setUserId(equ_no);
-        }
-        getPropertiesData();
-        super.onRestart();
-    }
-
-
-    @Override
-    protected void onResume() {
-//        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.e(TAG, "onDestroy: ");
-        SQLiteStudioService.instance().stop();
-//        if (db != null) db.close();
-//        if (tipDlg != null) {
-//            tipDlg.dismiss();
-//            tipDlg = null;
-//        }
-        super.onDestroy();
-    }
 
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {

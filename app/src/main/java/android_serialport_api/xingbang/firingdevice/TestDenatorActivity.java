@@ -111,7 +111,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private String TAG = "组网测试";
     private String version = "";
     private boolean chongfu = false;//是否已经检测了一次
-
+    public static final int RESULT_SUCCESS = 1;
     //初始化
     private void initParam() {
         initCloseCmdReFlag = 0;
@@ -747,7 +747,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("发送命令:" + str);
+                Utils.writeLog("测试发送命令:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

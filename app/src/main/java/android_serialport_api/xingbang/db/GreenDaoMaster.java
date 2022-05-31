@@ -256,14 +256,39 @@ public class GreenDaoMaster {
 
     //更新雷管状态
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
-        if (lgBean.getGzmcwxx().equals("0")) {
+
+        if (lgBean.getGzmcwxx().equals("0")&&!lgBean.getUid().startsWith("00000")) {
             String uid = "A62F400" + lgBean.getGzm().substring(0, 6);
             String yscs = lgBean.getGzm().substring(6);
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
-            db.setDenatorId(uid);
-            db.setZhu_yscs(yscs);//有延时参数就更新延时参数
-            getDaoSession().getDenatorBaseinfoDao().update(db);
+            if(db!=null){
+                Log.e("查询数据库中是否有对应的数据", "db: "+ db);
+                db.setDenatorId(uid);
+                db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                getDaoSession().getDenatorBaseinfoDao().update(db);
+            }
+
         }
+    }
+
+    /**
+     * 查询雷管 区域倒序(序号)
+     * 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorDesc() {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 从数据库表中拿数据
+     *
+     * @return
+     */
+    public static void delAllMessage() {
+         getDaoSession().getShouQuanDao().deleteAll();
     }
 }

@@ -6,11 +6,15 @@ import org.greenrobot.greendao.annotation.Property;
 import org.litepal.crud.LitePalSupport;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by xingbang on 2020/6/4.
  */
 @Entity(nameInDb = "denatorBaseinfo")
-public class DenatorBaseinfo extends LitePalSupport {
+public class DenatorBaseinfo extends LitePalSupport implements Comparable<DenatorBaseinfo>{
 
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
@@ -209,5 +213,38 @@ public class DenatorBaseinfo extends LitePalSupport {
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(DenatorBaseinfo denator) {//53904180500000
+        // 返回值0代表相等，1表示大于，-1表示小于；
+
+        SimpleDateFormat md = new SimpleDateFormat("MMdd");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = md.parse(shellBlastNo.substring(3, 7));
+            date2 = md.parse(denator.getShellBlastNo().substring(3, 7));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int liushui1 = Integer.parseInt(shellBlastNo.substring(9));
+        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(9));
+
+        if (date1.before(date2)) {
+            return 1;
+        } else if (date1.after(date2)) {
+            return -1;
+        } else {
+            if (liushui1 > liushui2) {
+                return -1;
+            } else if (liushui1 < liushui2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
     }
 }

@@ -960,7 +960,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("发送命令:" + str);
+                Utils.writeLog("注册发送命令:" + str);
                 if (str.contains("C00010")) {
                     send_10 = 1;
                 } else if (str.contains("C00041")) {

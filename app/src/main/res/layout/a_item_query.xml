@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal">
+
+    <!-- 序号 -->
+    <TextView
+        android:id="@+id/tv_blastserial"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        style="@style/alltextstyle" />
+
+    <!-- 管壳号-->
+    <TextView
+        android:id="@+id/tv_shellBlastNo"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        style="@style/alltextstyle"
+        android:textSize="18sp" />
+
+    <!-- 状态-->
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        style="@style/alltextstyle"
+        android:textSize="18sp" />
+
+</LinearLayout>

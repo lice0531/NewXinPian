@@ -63,6 +63,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.jilian.SyncActivity;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -520,10 +521,14 @@ public class PracticeActivity extends SerialPortActivity {
     }
 
 
-    @OnClick({R.id.but_pre, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_test})
+    @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-
+            case R.id.but_jilian://进入级联页面
+                Intent intent9 = new Intent(this, SyncActivity.class);//热点方式
+                startActivity(intent9);
+                finish();
+                break;
             case R.id.but_pre://开启测试
 
                 if (revOpenCmdTestFlag == 0) {

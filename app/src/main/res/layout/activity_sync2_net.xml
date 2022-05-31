@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sync_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="设置编号"
+        android:textColor="@color/color_red"
+        android:textSize="80sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/text_android_ip"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:text="本机ip" />
+        <TextView
+            android:id="@+id/tv_delay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            style="@style/alltextstyle"
+            android:text="当前延迟(m)：" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="6dp">
+
+        <TextView
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请输入主机IP:" />
+
+        <AutoCompleteTextView
+            android:id="@+id/a_et"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:completionHint="请输入主机IP,用点隔开"
+            android:completionThreshold="1"
+            android:digits="1234567890.,"
+            android:dropDownHorizontalOffset="5dp"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/et_ip"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:hint="填写ip用点隔开"
+            android:maxLength="15"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_connect"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:enabled="false"
+            android:text="连接"
+            style="@style/allbtntstyle"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_test"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="同步"
+            style="@style/allbtntstyle" />
+
+        <Button
+            android:id="@+id/btn_test1"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="退出"
+            style="@style/allbtntstyle" />
+
+        <Button
+            android:id="@+id/btn_tongbu_setting"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="设置"
+            style="@style/allbtntstyle" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
