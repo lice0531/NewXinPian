@@ -293,10 +293,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 addXiangHao(data);
             }
             if (sanButtonFlag > 0) {//扫码结果设置到输入框里
+                Log.e("扫码注册", "data: "+data );
                 decodeBar(data);
                 Message msg = new Message();
                 msg.obj = data;
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(9));
+                msg.what=9;
+                mHandler_tip.sendMessage(msg);
                 scanDecode.stopScan();
             } else {
                 String barCode;
@@ -321,6 +323,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return false;
         });
         mHandler_tip = new Handler(msg -> {
+            Log.e("handler", "msg.what: "+msg.what );
             if (msg.what == 1) {
                 SoundPlayUtils.play(4);
                 show_Toast(getResources().getString(R.string.text_error_tip1));
@@ -2467,11 +2470,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         if (strParamBarcode.trim().length() > 14) {
             int index = strParamBarcode.indexOf("SC:");
+            Log.e("扫码", "index: "+index );
             if (index > 0) {
                 show_Toast("不正确的编码，请扫描选择正确的编码");
                 return;
             }
-            subBarCode = strParamBarcode.substring(index + 3, index + 16);
+            if(index==-1){//二代芯片新管壳码规则5620316H00001A621400FEAF3D0404
+                subBarCode = strParamBarcode.substring(0, 15);
+            }else {//旧版带SC:开头的
+                subBarCode = strParamBarcode.substring(index + 3, index + 16);
+            }
+
             if (subBarCode.trim().length() < 13) {
                 show_Toast("不正确的编码，请扫描选择正确的编码");
                 return;
@@ -2479,6 +2488,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         } else {
             if (strParamBarcode.trim().length() == 14) {//煤许雷管
                 subBarCode = strParamBarcode.substring(0, 13);
+            } else if (strParamBarcode.trim().length() == 13) {
+                subBarCode = strParamBarcode;
             } else if (strParamBarcode.trim().length() == 13) {
                 subBarCode = strParamBarcode;
             } else
