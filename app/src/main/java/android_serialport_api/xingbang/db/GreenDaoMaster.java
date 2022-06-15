@@ -13,6 +13,7 @@ import java.util.List;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
@@ -27,6 +28,7 @@ public class GreenDaoMaster {
 
     private DefactoryDao mDefactoryDao;
     private DenatorBaseinfoDao mDeantorBaseDao;
+    private DenatorBaseinfo_allDao mDenatorBaseDao_all;
     private ProjectDao mProjectDao;
     private Denator_typeDao mDenatorType;
     private MessageBeanDao messageBeanDao;
@@ -36,6 +38,7 @@ public class GreenDaoMaster {
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
         this.detonatorTypeNewDao = Application.getDaoSession().getDetonatorTypeNewDao();
+        this.mDenatorBaseDao_all = Application.getDaoSession().getDenatorBaseinfo_allDao();
         this.mDeantorBaseDao = Application.getDaoSession().getDenatorBaseinfoDao();
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
@@ -291,4 +294,59 @@ public class GreenDaoMaster {
     public static void delAllMessage() {
          getDaoSession().getShouQuanDao().deleteAll();
     }
+
+    /**
+     * 修改雷管延时
+     *
+     * @param shell 管壳号
+     * @param delay 延时
+     */
+    public void updateDetonatorDelay(String shell, int delay) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .build()
+                .unique();
+        entity.setDelay(delay);
+        mDeantorBaseDao.update(entity);
+    }
+
+    /**
+     * 删除某一发雷管
+     */
+    public void deleteDetonator(String shell) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .unique();
+        mDeantorBaseDao.delete(entity);
+    }
+
+
+
+
+    /**
+     * 查询全部雷管 正序(序号)
+     */
+    public List<DenatorBaseinfo> queryAllDetonatorAsc() {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 删除全部雷管
+     */
+    public void deleteAllDetonator() {
+        mDeantorBaseDao.deleteAll();
+        mDenatorBaseDao_all.deleteAll();
+    }
+
+
+
+
+
+
+
 }

@@ -4,12 +4,14 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,6 +43,12 @@ public class QueryCurrentDetail extends BaseActivity {
 
     @BindView(R.id.tx_total)
     TextView txTotal;
+    @BindView(R.id.re_gkm)
+    LinearLayout regkm;
+    @BindView(R.id.text_gkm1)
+    TextView text_gkm;
+    @BindView(R.id.text_gkm2)
+    TextView text_uid;
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list = new ArrayList<>();
     private SQLiteDatabase db;
@@ -62,6 +70,7 @@ public class QueryCurrentDetail extends BaseActivity {
     private DetonatorAdapter_Paper<DenatorBaseinfo> mAdapter;
     private LinearLayoutManager linearLayoutManager;
     private boolean paixu_flag = true;//排序标志
+    private boolean switchUid =true;//切换uid/管壳码
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +120,7 @@ public class QueryCurrentDetail extends BaseActivity {
         mListData = new GreenDaoMaster().queryDetonatorDesc();
         mAdapter.setListData(mListData, 1);
         mAdapter.notifyDataSetChanged();
+
         mHandler_ui = new Handler(msg -> {
 
             switch (msg.what) {
@@ -132,6 +142,26 @@ public class QueryCurrentDetail extends BaseActivity {
             }
             return false;
         });
+
+        regkm.setOnClickListener(v -> {
+            int a;
+            if(switchUid){
+                a=7;
+                switchUid=false;
+                text_uid.setTextColor(Color.GREEN);
+                text_gkm.setTextColor(Color.BLACK);
+            }else {
+                a=3;
+                switchUid=true;
+                text_uid.setTextColor(Color.BLACK);
+                text_gkm.setTextColor(Color.GREEN);
+            }
+            mAdapter = new DetonatorAdapter_Paper<>(QueryCurrentDetail.this, a);
+            mListView.setLayoutManager(linearLayoutManager);
+            mListView.setAdapter(mAdapter);
+            mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
+        });
+
     }
 
     private void loadMoreData() {

@@ -64,6 +64,10 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_paper, parent, false);
         } else if (mLine == 3) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_query, parent, false);
+        }else if (mLine == 6) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_paper, parent, false);
+        }else if (mLine == 7) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_query, parent, false);
         }
         return new ViewHolder(view);
     }
@@ -74,12 +78,15 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
 
         if (mIndex == 1) {
             List<DenatorBaseinfo> list_detonatorBaseInfo = (List<DenatorBaseinfo>) mListData;
-            Log.e("DetonatorAdapter_Paper", "数据长度: " + mListData.size());
 
             DenatorBaseinfo detonatorBaseInfo = list_detonatorBaseInfo.get(position);
             holder.mTvBlastSerial.setText((list_detonatorBaseInfo.size() - position) + "");                 // 序号
             holder.mTvShellBlastNo.setText(detonatorBaseInfo.getShellBlastNo());   // 管壳号
-
+            if(mLine == 6){
+                holder.mTvShellBlastNo.setText(detonatorBaseInfo.getDenatorId());   // 芯片码
+                holder.mTvSitHole.setText(detonatorBaseInfo.getSithole() + "");     // 孔号
+                holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
+            }
             if (mLine == 4 || mLine == 5) {
                 holder.mTvSitHole.setText(detonatorBaseInfo.getSithole() + "");     // 孔号
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
@@ -87,13 +94,20 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
 
             if (mLine == 3 || mLine == 5) {
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
-
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
                 } else {
                     holder.mTvStatus.setTextColor(Color.RED);
                 }
-
+            }
+            if(mLine == 7){//点击管壳码/uid 切换显示
+                holder.mTvShellBlastNo.setText(detonatorBaseInfo.getDenatorId());   // 芯片码
+                holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
+                if (detonatorBaseInfo.getErrorCode().equals("FF")) {
+                    holder.mTvStatus.setTextColor(Color.GREEN);
+                } else {
+                    holder.mTvStatus.setTextColor(Color.RED);
+                }
             }
 
             // 长按

@@ -245,7 +245,8 @@
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
-                            android:text="@string/text_delay_start" />
+                            android:text="@string/text_delay_start"
+                            />
 
                         <EditText
                             android:id="@+id/setDelayTime_startDelaytime"
@@ -496,20 +497,36 @@
 
                     <TextView
                         style="@style/alltextstyle"
-                        android:layout_width="55dp"
+                        android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
                         android:text="延时" />
 
-                    <TextView
-                        style="@style/alltextstyle"
-                        android:layout_width="fill_parent"
-                        android:layout_height="30dp"
-                        android:background="@drawable/textview_border"
-                        android:text="@string/text_list_guan" />
+                    <LinearLayout
+                        android:id="@+id/re_gkm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/textview_border">
+                        <TextView
+                            android:id="@+id/text_gkm1"
+                            style="@style/alltextstyle"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="30dp"
+                            android:text="管壳码" />
+                        <TextView
+                            android:id="@+id/text_gkm2"
+                            style="@style/alltextstyle"
+                            android:gravity="left"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="30dp"
+                            android:text="/UID" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/factory_listView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

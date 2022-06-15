@@ -98,14 +98,31 @@
                     android:gravity="center"
                     android:text="@string/text_list_delay"
                     android:textSize="@dimen/childPageLabelFontSize" />
-
-                <TextView
-                    style="@style/alltextstyle"
+                <LinearLayout
+                    android:id="@+id/re_gkm"
                     android:layout_width="160dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/textview_border"
-                    android:text="@string/text_list_guan"
-                    android:textSize="@dimen/childPageLabelFontSize" />
+                    android:background="@drawable/textview_border">
+                    <TextView
+                        android:id="@+id/text_gkm1"
+                        style="@style/alltextstyle"
+                        android:gravity="right"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="30dp"
+                        android:text="管壳码"
+                        android:textSize="@dimen/childPageLabelFontSize"/>
+                    <TextView
+                        android:id="@+id/text_gkm2"
+                        style="@style/alltextstyle"
+                        android:gravity="left"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="30dp"
+                        android:text="/UID"
+                        android:textSize="@dimen/childPageLabelFontSize"/>
+                </LinearLayout>
+
 
                 <TextView
                     style="@style/alltextstyle"

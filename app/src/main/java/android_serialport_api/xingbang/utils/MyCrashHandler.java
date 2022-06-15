@@ -43,24 +43,20 @@ public class MyCrashHandler implements Thread.UncaughtExceptionHandler {
         String fileName;
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
-            logPath = Environment.getExternalStorageDirectory()
-                    .getAbsolutePath()
-                    + File.separator
-                    + File.separator
-                    + "XB错误日志";
-            File file = new File(logPath);
-            if (!file.exists()) {
-                file.mkdirs();
-
-                ErrLog errLog = new ErrLog();
-                errLog.setFilename(Utils.getDate(new Date()) + "错误日志");
-                errLog.setPath(logPath);
-                errLog.setUpdataState("否");
-                errLog.setUpdataTime("");
-                Application.getDaoSession().getErrLogDao().insert(errLog);
-            }
+            logPath =  Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
+//            File file = new File(logPath);
+//            if (!file.exists()) {
+//                file.mkdirs();
+//
+//                ErrLog errLog = new ErrLog();
+//                errLog.setFilename(Utils.getDate(new Date()) + "错误日志");
+//                errLog.setPath(logPath);
+//                errLog.setUpdataState("否");
+//                errLog.setUpdataTime("");
+//                Application.getDaoSession().getErrLogDao().insert(errLog);
+//            }
             try {
-                FileWriter fw = new FileWriter(logPath + File.separator + Utils.getDate(new Date()) + "报错信息.txt", true);
+                FileWriter fw = new FileWriter(logPath, true);
                 fw.write(new Date() + "错误原因：\n");
                 // 错误信息
                 // 这里还可以加上当前的系统版本，机型型号 等等信息

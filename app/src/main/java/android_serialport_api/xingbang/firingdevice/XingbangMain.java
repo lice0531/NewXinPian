@@ -133,15 +133,15 @@ public class XingbangMain extends BaseActivity {
         }
         loadMoreData_all_lg();
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
-//        getPropertiesData();
-        getUserMessage();
+        getPropertiesData();
+//        getUserMessage();
         super.onRestart();
     }
 
 
     @Override
     protected void onResume() {
-//        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
+        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
         super.onResume();
 
     }

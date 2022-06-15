@@ -33,6 +33,7 @@ import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DaoSession;
 import android_serialport_api.xingbang.services.LocationService;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.MyCrashHandler;
 
 public class Application extends MultiDexApplication {
 
