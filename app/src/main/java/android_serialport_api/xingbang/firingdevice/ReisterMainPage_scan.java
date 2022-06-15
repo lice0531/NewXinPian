@@ -2658,7 +2658,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     //扫码方法
     private void decodeBar(String strParamBarcode) {
 
-        String subBarCode;
+        String subBarCode ;
 
         if (strParamBarcode.trim().length() > 14) {
             int index = strParamBarcode.indexOf("SC:");
@@ -2668,7 +2668,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 return;
             }
             if(index==-1){//二代芯片新管壳码规则5620316H00001A621400FEAF3D0404
-                subBarCode = strParamBarcode.substring(0, 15);
+                if(strParamBarcode.length()==28){
+                    subBarCode = strParamBarcode.substring(1, 16);
+                }else{
+                    subBarCode = strParamBarcode.substring(0, 15);
+                }
+
             }else {//旧版带SC:开头的
                 subBarCode = strParamBarcode.substring(index + 3, index + 16);
             }
