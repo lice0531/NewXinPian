@@ -218,7 +218,12 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     @Override
     public int compareTo(DenatorBaseinfo denator) {//53904180500000
         // 返回值0代表相等，1表示大于，-1表示小于；
-
+        if(denator.getShellBlastNo().contains("A6")){
+            return -1;
+        }
+        if(shellBlastNo.contains("A6")){
+            return -1;
+        }
         SimpleDateFormat md = new SimpleDateFormat("MMdd");
         Date date1 = null;
         Date date2 = null;

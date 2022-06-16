@@ -308,7 +308,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         } else {
             sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
         }
-        send12("C000120AFF0191A8FF007DA6CB04B2E6C0");
+//        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
     }
 
     private void getUserMessage() {

@@ -78,14 +78,11 @@ public class QueryCurrentDetail extends BaseActivity {
         ButterKnife.bind(this);
 
         btn_return = (Button) findViewById(R.id.btn_del_return);
-        btn_return.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentTemp = new Intent();
-                intentTemp.putExtra("backString", "");
-                setResult(1, intentTemp);
-                finish();
-            }
+        btn_return.setOnClickListener(v -> {
+            Intent intentTemp = new Intent();
+            intentTemp.putExtra("backString", "");
+            setResult(1, intentTemp);
+            finish();
         });
         btn_paixu = findViewById(R.id.btn_paixu);
         btn_paixu.setOnClickListener(v -> {

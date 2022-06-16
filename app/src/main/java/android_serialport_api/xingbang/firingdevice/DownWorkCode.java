@@ -2011,24 +2011,24 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_down_return://添加项目
-                if (lySetUpData.getVisibility() == View.GONE) {
-                    btnDownReturn.setText("隐藏内容");
-                    lySetUpData.setVisibility(View.VISIBLE);
-                } else {
-                    lySetUpData.setVisibility(View.GONE);
-                    btnDownReturn.setText("添加项目");
-                }
-//                AlertDialog dialog2 = new AlertDialog.Builder(this)
-//                        .setTitle("清空提示")//设置对话框的标题//"成功起爆"
-//                        .setMessage("请确认是否清空所有下载信息,点击确认清空")//设置对话框的内容"本次任务成功起爆！"
-//                        //设置对话框的按钮
-//                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-//                        .setPositiveButton("确认", (dialog, which) -> {
-//                            dialog.dismiss();
-//                            GreenDaoMaster.delAllMessage();//清空数据
-//                            mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
-//                        }).create();
-//                dialog2.show();
+//                if (lySetUpData.getVisibility() == View.GONE) {
+//                    btnDownReturn.setText("隐藏内容");
+//                    lySetUpData.setVisibility(View.VISIBLE);
+//                } else {
+//                    lySetUpData.setVisibility(View.GONE);
+//                    btnDownReturn.setText("添加项目");
+//                }
+                AlertDialog dialog2 = new AlertDialog.Builder(this)
+                        .setTitle("清空提示")//设置对话框的标题//"成功起爆"
+                        .setMessage("请确认是否清空所有下载信息,点击确认清空")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
+                        .setPositiveButton("确认", (dialog, which) -> {
+                            dialog.dismiss();
+                            GreenDaoMaster.delAllMessage();//清空数据
+                            mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+                        }).create();
+                dialog2.show();
 
                 break;
             case R.id.btn_down_inputOK://保存
