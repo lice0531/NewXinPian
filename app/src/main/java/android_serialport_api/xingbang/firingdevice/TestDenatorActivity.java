@@ -579,7 +579,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                         }
                         return;
-                    }
+                     }
 //                    if (busInfo.getBusVoltage() < 6.3&& firstCount > Preparation_time * 0.8) {
 //                        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
 //                                .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
