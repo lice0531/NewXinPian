@@ -43,6 +43,7 @@ public class MyCrashHandler implements Thread.UncaughtExceptionHandler {
         String fileName;
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
+
             logPath =  Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
 //            File file = new File(logPath);
 //            if (!file.exists()) {

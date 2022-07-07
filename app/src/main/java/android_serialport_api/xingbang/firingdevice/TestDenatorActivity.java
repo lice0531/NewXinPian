@@ -552,20 +552,29 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > (denatorCount * 75) && firstCount > Preparation_time * 0.9) {//5
+                    if(displayIc > 6500){
+                        displayIcStr = displayIcStr + "(疑似短路)";
+                        ll_firing_IC_4.setTextColor(Color.RED);
+                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+
+                    }else if (displayIc > (denatorCount * 51) && firstCount > Preparation_time * 0.9) {//5
                         Log.e(TAG, "电流过大: ");
+                        displayIcStr =displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
-                        ll_firing_IC_4.setText(displayIcStr + "(电流过大)");
                         ll_firing_IC_4.setTextSize(20);
-//                        show_Toast("当前电流过大,请检查线路是否正确连接");
-//                        stage = 5;
-//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         Utils.writeRecord("组网测试--当前电流:" + busInfo.getBusCurrentIa() + "μA  --当前电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                        return;
+                    }else if (displayIc <8 && firstCount > Preparation_time * 0.9) {//5
+                        displayIcStr =displayIcStr + "(疑似断路)";
+                        ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
+                        ll_firing_IC_4.setTextSize(20);
+                        Utils.writeRecord("组网测试--当前电流:" + busInfo.getBusCurrentIa() + "μA  --当前电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
                         ll_firing_IC_4.setTextColor(Color.GREEN);
                         Utils.writeRecord("组网测试--当前电流:" + busInfo.getBusCurrentIa() + "μA  --当前电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
                     }
+                    ll_firing_IC_4.setText(displayIcStr);
+
+
                     //电流大于4500
                     Log.e(TAG, "displayIc: " + displayIc);
                     if (displayIc > 4500 && firstCount > Preparation_time * 0.85) {

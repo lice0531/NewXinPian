@@ -112,8 +112,8 @@ public class Application extends MultiDexApplication {
         locationService = new LocationService(getApplicationContext());
         //数据库实例化
 //      打开错误日志，保存到sd卡
-//        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
-//        crashHandler.init(this);
+        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
+        crashHandler.init(this);
         Bugly.init(this, "e43df75202", false);//四川id(腾讯错误日志)
 
         String dir = Environment.getExternalStorageDirectory() + File.separator + "Xingbang" + "/mmkv";

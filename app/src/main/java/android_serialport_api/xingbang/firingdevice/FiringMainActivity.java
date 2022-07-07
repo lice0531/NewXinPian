@@ -373,27 +373,31 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             return false;
         });
+
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-
-                if (displayIc > (denatorCount * 51) && displayIc > 10) {// "电流过大";
+                if(displayIc>6500){
+                    displayIcStr = displayIcStr + "(疑似短路)";
+                    setIcView();//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+                } else if (displayIc > (denatorCount * 51) && displayIc > 10||displayIc>4500) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
-                    ll_firing_IC_2.setTextColor(Color.RED);
-                    ll_firing_IC_4.setTextColor(Color.RED);
-                    ll_firing_IC_5.setTextColor(Color.RED);
-                    ll_firing_IC_6.setTextColor(Color.RED);
-                    ll_firing_IC_7.setTextColor(Color.RED);
+                    setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
+                }else if (displayIc<8){
+                    displayIcStr = displayIcStr + "(疑似断路)";
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
+                    setIcView();//设置颜色
                 } else {
                     ll_firing_IC_2.setTextColor(Color.GREEN);
                     ll_firing_IC_4.setTextColor(Color.GREEN);
                     ll_firing_IC_5.setTextColor(Color.GREEN);
                     ll_firing_IC_6.setTextColor(Color.GREEN);
                     ll_firing_IC_7.setTextColor(Color.GREEN);
-                    if (displayIc < 1) {
+                    if (displayIc < 8) {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                     } else {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流正常");
@@ -510,6 +514,13 @@ public class FiringMainActivity extends SerialPortActivity {
 //            busInfo = null;
             return false;
         });
+    }
+    private void setIcView(){
+        ll_firing_IC_2.setTextColor(Color.RED);
+        ll_firing_IC_4.setTextColor(Color.RED);
+        ll_firing_IC_5.setTextColor(Color.RED);
+        ll_firing_IC_6.setTextColor(Color.RED);
+        ll_firing_IC_7.setTextColor(Color.RED);
     }
 
     private void setDialogTextColor(AlertDialog dialog, int red) {
@@ -1537,33 +1548,33 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 //检测一次
-//                                if (blastQueue == null || blastQueue.size() < 1) {
-//                                    increase(4);//之前是4
-//                                    Log.e("第4阶段-increase", "4-2");
-//                                    fourOnlineDenatorFlag = 0;
-//                                    break;
-//                                }
-
-                                //检测两次
-                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
-                                    //如果过错误数量不为为0才发第二次
-//                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
-//                                        //检测一次
-//                                        increase(4);//之前是4
-//                                        Log.e("第4阶段-increase", "4-2");
-//                                    }else {
-                                    Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
-                                    Utils.writeRecord("--第一轮检测结束-------------");
-                                    //检测两次
-                                    getblastQueue();
-                                    Thread.sleep(1000);//在第二次检测前等待1s
-                                    increase(33);//之前是4
-                                    totalerrorNum = 0;//重置错误数量
-//                                  }
-
+                                if (blastQueue == null || blastQueue.size() < 1) {
+                                    increase(4);//之前是4
+                                    Log.e("第4阶段-increase", "4-2");
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
+
+                                //检测两次
+//                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
+//                                    //如果过错误数量不为为0才发第二次
+////                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
+////                                        //检测一次
+////                                        increase(4);//之前是4
+////                                        Log.e("第4阶段-increase", "4-2");
+////                                    }else {
+//                                    Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
+//                                    Utils.writeRecord("--第一轮检测结束-------------");
+//                                    //检测两次
+//                                    getblastQueue();
+//                                    Thread.sleep(1000);//在第二次检测前等待1s
+//                                    increase(33);//之前是4
+//                                    totalerrorNum = 0;//重置错误数量
+////                                  }
+//
+//                                    fourOnlineDenatorFlag = 0;
+//                                    break;
+//                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
 

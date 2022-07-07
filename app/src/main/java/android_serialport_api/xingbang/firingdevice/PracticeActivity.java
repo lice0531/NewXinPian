@@ -141,7 +141,7 @@ public class PracticeActivity extends SerialPortActivity {
 
     // 存放接收到的文字信息
     private boolean revice_type = true;
-
+    private int denatorCount = 0;//雷管总数
     /**
      * 线程池
      */
@@ -205,7 +205,21 @@ public class PracticeActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null) {
                 BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类
-                String displayIcStr = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "μA";// 保留两位小数
+                float dianliu =b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+                String displayIcStr = dianliu+ "μA";// 保留两位小数
+
+                if(dianliu > 6500){
+                    displayIcStr = displayIcStr + "(疑似短路)";
+                    tvCeshiDianliu.setTextColor(Color.RED);
+                }else if(dianliu < 6500&&dianliu>denatorCount*51){
+                    displayIcStr = displayIcStr + "(电流过大)";
+                    tvCeshiDianliu.setTextColor(Color.RED);
+                }else if(dianliu < 8){
+                    displayIcStr = displayIcStr + "(疑似断路)";
+                    tvCeshiDianliu.setTextColor(Color.RED);
+                }else {
+                    tvCeshiDianliu.setTextColor(Color.GREEN);
+                }
                 tvCeshiDianliu.setText(displayIcStr);
                 tvCeshiDianya.setText(busInfo.getBusVoltage() + "V");
             }
@@ -259,7 +273,7 @@ public class PracticeActivity extends SerialPortActivity {
             item.setDenatorId(list.get(i).getDenatorId());
             list_uid.add(item);
         }
-
+        denatorCount=list.size();
     }
 
     private void loadMoreData_out() {
@@ -368,14 +382,17 @@ public class PracticeActivity extends SerialPortActivity {
         Log.e("分析日志", "log: " + log);
         for (int i = 0; i < log.length; i++) {
             shellNo = log[i];
-            String[] ml = shellNo.split(":");
-            Log.e("分析日志", "ml: " + ml[2]);
-            String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
-            if (cmd != null) {
-                int localSize = ml[2].length() / 2;
-                byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
-                doWithReceivData_fenxi(cmd, localBuf, localSize);
+            if(shellNo.length()!=5){
+                String[] ml = shellNo.split(":");
+                Log.e("分析日志", "ml: " + ml[2]);
+                String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
+                if (cmd != null) {
+                    int localSize = ml[2].length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
+                    doWithReceivData_fenxi(cmd, localBuf, localSize);
+                }
             }
+
         }
         show_Toast("解析成功");
     }

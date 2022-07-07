@@ -818,7 +818,7 @@ public class QueryHisDetail extends BaseActivity {
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
         for (int i = 1; i < hisListData.size(); i++) {
-            list_uid.add(hisListData.get(i).get("shellNo") + "");
+            list_uid.add(hisListData.get(i).get("shellNo").toString() + "#" + hisListData.get(i).get("delay") + "#" + hisListData.get(i).get("errorName"));
         }
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);

@@ -2667,7 +2667,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("不正确的编码，请扫描选择正确的编码");
                 return;
             }
-            if(index==-1){//二代芯片新管壳码规则5620316H00001A621400FEAF3D0404
+            //二代芯片新管壳码规则只有28位的Y5620528H01709A637FFC9741B05
+            if(index==-1){
                 if(strParamBarcode.length()==28){
                     subBarCode = strParamBarcode.substring(1, 16);
                 }else{

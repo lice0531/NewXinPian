@@ -69,7 +69,6 @@ public class From42Power {
 				", 雷管电流=" + denatorIa +
 				", 总线电压=" + busVoltage +
 				", 总线电流=" + busCurrentIa +
-				", 起爆电压=" + firingVoltage +
 				'}';
 	}
 }
