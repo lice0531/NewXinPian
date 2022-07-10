@@ -60,7 +60,8 @@ public class ZiJianActivity extends SerialPortActivity {
         ButterKnife.bind(this);
         initPower();                // 初始化上电方式()
         powerOnDevice(PIN_ADSL);    // 上电
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         //获取偏好设置的编辑器
         SharedPreferences sp = getSharedPreferences("config", 0);
         edit = sp.edit();
@@ -134,7 +135,7 @@ public class ZiJianActivity extends SerialPortActivity {
                         exit = true;
                         Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
                         startActivity(intent);
-                        finish();
+//                        finish();
                         break;
                     }
                     firstCount--;

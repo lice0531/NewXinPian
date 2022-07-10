@@ -104,7 +104,8 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         loadMoreData();
         mAdapter = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject);
         mAdapter.setOnInnerItemOnClickListener(this);
@@ -125,33 +126,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
     private void loadMoreData() {
         map_project.clear();
-//        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_PROJECT;//+" order by htbh "
-//        Cursor cursor = db.rawQuery(sql, null);
-//        //return getCursorTolist(cursor);
-//        if (cursor != null) {
-//
-//            while (cursor.moveToNext()) {
-//                String id = cursor.getString(0);
-//                String project_name = cursor.getString(1); //获取第二列的值 ,序号
-//                String xmbh = cursor.getString(2);
-//                String htbh = cursor.getString(3);//管壳号
-//                String dwdm = cursor.getString(4);//错误数量
-//                String bprysfz = cursor.getString(5);//起爆状态
-//                String coordxy = cursor.getString(6);//经纬度
-//
-//                Map<String, Object> item = new HashMap<String, Object>();
-//                item.put("id", id);
-//                item.put("project_name", project_name);
-//                item.put("xmbh", xmbh);
-//                item.put("htbh", htbh);
-//                item.put("dwdm", dwdm);
-//                item.put("bprysfz", bprysfz);
-//                item.put("coordxy", coordxy);
-//                map_project.add(item);
-//            }
-//            cursor.close();
-//        }
-
         GreenDaoMaster daoMaster = new GreenDaoMaster();
         List<Project> list_pj = daoMaster.queryProject();
         for (Project project : list_pj) {
@@ -273,57 +247,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         }
     }
 
-    /**
-     * 把指定AutoCompleteTextView中内容保存到sharedPreference中指定的字符段
-     *
-     * @param field 保存在sharedPreference中的字段名
-     * @param auto  要操作的AutoCompleteTextView
-     */
-//    private void saveHistory(String field, AutoCompleteTextView auto) {
-//        String text = auto.getText().toString();
-//        SharedPreferences sp = getSharedPreferences("network_url", 0);
-//        String longhistory = sp.getString(field, "");
-//        if (!longhistory.contains(text + "#")) {
-//            StringBuilder sb = new StringBuilder(longhistory);
-//            sb.insert(0, text + "#");
-//            sp.edit().putString(field, sb.toString()).commit();
-//        }
-//    }
-
-    /**
-     * 初始化AutoCompleteTextView，最多显示5项提示，使
-     * AutoCompleteTextView在一开始获得焦点时自动提示
-     *
-     * @param field 保存在sharedPreference中的字段名
-     * @param auto  要操作的AutoCompleteTextView
-     */
-//    private void initAutoComplete(String field, AutoCompleteTextView auto) {
-//        SharedPreferences sp = getSharedPreferences("network_url", 0);
-//        String longhistory = sp.getString(field, "当前无记录");
-//        String[] hisArrays = longhistory.split("#");
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
-//        //只保留最近的50条的记录
-//        if (hisArrays.length > 20) {
-//            String[] newArrays = new String[20];
-//            System.arraycopy(hisArrays, 0, newArrays, 0, 20);
-//            adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, newArrays);
-//        }
-//        auto.setAdapter(adapter);
-//        auto.setDropDownHeight(500);
-//        auto.setDropDownWidth(450);
-//        auto.setThreshold(1);
-//        auto.setCompletionHint("最近的20条记录");
-//        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                AutoCompleteTextView view = (AutoCompleteTextView) v;
-//                if (hasFocus) {
-//                    view.showDropDown();
-//                }
-//            }
-//        });
-//    }
 
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_clear_htid, R.id.btn_clear_xmbh,
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,

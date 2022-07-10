@@ -98,6 +98,8 @@ public class SyncActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
         ButterKnife.bind(this);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         EventBus.getDefault().register(this);
         mThreadPool = Executors.newCachedThreadPool();

@@ -20,6 +20,7 @@ import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.utils.Utils;
 
 /**
  * 管理GreenDao查询语句
@@ -195,10 +196,9 @@ public class GreenDaoMaster {
 //                .where(DenatorBaseinfoDao.Properties.DenatorId.eq(detonatorId))
 //                .list();
         Log.e("检测重复", "detonatorId: " + detonatorId);
-        Log.e("检测重复", "detonatorId.substring(5): " + detonatorId.substring(5));
         return mDeantorBaseDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.DenatorId.like("%"+detonatorId))
+                .where(DenatorBaseinfoDao.Properties.DenatorId.like("%" + detonatorId))
                 .list();//0209为李斌改的不用4字节的首字节进行的模糊查询
     }
 
@@ -251,27 +251,61 @@ public class GreenDaoMaster {
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
-                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "\n";
+                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs()+ "," + list.get(i).getPiece() + "\n";
             str = str + content;
         }
         return str;
     }
 
-    //更新雷管状态
+    //丹灵下载后更新雷管芯片码
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
 
-        if (lgBean.getGzmcwxx().equals("0")&&!lgBean.getUid().startsWith("00000")) {
+        if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
             String uid = "A62F400" + lgBean.getGzm().substring(0, 6);
             String yscs = lgBean.getGzm().substring(6);
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
-            if(db!=null){
-                Log.e("查询数据库中是否有对应的数据", "db: "+ db);
+            if (db != null) {
+                Log.e("查询数据库中是否有对应的数据", "db: " + db);
                 db.setDenatorId(uid);
                 db.setZhu_yscs(yscs);//有延时参数就更新延时参数
                 getDaoSession().getDenatorBaseinfoDao().update(db);
+                registerDetonator_typeNew(db);
+                Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
+        }
+    }
+
+    /**
+     * 读取输入注册
+     */
+    private static void registerDetonator_typeNew(DenatorBaseinfo leiguan) {
+//        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
+        // 检查重复数据
+        if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
+            return;
+        }
+        // 雷管类型_新
+        DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
+        detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
+        detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
+        detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
+        getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
+    }
+
+    /**
+     * 检查重复的数据
+     *
+     * @param ShellBlastNo
+     */
+    public static boolean checkRepeatShellBlastNo_typeNew(String ShellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        DetonatorTypeNew detonatorTypeNew = master.checkRepeat_DetonatorTypeNew(ShellBlastNo);
+        if (detonatorTypeNew != null) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -292,7 +326,7 @@ public class GreenDaoMaster {
      * @return
      */
     public static void delAllMessage() {
-         getDaoSession().getShouQuanDao().deleteAll();
+        getDaoSession().getShouQuanDao().deleteAll();
     }
 
     /**
@@ -323,8 +357,6 @@ public class GreenDaoMaster {
     }
 
 
-
-
     /**
      * 查询全部雷管 正序(序号)
      */
@@ -344,9 +376,74 @@ public class GreenDaoMaster {
     }
 
 
+    /**
+     * 查询雷管 区域正序(序号)
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionAsc(String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 查询雷管 区域倒序(序号)
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionDesc(String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
 
 
+    /**
+     * 获取 该区域 最大序号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxNum(String piece) {
+        // 倒叙查询
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
 
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据是最大序号
+            int num = mList.get(0).getBlastserial();
+            Log.e("getPieceMaxNum", "获取最大序号: " + num);
+            return num;
+            // 如果没数据
+        } else {
+            Log.e("getPieceMaxNum", "获取最大序号: 0");
+            return 0;
+        }
+    }
 
+    /**
+     * 获取 该区域 最大序号 的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxNumDelay(String piece) {
+        // 倒叙查询
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
 
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据 该区域 最大序号 的延时
+            int delay = mList.get(0).getDelay();
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+            return delay;
+            // 如果没数据
+        } else {
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+            return 0;
+        }
+    }
 }

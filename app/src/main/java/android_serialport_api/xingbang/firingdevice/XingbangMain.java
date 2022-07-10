@@ -14,12 +14,16 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
@@ -34,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 
 import android_serialport_api.xingbang.BaseActivity;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -80,7 +86,7 @@ public class XingbangMain extends BaseActivity {
     @BindView(R.id.btn_main_exit2)
     Button btnMainExit2;
     @BindView(R.id.container)
-    FrameLayout container;
+    LinearLayout container;
     @BindView(R.id.tv_main_version)
     TextView tvMainVersion;
     @BindView(R.id.btn_main_lianxi)
@@ -116,7 +122,9 @@ public class XingbangMain extends BaseActivity {
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
     private String TAG = "主页";
 
-
+    private String mOldTitle;   // 原标题
+    private String mRegion;     // 区域
+    private int region_0,region_1,region_2,region_3,region_4,region_5;
     @Override
     protected void onPause() {
         super.onPause();
@@ -142,6 +150,12 @@ public class XingbangMain extends BaseActivity {
     @Override
     protected void onResume() {
         getPropertiesData();//重新读取备份数据会导致已修改的数据重置
+        // 获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 设置标题区域
+        setTitleRegion();
+        // 获取区域雷管数量
+        getRegionNumber();
         super.onResume();
 
     }
@@ -166,6 +180,7 @@ public class XingbangMain extends BaseActivity {
         SQLiteStudioService.instance().start(this);
 
         initPower();                // 初始化上电方式()
+        initView();         // 初始化控件
 //        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
 //        db = mMyDatabaseHelper.getReadableDatabase();
 
@@ -189,8 +204,22 @@ public class XingbangMain extends BaseActivity {
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
+        Beta.checkUpgrade();
     }
+    /**
+     * 初始化控件
+     */
+    private void initView() {
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
+        // 获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
+        // 设置标题区域
+        setTitleRegion();
 
+    }
     private void initHandler() {
         mHandler_loading = new Handler(this.getMainLooper()) {
             @SuppressLint("HandlerLeak")
@@ -394,14 +423,6 @@ public class XingbangMain extends BaseActivity {
         }
     }
 
-    /**
-     *
-     **/
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-        }
-    }
 
     //退出方法
     private void exit() {
@@ -609,6 +630,7 @@ public class XingbangMain extends BaseActivity {
                 }else if(a.length>16){
                     baseinfo.setZhu_yscs(a[16]);
                     baseinfo.setCong_yscs(a[17]);
+                    baseinfo.setPiece(a[18]);
                 }
                 getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 i++;
@@ -810,5 +832,82 @@ public class XingbangMain extends BaseActivity {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegion() {
+        String str = " 区域" + mRegion;
+        // 设置标题
+        getSupportActionBar().setTitle(mOldTitle + str);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
+        Log.e("liyi_Region", "已选择 " + str);
+    }
+
+    /**
+     * 获取区域雷管数量
+     */
+    private void getRegionNumber() {
+        GreenDaoMaster g = new GreenDaoMaster();
+        region_0 = g.queryAllDetonatorAsc().size();
+        region_1 = g.queryDetonatorRegionDesc("1").size();
+        region_2 = g.queryDetonatorRegionDesc("2").size();
+        region_3 = g.queryDetonatorRegionDesc("3").size();
+        region_4 = g.queryDetonatorRegionDesc("4").size();
+        region_5 = g.queryDetonatorRegionDesc("5").size();
+
+//        tv_region_number.setText(
+//                "区域数量: " + region_0 + " = ("
+//                        + region_1 + ")+(" + region_2 + ")+(" + region_3
+//                        + ")+(" + region_4 + ")+(" + region_5 + ")"
+//        );
+    }
+
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 设置标题区域
+                setTitleRegion();
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                // 延时选择重置
+//                resetView();
+//                delay_set = "0";
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 }

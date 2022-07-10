@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.DeviceControl;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,11 +21,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
 import android_serialport_api.xingbang.utils.Utils;
 
-public class  BaseActivity extends Activity {
+public class  BaseActivity extends AppCompatActivity {
 	
 	protected Application mApplication;
 	private BaseActivity oContext;
@@ -65,7 +68,8 @@ public class  BaseActivity extends Activity {
 		Utils.showToast(this,text,5000);
 	}
 
-	public static void fixInputMethodManagerLeak(Context destContext) {  
+	@SuppressLint("BlockedPrivateApi")
+	public static void fixInputMethodManagerLeak(Context destContext) {
 	    if (destContext == null) {  
 	        return;  
 	    }  

@@ -127,6 +127,8 @@ public class QueryHisDetail extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_query_hisinfo);
         ButterKnife.bind(this);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
@@ -288,7 +290,7 @@ public class QueryHisDetail extends BaseActivity {
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         //tipDlg.setMessage("正在操作,请等待...").show();
         // tipDlg.show();
 

@@ -139,8 +139,8 @@ public class SyncActivity2WIFI extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync2_net);
         ButterKnife.bind(this);
-        // 标题栏
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         EventBus.getDefault().register(this);
 

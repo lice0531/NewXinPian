@@ -153,7 +153,8 @@ public class PracticeActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
@@ -205,19 +206,19 @@ public class PracticeActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null) {
                 BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类
-                float dianliu =b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
-                String displayIcStr = dianliu+ "μA";// 保留两位小数
+                float dianliu = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+                String displayIcStr = dianliu + "μA";// 保留两位小数
 
-                if(dianliu > 6500){
+                if (dianliu > 4800) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     tvCeshiDianliu.setTextColor(Color.RED);
-                }else if(dianliu < 6500&&dianliu>denatorCount*51){
+                } else if (dianliu < 4800 && dianliu > denatorCount * 51) {
                     displayIcStr = displayIcStr + "(电流过大)";
                     tvCeshiDianliu.setTextColor(Color.RED);
-                }else if(dianliu < 8){
+                } else if (dianliu < 8) {
                     displayIcStr = displayIcStr + "(疑似断路)";
                     tvCeshiDianliu.setTextColor(Color.RED);
-                }else {
+                } else {
                     tvCeshiDianliu.setTextColor(Color.GREEN);
                 }
                 tvCeshiDianliu.setText(displayIcStr);
@@ -242,7 +243,7 @@ public class PracticeActivity extends SerialPortActivity {
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         new Thread(() -> {
             mHandler_2.sendMessage(mHandler_2.obtainMessage());
             try {
@@ -273,7 +274,7 @@ public class PracticeActivity extends SerialPortActivity {
             item.setDenatorId(list.get(i).getDenatorId());
             list_uid.add(item);
         }
-        denatorCount=list.size();
+        denatorCount = list.size();
     }
 
     private void loadMoreData_out() {
@@ -361,7 +362,7 @@ public class PracticeActivity extends SerialPortActivity {
             detonatorTypeNew.setDetonatorId(a[1]);
             if (a.length == 3) {//不算从芯片生产数据
                 detonatorTypeNew.setZhu_yscs(a[2]);
-            }else if(a.length == 5){
+            } else if (a.length == 5) {
                 detonatorTypeNew.setDetonatorIdSup(a[2]);
                 detonatorTypeNew.setZhu_yscs(a[3]);
                 detonatorTypeNew.setCong_yscs(a[4]);
@@ -382,7 +383,7 @@ public class PracticeActivity extends SerialPortActivity {
         Log.e("分析日志", "log: " + log);
         for (int i = 0; i < log.length; i++) {
             shellNo = log[i];
-            if(shellNo.length()!=5){
+            if (shellNo.length() != 5) {
                 String[] ml = shellNo.split(":");
                 Log.e("分析日志", "ml: " + ml[2]);
                 String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
@@ -676,6 +677,7 @@ public class PracticeActivity extends SerialPortActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开

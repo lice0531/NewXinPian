@@ -32,6 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 
 import org.apache.commons.lang.StringUtils;
@@ -101,24 +103,19 @@ public class DownOfflineActivity extends BaseActivity {
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         initAutoComplete("history_htid", dfAtHtid);//输入历史记录
         initAutoComplete("history_xmbh", dfAtXmbh);
         initAutoComplete("history_dwdm", dfAtDwdm);
         initAutoComplete("history_bprysfz", dfAtBprysfz);
-
-        mHandler2 = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                //显示或隐藏loding界面
-                if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
-                super.handleMessage(msg);
-
-            }
-        };
+        mHandler2 = new Handler(msg -> {
+            //显示或隐藏loding界面
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
 
         dfAtHtid.addTextChangedListener(htbh_watcher);//长度监听
         dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
@@ -261,6 +258,7 @@ public class DownOfflineActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开
@@ -452,57 +450,6 @@ public class DownOfflineActivity extends BaseActivity {
         initAutoComplete("history_bprysfz", dfAtBprysfz);
     }
 
-    /**
-     * 初始化AutoCompleteTextView，最多显示5项提示，使
-     * AutoCompleteTextView在一开始获得焦点时自动提示
-     *
-     * @param field 保存在sharedPreference中的字段名
-     * @param auto  要操作的AutoCompleteTextView
-     */
-//    private void initAutoComplete(String field, AutoCompleteTextView auto) {
-//        SharedPreferences sp = getSharedPreferences("network_url", 0);
-//        String longhistory = sp.getString(field, "当前无记录");
-//        String[] hisArrays = longhistory.split("#");
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
-//        //只保留最近的50条的记录
-//        if (hisArrays.length > 15) {
-//            String[] newArrays = new String[10];
-//            System.arraycopy(hisArrays, 0, newArrays, 0, 10);
-//            adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, newArrays);
-//        }
-//        auto.setAdapter(adapter);
-//        auto.setDropDownHeight(500);
-//        auto.setDropDownWidth(450);
-//        auto.setThreshold(1);
-//        auto.setCompletionHint("最近的10条记录");
-//        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                AutoCompleteTextView view = (AutoCompleteTextView) v;
-//                if (hasFocus) {
-//                    view.showDropDown();
-//                }
-//            }
-//        });
-//    }
-
-    /**
-     * 把指定AutoCompleteTextView中内容保存到sharedPreference中指定的字符段
-     *
-     * @param field 保存在sharedPreference中的字段名
-     * @param auto  要操作的AutoCompleteTextView
-     */
-//    private void saveHistory(String field, AutoCompleteTextView auto) {
-//        String text = auto.getText().toString();
-//        SharedPreferences sp = getSharedPreferences("network_url", 0);
-//        String longhistory = sp.getString(field, "");
-//        if (!longhistory.contains(text + "#")) {
-//            StringBuilder sb = new StringBuilder(longhistory);
-//            sb.insert(0, text + "#");
-//            sp.edit().putString(field, sb.toString()).commit();
-//        }
-//    }
 
     //隐藏键盘
     public void hideInputKeyboard() {

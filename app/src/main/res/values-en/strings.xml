@@ -351,5 +351,6 @@
     <string name="stop_continue_Loc">停止连续定位</string>
     <string name="continue_Loc_tile">连续定位</string>
     <string name="one_Loc_tile">单次定位</string>
+    <string name="title_activity_practice">辅助功能</string>
 
 </resources>

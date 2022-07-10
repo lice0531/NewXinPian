@@ -82,12 +82,12 @@
             android:name=".firingdevice.ReisterMainPage_scan"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_reister_main_page"
-            android:theme="@style/blackActivityTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.ReisterMainPage_line"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_reister_main_page"
-            android:theme="@style/blackActivityTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.XingbangMain"
             android:configChanges="orientation|keyboardHidden"
@@ -194,6 +194,7 @@
         <activity
             android:name=".firingdevice.PracticeActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_practice"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.ShouQuanLegActivity"

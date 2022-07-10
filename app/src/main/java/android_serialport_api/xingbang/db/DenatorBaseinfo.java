@@ -53,13 +53,15 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     private String zhu_yscs;//
     @Property(nameInDb = "cong_yscs")
     private String cong_yscs;//
+    @Property(nameInDb = "piece")
+    private String piece;           // 区域
 
-    @Generated(hash = 1185799516)
-    public DenatorBaseinfo(Long id, int blastserial, int sithole,
-            String shellBlastNo, String denatorId, int delay, String statusCode,
-            String statusName, String errorName, String errorCode,
-            String authorization, String remark, String regdate, String wire,
-            String name, String denatorIdSup, String zhu_yscs, String cong_yscs) {
+    @Generated(hash = 648500599)
+    public DenatorBaseinfo(Long id, int blastserial, int sithole, String shellBlastNo,
+            String denatorId, int delay, String statusCode, String statusName,
+            String errorName, String errorCode, String authorization, String remark,
+            String regdate, String wire, String name, String denatorIdSup, String zhu_yscs,
+            String cong_yscs, String piece) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -78,6 +80,7 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
         this.denatorIdSup = denatorIdSup;
         this.zhu_yscs = zhu_yscs;
         this.cong_yscs = cong_yscs;
+        this.piece = piece;
     }
     @Generated(hash = 1775503899)
     public DenatorBaseinfo() {
@@ -212,6 +215,7 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
                 ", denatorIdSup='" + denatorIdSup + '\'' +
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
+                ", piece='" + piece + '\'' +
                 '}';
     }
 
@@ -251,5 +255,11 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
             }
         }
 
+    }
+    public String getPiece() {
+        return this.piece;
+    }
+    public void setPiece(String piece) {
+        this.piece = piece;
     }
 }

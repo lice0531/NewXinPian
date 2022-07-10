@@ -113,6 +113,8 @@ public class XingBangApproveActivity extends BaseActivity {
         initPhotoError();
         setContentView(R.layout.activity_xing_bang_approve);
         ButterKnife.bind(this);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         sharedPreferencesHelper = new SharedPreferencesHelper(XingBangApproveActivity.this, getApplicationContext().getPackageName());
         initTime();
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);

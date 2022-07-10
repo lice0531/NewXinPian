@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
@@ -182,7 +184,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private int ChongDian_time;//充电时间
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
-    private String version = "";//是否检测桥丝
+    private String version = "02";//版本号
     private String hisInsertFireDate;
     private ArrayList<Map<String, Object>> errDeData = new ArrayList<>();//错误雷管
     ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//起爆雷管
@@ -195,7 +197,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private int totalerrorNum;//错误雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
-
+    private String mRegion;     // 区域
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -230,7 +232,8 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void initView() {
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         ll_1 = findViewById(R.id.ll_firing_1);
         ll_2 = findViewById(R.id.ll_firing_2);
         ll_4 = findViewById(R.id.ll_firing_4);
@@ -379,7 +382,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if(displayIc>6500){
+                if(displayIc>4800){
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -582,7 +585,10 @@ public class FiringMainActivity extends SerialPortActivity {
             ChongDian_time = Integer.parseInt(message.get(0).getChongdian_time());
             pro_dwdm = message.get(0).getPro_dwdm();
             JianCe_time = Integer.parseInt(message.get(0).getJiance_time());
-            version = message.get(0).getVersion();
+            if(message.get(0).getVersion()!=null){
+                version = message.get(0).getVersion();
+            }
+
             Log.e(TAG, "version: " + version);
         }
         Log.e("Preparation_time", Preparation_time + "");
@@ -760,10 +766,12 @@ public class FiringMainActivity extends SerialPortActivity {
      * 加载雷管信息
      */
     private void loadBlastModel() {
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
+//        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionDesc(mRegion);//不分区域
         for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
             vo.setBlastserial(d.getBlastserial());

@@ -32,7 +32,8 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tongbu_setting);
         ButterKnife.bind(this);
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("setting", 0);
         final SharedPreferences.Editor editor = sp.edit();
         delay = sp.getInt("delay", 0);

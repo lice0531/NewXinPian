@@ -30,6 +30,8 @@ public class ShouQuanLegActivity extends BaseActivity implements LoadListView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shou_quan_leg);
         ButterKnife.bind(this);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         map_dl = (List<Map<String, Object>>) bundle.getSerializable("list_dl");

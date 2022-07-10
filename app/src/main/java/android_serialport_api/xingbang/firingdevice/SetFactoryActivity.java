@@ -68,7 +68,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
     @BindView(R.id.factory_listView)
     ListView reisterListView;
     @BindView(R.id.container)
-    RelativeLayout container;
+    LinearLayout container;
     private SimpleCursorAdapter adapter;
     private String TAG = "设置厂家";
 
@@ -78,6 +78,9 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_factory_page);
         ButterKnife.bind(this);
+
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         ListView factory_listView = (ListView) this.findViewById(R.id.factory_listView);
         adapter = new SimpleCursorAdapter(SetFactoryActivity.this, R.layout.factoryitem,
                 null, new String[]{"deName", "deEntCode", "deFeatureCode", "isSelected"}, new int[]{R.id.deName, R.id.deEntCode, R.id.deFeatureCode, R.id.isSelected},

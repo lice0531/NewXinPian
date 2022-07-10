@@ -18,6 +18,8 @@ public class SetLanguageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setlanguage);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         mUserSelect = (TextView) findViewById(R.id.tv_user_select);
         mUserSelect.setText(getString(R.string.user_select_language, LocalManageUtil.getSelectLanguage(this)));
         //

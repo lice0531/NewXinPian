@@ -46,7 +46,8 @@ public class SetVoltageActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_voltage);
         ButterKnife.bind(this);
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("config", 0);
         //获取偏好设置的编辑器
         edit = sp.edit();
@@ -200,7 +201,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                     String str_lowVoltage = etSetlowVoltage.getText().toString();
                     int low = Double.valueOf(Utils.convertToDouble(str_lowVoltage, 7.0) * 10).intValue();
                     Log.e("设置电压", "low: " + low);
-                    Utils.writeRecord("-设置低压:"+low);
+                    Utils.writeRecord("-设置低压:" + low);
                     if (isNumber(str_lowVoltage) && low > 60 && low < 120) {
                         edit.putString("lowVoltage", str_lowVoltage);
                         edit.commit();//点击提交编辑器
@@ -229,7 +230,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                     String str_highVoltage = etSethighVoltage.getText().toString();
                     int high = Double.valueOf(Utils.convertToDouble(str_highVoltage, 16.0) * 10).intValue();
                     Log.e("设置电压", "high: " + high);
-                    Utils.writeRecord("-设置高压:"+high);
+                    Utils.writeRecord("-设置高压:" + high);
                     if (isNumber(str_highVoltage) && high > 100 && high < 200) {
                         edit.putString("highVoltage", str_highVoltage);
                         edit.commit();//点击提交编辑器

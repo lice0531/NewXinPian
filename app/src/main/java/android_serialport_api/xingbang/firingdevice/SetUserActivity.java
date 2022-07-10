@@ -63,7 +63,8 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setenv_activity_user_main);
-	
+		// 标题栏
+		setSupportActionBar(findViewById(R.id.toolbar));
 		//扫描结束		
 		//管壳号扫描分码--开始
 		et_user_name =  (EditText) this.findViewById(R.id.user_name);		

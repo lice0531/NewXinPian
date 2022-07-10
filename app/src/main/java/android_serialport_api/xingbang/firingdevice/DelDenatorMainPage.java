@@ -81,6 +81,8 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delete_denator_time);
         ButterKnife.bind(this);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         //点击其他地方隐藏输入框
         //db实例化
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
@@ -308,7 +310,7 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         new Thread(new Runnable() {
 
             @Override

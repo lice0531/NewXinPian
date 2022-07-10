@@ -2,7 +2,7 @@
 <resources>
 
     <!--  Activity基础风格  -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -63,6 +63,8 @@
         <!--是否模糊-->
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+
     <!-- actionbar风格-->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

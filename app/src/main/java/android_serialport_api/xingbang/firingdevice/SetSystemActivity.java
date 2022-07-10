@@ -65,6 +65,8 @@ public class SetSystemActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_system);
         ButterKnife.bind(this);
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");

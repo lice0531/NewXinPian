@@ -233,6 +233,8 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         sharedPreferencesHelper = new SharedPreferencesHelper(this, getApplicationContext().getPackageName());
         adapter = new CustomSimpleCursorAdapter(SetDelayTime_suidao.this, R.layout.item_delayset,
                 null, new String[]{"blastserial", "sithole", "delay", "shellBlastNo"},

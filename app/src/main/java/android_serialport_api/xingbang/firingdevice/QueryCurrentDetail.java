@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,6 +26,8 @@ import java.util.List;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.LoadAdapter;
 import android_serialport_api.xingbang.custom.LoadListView;
@@ -71,12 +75,22 @@ public class QueryCurrentDetail extends BaseActivity {
     private LinearLayoutManager linearLayoutManager;
     private boolean paixu_flag = true;//排序标志
     private boolean switchUid =true;//切换uid/管壳码
+    // 雷管列表
+    private String mOldTitle;   // 原标题
+    private String mRegion;     // 区域
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_query_currentinfo);
         ButterKnife.bind(this);
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
+        //获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
+        // 设置标题区域
+        setTitleRegion(mRegion, -1);
         btn_return = (Button) findViewById(R.id.btn_del_return);
         btn_return.setOnClickListener(v -> {
             Intent intentTemp = new Intent();
@@ -125,13 +139,15 @@ public class QueryCurrentDetail extends BaseActivity {
                 // 区域 更新视图
                 case 1001:
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+//                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     break;
                 case 1005://按管壳码排序
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
-                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+//                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
@@ -200,5 +216,69 @@ public class QueryCurrentDetail extends BaseActivity {
         fixInputMethodManagerLeak(this);
     }
 
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 区域 更新视图
+                mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                // 延时选择重置
+//                resetView();
+//                delay_set = "0";
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegion(String region, int size) {
+
+        String str;
+        if (size == -1) {
+            str = " 区域" + region;
+        } else {
+            str = " 区域" + region + "(雷管数量: " + size + ")";
+        }
+        // 设置标题
+        getSupportActionBar().setTitle(mOldTitle + str);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, region);
+
+        Log.e("liyi_Region", "已选择" + str);
+    }
 
 }

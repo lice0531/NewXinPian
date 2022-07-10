@@ -20,6 +20,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,8 @@ import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
@@ -223,7 +226,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private Handler mHandler_0 = new Handler();     // UI处理
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
-    private boolean switchUid =true;//切换uid/管壳码
+    private boolean switchUid = true;//切换uid/管壳码
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,50 +241,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         init();
         //管壳号扫描分码--结束
         getUserMessage();
-        // 适配器
-        linearLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new DetonatorAdapter_Paper<>(this, 4);
-        mListView.setLayoutManager(linearLayoutManager);
-        mListView.setAdapter(mAdapter);
-        mAdapter.setOnItemLongClick(position -> {
-            Log.e("长按", "mListData.size(): " + mListData.size());
-            Log.e("长按", "position: " + position);
-            DenatorBaseinfo info = mListData.get(position);
 
-            int no = info.getBlastserial();
-            int delay = info.getDelay();
-            String shellBlastNo = info.getShellBlastNo();
 
-            // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo);
-        });
-//        adapter = new SimpleCursorAdapter(
-//                ReisterMainPage_line.this,
-//                R.layout.item_blast,
-//                null,
-//                new String[]{"blastserial", "sithole", "shellBlastNo", "delay"},
-//                new int[]{R.id.blastserial, R.id.sithole, R.id.shellBlastNo, R.id.delay},
-//                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);//查询条件在myload里
-//
-//        reisterListView.setAdapter(adapter);
-
-//        getLoaderManager().initLoader(0, null, this);
-//        reisterListView.setOnItemLongClickListener((arg0, view, arg2, arg3) -> {
-//            LinearLayout myte = (LinearLayout) view;
-//            TextView seralNoTxt = (TextView) myte.getChildAt(0);
-//            TextView holeTxt = (TextView) myte.getChildAt(1);
-//            TextView delayTxt = (TextView) myte.getChildAt(2);
-//            TextView denatorTxt = (TextView) myte.getChildAt(3);
-//
-//            String serialNo = seralNoTxt.getText().toString().trim();
-//            String holeNo = holeTxt.getText().toString().trim();
-//            String denatorNo = denatorTxt.getText().toString().trim();
-//            String delaytime = delayTxt.getText().toString().trim();
-//            selectDenatorId = serialNo;
-//            modifyBlastBaseInfo(serialNo, holeNo, delaytime, denatorNo);//序号,孔号,延时,管壳码
-//            return false;
-//        });
-        this.isSingleReisher = 0;
+        initView();
 
         btn_onClick();//button的onClick
         getFactoryCode();//获取厂家码
@@ -309,6 +271,35 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
         }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
+    }
+
+    private void initView() {
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
+//         获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
+        // 设置标题区域
+        setTitleRegion(mRegion, -1);
+        // 适配器
+        linearLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new DetonatorAdapter_Paper<>(this, 4);
+        mListView.setLayoutManager(linearLayoutManager);
+        mListView.setAdapter(mAdapter);
+        mAdapter.setOnItemLongClick(position -> {
+            Log.e("长按", "mListData.size(): " + mListData.size());
+            Log.e("长按", "position: " + position);
+            DenatorBaseinfo info = mListData.get(position);
+
+            int no = info.getBlastserial();
+            int delay = info.getDelay();
+            String shellBlastNo = info.getShellBlastNo();
+
+            // 序号 延时 管壳码
+            modifyBlastBaseInfo(no, delay, shellBlastNo);
+        });
+        this.isSingleReisher = 0;
     }
 
     private void getUserMessage() {
@@ -357,18 +348,18 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
 
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
 
                     // 设置标题区域
-//                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegion(mRegion, mListData.size());
                     break;
 
                 // 重新排序 更新视图
                 case 1002:
                     // 雷管孔号排序 并 重新查询
-                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
 
@@ -393,7 +384,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     }
                     break;
                 case 1005://按管壳码排序
-                    mListData = new GreenDaoMaster().queryDetonatorDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
@@ -532,14 +523,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         regkm.setOnClickListener(v -> {
             int a;
-            if(switchUid){
-                a=6;
-                switchUid=false;
+            if (switchUid) {
+                a = 6;
+                switchUid = false;
                 text_uid.setTextColor(Color.GREEN);
                 text_gkm.setTextColor(Color.BLACK);
-            }else {
-                a=4;
-                switchUid=true;
+            } else {
+                a = 4;
+                switchUid = true;
                 text_uid.setTextColor(Color.BLACK);
                 text_gkm.setTextColor(Color.GREEN);
             }
@@ -677,7 +668,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     private int showDenatorSum() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryDenatorBaseinfoToStatusCode("02");
+        List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
         txtReisteramount.setText("已注册:" + list.size());
         return list.size();
     }
@@ -687,9 +678,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //  builder = showPbDialog();
         tipDlg = new LoadingDialog(ReisterMainPage_line.this);
         Context context = tipDlg.getContext();
-        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
-        View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
+//        View divider = tipDlg.findViewById(divierId);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         //tipDlg.setMessage("正在操作,请等待...").show();
         new Thread(new Runnable() {
 
@@ -1137,6 +1128,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("注册发送命令:" + str);
+                Log.e("发送命令", str);
                 if (str.contains("C00010")) {
                     send_10 = 1;
                 } else if (str.contains("C00041")) {
@@ -1159,11 +1151,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     //模拟
-    private void send12(String a) {
+    private void send12() {
         String subStr = "00120CFF00B6E6FF0041A6B6E6FF001503";
         String inInfo = subStr.substring(0, subStr.length() - 4);
         String dcrc = DefCommand.getLowByteBeforeCRCCode(inInfo);
-        String fromCommad = a;
+        String fromCommad = dcrc;
         byte[] localBuf = Utils.hexStringToBytes(fromCommad);
         String cmd = DefCommand.getCmd(fromCommad);
         doWithReceivData(cmd, localBuf);//处理cmd命令
@@ -1196,6 +1188,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 有雷管接入
             //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
             //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
+            //C000120A FF 00 67D0FA00 03 A6 1704 7F24 C0
             try {
                 Thread.sleep(500);//
             } catch (InterruptedException e) {
@@ -1327,6 +1320,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //352841778FDE5
         //A62141778FDE5
         Log.e("注册", "detonatorId: " + detonatorId);
+        Log.e("注册", "zhuce_form.getZhu_yscs(): " + zhuce_form.getZhu_yscs());
 //        String shellBlastNo = serchShellBlastNo(detonatorId);
         DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
 //        if (detonatorTypeNew == null) {//考虑到可以直接注册A6
@@ -1362,21 +1356,21 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             return -1;
         }
         Log.e("查询生产数据库查管壳码", "detonatorId: " + detonatorId);
-
         if (setDelayTimeStartDelaytime.getText().length() == 0 && reEtF1.getText().length() == 0 && reEtF2.getText().length() == 0) {
             tipInfoFlag = 6;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
             Log.e("验证是否输入延时", "tipInfoFlag: ");
             return -1;
         }
-
-
-        int index = getEmptyDenator(-1);
-        int maxNo = getMaxNumberNo();
+//        int maxNo = getMaxNumberNo();
         int start = Integer.parseInt(String.valueOf(setDelayTimeStartDelaytime.getText()));//开始延时
         int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
         int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
-        int delay = getMaxDelay(maxNo);//获取最大延时
+//        int delay = getMaxDelay(maxNo);//获取最大延时
+        // 获取 该区域 最大序号
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
+        // 获取 该区域 最大序号的延时
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -1410,61 +1404,47 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 delay = delay + f2;
             }
         }
-        db.beginTransaction();
-        try {
-            ContentValues values = new ContentValues();
 
-            if (index < 0 && !zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
-                maxNo++;
-                //从绑码库中获取到的数据
-                if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
-                    values.put("shellBlastNo", detonatorTypeNew.getShellBlastNo());
-                    values.put("zhu_yscs", detonatorTypeNew.getZhu_yscs());
-                    Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
-                } else {
-                    values.put("shellBlastNo", detonatorId);
-                    values.put("zhu_yscs", zhuce_form.getZhu_yscs());
-                    Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
-                }
 
-                if (zhuce_form.getDenaIdSup() != null) {
-                    String detonatorId_Sup = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaIdSup());
-                    values.put("denatorIdSup", detonatorId_Sup);//从芯片
-                    values.put("cong_yscs", detonatorTypeNew.getCong_yscs());
-                    Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
-                }
-                values.put("blastserial", maxNo);
-                values.put("sithole", maxNo);
-                values.put("denatorId", detonatorId);//主芯片
-                values.put("delay", delay);
-                values.put("regdate", Utils.getDateFormatLong(new Date()));
-                values.put("statusCode", "02");
-                values.put("statusName", "已注册");
-                values.put("errorCode", "FF");
-                values.put("errorName", "正常");
-                values.put("wire", zhuce_form.getWire());//桥丝状态
-                //向数据库插入数据
-                db.insert("denatorBaseinfo", null, values);
-//                db.insert("denatorBaseinfo_all", null, values);
-//                getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
+        if (!zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
+            maxNo++;
+            //从绑码库中获取到的数据
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+
+            if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
+                denatorBaseinfo.setShellBlastNo(detonatorTypeNew.getShellBlastNo());
+                denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
             } else {
-                values.put("shellBlastNo", detonatorId);//key为字段名，value为值
-                values.put("statusCode", "02");
-                values.put("statusName", "已注册");
-                values.put("errorCode", "FF");
-                values.put("errorName", "正常");
-                values.put("regdate", Utils.getDateFormatLong(new Date()));
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
+                denatorBaseinfo.setShellBlastNo(detonatorId);
+                denatorBaseinfo.setZhu_yscs(zhuce_form.getZhu_yscs());
+                Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
             }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
+
+            if (zhuce_form.getDenaIdSup() != null) {
+                String detonatorId_Sup = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaIdSup());
+                denatorBaseinfo.setDenatorIdSup(detonatorId_Sup);//从芯片
+                denatorBaseinfo.setCong_yscs(detonatorTypeNew.getCong_yscs());
+                Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
+            }
+            denatorBaseinfo.setBlastserial(maxNo);
+            denatorBaseinfo.setSithole(maxNo);
+            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setDenatorId(detonatorId);
+            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusName("已注册");
+            denatorBaseinfo.setErrorCode("FF");
+            denatorBaseinfo.setErrorName("正常");
+            denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
+            denatorBaseinfo.setPiece(mRegion);
+            //向数据库插入数据
+            getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+            //向数据库插入数据
         }
-//        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(99));
+
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         SoundPlayUtils.play(1);
-
-//        Utils.saveFile_max();//把数据库中序号最大的一发保存到列表
         return 0;
     }
 
@@ -1736,10 +1716,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
             case R.id.btn_singleReister:
 
-                if (delay_set.equals("0")) {
-                    show_Toast("请设置延时");
-                    break;
-                }
+//                if (delay_set.equals("0")) {
+//                    show_Toast("请设置延时");
+//                    break;
+//                }
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
@@ -1780,13 +1760,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             case R.id.btn_LookHistory:
                 Intent intent2 = new Intent(this, QueryCurrentDetail_All.class);
                 intent2.putExtra("dataSend", "当前雷管信息");
-                startActivityForResult(intent2, 1);
+                startActivity(intent2);
                 break;
 
             case R.id.btn_setdelay:
                 Intent intent3 = new Intent(this, SetDelayTime.class);
                 intent3.putExtra("dataSend", "设置延时");
-                startActivityForResult(intent3, 1);
+                startActivity(intent3);
 
 //                send12();
                 break;
@@ -2282,16 +2262,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         return true;
     }
 
-
-    private void loadMoreData_all_lg() {
-        lg2_yanshi.clear();
-        list_data.clear();
-        list_data = new GreenDaoMaster().queryDenatorBaseinfoToStatusCode("02");
-        for (int i = 0; i < list_data.size(); i++) {
-            lg2_yanshi.add(list_data.get(i).getDelay() + "");
-        }
-    }
-
     /**
      * RecyclerView 移动到当前位置，
      *
@@ -2311,5 +2281,86 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             mRecyclerView.scrollToPosition(n);
         }
 
+    }
+
+    /**
+     * 重置控件
+     */
+    private void resetView() {
+        reEtF1.setBackgroundResource(R.drawable.translucent);
+        reEtF2.setBackgroundResource(R.drawable.translucent);
+        setDelayTimeStartDelaytime.setBackgroundResource(R.drawable.translucent);
+
+        reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+        reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+
+        reEtF1.clearFocus();
+        reEtF2.clearFocus();
+        setDelayTimeStartDelaytime.clearFocus();
+    }
+
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                // 延时选择重置
+                resetView();
+                delay_set = "0";
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegion(String region, int size) {
+
+        String str;
+        if (size == -1) {
+            str = " 区域" + region;
+        } else {
+            str = " 区域" + region + "(雷管数量: " + size + ")";
+        }
+        // 设置标题
+        getSupportActionBar().setTitle(mOldTitle + str);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, region);
+
+        Log.e("liyi_Region", "已选择" + str);
     }
 }

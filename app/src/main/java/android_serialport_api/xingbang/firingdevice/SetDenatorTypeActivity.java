@@ -60,9 +60,11 @@ public class SetDenatorTypeActivity extends BaseActivity  implements LoaderCallb
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_denatort_ype_page);
+		// 标题栏
+		setSupportActionBar(findViewById(R.id.toolbar));
 		 mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
 		 db = mMyDatabaseHelper.getReadableDatabase();
-		ListView listView = (ListView) this.findViewById(R.id.factory_listView);
+		ListView listView =  this.findViewById(R.id.factory_listView);
 		adapter = new SimpleCursorAdapter(SetDenatorTypeActivity.this, R.layout.denator_type_item,  
 					null,  new String[]{"deTypeName", "deTypeSecond", "isSelected"}, new int[]{R.id.de_Type_Name, R.id.de_Type_second,R.id.de_Type_isSelected},  
 	                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);  
@@ -70,33 +72,20 @@ public class SetDenatorTypeActivity extends BaseActivity  implements LoaderCallb
 		listView.setAdapter(adapter);
 		getLoaderManager().initLoader(0, null,this);
 
-		denator_type_Name =  (EditText) this.findViewById(R.id.denator_type_Name);		
-		denator_type_Name.setOnFocusChangeListener(new View.OnFocusChangeListener() {  
-	           @Override  
-	           public void onFocusChange(View v, boolean hasFocus) {  
-	        	   displayInputKeyboard(v,hasFocus);
-	           }  
-	     });  
-		denator_type_second=  (EditText) this.findViewById(R.id.denator_type_second);
-		denator_type_second.setOnFocusChangeListener(new View.OnFocusChangeListener() {  
-	           @Override  
-	           public void onFocusChange(View v, boolean hasFocus) {  
-	        	   displayInputKeyboard(v,hasFocus);
-	           }  
-	     });  
+		denator_type_Name =   this.findViewById(R.id.denator_type_Name);
+		denator_type_Name.setOnFocusChangeListener((v, hasFocus) -> displayInputKeyboard(v,hasFocus));
+		denator_type_second=   this.findViewById(R.id.denator_type_second);
+		denator_type_second.setOnFocusChangeListener((v, hasFocus) -> displayInputKeyboard(v,hasFocus));
 		
-	   et_factory_selected=  (CheckBox) this.findViewById(R.id.denator_type_isSelected);
+	   et_factory_selected=   this.findViewById(R.id.denator_type_isSelected);
 		 
-       btn_return = (Button) findViewById(R.id.btn_factory_return);
-       btn_return.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent intentTemp = new Intent();
-               intentTemp.putExtra("backString","");
-               setResult(1,intentTemp);
-               finish();
-           }
-       });
+       btn_return =  findViewById(R.id.btn_factory_return);
+       btn_return.setOnClickListener(v -> {
+		   Intent intentTemp = new Intent();
+		   intentTemp.putExtra("backString","");
+		   setResult(1,intentTemp);
+		   finish();
+	   });
      
        btn_inputOk = (Button) findViewById(R.id.btn_factory_inputOk);
        btn_inputOk.setOnClickListener(new View.OnClickListener() {

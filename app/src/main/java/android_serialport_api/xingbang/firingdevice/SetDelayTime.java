@@ -76,6 +76,8 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         startNoTxt = (TextView) findViewById(R.id.setDelayTime_FirstNo);
         endNoTxt = (TextView) findViewById(R.id.setDelayTime_EndNo);
         holeDeAmoTxt = (TextView) findViewById(R.id.setDelayTime_holedetonator);
@@ -235,7 +237,7 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         Window window = getWindow();//最大化dialog
         window.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams layoutParams = window.getAttributes();

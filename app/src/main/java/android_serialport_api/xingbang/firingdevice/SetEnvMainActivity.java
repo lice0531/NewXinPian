@@ -61,7 +61,7 @@ public class SetEnvMainActivity extends BaseActivity {
     @BindView(R.id.btn_set_exit)//退出
     Button btnSetExit;
     @BindView(R.id.container)
-    FrameLayout container;
+    LinearLayout container;
     @BindView(R.id.btn_upload)
     Button btnUpload;
     private SQLiteDatabase db;
@@ -91,6 +91,8 @@ public class SetEnvMainActivity extends BaseActivity {
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getWritableDatabase();
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         getUserMessage();
     }
 
@@ -114,12 +116,6 @@ public class SetEnvMainActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            // text1.setText(data.getStringExtra("backString"));
-        }
-    }
 
 
     public int checkUserName(String userName, String pw) {
@@ -328,9 +324,9 @@ public class SetEnvMainActivity extends BaseActivity {
                 checkUpgrade();
                 Log.e("版本号", "Bugly.getAppChannel(): " + Bugly.getAppChannel());
                 break;
-            case R.id.btn_set_netmodel://网络模式
-                Intent intent5 = new Intent(SetEnvMainActivity.this, WriteLogActivity.class);
-                startActivity(intent5);
+            case R.id.btn_set_netmodel://日志
+//                Intent intent5 = new Intent(SetEnvMainActivity.this, WriteLogActivity.class);
+//                startActivity(intent5);
                 break;
             case R.id.btn_set_upload://上传数据
                 setServerIpEnv();

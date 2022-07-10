@@ -42,7 +42,8 @@ public class WriteLogActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_log);
         ButterKnife.bind(this);
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
 //        mHandler_loding = new Handler(message -> {
 //            if (pb_show == 1 && tipDlg != null) tipDlg.show();
 //            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();

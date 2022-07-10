@@ -21,6 +21,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.Bugly;
+import com.tencent.bugly.beta.Beta;
 import com.tencent.mmkv.MMKV;
 
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
@@ -112,9 +113,10 @@ public class Application extends MultiDexApplication {
         locationService = new LocationService(getApplicationContext());
         //数据库实例化
 //      打开错误日志，保存到sd卡
-        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
-        crashHandler.init(this);
-        Bugly.init(this, "e43df75202", false);//四川id(腾讯错误日志)
+//        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
+//        crashHandler.init(this);
+        Beta.autoCheckUpgrade = false;
+        Bugly.init(this, "2f6814070f", false);//四川id(腾讯错误日志)//原来的id e43df75202
 
         String dir = Environment.getExternalStorageDirectory() + File.separator + "Xingbang" + "/mmkv";
         MMKV.initialize(dir);//替代SharedPreferences(腾讯工具)

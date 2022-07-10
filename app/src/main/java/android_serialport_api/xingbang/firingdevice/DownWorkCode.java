@@ -41,6 +41,7 @@ import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
@@ -52,6 +53,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePal;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -61,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -92,6 +95,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 import static android_serialport_api.xingbang.Application.getContext;
 
 
@@ -106,47 +110,47 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @BindView(R.id.btn_down_workcode)
     Button btnDownWorkcode;
     @BindView(R.id.down_at_htid)//合同编号
-            AutoCompleteTextView at_htid;
+    AutoCompleteTextView at_htid;
     @BindView(R.id.ll_1)
     LinearLayout ll1;
     @BindView(R.id.down_at_xmbh)//项目编号
-            AutoCompleteTextView at_xmbh;
+    AutoCompleteTextView at_xmbh;
     @BindView(R.id.ll_2)
     LinearLayout ll2;
     @BindView(R.id.down_at_dwdm)//单位代码
-            AutoCompleteTextView at_dwdm;
+    AutoCompleteTextView at_dwdm;
     @BindView(R.id.ll_3)
     LinearLayout ll3;
     @BindView(R.id.down_at_coordxy)//经纬度
-            AutoCompleteTextView at_coordxy;
+    AutoCompleteTextView at_coordxy;
     @BindView(R.id.ll_4)
     LinearLayout ll4;
     @BindView(R.id.down_at_bprysfz)//证件号码
-            AutoCompleteTextView at_bprysfz;
+    AutoCompleteTextView at_bprysfz;
     @BindView(R.id.ll_5)
     LinearLayout ll5;
     @BindView(R.id.text_start)
     TextView textStart;
     @BindView(R.id.entBF2Bit_st)//开始厂家码
-            EditText edit_start_entBF2Bit_st;
+    EditText edit_start_entBF2Bit_st;
     @BindView(R.id.entproduceDate_st)//开始日期码
-            EditText edit_start_entproduceDate_st;
+    EditText edit_start_entproduceDate_st;
     @BindView(R.id.entAT1Bit_st)//开始特征码
-            EditText edit_start_entAT1Bit_st;
+    EditText edit_start_entAT1Bit_st;
     @BindView(R.id.entboxNoAndSerial_st)//开始流水号
-            EditText edit_start_entboxNoAndSerial_st;
+    EditText edit_start_entboxNoAndSerial_st;
     @BindView(R.id.btn_ReisterScanStart_st)//开始码扫描
-            Button btnReisterScanStartSt;
+    Button btnReisterScanStartSt;
     @BindView(R.id.entBF2Bit_ed)//结束厂家码
-            EditText edit_end_entBF2Bit_en;
+    EditText edit_end_entBF2Bit_en;
     @BindView(R.id.entproduceDate_ed)//结束日期码
-            EditText edit_end_entproduceDate_ed;
+    EditText edit_end_entproduceDate_ed;
     @BindView(R.id.entAT1Bit_ed)//结束特征码
-            EditText edit_end_entAT1Bit_ed;
+    EditText edit_end_entAT1Bit_ed;
     @BindView(R.id.entboxNoAndSerial_ed)//结束流水号
-            EditText edit_end_entboxNoAndSerial_ed;
+    EditText edit_end_entboxNoAndSerial_ed;
     @BindView(R.id.btn_ReisterScanStart_ed)//结束码扫描
-            Button btnReisterScanStartEd;
+    Button btnReisterScanStartEd;
     @BindView(R.id.btn_inputOk)
     Button btnInputOk;
     @BindView(R.id.ly_input)
@@ -241,7 +245,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         edit = sp.edit();
         pro_name = sp.getString("pro_name", "");
         at_projectName.setText(pro_name);
-
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         if (1 == currentPage) {
             loadMoreData();
         }
@@ -292,35 +297,35 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         at_projectName.setOnItemClickListener((parent, view, position, id) -> {
             hideInputKeyboard();
             String project_name = parent.getAdapter().getItem(position).toString();
-            Log.e("输入项目", "position: "+position );
-            Log.e("输入项目", "project_name: "+project_name );
-            Log.e("输入项目", "getItem(position): "+parent.getAdapter().getItem(position).toString() );
+            Log.e("输入项目", "position: " + position);
+            Log.e("输入项目", "project_name: " + project_name);
+            Log.e("输入项目", "getItem(position): " + parent.getAdapter().getItem(position).toString());
             GreenDaoMaster master = new GreenDaoMaster();
             List<Project> list = master.queryProjectToProject_name(project_name);
 
-            Log.e("输入项目", "list: "+list.toString() );
-            if(list.size()>0){
+            Log.e("输入项目", "list: " + list.toString());
+            if (list.size() > 0) {
                 if (list.get(0).getHtbh().length() > 0) {
                     at_htid.setText(list.get(0).getHtbh());
-                }else {
+                } else {
                     at_htid.setText("");
 
                 }
                 if (list.get(0).getXmbh().length() > 0) {
                     at_xmbh.setText(list.get(0).getXmbh());
-                }else {
+                } else {
                     at_xmbh.setText("");
 
                 }
                 if (list.get(0).getDwdm().length() > 0) {
                     at_dwdm.setText(list.get(0).getDwdm());
-                }else {
+                } else {
                     at_dwdm.setText("");
 
                 }
                 if (list.get(0).getCoordxy().length() > 0) {
                     at_coordxy.setText(list.get(0).getCoordxy());
-                }else {
+                } else {
                     at_coordxy.setText("");
 
                 }
@@ -345,15 +350,15 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
         Gson gson = new Gson();
         DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
-        Log.e("测试", "danLingBean: "+danLingBean);
-        if(danLingBean.getLgs().getLg().size()>0){
-            for (int i=0;i<danLingBean.getLgs().getLg().size();i++){
+        Log.e("测试", "danLingBean: " + danLingBean);
+        if (danLingBean.getLgs().getLg().size() > 0) {
+            for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                 GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
             }
         }
     }
 
-    private void initView(){
+    private void initView() {
         Resources resources = getContext().getResources();
         Drawable btnDrawable = resources.getDrawable(R.drawable.translucent);
         at_htid.setBackground(btnDrawable);
@@ -940,7 +945,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     LngLat start = new LngLat(zbqyjd, zbqywd);
                                     LngLat end = new LngLat(jingdu, weidu);
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
-                                    Log.e("经纬度", "juli3: "+juli3 );
+                                    Log.e("经纬度", "juli3: " + juli3);
                                     if (juli3 < banjing) {
                                         insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
@@ -948,8 +953,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                 }
                             }
                         }
-                        if(danLingBean.getLgs().getLg().size()>0){
-                            for (int i=0;i<danLingBean.getLgs().getLg().size();i++){
+                        if (danLingBean.getLgs().getLg().size() > 0) {
+                            for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                                 GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
                             }
                         }
@@ -1359,7 +1364,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         //tipDlg.setMessage("正在操作,请等待...").show();
         new Thread(new Runnable() {
 
@@ -1543,7 +1548,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
      * 向数据库中插入数据
      */
     public void insertJson_new(String htbh, String xmbh, String json, int errNum, String coordxy, String name) {
-        ShouQuan sq= new ShouQuan();
+        ShouQuan sq = new ShouQuan();
         sq.setErrNum(String.valueOf(errNum));
         sq.setXmbh(xmbh);
         sq.setHtbh(htbh);
@@ -1680,7 +1685,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             while (cursor.moveToNext()) {
                 String id = cursor.getString(0);
                 String xmbh = cursor.getString(1); //获取第二列的值 ,序号
-                String htbh= cursor.getString(2);
+                String htbh = cursor.getString(2);
                 String json = cursor.getString(3);//管壳号
                 String errNum = cursor.getString(4);//错误数量
                 String qbzt = cursor.getString(5);//起爆状态
@@ -2244,6 +2249,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
@@ -2261,6 +2267,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
@@ -2278,6 +2285,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
+
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }

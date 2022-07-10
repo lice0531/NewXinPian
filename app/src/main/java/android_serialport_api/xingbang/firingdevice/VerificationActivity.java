@@ -89,7 +89,8 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
         ButterKnife.bind(this);
-
+// 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
         db = mMyDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_SHOUQUAN, null);
