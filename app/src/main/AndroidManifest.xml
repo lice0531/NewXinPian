@@ -35,6 +35,16 @@
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
+            android:name=".firingdevice.SendMsgActivity"
+            android:label="数据互传"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".firingdevice.TestICActivity"
+            android:label="快速测试电流"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false" />
+        <activity
             android:name=".activity.UpdataDelayActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -67,10 +77,11 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".activity.MenuActivity"
@@ -99,11 +110,11 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".firingdevice.SetDelayTime"
@@ -240,7 +251,7 @@
         <activity
             android:name=".firingdevice.SetDelayTime_suidao"
             android:configChanges="orientation|keyboardHidden"
-            android:label="设置隧道延时"
+            android:label="隧道延时"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.DownOfflineActivity"
@@ -268,7 +279,7 @@
             android:name=".jilian.SyncActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="级联"
-            android:theme="@style/AppTheme.NoActionBar"   />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".jilian.SettingActivity"
             android:configChanges="orientation|keyboardHidden"

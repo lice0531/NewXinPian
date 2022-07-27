@@ -27,16 +27,19 @@ public class DetonatorTypeNew {
     private String zhu_yscs;//主芯片延时参数
     @Property(nameInDb = "cong_yscs")
     private String cong_yscs;//从芯片延时参数
+    @Property(nameInDb = "time")
+    private String time;//从芯片延时参数
 
-    @Generated(hash = 2013670884)
+    @Generated(hash = 350380064)
     public DetonatorTypeNew(Long Id, String shellBlastNo, String detonatorId,
-            String detonatorIdSup, String zhu_yscs, String cong_yscs) {
+            String detonatorIdSup, String zhu_yscs, String cong_yscs, String time) {
         this.Id = Id;
         this.shellBlastNo = shellBlastNo;
         this.detonatorId = detonatorId;
         this.detonatorIdSup = detonatorIdSup;
         this.zhu_yscs = zhu_yscs;
         this.cong_yscs = cong_yscs;
+        this.time = time;
     }
     @Generated(hash = 1791749386)
     public DetonatorTypeNew() {
@@ -77,7 +80,12 @@ public class DetonatorTypeNew {
     public void setCong_yscs(String cong_yscs) {
         this.cong_yscs = cong_yscs;
     }
-
+    public String getTime() {
+        return this.time;
+    }
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     @Override
     public String toString() {
@@ -90,4 +98,5 @@ public class DetonatorTypeNew {
                 ", cong_yscs='" + cong_yscs + '\'' +
                 '}';
     }
+
 }

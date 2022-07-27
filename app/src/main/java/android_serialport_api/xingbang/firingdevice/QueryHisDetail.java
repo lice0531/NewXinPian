@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ import android_serialport_api.xingbang.custom.LoadHisDetailRecyclerAdapter;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -129,7 +131,7 @@ public class QueryHisDetail extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         getUserMessage();//获取用户信息
@@ -176,7 +178,7 @@ public class QueryHisDetail extends BaseActivity {
                                 show_Toast("没有数据，不能执行上传");
                                 return;
                             }
-                            String fireDate = Utils.getDateFormatToFileName();
+                            String fireDate =Utils.getDateFormatLong(new Date());
                             saveFireResult(fireDate);
                             blastdate = fireDate;
                         }
@@ -394,13 +396,16 @@ public class QueryHisDetail extends BaseActivity {
         return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
 
     }
-
-    private int delHisInfo(String blastdate) {//删除雷管
+    /**
+     * 删除历史记录
+     */
+    private int delHisInfo(String blastdate) {
         if (blastdate == null) return 1;
         if (getString(R.string.text_alert_tip3).equals(blastdate)) {
             show_Toast(getString(R.string.text_error_tip52));
             return 1;
         }
+        new GreenDaoMaster().deleteType(blastdate);//删除生产数据中对应的雷管
         //从表
         String selection = "blastdate = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {blastdate + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
@@ -420,6 +425,7 @@ public class QueryHisDetail extends BaseActivity {
         showLoadMore();
         return 0;
     }
+
 
     /**
      * 上传核对
@@ -566,13 +572,13 @@ public class QueryHisDetail extends BaseActivity {
             builder.setTitle(getString(R.string.text_alert_tip6));//"已爆雷管列表"
         builder.setView(getlistview);
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("日志", (dialog, which) -> {
-            Intent intent = new Intent(QueryHisDetail.this, WriteLogActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("log",voFireHisMain.getLog());
-            intent.putExtras(bundle);
-            startActivity(intent);
-        });
+//        builder.setNeutralButton("日志", (dialog, which) -> {//不让客户看见比较好
+//            Intent intent = new Intent(QueryHisDetail.this, WriteLogActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("log",voFireHisMain.getLog());
+//            intent.putExtras(bundle);
+//            startActivity(intent);
+//        });
         builder.create().show();
 
     }

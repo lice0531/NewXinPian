@@ -34,11 +34,13 @@ public class MyCrashHandler implements Thread.UncaughtExceptionHandler {
     public void init(Context ctx) {
         mContext=ctx;
         Thread.setDefaultUncaughtExceptionHandler(this);
+
     }
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         Utils.showToast(mContext,"很抱歉,程序出现异常,即将重启.",Toast.LENGTH_LONG);
+        Log.e("异常原因", "异常原因: " );
         String logPath;// logPath: /storage/emulated/0//XB错误日志
         String fileName;
         if (Environment.getExternalStorageState().equals(

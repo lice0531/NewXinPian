@@ -53,6 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
+
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
@@ -109,7 +110,7 @@ public class XingbangMain extends BaseActivity {
     private String server_type1 = "";
     private String server_type2 = "";
     private String Yanzheng = "";//是否验证地理位置
-    private String version = "";//版本号
+    private String version = "02";//版本号
     private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
     private int jiance_time;//检测时间
@@ -124,7 +125,8 @@ public class XingbangMain extends BaseActivity {
 
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
-    private int region_0,region_1,region_2,region_3,region_4,region_5;
+    private int region_0, region_1, region_2, region_3, region_4, region_5;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -139,7 +141,7 @@ public class XingbangMain extends BaseActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        loadMoreData_all_lg();
+        loadMoreData_all_lg();//获取雷管信息
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
         getPropertiesData();
 //        getUserMessage();
@@ -181,7 +183,7 @@ public class XingbangMain extends BaseActivity {
 
         initPower();                // 初始化上电方式()
         initView();         // 初始化控件
-//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
 //        db = mMyDatabaseHelper.getReadableDatabase();
 
         tipDlg = new LoadingDialog(XingbangMain.this);
@@ -194,7 +196,7 @@ public class XingbangMain extends BaseActivity {
                 if (queryTotal() == 0) {
                     readCVS();//读取雷管列表
                 }
-                Log.e("读取数据", "version: "+version);
+                Log.e("读取数据", "version: " + version);
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
@@ -206,6 +208,7 @@ public class XingbangMain extends BaseActivity {
         Utils.writeRecord("---进入主页面---");
         Beta.checkUpgrade();
     }
+
     /**
      * 初始化控件
      */
@@ -220,6 +223,7 @@ public class XingbangMain extends BaseActivity {
         setTitleRegion();
 
     }
+
     private void initHandler() {
         mHandler_loading = new Handler(this.getMainLooper()) {
             @SuppressLint("HandlerLeak")
@@ -433,6 +437,7 @@ public class XingbangMain extends BaseActivity {
             time = System.currentTimeMillis();
             show_Toast(getString(R.string.text_error_tip56));
         } else {
+            Utils.writeRecord("---点击返回按键退出程序---");
             powerOffDevice(PIN_ADSL);//主板下电
             //点击在两秒以内
             removeALLActivity();//执行移除所以Activity方法
@@ -498,7 +503,6 @@ public class XingbangMain extends BaseActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
-
 
 
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
@@ -582,6 +586,9 @@ public class XingbangMain extends BaseActivity {
 
             case R.id.btn_main_exit://退出
                 exit();//退出方法
+                //只为了报错用的
+//                Intent intent55 = new Intent(XingbangMain.this, WriteLogActivity.class);
+//                startActivity(intent55);
                 break;
         }
     }
@@ -593,6 +600,7 @@ public class XingbangMain extends BaseActivity {
         int i = 0;
         String path = Environment.getExternalStorageDirectory() + "/xb/" + "list.csv";
         File f = new File(path);
+
         if (!f.exists()) {
             return;
         }
@@ -609,30 +617,36 @@ public class XingbangMain extends BaseActivity {
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
-                //向数据库插入数据
-                DenatorBaseinfo baseinfo = new DenatorBaseinfo();
-                baseinfo.setBlastserial(Integer.parseInt(a[1]));
-                baseinfo.setSithole(Integer.parseInt(a[2]));
-                baseinfo.setShellBlastNo(a[3]);
-                baseinfo.setDenatorId(a[4]);
-                baseinfo.setDelay(Integer.parseInt(a[5]));
-                baseinfo.setStatusCode(a[6]);
-                baseinfo.setStatusName(a[7]);
-                baseinfo.setErrorName(a[8]);
-                baseinfo.setErrorCode(a[9]);
-                baseinfo.setAuthorization(a[10]);
-                baseinfo.setRemark(a[11]);
-                baseinfo.setRegdate(a[12]);
-                baseinfo.setWire(a[13]);
-                baseinfo.setName(a[14]);
-                if (a.length == 16) {
-                    baseinfo.setDenatorIdSup(a[15]);
-                }else if(a.length>16){
-                    baseinfo.setZhu_yscs(a[16]);
-                    baseinfo.setCong_yscs(a[17]);
-                    baseinfo.setPiece(a[18]);
+                if (a.length == 19) {
+//向数据库插入数据
+                    DenatorBaseinfo baseinfo = new DenatorBaseinfo();
+                    baseinfo.setBlastserial(Integer.parseInt(a[1]));
+                    baseinfo.setSithole(a[2]);
+                    baseinfo.setShellBlastNo(a[3]);
+                    baseinfo.setDenatorId(a[4]);
+                    baseinfo.setDelay(Integer.parseInt(a[5]));
+                    baseinfo.setStatusCode(a[6]);
+                    baseinfo.setStatusName(a[7]);
+                    baseinfo.setErrorName(a[8]);
+                    baseinfo.setErrorCode(a[9]);
+                    baseinfo.setAuthorization(a[10]);
+                    baseinfo.setRemark(a[11]);
+                    baseinfo.setRegdate(a[12]);
+                    baseinfo.setWire(a[13]);
+                    baseinfo.setName(a[14]);
+                    if (a.length == 16) {
+                        baseinfo.setDenatorIdSup(a[15]);
+                    } else if (a.length > 16) {
+                        baseinfo.setZhu_yscs(a[16]);
+                        baseinfo.setCong_yscs(a[17]);
+                        baseinfo.setPiece(a[18]);
+                    }
+                    getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
+                } else {
+                    f.delete();//如果字段个数不对,先删除list,再跳出循环
+                    return;
                 }
-                getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
+
                 i++;
             }
         } catch (FileNotFoundException e) {
@@ -690,9 +704,9 @@ public class XingbangMain extends BaseActivity {
     private void loadMoreData_all_lg() {
         lg2_yanshi.clear();
         list_data.clear();
-        GreenDaoMaster master = new GreenDaoMaster();
-        list_data = master.queryDenatorBaseinfoToStatusCode("02");
-//        list_data = getDaoSession().getDenatorBaseinfoDao().loadAll();
+//        GreenDaoMaster master = new GreenDaoMaster();
+//        list_data = master.queryDenatorBaseinfoToStatusCode("02");
+        list_data = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
         for (int i = 0; i < list_data.size(); i++) {
             lg2_yanshi.add(list_data.get(i).getDelay() + "");
         }
@@ -792,7 +806,7 @@ public class XingbangMain extends BaseActivity {
             maxNo++;
             DenatorBaseinfo baseinfo = new DenatorBaseinfo();
             baseinfo.setBlastserial(maxNo);
-            baseinfo.setSithole(maxNo);
+            baseinfo.setSithole(maxNo + "");
             baseinfo.setShellBlastNo(a[0]);
             baseinfo.setDelay(Integer.parseInt(a[1]));
             baseinfo.setRegdate(Utils.getDateFormatLong(new Date()));

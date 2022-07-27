@@ -278,7 +278,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan("1");
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -1099,7 +1099,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             } else {
                 //stage=9;
                 eightCmdFlag = 2;
-                hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
+                hisInsertFireDate =Utils.getDateFormatLong(new Date());//记录的起爆时间
                 saveFireResult();
 
                 if (!qbxm_id.equals("-1")) {
@@ -1150,7 +1150,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             if (QiBaoActivity.stage == 1) {
                 firstCmdReFlag = 1;
                 if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
                 } else {
                     sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
                 }
@@ -1212,7 +1212,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         for (DenatorBaseinfo dbf : list) {
             DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
             denatorHis_detail.setBlastserial(dbf.getBlastserial());
-            denatorHis_detail.setSithole(dbf.getSithole());
+            denatorHis_detail.setSithole(dbf.getSithole()+"");
             denatorHis_detail.setShellBlastNo(dbf.getShellBlastNo());
             denatorHis_detail.setDenatorId(dbf.getDenatorId());
             denatorHis_detail.setDelay(dbf.getDelay());

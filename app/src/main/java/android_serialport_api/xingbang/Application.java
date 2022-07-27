@@ -9,6 +9,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -33,6 +34,8 @@ import android_serialport_api.xingbang.db.MyOpenHelper;
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DaoSession;
 import android_serialport_api.xingbang.services.LocationService;
+import android_serialport_api.xingbang.utils.CrashExceptionHandler;
+import android_serialport_api.xingbang.utils.CrashHandler;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyCrashHandler;
 
@@ -42,7 +45,7 @@ public class Application extends MultiDexApplication {
     private SerialPort mSerialPort = null;
     public LocationService locationService;
     public static Context mContext;
-    public static int db_version = 22;
+    public static int db_version = 23;
     private static String TAG = "煋邦起爆器";
 
     private String mSportName;
@@ -111,10 +114,19 @@ public class Application extends MultiDexApplication {
         Log.e("application", "设备型号: " + Build.DEVICE);
         //定位初始化
         locationService = new LocationService(getApplicationContext());
-        //数据库实例化
+
 //      打开错误日志，保存到sd卡
+//        CrashHandler crashHandler = CrashHandler.getInstance();// 注册crashHandler
+//        crashHandler.init(getApplicationContext());
 //        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
 //        crashHandler.init(this);
+        if(!isApkInDebug(getApplicationContext())){
+            //测试过的错误拦截
+            CrashExceptionHandler crashExceptionHandler = CrashExceptionHandler.newInstance();
+            crashExceptionHandler.init(getApplicationContext());
+        }
+
+
         Beta.autoCheckUpgrade = false;
         Bugly.init(this, "2f6814070f", false);//四川id(腾讯错误日志)//原来的id e43df75202
 
@@ -191,7 +203,20 @@ public class Application extends MultiDexApplication {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
+        MultiDex.install(this);//解决65536问题
     }
+
+    /**
+     * 判断当前应用是否是debug状态
+     */
+    public static boolean isApkInDebug(Context context) {
+        try {
+            ApplicationInfo info = context.getApplicationInfo();
+            return (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
 }

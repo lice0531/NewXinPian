@@ -117,7 +117,7 @@ public class XingBangApproveActivity extends BaseActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         sharedPreferencesHelper = new SharedPreferencesHelper(XingBangApproveActivity.this, getApplicationContext().getPackageName());
         initTime();
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();
         if (equ_no.equals("")) {

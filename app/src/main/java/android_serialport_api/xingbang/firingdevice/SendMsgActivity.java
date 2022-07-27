@@ -1,13 +1,13 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -20,15 +20,14 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import org.litepal.LitePal;
 
@@ -38,8 +37,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -56,116 +53,79 @@ import java.util.concurrent.TimeUnit;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.LoadingDialog;
-import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
-import android_serialport_api.xingbang.jilian.SyncActivity;
 import android_serialport_api.xingbang.models.VoBlastModel;
-import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android_serialport_api.xingbang.Application.getDaoSession;
-
-/**
- * 实验发送命令页面
- */
-public class PracticeActivity extends BaseActivity {
-
-    @BindView(R.id.tv_ceshi_dianliu)
-    TextView tvCeshiDianliu;
-    @BindView(R.id.tv_ceshi_dianya)
-    TextView tvCeshiDianya;
-    @BindView(R.id.but_pre)
-    Button butPre;
-    @BindView(R.id.ll_firing_4)
-    LinearLayout llFiring4;
-    @BindView(R.id.activity_practice)
-    ScrollView activityPractice;
-    @BindView(R.id.but_write)
-    Button butWrite;
-    @BindView(R.id.btn_read)
-    Button butRead;
-    @BindView(R.id.btn_read_log)
-    Button butReadLog;
+public class SendMsgActivity extends BaseActivity {
     @BindView(R.id.text_android_ip)
     TextView textAndroidIp;
+    @BindView(R.id.text_filePath)
+    TextView textFilePath;
+    @BindView(R.id.text_setvice_ip_start)
+    TextView textIpStart;
     @BindView(R.id.text_setvice_ip)
     EditText textSetviceIp;
     @BindView(R.id.but_receive)
     Button butReceive;
-    @BindView(R.id.but_lianjie)
-    Button butLianjie;
     @BindView(R.id.but_send)
     Button butSend;
-    @BindView(R.id.btn_openFile)
-    Button btnOpenFile;
-    @BindView(R.id.text_filePath)
-    TextView textFilePath;
-    @BindView(R.id.but_test)
-    Button butTest;
-    @BindView(R.id.but_version)
-    Button butVersion;
-    @BindView(R.id.but_sendMsg)
-    Button but_sendMsg;
 
-    private DatabaseHelper mMyDatabaseHelper;
-    private List<VoBlastModel> list_uid = new ArrayList<>();
-    private SQLiteDatabase db;
-    private Handler busHandler = null;//总线信息
-    private static volatile int stage;
-    private volatile int firstCount = 0;
-    private From42Power busInfo;
-    private volatile int initCloseCmdReFlag = 0;
-    private volatile int revCloseCmdReFlag = 0;
-    private volatile int revOpenCmdReFlag = 0;
-    private volatile int revOpenCmdTestFlag = 0;//收到了打开测试命令
+
     private Handler handler_zhuce;
-    // 写入和读取操作
-    private int currentPage = 1;//当前页数
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
     private Handler mHandler_2 = new Handler();//显示进度条
-
-    private static int StringProt = 30000;
-
-    // 存放接收到的文字信息
-    private boolean revice_type = true;
+    private From42Power busInfo;
+    private List<VoBlastModel> list_uid = new ArrayList<>();
     private int denatorCount = 0;//雷管总数
     /**
      * 线程池
      */
     private ExecutorService executorService = new ThreadPoolExecutor(3, 3, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(128));
     private String path;
-    private Handler Handler_tip = null;//提示信息
-
+    private static int StringProt = 30000;
+    private boolean revice_type = true;
+    private String mOldTitle;   // 原标题
+    private String mRegion;     // 区域
+    private Handler mHandler_0 = new Handler();     // UI处理
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practice);
+        setContentView(R.layout.activity_send_msg);
         ButterKnife.bind(this);
-// 标题栏
+
+        // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
-        db = mMyDatabaseHelper.getReadableDatabase();
+        //获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
+        // 设置标题区域
+        setTitleRegion(mRegion, -1);
+        initHandle();
+        loadMoreData();
+
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText("本机IP地址:" + getlocalip());
+        if(getlocalip().contains(".")){
+            String[] b =getlocalip().split("\\.");
+            textIpStart.setText(b[0]+"."+b[1]+"."+b[2]+".");
+        }
 
-        initHandle();
-
-        loadMoreData();
-//        List<DenatorBaseinfo> denator = LitePal.findAll(DenatorBaseinfo.class);
-//        List<MessageBean> message = LitePal.findAll(MessageBean.class);
-//        Log.e("注册", "denator: " + denator.toString());
-//        Log.e("注册", "message: " + message.toString());
     }
 
     private void initHandle() {
@@ -202,36 +162,28 @@ public class PracticeActivity extends BaseActivity {
             return false;
         });
 
-        busHandler = new Handler(msg -> {
-            if (busInfo != null) {
-                BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类
-                float dianliu = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
-                String displayIcStr = dianliu + "μA";// 保留两位小数
-
-                if (dianliu > 4800) {
-                    displayIcStr = displayIcStr + "(疑似短路)";
-                    tvCeshiDianliu.setTextColor(Color.RED);
-                } else if (dianliu < 4800 && dianliu > denatorCount * 24) {
-                    displayIcStr = displayIcStr + "(电流过大)";
-                    tvCeshiDianliu.setTextColor(Color.RED);
-                } else if (dianliu < 8) {
-                    displayIcStr = displayIcStr + "(疑似断路)";
-                    tvCeshiDianliu.setTextColor(Color.RED);
-                } else {
-                    tvCeshiDianliu.setTextColor(Color.GREEN);
-                }
-                tvCeshiDianliu.setText(displayIcStr);
-                tvCeshiDianya.setText(busInfo.getBusVoltage() + "V");
-            }
-            busInfo = null;
-            return false;
-        });
-
         mHandler_2 = new Handler(msg -> {
             if (pb_show == 1 && tipDlg != null)
                 tipDlg.show();
             if (pb_show == 0 && tipDlg != null)
                 tipDlg.dismiss();
+            return false;
+        });
+
+        mHandler_0 = new Handler(msg -> {
+            switch (msg.what) {
+                // 区域 更新视图
+                case 1001:
+                    Log.e("liyi_1001", "更新视图 区域" + mRegion);
+                    // 查询全部雷管 倒叙(序号)
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
+                    break;
+                default:
+                    break;
+            }
+
             return false;
         });
     }
@@ -255,11 +207,11 @@ public class PracticeActivity extends BaseActivity {
             }
         }).start();
     }
-
+    //获取雷管
     private void loadMoreData() {
         list_uid.clear();
 
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
         for (int i = 0; i < list.size(); i++) {
             VoBlastModel item = new VoBlastModel();
             item.setBlastserial(list.get(i).getBlastserial());
@@ -275,7 +227,7 @@ public class PracticeActivity extends BaseActivity {
         }
         denatorCount = list.size();
     }
-
+    //导出数据
     private void loadMoreData_out() {
         list_uid.clear();
         StringBuilder sb = new StringBuilder();
@@ -298,7 +250,31 @@ public class PracticeActivity extends BaseActivity {
         show_Toast("写入成功");
     }
 
+    /**
+     * 得到最大序号
+     */
+    private int getMaxNumberNo() {
+        return LitePal.max(DenatorBaseinfo.class, "blastserial", int.class);
+    }
+    /**
+     * 检查重复的数据
+     *
+     * @param denatorId
+     */
+    public boolean checkRepeatDenatorId(String denatorId) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
+        if (denatorBaseinfo.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     *注册雷管
+     */
     private int registerDetonator(String leiguan) {
+
         String[] lg = leiguan.split(",");
         String shellNo;
         int maxNo = getMaxNumberNo();
@@ -326,6 +302,7 @@ public class PracticeActivity extends BaseActivity {
             denator.setErrorCode("FF");
             denator.setErrorName("");
             denator.setWire("");
+            denator.setPiece(mRegion);
             Log.e("接收注册", "denator: " + denator.toString());
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
             reCount++;
@@ -335,184 +312,12 @@ public class PracticeActivity extends BaseActivity {
         return reCount;
     }
 
-
-    /**
-     * 读取输入注册
-     */
-    private void registerDetonator_typeNew(String leiguan) {
-        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
-        String[] lg = leiguan.split(",");
-        String shellNo;
-//        int maxNo = getMaxNumberNo();
-        for (int i = 0; i < lg.length; i++) {
-            shellNo = lg[i];
-            String[] a = shellNo.split("#");
-            Log.e("注册", "管壳码 a[0]: " + a[0]);
-            Log.e("注册", "芯片码 a[1]: " + a[1]);
-            Log.e("注册", "a.length: " + a.length);
-
-            // 检查重复数据
-            if (checkRepeatShellBlastNo_typeNew(a[0])) {
-                continue;
-            }
-            // 雷管类型_新
-            DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
-            detonatorTypeNew.setShellBlastNo(a[0]);
-            detonatorTypeNew.setDetonatorId(a[1]);
-            if (a.length == 3) {//不算从芯片生产数据
-                detonatorTypeNew.setZhu_yscs(a[2]);
-            } else if (a.length == 5) {
-                detonatorTypeNew.setDetonatorIdSup(a[2]);
-                detonatorTypeNew.setZhu_yscs(a[3]);
-                detonatorTypeNew.setCong_yscs(a[4]);
-            }
-            getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
-        }
-        pb_show = 0;
-        show_Toast_ui("读取成功");
-    }
-
-
-    /**
-     * 读取输入注册
-     */
-    private void registerLog(String logstr) {
-        String[] log = logstr.split(",");
-        String shellNo;
-        Log.e("分析日志", "log: " + log);
-        for (int i = 0; i < log.length; i++) {
-            shellNo = log[i];
-            if (shellNo.length() != 5) {
-                String[] ml = shellNo.split(":");
-                Log.e("分析日志", "ml: " + ml[2]);
-                String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
-                if (cmd != null) {
-                    int localSize = ml[2].length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
-                    doWithReceivData_fenxi(cmd, localBuf, localSize);
-                }
-            }
-
-        }
-        show_Toast("解析成功");
-    }
-
-    //C000120CFF000BE6FF0041A6A2DEFF00028DC0
-    //C000310C0BE6FF000A00A2DEFF00E20FC0
-
-    /**
-     * 检查重复的数据
-     *
-     * @param denatorId
-     */
-    public boolean checkRepeatDenatorId(String denatorId) {
-        GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
-        if (denatorBaseinfo.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 检查重复的数据
-     *
-     * @param ShellBlastNo
-     */
-    public boolean checkRepeatShellBlastNo_typeNew(String ShellBlastNo) {
-        GreenDaoMaster master = new GreenDaoMaster();
-        DetonatorTypeNew detonatorTypeNew = master.checkRepeat_DetonatorTypeNew(ShellBlastNo);
-        if (detonatorTypeNew != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 得到最大序号
-     */
-    private int getMaxNumberNo() {
-        return LitePal.max(DenatorBaseinfo.class, "blastserial", int.class);
-    }
-
-
-
-
-    /**
-     * 处理接收到的cmd命令
-     */
-    private void doWithReceivData_fenxi(String cmd, byte[] cmdBuf, int size) {
-        byte[] locatBuf = new byte[size];
-        System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
-
-        if ("20".equals(cmd)) {//进入测试模式
-        } else if ("40".equals(cmd)) {
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("40命令", "busInfo: " + busInfo.toString());
-        } else if ("22".equals(cmd)) { // 关闭测试
-        } else if ("13".equals(cmd)) { // 关闭电源
-        } else if ("41".equals(cmd)) { // 开启总线电源指令
-        }
-    }
-
-
-
-    @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_test, R.id.but_sendMsg})
+    @OnClick({R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.but_jilian://进入级联页面
-                Intent intent9 = new Intent(this, SyncActivity.class);//热点方式
-                startActivity(intent9);
-                finish();
-                break;
-            case R.id.but_version://进入级联页面
-                Intent intent11 = new Intent(this, SystemVersionActivity.class);//版本号
-                startActivity(intent11);
-                break;
-            case R.id.but_sendMsg://进入数据互传页面
-                Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
-                startActivity(intent12);
-                break;
-            case R.id.but_pre://开启测试
-
-//                if (revOpenCmdTestFlag == 0) {
-//                    byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-//                    sendCmd(powerCmd);
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    sendPower = new SendPower();//40指令线程
-//                    sendPower.exit = false;
-//                    sendPower.start();
-//                    revOpenCmdTestFlag = 1;
-//                    butPre.setText("停止测试");
-//                } else {
-//                    sendPower.exit = true;
-//                    sendPower.interrupt();
-//                    try {
-//                        sendPower.join();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
-//                    sendCmd(powerCmd);
-//                    butPre.setText("开始测试");
-//                    tvCeshiDianliu.setText("0.0μA");
-//                    tvCeshiDianya.setText("0.0V");
-//                    revOpenCmdTestFlag = 0;
-//                }
-                Intent intent2 = new Intent(this, TestICActivity.class);
-                startActivity(intent2);
-                break;
 
             case R.id.but_write://写入雷管
-                if (currentPage == 1) {
-                    loadMoreData_out();
-                }
+                loadMoreData_out();
                 break;
 
             // 读取雷管
@@ -559,7 +364,7 @@ public class PracticeActivity extends BaseActivity {
 
 //                    Log.e("添加信息", "sb: " + (list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ","));
                 }
-                String ip = textSetviceIp.getText().toString();
+                String ip = textIpStart.getText().toString()+textSetviceIp.getText().toString();
                 if (TextUtils.isEmpty(ip)) {
                     show_Toast("ip地址异常，请检查网络是否连接");
                     return;
@@ -572,6 +377,7 @@ public class PracticeActivity extends BaseActivity {
                 // 启动线程 向服务器发送信息//需要换成服务器端的IP地址
                 sendStringMessage(sb.toString(), ip);
 //                Utils.sendMessage("F5310000",ip,30000,list_upload_uid);
+                hideInputKeyboard();
                 break;
 
             case R.id.but_lianjie:
@@ -642,12 +448,6 @@ public class PracticeActivity extends BaseActivity {
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
     }
-
-
-
-
-
-
 
     /**
      * 创建服务端ServerSocket
@@ -721,10 +521,11 @@ public class PracticeActivity extends BaseActivity {
                 //向服务器发送文本信息
                 ou.write(txt1.getBytes(StandardCharsets.UTF_8));
                 //关闭各种输入输出流
-                ou.flush();
-//                bff.close();
-//                ou.close();
-//                socket.close();
+                ou.flush();//刷新
+                //关闭()
+                bff.close();
+                ou.close();
+                socket.close();
                 // 服务器返回
                 Message message = new Message();
                 message.what = 2;
@@ -737,26 +538,17 @@ public class PracticeActivity extends BaseActivity {
         executorService.execute(run);
     }
 
-    @Override
-    protected void onDestroy() {
-        if (db != null) db.close();
-        Utils.saveFile();//把软存中的数据存入磁盘中
-        super.onDestroy();
-    }
 
     @Override
     protected void onStart() {
         hideInputKeyboard();
-        activityPractice.setFocusable(true);
-        activityPractice.setFocusableInTouchMode(true);
-        activityPractice.requestFocus();
-        activityPractice.findFocus();
         super.onStart();
     }
 
     //隐藏键盘
     public void hideInputKeyboard() {
         textSetviceIp.clearFocus();//取消焦点
+        textIpStart.clearFocus();//取消焦点
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
@@ -890,13 +682,13 @@ public class PracticeActivity extends BaseActivity {
     }
 
 
-
     private Socket socket = null;
     private String strMessage;
     private boolean isConnect = false;
     private OutputStream outStream;
     private boolean isReceive = false;
     private ReceiveThread receiveThread = null;
+
     Runnable connectThread = () -> {
         // TODO Auto-generated method stub
         try {
@@ -905,15 +697,15 @@ public class PracticeActivity extends BaseActivity {
             isReceive = true;
             receiveThread = new ReceiveThread(socket);
             receiveThread.start();
-            System.out.println("----connected success----");
+            Log.e("打开线程", "----打开socket成功----");
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.out.println("UnknownHostException-->" + e.toString());
+            Log.e("线程报错", "----UnknownHostException----"+e.toString());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.out.println("IOException" + e.toString());
+            Log.e("线程报错", "----IOException----"+e.toString());
         }
     };
 
@@ -982,4 +774,160 @@ public class PracticeActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * 读取输入注册
+     */
+    private void registerLog(String logstr) {
+        String[] log = logstr.split(",");
+        String shellNo;
+        Log.e("分析日志", "log: " + log);
+        for (int i = 0; i < log.length; i++) {
+            shellNo = log[i];
+            if (shellNo.length() != 5) {
+                String[] ml = shellNo.split(":");
+                Log.e("分析日志", "ml: " + ml[2]);
+                String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
+                if (cmd != null) {
+                    int localSize = ml[2].length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
+                    doWithReceivData_fenxi(cmd, localBuf, localSize);
+                }
+            }
+
+        }
+        show_Toast("解析成功");
+    }
+    /**
+     * 处理接收到的cmd命令
+     */
+    private void doWithReceivData_fenxi(String cmd, byte[] cmdBuf, int size) {
+        byte[] locatBuf = new byte[size];
+        System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
+
+        if ("20".equals(cmd)) {//进入测试模式
+        } else if ("40".equals(cmd)) {
+            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            Log.e("40命令", "busInfo: " + busInfo.toString());
+        } else if ("22".equals(cmd)) { // 关闭测试
+        } else if ("13".equals(cmd)) { // 关闭电源
+        } else if ("41".equals(cmd)) { // 开启总线电源指令
+        }
+    }
+
+
+    /**
+     * 读取输入注册
+     */
+    private void registerDetonator_typeNew(String leiguan) {
+        String time =Utils.getDateFormatLong(new Date());
+        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
+        String[] lg = leiguan.split(",");
+        String shellNo;
+//        int maxNo = getMaxNumberNo();
+        for (int i = 0; i < lg.length; i++) {
+            shellNo = lg[i];
+            String[] a = shellNo.split("#");
+            Log.e("注册", "管壳码 a[0]: " + a[0]);
+            Log.e("注册", "芯片码 a[1]: " + a[1]);
+            Log.e("注册", "a.length: " + a.length);
+
+            // 检查重复数据
+            if (checkRepeatShellBlastNo_typeNew(a[0])) {
+                continue;
+            }
+            // 雷管类型_新
+            DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
+            detonatorTypeNew.setTime(time);
+            detonatorTypeNew.setShellBlastNo(a[0]);
+            detonatorTypeNew.setDetonatorId(a[1]);
+            if (a.length == 3) {//不算从芯片生产数据
+                detonatorTypeNew.setZhu_yscs(a[2]);
+            } else if (a.length == 5) {
+                detonatorTypeNew.setDetonatorIdSup(a[2]);
+                detonatorTypeNew.setZhu_yscs(a[3]);
+                detonatorTypeNew.setCong_yscs(a[4]);
+            }
+            getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
+        }
+        pb_show = 0;
+        show_Toast_ui("读取成功");
+    }
+
+    /**
+     * 检查重复的数据
+     *
+     * @param ShellBlastNo
+     */
+    public boolean checkRepeatShellBlastNo_typeNew(String ShellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        DetonatorTypeNew detonatorTypeNew = master.checkRepeat_DetonatorTypeNew(ShellBlastNo);
+        if (detonatorTypeNew != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                // 延时选择重置
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegion(String region, int size) {
+
+        String str;
+        if (size == -1) {
+            str = " 区域" + region;
+        } else {
+            str = " 区域" + region + "(数量: " + size + ")";
+        }
+        // 设置标题
+        getSupportActionBar().setTitle(mOldTitle + str);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, region);
+
+        Log.e("liyi_Region", "已选择" + str);
+    }
 }

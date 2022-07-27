@@ -650,9 +650,9 @@ public class Utils {
     }
 
     public static void main(String args[]) {
-        String dela = DetonatorShellToSerialNo("5680625H00002");
-        String dd = getReverseDetonatorNo(dela);
-        System.out.print(dela);
+//        String dela = DetonatorShellToSerialNo("5680625H00002");
+//        String dd = getReverseDetonatorNo(dela);
+//        System.out.print(dela);
         /**
          String data = "2970102G99999";
          //得到管壳码
@@ -728,7 +728,7 @@ public class Utils {
 
     public static String getDateFormat_log(Date date) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
         String dateString = formatter.format(date);
 
         return dateString;
@@ -1699,14 +1699,14 @@ public class Utils {
     /**
      * 重新排序雷管
      */
-    public static void deleteData(Context context) {
-        List<DenatorBaseinfo> list_lg = getDaoSession().getDenatorBaseinfoDao().loadAll();
+    public static void deleteData(String mRegion) {
+        List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
         Log.e("排序雷管", "list_lg: " + list_lg.size());
         for (int i = 0; i < list_lg.size(); i++) {
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setId(list_lg.get(i).getId());
             denatorBaseinfo.setBlastserial(i + 1);
-            denatorBaseinfo.setSithole(i + 1);
+            denatorBaseinfo.setSithole((i + 1)+"");
             denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
             denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
             denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
@@ -1722,6 +1722,7 @@ public class Utils {
             denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
             denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
             denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
+            denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
         }
         Utils.saveFile();//把软存中的数据存入磁盘中

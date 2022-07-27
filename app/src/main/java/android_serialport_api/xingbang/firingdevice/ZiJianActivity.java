@@ -135,7 +135,7 @@ public class ZiJianActivity extends SerialPortActivity {
                         exit = true;
                         Intent intent = new Intent(ZiJianActivity.this, XingbangMain.class);
                         startActivity(intent);
-//                        finish();
+                        finish();//如果不结束当前页面的话,会和后面的页面抢命令
                         break;
                     }
                     firstCount--;

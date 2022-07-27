@@ -53,6 +53,7 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.CommonDialog;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
@@ -159,7 +160,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         setContentView(R.layout.activity_writedelay_denator);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        //获取区号
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         blastQueue = new LinkedList<>();
         errorList = new LinkedList<>();
@@ -185,9 +188,29 @@ public class TestDenatorActivity extends SerialPortActivity {
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         Log.e(TAG, "stage: " + stage);
-
+        long time = System.currentTimeMillis();
+        long endTime = (long) MmkvUtils.getcode("endTime",(long)0);
         sendOpenThread = new SendOpenPower();
-        sendOpenThread.start();
+        if(time-endTime<180000){
+            AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
+                    .setTitle("正在放电")//设置对话框的标题//"成功起爆"
+                    .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测")//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNegativeButton("退出", (dialog13, which) -> {
+                        dialog13.dismiss();
+                        finish();
+                    })
+                    .setNeutralButton("继续", (dialog2, which) -> {
+                        dialog2.dismiss();
+                        sendOpenThread.start();
+                    })
+                    .create();
+            dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+            dialog.show();
+        }else {
+            sendOpenThread.start();
+        }
+
     }
 
     private void initHandler() {
@@ -373,24 +396,16 @@ public class TestDenatorActivity extends SerialPortActivity {
         cursor.close();
         ll_firing_errorNum_4.setText("" + totalerrorNum);
         int total = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-        if (dangqian_ic > (total - totalerrorNum) * 70) {
+        if (dangqian_ic > (total - totalerrorNum) * 24) {
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                     .setTitle("当前实际电流过大")//设置对话框的标题
                     .setMessage("雷管正常数量为:" + (total - totalerrorNum) + ",当前电流超过参考电流" + ((total - totalerrorNum) * 70) + "μA,请排查错误雷管后重新进行检测")//设置对话框的内容
                     //设置对话框的按钮
-                    .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            finish();
-                        }
+                    .setNegativeButton("退出", (dialog12, which) -> {
+                        dialog12.dismiss();
+                        finish();
                     })
-                    .setNeutralButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
+                    .setNeutralButton("确定", (dialog1, which) -> dialog1.dismiss())
                     .create();
             dialog.show();
             show_Toast("当前电流过大");
@@ -405,32 +420,47 @@ public class TestDenatorActivity extends SerialPortActivity {
         //Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null, null, null, null, " blastserial asc");
 //        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where statusCode =? order by blastserial asc";
 //        Cursor cursor = db.rawQuery(sql, new String[]{"02"});
-        String sql = DatabaseHelper.SELECT_ALL_DENATOBASEINFO_ZHENGCHANG;
-        Cursor cursor = db.rawQuery(sql, null);
-        Log.e("总数", "sum: " + cursor.getCount());
-        errDeData.clear();
-        //cursor不位空,可以移动到第一行
-        while (cursor.moveToNext()) {
-            String errorCode = cursor.getString(9);//管壳号
-            String stCode = cursor.getString(6);//状态
-            if (errorCode != null) {//说明已经通信
-                if ("FF".equals(errorCode)) {
-                    continue;
-                }
-            }
-            int serialNo = cursor.getInt(1); //获取第二列的值 ,序号
-            String shellNo = cursor.getString(3);//管壳号
-            String errorName = cursor.getString(8);//错误信息
-            String delay = cursor.getString(5);//延时
-            Map<String, Object> item = new HashMap<String, Object>();
-            item.put("serialNo", serialNo);
-            item.put("shellNo", shellNo);
-            item.put("errorName", errorName);
-            item.put("delay", delay);
-            errDeData.add(item);
+        //
+//        String sql = DatabaseHelper.SELECT_ALL_DENATOBASEINFO_ZHENGCHANG;
+//        Cursor cursor = db.rawQuery(sql, null);
+//        Log.e("总数", "sum: " + cursor.getCount());
+//        errDeData.clear();
+//        //cursor不位空,可以移动到第一行
+//        while (cursor.moveToNext()) {
+//            String errorCode = cursor.getString(9);//管壳号
+//            String stCode = cursor.getString(6);//状态
+//            if (errorCode != null) {//说明已经通信
+//                if ("FF".equals(errorCode)) {
+//                    continue;
+//                }
+//            }
+//            int serialNo = cursor.getInt(1); //获取第二列的值 ,序号
+//            String shellNo = cursor.getString(3);//管壳号
+//            String errorName = cursor.getString(8);//错误信息
+//            String delay = cursor.getString(5);//延时
+//            Map<String, Object> item = new HashMap<String, Object>();
+//            item.put("serialNo", serialNo);
+//            item.put("shellNo", shellNo);
+//            item.put("errorName", errorName);
+//            item.put("delay", delay);
+//            errDeData.add(item);
+//
+//        }
+//        cursor.close();
 
+
+        errDeData.clear();
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);
+        for (DenatorBaseinfo d : list) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("serialNo", d.getBlastserial());
+            item.put("shellNo", d.getShellBlastNo());
+            item.put("errorName", d.getErrorName());
+            item.put("delay", d.getDelay());
+            errDeData.add(item);
         }
-        cursor.close();
+        Log.e(TAG, "errDeData: " + errDeData.toString());
     }
 
     /***
@@ -474,31 +504,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void loadMoreData() {
         blastQueue.clear();
         errorList.clear();
-//        String sql =  "Select * from denatorBaseinfo where statusCode = ? order by blastserial asc";
-//        Cursor cursor = db.rawQuery(sql, new String[]{"02"});
-//        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-//        for (DenatorBaseinfo denatorBaseinfo : list) {
-//            int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
-//            String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
-//            String denatorId = denatorBaseinfo.getDenatorId();//管壳号
-//            String denatorIdSup = denatorBaseinfo.getDenatorIdSup();//管壳号
-//            short delay = (short) denatorBaseinfo.getDelay();//获取第三列的值
-//            VoBlastModel vo = new VoBlastModel();
-//            vo.setBlastserial(serialNo);
-//            vo.setDelay(delay);
-//            vo.setShellBlastNo(shellNo);
-//            vo.setDenatorId(denatorId);
-//            vo.setDenatorIdSup(denatorIdSup);
-//            vo.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
-//            vo.setCong_yscs(denatorBaseinfo.getCong_yscs());
-//            if (denatorBaseinfo.getStatusCode().equals("02")) {
-//                list_lg.add(vo);
-//                blastQueue.offer(vo);
-//            }
-//        }
 
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
             VoBlastModel item = new VoBlastModel();
@@ -553,7 +560,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (displayIc < denatorCount * 12 * 0.25 && firstCount > Preparation_time * 0.9) {//总线电流小于参考值一半,可能出现断路
+                    if (displayIc < denatorCount * 12 * 0.25 && firstCount > Preparation_time * 0.3) {//总线电流小于参考值一半,可能出现断路
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流过小,请检查线路是否出现断路");
                         stage = 5;
@@ -561,7 +568,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (busInfo.getBusVoltage() < 6 && firstCount > Preparation_time * 0.85) {
+                    if (busInfo.getBusVoltage() < 6 && firstCount > Preparation_time * 0.3) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
                         show_Toast("当前电压异常,请检查线路是否出现短路等情况");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -570,32 +577,32 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if(displayIc > 4800){
+                    if(displayIc > 4500){
                         displayIcStr = displayIcStr + "(疑似短路)";
                         ll_firing_IC_4.setTextColor(Color.RED);
-                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+                        Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    }else if (displayIc > (denatorCount * 51) && firstCount > Preparation_time * 0.9) {//5
+                    }else if (displayIc > (denatorCount * 24) && firstCount > Preparation_time * 0.3) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr =displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
-                        Utils.writeRecord("组网测试--当前电流:" + busInfo.getBusCurrentIa() + "μA  --当前电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    }else if (displayIc <8 && firstCount > Preparation_time * 0.9) {//5
+                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
+                    }else if (displayIc < 4+denatorCount*6 && firstCount > Preparation_time * 0.3) {//5
                         displayIcStr =displayIcStr + "(疑似断路)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
-                        Utils.writeRecord("组网测试--当前电流:" + busInfo.getBusCurrentIa() + "μA  --当前电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
+                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
                         ll_firing_IC_4.setTextColor(Color.GREEN);
-                        Utils.writeRecord("组网测试--当前电流:" + busInfo.getBusCurrentIa() + "μA  --当前电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
+                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
                     }
                     ll_firing_IC_4.setText(displayIcStr);
 
 
                     //电流大于4500
-                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 4500 && firstCount > Preparation_time * 0.85) {
+//                    Log.e(TAG, "displayIc: " + displayIc);
+                    if (displayIc > 4500 && firstCount > Preparation_time * 0.3) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         if (!chongfu) {
@@ -786,14 +793,12 @@ public class TestDenatorActivity extends SerialPortActivity {
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("测试发送:" + str);
+                Utils.writeLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            return;
         }
     }
 
@@ -815,7 +820,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
                                 }
@@ -1012,15 +1017,16 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            }
             if (writeDenator != null) {
                 VoDenatorBaseInfo temp = writeDenator;
-                String fromCommad = Utils.bytesToHexFun(locatBuf);
                 short writeDelay = temp.getDelay();
                 fromData.setShellNo(temp.getShellBlastNo());//设置管壳码
+                fromData.setDenaId(temp.getDenatorId());//设置芯片码
                 updateDenator(fromData, writeDelay);
                 if (!"FF".equals(fromData.getCommicationStatus())) {
                     errHandler.sendMessage(errHandler.obtainMessage());
-                    Utils.writeRecord("--测试结果:" + fromData.toString());
+
                 }
-                Log.e("测试返回数据", "fromData: " + fromData.toString());
+                Utils.writeRecord("--测试结果:" + fromData);
+                Log.e("测试返回数据", "fromData: " + fromData);
 //
                 writeDenator = null;
                 reThirdWriteCount++;

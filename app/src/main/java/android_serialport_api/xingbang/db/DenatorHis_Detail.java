@@ -16,7 +16,7 @@ public class DenatorHis_Detail {
     @Property(nameInDb = "blastserial")
     private int blastserial;
     @Property(nameInDb = "sithole")
-    private int sithole;
+    private String sithole;
     @Property(nameInDb = "shellBlastNo")
     private String shellBlastNo;
     @Property(nameInDb = "denatorId")
@@ -41,12 +41,14 @@ public class DenatorHis_Detail {
     private String blastdate;
     @Property(nameInDb = "name")
     private String name;
-    @Generated(hash = 727078313)
-    public DenatorHis_Detail(Long id, int blastserial, int sithole,
+    @Property(nameInDb = "piece")
+    private String piece;
+    @Generated(hash = 929310764)
+    public DenatorHis_Detail(Long id, int blastserial, String sithole,
             String shellBlastNo, String denatorId, int delay, String statusCode,
             String statusName, String errorName, String errorCode,
             String authorization, String remark, String regdate, String blastdate,
-            String name) {
+            String name, String piece) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -62,6 +64,7 @@ public class DenatorHis_Detail {
         this.regdate = regdate;
         this.blastdate = blastdate;
         this.name = name;
+        this.piece = piece;
     }
     @Generated(hash = 1925319946)
     public DenatorHis_Detail() {
@@ -78,10 +81,10 @@ public class DenatorHis_Detail {
     public void setBlastserial(int blastserial) {
         this.blastserial = blastserial;
     }
-    public int getSithole() {
+    public String getSithole() {
         return this.sithole;
     }
-    public void setSithole(int sithole) {
+    public void setSithole(String sithole) {
         this.sithole = sithole;
     }
     public String getShellBlastNo() {
@@ -156,6 +159,33 @@ public class DenatorHis_Detail {
     public void setName(String name) {
         this.name = name;
     }
+    public String getPiece() {
+        return this.piece;
+    }
+    public void setPiece(String piece) {
+        this.piece = piece;
+    }
 
 
+    @Override
+    public String toString() {
+        return "DenatorHis_Detail{" +
+                "id=" + id +
+                ", blastserial=" + blastserial +
+                ", sithole='" + sithole + '\'' +
+                ", shellBlastNo='" + shellBlastNo + '\'' +
+                ", denatorId='" + denatorId + '\'' +
+                ", delay=" + delay +
+                ", statusCode='" + statusCode + '\'' +
+                ", statusName='" + statusName + '\'' +
+                ", errorName='" + errorName + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                ", authorization='" + authorization + '\'' +
+                ", remark='" + remark + '\'' +
+                ", regdate='" + regdate + '\'' +
+                ", blastdate='" + blastdate + '\'' +
+                ", name='" + name + '\'' +
+                ", piece='" + piece + '\'' +
+                '}';
+    }
 }

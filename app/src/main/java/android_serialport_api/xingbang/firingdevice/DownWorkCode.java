@@ -1,6 +1,5 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -20,17 +19,17 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,7 +56,6 @@ import org.litepal.LitePal;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,10 +65,15 @@ import java.util.concurrent.TimeUnit;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.ShouQuanAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.ShouQuan;
@@ -97,6 +100,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android_serialport_api.xingbang.Application.getContext;
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -160,7 +167,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @BindView(R.id.btn_inputGKM)
     Button btnInputGKM;
     @BindView(R.id.factory_listView)
-    ListView listView;
+    RecyclerView mListView;
     @BindView(R.id.btn_location)
     Button btnLocation;
     @BindView(R.id.btn_scanReister)
@@ -181,7 +188,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     TextView textView10;
     @BindView(R.id.setDelayTimeMainPage)
     ScrollView setDelayTimeMainPage;
-    private ShouQuanAdapter mAdapter;
+    private ShouQuanAdapter mAdapter_sq;//授权
     private SQLiteDatabase db;
     private Handler mHandler_httpresult;
     private Handler mHandler_1 = new Handler();//提示电源信息
@@ -190,7 +197,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private List<Map<String, Object>> map_dl = new ArrayList<>();
     private int pageSize = 500;//每页显示的数据
     private int currentPage = 1;//当前页数
-    private List<VoBlastModel> list = new ArrayList<>();
+    private List<VoBlastModel> list_all = new ArrayList<>();
     private ArrayList<String> list_uid = new ArrayList<>();
     private String equ_no = "";//设备编码
     private String pro_bprysfz = "";//证件号码
@@ -227,12 +234,19 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     //    private MMKV kv;//以后替换SharedPreferences
     SharedPreferences.Editor edit;
 
+    private LinearLayoutManager linearLayoutManager;
+    private DetonatorAdapter_Paper<DenatorBaseinfo> mAdapter;
+    private String mOldTitle;   // 原标题
+    private String mRegion;     // 区域
+    private Handler mHandler_0 = new Handler();     // UI处理
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_workcode);
         ButterKnife.bind(this);
-        DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         baidudingwei();
         getUserMessage();//获取用户信息
@@ -245,26 +259,40 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         edit = sp.edit();
         pro_name = sp.getString("pro_name", "");
         at_projectName.setText(pro_name);
+
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        if (1 == currentPage) {
-            loadMoreData();
-        }
-        loadMoreData_lg(currentPage);//查询所有雷管
-        mAdapter = new ShouQuanAdapter(this, map_dl, R.layout.item_list_shouquan);
-        mAdapter.setOnInnerItemOnClickListener(this);
-        lvShouquan.setAdapter(mAdapter);
+        //         获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
+        // 设置标题区域
+        setTitleRegion(mRegion, -1);
+        loadMoreData_sq();
+
+//        loadMoreData_lg(currentPage);//查询所有雷管
+
+        mAdapter_sq = new ShouQuanAdapter(this, map_dl, R.layout.item_list_shouquan);
+        mAdapter_sq.setOnInnerItemOnClickListener(this);
+        lvShouquan.setAdapter(mAdapter_sq);
         lvShouquan.setOnItemClickListener(this);
 
-        list_adapter = new SimpleCursorAdapter(
-                DownWorkCode.this,
-                R.layout.item_blast,
-                null,
-                new String[]{"blastserial", "sithole", "delay", "shellBlastNo"},
-                new int[]{R.id.blastserial, R.id.sithole, R.id.delay, R.id.shellBlastNo},
-                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        listView.setAdapter(list_adapter);
-        getLoaderManager().initLoader(0, null, this);
+//        list_adapter = new SimpleCursorAdapter(
+//                DownWorkCode.this,
+//                R.layout.item_blast,
+//                null,
+//                new String[]{"blastserial", "sithole", "delay", "shellBlastNo"},
+//                new int[]{R.id.blastserial, R.id.sithole, R.id.delay, R.id.shellBlastNo},
+//                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+//        mListView.setAdapter(list_adapter);
+//        getLoaderManager().initLoader(0, null, this);
+
+        // 适配器
+        linearLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new DetonatorAdapter_Paper<>(this, 4);
+        mListView.setLayoutManager(linearLayoutManager);
+        mListView.setAdapter(mAdapter);
+
         scan();//扫描初始化
         initHandle();//handle初始化
         edit_start_entBF2Bit_st.addTextChangedListener(st_1_watcher);
@@ -340,6 +368,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
+
+        // 区域 更新视图
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        Utils.writeRecord("---进入项目下载页面---");
 //        test();//模拟下载
     }
 
@@ -348,8 +380,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"00000DB119124\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"70107707\",\"gzmcwxx\":\"0\"}]}}";
         //新规则
         String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
+        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B01\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B02\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
         Gson gson = new Gson();
-        DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
+        DanLingBean danLingBean = gson.fromJson(res2, DanLingBean.class);
         Log.e("测试", "danLingBean: " + danLingBean);
         if (danLingBean.getLgs().getLg().size() > 0) {
             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
@@ -369,71 +402,92 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
     private void initHandle() {
-        mHandler_1 = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
+        mHandler_0 = new Handler(msg -> {
+            switch (msg.what) {
+                // 区域 更新视图
+                case 1001:
+                    Log.e("liyi_1001", "更新视图 区域" + mRegion);
+                    Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
 
-                //未收到关闭电源命令
-                if (tipInfoFlag == 3)
-                    show_Toast(getResources().getString(R.string.text_error_tip5));
-                if (tipInfoFlag == 4) {//未收到打开电源命令
-                    show_Toast(getResources().getString(R.string.text_error_tip6));
-                }
-                if (tipInfoFlag == 5) {//桥丝不正常
-                    show_Toast(getResources().getString(R.string.text_error_tip7));
-                }
-                if (tipInfoFlag == 89) {//刷新界面
-                    show_Toast("输入的管壳码重复");
-                }
-                super.handleMessage(msg);
-            }
-        };
+                    // 查询全部雷管 倒叙(序号)
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mAdapter.setListData(mListData, 1);
+                    mAdapter.notifyDataSetChanged();
+                    list_uid.clear();
+                    for (int i = 0; i < mListData.size(); i++) {
+                        list_uid.add(mListData.get(i).getShellBlastNo());
+                    }
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
+                    break;
 
-        mHandler_httpresult = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                loadMoreData();//读取数据
-                mAdapter.notifyDataSetChanged();
-            }
-        };
-        mHandler2 = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                //显示或隐藏loding界面
-                if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
-                super.handleMessage(msg);
+                // 重新排序 更新视图
+                case 1002:
+                    // 雷管孔号排序 并 重新查询
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+//                    mAdapter.setListData(mListData, 1);
+//                    mAdapter.notifyDataSetChanged();
 
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
+
+//                    Log.e("liyi_1002", "更新视图 区域" + mRegion);
+//                    Log.e("liyi_1002", "更新视图 雷管数量" + mListData.size());
+                    break;
+                default:
+                    break;
             }
-        };
-        mHandler_3 = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                if (isCorrectReisterFea == 1) {
-                    SoundPlayUtils.play(3);
-                    show_Toast(getResources().getString(R.string.text_error_tip1));
-                    //"雷管信息有误，管厂码不正确，请检查"
-                } else if (isCorrectReisterFea == 2) {
-                    SoundPlayUtils.play(3);
-                    show_Toast(getResources().getString(R.string.text_error_tip2));
-                } else if (isCorrectReisterFea == 3) {
-                    SoundPlayUtils.play(3);
-                    show_Toast("已达到最大延时限制");
-                } else if (isCorrectReisterFea == 4) {
-                    SoundPlayUtils.play(3);
-                    show_Toast("与第" + lg_No + "发" + singleShellNo + "重复");
-                } else {
-                    SoundPlayUtils.play(3);
-                    show_Toast("注册失败");
-                }
-                isCorrectReisterFea = 0;
-                super.handleMessage(msg);
+
+            return false;
+        });
+
+        mHandler_1 = new Handler(msg -> {
+            //未收到关闭电源命令
+            if (tipInfoFlag == 3)
+                show_Toast(getResources().getString(R.string.text_error_tip5));
+            if (tipInfoFlag == 4) {//未收到打开电源命令
+                show_Toast(getResources().getString(R.string.text_error_tip6));
             }
-        };
+            if (tipInfoFlag == 5) {//桥丝不正常
+                show_Toast(getResources().getString(R.string.text_error_tip7));
+            }
+            if (tipInfoFlag == 89) {
+                show_Toast("输入的管壳码重复");
+            }
+            return false;
+        });
+        mHandler_httpresult = new Handler(msg -> {
+            loadMoreData_sq();//读取数据
+            mAdapter_sq.notifyDataSetChanged();
+            return false;
+        });
+        mHandler2 = new Handler(msg -> {
+            //显示或隐藏loding界面
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
+        mHandler_3 = new Handler(msg -> {
+            if (isCorrectReisterFea == 1) {
+                SoundPlayUtils.play(3);
+                show_Toast(getResources().getString(R.string.text_error_tip1));
+                //"雷管信息有误，管厂码不正确，请检查"
+            } else if (isCorrectReisterFea == 2) {
+                SoundPlayUtils.play(3);
+                show_Toast(getResources().getString(R.string.text_error_tip2));
+            } else if (isCorrectReisterFea == 3) {
+                SoundPlayUtils.play(3);
+                show_Toast("已达到最大延时限制");
+            } else if (isCorrectReisterFea == 4) {
+                SoundPlayUtils.play(3);
+                show_Toast("与第" + lg_No + "发" + singleShellNo + "重复");
+            } else {
+                SoundPlayUtils.play(3);
+                show_Toast("注册失败");
+            }
+            isCorrectReisterFea = 0;
+            return false;
+        });
     }
 
     //获取配置文件中的值
@@ -780,11 +834,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                insertDenator(prex, finalStrNo, finalEndNo);//添加
-            }
+        new Thread(() -> {
+            insertDenator(prex, finalStrNo, finalEndNo);//添加
         }).start();
     }
 
@@ -857,14 +908,13 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         runPbDialog();//loading画面
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_down_dl;//丹灵下载
-//        String url = Utils.httpurl_down;//丹灵下载
         OkHttpClient client = new OkHttpClient();
 
         JSONObject object = new JSONObject();
         String sfz = at_bprysfz.getText().toString().trim().replace(" ", "");//证件号码
         String tx_htid = at_htid.getText().toString().trim().replace(" ", "");//合同编号 15位
         String tv_xmbh = at_xmbh.getText().toString().trim().replace(" ", "");//项目编号
-        final String xy[] = at_coordxy.getText().toString().replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
+        final String[] xy = at_coordxy.getText().toString().replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
         String tv_dwdm = at_dwdm.getText().toString().trim();//单位代码 13位
 
         //四川转换规则
@@ -885,6 +935,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             object.put("htid", tx_htid);//合同编号370100X15040027
             object.put("dwdm", tv_dwdm);//单位代码
             Log.e("上传信息", object.toString());
+            Utils.writeRecord("---上传丹灵信息:"+ object);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -920,6 +971,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     return;
                 }
                 Log.e("网络请求", "res: " + res);
+                Utils.writeRecord("---丹灵网返回:"+res);
                 Gson gson = new Gson();
                 DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
                 try {
@@ -1160,12 +1212,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("经纬度说明");//"说明"
         builder.setView(view);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                at_coordxy.setText(jd_5.getText().toString() + jd_4.getText().toString() + "," + wd_5.getText().toString() + wd_4.getText().toString() + "");
-                dialog.dismiss();
-            }
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            at_coordxy.setText(jd_5.getText().toString() + jd_4.getText().toString() + "," + wd_5.getText().toString() + wd_4.getText().toString() + "");
+            dialog.dismiss();
         });
         builder.create().show();
     }
@@ -1244,7 +1293,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         if (end < start) return -1;
         if (start < 0 || end > 99999) return -1;
         String shellNo = "";
-        int maxNo = getMaxNumberNo();
+//        int maxNo = getMaxNumberNo();
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
         int flag = 0;
         ContentValues values = new ContentValues();
         int reCount = 0;
@@ -1255,41 +1306,36 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 flag = 1;
                 break;
             }
-            int index = getEmptyDenator(-1);
-            if (index < 0) {//说明没有空余的序号可用
-                maxNo++;
-                values.put("blastserial", maxNo);
-                values.put("sithole", maxNo);
-                values.put("shellBlastNo", shellNo);
-                values.put("delay", 0);
-                values.put("regdate", Utils.getDateFormatLong(new Date()));
-                values.put("statusCode", "02");
-                values.put("statusName", "已注册");
-                values.put("errorCode", "");
-                values.put("errorName", "");
-                values.put("wire", "");//桥丝状态
-                //向数据库插入数据
-                db.insert("denatorBaseinfo", null, values);
-            } else {
-                values = new ContentValues();
-                values.put("shellBlastNo", shellNo);//key为字段名，value为值
-                values.put("statusCode", "");
-                values.put("statusName", "");
-                values.put("regdate", Utils.getDateFormatLong(new Date()));
-                values.put("statusCode", "02");
-                values.put("statusName", "已注册");
-                values.put("errorCode", "");
-                values.put("errorName", "");
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
+            DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
 
+            maxNo++;
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+            denatorBaseinfo.setBlastserial(maxNo);
+            denatorBaseinfo.setSithole(maxNo+"");
+            denatorBaseinfo.setShellBlastNo(shellNo);
+            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusName("已注册");
+            denatorBaseinfo.setErrorCode("FF");
+            denatorBaseinfo.setErrorName("");
+            denatorBaseinfo.setWire("");//桥丝状态
+            denatorBaseinfo.setPiece(mRegion);
+            if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+                denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
+                denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
             }
+            //向数据库插入数据
+            getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             Utils.saveFile();//把软存中的数据存入磁盘中
             reCount++;
         }
-        getLoaderManager().restartLoader(1, null, this);
+//        getLoaderManager().restartLoader(1, null, this);
         pb_show = 0;
         if (flag == 0) tipInfoFlag = 88;
-        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+        mHandler_1.sendMessage(mHandler_1.obtainMessage());//可以优化
+
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         return reCount;
     }
 
@@ -1493,9 +1539,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 if (map_dl != null && map_dl.size() > 0) {//移除map中的值
                     map_dl.remove(position);
                 }
-                mAdapter.notifyDataSetChanged();
+                mAdapter_sq.notifyDataSetChanged();
                 break;
             case R.id.ly_sq://
+            case R.id.tv_chakan_sq:
                 Log.e("点击项目", "position: " + map_dl.get(position));
                 Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
                 Bundle bundle = new Bundle();
@@ -1503,15 +1550,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 bundle.putInt("position", position);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                break;
-            case R.id.tv_chakan_sq://
-                Log.e("点击项目", "position: " + map_dl.get(position));
-                Intent intent2 = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
-                Bundle bundle2 = new Bundle();
-                bundle2.putSerializable("list_dl", (Serializable) map_dl);
-                bundle2.putInt("position", position);
-                intent2.putExtras(bundle2);
-                startActivity(intent2);
                 break;
             default:
                 break;
@@ -1575,7 +1613,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private void loadMoreData_lg(int cp) {
         String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO;
         Cursor cursor = db.rawQuery(sql, null);//new String[]{(index) + "", pageSize + ""}
-        list.clear();
+        list_all.clear();
         this.currentPage = cp;
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -1590,24 +1628,24 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                 VoBlastModel item = new VoBlastModel();
                 item.setBlastserial(serialNo);
-                item.setSithole(holeNo);
+                item.setSithole(holeNo + "");
                 item.setDelay((short) delay);
                 item.setShellBlastNo(shellNo);
                 item.setErrorCode(errorCode);
                 item.setErrorName(errorName);
                 item.setStatusCode(stCode);
                 item.setStatusName(stName);
-                list.add(item);
+                list_all.add(item);
             }
             cursor.close();
             this.currentPage++;
         }
-        if (list == null) {
+        if (list_all == null) {
             show_Toast("请注册雷管!");
         }
         list_uid.clear();
-        for (int i = 0; i < list.size(); i++) {
-            list_uid.add(list.get(i).getShellBlastNo());
+        for (int i = 0; i < list_all.size(); i++) {
+            list_uid.add(list_all.get(i).getShellBlastNo());
         }
         Log.e("雷管", "list_uid: " + list_uid.toString());
     }
@@ -1656,7 +1694,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         return listPro;
     }
 
-    private void loadMoreData() {
+    private void loadMoreData_sq() {
         map_dl.clear();
 //        List<ShouQuan> list = LitePal.findAll(ShouQuan.class);//ErrNum总是为空
 //        Log.e("查询", "list getErrNum: "+list.get(0).getErrNum() );
@@ -2044,7 +2082,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 startActivity(intent);
                 break;
             case R.id.btn_down_workcode://下载
-                loadMoreData_lg(currentPage);
+//                loadMoreData_lg(currentPage);
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 saveData();
                 hideInputKeyboard();//隐藏键盘,取消焦点
                 AlertDialog dialog = new AlertDialog.Builder(this)
@@ -2095,21 +2134,14 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     final int end = Integer.parseInt(edsno);
                     pb_show = 1;
                     runPbDialog();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            insertDenator(prex, start, end);
-                            Log.e("添加码", "prex: " + prex);
-                            Log.e("添加码", "start: " + start);
-                            Log.e("添加码", "end: " + end);
-                        }
+                    new Thread(() -> {
+                        insertDenator(prex, start, end);
+                        Log.e("添加码", "prex: " + prex);
+                        Log.e("添加码", "start: " + start);
+                        Log.e("添加码", "end: " + end);
                     }).start();
-                    loadMoreData_lg(currentPage);//查询所有雷管
-                    // int reCount = insertDenator(prex,start,end);
-                    //tipDlg.dismiss();
-                    // pb_show = 0;
-
-                    // Toast.makeText(ReisterMainPage_scan.this, "本次注册雷管数量为:"+reCount, Toast.LENGTH_LONG).show();
+//                    loadMoreData_lg(currentPage);//查询所有雷管
+                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 } else {
                     Toast.makeText(this, checstr1, Toast.LENGTH_SHORT).show();
                 }
@@ -2299,4 +2331,71 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         }
     };
+
+
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                // 延时选择重置
+//                resetView();
+//                delay_set = "0";
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegion(String region, int size) {
+
+        String str;
+        if (size == -1) {
+            str = " 区域" + region;
+        } else {
+            str = " 区域" + region + "(数量: " + size + ")";
+        }
+        // 设置标题
+        getSupportActionBar().setTitle(mOldTitle + str);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, region);
+
+        Log.e("liyi_Region", "已选择" + str);
+    }
+
 }

@@ -109,7 +109,6 @@ public class From22WriteDelay {
 				", 通信状态='" + this.getCommicationStatusName() + '\'' +
 				", 管壳码='" + shellNo + '\'' +
 				", 芯片码='" + denaId + '\'' +
-				", 延时=" + delayTime +
 				'}';
 	}
 }

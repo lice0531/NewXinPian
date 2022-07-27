@@ -91,7 +91,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_SHOUQUAN, null);
         totalNum = cursor.getCount();//得到数据的总条数
@@ -423,7 +423,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 String errorName = cursor.getString(8);//
                 VoBlastModel item = new VoBlastModel();
                 item.setBlastserial(serialNo);
-                item.setSithole(holeNo);
+                item.setSithole(holeNo+"");
                 item.setDelay((short) delay);
                 item.setShellBlastNo(shellNo);
                 item.setErrorCode(errorCode);

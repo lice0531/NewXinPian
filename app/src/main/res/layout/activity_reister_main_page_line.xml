@@ -504,17 +504,17 @@
 
                     <TextView
                         style="@style/alltextstyle"
-                        android:layout_width="55dp"
+                        android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
                         android:text="@string/text_list_kong" />
 
                     <TextView
                         style="@style/alltextstyle"
-                        android:layout_width="60dp"
+                        android:layout_width="70dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
-                        android:text="延时" />
+                        android:text="@string/text_list_delay" />
 
                     <LinearLayout
                         android:id="@+id/re_gkm"

@@ -14,6 +14,7 @@ import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
@@ -35,6 +36,7 @@ public class GreenDaoMaster {
     private MessageBeanDao messageBeanDao;
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
+    private DenatorHis_DetailDao denatorHis_detailDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -43,6 +45,7 @@ public class GreenDaoMaster {
         this.mDeantorBaseDao = Application.getDaoSession().getDenatorBaseinfoDao();
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
+        this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
     }
 
 
@@ -96,18 +99,26 @@ public class GreenDaoMaster {
     /**
      * 查询错误雷管
      */
-    public List<DenatorBaseinfo> queryErrLeiGuan() {
+    public List<DenatorBaseinfo> queryErrLeiGuan(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"));
+        result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
         return result.list();
     }
 
     /**
      * 删除错误代码不等于FF的所有雷管
      */
-    public void deleteErrLeiGuan() {
+    public void deleteErrLeiGuan(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 删除错误代码不等于FF的所有雷管
+     */
+    public void deleteLeiGuanFroPiace(String piece) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        result.where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     public List<MessageBean> queryUsetMessgae() {
@@ -150,7 +161,7 @@ public class GreenDaoMaster {
         Log.e("通过管壳码获取芯片码", "shellBlastNo: " + shellBlastNo);
 
         List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
-        Log.e("通过管壳码获取芯片码", "dt.size(): " + dt.size());
+//        Log.e("通过管壳码获取芯片码", "dt.size(): " + dt.size());
         if (dt.size() >= 1) {
             return dt.get(0);
         } else {
@@ -191,11 +202,6 @@ public class GreenDaoMaster {
      * 查询注册列表中的重复芯片码
      */
     public List<DenatorBaseinfo> checkRepeatdenatorId(String detonatorId) {
-//        return mDeantorBaseDao
-//                .queryBuilder()
-//                .where(DenatorBaseinfoDao.Properties.DenatorId.eq(detonatorId))
-//                .list();
-        Log.e("检测重复", "detonatorId: " + detonatorId);
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.DenatorId.like("%" + detonatorId))
@@ -251,7 +257,7 @@ public class GreenDaoMaster {
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
-                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs()+ "," + list.get(i).getPiece() + "\n";
+                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "," + list.get(i).getPiece() + "\n";
             str = str + content;
         }
         return str;
@@ -291,6 +297,7 @@ public class GreenDaoMaster {
         detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
         detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
+        detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
 
@@ -445,5 +452,69 @@ public class GreenDaoMaster {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
         }
+    }
+
+    /**
+     * 删除生产数据中的雷管
+     */
+    public void deleteTypeLeiGuan(String time) {
+        QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
+        result.where(DetonatorTypeNewDao.Properties.Time.like(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 删除某一发雷管
+     */
+    public void deleteDetonatorForType(String gkm) {
+        DetonatorTypeNew entity = detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(gkm))
+                .unique();
+        if (entity != null) {
+            detonatorTypeNewDao.delete(entity);
+        }
+
+    }
+
+    /**
+     * 删除生产数据中对应的雷管
+     */
+    public void deleteType(String time) {
+        List<DenatorHis_Detail> list_lg = queryDetonatorForHis(time);
+//        Log.e("删除生产数据中对应的雷管", "list_lg.size: " + list_lg.size());
+        if (list_lg != null && list_lg.size() > 0) {
+//            Log.e("删除生产数据中对应的雷管", "list_lg: " + list_lg.toString());
+//            Log.e("删除生产数据中对应的雷管", "list_lg.get(0).getShellBlastNo(): " + list_lg.get(0).getShellBlastNo());
+            DetonatorTypeNew entity = detonatorTypeNewDao
+                    .queryBuilder()
+                    .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(list_lg.get(0).getShellBlastNo()))
+                    .unique();
+
+            if (entity != null) {
+//                Log.e("删除生产数据中对应的雷管", "entity: " + entity.toString());//
+                for (DenatorHis_Detail a : list_lg) {
+                    deleteDetonatorForType(a.getShellBlastNo());
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * 根据历史记录查询雷管
+     *
+     * @param time 区域号 1 2 3 4 5
+     */
+    public List<DenatorHis_Detail> queryDetonatorForHis(String time) {
+        return denatorHis_detailDao
+                .queryBuilder()
+                .where(DenatorHis_DetailDao.Properties.Blastdate.eq(time))
+                .list();
+    }
+
+    public DetonatorTypeNew serchDenatorId(String shellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        return master.queryShellBlastNoTypeNew(shellBlastNo);
     }
 }

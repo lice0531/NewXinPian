@@ -25,8 +25,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "name text, "
             + "denatorIdSup text, "//从芯片码
             + "zhu_yscs text, "//主芯片参数
-            + "cong_yscs text "//从芯片参数
-            +")";
+            + "cong_yscs text, "//从芯片参数
+            + "piece text "//区域
+            + ")";
     public static final String CREATE_DENATO_ALL = "create table denatorBaseinfo_all ("
             + "id integer primary key autoincrement, "
             + "blastserial integer, "//序号
@@ -44,8 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "wire text, "//桥丝状态
             + "name text, "
             + "denatorIdSup text "//从芯片码
-            +")";
-    
+            + ")";
+
     //用于创建爆炸雷管历史主表
     public static final String CREATE_HIS_MAIN_DENATO = "create table denatorHis_Main ("
             + "id integer primary key autoincrement, "
@@ -87,9 +88,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "statusName text, "
             + "errorName text, "
             + "errorCode text, "
-            + "authorization text, "    
-            + "remark text, " 
-            + "regdate text, " 
+            + "authorization text, "
+            + "remark text, "
+            + "regdate text, "
             + "blastdate text, " //爆炸时间
             + "name text)";
 
@@ -117,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "deEntCode text, "//雷管代号
             + "deFeatureCode text, "//厂家代号
             + "isSelected text)";//是否选择
-  //用于创建雷管类别
+    //用于创建雷管类别
     public static final String CREATE_DENATOR_TYPE = "create table denator_type ("
             + "id integer primary key autoincrement, "
             + "deTypeName text, "//雷管类型名称
@@ -128,10 +129,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "id integer primary key autoincrement, "
             + "uname text, "
             + "upassword text, "
-            + "isface int, "            
+            + "isface int, "
             + "facepath text)";
     //用于创建授权信息表
-    public static final String CREATE_SHOUQUAN= "create table ShouQuan ("
+    public static final String CREATE_SHOUQUAN = "create table ShouQuan ("
             + "id integer primary key autoincrement, "
             + "xmbh text, "//项目编号
             + "htbh text, "//合同编号
@@ -149,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "spare2 text )";//备用2
 
     //用于创建授权信息表
-    public static final String CREATE_PROJECT= "create table Project ("
+    public static final String CREATE_PROJECT = "create table Project ("
             + "id integer primary key autoincrement, "
             + "project_name text, "//项目名称
             + "xmbh text, "//项目编号
@@ -159,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "coordxy text"//经纬度
             + ")";
     //用于创建授权信息表
-    public static final String CREATE_MESSAGE= "create table Message ("
+    public static final String CREATE_MESSAGE = "create table Message ("
             + "id integer primary key autoincrement, "
             + "pro_bprysfz text, "
             + "pro_htid text, "
@@ -176,8 +177,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "server_type1 text, "
             + "server_type2 text, "
             + "pro_dwdm text, "
-            +"jiance_time text,"
-            +"version text"
+            + "jiance_time text,"
+            + "version text"
             + ")";
 
     //用于错误日志表
@@ -188,18 +189,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "updataState text, "
             + "updataTime text)";
 
-    public static  final String TABLE_NAME_DENATOBASEINFO="denatorBaseinfo";   //雷管表
-    public static  final String TABLE_NAME_DENATOBASEINFO_ALL="denatorBaseinfo_all";   //全部雷管表
-    public static  final String TABLE_NAME_HISMAIN="denatorHis_Main";//历史时间表
-    public static  final String TABLE_NAME_HISDETAIL="denatorHis_Detail";//历史详细表
-    public static  final String TABLE_NAME_HISMAIN_ALL="denatorHis_Main_all";
-    public static  final String TABLE_NAME_HISDETAIL_ALL="denatorHis_Detail_all";
-    public static  final String TABLE_USER_MAIN="UserMain";     //用户表
-    public static  final String TABLE_NAME_DEFACTORY="Defactory";//厂家表
-    public static  final String TABLE_NAME_DENATOR_TYPE="denator_type";//雷管类型
-    public static  final String TABLE_NAME_SHOUQUAN="ShouQuan";//授权信息表
-    public static  final String TABLE_NAME_PROJECT="Project";//项目保存信息表
-    public static  final String TABLE_NAME_USER_MESSQGE="Message";//用户信息表
+    public static final int TABLE_VERSION = 23;
+    public static final String TABLE_NAME_DENATOBASEINFO = "denatorBaseinfo";   //雷管表
+    public static final String TABLE_NAME_DENATOBASEINFO_ALL = "denatorBaseinfo_all";   //全部雷管表
+    public static final String TABLE_NAME_HISMAIN = "denatorHis_Main";//历史时间表
+    public static final String TABLE_NAME_HISDETAIL = "denatorHis_Detail";//历史详细表
+    public static final String TABLE_NAME_HISMAIN_ALL = "denatorHis_Main_all";
+    public static final String TABLE_NAME_HISDETAIL_ALL = "denatorHis_Detail_all";
+    public static final String TABLE_USER_MAIN = "UserMain";     //用户表
+    public static final String TABLE_NAME_DEFACTORY = "Defactory";//厂家表
+    public static final String TABLE_NAME_DENATOR_TYPE = "denator_type";//雷管类型
+    public static final String TABLE_NAME_SHOUQUAN = "ShouQuan";//授权信息表
+    public static final String TABLE_NAME_PROJECT = "Project";//项目保存信息表
+    public static final String TABLE_NAME_USER_MESSQGE = "Message";//用户信息表
 
     public static final String SELECT_ALL_DENATOBASEINFO = "Select * from denatorBaseinfo";
     public static final String SELECT_ALL_DENATOBASEINFO_ZHENGCHANG =
@@ -213,21 +215,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DROP_HIS_USER_MAIN = "drop table if exists UserMain";
     public static final String DROP_HIS_FACTORY_MAIN = "drop table if exists Defactory";
     public static final String DROP_DENATOR_TYPE = "drop table if exists denator_type";
-    
+
     private Context mContext;
 
     public DatabaseHelper(Context context, String name,
-                            SQLiteDatabase.CursorFactory factory, int version) {
+                          SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         mContext = context;
     }
-    private void manageTable(SQLiteDatabase db){
-    	db.execSQL(DROP_DENATOBASEINFO);
-    	db.execSQL(DROP_HIS_MAIN_DENATO);
-    	db.execSQL(DROP_HIS_DETAIL_DENATO);
-    	db.execSQL(DROP_HIS_USER_MAIN);
-    	db.execSQL(DROP_HIS_FACTORY_MAIN);
-    	db.execSQL(DROP_DENATOR_TYPE);
+
+    private void manageTable(SQLiteDatabase db) {
+        db.execSQL(DROP_DENATOBASEINFO);
+        db.execSQL(DROP_HIS_MAIN_DENATO);
+        db.execSQL(DROP_HIS_DETAIL_DENATO);
+        db.execSQL(DROP_HIS_USER_MAIN);
+        db.execSQL(DROP_HIS_FACTORY_MAIN);
+        db.execSQL(DROP_DENATOR_TYPE);
         db.execSQL(CREATE_DENATO);
         db.execSQL(CREATE_DENATO_ALL);
         db.execSQL(CREATE_DEFACTORY);
@@ -240,29 +243,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_PROJECT);
         db.execSQL(CREATE_MESSAGE);
         db.execSQL(CREATE_DENATOR_TYPE);
-        Log.e("创建数据库", "manageTable: " );
+        Log.e("创建数据库", "manageTable: ");
     }
+
     //第一次创建数据库时会调用此方法
     @Override
     public void onCreate(SQLiteDatabase db) {
-    	manageTable(db);
+        manageTable(db);
     }
+
     //数据库版本升级时会调用此方法
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         /*第一版的数据库只有Book表，第二版的数据库增加了Category表，
-        * 为了保证用户体验，在不干扰前一版的数据的情况下，实现对数据
-        * 库的平滑升级，简单的可以用此方法进行判断在升级*/
-    	/***
-        switch (oldVersion){
-            case 1:
-                db.execSQL(CREATE_CATEGORY);
-            case 2:
-                db.execSQL("alter table Book add column category_id integer");
-            default:
-        }**/
-    	// db.execSQL(CREATE_DEFACTORY);
-    	manageTable(db);
+         * 为了保证用户体验，在不干扰前一版的数据的情况下，实现对数据
+         * 库的平滑升级，简单的可以用此方法进行判断在升级*/
+        /***
+         switch (oldVersion){
+         case 1:
+         db.execSQL(CREATE_CATEGORY);
+         case 2:
+         db.execSQL("alter table Book add column category_id integer");
+         default:
+         }**/
+        // db.execSQL(CREATE_DEFACTORY);
+        manageTable(db);
     }
-    
+
 }

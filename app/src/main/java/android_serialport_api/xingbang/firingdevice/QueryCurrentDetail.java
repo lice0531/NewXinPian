@@ -83,7 +83,14 @@ public class QueryCurrentDetail extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_query_currentinfo);
         ButterKnife.bind(this);
-// 标题栏
+        initView();
+
+
+        mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
+    }
+
+    private void initView() {
+        // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -91,6 +98,7 @@ public class QueryCurrentDetail extends BaseActivity {
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
         setTitleRegion(mRegion, -1);
+
         btn_return = (Button) findViewById(R.id.btn_del_return);
         btn_return.setOnClickListener(v -> {
             Intent intentTemp = new Intent();
@@ -108,13 +116,8 @@ public class QueryCurrentDetail extends BaseActivity {
                 paixu_flag = true;
             }
         });
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
-
-        int totalNum = (int) Application.getDaoSession().getDenatorBaseinfoDao().count();
-        totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
-        txTotal.setText(getString(R.string.text_total) + totalNum);
-        loadMoreData();
 
         mListView = findViewById(R.id.denator_query_listview);
 //        mAdapter = new LoadAdapter(this, list, R.layout.query_current_item, 1);
@@ -128,9 +131,9 @@ public class QueryCurrentDetail extends BaseActivity {
         mAdapter = new DetonatorAdapter_Paper<>(this, 3);
         mListView.setAdapter(mAdapter);
 
-        mListData = new GreenDaoMaster().queryDetonatorDesc();
-        mAdapter.setListData(mListData, 1);
-        mAdapter.notifyDataSetChanged();
+//        mListData = new GreenDaoMaster().queryDetonatorDesc();
+//        mAdapter.setListData(mListData, 1);
+//        mAdapter.notifyDataSetChanged();
 
         mHandler_ui = new Handler(msg -> {
 
@@ -142,7 +145,11 @@ public class QueryCurrentDetail extends BaseActivity {
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
+                    txTotal.setText(getString(R.string.text_total) + mListData.size());
                     mAdapter.notifyDataSetChanged();
+
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
                     break;
                 case 1005://按管壳码排序
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
@@ -151,6 +158,9 @@ public class QueryCurrentDetail extends BaseActivity {
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
+
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
                     break;
             }
             return false;
@@ -174,7 +184,6 @@ public class QueryCurrentDetail extends BaseActivity {
             mListView.setAdapter(mAdapter);
             mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
         });
-
     }
 
     private void loadMoreData() {
@@ -271,7 +280,7 @@ public class QueryCurrentDetail extends BaseActivity {
         if (size == -1) {
             str = " 区域" + region;
         } else {
-            str = " 区域" + region + "(雷管数量: " + size + ")";
+            str = " 区域" + region + "(数量: " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

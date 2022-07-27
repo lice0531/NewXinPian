@@ -62,7 +62,7 @@ public class SetDenatorTypeActivity extends BaseActivity  implements LoaderCallb
 		setContentView(R.layout.activity_set_denatort_ype_page);
 		// 标题栏
 		setSupportActionBar(findViewById(R.id.toolbar));
-		 mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+		 mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
 		 db = mMyDatabaseHelper.getReadableDatabase();
 		ListView listView =  this.findViewById(R.id.factory_listView);
 		adapter = new SimpleCursorAdapter(SetDenatorTypeActivity.this, R.layout.denator_type_item,  

@@ -4,7 +4,7 @@ package android_serialport_api.xingbang.models;
  * */
 public class VoBlastModel extends VoDenatorBaseInfo {
 
-	private int sithole;//孔号
+	private String sithole;//孔号
 	private String status;//状态
 	private String errorInfo;//错误
 	private String authorization;//授权期限
@@ -58,10 +58,10 @@ public class VoBlastModel extends VoDenatorBaseInfo {
 	public void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
-	public int getSithole() {
+	public String getSithole() {
 		return sithole;
 	}
-	public void setSithole(int sithole) {
+	public void setSithole(String sithole) {
 		this.sithole = sithole;
 	}
 	public String getStatus() {

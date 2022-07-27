@@ -581,20 +581,20 @@
                             android:background="@drawable/textview_border"
                             android:gravity="center"
                             android:text="@string/text_list_Serial"
-                            android:textSize="@dimen/childReisterPageEditFontSize" />
+                            style="@style/alltextstyle"/>
 
                         <TextView
-                            android:layout_width="55dp"
+                            android:layout_width="60dp"
                             android:layout_height="30dp"
                             android:background="@drawable/textview_border"
                             android:gravity="center"
                             android:text="@string/text_list_kong"
                             style="@style/alltextstyle"/>
                         <TextView
-                            android:layout_width="55dp"
+                            android:layout_width="70dp"
                             android:layout_height="30dp"
                             android:background="@drawable/textview_border"
-                            android:text="延时"
+                            android:text="@string/text_list_delay"
                             style="@style/alltextstyle" />
 
                         <TextView
@@ -606,7 +606,7 @@
                             style="@style/alltextstyle" />
                     </LinearLayout>
 
-                    <android_serialport_api.xingbang.custom.MlistView
+                    <android_serialport_api.xingbang.custom.MyRecyclerView
                         android:id="@+id/factory_listView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

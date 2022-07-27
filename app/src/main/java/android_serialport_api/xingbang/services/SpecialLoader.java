@@ -24,7 +24,7 @@ public class SpecialLoader extends SimpleCursorLoader {
 
     @Override
     public Cursor loadInBackground() {
-        DatabaseHelper dh = new DatabaseHelper(this.context, "denatorSys.db", null, Application.db_version);
+        DatabaseHelper dh = new DatabaseHelper(this.context, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         
         SQLiteDatabase database = dh.getReadableDatabase();
         String table = "denatorBaseinfo";

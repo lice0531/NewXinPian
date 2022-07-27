@@ -28,12 +28,12 @@ public class MyLoad extends AsyncTaskLoader<Cursor> {
         if(bundle != null){  
         	querykey = bundle.getString("key");
         }
-        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, Application.db_version);
+        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
     }  
   
     public MyLoad(Context context) {  
         super(context);  
-        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null, Application.db_version);
+        mMyDatabaseHelper = new DatabaseHelper(context, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
     }  
   
     @Override  

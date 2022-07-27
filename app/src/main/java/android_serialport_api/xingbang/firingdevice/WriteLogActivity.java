@@ -70,7 +70,7 @@ public class WriteLogActivity extends BaseActivity {
         Context context = tipDlg.getContext();
         int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
         View divider = tipDlg.findViewById(divierId);
-        divider.setBackgroundColor(Color.TRANSPARENT);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
         //tipDlg.setMessage("正在操作,请等待...").show();
 
         new Thread(() -> {

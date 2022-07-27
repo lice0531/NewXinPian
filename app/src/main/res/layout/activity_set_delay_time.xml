@@ -351,7 +351,7 @@
                         style="@style/alltextstyle"/>
 
                     <TextView
-                        android:layout_width="55dp"
+                        android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
                         android:gravity="center"
@@ -359,7 +359,7 @@
                         style="@style/alltextstyle"/>
 
                     <TextView
-                        android:layout_width="50dp"
+                        android:layout_width="70dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
                         android:gravity="center"
@@ -375,7 +375,7 @@
                         style="@style/alltextstyle"/>
                 </LinearLayout>
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/setDelayMainlistView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

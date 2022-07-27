@@ -31,7 +31,7 @@
         <!-- 管壳号-->
         <TextView
             android:id="@+id/tv_shellBlastNo"
-            android:layout_width="110dp"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:background="@drawable/a_bg_border_blue_1dp"
             style="@style/alltextstyle" />

@@ -26,7 +26,7 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "id");
         public final static Property Blastserial = new Property(1, int.class, "blastserial", false, "blastserial");
-        public final static Property Sithole = new Property(2, int.class, "sithole", false, "sithole");
+        public final static Property Sithole = new Property(2, String.class, "sithole", false, "sithole");
         public final static Property ShellBlastNo = new Property(3, String.class, "shellBlastNo", false, "shellBlastNo");
         public final static Property DenatorId = new Property(4, String.class, "denatorId", false, "denatorId");
         public final static Property Delay = new Property(5, int.class, "delay", false, "delay");
@@ -39,6 +39,7 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         public final static Property Regdate = new Property(12, String.class, "regdate", false, "regdate");
         public final static Property Blastdate = new Property(13, String.class, "blastdate", false, "blastdate");
         public final static Property Name = new Property(14, String.class, "name", false, "name");
+        public final static Property Piece = new Property(15, String.class, "piece", false, "piece");
     }
 
 
@@ -56,7 +57,7 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"denatorHis_Detail\" (" + //
                 "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"blastserial\" INTEGER NOT NULL ," + // 1: blastserial
-                "\"sithole\" INTEGER NOT NULL ," + // 2: sithole
+                "\"sithole\" TEXT," + // 2: sithole
                 "\"shellBlastNo\" TEXT," + // 3: shellBlastNo
                 "\"denatorId\" TEXT," + // 4: denatorId
                 "\"delay\" INTEGER NOT NULL ," + // 5: delay
@@ -68,7 +69,8 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
                 "\"remark\" TEXT," + // 11: remark
                 "\"regdate\" TEXT," + // 12: regdate
                 "\"blastdate\" TEXT," + // 13: blastdate
-                "\"name\" TEXT);"); // 14: name
+                "\"name\" TEXT," + // 14: name
+                "\"piece\" TEXT);"); // 15: piece
     }
 
     /** Drops the underlying database table. */
@@ -86,7 +88,11 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getBlastserial());
-        stmt.bindLong(3, entity.getSithole());
+ 
+        String sithole = entity.getSithole();
+        if (sithole != null) {
+            stmt.bindString(3, sithole);
+        }
  
         String shellBlastNo = entity.getShellBlastNo();
         if (shellBlastNo != null) {
@@ -142,6 +148,11 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(15, name);
+        }
+ 
+        String piece = entity.getPiece();
+        if (piece != null) {
+            stmt.bindString(16, piece);
         }
     }
 
@@ -154,7 +165,11 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getBlastserial());
-        stmt.bindLong(3, entity.getSithole());
+ 
+        String sithole = entity.getSithole();
+        if (sithole != null) {
+            stmt.bindString(3, sithole);
+        }
  
         String shellBlastNo = entity.getShellBlastNo();
         if (shellBlastNo != null) {
@@ -210,6 +225,11 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(15, name);
+        }
+ 
+        String piece = entity.getPiece();
+        if (piece != null) {
+            stmt.bindString(16, piece);
         }
     }
 
@@ -223,7 +243,7 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         DenatorHis_Detail entity = new DenatorHis_Detail( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getInt(offset + 1), // blastserial
-            cursor.getInt(offset + 2), // sithole
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // sithole
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // shellBlastNo
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // denatorId
             cursor.getInt(offset + 5), // delay
@@ -235,7 +255,8 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // remark
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // regdate
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // blastdate
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // name
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // name
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // piece
         );
         return entity;
     }
@@ -244,7 +265,7 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
     public void readEntity(Cursor cursor, DenatorHis_Detail entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setBlastserial(cursor.getInt(offset + 1));
-        entity.setSithole(cursor.getInt(offset + 2));
+        entity.setSithole(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setShellBlastNo(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDenatorId(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setDelay(cursor.getInt(offset + 5));
@@ -257,6 +278,7 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         entity.setRegdate(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setBlastdate(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setName(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setPiece(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
      }
     
     @Override

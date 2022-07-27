@@ -18,6 +18,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -32,12 +34,25 @@ import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.CustomSimpleCursorAdapter;
+import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.MlistView;
+import android_serialport_api.xingbang.custom.MyRecyclerView;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SharedPreferencesHelper;
@@ -50,7 +65,7 @@ import butterknife.OnClick;
  * 设置延时页面
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks<Cursor> {
+public class SetDelayTime_suidao extends BaseActivity {
 
     @BindView(R.id.btn_setDelayTime_return)
     Button btn_return;
@@ -183,31 +198,31 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
     @BindView(R.id.textView4)
     TextView textView4;
     @BindView(R.id.setDelayTime_FirstNo)//起始序号
-            EditText startNoTxt;
+    EditText startNoTxt;
     @BindView(R.id.setDelayTime_EndNo)//终点序号
-            EditText endNoTxt;
+    EditText endNoTxt;
     @BindView(R.id.setDelayTime_holedetonator)//孔内雷管数
-            EditText holeDeAmoTxt;
+    EditText holeDeAmoTxt;
     @BindView(R.id.setDelayTime_startDelaytime)//开始延时
-            EditText startDelayTxt;
+    EditText startDelayTxt;
     @BindView(R.id.textView5)
     TextView textView5;
     @BindView(R.id.textView2)
     TextView textView2;
     @BindView(R.id.setDelayTime_holein_Delaytime)//孔内延时
-            EditText holeinDelayTxt;
+    EditText holeinDelayTxt;
     @BindView(R.id.setDelayTime_holemiddle_Delaytime)//孔间延时
-            EditText holeBetweentTxt;
+    EditText holeBetweentTxt;
     @BindView(R.id.textView3)
     TextView textView3;
     @BindView(R.id.ly_setUpdata)
     LinearLayout lySetUpdata;
     @BindView(R.id.setDelayTime_deAmount)//雷管总数
-            TextView deTotalTxt;
+    TextView deTotalTxt;
     @BindView(R.id.setDelayTime_tipinfo_fragement)
     LinearLayout setDelayTimeTipinfoFragement;
     @BindView(R.id.setDelayMainlistView)
-    MlistView setDelayMainlistView;
+    MyRecyclerView setDelayMainlistView;
     @BindView(R.id.setDelayTimeMainPage)
     ScrollView setDelayTimeMainPage;
     private CustomSimpleCursorAdapter adapter;
@@ -223,70 +238,121 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
     private ProgressDialog builder = null;
     private LoadingDialog tipDlg = null;
     private int pb_show = 0;
-    private SharedPreferencesHelper sharedPreferencesHelper;
+    // 雷管列表
+    private LinearLayoutManager linearLayoutManager;
+    private DetonatorAdapter_Paper<DenatorBaseinfo> mAdapter;
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();
+    private Handler mHandler_0 = new Handler();     // UI处理
+    private String mOldTitle;   // 原标题
+    private String mRegion;     // 区域
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_delay_time_suidao);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
+        initView();
+        setData();//设置延时
+        initHandle();
+
+
+        // 区域 更新视图
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+        Utils.writeRecord("---进入设置隧道延时页面---");
+    }
+
+    private void initView() {
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        sharedPreferencesHelper = new SharedPreferencesHelper(this, getApplicationContext().getPackageName());
-        adapter = new CustomSimpleCursorAdapter(SetDelayTime_suidao.this, R.layout.item_delayset,
-                null, new String[]{"blastserial", "sithole", "delay", "shellBlastNo"},
-                new int[]{R.id.blastserial, R.id.sithole, R.id.setdelaytxt, R.id.shellBlastNo},
-                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        setDelayMainlistView.setAdapter(adapter);
+        //         获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
+        // 设置标题区域
+        setTitleRegion(mRegion, -1);
 
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where statusCode =?", new String[]{"02"});
-        int totalNum = cursor.getCount();//得到已注册数据的总条数
-        if (cursor != null) cursor.close();
-        cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " ", null);
-        int serNum = cursor.getCount();//得到数据的总条数
-        if (cursor != null) cursor.close();
+        // 适配器
+        linearLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new DetonatorAdapter_Paper<>(this, 4);
+        setDelayMainlistView.setLayoutManager(linearLayoutManager);
+        setDelayMainlistView.setAdapter(mAdapter);
+        mAdapter.setOnItemLongClick(position -> {
+            Log.e("长按", "mListData.size(): " + mListData.size());
+            Log.e("长按", "position: " + position);
+            DenatorBaseinfo info = mListData.get(position);
 
-        deTotalTxt.setText(getString(R.string.text_delay_total) + totalNum);//"雷管总数量："
-        endNoTxt.setText("" + serNum);
+            int no = info.getBlastserial();
+            int delay = info.getDelay();
+            String shellBlastNo = info.getShellBlastNo();
+
+            // 序号 延时 管壳码
+            modifyBlastBaseInfo(no, delay, shellBlastNo);
+        });
+
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
+
+        deTotalTxt.setText(getString(R.string.text_delay_total) + list.size());//"雷管总数量："
+        endNoTxt.setText("" + list.size());
         startNoTxt.setText("1");
 
         holeDeAmoTxt.setText("1");
         startDelayTxt.setText("10");
         holeinDelayTxt.setText("0");
         holeBetweentTxt.setText("10");
-        setData();//设置延时
-        getLoaderManager().initLoader(0, null, this);
+    }
 
-        setDelayMainlistView.setOnItemLongClickListener(new OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View view,
-                                           int arg2, long arg3) {
-                LinearLayout myte = (LinearLayout) view;
-                TextView seralNoTxt = (TextView) myte.getChildAt(0);
-                TextView holeTxt = (TextView) myte.getChildAt(1);
-                TextView delayTxt = (TextView) myte.getChildAt(2);
-                TextView denatorTxt = (TextView) myte.getChildAt(3);
-                String serialNo = seralNoTxt.getText().toString().trim();
-                String holeNo = holeTxt.getText().toString().trim();
-                String denatorNo = denatorTxt.getText().toString().trim();
-                String delaytime = delayTxt.getText().toString().trim();
-                selectDenatorId = serialNo;
-                modifyBlastBaseInfo(serialNo, holeNo, delaytime, denatorNo);//序号,孔号,延时,管壳码
-                return false;
-            }
+    private void initHandle() {
+        mHandler_2 = new Handler(msg -> {
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
         });
-        mHandler_2 = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
-                super.handleMessage(msg);
+        mHandler_0 = new Handler(msg -> {
+            switch (msg.what) {
+                // 区域 更新视图
+                case 1001:
+                    Log.e("liyi_1001", "更新视图 区域" + mRegion);
+                    Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
+                    // 查询全部雷管 倒叙(序号)
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mAdapter.setListData(mListData, 1);
+                    mAdapter.notifyDataSetChanged();
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
+                    deTotalTxt.setText(getString(R.string.text_delay_total) + mListData.size());//"雷管总数量："
+                    endNoTxt.setText("" + mListData.size());
+                    break;
+
+                // 重新排序 更新视图
+                case 1002:
+                    // 雷管孔号排序 并 重新查询
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mAdapter.setListData(mListData, 1);
+                    mAdapter.notifyDataSetChanged();
+                    // 设置标题区域
+                    setTitleRegion(mRegion, mListData.size());
+                    break;
+                case 1005://按管壳码排序
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    Collections.sort(mListData);
+                    mAdapter.setListData(mListData, 1);
+                    mAdapter.notifyDataSetChanged();
+                    break;
+                case 2001://按管壳码排序
+                    show_Toast(msg.obj.toString());
+                    break;
+                default:
+                    break;
             }
-        };
+
+            return false;
+        });
+
     }
 
     /**
@@ -322,46 +388,57 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
 
     }
 
-    private void modifyBlastBaseInfo(String serialNo, String hoteNo, String delaytime, String denatorNo) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SetDelayTime_suidao.this);
-        // builder.setIcon(R.drawable.ic_launcher);
-        //   builder.setTitle("修改延时信息");
-        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
-        View view = LayoutInflater.from(SetDelayTime_suidao.this).inflate(R.layout.delaymodifydialog, null);
-        //    设置我们自己定义的布局文件作为弹出框的Content
+    /**
+     * 修改雷管延期 弹窗
+     */
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
 
-        final EditText serialNoTxt = (EditText) view.findViewById(R.id.serialNo);
-        final EditText denatorNoTxt = (EditText) view.findViewById(R.id.denatorNo);
-        final EditText delaytimeTxt = (EditText) view.findViewById(R.id.delaytime);
+        EditText et_no = view.findViewById(R.id.serialNo);
+        EditText et_shell = view.findViewById(R.id.denatorNo);
+        EditText et_delay = view.findViewById(R.id.delaytime);
 
-        serialNoTxt.setEnabled(false);
-        denatorNoTxt.setEnabled(false);
+        et_no.setText(String.valueOf(no));
+        et_delay.setText(String.valueOf(delay));
+        et_shell.setText(shellBlastNo);
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton("删除", (dialog, which) -> {
+            dialog.dismiss();
 
-        serialNoTxt.setText(serialNo);
-        denatorNoTxt.setText(denatorNo);
-        delaytimeTxt.setText(delaytime);
+            // TODO 开启进度条
 
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //String a = username.getText().toString().trim();
-                String b = delaytimeTxt.getText().toString().trim();
-                if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
-                    show_Toast(getString(R.string.text_error_tip37));
-                } else {
-                    modifyDelayTime(selectDenatorId, b);
-                    getLoaderManager().restartLoader(1, null, SetDelayTime_suidao.this);
-                    //    将输入的用户名和密码打印出来
-                    show_Toast(getString(R.string.text_error_tip38));
-                }
-            }
+            new Thread(() -> {
+                // 删除某一发雷管
+                new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                Utils.writeRecord("--删除雷管:"+shellBlastNo);
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
+
+            }).start();
+
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            String delay1 = et_delay.getText().toString();
+            Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
+            if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
 
+            } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+                show_Toast("延时为空或大于最大设定延时，修改失败! ");
+
+            } else {
+                // 修改雷管延时
+                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+                show_Toast(shellBlastNo + "\n修改成功");
+
+                Utils.saveFile();
             }
+            dialog.dismiss();
         });
         builder.show();
     }
@@ -379,13 +456,6 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
 
     }
 
-    public int modifyDelayTime(String id, String delay) {
-        ContentValues values = new ContentValues();
-        values.put("delay", delay);
-        db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + id});
-
-        return 1;
-    }
 
     @Override
     protected void onStart() {
@@ -488,113 +558,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
         return delayCount;
     }
 
-    private void setDenatorDelay() {
 
-        //起始序号
-        String startNoStr = startNoTxt.getText().toString();
-        //终点序号
-        String endNoStr = endNoTxt.getText().toString();
-        //孔内雷管数
-        String holeDeAmoStr = holeDeAmoTxt.getText().toString();
-        //开始延时
-        String startDelayStr = startDelayTxt.getText().toString();
-        //孔内延时
-        String holeinDelayStr = holeinDelayTxt.getText().toString();
-        //孔间延时
-        String holeBetweentStr = holeBetweentTxt.getText().toString();
-
-        int start = Integer.parseInt(startNoStr);
-        int end = Integer.parseInt(endNoStr);
-        int holeDeAmo = Integer.parseInt(holeDeAmoStr);
-        int startDelay = Integer.parseInt(startDelayStr);
-        int holeinDelay = Integer.parseInt(holeinDelayStr);
-        int holeBetweent = Integer.parseInt(holeBetweentStr);
-        int holeLoop = 1;
-        int delayCount = startDelay;
-        for (int iLoop = start; iLoop <= end; iLoop++) {
-
-            //int isExist = isDel(""+iLoop);
-
-            for (int i = 1; i <= holeDeAmo; i++) {
-                ContentValues values = new ContentValues();
-//				values.put("sithole", holeLoop);
-                values.put("delay", delayCount);
-
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{String.valueOf(iLoop)});
-                //getLoaderManager().initLoader(0, null,this);
-                if (i < holeDeAmo) {
-                    delayCount += holeinDelay;
-                    iLoop++;
-                }
-                if (iLoop > end) break;
-            }
-            holeLoop++;
-            delayCount += holeBetweent;
-        }
-        getLoaderManager().restartLoader(1, null, SetDelayTime_suidao.this);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        args = new Bundle();
-        // TODO Auto-generated method stub
-        args.putString("key", "3");
-        MyLoad myLoad = new MyLoad(SetDelayTime_suidao.this, args);
-        return myLoad;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.changeCursor(data);
-        //System.out.print("111-"+System.currentTimeMillis());
-        //Utility.setListViewHeightBasedOnChildren(listView);
-        //System.out.print("22"+System.currentTimeMillis());
-        //dealWithListViewAndScrollViewTouch();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.changeCursor(null);
-
-    }
-
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-
-
-        // 获取ListView对应的Adapter
-
-        ListAdapter listAdapter = listView.getAdapter();
-
-        if (listAdapter == null) {
-
-            return;
-
-        }
-
-        int totalHeight = 0;
-
-        for (int i = 0; i < listAdapter.getCount(); i++) { // listAdapter.getCount()返回数据项的数目
-
-            View listItem = listAdapter.getView(i, null, listView);
-
-            listItem.measure(0, 0); // 计算子项View 的宽高
-
-            totalHeight += listItem.getMeasuredHeight(); // 统计所有子项的总高度
-
-        }
-
-        ViewGroup.LayoutParams params = setDelayMainlistView.getLayoutParams();
-
-        params.height = totalHeight
-                + (setDelayMainlistView.getDividerHeight() * (listAdapter.getCount() - 1));
-
-        // setDelayMainlistView.getDividerHeight()获取子项间分隔符占用的高度
-
-        // params.height最后得到整个ListView完整显示需要的高度
-
-        setDelayMainlistView.setLayoutParams(params);
-
-    }
 
     /****
      * 校验数据
@@ -684,28 +648,28 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 pb_show = 1;
                 runPbDialog();
                 saveData();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 1; i < 21; i++) {
-                            setSuidaoDelayTime(i);
-                            pb_show = 0;
-                        }
+                new Thread(() -> {
+                    for (int i = 1; i < 21; i++) {
+                        setSuidaoDelayTime(i);
+                        // 区域 更新视图
+                        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                        pb_show = 0;
                     }
                 }).start();
 
                 //进行清零
-                if(setDelayTimeStartDelaytime1.getText().toString().equals("")){
-                    totaldelay=0;
+                if (setDelayTimeStartDelaytime1.getText().toString().equals("")) {
+                    totaldelay = 0;
                     setDelayTimeStartDelaytime1.setText("0");
-                }else {
+                } else {
                     totaldelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
                 }
                 totalNum = 0;
                 dangqianNum = 1;
-                getLoaderManager().restartLoader(3, null, SetDelayTime_suidao.this);
-                adapter.notifyDataSetChanged();
                 show_Toast("延时写入成功");
+                Utils.writeRecord("-设置隧道延时成功");
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 break;
         }
     }
@@ -745,7 +709,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime1.getText().toString());
                 } else {
@@ -763,7 +727,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime2.getText().toString());
                 } else {
@@ -781,7 +745,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime3.getText().toString());
                 } else {
@@ -797,7 +761,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime4.getText().toString());
                 } else {
@@ -813,7 +777,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime5.getText().toString());
                 } else {
@@ -829,7 +793,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime6.getText().toString());
                 } else {
@@ -846,7 +810,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                     Log.e("延时", "dangqianNum: " + dangqianNum);
                     Log.e("延时", "totaldelay: " + totaldelay);
                     Log.e("延时", "-------------------------: ");
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime7.getText().toString());
                 } else {
@@ -859,7 +823,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal8.getText().length() != 0 && Integer.parseInt(etDuanTotal8.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal8.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal8.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime8.getText().toString());
                 } else {
@@ -872,7 +836,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal9.getText().length() != 0 && Integer.parseInt(etDuanTotal9.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal9.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal9.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime9.getText().toString());
                 } else {
@@ -885,7 +849,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal10.getText().length() != 0 && Integer.parseInt(etDuanTotal10.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal10.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal10.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime10.getText().toString());
                 } else {
@@ -898,7 +862,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal11.getText().length() != 0 && Integer.parseInt(etDuanTotal11.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal11.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal11.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime11.getText().toString());
                 } else {
@@ -911,7 +875,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal12.getText().length() != 0 && Integer.parseInt(etDuanTotal12.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal12.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal12.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime12.getText().toString());
                 } else {
@@ -924,7 +888,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal13.getText().length() != 0 && Integer.parseInt(etDuanTotal13.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal13.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal13.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime13.getText().toString());
                 } else {
@@ -937,7 +901,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal14.getText().length() != 0 && Integer.parseInt(etDuanTotal14.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal14.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal14.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime14.getText().toString());
                 } else {
@@ -950,7 +914,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal15.getText().length() != 0 && Integer.parseInt(etDuanTotal15.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal15.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal15.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime15.getText().toString());
                 } else {
@@ -963,7 +927,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal16.getText().length() != 0 && Integer.parseInt(etDuanTotal16.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal16.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal16.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime16.getText().toString());
                 } else {
@@ -976,7 +940,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal17.getText().length() != 0 && Integer.parseInt(etDuanTotal17.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal17.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal17.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime17.getText().toString());
                 } else {
@@ -989,7 +953,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal18.getText().length() != 0 && Integer.parseInt(etDuanTotal18.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal18.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal18.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime18.getText().toString());
                 } else {
@@ -1003,7 +967,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal19.getText().length() != 0 && Integer.parseInt(etDuanTotal19.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal19.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal19.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime19.getText().toString());
                 } else {
@@ -1017,7 +981,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
                 if (etDuanTotal20.getText().length() != 0 && Integer.parseInt(etDuanTotal20.getText().toString()) > 0) {
                     totalNum = totalNum + Integer.parseInt(etDuanTotal20.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal20.getText().toString());
-                    setSuidaoDelay(dangqianNum, totalNum, totaldelay);
+                    setSuidaoDelay(dangqianNum, totalNum, totaldelay, i);
                     //设置完延时增加延时间隔
                     totaldelay = totaldelay + Integer.parseInt(etDuanDelaytime20.getText().toString());
                 } else {
@@ -1030,138 +994,140 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
 
     }
 
-    private void setSuidaoDelay(int dangqianNum, int totalNum, int totaldelay) {
+    private void setSuidaoDelay(int dangqianNum, int totalNum, int totaldelay, int duan) {
         int start = dangqianNum + 1;//起始序号
-        int end = totalNum;//终点序号
-        for (int i = start; i <= end; i++) {
+        int no = 1;
+        for (int i = start; i <= totalNum; i++) {
             ContentValues values = new ContentValues();
             values.put("delay", totaldelay);
-            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{String.valueOf(i)});
+            values.put("sithole", duan + "-" + no);
+            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? ", new String[]{String.valueOf(i),mRegion});
+            no++;
         }
-        getLoaderManager().restartLoader(1, null, SetDelayTime_suidao.this);
+
     }
 
     //保存当前隧道设置
     private void saveData() {
-        if(etDuanDelaytime1.length()<1){
+        if (etDuanDelaytime1.length() < 1) {
             etDuanDelaytime1.setText("0");
         }
-        if(etDuanTotal1.length()<1){
+        if (etDuanTotal1.length() < 1) {
             etDuanTotal1.setText("0");
         }
 
-        if(etDuanDelaytime2.length()<1){
+        if (etDuanDelaytime2.length() < 1) {
             etDuanDelaytime2.setText("0");
         }
-        if(etDuanTotal2.length()<1){
+        if (etDuanTotal2.length() < 1) {
             etDuanTotal2.setText("0");
         }
-        if(etDuanDelaytime3.length()<1){
+        if (etDuanDelaytime3.length() < 1) {
             etDuanDelaytime3.setText("0");
         }
-        if(etDuanTotal3.length()<1){
+        if (etDuanTotal3.length() < 1) {
             etDuanTotal3.setText("0");
         }
-        if(etDuanDelaytime4.length()<1){
+        if (etDuanDelaytime4.length() < 1) {
             etDuanDelaytime4.setText("0");
         }
-        if(etDuanTotal4.length()<1){
+        if (etDuanTotal4.length() < 1) {
             etDuanTotal4.setText("0");
         }
-        if(etDuanDelaytime5.length()<1){
+        if (etDuanDelaytime5.length() < 1) {
             etDuanDelaytime5.setText("0");
         }
-        if(etDuanTotal5.length()<1){
+        if (etDuanTotal5.length() < 1) {
             etDuanTotal5.setText("0");
         }
-        if(etDuanDelaytime6.length()<1){
+        if (etDuanDelaytime6.length() < 1) {
             etDuanDelaytime6.setText("0");
         }
-        if(etDuanTotal6.length()<1){
+        if (etDuanTotal6.length() < 1) {
             etDuanTotal6.setText("0");
         }
-        if(etDuanDelaytime7.length()<1){
+        if (etDuanDelaytime7.length() < 1) {
             etDuanDelaytime7.setText("0");
         }
-        if(etDuanTotal7.length()<1){
+        if (etDuanTotal7.length() < 1) {
             etDuanTotal7.setText("0");
         }
-        if(etDuanDelaytime8.length()<1){
+        if (etDuanDelaytime8.length() < 1) {
             etDuanDelaytime8.setText("0");
         }
-        if(etDuanTotal8.length()<1){
+        if (etDuanTotal8.length() < 1) {
             etDuanTotal8.setText("0");
         }
-        if(etDuanDelaytime9.length()<1){
+        if (etDuanDelaytime9.length() < 1) {
             etDuanDelaytime9.setText("0");
         }
-        if(etDuanTotal9.length()<1){
+        if (etDuanTotal9.length() < 1) {
             etDuanTotal9.setText("0");
         }
-        if(etDuanDelaytime10.length()<1){
+        if (etDuanDelaytime10.length() < 1) {
             etDuanDelaytime10.setText("0");
         }
-        if(etDuanTotal10.length()<1){
+        if (etDuanTotal10.length() < 1) {
             etDuanTotal10.setText("0");
         }
-        if(etDuanDelaytime11.length()<1){
+        if (etDuanDelaytime11.length() < 1) {
             etDuanDelaytime11.setText("0");
         }
-        if(etDuanTotal11.length()<1){
+        if (etDuanTotal11.length() < 1) {
             etDuanTotal11.setText("0");
         }
-        if(etDuanDelaytime12.length()<1){
+        if (etDuanDelaytime12.length() < 1) {
             etDuanDelaytime12.setText("0");
         }
-        if(etDuanTotal12.length()<1){
+        if (etDuanTotal12.length() < 1) {
             etDuanTotal12.setText("0");
         }
-        if(etDuanDelaytime13.length()<1){
+        if (etDuanDelaytime13.length() < 1) {
             etDuanDelaytime13.setText("0");
         }
-        if(etDuanTotal13.length()<1){
+        if (etDuanTotal13.length() < 1) {
             etDuanTotal13.setText("0");
         }
-        if(etDuanDelaytime14.length()<1){
+        if (etDuanDelaytime14.length() < 1) {
             etDuanDelaytime14.setText("0");
         }
-        if(etDuanTotal14.length()<1){
+        if (etDuanTotal14.length() < 1) {
             etDuanTotal14.setText("0");
         }
-        if(etDuanDelaytime15.length()<1){
+        if (etDuanDelaytime15.length() < 1) {
             etDuanDelaytime15.setText("0");
         }
-        if(etDuanTotal15.length()<1){
+        if (etDuanTotal15.length() < 1) {
             etDuanTotal15.setText("0");
         }
-        if(etDuanDelaytime16.length()<1){
+        if (etDuanDelaytime16.length() < 1) {
             etDuanDelaytime16.setText("0");
         }
-        if(etDuanTotal16.length()<1){
+        if (etDuanTotal16.length() < 1) {
             etDuanTotal16.setText("0");
         }
-        if(etDuanDelaytime17.length()<1){
+        if (etDuanDelaytime17.length() < 1) {
             etDuanDelaytime17.setText("0");
         }
-        if(etDuanTotal17.length()<1){
+        if (etDuanTotal17.length() < 1) {
             etDuanTotal17.setText("0");
         }
-        if(etDuanDelaytime18.length()<1){
+        if (etDuanDelaytime18.length() < 1) {
             etDuanDelaytime18.setText("0");
         }
-        if(etDuanTotal18.length()<1){
+        if (etDuanTotal18.length() < 1) {
             etDuanTotal18.setText("0");
         }
-        if(etDuanDelaytime19.length()<1){
+        if (etDuanDelaytime19.length() < 1) {
             etDuanDelaytime19.setText("0");
         }
-        if(etDuanTotal19.length()<1){
+        if (etDuanTotal19.length() < 1) {
             etDuanTotal19.setText("0");
         }
-        if(etDuanDelaytime20.length()<1){
+        if (etDuanDelaytime20.length() < 1) {
             etDuanDelaytime20.setText("0");
         }
-        if(etDuanTotal20.length()<1){
+        if (etDuanTotal20.length() < 1) {
             etDuanTotal20.setText("0");
         }
         MmkvUtils.savecode("setDelayTimeStartDelaytime1", setDelayTimeStartDelaytime1.getText().toString());//开始时间
@@ -1291,5 +1257,67 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
         etDuanDelaytime20.setText(MmkvUtils.decodeString("etDuanDelaytime20", "0"));//间隔时间
         etDuanTotal20.setText(MmkvUtils.decodeString("etDuanTotal20", "0"));//段中雷管数
 
+    }
+
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegion(String region, int size) {
+
+        String str;
+        if (size == -1) {
+            str = " 区域" + region;
+        } else {
+            str = " 区域" + region + "(数量:" + size + ")";
+        }
+        // 设置标题
+        getSupportActionBar().setTitle(mOldTitle + str);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, region);
+
+        Log.e("liyi_Region", "已选择" + str);
     }
 }

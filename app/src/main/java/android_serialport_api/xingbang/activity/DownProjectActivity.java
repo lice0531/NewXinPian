@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class DownProjectActivity extends BaseActivity implements ItemProjectAdap
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private List<Map<String, Object>> map_project = new ArrayList<>();
-    MlistView lvProject;
+    ListView lvProject;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

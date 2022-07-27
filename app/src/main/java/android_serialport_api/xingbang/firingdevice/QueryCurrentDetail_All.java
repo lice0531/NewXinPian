@@ -69,7 +69,7 @@ public class QueryCurrentDetail_All extends BaseActivity implements LoadListView
         setContentView(R.layout.activity_query_currentinfo_all);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("Select * from denatorBaseinfo_all ", null);
@@ -110,7 +110,7 @@ public class QueryCurrentDetail_All extends BaseActivity implements LoadListView
 
                 VoBlastModel item = new VoBlastModel();
                 item.setBlastserial(serialNo);
-                item.setSithole(holeNo);
+                item.setSithole(holeNo+"");
                 item.setDelay((short) delay);
                 item.setShellBlastNo(shellNo);
                 item.setErrorCode(errorCode);

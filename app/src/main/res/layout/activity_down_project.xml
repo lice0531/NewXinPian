@@ -15,11 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android_serialport_api.xingbang.custom.MlistView
+        <ListView
             android:id="@+id/lv_project"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </android_serialport_api.xingbang.custom.MlistView>
+        </ListView>
     </LinearLayout>
 </LinearLayout>
