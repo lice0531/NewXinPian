@@ -786,12 +786,12 @@ public class Utils {
                 boolean a=dir.mkdirs();
                 boolean b=file.createNewFile();
                 //把文件名存入到数据库中
-                SysLog sysLog = new SysLog();
-                sysLog.setFilename(Utils.getDate(new Date()));
-                sysLog.setPath(filePath);
-                sysLog.setUpdataState("否");
-                sysLog.setUpdataTime("");
-                Application.getDaoSession().getSysLogDao().insert(sysLog);
+//                SysLog sysLog = new SysLog();
+//                sysLog.setFilename(Utils.getDate(new Date()));
+//                sysLog.setPath(filePath);
+//                sysLog.setUpdataState("否");
+//                sysLog.setUpdataTime("");
+//                Application.getDaoSession().getSysLogDao().insert(sysLog);
             } else {
                 long fileS = getFileSize(file);
                 if (fileS > 1073741824) {//大于1M，

@@ -307,7 +307,7 @@ public class XingbangMain extends BaseActivity {
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
         Preparation_time = (int) MmkvUtils.getcode("preparation_time", 50);
-        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 28);
+        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 48);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
@@ -331,7 +331,7 @@ public class XingbangMain extends BaseActivity {
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
         message.setPreparation_time("20");
-        message.setChongdian_time("28");
+        message.setChongdian_time("48");
         message.setServer_type1("1");
         message.setServer_type2("0");
         message.setPro_dwdm("");

@@ -22,14 +22,20 @@ import java.io.OutputStream;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
 
+
+import com.orhanobut.dialogplus.DialogPlus;
+
 import android_serialport_api.SerialPort;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.utils.LoadingUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 public abstract class SerialPortActivity extends BaseActivity {
@@ -38,11 +44,13 @@ public abstract class SerialPortActivity extends BaseActivity {
     protected SerialPort mSerialPort;
     protected OutputStream mOutputStream;
     private InputStream mInputStream;
-    private ReadThread mReadThread;
+    public ReadThread mReadThread;
     protected String revCmd;//执行命令
     protected String afterCmd;//后续命令
     private boolean isStop = false;
-
+    // 通用
+    public DialogPlus mDialogPlus;
+    public Context mContext;
     private class ReadThread extends Thread {
 
         public boolean exit = false;
@@ -62,8 +70,11 @@ public abstract class SerialPortActivity extends BaseActivity {
                     size = mInputStream.read(buffer);
 //                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
                     //Utils.writeLog("Read------22222222");
-
                     if (size > 0) {
+//                        byte[] cmdBuf = new byte[size];
+//                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//                        Log.e("收到: ",fromCommad );
                         onDataReceived(buffer, size);
                     }
 
@@ -75,7 +86,12 @@ public abstract class SerialPortActivity extends BaseActivity {
 //			Utils.writeLog("ReadThread End:"+Thread.currentThread().getName());
         }
     }
-
+    public String[] mArr_Permissions = new String[]{
+//            Manifest.permission.ACCESS_FINE_LOCATION,
+//            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE
+    };
     private void DisplayError(int resourceId) {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle("Error");
@@ -103,6 +119,7 @@ public abstract class SerialPortActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("父页面", "onCreate: " );
         try {
             mSerialPort = mApplication.getSerialPort();
             mSerialPort.tcflush();
@@ -121,7 +138,33 @@ public abstract class SerialPortActivity extends BaseActivity {
             DisplayError(R.string.error_configuration);
         }
     }
+    // 进度条
+    public void showDialog() {
+        mDialogPlus = LoadingUtils.loadDialog(mContext);
+        mDialogPlus.show();
+    }
+    // 进度条
+    public void initSerialPort() {
+        Log.e("父页面", "initSerialPort: " );
+//        mReadThread.exit = false;
+        try {
+            mSerialPort = mApplication.getSerialPort();
+            mSerialPort.tcflush();
 
+            mOutputStream = mSerialPort.getOutputStream();
+            mInputStream = mSerialPort.getInputStream();
+
+            /* Create a receiving thread */
+            mReadThread = new ReadThread();
+            mReadThread.start();
+        } catch (SecurityException e) {
+            DisplayError(R.string.error_security);
+        } catch (IOException e) {
+            DisplayError(R.string.error_unknown);
+        } catch (InvalidParameterException e) {
+            DisplayError(R.string.error_configuration);
+        }
+    }
     protected abstract void onDataReceived(final byte[] buffer, final int size);
 
     @Override
@@ -134,77 +177,22 @@ public abstract class SerialPortActivity extends BaseActivity {
         }
         mApplication.closeSerialPort();
         mSerialPort = null;
+        Log.e("父页面-destroy", "mReadThread: "+mReadThread.exit );
         super.onDestroy();
     }
 
     public void sendInterruptCmd() {
 
     }
-    /***
-     * 拼接命令
-     * @param cmd
-     * @return -1 异常 1继续 0合适命令
-     */
-    /***
-     protected int completeValidCmd(String cmd){
-     if(cmd==null)return -1;
-     if(revCmd==null)revCmd="";
-     int first = cmd.indexOf("C0");
-     if(first==0){
-     if(cmd.length()==2){
-     if(revCmd.indexOf("C0")==0){//命令最后一个个C0
-     revCmd += cmd;
-     //判断是否为正确的命令
-     if(isCorrectCmd(revCmd)==0)return 0;
-     return 1;
-     }else{
-     if(revCmd!=null&&revCmd.length()>0){//第一个C0
-     revCmd += cmd;
-     return 1;
-     }
-     if(revCmd.indexOf("C0")<0){
-     revCmd = "";
-     return -1;
-     }
-     }
-
-     }else{
-
-     }
-
-     int last =  cmd.indexOf("C0", 2);
-     revCmd = cmd;
-     if(last>=8){
-     return 0;
-     }
-     }else{
-     if(first<0){
-     revCmd += cmd;
-     if(revCmd.length()>=80){
-     revCmd="";
-     return -1;
-     }
-     }else{
-     revCmd += cmd.substring(0,first+2);
-     return 0;
-     }
-     }
-     return 1;
-     }
-     **/
 
     protected int completeValidCmd(String cmd) {
         if (cmd == null) return -1;
         if (revCmd == null) revCmd = "";
         this.afterCmd = "";
-        //Utils.writeLog("revCmd="+revCmd+",cmd="+cmd);
         revCmd += cmd;
-        //
         //分解判断命令
         String reVal = analysisCmd(revCmd);
-        //	Utils.writeLog("reVal="+reVal);
         if (reVal.equals("00")) {
-            //	Utils.writeLog("reVal000="+reVal);
             return 0;
         }
         return 1;
@@ -216,23 +204,17 @@ public abstract class SerialPortActivity extends BaseActivity {
      * @return
      */
     private String analysisCmd(String localcmd) {
-        //Utils.writeLog("revCmdCombine="+localcmd);
         if (localcmd == null || localcmd.trim().length() < 1) return "-1";
         if (localcmd.trim().length() <= 12) return "-1";
-        //	Utils.writeLog("111=");
         if (localcmd.indexOf("C0") == 0) {//说明是命令起点
             String dataLenStr = localcmd.substring(6, 8);
             int dataLen = Integer.parseInt(dataLenStr, 16) * 2;    //一个字节两个字符BCD码
             int cmdLen = dataLen + 14;
-            //Utils.writeLog("222=");
-            //	Utils.writeLog("cmdLen="+cmdLen+",localcmd.leng="+localcmd.length());
             if (cmdLen <= localcmd.length()) {//说明命令已经合适
-                //	Utils.writeLog("444=");
 
                 String endC0 = localcmd.substring(dataLen + 12, cmdLen);
                 //Utils.writeLog("endC0="+endC0);
                 if (endC0.equals("C0")) {//说明正确的命令
-                    //	Utils.writeLog("6666=");
                     //正确的命令
                     String correctCmd = localcmd.substring(0, cmdLen);
                     if (cmdLen + 2 <= localcmd.length()) {//说明附带了后面命令数据
@@ -240,16 +222,13 @@ public abstract class SerialPortActivity extends BaseActivity {
                         if (afCmd.indexOf("C0") == 0) {//后续命令保存
                             afterCmd = afCmd;
                         }
-                        //	Utils.writeLog("888="+afCmd);
                     }
                     //正确命令
                     revCmd = correctCmd;
-                    //Utils.writeLog("7777="+revCmd);
                     return "00";
                 }
             }
         } else {
-            //Utils.writeLog("333=");
             revCmd = "";
             afterCmd = "";
         }

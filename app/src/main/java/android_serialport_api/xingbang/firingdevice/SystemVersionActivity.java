@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static com.tencent.bugly.beta.Beta.checkUpgrade;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +36,8 @@ public class SystemVersionActivity extends SerialPortActivity {
     EditText etHardwareVersion;
     @BindView(R.id.set_Hardware_Version)
     Button setHardwareVersion;
+    @BindView(R.id.check_version)
+    Button checkVersion;
     private Handler Handler_tip = null;//提示信息
 
 
@@ -162,7 +166,7 @@ public class SystemVersionActivity extends SerialPortActivity {
     }
 
 
-    @OnClick({R.id.btn_Soft_Version, R.id.btn_Hardware_Version, R.id.set_Hardware_Version})
+    @OnClick({R.id.btn_Soft_Version, R.id.btn_Hardware_Version, R.id.set_Hardware_Version,R.id.check_version})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.set_Hardware_Version:
@@ -178,6 +182,9 @@ public class SystemVersionActivity extends SerialPortActivity {
                 Log.e("16进制", "strHex_fan: "+strHex_fan );
                 byte[] reCmd3 = FourStatusCmd.setHardVersion("00", strHex_fan);//
                 sendCmd(reCmd3);
+                break;
+            case R.id.check_version:
+                checkUpgrade();
                 break;
         }
     }

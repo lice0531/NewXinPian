@@ -412,6 +412,7 @@ public class SetDelayTime_suidao extends BaseActivity {
             new Thread(() -> {
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                Utils.deleteData(mRegion);//重新排序雷管
                 Utils.writeRecord("--删除雷管:"+shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
@@ -644,32 +645,48 @@ public class SetDelayTime_suidao extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_setDelayTime_inputOK:
-                hideInputKeyboard();
-                pb_show = 1;
-                runPbDialog();
-                saveData();
-                new Thread(() -> {
-                    for (int i = 1; i < 21; i++) {
-                        setSuidaoDelayTime(i);
-                        // 区域 更新视图
-                        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                        pb_show = 0;
-                    }
-                }).start();
+                AlertDialog dialog = new AlertDialog.Builder(SetDelayTime_suidao.this)
+                        .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog13, which) -> {
+                            dialog13.dismiss();
+                        })
+                        .setNeutralButton("继续", (dialog2, which) -> {
+                            dialog2.dismiss();
 
-                //进行清零
-                if (setDelayTimeStartDelaytime1.getText().toString().equals("")) {
-                    totaldelay = 0;
-                    setDelayTimeStartDelaytime1.setText("0");
-                } else {
-                    totaldelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
-                }
-                totalNum = 0;
-                dangqianNum = 1;
-                show_Toast("延时写入成功");
-                Utils.writeRecord("-设置隧道延时成功");
-                // 区域 更新视图
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                            hideInputKeyboard();
+                            pb_show = 1;
+                            runPbDialog();
+                            saveData();
+                            new Thread(() -> {
+                                for (int i = 1; i < 21; i++) {
+                                    setSuidaoDelayTime(i);
+                                    // 区域 更新视图
+                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                                    pb_show = 0;
+                                }
+                            }).start();
+
+                            //进行清零
+                            if (setDelayTimeStartDelaytime1.getText().toString().equals("")) {
+                                totaldelay = 0;
+                                setDelayTimeStartDelaytime1.setText("0");
+                            } else {
+                                totaldelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
+                            }
+                            totalNum = 0;
+                            dangqianNum = 1;
+                            show_Toast("延时写入成功");
+                            Utils.writeRecord("-设置隧道延时成功");
+                            // 区域 更新视图
+                            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+                        })
+                        .create();
+                dialog.show();
+
+
                 break;
         }
     }

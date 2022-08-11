@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="KT50_3.25_PT_220726"
+            android:text="KT50_3.25_PT_220810"
             android:textSize="20sp"
             />
     </LinearLayout>
@@ -149,4 +149,13 @@
             android:text="切换单片机版本"
             android:textColor="@color/bt_fg_base" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/check_version"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/allbtntstyle"
+        android:text="检查是否需要更新软件版本"
+        />
 </LinearLayout>

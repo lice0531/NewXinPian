@@ -14,7 +14,7 @@
     <color name="green">#00ff00</color>
     <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#60000000</color>
-
+    <color name="colorGrey">#333333</color>     // 用于重要文字，内容标题等。
     <color name="label_color">#5B5B5B</color>
 
     <color name="child_pg_bg">#ffffffff</color>

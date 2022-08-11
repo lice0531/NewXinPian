@@ -477,34 +477,6 @@ public class PracticeActivity extends BaseActivity {
                 break;
             case R.id.but_pre://开启测试
 
-//                if (revOpenCmdTestFlag == 0) {
-//                    byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-//                    sendCmd(powerCmd);
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    sendPower = new SendPower();//40指令线程
-//                    sendPower.exit = false;
-//                    sendPower.start();
-//                    revOpenCmdTestFlag = 1;
-//                    butPre.setText("停止测试");
-//                } else {
-//                    sendPower.exit = true;
-//                    sendPower.interrupt();
-//                    try {
-//                        sendPower.join();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
-//                    sendCmd(powerCmd);
-//                    butPre.setText("开始测试");
-//                    tvCeshiDianliu.setText("0.0μA");
-//                    tvCeshiDianya.setText("0.0V");
-//                    revOpenCmdTestFlag = 0;
-//                }
                 Intent intent2 = new Intent(this, TestICActivity.class);
                 startActivity(intent2);
                 break;

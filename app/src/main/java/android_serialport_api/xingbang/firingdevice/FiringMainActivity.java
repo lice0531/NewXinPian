@@ -143,14 +143,14 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int thirdWriteCount;//雷管发送计数器
     private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
-    private volatile int sixExchangeCount = 28;//第6阶段计时
+    private volatile int sixExchangeCount = 48;//第6阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
     private volatile int eightCmdFlag = 0;//第八阶段命令发出起爆
     private volatile int qibaoNoFlag = 1;//第八阶段命令发出起爆
     private volatile int eightCmdExchangePower = 0;//切换电源命令
     private volatile int neightCount = 0;//
-    private int elevenCount = 10;//
+    private int elevenCount = 10;//放电时间
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
     private String userId = "";
     private volatile int revPowerFlag = 0;
@@ -229,8 +229,8 @@ public class FiringMainActivity extends SerialPortActivity {
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
-        elevenCount = getMinDelay() / 1000 + 1;
-
+        elevenCount = getMaxDelay() / 1000 + 1;
+        Log.e(TAG, "elevenCount: "+elevenCount );
         //级联接收命令注册的eventbus
         EventBus.getDefault().register(this);
     }
@@ -561,7 +561,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private void initParam() {
         FiringMainActivity.stage = 0;
         writeVo = null;
-        firstWaitCount = secondCount + firstWaitCount + Wait_Count;
+        firstWaitCount = 3;
         Wait_Count = 5;
         firstCmdReFlag = 0;
         secondCmdFlag = 0;
@@ -593,7 +593,6 @@ public class FiringMainActivity extends SerialPortActivity {
             equ_no = message.get(0).getEqu_no();
             pro_coordxy = message.get(0).getPro_coordxy();
             qiaosi_set = message.get(0).getQiaosi_set();
-            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());
             ChongDian_time = Integer.parseInt(message.get(0).getChongdian_time());
             pro_dwdm = message.get(0).getPro_dwdm();
             JianCe_time = Integer.parseInt(message.get(0).getJiance_time());
@@ -718,10 +717,14 @@ public class FiringMainActivity extends SerialPortActivity {
             case 8:
                 ll_8.setVisibility(View.VISIBLE);
                 break;
+
             case 10:
                 ll_4.setVisibility(View.VISIBLE);
                 fourTxt.setText("当前电流为0,请检查线路是否正确连接");
                 Log.e("流程", "10: ");
+                break;
+            case 11:
+                btn_return8.setVisibility(View.GONE);
                 break;
         }
     }
@@ -1195,6 +1198,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 updataState(qbxm_id);
             }
             increase(11);//跳到第9阶段
+
             Log.e("increase", "9");
 //                try {
 //                    Thread.sleep(50);
@@ -1481,7 +1485,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 break;
             case 11://给范总加的起爆后的放电阶段
-                eightTxt.setText("正在放电,请稍等" + elevenCount + "s");
+                btn_return8.setVisibility(View.GONE);
+                eightTxt.setText("起爆中,请稍等" + elevenCount + "s");
                 break;
             case 99://暂停阶段
                 break;
@@ -2039,8 +2044,6 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_errorAmount_2.setTextColor(Color.GREEN);
         firstTxt.setText((secondCount + firstWaitCount + Wait_Count) + "s");
         secondTxt.setText("测试准备阶段 (" + (secondCount + Wait_Count) + "s)");
-//        firstTxt.setText(firstWaitCount + "s");
-//        secondTxt.setText(getString(R.string.text_firing_tip7) + secondCount + "s)");//"测试准备 ("
 
     }
 
@@ -2228,7 +2231,20 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         return 0;
     }
-
+    /***
+     * 得到最大序号
+     * @return
+     */
+    private int getMaxDelay() {//
+        Cursor cursor = db.rawQuery("select max(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece =?", new String[]{mRegion});
+        if (cursor != null && cursor.moveToNext()) {
+            int delayMax = cursor.getInt(0);
+            cursor.close();
+            Log.e(TAG, "当前" + mRegion + "区域最大延时: " + delayMax);
+            return delayMax;
+        }
+        return 0;
+    }
     /**
      * 级联接收命令代码 eventbus
      */

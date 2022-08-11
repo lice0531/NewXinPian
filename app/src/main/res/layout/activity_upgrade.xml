@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_assets"
+                style="@style/btn_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="0.选择初始内置文件 进行升级"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_open_file"
+                style="@style/btn_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+
+                android:text="请选择 bin 结尾文件 进行升级" />
+
+            <Button
+                android:id="@+id/btn_new_currency"
+                style="@style/btn_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:visibility="gone"
+                android:text="2.下载 通用版升级文件 进行升级" />
+
+            <Button
+                android:id="@+id/btn_new_permit"
+                style="@style/btn_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:visibility="gone"
+                android:text="3.下载 煤许版升级文件 进行升级" />
+            <Button
+                android:id="@+id/btn_new_currency2"
+                style="@style/btn_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="下载 二代芯片版升级文件 进行升级" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_cmd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorGrey"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+
+            <Button
+                android:id="@+id/btn_up"
+                style="@style/btn_style"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="上电" />
+
+            <Button
+                android:id="@+id/btn_down"
+                style="@style/btn_style"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="下电" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
+
+            <Button
+                android:id="@+id/btn_apk"
+                style="@style/btn_style"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:text="起爆器程序下载"
+                android:visibility="gone"/>
+
+
+            <TextView
+                android:id="@+id/tv_version"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="版本号:0.0.0"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

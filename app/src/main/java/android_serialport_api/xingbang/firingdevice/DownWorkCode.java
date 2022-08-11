@@ -1005,13 +1005,14 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                 }
                             }
                         }
+                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                                 GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
                             }
                         }
 
-                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
                         if (err != 0) {
                             Log.e("下载", "err: " + err);
 //                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");

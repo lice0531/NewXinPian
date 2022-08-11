@@ -1,13 +1,11 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,13 +30,16 @@ import java.util.Map;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.LoadListView;
 import android_serialport_api.xingbang.custom.VerificationAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
-import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -83,14 +84,17 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
     private String qbxm_name = "1";
     private List<VoBlastModel> list_data = new ArrayList<>();
     private LocationService locationService;
-
+    private String mRegion;     // 区域
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
         ButterKnife.bind(this);
-// 标题栏
+        // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        //获取区号
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_SHOUQUAN, null);
@@ -101,8 +105,8 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         cursor.close();
         cursor2.close();
         if (1 == currentPage) {
+            loadShouQuan();
             loadMoreData();
-            loadMoreData_all_lg();
 
         }
         mAdapter = new VerificationAdapter(this, map_dl, R.layout.item_list_shouquan);
@@ -301,7 +305,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         mLocationClient.startLocation();
     }
 
-    private void loadMoreData() {
+    private void loadShouQuan() {
         String sql = "Select * from " + DatabaseHelper.TABLE_NAME_SHOUQUAN;//+" order by htbh "
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor != null) {
@@ -344,10 +348,10 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        ArrayList<String> list_lg1 = new ArrayList<>();
+        ArrayList<String> list_lg_down = new ArrayList<>();
         ArrayList<String> list_lg2 = new ArrayList<>();
         for (int i = 0; i < ((DanLingBean) map_dl.get(position).get("danLingBean")).getLgs().getLg().size(); i++) {
-            list_lg1.add(((DanLingBean) map_dl.get(position).get("danLingBean")).getLgs().getLg().get(i).getUid().substring(0, 13));
+            list_lg_down.add(((DanLingBean) map_dl.get(position).get("danLingBean")).getLgs().getLg().get(i).getUid().substring(0, 13));
 
         }
         for (int i = 0; i < list_data.size(); i++) {
@@ -356,8 +360,8 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 //            list_lg2.add(Utils.ShellNo13toSiChuan_new(list_data.get(i).getShellBlastNo()));//四川包工定的编码规则
         }
         for (int i = 0; i < list_lg2.size(); i++) {
-            if (!list_lg1.contains(list_lg2.get(i))) {
-                Log.e("对比", "list_lg1: "+list_lg1+"---list_lg2.get(i)"+list_lg2.get(i) );
+            if (!list_lg_down.contains(list_lg2.get(i))) {
+                Log.e("对比", "list_lg_down: "+list_lg_down+"---list_lg2.get(i)"+list_lg2.get(i) );
                 show_Toast("注册雷管与下载雷管不符");
                 return;
             }
@@ -408,8 +412,29 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 break;
         }
     }
+    /**
+     * 加载数据
+     */
+    private void loadMoreData() {
 
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        //int count=0;
+        for (DenatorBaseinfo a : denatorBaseinfos) {
+            VoBlastModel item = new VoBlastModel();
+            item.setBlastserial(a.getBlastserial());
+            item.setDelay((short) a.getDelay());
+            item.setShellBlastNo(a.getShellBlastNo());
+            item.setDenatorId(a.getDenatorId());
+            item.setDenatorIdSup(a.getDenatorIdSup());
+            item.setZhu_yscs(a.getZhu_yscs());
+            item.setCong_yscs(a.getCong_yscs());
+            list_data.add(item);
+        }
+
+
+    }
     private void loadMoreData_all_lg() {
+
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, "statusCode=?", new String[]{"02"}, null, null, " blastserial asc");
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -421,6 +446,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 String stName = cursor.getString(7);//
                 String errorCode = cursor.getString(9);//状态
                 String errorName = cursor.getString(8);//
+
                 VoBlastModel item = new VoBlastModel();
                 item.setBlastserial(serialNo);
                 item.setSithole(holeNo+"");

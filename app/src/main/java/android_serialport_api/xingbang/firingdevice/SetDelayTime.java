@@ -42,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -189,26 +190,43 @@ public class SetDelayTime extends BaseActivity {
             hideInputKeyboard();
             Intent intent3 = new Intent(SetDelayTime.this, SetDelayTime_suidao.class);
             startActivity(intent3);
+            finish();
         });
-        btn_OK = (Button) findViewById(R.id.btn_setDelayTime_inputOK);
+        btn_OK = findViewById(R.id.btn_setDelayTime_inputOK);
         btn_OK.setOnClickListener(v -> {
-            hideInputKeyboard();
+            AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
+                    .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
+                    .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNegativeButton("退出", (dialog13, which) -> {
+                        dialog13.dismiss();
+                        finish();
+                    })
+                    .setNeutralButton("继续", (dialog2, which) -> {
+                        dialog2.dismiss();
 
-            String checstr = checkData();
-            if (checstr == null || checstr.trim().length() < 1) {
-                int maxDelay = getComputerDenDelay();
-                Log.e("延时", "maxSecond: " + maxSecond);
-                if (maxSecond > 0 && maxSecond < maxDelay && maxSecond > 15000) {
-                    show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
-                    return;
-                }
-                pb_show = 1;
-                runPbDialog();
-                new Thread(() -> setDenatorDelay()).start();
-                show_Toast(getString(R.string.text_error_tip36));
-            } else {
-                show_Toast(checstr);
-            }
+                        hideInputKeyboard();
+
+                        String checstr = checkData();
+                        if (checstr == null || checstr.trim().length() < 1) {
+                            int maxDelay = getComputerDenDelay();
+                            Log.e("延时", "maxSecond: " + maxSecond);
+                            if (maxSecond > 0 && maxSecond < maxDelay && maxSecond > 15000) {
+                                show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
+                                return;
+                            }
+                            pb_show = 1;
+                            runPbDialog();
+                            new Thread(() -> setDenatorDelay()).start();
+                            show_Toast(getString(R.string.text_error_tip36));
+                        } else {
+                            show_Toast(checstr);
+                        }
+                    })
+                    .create();
+            dialog.show();
+
+
         });
 
         // 适配器
@@ -339,6 +357,7 @@ public class SetDelayTime extends BaseActivity {
             new Thread(() -> {
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                Utils.deleteData(mRegion);//重新排序雷管
                 Utils.writeRecord("--删除雷管:"+shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
