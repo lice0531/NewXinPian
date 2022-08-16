@@ -272,6 +272,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
         }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
+        hideInputKeyboard();
     }
 
     private void initView() {
@@ -431,6 +432,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 adapter.notifyDataSetChanged();
             }else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
+                SoundPlayUtils.play(4);
             } else {
                 SoundPlayUtils.play(4);
                 show_Toast("注册失败");
@@ -808,19 +810,20 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     @Override
     protected void onDestroy() {
-        if (reEtF1.getText().length() > 0) {
-            MmkvUtils.savecode("f1", reEtF1.getText().toString());
-        }
-        if (reEtF2.getText().length() > 0) {
-            MmkvUtils.savecode("f2", reEtF1.getText().toString());
-        }
-        MmkvUtils.savecode("start", setDelayTimeStartDelaytime.getText().toString());
-        scanDecode.onDestroy();//回复初始状态
+//        if (reEtF1.getText().length() > 0) {
+//            MmkvUtils.savecode("f1", reEtF1.getText().toString());
+//        }
+//        if (reEtF2.getText().length() > 0) {
+//            MmkvUtils.savecode("f2", reEtF2.getText().toString());
+//        }
+//        MmkvUtils.savecode("start", setDelayTimeStartDelaytime.getText().toString());
+
         Utils.saveFile();//把软存中的数据存入磁盘中
 //        loadMoreData_all_lg();//
 
         if (db != null) db.close();
         scanDecode.stopScan();//停止扫描
+        scanDecode.onDestroy();//回复初始状态
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -1006,7 +1009,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         builder.setPositiveButton("确定", (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
 
-            if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
+            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {

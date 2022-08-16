@@ -457,6 +457,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("找不到对应的生产数据,请先导入生产数据");
             } else if (msg.what == 11) {
                 show_Toast("输入的日期格式不对");
+            }else if (msg.what == 2001) {
+                show_Toast(msg.obj.toString());
+                SoundPlayUtils.play(4);
             } else {
                 SoundPlayUtils.play(4);
                 show_Toast("注册失败");
@@ -935,14 +938,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 e.printStackTrace();
             }
 //                zhuceThread.interrupt();
-            Log.e("关闭线程", "关闭线程: ");
+//            Log.e("关闭线程", "关闭线程: ");
         }
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
         }
         if (reEtF2.getText().length() > 0) {
-            MmkvUtils.savecode("f2", reEtF1.getText().toString());
+            MmkvUtils.savecode("f2", reEtF2.getText().toString());
         }
         MmkvUtils.savecode("start", et_startDelay.getText().toString());
         scanDecode.onDestroy();//回复初始状态
@@ -1151,7 +1154,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         builder.setPositiveButton("确定", (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
+            Log.e("单发修改", "delay1: "+delay1 );
+            Log.e("单发修改", "maxSecond: "+maxSecond );
+            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
@@ -1634,7 +1639,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 singleShellNo = "";
                 singleShellNo = shellNo;
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-
                 break;
             }
             DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
@@ -1656,7 +1660,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     delay = delay + f2;
                 }
             }
-
+            if (maxSecond != 0 && delay > maxSecond) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                break;
+            }
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
@@ -2010,6 +2017,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             insertDenator(prex, start, start + (num - 1));
                             Log.e("手动输入", "厂号日期: " + prex);
                             Log.e("手动输入", "start: " + start);
+                            pb_show = 0;
                         }).start();
                         return;
                     } else {
@@ -2041,6 +2049,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             Log.e("手动输入", "prex: " + prex);
                             Log.e("手动输入", "start: " + start);
                             Log.e("手动输入", "end: " + end);
+                            pb_show = 0;
                         }).start();
                     }
                     // int reCount = insertDenator(prex,start,end);
@@ -2051,6 +2060,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     show_Toast(checstr);
                 }
+
                 break;
             case R.id.btn_return:
                 closeThread();

@@ -191,7 +191,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private ShouQuanAdapter mAdapter_sq;//授权
     private SQLiteDatabase db;
     private Handler mHandler_httpresult;
-    private Handler mHandler_1 = new Handler();//提示电源信息
+    private Handler mHandler_1 = new Handler();//错误提示
     private Handler mHandler2;
     private String selectDenatorId;
     private List<Map<String, Object>> map_dl = new ArrayList<>();
@@ -379,16 +379,67 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         //旧编码
 //        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"00000DB119124\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"70107707\",\"gzmcwxx\":\"0\"}]}}";
         //新规则
-        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
-        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B01\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B02\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
+//        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
+
+//        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B01\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B02\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
+        //模拟下载150发雷管
+        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-08-14 09:29:20\",\"sbbhs\":[{\"sbbh\":\"F560600002\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"德凤矿业\",\"zbqyjd\":\"104.802639\",\"zbqywd\":\"28.351421\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620705H84983\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA8BC04104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80098\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA3C1EF003\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84834\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB66FD6B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84951\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB78772404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84839\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB8E7BA304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84833\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB76FF5404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80075\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0532474D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80054\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"053CBBD703\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84973\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA9C0CD504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84980\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB6CDD4604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80029\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAC4BE9904\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84959\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB84EA1704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80040\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82384AA303\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80056\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04D128DD03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80077\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"058FC41B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80059\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA440A3804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80047\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"050A593104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80019\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FABF1FF304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80052\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0503180504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80069\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA5A226204\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80018\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA4B2C3404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80024\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBDA92A604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84975\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB5D004204\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80071\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"052207D603\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84986\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB886A7D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80095\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0552FB4D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80009\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"049B0F0304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80013\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0560C8C603\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84970\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAA8ACB803\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80060\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA4B6CB804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80023\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBB5946604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80033\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBBAA55E04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84989\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA9173E203\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80088\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA5C0B1704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80011\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"054C58AB03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84968\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB67384C04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84953\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBA4023F04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80084\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0520FF3304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80089\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"052C5B0004\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84976\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAA6884704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84836\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB469E1304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80091\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0557E16704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80065\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04F02A8D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84999\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB978AF703\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80072\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"054C51DE03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80039\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBA45B4304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84837\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAB6DD7504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84957\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB54265104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80034\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"053371F903\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80006\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA3C464D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80086\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"052998B703\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80053\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04FB832404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80003\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04A0E62504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80037\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0512A79904\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80087\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA46625704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84988\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA8BA61E05\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80021\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0584060804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80022\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBB62B6104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84954\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB7FC45304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84994\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA84528804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84981\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA7C28B604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80051\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82E6C9EA03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80058\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04DDE0FE03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80074\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBBA0CF503\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80093\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA5BE64704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80092\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0522B46904\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80028\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"05288BC003\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84987\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB7B5F9C04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80038\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"051CF41D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80080\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBB77AB004\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84991\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB9C653104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80000\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04FBDFB004\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80079\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA6A05BC04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80050\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA764D1504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84972\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB75B90D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84985\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB84940104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84969\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FACA8FFD03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80010\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA46AE6804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84997\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAE6110704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80004\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"050B1F8E04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80015\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA3C813304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80076\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0596973F04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84955\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB50718C03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80094\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0573C76704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80081\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBA82E5304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80049\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04B08E2C04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80064\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBCE9E6404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80066\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"049EC12304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80002\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA56CFCB04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84974\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA5D6AAC03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80073\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"053E48AA03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80097\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0567207804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80090\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FABB25AB04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80083\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"051E4D2B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84995\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB55429904\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80085\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0573C2D403\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80041\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"051EE38404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84998\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB6CEF3D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80030\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAC1979404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84992\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB7E6F4404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80014\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA49666D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84990\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAF1080604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80061\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA46707A04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84982\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA63E82704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80048\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0556D37104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80063\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0484D18F04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80017\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"055BD65504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80043\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"050BA3E503\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80099\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0525283004\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80045\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82DB100504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84978\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA5F260E04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80027\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBD2653704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84996\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FABF508404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80005\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0586007503\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80078\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"050EAA6804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80082\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA55537804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84958\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA8B037604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80057\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82E66A7C04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80046\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"05415E4C04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80096\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA49D3F103\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80035\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"05796A7F04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80042\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82E6B97003\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80020\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"058332F703\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84838\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB811A9304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80031\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"053E45EE03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80012\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAB45C7D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80007\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA5B0A0604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80044\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0509BAC903\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84835\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB62A4ED04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80008\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04BE8B1704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84971\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA9C708604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80016\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBE2B6F203\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80026\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBA4538004\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80062\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04F48AD503\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80070\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0498A9CA03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80036\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"054BFA6304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80025\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBCF0AF203\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84832\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB90393E04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84952\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB91728204\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84977\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB55785704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80067\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBCDB03104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84979\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA7EEC5604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80068\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBD74B3F04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84956\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB5AB23504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84993\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB57E78904\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80032\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBB76C1A05\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80001\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA4A02B804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84984\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB88F86C04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80055\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0523C9A804\",\"gzmcwxx\":\"0\"}]}}";
         Gson gson = new Gson();
         DanLingBean danLingBean = gson.fromJson(res2, DanLingBean.class);
         Log.e("测试", "danLingBean: " + danLingBean);
-        if (danLingBean.getLgs().getLg().size() > 0) {
-            for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+        try {
+            JSONObject object1 = new JSONObject(res2);
+            String cwxx = null;
+
+            cwxx = object1.getString("cwxx");
+
+            if (cwxx.equals("0")) {
+                int err = 0;
+                for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                    if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
+                        err++;
+                    }
+                }
+                Log.e("下载的雷管", "错误数量: " + err);
+                if (danLingBean.getCwxx().equals("0")) {
+                    if (danLingBean.getZbqys().getZbqy().size() > 0) {
+//                        double zbqyjd = Double.parseDouble(xy[0]);//116.456535
+//                        double zbqywd = Double.parseDouble(xy[1]);//37.427541
+                        for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
+                            double jingdu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd());
+                            double weidu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
+                            double banjing = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqybj());
+                            //判断经纬度
+//                            LngLat start = new LngLat(zbqyjd, zbqywd);
+//                            LngLat end = new LngLat(jingdu, weidu);
+//                            double juli3 = AMapUtils.calculateLineDistance(start, end);
+//                            Log.e("经纬度", "juli3: " + juli3);
+//                            if (juli3 < banjing) {
+                            insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+//                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+//                            }
+                        }
+                    }
+                }
+                mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+
+                if (danLingBean.getLgs().getLg().size() > 0) {
+                    for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                    }
+                }
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//项目下载成功
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        //模拟替换雷管
+//        if (danLingBean.getLgs().getLg().size() > 0) {
+//            for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+//                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+//            }
+//        }
     }
 
     private void initView() {
@@ -442,17 +493,52 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         });
 
         mHandler_1 = new Handler(msg -> {
-            //未收到关闭电源命令
-            if (tipInfoFlag == 3)
-                show_Toast(getResources().getString(R.string.text_error_tip5));
-            if (tipInfoFlag == 4) {//未收到打开电源命令
-                show_Toast(getResources().getString(R.string.text_error_tip6));
-            }
-            if (tipInfoFlag == 5) {//桥丝不正常
-                show_Toast(getResources().getString(R.string.text_error_tip7));
-            }
-            if (tipInfoFlag == 89) {
-                show_Toast("输入的管壳码重复");
+            switch (msg.what) {
+                case 0:
+                    show_Toast("项目下载成功");
+                    break;
+                case 1:
+                case 99:
+                    show_Toast(String.valueOf(msg.obj));
+                    break;
+                case 2:
+                    show_Toast("未找到该起爆器设备信息或起爆器未设置作业任务");
+                    break;
+                case 3:
+                    show_Toast("该起爆器未设置作业任务");
+                    break;
+                case 4:
+                    show_Toast("起爆器在黑名单中");
+                    break;
+                case 5:
+                    show_Toast("起爆位置不在起爆区域内");
+                    break;
+                case 6:
+                    show_Toast("起爆位置在禁爆区域内");
+                    break;
+                case 7:
+                    show_Toast("该起爆器已注销/报废");
+                    break;
+                case 8:
+                    show_Toast("禁爆任务");
+                    break;
+                case 9:
+                    show_Toast("作业合同存在项目");
+                    break;
+                case 10:
+                    show_Toast("作业任务未设置准爆区域");
+                    break;
+                case 11:
+                    show_Toast("离线下载不支持生产厂家试爆");
+                    break;
+                case 12:
+                    show_Toast("营业性单位必须设置合同或者项目");
+                    break;
+                case 89:
+                    show_Toast("输入的管壳码重复");
+                    break;
+
+
             }
             return false;
         });
@@ -935,7 +1021,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             object.put("htid", tx_htid);//合同编号370100X15040027
             object.put("dwdm", tv_dwdm);//单位代码
             Log.e("上传信息", object.toString());
-            Utils.writeRecord("---上传丹灵信息:"+ object);
+            Utils.writeRecord("---上传丹灵信息:" + object);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -962,7 +1048,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                pb_show = 0;
                 String res;
                 try {
                     res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(response.body().string().toString(), Base64.DEFAULT)));
@@ -971,7 +1056,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     return;
                 }
                 Log.e("网络请求", "res: " + res);
-                Utils.writeRecord("---丹灵网返回:"+res);
+                Utils.writeRecord("---丹灵网返回:" + res);
                 Gson gson = new Gson();
                 DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
                 try {
@@ -1017,46 +1102,48 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             Log.e("下载", "err: " + err);
 //                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                         }
-                        show_Toast_ui("项目下载成功");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
+                        pb_show = 0;//loding画面结束
                     } else if (cwxx.equals("1")) {
-                        show_Toast_ui(object1.getString("cwxxms"));
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(1, object1.getString("cwxxms")));
                     } else if (cwxx.equals("2")) {
-                        show_Toast_ui("未找到该起爆器设备信息或起爆器未设置作业任务");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(2));
                     } else if (cwxx.equals("3")) {
-                        show_Toast_ui("该起爆器未设置作业任务");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(3));//该起爆器未设置作业任务
                     } else if (cwxx.equals("4")) {
-                        show_Toast_ui("起爆器在黑名单中");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(4));//起爆器在黑名单中
                     } else if (cwxx.equals("5")) {
-                        show_Toast_ui("起爆位置不在起爆区域内 ");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(5));//起爆位置不在起爆区域内
                     } else if (cwxx.equals("6")) {
-                        show_Toast_ui("起爆位置在禁爆区域内");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(6));//起爆位置在禁爆区域内
                     } else if (cwxx.equals("7")) {
-                        show_Toast_ui("该起爆器已注销/报废");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(7));//该起爆器已注销/报废
                     } else if (cwxx.equals("8")) {
-                        show_Toast_ui("禁爆任务");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(8));//禁爆任务
                     } else if (cwxx.equals("9")) {
-                        show_Toast_ui("作业合同存在项目");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(9));//作业合同存在项目
                     } else if (cwxx.equals("10")) {
-                        show_Toast_ui("作业任务未设置准爆区域");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(10));//作业任务未设置准爆区域
                     } else if (cwxx.equals("11")) {
-                        show_Toast_ui("离线下载不支持生产厂家试爆");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(11));//离线下载不支持生产厂家试爆
                     } else if (cwxx.equals("12")) {
-                        show_Toast_ui("营业性单位必须设置合同或者项目");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(12));//营业性单位必须设置合同或者项目
                     } else if (cwxx.equals("99")) {
-                        show_Toast_ui(danLingBean.getCwxxms());
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(99, danLingBean.getCwxxms()));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                pb_show = 0;//loding画面结束
             }
         });
     }
 
+    /***
+     * 发送初始化命令
+     */
     @Override
     protected void onStart() {
-        /***
-         * 发送初始化命令
-         */
         hideInputKeyboard();
         btnDownReturn.setFocusable(true);
         btnDownReturn.setFocusableInTouchMode(true);
@@ -1312,7 +1399,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
-            denatorBaseinfo.setSithole(maxNo+"");
+            denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setShellBlastNo(shellNo);
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
@@ -1331,11 +1418,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             Utils.saveFile();//把软存中的数据存入磁盘中
             reCount++;
         }
-//        getLoaderManager().restartLoader(1, null, this);
         pb_show = 0;
-        if (flag == 0) tipInfoFlag = 88;
-        mHandler_1.sendMessage(mHandler_1.obtainMessage());//可以优化
-
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         return reCount;
     }
@@ -1697,53 +1780,53 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     private void loadMoreData_sq() {
         map_dl.clear();
-//        List<ShouQuan> list = LitePal.findAll(ShouQuan.class);//ErrNum总是为空
-//        Log.e("查询", "list getErrNum: "+list.get(0).getErrNum() );
-//        Gson gson = new Gson();
-//        DanLingBean danLingBean;
-//        Log.e("查询", "ErrNum: "+list.get(0).getErrNum() );
-//        for (ShouQuan sq : list) {
-//            danLingBean = gson.fromJson(sq.getJson(), DanLingBean.class);
-//            Map<String, Object> item = new HashMap<String, Object>();
-//            item.put("id", sq.getId());
-//            item.put("htbh", sq.getHtbh());
-//            item.put("xmbh", sq.getXmbh());
-//            item.put("qbzt", sq.getQbzt());
-//            item.put("errNum", sq.getErrNum());
-//            item.put("coordxy", sq.getCoordxy());
-//            item.put("spare1", sq.getSpare1());
-//            item.put("danLingBean", danLingBean);
-//            map_dl.add(item);
-//        }
-        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_SHOUQUAN;//+" order by htbh "
-        Cursor cursor = db.rawQuery(sql, null);
-        //return getCursorTolist(cursor);
-        if (cursor != null) {
-            Gson gson = new Gson();
-            DanLingBean danLingBean;
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
-                String xmbh = cursor.getString(1); //获取第二列的值 ,序号
-                String htbh = cursor.getString(2);
-                String json = cursor.getString(3);//管壳号
-                String errNum = cursor.getString(4);//错误数量
-                String qbzt = cursor.getString(5);//起爆状态
-                String coordxy = cursor.getString(11);//经纬度
-                String spare1 = cursor.getString(13);//工程名称
-                danLingBean = gson.fromJson(json, DanLingBean.class);
-                Map<String, Object> item = new HashMap<String, Object>();
-                item.put("id", id);
-                item.put("htbh", htbh);
-                item.put("xmbh", xmbh);
-                item.put("qbzt", qbzt);
-                item.put("spare1", spare1);
-                item.put("coordxy", coordxy);
-                item.put("errNum", errNum);
-                item.put("danLingBean", danLingBean);
-                map_dl.add(item);
-            }
-            cursor.close();
+        List<ShouQuan> list = GreenDaoMaster.getAllShouQuan();
+//        Log.e("查询", "list : " + list.toString());
+        Gson gson = new Gson();
+        DanLingBean danLingBean;
+        for (ShouQuan sq : list) {
+            danLingBean = gson.fromJson(sq.getJson(), DanLingBean.class);
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("id", sq.getId());
+            item.put("htbh", sq.getHtbh());
+            item.put("xmbh", sq.getXmbh());
+            item.put("qbzt", sq.getQbzt());
+            item.put("errNum", sq.getErrNum());
+            item.put("coordxy", sq.getCoordxy());
+            item.put("spare1", sq.getSpare1());
+            item.put("danLingBean", danLingBean);
+            map_dl.add(item);
         }
+
+//        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_SHOUQUAN;//+" order by htbh "
+//        Cursor cursor = db.rawQuery(sql, null);
+//        //return getCursorTolist(cursor);
+//        if (cursor != null) {
+//            Gson gson = new Gson();
+//            DanLingBean danLingBean;
+//            while (cursor.moveToNext()) {
+//                String id = cursor.getString(0);
+//                String xmbh = cursor.getString(1); //获取第二列的值 ,序号
+//                String htbh = cursor.getString(2);
+//                String json = cursor.getString(3);//管壳号
+//                String errNum = cursor.getString(4);//错误数量
+//                String qbzt = cursor.getString(5);//起爆状态
+//                String coordxy = cursor.getString(11);//经纬度
+//                String spare1 = cursor.getString(13);//工程名称
+//                danLingBean = gson.fromJson(json, DanLingBean.class);
+//                Map<String, Object> item = new HashMap<String, Object>();
+//                item.put("id", id);
+//                item.put("htbh", htbh);
+//                item.put("xmbh", xmbh);
+//                item.put("qbzt", qbzt);
+//                item.put("spare1", spare1);
+//                item.put("coordxy", coordxy);
+//                item.put("errNum", errNum);
+//                item.put("danLingBean", danLingBean);
+//                map_dl.add(item);
+//            }
+//            cursor.close();
+//        }
     }
 
     private int delShouQuan(String id) {//删除雷管

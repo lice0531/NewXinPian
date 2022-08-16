@@ -198,20 +198,17 @@ public class SetDelayTime extends BaseActivity {
                     .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
                     .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton("退出", (dialog13, which) -> {
+                    .setNegativeButton("继续", (dialog13, which) -> {
                         dialog13.dismiss();
-                        finish();
-                    })
-                    .setNeutralButton("继续", (dialog2, which) -> {
-                        dialog2.dismiss();
 
                         hideInputKeyboard();
 
                         String checstr = checkData();
                         if (checstr == null || checstr.trim().length() < 1) {
                             int maxDelay = getComputerDenDelay();
-                            Log.e("延时", "maxSecond: " + maxSecond);
-                            if (maxSecond > 0 && maxSecond < maxDelay && maxSecond > 15000) {
+                            Log.e("延时1", "maxDelay: " + maxDelay);//9010
+                            Log.e("延时2", "maxSecond: " + maxSecond);//5000
+                            if (maxSecond > 0  &&  maxSecond < maxDelay) {
                                 show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
                                 return;
                             }
@@ -222,6 +219,10 @@ public class SetDelayTime extends BaseActivity {
                         } else {
                             show_Toast(checstr);
                         }
+                    })
+                    .setNeutralButton("退出", (dialog2, which) -> {
+                        dialog2.dismiss();
+                        finish();
                     })
                     .create();
             dialog.show();

@@ -36,16 +36,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.db.Defactory;
+import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
@@ -200,6 +206,8 @@ public class XingbangMain extends BaseActivity {
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
+                setDenatorType();//四川默认值
+                setFactory();//四川默认值
             }
         }.start();
         loadMoreData_all_lg();//查询雷管延时是否为0
@@ -271,7 +279,6 @@ public class XingbangMain extends BaseActivity {
             }
         }).start();
     }
-
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
 //        Log.e(TAG, "message: " + message.toString());
@@ -341,6 +348,28 @@ public class XingbangMain extends BaseActivity {
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
     }
 
+    private void setDenatorType() {
+        List<Denator_type> msg = getDaoSession().getDenator_typeDao().loadAll();
+        if(msg.size()==0){
+            Denator_type message = new Denator_type();
+            message.setDeTypeName("scyb");
+            message.setDeTypeSecond("10000");
+            message.setIsSelected("是");
+            getDaoSession().getDenator_typeDao().insert(message);
+        }
+
+    }
+    private void setFactory() {
+        List<Defactory> msg = getDaoSession().getDefactoryDao().loadAll();
+        if(msg.size()==0){
+            Defactory message = new Defactory();
+            message.setDeName("scyb");
+            message.setDeEntCode("56");
+            message.setDeFeatureCode("H");
+            message.setIsSelected("是");
+            getDaoSession().getDefactoryDao().insert(message);
+        }
+    }
 
     private void loginToSetEnv() {
 
@@ -543,6 +572,14 @@ public class XingbangMain extends BaseActivity {
                         return;
                     }
                 }
+                long time = System.currentTimeMillis();
+                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+
+//                if(time - endTime < 180000){//第二次启动时间不重置
+//                    int a =(int) (180000-(time - endTime))/1000+5;
+//                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a);
+//                    return;
+//                }
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
@@ -924,4 +961,79 @@ public class XingbangMain extends BaseActivity {
         }
 
     }
+
+
+    private TextView mOffTextView;
+    private Handler mOffHandler;
+    private java.util.Timer mOffTime;
+    private android.app.Dialog mDialog;
+    private void initDialog_fangdian(String tip,int daojishi) {
+        Log.e(TAG, "倒计时: "+daojishi);
+        mOffTextView = new TextView(this);
+        mOffTextView.setTextSize(25);
+        mOffTextView.setText(tip + "\n放电倒计时：");
+        mDialog = new AlertDialog.Builder(this)
+                .setTitle("系统提示")
+                .setCancelable(false)
+                .setView(mOffTextView)
+//                .setPositiveButton("确定", (dialog, id) -> {
+//                    mOffTime.cancel();//清除计时
+//                    stopXunHuan();//关闭后的一些操作
+//                })
+                .setNeutralButton("退出", (dialog, id) -> {
+                    dialog.cancel();
+                    mOffTime.cancel();
+                })
+                .setNegativeButton("继续", (dialog2, which) -> {
+                    dialog2.dismiss();
+                    String str5 = "起爆";
+                    Log.e("验证2", "Yanzheng: " + Yanzheng);
+                    Intent intent5;//金建华
+                    if (Yanzheng.equals("验证")) {
+                        intent5 = new Intent(this, VerificationActivity.class);
+                    } else {
+                        intent5 = new Intent(this, FiringMainActivity.class);
+                    }
+                    intent5.putExtra("dataSend", str5);
+                    startActivityForResult(intent5, 1);
+                })
+                .create();
+        mDialog.show();
+        mDialog.setCanceledOnTouchOutside(false);
+
+        mOffHandler = new Handler(msg -> {
+            if (msg.what > 0) {
+                //动态显示倒计时
+                mOffTextView.setText(tip + "\n放电倒计时：" + msg.what);
+            } else {
+                //倒计时结束自动关闭
+                if (mDialog != null) {
+                    mDialog.dismiss();
+
+                }
+//                off();//关闭后的操作
+                mOffTime.cancel();
+            }
+            return false;
+        });
+
+        //倒计时
+
+        mOffTime = new Timer(true);
+        TimerTask tt = new TimerTask() {
+            private int countTime = daojishi;
+
+            public void run() {
+                if (countTime > 0) {
+                    countTime--;
+                }
+                Log.e(TAG, "countTime: "+countTime );
+                Message msg = new Message();
+                msg.what = countTime;
+                mOffHandler.sendMessage(msg);
+            }
+        };
+        mOffTime.schedule(tt, 1000, 1000);
+    }
+
 }

@@ -301,11 +301,12 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     tvZjNum.setText(firstCount + "s");
                     break;
                 case 2:
-                    ziJianThread.exit=true;
+
                     Log.e("自检", "version: "+version );
                     Log.e("自检", "version_cloud: "+version_cloud );
                     if(!version_cloud.contains(version)){
-                        show_Toast("升级bin文件");
+                        ziJianThread.exit=true;
+                        show_Toast("当前系统程序有新版本,正在升级,请稍等!");
                         finish();
                         Intent intent = new Intent(this,UpgradeActivity.class);
                         startActivity(intent);

@@ -5,6 +5,7 @@ import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 import android.DeviceControl;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -572,7 +573,7 @@ public class UpgradeActivity extends SerialPortActivity {
                     mTvCmd.setText(mTip);
                     mTvCmd.setBackgroundResource(R.color.green);
                     Log.e("UpgradeActivity", "int_E4_10_Number == mNumber_E2: " + int_E4_10_Number + " == " + mNumber_E2);
-
+                    dialog();
                 } else {
                     mTip = mTip + "\n使用\n" + mDownLoadFilePath + "\n路径下 bin文件升级失败";
                     mTvCmd.setText(mTip);
@@ -596,6 +597,22 @@ public class UpgradeActivity extends SerialPortActivity {
                 Log.e("UpgradeActivity", "cmd指令没有做处理->" + cmd);
                 break;
         }
+    }
+
+    private void dialog() {
+        AlertDialog dialog = new AlertDialog.Builder(UpgradeActivity.this)
+                .setTitle("系统程序升级成功")//设置对话框的标题//"成功起爆"
+                .setMessage("系统程序升级成功,请点击确认后,重新进入程序!")//设置对话框的内容"本次任务成功起爆！"
+                //设置对话框的按钮
+                .setNegativeButton("确认", (dialog13, which) -> {
+                    dialog13.dismiss();
+                    finish();
+                })
+//                .setNeutralButton("确认", (dialog2, which) -> {
+//                    dialog2.dismiss();
+//                })
+                .create();
+        dialog.show();
     }
 
     private void E0() {

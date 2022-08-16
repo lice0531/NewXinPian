@@ -233,6 +233,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "elevenCount: "+elevenCount );
         //级联接收命令注册的eventbus
         EventBus.getDefault().register(this);
+
     }
 
     private void initView() {
@@ -457,7 +458,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
                     if (!chongfu) {
-                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
+                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",5);//弹出框
                     } else {
                         initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                     }
@@ -1030,9 +1031,8 @@ public class FiringMainActivity extends SerialPortActivity {
         long time = System.currentTimeMillis();
         long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
         Log.e(TAG, "time: " + time);
-        /***
-         * 发送初始化命令
-         */
+        Log.e(TAG, "endTime: " + endTime);
+        //发送初始化命令
         if (!firstThread.isAlive()) {
             if (denatorCount == 0) {
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -1050,23 +1050,27 @@ public class FiringMainActivity extends SerialPortActivity {
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
-            } else if (time - endTime < 180000) {
+            }else if(time - endTime < 180000){
+                int a =(int) (180000-(time - endTime))/1000+5;
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("正在放电")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待"+a+"秒后再进入起爆页面进行检测。")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog13, which) -> {
+                        .setNeutralButton("退出", (dialog13, which) -> {
                             dialog13.dismiss();
                             finish();
                         })
-                        .setNeutralButton("继续", (dialog2, which) -> {
+                        .setNegativeButton("继续", (dialog2, which) -> {
                             dialog2.dismiss();
                             firstThread.start();
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
-            } else {
+
+//                initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行起爆",a);
+            }
+            else {
                 firstThread.start();
             }
 
@@ -1450,7 +1454,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",5);//弹出框
                     }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4500u ，全错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
@@ -1458,7 +1462,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况",5);//弹出框
                     }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
@@ -2059,7 +2063,7 @@ public class FiringMainActivity extends SerialPortActivity {
         sendCmd(initBuf2);
     }
 
-    private void initDialog(String tip) {
+    private void initDialog(String tip,int daojishi) {
 
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
@@ -2102,7 +2106,73 @@ public class FiringMainActivity extends SerialPortActivity {
 
         mOffTime = new Timer(true);
         TimerTask tt = new TimerTask() {
-            private int countTime = 5;
+            private int countTime = daojishi;
+
+            public void run() {
+                if (countTime > 0) {
+                    countTime--;
+                }
+                if (countTime == 118) {
+                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    sendCmd(reCmd);
+                }
+                Message msg = new Message();
+                msg.what = countTime;
+                mOffHandler.sendMessage(msg);
+            }
+        };
+        mOffTime.schedule(tt, 1000, 1000);
+    }
+
+    private void initDialog_fangdian(String tip,int daojishi) {
+
+        mOffTextView = new TextView(this);
+        mOffTextView.setTextSize(25);
+        mOffTextView.setText(tip + "\n放电倒计时：");
+        mDialog = new AlertDialog.Builder(this)
+                .setTitle("系统提示")
+                .setCancelable(false)
+                .setView(mOffTextView)
+//                .setPositiveButton("确定", (dialog, id) -> {
+//                    mOffTime.cancel();//清除计时
+//                    stopXunHuan();//关闭后的一些操作
+//                })
+                .setNeutralButton("退出", (dialog, id) -> {
+                    dialog.cancel();
+                    mOffTime.cancel();
+                    closeThread();
+                    closeForm();
+                })
+                .setNegativeButton("继续", (dialog2, which) -> {
+                            dialog2.dismiss();
+                            firstThread.start();
+                        })
+                .create();
+        mDialog.show();
+        mDialog.setCanceledOnTouchOutside(false);
+
+        mOffHandler = new Handler(msg -> {
+            if (msg.what > 0) {
+                //动态显示倒计时
+                mOffTextView.setText(tip + "\n放电倒计时：" + msg.what);
+            } else {
+                //倒计时结束自动关闭
+                if (mDialog != null) {
+                    mDialog.dismiss();
+
+                }
+//                off();//关闭后的操作
+                firstThread.start();
+                mOffTime.cancel();
+            }
+            return false;
+        });
+
+        //倒计时
+
+        mOffTime = new Timer(true);
+        TimerTask tt = new TimerTask() {
+            private int countTime = daojishi;
 
             public void run() {
                 if (countTime > 0) {
@@ -2276,4 +2346,6 @@ public class FiringMainActivity extends SerialPortActivity {
             show_Toast("命令错误");
         }
     }
+
+
 }

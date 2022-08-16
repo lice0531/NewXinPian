@@ -218,28 +218,22 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
         if ("是".equals(defactory.getIsSelected())) {
             factoryselected.setChecked(true);
         }
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String a = factoryname.getText().toString().trim();
-                String b = factorycode.getText().toString().trim();
-                String c = factoryfea.getText().toString().trim();
-                String d = "否";
-                if (factoryselected.isChecked()) {
-                    d = "是";
-                }
-
-                updateFactory(a, b, c, d, id);
-                getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
-                //    将输入的用户名和密码打印出来
-                show_Toast(getString(R.string.text_error_tip38));
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String a = factoryname.getText().toString().trim();
+            String b = factorycode.getText().toString().trim();
+            String c = factoryfea.getText().toString().trim();
+            String d = "否";
+            if (factoryselected.isChecked()) {
+                d = "是";
             }
+
+            updateFactory(a, b, c, d, id);
+            getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
+            //    将输入的用户名和密码打印出来
+            show_Toast(getString(R.string.text_error_tip38));
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
-            }
         });
         builder.show();
     }
@@ -305,7 +299,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
                     String facname = et_factory_name.getText().toString();
                     String faccode = et_factory_code.getText().toString();
                     String facTe = et_factory_feature.getText().toString().toUpperCase();//转成大写
-                    String facselected = "0";
+                    String facselected = "否";
                     if (et_factory_selected.isChecked()) {
                         facselected = "是";
                     }

@@ -2,8 +2,6 @@ package android_serialport_api.xingbang.db;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-import android.content.Context;
-import android.os.Message;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -272,7 +270,7 @@ public class GreenDaoMaster {
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
-                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+//                Log.e("查询数据库中是否有对应的数据", "db: " + db);
                 db.setDenatorId(uid);
                 db.setZhu_yscs(yscs);//有延时参数就更新延时参数
                 getDaoSession().getDenatorBaseinfoDao().update(db);
@@ -334,6 +332,14 @@ public class GreenDaoMaster {
      */
     public static void delAllMessage() {
         getDaoSession().getShouQuanDao().deleteAll();
+    }
+    /**
+     * 从数据库表中拿数据
+     *
+     * @return
+     */
+    public static List<ShouQuan> getAllShouQuan() {
+        return getDaoSession().getShouQuanDao().loadAll();
     }
 
     /**

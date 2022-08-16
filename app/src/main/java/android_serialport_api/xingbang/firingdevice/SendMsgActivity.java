@@ -32,6 +32,9 @@ import android.widget.Toast;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -102,6 +105,7 @@ public class SendMsgActivity extends BaseActivity {
     private String mRegion;     // 区域
     private Handler mHandler_0 = new Handler();     // UI处理
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,9 +125,9 @@ public class SendMsgActivity extends BaseActivity {
 
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText("本机IP地址:" + getlocalip());
-        if(getlocalip().contains(".")){
-            String[] b =getlocalip().split("\\.");
-            textIpStart.setText(b[0]+"."+b[1]+"."+b[2]+".");
+        if (getlocalip().contains(".")) {
+            String[] b = getlocalip().split("\\.");
+            textIpStart.setText(b[0] + "." + b[1] + "." + b[2] + ".");
         }
 
     }
@@ -207,6 +211,7 @@ public class SendMsgActivity extends BaseActivity {
             }
         }).start();
     }
+
     //获取雷管
     private void loadMoreData() {
         list_uid.clear();
@@ -227,13 +232,14 @@ public class SendMsgActivity extends BaseActivity {
         }
         denatorCount = list.size();
     }
+
     //导出数据
     private void loadMoreData_out() {
         list_uid.clear();
         StringBuilder sb = new StringBuilder();
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
         for (int i = 0; i < list.size(); i++) {
-            sb.append(list.get(i).getShellBlastNo()).append("#").append(list.get(i).getDelay()).append(",");
+            sb.append(list.get(i).getShellBlastNo()).append("#").append(list.get(i).getDenatorId()).append("#").append(list.get(i).getZhu_yscs()).append(",");
             VoBlastModel item = new VoBlastModel();
             item.setBlastserial(list.get(i).getBlastserial());
             item.setSithole(list.get(i).getSithole());
@@ -256,6 +262,7 @@ public class SendMsgActivity extends BaseActivity {
     private int getMaxNumberNo() {
         return LitePal.max(DenatorBaseinfo.class, "blastserial", int.class);
     }
+
     /**
      * 检查重复的数据
      *
@@ -270,8 +277,9 @@ public class SendMsgActivity extends BaseActivity {
             return false;
         }
     }
+
     /**
-     *注册雷管
+     * 注册雷管
      */
     private int registerDetonator(String leiguan) {
 
@@ -290,7 +298,7 @@ public class SendMsgActivity extends BaseActivity {
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
             denator.setBlastserial(maxNo);
-            denator.setSithole(maxNo+"");
+            denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
             if (a.length == 3) {
                 denator.setShellBlastNo(a[2]);
@@ -345,8 +353,10 @@ public class SendMsgActivity extends BaseActivity {
                 }).start();
                 break;
             case R.id.btn_read_log:
-                String log = Utils.fenxiLog(path);
-                registerLog(log);
+//                String log = Utils.fenxiLog(path);
+//
+//                registerLog(log);
+                readCVS();
                 break;
             case R.id.but_send://发送
                 StringBuffer sb = new StringBuffer();
@@ -364,7 +374,7 @@ public class SendMsgActivity extends BaseActivity {
 
 //                    Log.e("添加信息", "sb: " + (list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ","));
                 }
-                String ip = textIpStart.getText().toString()+textSetviceIp.getText().toString();
+                String ip = textIpStart.getText().toString() + textSetviceIp.getText().toString();
                 if (TextUtils.isEmpty(ip)) {
                     show_Toast("ip地址异常，请检查网络是否连接");
                     return;
@@ -701,11 +711,11 @@ public class SendMsgActivity extends BaseActivity {
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            Log.e("线程报错", "----UnknownHostException----"+e.toString());
+            Log.e("线程报错", "----UnknownHostException----" + e.toString());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            Log.e("线程报错", "----IOException----"+e.toString());
+            Log.e("线程报错", "----IOException----" + e.toString());
         }
     };
 
@@ -798,6 +808,7 @@ public class SendMsgActivity extends BaseActivity {
         }
         show_Toast("解析成功");
     }
+
     /**
      * 处理接收到的cmd命令
      */
@@ -820,7 +831,7 @@ public class SendMsgActivity extends BaseActivity {
      * 读取输入注册
      */
     private void registerDetonator_typeNew(String leiguan) {
-        String time =Utils.getDateFormatLong(new Date());
+        String time = Utils.getDateFormatLong(new Date());
         getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         String[] lg = leiguan.split(",");
         String shellNo;
@@ -868,6 +879,7 @@ public class SendMsgActivity extends BaseActivity {
             return false;
         }
     }
+
     /**
      * 创建菜单
      */
@@ -930,4 +942,54 @@ public class SendMsgActivity extends BaseActivity {
 
         Log.e("liyi_Region", "已选择" + str);
     }
+
+    private void readCVS() {
+        int i = 0;
+        String path = Environment.getExternalStorageDirectory() + "/xb/" + "list_data2.csv";
+        File f = new File(path);
+
+        if (!f.exists()) {
+            return;
+        }
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(f));
+            String line;
+            while ((line = br.readLine()) != null) {
+//                if (i == 0) {//去掉第一行文字表头
+//                    i = 1;
+//                    continue;
+//                }
+                String a[] = line.split(",", -1);
+                //,,,5620811H08989,085060B804,,,,,,,,,,,,,,
+          Log.e("写入文件数据",a[3]+"--"+a[4]);
+                String uid = "A62F400" + a[4].substring(0, 6);
+                String yscs = a[4].substring(6);
+                DenatorBaseinfo baseinfo = new DenatorBaseinfo();
+                baseinfo.setShellBlastNo(a[3]);
+                baseinfo.setDenatorId(uid);
+                baseinfo.setZhu_yscs(yscs);
+                baseinfo.setPiece("1");
+                getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
+
+                i++;
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("读取备份", "readCVS: 1");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("读取备份", "readCVS: 2");
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("读取备份", "readCVS: 3");
+            }
+        }
+    }
+
 }

@@ -838,7 +838,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 tempBaseInfo = write;
 
                                 String data = "";
-                                if (write.getDenatorId() == null) {
+                                if (write.getDenatorId() == null||write.getDenatorId().length()<8) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();

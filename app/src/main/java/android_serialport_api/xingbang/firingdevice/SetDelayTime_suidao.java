@@ -1,40 +1,28 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
@@ -48,14 +36,11 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.CustomSimpleCursorAdapter;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.LoadingDialog;
-import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.MyRecyclerView;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
-import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.MmkvUtils;
-import android_serialport_api.xingbang.utils.SharedPreferencesHelper;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -385,7 +370,7 @@ public class SetDelayTime_suidao extends BaseActivity {
             cursor.close();
         }
         maxSecond = Integer.parseInt(second);//类型转换异常
-
+        Log.e("隧道", "maxSecond: "+maxSecond );
     }
 
     /**
@@ -649,38 +634,46 @@ public class SetDelayTime_suidao extends BaseActivity {
                         .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
                         .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog13, which) -> {
+                        .setNegativeButton("继续", (dialog13, which) -> {
                             dialog13.dismiss();
-                        })
-                        .setNeutralButton("继续", (dialog2, which) -> {
-                            dialog2.dismiss();
-
+                            getTotalDelay();
                             hideInputKeyboard();
                             pb_show = 1;
                             runPbDialog();
                             saveData();
-                            new Thread(() -> {
-                                for (int i = 1; i < 21; i++) {
-                                    setSuidaoDelayTime(i);
-                                    // 区域 更新视图
-                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                                    pb_show = 0;
-                                }
-                            }).start();
+                            int totalDelay=getTotalDelay();
+                            if(totalDelay>maxSecond){
+                                show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
+                            }else {
+                                new Thread(() -> {
+                                    for (int i = 1; i < 21; i++) {
+                                        setSuidaoDelayTime(i);
+                                        // 区域 更新视图
+                                        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                            //进行清零
-                            if (setDelayTimeStartDelaytime1.getText().toString().equals("")) {
-                                totaldelay = 0;
-                                setDelayTimeStartDelaytime1.setText("0");
-                            } else {
-                                totaldelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
+                                    }
+                                }).start();
+
+                                //进行清零
+                                if (setDelayTimeStartDelaytime1.getText().toString().equals("")) {
+                                    totaldelay = 0;
+                                    setDelayTimeStartDelaytime1.setText("0");
+                                } else {
+                                    totaldelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
+                                }
+                                totalNum = 0;
+                                dangqianNum = 1;
+                                show_Toast("延时写入成功");
+                                Utils.writeRecord("-设置隧道延时成功");
+                                // 区域 更新视图
+                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                             }
-                            totalNum = 0;
-                            dangqianNum = 1;
-                            show_Toast("延时写入成功");
-                            Utils.writeRecord("-设置隧道延时成功");
-                            // 区域 更新视图
-                            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+                            pb_show = 0;
+                        })
+                        .setNeutralButton("退出", (dialog2, which) -> {
+                            dialog2.dismiss();
+
 
                         })
                         .create();
@@ -689,6 +682,31 @@ public class SetDelayTime_suidao extends BaseActivity {
 
                 break;
         }
+    }
+
+    private int getTotalDelay() {
+        int a =Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString())+
+                Integer.parseInt(etDuanDelaytime1.getText().toString())+
+                Integer.parseInt(etDuanDelaytime2.getText().toString())+
+                Integer.parseInt(etDuanDelaytime3.getText().toString())+
+                Integer.parseInt(etDuanDelaytime4.getText().toString())+
+                Integer.parseInt(etDuanDelaytime5.getText().toString())+
+                Integer.parseInt(etDuanDelaytime6.getText().toString())+
+                Integer.parseInt(etDuanDelaytime7.getText().toString())+
+                Integer.parseInt(etDuanDelaytime8.getText().toString())+
+                Integer.parseInt(etDuanDelaytime9.getText().toString())+
+                Integer.parseInt(etDuanDelaytime10.getText().toString())+
+                Integer.parseInt(etDuanDelaytime11.getText().toString())+
+                Integer.parseInt(etDuanDelaytime12.getText().toString())+
+                Integer.parseInt(etDuanDelaytime13.getText().toString())+
+                Integer.parseInt(etDuanDelaytime14.getText().toString())+
+                Integer.parseInt(etDuanDelaytime15.getText().toString())+
+                Integer.parseInt(etDuanDelaytime16.getText().toString())+
+                Integer.parseInt(etDuanDelaytime17.getText().toString())+
+                Integer.parseInt(etDuanDelaytime18.getText().toString())+
+                Integer.parseInt(etDuanDelaytime19.getText().toString())+
+                Integer.parseInt(etDuanDelaytime20.getText().toString());
+        return a;
     }
 
     private void runPbDialog() {
