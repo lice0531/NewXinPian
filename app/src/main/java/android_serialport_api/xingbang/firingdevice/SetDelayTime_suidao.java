@@ -643,7 +643,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                             saveData();
                             int totalDelay=getTotalDelay();
                             if(totalDelay>maxSecond){
-                                show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
+                                show_Toast("当前设置延时已超出最大值"+maxSecond+"限制,请重新设置延时");
                             }else {
                                 new Thread(() -> {
                                     for (int i = 1; i < 21; i++) {

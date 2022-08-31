@@ -230,7 +230,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         elevenCount = getMaxDelay() / 1000 + 1;
-        Log.e(TAG, "elevenCount: "+elevenCount );
+        Log.e(TAG, "elevenCount: " + elevenCount);
         //级联接收命令注册的eventbus
         EventBus.getDefault().register(this);
 
@@ -458,7 +458,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
                     if (!chongfu) {
-                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",5);//弹出框
+                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
                     } else {
                         initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                     }
@@ -772,6 +772,7 @@ public class FiringMainActivity extends SerialPortActivity {
      * 加载雷管信息
      */
     private void loadBlastModel() {
+        list_all_lg.clear();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
@@ -1050,26 +1051,27 @@ public class FiringMainActivity extends SerialPortActivity {
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
-            }else if(time - endTime < 180000){
-                int a =(int) (180000-(time - endTime))/1000+5;
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待"+a+"秒后再进入起爆页面进行检测。")//设置对话框的内容"本次任务成功起爆！"
-                        //设置对话框的按钮
-                        .setNeutralButton("退出", (dialog13, which) -> {
-                            dialog13.dismiss();
-                            finish();
-                        })
-                        .setNegativeButton("继续", (dialog2, which) -> {
-                            dialog2.dismiss();
-                            firstThread.start();
-                        })
-                        .create();
-                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
-
-//                initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行起爆",a);
             }
+//            else if(time - endTime < 180000){
+//                int a =(int) (180000-(time - endTime))/1000+5;
+//                AlertDialog dialog = new Builder(FiringMainActivity.this)
+//                        .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+//                        .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待"+a+"秒后再进入起爆页面进行检测。")//设置对话框的内容"本次任务成功起爆！"
+//                        //设置对话框的按钮
+//                        .setNeutralButton("退出", (dialog13, which) -> {
+//                            dialog13.dismiss();
+//                            finish();
+//                        })
+//                        .setNegativeButton("继续", (dialog2, which) -> {
+//                            dialog2.dismiss();
+//                            firstThread.start();
+//                        })
+//                        .create();
+//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+//                dialog.show();
+//
+////                initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行起爆",a);
+//            }
             else {
                 firstThread.start();
             }
@@ -1454,7 +1456,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",5);//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
                     }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4500u ，全错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
@@ -1462,7 +1464,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况",5);//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
                     }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
@@ -2063,7 +2065,7 @@ public class FiringMainActivity extends SerialPortActivity {
         sendCmd(initBuf2);
     }
 
-    private void initDialog(String tip,int daojishi) {
+    private void initDialog(String tip, int daojishi) {
 
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
@@ -2124,7 +2126,7 @@ public class FiringMainActivity extends SerialPortActivity {
         mOffTime.schedule(tt, 1000, 1000);
     }
 
-    private void initDialog_fangdian(String tip,int daojishi) {
+    private void initDialog_fangdian(String tip, int daojishi) {
 
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
@@ -2144,9 +2146,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     closeForm();
                 })
                 .setNegativeButton("继续", (dialog2, which) -> {
-                            dialog2.dismiss();
-                            firstThread.start();
-                        })
+                    dialog2.dismiss();
+                    firstThread.start();
+                    mOffTime.cancel();
+                })
                 .create();
         mDialog.show();
         mDialog.setCanceledOnTouchOutside(false);
@@ -2301,6 +2304,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         return 0;
     }
+
     /***
      * 得到最大序号
      * @return
@@ -2315,6 +2319,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         return 0;
     }
+
     /**
      * 级联接收命令代码 eventbus
      */

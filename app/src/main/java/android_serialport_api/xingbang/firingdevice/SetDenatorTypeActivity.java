@@ -39,6 +39,8 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.Utils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author zenghp
@@ -46,7 +48,8 @@ import android_serialport_api.xingbang.utils.Utils;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
-
+    @BindView(R.id.container)
+    LinearLayout container;
     public static final Uri uri = Uri.parse("content://android_serialport_api.xingbang.Defactory");
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
@@ -63,8 +66,10 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
         setContentView(R.layout.activity_set_denatort_ype_page);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
+
         ListView listView = this.findViewById(R.id.factory_listView);
         adapter = new SimpleCursorAdapter(SetDenatorTypeActivity.this, R.layout.denator_type_item,
                 null, new String[]{"deTypeName", "deTypeSecond", "isSelected"}, new int[]{R.id.de_Type_Name, R.id.de_Type_second, R.id.de_Type_isSelected},
@@ -74,10 +79,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
         getLoaderManager().initLoader(0, null, this);
 
         denator_type_Name = this.findViewById(R.id.denator_type_Name);
-        denator_type_Name.setOnFocusChangeListener((v, hasFocus) -> displayInputKeyboard(v, hasFocus));
         denator_type_second = this.findViewById(R.id.denator_type_second);
-        denator_type_second.setOnFocusChangeListener((v, hasFocus) -> displayInputKeyboard(v, hasFocus));
-
         et_factory_selected = this.findViewById(R.id.denator_type_isSelected);
 
         btn_return = findViewById(R.id.btn_factory_return);
@@ -129,6 +131,20 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
 
             }
         });
+
+        container.requestFocus();//获取焦点
+        //点击空白位置 隐藏软键盘
+        container.setOnTouchListener((v, event) -> {
+            if (null != SetDenatorTypeActivity.this.getCurrentFocus()) {
+                container.setFocusable(true);
+                container.setFocusableInTouchMode(true);
+                container.requestFocus();
+                InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                return mInputMethodManager.hideSoftInputFromWindow(SetDenatorTypeActivity.this.getCurrentFocus().getWindowToken(), 0);
+            }
+            return false;
+        });
+        hideInputKeyboard();//隐藏焦点
     }
 
     @Override
@@ -176,11 +192,10 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
     }
 
     public void hideInputKeyboard() {
-
         denator_type_Name.clearFocus();//取消焦点
         denator_type_second.clearFocus();
         et_factory_selected.clearFocus();
-
+        container.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
@@ -277,7 +292,9 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
                 getLoaderManager().restartLoader(1, null, SetDenatorTypeActivity.this);
                 //    将输入的用户名和密码打印出来
                 show_Toast(getString(R.string.text_error_tip38));
+                hideInputKeyboard();
             }
+
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
@@ -357,4 +374,5 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
         }
         return tipStr;
     }
+
 }

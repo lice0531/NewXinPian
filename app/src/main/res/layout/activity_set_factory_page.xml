@@ -27,7 +27,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -81,6 +83,7 @@
                 android:layout_marginRight="20dp"
                 android:maxLength="2"
                 android:inputType="number"
+                android:digits="0123456789"
                 android:padding="5dp"
                 android:hint="只能输入数字"
                 android:textColor="@color/rangle_fc_base"

@@ -315,10 +315,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         scanDecode.initService("true");//初始化扫描服务
 
         scanDecode.getBarCode(data -> {
-            if (data.length() == 19) {
-                Log.e("箱号", "getBarcode: " + data);
-                addXiangHao(data);
-            }
+//            if (data.length() == 19) {
+//                Log.e("箱号", "getBarcode: " + data);
+//                addXiangHao(data);
+//            }
             if (sanButtonFlag > 0) {
                 scanDecode.stopScan();
                 decodeBar(data);
@@ -546,22 +546,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         });
     }
 
-    /**
-     * 扫描箱号
-     */
-    private void addXiangHao(String data) {
-        char[] xh = data.toCharArray();
-        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
-        final String strNo = "00";
-        String a = xh[5] + "" + xh[6];
-        String endNo = Utils.XiangHao(a);
-        final String prex = String.valueOf(strNo1);
-        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
-        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);//添加
-        }).start();
-    }
+
 
     private void init() {
         container1 = (LinearLayout) findViewById(R.id.container1);
@@ -1281,7 +1266,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
 //            return -1;
 //        }
-        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
+
+        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
@@ -1300,15 +1286,21 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
             return -1;
         }
-        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode)) {
+        if (detonatorTypeNew != null) {//考虑到可以直接注册A6
+            facCode = Utils.getDetonatorShellToFactoryCodeStr(detonatorTypeNew.getShellBlastNo());
+        }
+        Log.e("查询生产数据库查管壳码", "factoryCode: " + factoryCode);
+        Log.e("查询生产数据库查管壳码", "facCode: " + facCode);
+//        Log.e("查询生产数据库查管壳码", "ShellBlastNo: " + detonatorTypeNew.getShellBlastNo());
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode)&&!facCode.equals("A6")) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             return -1;
         }
-
-        if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
-            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
-            return -1;
-        }
+        //验证特征码
+//        if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
+//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+//            return -1;
+//        }
         Log.e("查询生产数据库查管壳码", "detonatorId: " + detonatorId);
         if (setDelayTimeStartDelaytime.getText().length() == 0 && reEtF1.getText().length() == 0 && reEtF2.getText().length() == 0) {
             tipInfoFlag = 6;
@@ -1402,61 +1394,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         return 0;
     }
 
-    /**
-     * 生成序列号
-     */
-    private int insertDenator(String prex, int start, int end) {
-        if (end < start) return -1;
-        if (start < 0 || end > 99999) return -1;
-        String shellNo;
-        int maxNo = getMaxNumberNo();
-        int flag = 0;
-        ContentValues values = new ContentValues();
-        int reCount = 0;
-        for (int i = start; i <= end; i++) {
-            shellNo = prex + String.format("%05d", i);
-            if (checkRepeatShellNo(shellNo)) {
-                tipInfoFlag = 89;
-                flag = 1;
-                break;
-            }
-            int index = getEmptyDenator(-1);
-            if (index < 0) {//说明没有空余的序号可用
-                maxNo++;
-                values.put("blastserial", maxNo);
-                values.put("sithole", maxNo);
-                values.put("shellBlastNo", shellNo);
-                values.put("delay", 0);
-                values.put("regdate", Utils.getDateFormatLong(new Date()));
-                values.put("statusCode", "02");
-                values.put("statusName", "已注册");
-                values.put("errorCode", "FF");
-                values.put("errorName", "");
-                values.put("wire", "");//桥丝状态
-                //向数据库插入数据
-                db.insert("denatorBaseinfo", null, values);
-            } else {
-                values = new ContentValues();
-                values.put("shellBlastNo", shellNo);//key为字段名，value为值
-                values.put("statusCode", "");
-                values.put("statusName", "");
-                values.put("regdate", Utils.getDateFormatLong(new Date()));
-                values.put("statusCode", "02");
-                values.put("statusName", "已注册");
-                values.put("errorCode", "FF");
-                values.put("errorName", "");
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
-            }
-            reCount++;
-        }
-//        getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        pb_show = 0;
-        if (flag == 0) tipInfoFlag = 88;
-        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-//        Utils.saveFile();//把软存中的数据存入磁盘中
-        return reCount;
-    }
 
     /***
      * 得到最大序号
@@ -1758,28 +1695,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 break;
 
             case R.id.btn_inputOk:
-                hideInputKeyboard();
-                String checstr = checkData();
-                if (checstr == null || checstr.trim().length() < 1) {
-                    String st2Bit = edit_start_entBF2Bit_st.getText().toString();
-                    String stproDt = edit_start_entproduceDate_st.getText().toString();
-                    String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-                    String stsno = edit_start_entboxNoAndSerial_st.getText().toString();
-                    final String prex = st2Bit + stproDt + st1Bit;
-                    String edsno = edit_end_entboxNoAndSerial_ed.getText().toString();
-                    final int start = Integer.parseInt(stsno);
-                    final int end = Integer.parseInt(edsno);
-                    pb_show = 1;
-                    runPbDialog();
-                    new Thread(() -> {
-                        insertDenator(prex, start, end);
-                        Log.e("添加码", "prex: " + prex);
-                        Log.e("添加码", "start: " + start);
-                        Log.e("添加码", "end: " + end);
-                    }).start();
-                } else {
-                    show_Toast(checstr);
-                }
                 break;
 
             case R.id.re_et_f1:

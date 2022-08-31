@@ -231,6 +231,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
             getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
             //    将输入的用户名和密码打印出来
             show_Toast(getString(R.string.text_error_tip38));
+            hideInputKeyboard();
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 

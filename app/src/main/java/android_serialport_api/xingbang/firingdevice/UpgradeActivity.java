@@ -99,12 +99,17 @@ public class UpgradeActivity extends SerialPortActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public volatile Result mResult;             // 下载完成返回结果
-
+    private String shengji = "升级";
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        shengji = (String) bundle.get("dataSend");
+        Log.e(TAG, "传递-dataSend: "+shengji );
         mContext = this;
         initPower();
         // xb文件夹不存在则创建
@@ -120,17 +125,21 @@ public class UpgradeActivity extends SerialPortActivity {
 //        initSerialHelper();     // 初始化串口类
         initHandler();          // 初始化Handler
         initView();             // 初始化控件
-//        //直接下载
-        if (ContextCompat.checkSelfPermission(this, mArr_Permissions[0]) != PackageManager.PERMISSION_GRANTED
-                ||
-                ContextCompat.checkSelfPermission(this, mArr_Permissions[1]) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
-        } else {
-            if (IntervalUtil.isFastClick_2()) {
-                Download_File("KT50_V", ".bin");
+        if(shengji.equals("升级")){
+            //直接下载
+            if (ContextCompat.checkSelfPermission(this, mArr_Permissions[0]) != PackageManager.PERMISSION_GRANTED
+                    ||
+                    ContextCompat.checkSelfPermission(this, mArr_Permissions[1]) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
+            } else {
+                if (IntervalUtil.isFastClick_2()) {
+                    Download_File("KT50_V", ".bin");
+                }
             }
         }
+
+
     }
 
 
@@ -168,7 +177,7 @@ public class UpgradeActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
-                Log.e("发送命令", str);
+//                Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 e.printStackTrace();

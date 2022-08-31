@@ -209,7 +209,7 @@ public class SetDelayTime extends BaseActivity {
                             Log.e("延时1", "maxDelay: " + maxDelay);//9010
                             Log.e("延时2", "maxSecond: " + maxSecond);//5000
                             if (maxSecond > 0  &&  maxSecond < maxDelay) {
-                                show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
+                                show_Toast("当前设置延时已超出最大值"+maxSecond+"限制,请重新设置延时");
                                 return;
                             }
                             pb_show = 1;

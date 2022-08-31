@@ -174,7 +174,6 @@ public class TestDenatorActivity extends SerialPortActivity {
         initHandler();
 
 
-
         if (denatorCount < 1) {
             show_Toast(getResources().getString(R.string.text_error_tip30));
             closeThread();
@@ -190,28 +189,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         Log.e(TAG, "stage: " + stage);
-        long time = System.currentTimeMillis();
-        long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+
         sendOpenThread = new SendOpenPower();
-        if (time - endTime < 180000) {
-            AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
-                    .setTitle("正在放电")//设置对话框的标题//"成功起爆"
-                    .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测")//设置对话框的内容"本次任务成功起爆！"
-                    //设置对话框的按钮
-                    .setNegativeButton("退出", (dialog13, which) -> {
-                        dialog13.dismiss();
-                        finish();
-                    })
-                    .setNeutralButton("继续", (dialog2, which) -> {
-                        dialog2.dismiss();
-                        sendOpenThread.start();
-                    })
-                    .create();
-            dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-            dialog.show();
-        } else {
-            sendOpenThread.start();
-        }
+        sendOpenThread.start();
 
     }
 
@@ -508,7 +488,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             case 1:
                 if (firstCount == -10) {//未收到开启测试命令
 //                    if (firstCount == 400)
-                        show_Toast(getString(R.string.text_error_tip34));
+                    show_Toast(getString(R.string.text_error_tip34));
                     break;
                 }
                 if (busInfo != null) {//8秒后再显示电压电流
@@ -675,7 +655,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
-                } else if (errtotal>0&&busInfo.getBusCurrentIa() > (denatorCount * 12 *0.9)&&busInfo.getBusCurrentIa() < (denatorCount * 12 *1.1)) {
+                } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 12 * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
                     stopXunHuan();//检测完成
                 } else {
@@ -838,7 +818,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 tempBaseInfo = write;
 
                                 String data = "";
-                                if (write.getDenatorId() == null||write.getDenatorId().length()<8) {
+                                if (write.getDenatorId() == null || write.getDenatorId().length() < 8) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();
@@ -1203,6 +1183,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         };
         mOffTime.schedule(tt, 1000, 1000);
     }
+
     private void initDialog_tip(String tip) {
         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
@@ -1218,6 +1199,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .create();
         dialog.show();
     }
+
     private void initDialog_zanting(String tip) {
         chongfu = true;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)

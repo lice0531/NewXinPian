@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.firingdevice;
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -108,6 +109,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             GetFileName("KT50_V", ".bin");
         }
     }
+
     /**
      * 初始化FTP
      */
@@ -124,7 +126,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         if (type.equals(".bin")) {
             mGetFrom = 3;    // 从xb获得
         }
-        Log.e("是否有网", NetUtils.haveNetWork(this)+"");
+        Log.e("是否有网", NetUtils.haveNetWork(this) + "");
         // 网络判断
         if (!NetUtils.haveNetWork(this)) {
             return;
@@ -162,7 +164,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                                 time_0 = time_1;
                                 mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
                                 mDownLoadFileSize = fileSize;
-                                version_cloud=ftpFileName;
+                                version_cloud = ftpFileName;
                                 Log.e("Download_Bin_1", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
                             }
                             // 如果 这是第n个符合条件文件
@@ -194,8 +196,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             }
 
 
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -296,20 +298,18 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     private void initHandler() {
         busHandler = new Handler(message -> {
-            switch (message.what){
+            switch (message.what) {
                 case 1:
                     tvZjNum.setText(firstCount + "s");
                     break;
                 case 2:
 
-                    Log.e("自检", "version: "+version );
-                    Log.e("自检", "version_cloud: "+version_cloud );
-                    if(!version_cloud.contains(version)){
-                        ziJianThread.exit=true;
-                        show_Toast("当前系统程序有新版本,正在升级,请稍等!");
-                        finish();
-                        Intent intent = new Intent(this,UpgradeActivity.class);
-                        startActivity(intent);
+                    Log.e("自检", "version: " + version);
+                    Log.e("自检", "version_cloud: " + version_cloud);
+                    if (version_cloud != null && !version_cloud.contains(version)) {
+                        ziJianThread.exit = true;
+                        createDialog();
+
 
                     }
                     break;
@@ -389,21 +389,50 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
             byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
             sendCmd(powerCmd);
-        }if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
+        }
+        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
             String realyCmd1 = DefCommand.decodeCommand(Utils.bytesToHexFun(locatBuf));
-            String a =realyCmd1.substring(6);//2020031201
+            String a = realyCmd1.substring(6);//2020031201
             StringBuilder output = new StringBuilder();
-            for (int i = 0; i < a.length(); i+=2) {
-                String str = a.substring(i, i+2);
-                output.append((char)Integer.parseInt(str, 16));
+            for (int i = 0; i < a.length(); i += 2) {
+                String str = a.substring(i, i + 2);
+                output.append((char) Integer.parseInt(str, 16));
             }
-            Log.e("软件版本返回的命令", "output: "+output);
-            version=output.toString();
-            MmkvUtils.savecode("yj_version",output.toString());
+            Log.e("软件版本返回的命令", "output: " + output);
+            version = output.toString();
+            MmkvUtils.savecode("yj_version", output.toString());
             Message msg = new Message();
-            msg.what=2;
-            msg.obj=output.toString();
+            msg.what = 2;
+            msg.obj = output.toString();
             busHandler.sendMessage(msg);
         }
+    }
+
+    /***
+     * 建立对话框
+     */
+    public void createDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("升级提醒");//"说明"
+        builder.setMessage("检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
+        builder.setPositiveButton("进行更新", (dialog, which) -> {
+//            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
+            finish();
+            Intent intent = new Intent(this, UpgradeActivity.class);
+            intent.putExtra("dataSend", "升级");
+            startActivity(intent);
+            dialog.dismiss();
+        });
+//        builder.setNeutralButton("退出", (dialog, which) -> {
+//            dialog.dismiss();
+//            finish();
+//        });
+        builder.setNegativeButton("进入程序", (dialog, which) -> {
+            finish();
+            Intent intent = new Intent(this, XingbangMain.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+        builder.create().show();
     }
 }

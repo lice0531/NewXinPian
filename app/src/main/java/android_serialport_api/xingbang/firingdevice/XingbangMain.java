@@ -206,8 +206,8 @@ public class XingbangMain extends BaseActivity {
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
-                setDenatorType();//四川默认值
-                setFactory();//四川默认值
+                GreenDaoMaster.setDenatorType();//四川默认值
+                GreenDaoMaster.setFactory();//四川默认值
             }
         }.start();
         loadMoreData_all_lg();//查询雷管延时是否为0
@@ -348,29 +348,6 @@ public class XingbangMain extends BaseActivity {
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
     }
 
-    private void setDenatorType() {
-        List<Denator_type> msg = getDaoSession().getDenator_typeDao().loadAll();
-        if(msg.size()==0){
-            Denator_type message = new Denator_type();
-            message.setDeTypeName("scyb");
-            message.setDeTypeSecond("10000");
-            message.setIsSelected("是");
-            getDaoSession().getDenator_typeDao().insert(message);
-        }
-
-    }
-    private void setFactory() {
-        List<Defactory> msg = getDaoSession().getDefactoryDao().loadAll();
-        if(msg.size()==0){
-            Defactory message = new Defactory();
-            message.setDeName("scyb");
-            message.setDeEntCode("56");
-            message.setDeFeatureCode("H");
-            message.setIsSelected("是");
-            getDaoSession().getDefactoryDao().insert(message);
-        }
-    }
-
     private void loginToSetEnv() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(XingbangMain.this);
@@ -389,41 +366,38 @@ public class XingbangMain extends BaseActivity {
         username.requestFocus();
         username.findFocus();
 
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String a = username.getText().toString().trim();
-                String b = password.getText().toString().trim();
-                if (a.trim().length() < 1) {
-                    show_Toast(getString(R.string.text_alert_username));
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String a = username.getText().toString().trim();
+            String b = password.getText().toString().trim();
+            if (a.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_username));
 //                    dialogOn(dialog);//取消按钮不可点击
-                    return;
-                }
-                if (b.trim().length() < 1) {
-                    show_Toast(getString(R.string.text_alert_password));
-//                    dialogOn(dialog);
-                    return;
-                }
-                if (a.equals("xingbang") && b.equals("123456")) {
-                    String str1 = "设置";
-                    Intent intent = new Intent(XingbangMain.this, SetEnvMainActivity.class);
-                    intent.putExtra("dataSend", str1);
-                    startActivityForResult(intent, 1);
-                    dialog.dismiss();
-                } else if (!a.equals("xingbang")) {
-                    show_Toast("用户名错误");
-                    dialogOn(dialog);
-                } else if (!b.equals("123456")) {
-                    show_Toast("密码错误");
-                    dialogOn(dialog);
-                } else {
-                    show_Toast(getString(R.string.text_error_tip50));
-                    dialogOn(dialog);
-//                    dialog.dismiss();
-                }
-
-                //  builder.
+                return;
             }
+            if (b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                return;
+            }
+            if (a.equals("xingbang") && b.equals("123456")) {
+                String str1 = "设置";
+                Intent intent = new Intent(XingbangMain.this, SetEnvMainActivity.class);
+                intent.putExtra("dataSend", str1);
+                startActivityForResult(intent, 1);
+                dialog.dismiss();
+            } else if (!a.equals("xingbang")) {
+                show_Toast("用户名错误");
+                dialogOn(dialog);
+            } else if (!b.equals("123456")) {
+                show_Toast("密码错误");
+                dialogOn(dialog);
+            } else {
+                show_Toast(getString(R.string.text_error_tip50));
+                dialogOn(dialog);
+//                    dialog.dismiss();
+            }
+
+            //  builder.
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             //builder.
@@ -547,6 +521,13 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                long time = System.currentTimeMillis();
+                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                if(time - endTime < 180000){//第二次启动时间不重置
+                    int a =(int) (180000-(time - endTime))/1000+5;
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a,"组网");
+                    return;
+                }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);//金建华
@@ -572,14 +553,14 @@ public class XingbangMain extends BaseActivity {
                         return;
                     }
                 }
-                long time = System.currentTimeMillis();
-                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                 time = System.currentTimeMillis();
+                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
-//                if(time - endTime < 180000){//第二次启动时间不重置
-//                    int a =(int) (180000-(time - endTime))/1000+5;
-//                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a);
-//                    return;
-//                }
+                if(time - endTime < 180000){//第二次启动时间不重置
+                    int a =(int) (180000-(time - endTime))/1000+5;
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a,"起爆");
+                    return;
+                }
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
@@ -967,7 +948,9 @@ public class XingbangMain extends BaseActivity {
     private Handler mOffHandler;
     private java.util.Timer mOffTime;
     private android.app.Dialog mDialog;
-    private void initDialog_fangdian(String tip,int daojishi) {
+
+    private void initDialog_fangdian(String tip,int daojishi,String c) {
+        String str5 = c;
         Log.e(TAG, "倒计时: "+daojishi);
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
@@ -986,16 +969,21 @@ public class XingbangMain extends BaseActivity {
                 })
                 .setNegativeButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
-                    String str5 = "起爆";
-                    Log.e("验证2", "Yanzheng: " + Yanzheng);
                     Intent intent5;//金建华
-                    if (Yanzheng.equals("验证")) {
-                        intent5 = new Intent(this, VerificationActivity.class);
-                    } else {
-                        intent5 = new Intent(this, FiringMainActivity.class);
+                    if(str5.equals("组网")){
+                        intent5 = new Intent(this, TestDenatorActivity.class);
+                    }else {
+                        Log.e("验证2", "Yanzheng: " + Yanzheng);
+                        if (Yanzheng.equals("验证")) {
+                            intent5 = new Intent(this, VerificationActivity.class);
+                        } else {
+                            intent5 = new Intent(this, FiringMainActivity.class);
+                        }
                     }
+
                     intent5.putExtra("dataSend", str5);
                     startActivityForResult(intent5, 1);
+                    mOffTime.cancel();
                 })
                 .create();
         mDialog.show();
@@ -1012,7 +1000,8 @@ public class XingbangMain extends BaseActivity {
 
                 }
 //                off();//关闭后的操作
-                mOffTime.cancel();
+                mOffTime.cancel();//终止此计时器，丢弃任何当前计划的任务
+                mOffTime.purge();//从此计时器的任务队列中删除所有取消的任务
             }
             return false;
         });
@@ -1024,6 +1013,10 @@ public class XingbangMain extends BaseActivity {
             private int countTime = daojishi;
 
             public void run() {
+//                if(countTime==0){
+//                    mOffTime.cancel();
+//                    mOffTime.purge();
+//                }
                 if (countTime > 0) {
                     countTime--;
                 }

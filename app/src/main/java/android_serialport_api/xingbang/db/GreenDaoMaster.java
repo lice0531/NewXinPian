@@ -523,4 +523,27 @@ public class GreenDaoMaster {
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryShellBlastNoTypeNew(shellBlastNo);
     }
+
+    public static void setDenatorType() {
+        List<Denator_type> msg = getDaoSession().getDenator_typeDao().loadAll();
+        if(msg.size()==0){
+            Denator_type message = new Denator_type();
+            message.setDeTypeName("scyb");
+            message.setDeTypeSecond("10000");
+            message.setIsSelected("是");
+            getDaoSession().getDenator_typeDao().insert(message);
+        }
+
+    }
+    public static void setFactory() {
+        List<Defactory> msg = getDaoSession().getDefactoryDao().loadAll();
+        if(msg.size()==0){
+            Defactory message = new Defactory();
+            message.setDeName("scyb");
+            message.setDeEntCode("56");
+            message.setDeFeatureCode("H");
+            message.setIsSelected("是");
+            getDaoSession().getDefactoryDao().insert(message);
+        }
+    }
 }

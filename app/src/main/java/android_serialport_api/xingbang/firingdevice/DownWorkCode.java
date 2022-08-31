@@ -1321,7 +1321,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         saveHistory("history_dwdm", at_dwdm);//保存输入的经纬度
 
 
-        initAutoComplete("history_htid", at_htid);
+        initAutoComplete("history_htid", at_htid);  
         initAutoComplete("history_xmbh", at_xmbh);
         initAutoComplete("history_bprysfz", at_bprysfz);
         initAutoComplete("history_coordxy", at_coordxy);

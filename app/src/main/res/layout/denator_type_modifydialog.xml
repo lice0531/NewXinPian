@@ -1,126 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="#ffffff"
-    android:layout_height="match_parent" >
-    
-    	<LinearLayout
-        	android:id="@+id/fac_ll_1"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"   
-            android:layout_marginTop="15dp"   
-             android:orientation="horizontal"          
-            > 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text="@string/text_systip_8"
-               android:gravity="right"  
-               android:paddingRight="5dp"
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-			 <EditText
-				android:id="@+id/item_denator_type_Name"
-				android:layout_width="10dp"
-				android:layout_height="wrap_content"					
-				android:maxLength="20"
-				android:gravity="left" 
-				android:layout_weight="3"			
-			    android:padding="5dp"
-				 android:background="@drawable/translucent" 			
-			    android:textColor="@color/rangle_fc_base"
-			    android:textSize="@dimen/childPageEditFontSize"    
-				android:hint="@string/text_systip_8"
-			/>
-			 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text=""   
-               android:gravity="left"  
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-        </LinearLayout>
-        
-   		<LinearLayout
-   		    android:id="@+id/fac_ll_2"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"  
-            android:layout_below="@id/fac_ll_1" 
-             android:orientation="horizontal"           
-            > 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text="@string/text_systip_9"
-               android:gravity="right"  
-               android:paddingRight="5dp"
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-			 <EditText
-				android:id="@+id/item_denator_type_second"
-				android:layout_width="10dp"
-				android:layout_height="wrap_content"					
-				android:maxLength="30"
-				android:gravity="left" 
-				android:layout_weight="3"			
-			    android:padding="5dp"
-				 android:background="@drawable/translucent" 			
-			    android:textColor="@color/rangle_fc_base"
-			    android:textSize="@dimen/childPageEditFontSize"   
-				android:hint="@string/text_systip_9"
-			/>
-		    <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text=""   
-               android:gravity="left"  
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-        </LinearLayout>
-        
-       <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"  
-             android:orientation="horizontal" 
-             android:id="@+id/fac_ll_3"   
-             android:layout_marginBottom="15dp"   
-             android:layout_below="@id/fac_ll_2"       
-            > 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text="@string/text_systip_10"
-               android:gravity="right"  
-               android:paddingLeft="5dp"
-               android:layout_marginTop="5dp" 
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-			
-			 <CheckBox 
-			    android:id="@+id/denator_type_isSelected" 
-			    android:layout_width="wrap_content" 
-			    android:layout_height="wrap_content" 
-			    android:maxLength="2"
-				android:gravity="left" 
-				android:layout_marginLeft="5dp" 
-				android:layout_weight="3"	
-		        
-			   android:button="@drawable/trade_checkbox_style"			   
-			    />
-		    <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text=""   
-               android:gravity="left"  
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-        </LinearLayout>
-  
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:id="@+id/fac_ll_1"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="5dp"
+            android:text="@string/text_systip_8"
+            android:textSize="@dimen/childPageLabelFontSize" />
+
+        <EditText
+            android:id="@+id/item_denator_type_Name"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/translucent"
+            android:gravity="left"
+            android:hint="@string/text_systip_8"
+            android:maxLength="20"
+            android:padding="5dp"
+            android:textColor="@color/rangle_fc_base"
+            android:textSize="@dimen/childPageEditFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childPageLabelFontSize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fac_ll_2"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/fac_ll_1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="5dp"
+            android:text="@string/text_systip_9"
+            android:textSize="@dimen/childPageLabelFontSize" />
+
+        <EditText
+            android:id="@+id/item_denator_type_second"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/translucent"
+            android:digits="0123456789"
+            android:gravity="left"
+            android:hint="@string/text_systip_9"
+            android:inputType="number"
+            android:maxLength="30"
+            android:padding="5dp"
+            android:textColor="@color/rangle_fc_base"
+            android:textSize="@dimen/childPageEditFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childPageLabelFontSize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fac_ll_3"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/fac_ll_2"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingLeft="5dp"
+            android:text="@string/text_systip_10"
+            android:textSize="@dimen/childPageLabelFontSize" />
+
+        <CheckBox
+            android:id="@+id/denator_type_isSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="3"
+            android:button="@drawable/trade_checkbox_style"
+            android:gravity="left"
+
+            android:maxLength="2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childPageLabelFontSize" />
+    </LinearLayout>
+
 
 </RelativeLayout>
