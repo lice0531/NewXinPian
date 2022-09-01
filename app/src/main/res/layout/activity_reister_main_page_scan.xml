@@ -329,7 +329,7 @@
                         android:layout_marginTop="8dp">
 
                         <Button
-                            android:id="@+id/re_btn_f1"
+                            android:id="@+id/btn_f1"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
                             android:layout_height="45dp"
@@ -368,7 +368,7 @@
                         android:layout_marginTop="8dp">
 
                         <Button
-                            android:id="@+id/re_btn_f2"
+                            android:id="@+id/btn_f2"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
                             android:layout_height="45dp"

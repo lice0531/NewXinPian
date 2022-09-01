@@ -15,7 +15,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,14 +26,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +49,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import android_serialport_api.xingbang.BuildConfig;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
@@ -115,11 +111,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     EditText et_startDelay;
     @BindView(R.id.textView5)
     TextView textView5;
-    @BindView(R.id.re_btn_f1)
+    @BindView(R.id.btn_f1)
     Button reBtnF1;
     @BindView(R.id.re_et_f1)
     EditText reEtF1;
-    @BindView(R.id.re_btn_f2)
+    @BindView(R.id.btn_f2)
     Button reBtnF2;
     @BindView(R.id.re_et_f2)
     EditText reEtF2;
@@ -1809,7 +1805,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     int flag1 = 0;
     int flag2 = 0;
 
-    @OnClick({R.id.btn_scanReister, R.id.re_btn_f1, R.id.re_btn_f2, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
+    @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
             R.id.btn_ReisterScanStart_ed})
     public void onViewClicked(View view) {
@@ -1866,7 +1862,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
                 break;
-            case R.id.re_btn_f1:
+            case R.id.btn_f1:
                 hideInputKeyboard();
                 if (reEtF1.getText().equals("")) {
                     show_Toast("当前设置延时为空,请重新设置");
@@ -1900,7 +1896,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
                 break;
-            case R.id.re_btn_f2:
+            case R.id.btn_f2:
                 hideInputKeyboard();
                 if (reEtF2.getText().toString().equals("")) {
                     show_Toast("当前设置延时为空,请重新设置");

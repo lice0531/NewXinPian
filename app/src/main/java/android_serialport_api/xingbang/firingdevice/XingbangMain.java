@@ -206,8 +206,8 @@ public class XingbangMain extends BaseActivity {
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
-                GreenDaoMaster.setDenatorType();//四川默认值
-                GreenDaoMaster.setFactory();//四川默认值
+                GreenDaoMaster.setDenatorType();//延时最大值默认值
+//                GreenDaoMaster.setFactory();//厂家码默认值
             }
         }.start();
         loadMoreData_all_lg();//查询雷管延时是否为0

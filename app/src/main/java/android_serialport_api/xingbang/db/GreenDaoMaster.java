@@ -546,4 +546,14 @@ public class GreenDaoMaster {
             getDaoSession().getDefactoryDao().insert(message);
         }
     }
+
+    /***
+     *
+     * @param duan
+     * @return
+     */
+    public List<DenatorBaseinfo> queryLeiguanDuan(int duan) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan)).list();
+    }
 }
