@@ -361,12 +361,14 @@ public class GreenDaoMaster {
     /**
      * 删除某一发雷管
      */
-    public void deleteDetonator(String shell) {
+    public void deleteDetonator(String gkm) {
         DenatorBaseinfo entity = mDeantorBaseDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm))
                 .unique();
-        mDeantorBaseDao.delete(entity);
+        if(entity!=null){
+            mDeantorBaseDao.delete(entity);
+        }
     }
 
 
