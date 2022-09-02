@@ -213,6 +213,7 @@
 
     <string name="text_list_Serial">序号</string>
     <string name="text_list_kong">孔号</string>
+    <string name="text_list_duan">段号</string>
     <string name="text_list_guan">管壳码</string>
     <string name="text_list_delay">延时</string>
     <string name="text_list_state">状态</string>

@@ -26,7 +26,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "denatorIdSup text, "//从芯片码
             + "zhu_yscs text, "//主芯片参数
             + "cong_yscs text, "//从芯片参数
-            + "piece text "//区域
+            + "piece text, "//区域
+            + "duan text ,"//段
+            + "duanNo text "//段序号
             + ")";
     public static final String CREATE_DENATO_ALL = "create table denatorBaseinfo_all ("
             + "id integer primary key autoincrement, "

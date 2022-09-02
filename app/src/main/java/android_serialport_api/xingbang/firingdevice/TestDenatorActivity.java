@@ -419,8 +419,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         // 给ListView绑定内容
         ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+                new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
+                new int[]{R.id.X_item_no,R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1231,7 +1231,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
         errlistview.setVisibility(View.GONE);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo", "shellNo", "errorName", "delay"},
+                new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
                 new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);

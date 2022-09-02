@@ -658,6 +658,8 @@ public class XingbangMain extends BaseActivity {
                         baseinfo.setZhu_yscs(a[16]);
                         baseinfo.setCong_yscs(a[17]);
                         baseinfo.setPiece(a[18]);
+                        baseinfo.setDuan(Integer.parseInt(a[19]));
+                        baseinfo.setDuanNo(a[20]);
                     }
                     getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 } else {

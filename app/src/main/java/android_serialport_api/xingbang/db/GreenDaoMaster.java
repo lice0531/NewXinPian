@@ -108,7 +108,9 @@ public class GreenDaoMaster {
      */
     public void deleteErrLeiGuan(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     /**
@@ -143,7 +145,9 @@ public class GreenDaoMaster {
      */
     public DetonatorTypeNew queryDetonatorForTypeNew(String detonatorId) {
         Log.e("模糊查询", "detonatorId.substring(7): " + detonatorId.substring(5));//A621400FED518
-        List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.like("%" + detonatorId.substring(5))).list();
+        List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.DetonatorId.like("%" + detonatorId.substring(5)))
+                .list();
 //        List<DetonatorTypeNew> dt =detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.eq(detonatorId)).list();
         if (dt.size() >= 1) {
             return dt.get(0);
@@ -158,7 +162,9 @@ public class GreenDaoMaster {
     public DetonatorTypeNew queryShellBlastNoTypeNew(String shellBlastNo) {
         Log.e("通过管壳码获取芯片码", "shellBlastNo: " + shellBlastNo);
 
-        List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
+        List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo))
+                .list();
 //        Log.e("通过管壳码获取芯片码", "dt.size(): " + dt.size());
         if (dt.size() >= 1) {
             return dt.get(0);
@@ -255,7 +261,7 @@ public class GreenDaoMaster {
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
-                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "," + list.get(i).getPiece() + "\n";
+                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "," + list.get(i).getPiece()+ "," + list.get(i).getDuan()+ "," + list.get(i).getDuanNo() + "\n";
             str = str + content;
         }
         return str;
@@ -398,6 +404,19 @@ public class GreenDaoMaster {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+    /**
+     * 查询雷管 区域正序(序号)
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionAndDUanAsc(String piece,int duan) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
@@ -548,12 +567,13 @@ public class GreenDaoMaster {
     }
 
     /***
-     *
      * @param duan
      * @return
      */
-    public List<DenatorBaseinfo> queryLeiguanDuan(int duan) {
+    public List<DenatorBaseinfo> queryLeiguanDuan(int duan,String mRegion) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan)).list();
+        Log.e("查询", "段位雷管: " );
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
     }
 }

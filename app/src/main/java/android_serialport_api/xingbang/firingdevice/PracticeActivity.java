@@ -118,7 +118,7 @@ public class PracticeActivity extends BaseActivity {
     Button but_sendMsg;
 
     private DatabaseHelper mMyDatabaseHelper;
-    private List<VoBlastModel> list_uid = new ArrayList<>();
+    private List<DenatorBaseinfo> list_uid = new ArrayList<>();
     private SQLiteDatabase db;
     private Handler busHandler = null;//总线信息
     private static volatile int stage;
@@ -259,39 +259,16 @@ public class PracticeActivity extends BaseActivity {
     private void loadMoreData() {
         list_uid.clear();
 
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (int i = 0; i < list.size(); i++) {
-            VoBlastModel item = new VoBlastModel();
-            item.setBlastserial(list.get(i).getBlastserial());
-            item.setSithole(list.get(i).getSithole());
-            item.setDelay((short) list.get(i).getDelay());
-            item.setShellBlastNo(list.get(i).getShellBlastNo());
-            item.setErrorCode(list.get(i).getErrorCode());
-            item.setErrorName(list.get(i).getErrorName());
-            item.setStatusCode(list.get(i).getStatusCode());
-            item.setStatusName(list.get(i).getStatusName());
-            item.setDenatorId(list.get(i).getDenatorId());
-            list_uid.add(item);
-        }
-        denatorCount = list.size();
+        list_uid = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        denatorCount = list_uid.size();
     }
 
     private void loadMoreData_out() {
         list_uid.clear();
         StringBuilder sb = new StringBuilder();
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (int i = 0; i < list.size(); i++) {
-            sb.append(list.get(i).getShellBlastNo()).append("#").append(list.get(i).getDelay()).append(",");
-            VoBlastModel item = new VoBlastModel();
-            item.setBlastserial(list.get(i).getBlastserial());
-            item.setSithole(list.get(i).getSithole());
-            item.setDelay((short) list.get(i).getDelay());
-            item.setShellBlastNo(list.get(i).getShellBlastNo());
-            item.setErrorCode(list.get(i).getErrorCode());
-            item.setErrorName(list.get(i).getErrorName());
-            item.setStatusCode(list.get(i).getStatusCode());
-            item.setStatusName(list.get(i).getStatusName());
-            list_uid.add(item);
+        list_uid = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        for (int i = 0; i < list_uid.size(); i++) {
+            sb.append(list_uid.get(i).getShellBlastNo()).append("#").append(list_uid.get(i).getDelay()).append(",");
         }
 
         Utils.writeLeiGuan(sb.toString());
@@ -318,6 +295,10 @@ public class PracticeActivity extends BaseActivity {
             denator.setDenatorId(a[0]);
             if (a.length == 3) {
                 denator.setShellBlastNo(a[2]);
+            }
+            if (a.length == 4) {
+                denator.setDuanNo(a[3]);
+                denator.setDuan(Integer.parseInt(a[3].substring(0,1)));
             }
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
@@ -524,7 +505,7 @@ public class PracticeActivity extends BaseActivity {
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + ",");
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo()+ "#" + list_uid.get(i).getDuanNo() + ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
                     }

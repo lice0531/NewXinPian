@@ -110,13 +110,14 @@ public class Utils {
         return a;
     }
 
-    public static String addZero(String str, int lenght){
-        String shell=str;
-        for (int i=0;i<(lenght-str.length());i++){
-            shell="0"+shell;
+    public static String addZero(String str, int lenght) {
+        String shell = str;
+        for (int i = 0; i < (lenght - str.length()); i++) {
+            shell = "0" + shell;
         }
         return shell;
     }
+
     //管壳码转换雷管序号Id
     public static String DetonatorShellToSerialNo(String shellStr) {
 
@@ -169,9 +170,9 @@ public class Utils {
     public static String DetonatorShellToSerialNo_newXinPian(String shellStr) {
         //A621407FFFDE5
         //StringIndexOutOfBoundsException: length=4; index=5(直接注册会出现这个问题)
-        if(shellStr.length()==8){
+        if (shellStr.length() == 8) {
             return shellStr;
-        }else {
+        } else {
             return shellStr.substring(5);
         }
 
@@ -188,6 +189,7 @@ public class Utils {
 
     /**
      * 得到管壳码的字节
+     *
      * @param shellStr
      * @return
      */
@@ -379,17 +381,18 @@ public class Utils {
 
     /**
      * 新 芯片
+     *
      * @param facode
      * @param feature
      * @param denatorId
      */
-    public static String GetShellNoById_newXinPian(String facode,String feature,String denatorId){
+    public static String GetShellNoById_newXinPian(String facode, String feature, String denatorId) {
         //C0AA51170C090009003204E5FDFF0641A600330000E5FDFF064D96F5ECC0
-        Log.e("ID转换", "facode: "+facode+",feature: "+feature+",denatorId: " +denatorId);
-        String a=feature.substring(0,1);
-        String b=feature.substring(1);
+        Log.e("ID转换", "facode: " + facode + ",feature: " + feature + ",denatorId: " + denatorId);
+        String a = feature.substring(0, 1);
+        String b = feature.substring(1);
         //从20年开始为2,到30年要改为3
-        return facode + "2"+b+a+denatorId;
+        return facode + "2" + b + a + denatorId;
     }
 
 
@@ -783,8 +786,8 @@ public class Utils {
 
             if (!file.exists()) {
                 File dir = new File(file.getParent());
-                boolean a=dir.mkdirs();
-                boolean b=file.createNewFile();
+                boolean a = dir.mkdirs();
+                boolean b = file.createNewFile();
                 //把文件名存入到数据库中
 //                SysLog sysLog = new SysLog();
 //                sysLog.setFilename(Utils.getDate(new Date()));
@@ -859,8 +862,8 @@ public class Utils {
 
             if (!file.exists()) {
                 File dir = new File(file.getParent());
-                boolean a=dir.mkdirs();
-                boolean b=file.createNewFile();
+                boolean a = dir.mkdirs();
+                boolean b = file.createNewFile();
                 //把文件名存入到数据库中
                 SysLog sysLog = new SysLog();
                 sysLog.setFilename(Utils.getDate(new Date()));
@@ -1047,6 +1050,7 @@ public class Utils {
         }
         return "0";
     }
+
     /**
      * 读入TXT文件
      */
@@ -1066,7 +1070,7 @@ public class Utils {
             //网友推荐更加简洁的写法
             while ((line = br.readLine()) != null) {
                 // 一次读入一行数据
-                sb.append(line+ ",");
+                sb.append(line + ",");
             }
             return sb.toString();
         } catch (IOException e) {
@@ -1270,7 +1274,7 @@ public class Utils {
         if ((server_type != null && "2".equals(server_type.trim()))) {//中爆网
             String rev = netParamCheck(1, pro_bprysfz, pro_htid, pro_xmbh, pro_coordxy, server_type, equ_no, serverIpStr, server_portStr, server_httpStr, hisInsertFireDate);
             if (rev != null) {
-                showToast(context, "上传数据设置错误！1-"+rev, 3000);
+                showToast(context, "上传数据设置错误！1-" + rev, 3000);
                 return "1";
             } else {
                 String[] xy = pro_coordxy.split(",");
@@ -1700,30 +1704,35 @@ public class Utils {
      * 重新排序雷管
      */
     public static void deleteData(String mRegion) {
-        List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
-        Log.e("排序雷管", "list_lg: " + list_lg.size());
-        for (int i = 0; i < list_lg.size(); i++) {
-            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-            denatorBaseinfo.setId(list_lg.get(i).getId());
-            denatorBaseinfo.setBlastserial(i + 1);
-            denatorBaseinfo.setSithole((i + 1)+"");
-            denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
-            denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
-            denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
-            denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
-            denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
-            denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
-            denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
-            denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
-            denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
-            denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
-            denatorBaseinfo.setWire(list_lg.get(i).getWire());
-            denatorBaseinfo.setName(list_lg.get(i).getName());
-            denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
-            denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
-            denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
-            denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
-            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+
+//        Log.e("排序雷管", "list_lg: " + list_lg.size());
+        for (int d = 1; d < 21; d++) {
+            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion,d);
+            for (int i = 0; i < list_lg.size(); i++) {
+                DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+                denatorBaseinfo.setId(list_lg.get(i).getId());
+                denatorBaseinfo.setBlastserial(i + 1);
+                denatorBaseinfo.setSithole((i + 1) + "");
+                denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
+                denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
+                denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
+                denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
+                denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
+                denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
+                denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
+                denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
+                denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
+                denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
+                denatorBaseinfo.setWire(list_lg.get(i).getWire());
+                denatorBaseinfo.setName(list_lg.get(i).getName());
+                denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
+                denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
+                denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
+                denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
+                denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+                denatorBaseinfo.setDuanNo(d + "-" + (i + 1));
+                getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+            }
         }
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
@@ -1893,7 +1902,9 @@ public class Utils {
         }
     }
 
-    /** byte[]转Int */
+    /**
+     * byte[]转Int
+     */
     public static int bytesToInt(byte[] bytes) {
         int addr = bytes[0] & 0xFF;
         addr |= ((bytes[1] << 8) & 0xFF00);
@@ -1934,7 +1945,7 @@ public class Utils {
     }
 
     //新规则得到的管壳码转换雷管序号Id
-    public static String  ShellNo_NewDanLing(String shellStr) {
+    public static String ShellNo_NewDanLing(String shellStr) {
         String changjia = shellStr.substring(0, 2);
         String yearStr = shellStr.substring(2, 3);
         String monthStr = shellStr.substring(3, 5);
@@ -1942,15 +1953,15 @@ public class Utils {
         String teStr = shellStr.substring(7, 8);
         String noStr = shellStr.substring(8, 13);
         int day = Integer.parseInt(dayStr);
-        if(monthStr.equals("11")){
-            monthStr="12";
-        }else if(monthStr.equals("12")){
-            monthStr="13";
+        if (monthStr.equals("11")) {
+            monthStr = "12";
+        } else if (monthStr.equals("12")) {
+            monthStr = "13";
         }
         int t = Integer.parseInt(monthStr);
         char a = HEX_CHAR[t];
-        Log.e("转换", "shellStr: "+changjia+"2"+yearStr+a+dayStr+teStr+noStr );
-        return changjia+"2"+yearStr+a+dayStr+teStr+noStr;
+        Log.e("转换", "shellStr: " + changjia + "2" + yearStr + a + dayStr + teStr + noStr);
+        return changjia + "2" + yearStr + a + dayStr + teStr + noStr;
     }
 
     /**
@@ -2202,7 +2213,8 @@ public class Utils {
     }
 
     private static SimpleDateFormat simpleDateFormat = null;
-    public  static String formatDateTime(long time, String strPattern) {
+
+    public static String formatDateTime(long time, String strPattern) {
         if (TextUtils.isEmpty(strPattern)) {
             strPattern = "yyyy-MM-dd HH:mm:ss";
         }
@@ -2216,6 +2228,7 @@ public class Utils {
         }
         return simpleDateFormat == null ? "NULL" : simpleDateFormat.format(time);
     }
+
     public static String getLocationStr(BDLocation location, LocationClient locationClient) {
         if (null == location) {
             return null;
@@ -2267,7 +2280,7 @@ public class Utils {
         if (location.getPoiList() != null && !location.getPoiList().isEmpty()) {
             for (int i = 0; i < location.getPoiList().size(); i++) {
                 Poi poi = (Poi) location.getPoiList().get(i);
-                sb.append("\n"+" POI名称 : ");
+                sb.append("\n" + " POI名称 : ");
                 sb.append(poi.getName() + ", ");
                 sb.append("POI类型 : ");
                 sb.append(poi.getTags());
@@ -2287,7 +2300,7 @@ public class Utils {
             sb.append(version);
         }
 
-        return  sb.toString();
+        return sb.toString();
     }
 
 
