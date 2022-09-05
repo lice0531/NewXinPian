@@ -398,7 +398,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private String duan_set = "0";//是duan1还是duan2
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
-
+    private String TAG="单发注册";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1148,7 +1148,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
             // TODO 开启进度条
 
             new Thread(() -> {
-                int duan1 = getDuanByDenatorNo(shellBlastNo);
+                int duan1 =  new GreenDaoMaster().getDuan(shellBlastNo);
+                Log.e("单发删除", "duan1: "+duan1);
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
@@ -1190,60 +1191,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         builder.show();
     }
 
-    private void modifyBlastBaseInfo(String serialNo, String hoteNo, String delaytime, final String denatorNo) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
-        //    设置我们自己定义的布局文件作为弹出框的Content
-        builder.setView(view);
-        final EditText serialNoTxt = (EditText) view.findViewById(R.id.serialNo);
-        final EditText denatorNoTxt = (EditText) view.findViewById(R.id.denatorNo);
-        final EditText delaytimeTxt = (EditText) view.findViewById(R.id.delaytime);
-        serialNoTxt.setEnabled(false);
-        denatorNoTxt.setEnabled(false);
-        serialNoTxt.setText(serialNo);
-        denatorNoTxt.setText(denatorNo);
-        delaytimeTxt.setText(delaytime);
-        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-            //String a = username.getText().toString().trim();
-            String b = delaytimeTxt.getText().toString().trim();
-            if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                dialog.dismiss();
-            } else if (b.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(b) > maxSecond) {
-                show_Toast(getString(R.string.text_error_tip37));
-                dialog.dismiss();
-            } else {
-                Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
-                modifyDelayTime(selectDenatorId, b);
-//                getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                //    将输入的用户名和密码打印出来
-                show_Toast(getString(R.string.text_error_tip38));
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
-
-        });
-        builder.setNeutralButton("删除", (dialog, which) -> {
-            dialog.dismiss();
-            runPbDialog();
-            Utils.writeRecord("-单发删除:" + "-删除管壳码:" + denatorNo + "-延时" + delaytime);
-            new Thread(() -> {
-                String whereClause = "shellBlastNo = ?";
-                String[] whereArgs = {denatorNo};
-                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
-                Utils.deleteData(mRegion);//重新排序雷管
-//                getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                tipDlg.dismiss();
-                Utils.saveFile();//把软存中的数据存入磁盘中
-                pb_show = 1;
-            }).start();
-
-        });
-        builder.show();
-    }
 
     public int modifyDelayTime(String id, String delay) {
         ContentValues values = new ContentValues();
@@ -2679,11 +2626,16 @@ public class ReisterMainPage_line extends SerialPortActivity {
             case R.id.item_5:
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
                 // 显示提示
                 show_Toast("已选择 区域" + mRegion);
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
+                //初始化雷管数量
+                for (int i = 1; i < 21; i++) {
+                    showDuanSum(i);
+                }
                 return true;
 
             default:
@@ -3042,9 +2994,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
      * 显示雷管数量
      */
     private void showDuanSum(int a) {
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan = ?", new String[]{a + ""});
-        int totalNum = cursor.getCount();//得到数据的总条数
-        if (cursor != null) cursor.close();
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
+        int totalNum = list.size();//得到数据的总条数
+        Log.e(TAG, "当前区域段数totalNum: "+totalNum );
         switch (a) {
             case 1:
                 reNumF1.setText(totalNum + "");

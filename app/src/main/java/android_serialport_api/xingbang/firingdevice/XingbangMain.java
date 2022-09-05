@@ -635,7 +635,7 @@ public class XingbangMain extends BaseActivity {
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
-                if (a.length == 19) {
+                if (a.length == 21) {
 //向数据库插入数据
                     DenatorBaseinfo baseinfo = new DenatorBaseinfo();
                     baseinfo.setBlastserial(Integer.parseInt(a[1]));
@@ -658,6 +658,7 @@ public class XingbangMain extends BaseActivity {
                         baseinfo.setZhu_yscs(a[16]);
                         baseinfo.setCong_yscs(a[17]);
                         baseinfo.setPiece(a[18]);
+                    } else if (a.length > 18) {
                         baseinfo.setDuan(Integer.parseInt(a[19]));
                         baseinfo.setDuanNo(a[20]);
                     }

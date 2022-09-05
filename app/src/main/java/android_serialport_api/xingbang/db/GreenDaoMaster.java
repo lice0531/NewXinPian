@@ -576,4 +576,20 @@ public class GreenDaoMaster {
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
     }
+
+    /**
+     * 检查重复雷管
+     */
+    public int  getDuan(String shellBlastNo) {
+        DenatorBaseinfo a = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shellBlastNo))
+                .unique();
+        if(a!=null){
+            return a.getDuan();
+        }else {
+            return 1;
+        }
+
+    }
 }

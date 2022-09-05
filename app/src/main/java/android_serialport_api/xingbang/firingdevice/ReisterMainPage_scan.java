@@ -416,7 +416,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
 
-
+    private String TAG="扫码注册";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1339,7 +1339,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 Utils.deleteData(mRegion);//重新排序雷管
                 //更新每段雷管数量
                 Message msg = new Message();
-                msg.arg1 =getDuanByDenatorNo(shellBlastNo);
+                msg.arg1 =new GreenDaoMaster().getDuan(shellBlastNo);
                 mHandler_showNum.sendMessage(msg);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
@@ -3298,6 +3298,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
+                //初始化雷管数量
+                for (int i = 1; i < 21; i++) {
+                    showDuanSum(i);
+                }
                 return true;
 
             default:
@@ -3679,9 +3683,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 显示雷管数量
      */
     private void showDuanSum(int a) {
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan = ?", new String[]{a + ""});
-        int totalNum = cursor.getCount();//得到数据的总条数
-        if (cursor != null) cursor.close();
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
+        int totalNum = list.size();//得到数据的总条数
+        Log.e(TAG, "当前区域段数totalNum: "+totalNum );
         switch (a) {
             case 1:
                 reNumF1.setText(totalNum + "");

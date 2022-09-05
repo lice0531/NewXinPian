@@ -29,7 +29,7 @@
             android:gravity="left"
             android:hint="序号"
             android:maxLength="20"
-            android:numeric="integer"
+            android:focusable="false"
             android:padding="5dp"
             style="@style/alltextstyle"/>
 
@@ -67,7 +67,7 @@
             android:gravity="left"
             android:hint="管壳码"
             android:maxLength="13"
-            android:numeric="integer"
+            android:focusable="false"
             android:padding="5dp"
             style="@style/alltextstyle" />
 
