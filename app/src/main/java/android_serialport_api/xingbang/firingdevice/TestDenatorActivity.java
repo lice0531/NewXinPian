@@ -401,6 +401,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
+            item.put("duanNo", d.getDuanNo());
             item.put("shellNo", d.getShellBlastNo());
             item.put("errorName", d.getErrorName());
             item.put("delay", d.getDelay());
@@ -1232,7 +1233,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errlistview.setVisibility(View.GONE);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
                 new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+                new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

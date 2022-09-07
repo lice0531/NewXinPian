@@ -2613,6 +2613,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     /**
      * 点击item
      */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         mRegion = String.valueOf(item.getOrder());
