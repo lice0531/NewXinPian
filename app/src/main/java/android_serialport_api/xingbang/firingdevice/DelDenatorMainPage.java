@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,8 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +42,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
 import butterknife.BindView;
@@ -93,7 +98,6 @@ public class DelDenatorMainPage extends BaseActivity  {
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private boolean switchUid = true;//切换uid/管壳码
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,14 +120,14 @@ public class DelDenatorMainPage extends BaseActivity  {
     }
 
     private void initView() {
+        //         获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-//         获取 区域参数
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
-        // 设置标题区域
-        setTitleRegion(mRegion, -1);
+
+
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new DetonatorAdapter_Paper<>(this, 5);
@@ -142,8 +146,22 @@ public class DelDenatorMainPage extends BaseActivity  {
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
+//                    StringBuilder a = new StringBuilder();
+//                    if (mRegion1) {
+//                        a.append("1");
+//                    }if (mRegion2) {
+//                        a.append(",2");
+//                    }if (mRegion3) {
+//                        a.append(",3");
+//                    }if (mRegion4) {
+//                        a.append(",4");
+//                    }if (mRegion5) {
+//                        a.append(",5");
+//                    }
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
+                    // 显示提示
+//                    show_Toast("已选择 " + a);
                     break;
 
                 // 重新排序 更新视图
@@ -175,20 +193,17 @@ public class DelDenatorMainPage extends BaseActivity  {
         Builder builder = new Builder(DelDenatorMainPage.this);
         builder.setTitle(getString(R.string.text_alert_tip));//"提示"
         builder.setMessage(getString(R.string.text_alert_del_all));//是否全部删除注册雷管数
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                GreenDaoMaster master = new GreenDaoMaster();
-                Log.e(TAG, "全部删除:mRegion "+mRegion );
-                master.deleteLeiGuanFroPiace(mRegion);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            GreenDaoMaster master = new GreenDaoMaster();
+            Log.e(TAG, "全部删除:mRegion "+mRegion );
+            master.deleteLeiGuanFroPiace(mRegion);
 //                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null);
-                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
-                list_lg.clear();
-                refreshData();
-                dialog.dismiss();
-                Utils.saveFile();//把软存中的数据存入磁盘中
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-            }
+            db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
+            list_lg.clear();
+            refreshData();
+            dialog.dismiss();
+            Utils.saveFile();//把软存中的数据存入磁盘中
+            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
@@ -466,7 +481,7 @@ public class DelDenatorMainPage extends BaseActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         mRegion = String.valueOf(item.getOrder());
-
+        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
         switch (item.getItemId()) {
 
             case R.id.item_1:
@@ -497,9 +512,10 @@ public class DelDenatorMainPage extends BaseActivity  {
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
-        // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, region);
+//        // 保存区域参数
+//        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
     }
+
 }

@@ -91,7 +91,6 @@ public class TestICActivity extends SerialPortActivity {
     }
 
     private void loadMoreData() {
-
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
         denatorCount = list.size();
     }

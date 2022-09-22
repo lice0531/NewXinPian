@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,10 +10,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +39,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +71,7 @@ public class QueryCurrentDetail extends BaseActivity {
     private boolean isBottom = false;
     private Button btn_return;
     private Button btn_paixu;
-//    private LoadAdapter mAdapter;
+    //    private LoadAdapter mAdapter;
 //    private LoadListView mListView;
     private RecyclerView mListView;
     private Handler mHandler_ui = new Handler();     // UI处理
@@ -74,10 +79,13 @@ public class QueryCurrentDetail extends BaseActivity {
     private DetonatorAdapter_Paper<DenatorBaseinfo> mAdapter;
     private LinearLayoutManager linearLayoutManager;
     private boolean paixu_flag = true;//排序标志
-    private boolean switchUid =true;//切换uid/管壳码
+    private boolean switchUid = true;//切换uid/管壳码
     // 雷管列表
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
+    private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
+    private TextView totalbar_title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +98,21 @@ public class QueryCurrentDetail extends BaseActivity {
     }
 
     private void initView() {
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+
+        totalbar_title = findViewById(R.id.title_text);
+        totalbar_title.setText("删除");
+        ImageView iv_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setOnClickListener(v -> {
+            choiceQuYu();
+        });
+        iv_back.setOnClickListener(v -> finish());
+
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //获取 区域参数
@@ -116,7 +139,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 paixu_flag = true;
             }
         });
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         mListView = findViewById(R.id.denator_query_listview);
@@ -143,24 +166,56 @@ public class QueryCurrentDetail extends BaseActivity {
                 case 1001:
                     // 查询全部雷管 倒叙(序号)
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     mAdapter.setListData(mListData, 1);
                     txTotal.setText(getString(R.string.text_total) + mListData.size());
                     mAdapter.notifyDataSetChanged();
 
+                    StringBuilder a = new StringBuilder();
+                    if (mRegion1) {
+                        a.append("1");
+                    }
+                    if (mRegion2) {
+                        a.append(",2");
+                    }
+                    if (mRegion3) {
+                        a.append(",3");
+                    }
+                    if (mRegion4) {
+                        a.append(",4");
+                    }
+                    if (mRegion5) {
+                        a.append(",5");
+                    }
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegion(a.toString(), mListData.size());
                     break;
                 case 1005://按管壳码排序
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
 
+                    StringBuilder b = new StringBuilder();
+                    if (mRegion1) {
+                        b.append("1");
+                    }
+                    if (mRegion2) {
+                        b.append(",2");
+                    }
+                    if (mRegion3) {
+                        b.append(",3");
+                    }
+                    if (mRegion4) {
+                        b.append(",4");
+                    }
+                    if (mRegion5) {
+                        b.append(",5");
+                    }
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegion(b.toString(), mListData.size());
                     break;
             }
             return false;
@@ -168,14 +223,14 @@ public class QueryCurrentDetail extends BaseActivity {
 
         regkm.setOnClickListener(v -> {
             int a;
-            if(switchUid){
-                a=7;
-                switchUid=false;
+            if (switchUid) {
+                a = 7;
+                switchUid = false;
                 text_uid.setTextColor(Color.GREEN);
                 text_gkm.setTextColor(Color.BLACK);
-            }else {
-                a=3;
-                switchUid=true;
+            } else {
+                a = 3;
+                switchUid = true;
                 text_uid.setTextColor(Color.BLACK);
                 text_gkm.setTextColor(Color.GREEN);
             }
@@ -285,9 +340,53 @@ public class QueryCurrentDetail extends BaseActivity {
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, region);
+//        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
     }
 
+    private void choiceQuYu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+        builder.setTitle("请选择区域");
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
+        builder.setView(view);
+        final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
+        final CheckBox cb_mRegion2 = view.findViewById(R.id.dialog_cb_mRegion2);
+        final CheckBox cb_mRegion3 = view.findViewById(R.id.dialog_cb_mRegion3);
+        final CheckBox cb_mRegion4 = view.findViewById(R.id.dialog_cb_mRegion4);
+        final CheckBox cb_mRegion5 = view.findViewById(R.id.dialog_cb_mRegion5);
+        cb_mRegion1.setChecked(mRegion1);
+        cb_mRegion2.setChecked(mRegion2);
+        cb_mRegion3.setChecked(mRegion3);
+        cb_mRegion4.setChecked(mRegion4);
+        cb_mRegion5.setChecked(mRegion5);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+            if (cb_mRegion1.isChecked() || cb_mRegion2.isChecked() || cb_mRegion3.isChecked() || cb_mRegion4.isChecked() || cb_mRegion5.isChecked()) {
+
+                mRegion1 = cb_mRegion1.isChecked();
+                mRegion2 = cb_mRegion2.isChecked();
+                mRegion3 = cb_mRegion3.isChecked();
+                mRegion4 = cb_mRegion4.isChecked();
+                mRegion5 = cb_mRegion5.isChecked();
+
+                MmkvUtils.savecode("mRegion1", mRegion1);
+                MmkvUtils.savecode("mRegion2", mRegion2);
+                MmkvUtils.savecode("mRegion3", mRegion3);
+                MmkvUtils.savecode("mRegion4", mRegion4);
+                MmkvUtils.savecode("mRegion5", mRegion5);
+                // 区域 更新视图
+                mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
+
+            } else {
+                show_Toast("请至少选择一个区域");
+            }
+
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
 }

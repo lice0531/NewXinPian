@@ -43,11 +43,14 @@ import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From22WriteDelay;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.custom.ErrListAdapter;
+import android_serialport_api.xingbang.custom.LeiGuanAdapter;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
@@ -397,7 +400,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -417,12 +420,14 @@ public class TestDenatorActivity extends SerialPortActivity {
         View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
 
         // 给ListView绑定内容
-        ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
-        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
-        // 给listview加入适配器
-        errlistview.setAdapter(adapter);
+        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
+//        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
+//                new String[]{"serialNo", "shellNo", "errorName", "delay"},
+//                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+//        // 给listview加入适配器
+//        errlistview.setAdapter(adapter);
+        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+        errlistview.setAdapter(mAdapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.text_alert_tablename1));//"错误雷管列表"
         builder.setView(getlistview);
@@ -451,7 +456,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         blastQueue.clear();
         errorList.clear();
 
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
             VoBlastModel item = new VoBlastModel();
@@ -643,7 +648,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
                     } else {
-                        initDialog_zanting2("请查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
+                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
@@ -1228,13 +1233,20 @@ public class TestDenatorActivity extends SerialPortActivity {
         text_tip.setText(tip);
         text_tip.setVisibility(View.VISIBLE);
         // 给ListView绑定内容
-        ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
+//        ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
+//        errlistview.setVisibility(View.GONE);
+//        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
+//                new String[]{"serialNo", "shellNo", "errorName", "delay"},
+//                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+//        // 给listview加入适配器
+//        errlistview.setAdapter(adapter);
+
+        // 给ListView绑定内容
+        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
         errlistview.setVisibility(View.GONE);
-        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
-        // 给listview加入适配器
-        errlistview.setAdapter(adapter);
+        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+        errlistview.setAdapter(mAdapter);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("系统提示");//"错误雷管列表"
         builder.setView(getlistview);

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
@@ -19,6 +20,7 @@ import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 /**
@@ -102,6 +104,26 @@ public class GreenDaoMaster {
         result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
         return result.list();
     }
+    public List<DenatorBaseinfo> queryErrLeiGuan() {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+        if (mRegion1) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("1"));
+        }if (mRegion2) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("2"));
+        }if (mRegion3) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("3"));
+        }if (mRegion4) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("4"));
+        }if (mRegion5) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("5"));
+        }
+        return mListData;
+    }
 
     /**
      * 删除错误代码不等于FF的所有雷管
@@ -110,6 +132,37 @@ public class GreenDaoMaster {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
+    public void deleteErrLeiGuan() {
+        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+
+
+
+        if (mRegion5) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            Log.e("删除所有", "5: ");
+            result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq("5")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion4) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            Log.e("删除所有", "4: ");
+            result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq("4")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion3) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            Log.e("删除所有", "3: ");
+            result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq("3")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion2) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            Log.e("删除所有", "2: ");
+            result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq("2")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion1) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            Log.e("删除所有", "1: ");
+            result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq("1")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }
+    }
 
     /**
      * 删除错误代码不等于FF的所有雷管
@@ -117,6 +170,33 @@ public class GreenDaoMaster {
     public void deleteLeiGuanFroPiace(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         result.where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+    public void deleteLeiGuanFroPiace() {
+        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+
+
+
+        if (mRegion5) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            result.where(DenatorBaseinfoDao.Properties.Piece.eq("5")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion4) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            result.where(DenatorBaseinfoDao.Properties.Piece.eq("4")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion3) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            result.where(DenatorBaseinfoDao.Properties.Piece.eq("3")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion2) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            result.where(DenatorBaseinfoDao.Properties.Piece.eq("2")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }if (mRegion1) {
+            QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+            result.where(DenatorBaseinfoDao.Properties.Piece.eq("1")).buildDelete().executeDeleteWithoutDetachingEntities();
+        }
+
     }
 
     public List<MessageBean> queryUsetMessgae() {
@@ -392,7 +472,7 @@ public class GreenDaoMaster {
 
 
     /**
-     * 查询雷管 区域正序(序号)
+     * 查询雷管 区域正序(序号) 1到100
      *
      * @param piece 区域号 1 2 3 4 5
      */
@@ -403,9 +483,29 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
+    public List<DenatorBaseinfo> queryDetonatorRegionAsc() {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+        if (mRegion1) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("1"));
+        }if (mRegion2) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("2"));
+        }if (mRegion3) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("3"));
+        }if (mRegion4) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("4"));
+        }if (mRegion5) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("5"));
+        }
+        return mListData;
+    }
 
     /**
-     * 查询雷管 区域倒序(序号)
+     * 查询雷管 区域倒序(序号)  100 - 1
      *
      * @param piece 区域号 1 2 3 4 5
      */
@@ -416,7 +516,26 @@ public class GreenDaoMaster {
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
-
+    public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+         boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+         boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+         boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+         boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+         boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+        if (mRegion5) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("5"));
+        }if (mRegion4) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("4"));
+        }if (mRegion3) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("3"));
+        }if (mRegion2) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("2"));
+        }if (mRegion1) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("1"));
+        }
+        return mListData;
+    }
 
     /**
      * 获取 该区域 最大序号

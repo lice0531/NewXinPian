@@ -27,7 +27,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -55,6 +57,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -93,13 +96,15 @@ public class SetDelayTime extends BaseActivity {
     private Handler mHandler_0 = new Handler();     // UI处理
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
+    private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
+    private TextView totalbar_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_delay_time);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
         initView();
@@ -123,11 +128,29 @@ public class SetDelayTime extends BaseActivity {
                     Log.e("liyi_1001", "更新视图 区域" + mRegion);
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
+                    StringBuilder a = new StringBuilder();
+                    if (mRegion1) {
+                        a.append("1");
+                    }
+                    if (mRegion2) {
+                        a.append(",2");
+                    }
+                    if (mRegion3) {
+                        a.append(",3");
+                    }
+                    if (mRegion4) {
+                        a.append(",4");
+                    }
+                    if (mRegion5) {
+                        a.append(",5");
+                    }
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegion(a.toString(), mListData.size());
+                    // 显示提示
+
                     deTotalTxt.setText(getString(R.string.text_delay_total) + mListData.size());//"雷管总数量："
                     endNoTxt.setText("" + mListData.size());
                     break;
@@ -138,8 +161,24 @@ public class SetDelayTime extends BaseActivity {
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
+                    StringBuilder b = new StringBuilder();
+                    if (mRegion1) {
+                        b.append("1");
+                    }
+                    if (mRegion2) {
+                        b.append(",2");
+                    }
+                    if (mRegion3) {
+                        b.append(",3");
+                    }
+                    if (mRegion4) {
+                        b.append(",4");
+                    }
+                    if (mRegion5) {
+                        b.append(",5");
+                    }
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegion(b.toString(), mListData.size());
                     break;
                 case 1005://按管壳码排序
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
@@ -162,6 +201,21 @@ public class SetDelayTime extends BaseActivity {
     }
 
     private void initView() {
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+
+        totalbar_title = findViewById(R.id.title_text);
+        totalbar_title.setText("删除");
+        ImageView iv_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setOnClickListener(v -> {
+            choiceQuYu();
+        });
+        iv_back.setOnClickListener(v -> finish());
+
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //         获取 区域参数
@@ -208,8 +262,8 @@ public class SetDelayTime extends BaseActivity {
                             int maxDelay = getComputerDenDelay();
                             Log.e("延时1", "maxDelay: " + maxDelay);//9010
                             Log.e("延时2", "maxSecond: " + maxSecond);//5000
-                            if (maxSecond > 0  &&  maxSecond < maxDelay) {
-                                show_Toast("当前设置延时已超出最大值"+maxSecond+"限制,请重新设置延时");
+                            if (maxSecond > 0 && maxSecond < maxDelay) {
+                                show_Toast("当前设置延时已超出最大值" + maxSecond + "限制,请重新设置延时");
                                 return;
                             }
                             pb_show = 1;
@@ -359,7 +413,7 @@ public class SetDelayTime extends BaseActivity {
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
-                Utils.writeRecord("--删除雷管:"+shellBlastNo);
+                Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
 
@@ -423,7 +477,7 @@ public class SetDelayTime extends BaseActivity {
         //         获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        Log.e("设置延时", "onResume: mHandler_0" );
+        Log.e("设置延时", "onResume: mHandler_0");
         super.onResume();
     }
 
@@ -547,7 +601,7 @@ public class SetDelayTime extends BaseActivity {
 //				values.put("sithole", holeLoop);
                 values.put("delay", delayCount);
 
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? ", new String[]{String.valueOf(iLoop),mRegion});
+                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? ", new String[]{String.valueOf(iLoop), mRegion});
                 if (i < holeDeAmo) {
                     delayCount += holeinDelay;
                     iLoop++;
@@ -562,8 +616,8 @@ public class SetDelayTime extends BaseActivity {
         Utils.saveFile();//把软存中的数据存入磁盘中
 //        getLoaderManager().restartLoader(1, null, SetDelayTime.this);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        Utils.writeRecord("--设置延时:起始序号:"+startNoStr+",终点序号:"+endNoStr+",孔内雷管数:"+holeDeAmoStr
-                +",开始延时:"+startDelayStr+",孔内延时:"+holeinDelayStr+",孔间延时:"+holeBetweentStr);
+        Utils.writeRecord("--设置延时:起始序号:" + startNoStr + ",终点序号:" + endNoStr + ",孔内雷管数:" + holeDeAmoStr
+                + ",开始延时:" + startDelayStr + ",孔内延时:" + holeinDelayStr + ",孔间延时:" + holeBetweentStr);
     }
 
     /****
@@ -692,17 +746,57 @@ public class SetDelayTime extends BaseActivity {
      */
     private void setTitleRegion(String region, int size) {
 
-        String str;
-        if (size == -1) {
-            str = " 区域" + region;
-        } else {
-            str = " 区域" + region + "(数量: " + size + ")";
-        }
+        String str = " 区域" + region;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, region);
-
+        totalbar_title.setText(mOldTitle + str);
         Log.e("liyi_Region", "已选择" + str);
+    }
+
+    private void choiceQuYu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+        builder.setTitle("请选择区域");
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
+        builder.setView(view);
+        final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
+        final CheckBox cb_mRegion2 = view.findViewById(R.id.dialog_cb_mRegion2);
+        final CheckBox cb_mRegion3 = view.findViewById(R.id.dialog_cb_mRegion3);
+        final CheckBox cb_mRegion4 = view.findViewById(R.id.dialog_cb_mRegion4);
+        final CheckBox cb_mRegion5 = view.findViewById(R.id.dialog_cb_mRegion5);
+        cb_mRegion1.setChecked(mRegion1);
+        cb_mRegion2.setChecked(mRegion2);
+        cb_mRegion3.setChecked(mRegion3);
+        cb_mRegion4.setChecked(mRegion4);
+        cb_mRegion5.setChecked(mRegion5);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+            if (cb_mRegion1.isChecked() || cb_mRegion2.isChecked() || cb_mRegion3.isChecked() || cb_mRegion4.isChecked() || cb_mRegion5.isChecked()) {
+
+                mRegion1 = cb_mRegion1.isChecked();
+                mRegion2 = cb_mRegion2.isChecked();
+                mRegion3 = cb_mRegion3.isChecked();
+                mRegion4 = cb_mRegion4.isChecked();
+                mRegion5 = cb_mRegion5.isChecked();
+
+                MmkvUtils.savecode("mRegion1", mRegion1);
+                MmkvUtils.savecode("mRegion2", mRegion2);
+                MmkvUtils.savecode("mRegion3", mRegion3);
+                MmkvUtils.savecode("mRegion4", mRegion4);
+                MmkvUtils.savecode("mRegion5", mRegion5);
+
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+            } else {
+                show_Toast("请至少选择一个区域");
+            }
+
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
     }
 }

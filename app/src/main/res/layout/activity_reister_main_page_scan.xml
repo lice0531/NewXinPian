@@ -13,7 +13,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -108,21 +109,53 @@
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base" />
 
+<!--                    <EditText-->
+<!--                        android:id="@+id/entboxNoAndSerial_st"-->
+<!--                        style="@style/alltextstyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="@dimen/childReisterPageEditHeight"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        android:layout_marginRight="2dp"-->
+<!--                        android:layout_weight="5"-->
+<!--                        android:background="@drawable/translucent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:hint="@string/text_reister_5b"-->
+<!--                        android:maxLength="5"-->
+<!--                        android:numeric="integer"-->
+<!--                        android:selectAllOnFocus="true"-->
+<!--                        android:textColor="@color/rangle_fc_base" />-->
+
                     <EditText
-                        android:id="@+id/entboxNoAndSerial_st"
+                        android:id="@+id/entboxNoAndSerial_st1"
                         style="@style/alltextstyle"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/childReisterPageEditHeight"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="5"
+                        android:layout_weight="2"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="@string/text_reister_5b"
-                        android:maxLength="5"
-                        android:numeric="integer"
-                        android:selectAllOnFocus="true"
-                        android:textColor="@color/rangle_fc_base" />
+                        android:hint="2位"
+                        android:maxLength="2"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/entboxNoAndSerial_st2"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="3位"
+                        android:maxLength="3"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true" />
                 </LinearLayout>
 
                 <Button
@@ -201,19 +234,50 @@
                         android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
                         android:selectAllOnFocus="true" />
 
+<!--                    <EditText-->
+<!--                        android:id="@+id/entboxNoAndSerial_ed"-->
+<!--                        style="@style/alltextstyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="@dimen/childReisterPageEditHeight"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        android:layout_marginRight="2dp"-->
+<!--                        android:layout_weight="5"-->
+<!--                        android:background="@drawable/translucent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:hint="@string/text_reister_5b"-->
+<!--                        android:maxLength="5"-->
+<!--                        android:numeric="integer"-->
+<!--                        android:selectAllOnFocus="true" />-->
                     <EditText
-                        android:id="@+id/entboxNoAndSerial_ed"
+                        android:id="@+id/entboxNoAndSerial_ed1"
                         style="@style/alltextstyle"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/childReisterPageEditHeight"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="5"
+                        android:layout_weight="2"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="@string/text_reister_5b"
-                        android:maxLength="5"
-                        android:numeric="integer"
+                        android:hint="2位"
+                        android:maxLength="2"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true" />
+
+                    <EditText
+                        android:id="@+id/entboxNoAndSerial_ed2"
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="3位"
+                        android:maxLength="3"
+                        android:digits="1234567890"
+                        android:inputType="number"
                         android:selectAllOnFocus="true" />
                 </LinearLayout>
 
@@ -501,7 +565,8 @@
                         android:gravity="center"
                         android:hint="2位"
                         android:maxLength="2"
-                        android:numeric="integer"
+                        android:digits="1234567890"
+                        android:inputType="number"
                         android:selectAllOnFocus="true" />
 
                     <EditText
@@ -516,7 +581,8 @@
                         android:gravity="center"
                         android:hint="3位"
                         android:maxLength="3"
-                        android:numeric="integer"
+                        android:digits="1234567890"
+                        android:inputType="number"
                         android:selectAllOnFocus="true" />
 
                 </LinearLayout>

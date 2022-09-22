@@ -106,7 +106,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
         if (IntervalUtil.isFastClick_2()) {
-            GetFileName("KT50_V", ".bin");
+            GetFileName("KT50_V1.3_16V", ".bin");
         }
     }
 
@@ -181,21 +181,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //                                    mDownLoadFileSize = fileSize;
 //                                    Log.e("Download_Bin_2", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
 //                                }
-//
-//
 //                            }
-
                         }
-
-
                     }
-
-
                 }
-
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

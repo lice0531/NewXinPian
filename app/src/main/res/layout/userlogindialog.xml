@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:background="#ffffff"
     android:layout_height="match_parent" >
-    
-    <EditText 
+
+    <EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-         android:numeric="integer"	
-        android:hint="@string/text_user_username"/>
-    
+        android:hint="@string/text_user_username"
+        android:numeric="integer" />
+
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_below="@id/username"
         android:hint="@string/text_user_password"
-        android:inputType="numberPassword"/>
+        android:inputType="numberPassword" />
 
 </RelativeLayout>

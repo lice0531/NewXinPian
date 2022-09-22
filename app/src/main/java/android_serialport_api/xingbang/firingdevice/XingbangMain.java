@@ -18,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -132,6 +134,8 @@ public class XingbangMain extends BaseActivity {
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private int region_0, region_1, region_2, region_3, region_4, region_5;
+    private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
+    TextView totalbar_title;
 
     @Override
     protected void onPause() {
@@ -160,6 +164,11 @@ public class XingbangMain extends BaseActivity {
         getPropertiesData();//重新读取备份数据会导致已修改的数据重置
         // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
         // 设置标题区域
         setTitleRegion();
         // 获取区域雷管数量
@@ -221,10 +230,27 @@ public class XingbangMain extends BaseActivity {
      * 初始化控件
      */
     private void initView() {
-        // 标题栏
-        setSupportActionBar(findViewById(R.id.toolbar));
         // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+
+        totalbar_title = findViewById(R.id.title_text);
+
+        ImageView iv_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setOnClickListener(v -> {
+            choiceQuYu();
+        });
+        iv_back.setOnClickListener(v -> finish());
+        iv_back.setVisibility(View.GONE);
+
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
@@ -279,6 +305,7 @@ public class XingbangMain extends BaseActivity {
             }
         }).start();
     }
+
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
 //        Log.e(TAG, "message: " + message.toString());
@@ -523,9 +550,9 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_test://测试
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                if(time - endTime < 180000){//第二次启动时间不重置
-                    int a =(int) (180000-(time - endTime))/1000+5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a,"组网");
+                if (time - endTime < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
                     return;
                 }
                 Log.e("测试页面", "测试: ");
@@ -553,12 +580,12 @@ public class XingbangMain extends BaseActivity {
                         return;
                     }
                 }
-                 time = System.currentTimeMillis();
-                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                time = System.currentTimeMillis();
+                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
-                if(time - endTime < 180000){//第二次启动时间不重置
-                    int a =(int) (180000-(time - endTime))/1000+5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a,"起爆");
+                if (time - endTime < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
                     return;
                 }
                 String str5 = "起爆";
@@ -722,13 +749,10 @@ public class XingbangMain extends BaseActivity {
     private void loadMoreData_all_lg() {
         lg2_yanshi.clear();
         list_data.clear();
-//        GreenDaoMaster master = new GreenDaoMaster();
-//        list_data = master.queryDenatorBaseinfoToStatusCode("02");
-        list_data = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+        list_data = new GreenDaoMaster().queryDetonatorRegionDesc();
         for (int i = 0; i < list_data.size(); i++) {
             lg2_yanshi.add(list_data.get(i).getDelay() + "");
         }
-//        Log.e("起爆延时验证", lg2_yanshi.toString());
     }
 
 //    private void loadMoreData_all_lg() {
@@ -870,25 +894,37 @@ public class XingbangMain extends BaseActivity {
      * 设置标题区域
      */
     private void setTitleRegion() {
-        String str = " 区域" + mRegion;
+        StringBuilder a = new StringBuilder();
+        if (mRegion1) {
+            a.append("1");
+        }if (mRegion2) {
+            a.append(",2");
+        }if (mRegion3) {
+            a.append(",3");
+        }if (mRegion4) {
+            a.append(",4");
+        }if (mRegion5) {
+            a.append(",5");
+        }
+        String str = " 区域" + a;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
-        // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
-        Log.e("liyi_Region", "已选择 " + str);
+        // 保存区域参数(单选的时候要放开,多选关闭)
+//        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
+        totalbar_title.setText(mOldTitle+"/"+str);
     }
 
     /**
      * 获取区域雷管数量
      */
     private void getRegionNumber() {
-        GreenDaoMaster g = new GreenDaoMaster();
-        region_0 = g.queryAllDetonatorAsc().size();
-        region_1 = g.queryDetonatorRegionDesc("1").size();
-        region_2 = g.queryDetonatorRegionDesc("2").size();
-        region_3 = g.queryDetonatorRegionDesc("3").size();
-        region_4 = g.queryDetonatorRegionDesc("4").size();
-        region_5 = g.queryDetonatorRegionDesc("5").size();
+//        GreenDaoMaster g = new GreenDaoMaster();
+//        region_0 = g.queryAllDetonatorAsc().size();
+//        region_1 = g.queryDetonatorRegionDesc("1").size();
+//        region_2 = g.queryDetonatorRegionDesc("2").size();
+//        region_3 = g.queryDetonatorRegionDesc("3").size();
+//        region_4 = g.queryDetonatorRegionDesc("4").size();
+//        region_5 = g.queryDetonatorRegionDesc("5").size();
 
 //        tv_region_number.setText(
 //                "区域数量: " + region_0 + " = ("
@@ -920,7 +956,8 @@ public class XingbangMain extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         mRegion = String.valueOf(item.getOrder());
-
+        // 保存区域参数(单选的时候要放开,多选关闭)
+        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
         switch (item.getItemId()) {
 
             case R.id.item_1:
@@ -949,9 +986,9 @@ public class XingbangMain extends BaseActivity {
     private java.util.Timer mOffTime;
     private android.app.Dialog mDialog;
 
-    private void initDialog_fangdian(String tip,int daojishi,String c) {
+    private void initDialog_fangdian(String tip, int daojishi, String c) {
         String str5 = c;
-        Log.e(TAG, "倒计时: "+daojishi);
+        Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
         mOffTextView.setText(tip + "\n放电倒计时：");
@@ -970,9 +1007,9 @@ public class XingbangMain extends BaseActivity {
                 .setNegativeButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
-                    if(str5.equals("组网")){
+                    if (str5.equals("组网")) {
                         intent5 = new Intent(this, TestDenatorActivity.class);
-                    }else {
+                    } else {
                         Log.e("验证2", "Yanzheng: " + Yanzheng);
                         if (Yanzheng.equals("验证")) {
                             intent5 = new Intent(this, VerificationActivity.class);
@@ -1020,7 +1057,7 @@ public class XingbangMain extends BaseActivity {
                 if (countTime > 0) {
                     countTime--;
                 }
-                Log.e(TAG, "countTime: "+countTime );
+                Log.e(TAG, "countTime: " + countTime);
                 Message msg = new Message();
                 msg.what = countTime;
                 mOffHandler.sendMessage(msg);
@@ -1028,5 +1065,68 @@ public class XingbangMain extends BaseActivity {
         };
         mOffTime.schedule(tt, 1000, 1000);
     }
+
+    private void choiceQuYu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+        builder.setTitle("请选择区域");
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
+        builder.setView(view);
+        final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
+        final CheckBox cb_mRegion2 = view.findViewById(R.id.dialog_cb_mRegion2);
+        final CheckBox cb_mRegion3 = view.findViewById(R.id.dialog_cb_mRegion3);
+        final CheckBox cb_mRegion4 = view.findViewById(R.id.dialog_cb_mRegion4);
+        final CheckBox cb_mRegion5 = view.findViewById(R.id.dialog_cb_mRegion5);
+        cb_mRegion1.setChecked(mRegion1);
+        cb_mRegion2.setChecked(mRegion2);
+        cb_mRegion3.setChecked(mRegion3);
+        cb_mRegion4.setChecked(mRegion4);
+        cb_mRegion5.setChecked(mRegion5);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+            if (cb_mRegion1.isChecked() || cb_mRegion2.isChecked() || cb_mRegion3.isChecked() || cb_mRegion4.isChecked() || cb_mRegion5.isChecked()) {
+                StringBuilder a = new StringBuilder();
+                mRegion1 = cb_mRegion1.isChecked();
+                mRegion2 = cb_mRegion2.isChecked();
+                mRegion3 = cb_mRegion3.isChecked();
+                mRegion4 = cb_mRegion4.isChecked();
+                mRegion5 = cb_mRegion5.isChecked();
+                if (mRegion1) {
+                    a.append("区域1");
+                }
+                if (mRegion2) {
+                    a.append(",区域2");
+                }
+                if (mRegion3) {
+                    a.append(",区域3");
+                }
+                if (mRegion4) {
+                    a.append(",区域4");
+                }
+                if (mRegion5) {
+                    a.append(",区域5");
+                }
+                MmkvUtils.savecode("mRegion1", mRegion1);
+                MmkvUtils.savecode("mRegion2", mRegion2);
+                MmkvUtils.savecode("mRegion3", mRegion3);
+                MmkvUtils.savecode("mRegion4", mRegion4);
+                MmkvUtils.savecode("mRegion5", mRegion5);
+                // 区域 更新视图
+//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                //更新标题
+                setTitleRegion();
+                // 显示提示
+                show_Toast("已选择 " + a);
+            } else {
+                show_Toast("请至少选择一个区域");
+            }
+
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
 
 }

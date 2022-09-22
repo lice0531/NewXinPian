@@ -10,10 +10,12 @@
     android:orientation="vertical"
     tools:context="android_serialport_api.xingbang.firingdevice.SetDelayTime"
     tools:ignore="MergeRootFrame">
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

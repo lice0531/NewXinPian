@@ -32,7 +32,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -240,7 +242,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private String mRegion;     // 区域
     private Handler mHandler_0 = new Handler();     // UI处理
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
-
+    private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
+    private TextView totalbar_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,23 +254,38 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         baidudingwei();
         getUserMessage();//获取用户信息
 //        getPropertiesData();//第二种获取用户信息
-        //读取项目名称
+        initUi();
+
+        // 区域 更新视图
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        Utils.writeRecord("---进入项目下载页面---");
+//        test();//模拟下载
+    }
+
+    private void initUi() {
         //获取偏好设置的编辑器
-//        kv = MMKV.defaultMMKV();//
-        SharedPreferences sp = getSharedPreferences("config", 0);
-        //获取偏好设置的编辑器
-        edit = sp.edit();
-        pro_name = sp.getString("pro_name", "");
+        pro_name =(String) MmkvUtils.getcode("pro_name","") ;
         at_projectName.setText(pro_name);
 
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+
+        totalbar_title = findViewById(R.id.title_text);
+        ImageView iv_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setOnClickListener(v -> {
+            choiceQuYu();
+        });
+        iv_back.setOnClickListener(v -> finish());
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //         获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
-        // 设置标题区域
-        setTitleRegion(mRegion, -1);
         loadMoreData_sq();
 
 //        loadMoreData_lg(currentPage);//查询所有雷管
@@ -276,16 +294,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mAdapter_sq.setOnInnerItemOnClickListener(this);
         lvShouquan.setAdapter(mAdapter_sq);
         lvShouquan.setOnItemClickListener(this);
-
-//        list_adapter = new SimpleCursorAdapter(
-//                DownWorkCode.this,
-//                R.layout.item_blast,
-//                null,
-//                new String[]{"blastserial", "sithole", "delay", "shellBlastNo"},
-//                new int[]{R.id.blastserial, R.id.sithole, R.id.delay, R.id.shellBlastNo},
-//                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-//        mListView.setAdapter(list_adapter);
-//        getLoaderManager().initLoader(0, null, this);
 
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
@@ -330,36 +338,29 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             Log.e("输入项目", "getItem(position): " + parent.getAdapter().getItem(position).toString());
             GreenDaoMaster master = new GreenDaoMaster();
             List<Project> list = master.queryProjectToProject_name(project_name);
-
-            Log.e("输入项目", "list: " + list.toString());
             if (list.size() > 0) {
                 if (list.get(0).getHtbh().length() > 0) {
                     at_htid.setText(list.get(0).getHtbh());
                 } else {
                     at_htid.setText("");
-
                 }
                 if (list.get(0).getXmbh().length() > 0) {
                     at_xmbh.setText(list.get(0).getXmbh());
                 } else {
                     at_xmbh.setText("");
-
                 }
                 if (list.get(0).getDwdm().length() > 0) {
                     at_dwdm.setText(list.get(0).getDwdm());
                 } else {
                     at_dwdm.setText("");
-
                 }
                 if (list.get(0).getCoordxy().length() > 0) {
                     at_coordxy.setText(list.get(0).getCoordxy());
                 } else {
                     at_coordxy.setText("");
-
                 }
                 at_bprysfz.setText(list.get(0).getBprysfz());
             }
-
             saveData();
             initView();//把输入框颜色初始化
         });
@@ -368,11 +369,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
-
-        // 区域 更新视图
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        Utils.writeRecord("---进入项目下载页面---");
-//        test();//模拟下载
     }
 
     private void test() {
@@ -461,15 +457,31 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
 
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     list_uid.clear();
                     for (int i = 0; i < mListData.size(); i++) {
                         list_uid.add(mListData.get(i).getShellBlastNo());
                     }
+                    StringBuilder a = new StringBuilder();
+                    if (mRegion1) {
+                        a.append("1");
+                    }
+                    if (mRegion2) {
+                        a.append(",2");
+                    }
+                    if (mRegion3) {
+                        a.append(",3");
+                    }
+                    if (mRegion4) {
+                        a.append(",4");
+                    }
+                    if (mRegion5) {
+                        a.append(",5");
+                    }
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegion(a.toString(), mListData.size());
                     break;
 
                 // 重新排序 更新视图
@@ -1311,8 +1323,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
      * 保存信息
      */
     private void saveData() {
-        edit.putString("pro_name", at_projectName.getText().toString());
-        edit.commit();//点击提交编辑器
+        MmkvUtils.savecode("pro_name", at_projectName.getText().toString());
 
         saveHistory("history_xmbh", at_xmbh);//保存输入的项目编号
         saveHistory("history_htid", at_htid);//保存输入的合同编号
@@ -2440,7 +2451,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         mRegion = String.valueOf(item.getOrder());
-
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
         switch (item.getItemId()) {
 
             case R.id.item_1:
@@ -2472,14 +2484,58 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         if (size == -1) {
             str = " 区域" + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = " 区域" + region + "(共:" + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
-        // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, region);
 
+        totalbar_title.setText(mOldTitle + str);
         Log.e("liyi_Region", "已选择" + str);
+    }
+
+    private void choiceQuYu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+        builder.setTitle("请选择区域");
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
+        builder.setView(view);
+        final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
+        final CheckBox cb_mRegion2 = view.findViewById(R.id.dialog_cb_mRegion2);
+        final CheckBox cb_mRegion3 = view.findViewById(R.id.dialog_cb_mRegion3);
+        final CheckBox cb_mRegion4 = view.findViewById(R.id.dialog_cb_mRegion4);
+        final CheckBox cb_mRegion5 = view.findViewById(R.id.dialog_cb_mRegion5);
+        cb_mRegion1.setChecked(mRegion1);
+        cb_mRegion2.setChecked(mRegion2);
+        cb_mRegion3.setChecked(mRegion3);
+        cb_mRegion4.setChecked(mRegion4);
+        cb_mRegion5.setChecked(mRegion5);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+            if (cb_mRegion1.isChecked() || cb_mRegion2.isChecked() || cb_mRegion3.isChecked() || cb_mRegion4.isChecked() || cb_mRegion5.isChecked()) {
+
+                mRegion1 = cb_mRegion1.isChecked();
+                mRegion2 = cb_mRegion2.isChecked();
+                mRegion3 = cb_mRegion3.isChecked();
+                mRegion4 = cb_mRegion4.isChecked();
+                mRegion5 = cb_mRegion5.isChecked();
+
+                MmkvUtils.savecode("mRegion1", mRegion1);
+                MmkvUtils.savecode("mRegion2", mRegion2);
+                MmkvUtils.savecode("mRegion3", mRegion3);
+                MmkvUtils.savecode("mRegion4", mRegion4);
+                MmkvUtils.savecode("mRegion5", mRegion5);
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+            } else {
+                show_Toast("请至少选择一个区域");
+            }
+
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
     }
 
 }

@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -15,7 +16,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,14 +27,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +52,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import android_serialport_api.xingbang.BuildConfig;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
@@ -97,8 +96,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     EditText entproduceDateSt;
     @BindView(R.id.entAT1Bit_st)
     EditText entAT1BitSt;
-    @BindView(R.id.entboxNoAndSerial_st)
-    EditText entboxNoAndSerialSt;
+    @BindView(R.id.entboxNoAndSerial_st1)
+    EditText entboxNoAndSerialSt1;
+    @BindView(R.id.entboxNoAndSerial_st2)
+    EditText entboxNoAndSerialSt2;
     @BindView(R.id.btn_ReisterScanStart_st)
     Button btnReisterScanStartSt;
     @BindView(R.id.entBF2Bit_ed)
@@ -107,8 +108,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     EditText entproduceDateEd;
     @BindView(R.id.entAT1Bit_ed)
     EditText entAT1BitEd;
-    @BindView(R.id.entboxNoAndSerial_ed)
-    EditText entboxNoAndSerialEd;
+    @BindView(R.id.entboxNoAndSerial_ed1)
+    EditText entboxNoAndSerialEd1;
+    @BindView(R.id.entboxNoAndSerial_ed2)
+    EditText entboxNoAndSerialEd2;
     @BindView(R.id.btn_ReisterScanStart_ed)
     Button btnReisterScanStartEd;//扫描按钮终止位
     @BindView(R.id.setDelayTime_startDelaytime)
@@ -206,11 +209,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private EditText edit_start_entBF2Bit_st;//开始厂家码
     private EditText edit_start_entproduceDate_st;//开始日期码
     private EditText edit_start_entAT1Bit_st;//开始特征码
-    private EditText edit_start_entboxNoAndSerial_st;//开始流水号
+//    private EditText entboxNoAndSerialSt1;//开始流水号
     private EditText edit_end_entBF2Bit_en;//结束厂家码
     private EditText edit_end_entproduceDate_ed;//结束日期码
     private EditText edit_end_entAT1Bit_ed;//结束特征码
-    private EditText edit_end_entboxNoAndSerial_ed;//结束流水号
+//    private EditText entboxNoAndSerialEd1;//结束流水号
     private String singleShellNo;//单发注册
     private String lg_No;//重复雷管管壳码
     private String lg_Piece;//重复雷管区号
@@ -380,7 +383,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 重新排序 更新视图
                 case 1002:
                     // 雷管孔号排序 并 重新查询
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
 
@@ -405,7 +408,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    }
 //                    break;
                 case 1005://按管壳码排序
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
@@ -494,8 +497,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             if (tipInfoFlag == 88) {//刷新界面
                 showDenatorSum();
-                edit_start_entboxNoAndSerial_st.getText().clear();
-                edit_end_entboxNoAndSerial_ed.getText().clear();//.setText("")
+//                entboxNoAndSerialSt1.getText().clear();
+                entboxNoAndSerialSt2.getText().clear();
+//                entboxNoAndSerialEd1.getText().clear();//.setText("")
+                entboxNoAndSerialEd2.getText().clear();//.setText("")
 //                    etNum.getText().clear();//连续注册个数
             }
             if (tipInfoFlag == 89) {//刷新界面
@@ -627,11 +632,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }).start();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void init() {
+        //         获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-//         获取 区域参数
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
@@ -665,7 +672,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         edit_start_entproduceDate_st.addTextChangedListener(st_2_watcher);
         edit_start_entAT1Bit_st = (EditText) this.findViewById(R.id.entAT1Bit_st);//开始特征码
         edit_start_entAT1Bit_st.addTextChangedListener(st_3_watcher);
-        edit_start_entboxNoAndSerial_st = (EditText) this.findViewById(R.id.entboxNoAndSerial_st);//开始流水号
         //点击空白位置 隐藏软键盘
         container1.setOnTouchListener((v, event) -> {
             if (null != ReisterMainPage_scan.this.getCurrentFocus()) {
@@ -677,19 +683,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             return false;
         });
-        edit_start_entboxNoAndSerial_st.addTextChangedListener(st_4_watcher);
-        edit_start_entboxNoAndSerial_st.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    edit_end_entboxNoAndSerial_ed.setFocusable(true);
-                    edit_end_entboxNoAndSerial_ed.setFocusableInTouchMode(true);
-                    edit_end_entboxNoAndSerial_ed.requestFocus();
-                    edit_end_entboxNoAndSerial_ed.findFocus();
-                }
-                return false;
-            }
-        });
+        entboxNoAndSerialSt1.addTextChangedListener(st_hehao);
+        entboxNoAndSerialSt2.addTextChangedListener(st_4_watcher);
+//        entboxNoAndSerialSt1.setOnKeyListener((v, keyCode, event) -> {
+//            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                entboxNoAndSerialEd1.setFocusable(true);
+//                entboxNoAndSerialEd1.setFocusableInTouchMode(true);
+//                entboxNoAndSerialEd1.requestFocus();
+//                entboxNoAndSerialEd1.findFocus();
+//            }
+//            return false;
+//        });
 
         edit_end_entBF2Bit_en = (EditText) this.findViewById(R.id.entBF2Bit_ed);
         edit_end_entBF2Bit_en.addTextChangedListener(end_1_watcher);
@@ -700,8 +704,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         edit_end_entAT1Bit_ed = (EditText) this.findViewById(R.id.entAT1Bit_ed);
         edit_end_entAT1Bit_ed.addTextChangedListener(end_3_watcher);
 
-        edit_end_entboxNoAndSerial_ed = (EditText) this.findViewById(R.id.entboxNoAndSerial_ed);
-        edit_end_entboxNoAndSerial_ed.addTextChangedListener(end_4_watcher);
+//        entboxNoAndSerialEd1 = (EditText) this.findViewById(R.id.entboxNoAndSerial_ed);
+        entboxNoAndSerialEd1.addTextChangedListener(ed_hehao);//结束流水号
+        entboxNoAndSerialEd2.addTextChangedListener(end_4_watcher);//结束流水号
 
         et_startDelay.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -871,11 +876,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         edit_start_entBF2Bit_st.clearFocus();//取消焦点
         edit_start_entproduceDate_st.clearFocus();
         edit_start_entAT1Bit_st.clearFocus();
-        edit_start_entboxNoAndSerial_st.clearFocus();
+        entboxNoAndSerialSt1.clearFocus();
         edit_end_entBF2Bit_en.clearFocus();
         edit_end_entproduceDate_ed.clearFocus();
         edit_end_entAT1Bit_ed.clearFocus();
-        edit_end_entboxNoAndSerial_ed.clearFocus();
+        entboxNoAndSerialEd1.clearFocus();
         container1.requestFocus();//获取焦点,
         et_startDelay.clearFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -947,7 +952,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (reEtF2.getText().length() > 0) {
             MmkvUtils.savecode("f2", reEtF2.getText().toString());
         }
-        MmkvUtils.savecode("start", et_startDelay.getText().toString());
+        if (et_startDelay.getText().length() > 0) {
+            MmkvUtils.savecode("start", et_startDelay.getText().toString());
+        }
+
         scanDecode.onDestroy();//回复初始状态
 
         super.onDestroy();
@@ -962,12 +970,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String st2Bit = edit_start_entBF2Bit_st.getText().toString();
         String stproDt = edit_start_entproduceDate_st.getText().toString();
         String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-        String stsno = edit_start_entboxNoAndSerial_st.getText().toString();
+        String stsno = entboxNoAndSerialSt1.getText().toString()+entboxNoAndSerialSt2.getText().toString();
 
         String ed2Bit = edit_end_entBF2Bit_en.getText().toString();
         String edproDt = edit_end_entproduceDate_ed.getText().toString();
         String ed1Bit = edit_end_entAT1Bit_ed.getText().toString();
-        String edsno = edit_end_entboxNoAndSerial_ed.getText().toString();
+        String edsno = entboxNoAndSerialEd1.getText().toString()+entboxNoAndSerialEd2.getText().toString();
         String addNum = etNum.getText().toString();
 
         if (StringUtils.isBlank(st2Bit)) {
@@ -1051,7 +1059,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private int check(String shellNo) {
 
-        if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
+        if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
@@ -1179,7 +1187,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void modifyBlastBaseInfo(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ReisterMainPage_scan.this);
-        builder.setIcon(R.drawable.ic_launcher);
+        builder.setIcon(R.drawable.logo);
         builder.setTitle("请修改雷管信息");
         //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
         View view = LayoutInflater.from(ReisterMainPage_scan.this).inflate(R.layout.blastbasedialog, null);
@@ -1819,7 +1827,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    show_Toast("请设置延时");
 //                    break;
 //                }
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
+                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
@@ -1982,7 +1990,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_inputOk:
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
+                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
@@ -1994,9 +2002,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String st2Bit = edit_start_entBF2Bit_st.getText().toString();
                     String stproDt = edit_start_entproduceDate_st.getText().toString();
                     String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-                    String stsno = edit_start_entboxNoAndSerial_st.getText().toString();
+                    String stsno = entboxNoAndSerialSt1.getText().toString()+entboxNoAndSerialSt2.getText().toString();
                     prex = st2Bit + stproDt + st1Bit;
-                    String edsno = edit_end_entboxNoAndSerial_ed.getText().toString();
+                    String edsno = entboxNoAndSerialEd1.getText().toString()+entboxNoAndSerialEd2.getText().toString();
                     String addNum = etNum.getText().toString();
                     start = Integer.parseInt(stsno);//开始流水号
 
@@ -2070,7 +2078,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 finish();
                 break;
             case R.id.btn_singleReister:
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
+                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
@@ -2299,10 +2307,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     //
                     edit_end_entproduceDate_ed.setText("" + edit_start_entproduceDate_st.getText());
-                    edit_start_entboxNoAndSerial_st.setFocusable(true);//开始流水号
-                    edit_start_entboxNoAndSerial_st.setFocusableInTouchMode(true);
-                    edit_start_entboxNoAndSerial_st.requestFocus();
-                    edit_start_entboxNoAndSerial_st.findFocus();
+                    entboxNoAndSerialSt1.setFocusable(true);//开始流水号
+                    entboxNoAndSerialSt1.setFocusableInTouchMode(true);
+                    entboxNoAndSerialSt1.requestFocus();
+                    entboxNoAndSerialSt1.findFocus();
                 }
             } else {
                 edit_start_entproduceDate_st.setBackgroundColor(Color.RED);
@@ -2326,10 +2334,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 edit_end_entBF2Bit_en.setText("" + edit_start_entBF2Bit_st.getText());
                 edit_end_entproduceDate_ed.setText("" + edit_start_entproduceDate_st.getText());
                 edit_end_entAT1Bit_ed.setText("" + edit_start_entAT1Bit_st.getText());
-                edit_start_entboxNoAndSerial_st.setFocusable(true);
-                edit_start_entboxNoAndSerial_st.setFocusableInTouchMode(true);
-                edit_start_entboxNoAndSerial_st.requestFocus();
-                edit_start_entboxNoAndSerial_st.findFocus();
+                entboxNoAndSerialSt1.setFocusable(true);
+                entboxNoAndSerialSt1.setFocusableInTouchMode(true);
+                entboxNoAndSerialSt1.requestFocus();
+                entboxNoAndSerialSt1.findFocus();
                 edit_start_entAT1Bit_st.setBackgroundColor(Color.GREEN);
             } else {
                 edit_start_entAT1Bit_st.setBackgroundColor(Color.RED);
@@ -2344,13 +2352,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             cou = before + count;
-            String editable = edit_start_entboxNoAndSerial_st.getText().toString();
+            String editable = entboxNoAndSerialSt1.getText().toString();
             String str = Utils.stringFilter(editable); //过滤特殊字符
             if (!editable.equals(str)) {
-                edit_start_entboxNoAndSerial_st.setText(str);
+                entboxNoAndSerialSt1.setText(str);
             }
-            edit_start_entboxNoAndSerial_st.setSelection(edit_start_entboxNoAndSerial_st.length());
-            cou = edit_start_entboxNoAndSerial_st.length();
+            entboxNoAndSerialSt1.setSelection(entboxNoAndSerialSt1.length());
+            cou = entboxNoAndSerialSt1.length();
         }
 
         @Override
@@ -2361,8 +2369,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         @Override
         public void afterTextChanged(Editable s) {
             //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
-            if (s.length() == 5) {
-                edit_start_entboxNoAndSerial_st.setBackgroundColor(Color.GREEN);
+//            if (s.length() == 2) {
+//                editScanHehao.setBackgroundColor(Color.GREEN);
+//
+//            } else {
+//                editScanHehao.setBackgroundColor(Color.RED);
+//            }
+            //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
+            if (s.length() == 3) {
+                entboxNoAndSerialSt2.setBackgroundColor(Color.GREEN);
                 /*
                 edit_end_entBF2Bit_en.setFocusable(true);
             	edit_end_entBF2Bit_en.setFocusableInTouchMode(true);
@@ -2376,7 +2391,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            	edit_end_entboxNoAndSerial_ed.findFocus();
 
             } else {
-                edit_start_entboxNoAndSerial_st.setBackgroundColor(Color.RED);
+                entboxNoAndSerialSt2.setBackgroundColor(Color.RED);
             }
         }
     };
@@ -2431,10 +2446,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     edit_end_entAT1Bit_ed.requestFocus();
                     edit_end_entAT1Bit_ed.findFocus();
                 } else {
-                    edit_end_entboxNoAndSerial_ed.setFocusable(true);
-                    edit_end_entboxNoAndSerial_ed.setFocusableInTouchMode(true);
-                    edit_end_entboxNoAndSerial_ed.requestFocus();
-                    edit_end_entboxNoAndSerial_ed.findFocus();
+                    entboxNoAndSerialEd1.setFocusable(true);
+                    entboxNoAndSerialEd1.setFocusableInTouchMode(true);
+                    entboxNoAndSerialEd1.requestFocus();
+                    entboxNoAndSerialEd1.findFocus();
                 }
 
             } else {
@@ -2458,10 +2473,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         public void afterTextChanged(Editable s) {
             //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
             if (s.length() == 1) {
-                edit_end_entboxNoAndSerial_ed.setFocusable(true);
-                edit_end_entboxNoAndSerial_ed.setFocusableInTouchMode(true);
-                edit_end_entboxNoAndSerial_ed.requestFocus();
-                edit_end_entboxNoAndSerial_ed.findFocus();
+                entboxNoAndSerialEd1.setFocusable(true);
+                entboxNoAndSerialEd1.setFocusableInTouchMode(true);
+                entboxNoAndSerialEd1.requestFocus();
+                entboxNoAndSerialEd1.findFocus();
                 edit_end_entAT1Bit_ed.setBackgroundColor(Color.GREEN);
             } else {
                 edit_end_entAT1Bit_ed.setBackgroundColor(Color.RED);
@@ -2483,10 +2498,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         @Override
         public void afterTextChanged(Editable s) {
             //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
-            if (s.length() == 5) {
-                edit_end_entboxNoAndSerial_ed.setBackgroundColor(Color.GREEN);
+            if (s.length() == 3) {
+                entboxNoAndSerialEd2.setBackgroundColor(Color.GREEN);
             } else {
-                edit_end_entboxNoAndSerial_ed.setBackgroundColor(Color.RED);
+                entboxNoAndSerialEd2.setBackgroundColor(Color.RED);
             }
         }
     };
@@ -2601,6 +2616,51 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
     };
+    //开始--盒号
+    TextWatcher st_hehao = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+            //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
+            if (s.length() == 2) {
+                entboxNoAndSerialSt1.setBackgroundColor(Color.GREEN);
+                entboxNoAndSerialSt2.setFocusable(true);
+                entboxNoAndSerialSt2.setFocusableInTouchMode(true);
+                entboxNoAndSerialSt2.requestFocus();
+                entboxNoAndSerialSt2.findFocus();
+            } else {
+                entboxNoAndSerialSt1.setBackgroundColor(Color.RED);
+            }
+        }
+    };
+    //结束--盒号
+    TextWatcher ed_hehao = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+            //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
+            if (s.length() == 2) {
+                entboxNoAndSerialEd1.setBackgroundColor(Color.GREEN);
+                entboxNoAndSerialEd2.setFocusable(true);
+                entboxNoAndSerialEd2.setFocusableInTouchMode(true);
+                entboxNoAndSerialEd2.requestFocus();
+                entboxNoAndSerialEd2.findFocus();
+            } else {
+                entboxNoAndSerialEd1.setBackgroundColor(Color.RED);
+            }
+        }
+    };
     //单独注册--流水号
     TextWatcher single_1_liushui = new TextWatcher() {
         @Override
@@ -2691,19 +2751,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String facCode = subBarCode.substring(0, 2);
         String dayCode = subBarCode.substring(2, 7);
         String featureCode = subBarCode.substring(7, 8);
-        String serialNo = subBarCode.substring(8);
+        String serialNo = subBarCode.substring(8,10);
+        String serialNo2 = subBarCode.substring(10);
         Log.e("注册页面--扫码注册", "facCode: " + facCode + "  dayCode:" + dayCode + "  featureCode:" + featureCode + "  serialNo:" + serialNo);
 
         if (sanButtonFlag == 1) {
             edit_start_entBF2Bit_st.setText(facCode);
             edit_start_entproduceDate_st.setText(dayCode);//日期码
             edit_start_entAT1Bit_st.setText(featureCode);
-            edit_start_entboxNoAndSerial_st.setText(serialNo);
+            entboxNoAndSerialSt1.setText(serialNo);
+            entboxNoAndSerialSt2.setText(serialNo2);
 
             edit_end_entBF2Bit_en.setText("");
             edit_end_entproduceDate_ed.setText("");
             edit_end_entAT1Bit_ed.setText("");
-            edit_end_entboxNoAndSerial_ed.setText("");
+            entboxNoAndSerialEd1.setText("");
+            entboxNoAndSerialEd2.setText("");
             btnReisterScanStartEd.setEnabled(true);
             btnScanReister.setEnabled(true);
         }
@@ -2711,8 +2774,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             edit_end_entBF2Bit_en.setText(facCode);
             edit_end_entproduceDate_ed.setText(dayCode);
             edit_end_entAT1Bit_ed.setText(featureCode);
-            edit_end_entboxNoAndSerial_ed.clearFocus();
-            edit_end_entboxNoAndSerial_ed.setText(serialNo);
+            entboxNoAndSerialEd1.clearFocus();
+            entboxNoAndSerialEd2.clearFocus();
+            entboxNoAndSerialEd1.setText(serialNo);
+            entboxNoAndSerialEd2.setText(serialNo2);
             btnReisterScanStartSt.setEnabled(true);
             btnScanReister.setEnabled(true);
         }
@@ -2843,4 +2908,5 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return false;
         }
     }
+
 }

@@ -18,7 +18,7 @@
     <color name="label_color">#5B5B5B</color>
 
     <color name="child_pg_bg">#ffffffff</color>
-
+    <color name="totalbar_bg">#299EE3</color>
     <color name="simple_write_ll">#0000FF</color>
     <color name="simple_write_ll_1">#191970</color>
 
