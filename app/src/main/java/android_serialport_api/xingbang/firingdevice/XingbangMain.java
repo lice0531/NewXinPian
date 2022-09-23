@@ -127,6 +127,7 @@ public class XingbangMain extends BaseActivity {
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loading = new Handler();//显示进度条
     private Handler mHandler_updata = new Handler();//更新主页面信息
+    private Handler mHandler_load = new Handler();//查了雷管
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
     private String TAG = "主页";
@@ -276,6 +277,10 @@ public class XingbangMain extends BaseActivity {
                 tvMainNo.setText("设备编号:" + equ_no);
                 CrashReport.setUserId(equ_no);
             }
+            return false;
+        });
+        mHandler_load = new Handler(msg -> {
+            loadMoreData_all_lg();//查询雷管延时是否为0
             return false;
         });
     }
@@ -1095,16 +1100,16 @@ public class XingbangMain extends BaseActivity {
                     a.append("区域1");
                 }
                 if (mRegion2) {
-                    a.append(",区域2");
+                    a.append(",2");
                 }
                 if (mRegion3) {
-                    a.append(",区域3");
+                    a.append(",3");
                 }
                 if (mRegion4) {
-                    a.append(",区域4");
+                    a.append(",4");
                 }
                 if (mRegion5) {
-                    a.append(",区域5");
+                    a.append(",5");
                 }
                 MmkvUtils.savecode("mRegion1", mRegion1);
                 MmkvUtils.savecode("mRegion2", mRegion2);
@@ -1117,6 +1122,7 @@ public class XingbangMain extends BaseActivity {
                 setTitleRegion();
                 // 显示提示
                 show_Toast("已选择 " + a);
+                mHandler_load.sendMessage(mHandler_load.obtainMessage());
             } else {
                 show_Toast("请至少选择一个区域");
             }
