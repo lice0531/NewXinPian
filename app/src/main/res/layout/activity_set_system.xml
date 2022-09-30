@@ -138,6 +138,31 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/et_hint_chongdian" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="设置1+5组合键后的起爆等待时间/s"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/et_set_qibaotime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="默认5s"
+            android:inputType="number" />
+
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

@@ -574,7 +574,7 @@ public class FiringMainActivity extends SerialPortActivity {
         sevenDisplay = 0;//第7步，是否显示
         sixExchangeCount = ChongDian_time;//第6阶段计时(充电时间)
         sixCmdSerial = 1;//命令倒计时
-        eightCount = 5;//第8阶段
+        eightCount = Integer.parseInt((String) MmkvUtils.getcode("Qibaotime", "5"));//第8阶段
         neightCount = 0;//
         eightCmdFlag = 0;
         thirdStartTime = 0;//第三阶段每个雷管返回命令计时器

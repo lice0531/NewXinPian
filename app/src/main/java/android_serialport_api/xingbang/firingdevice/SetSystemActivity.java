@@ -29,6 +29,8 @@ import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.annotation.NonNull;
+
 public class SetSystemActivity extends BaseActivity {
 
     @BindView(R.id.sw_setsys)
@@ -49,13 +51,15 @@ public class SetSystemActivity extends BaseActivity {
     EditText etSetJiancetime;
     @BindView(R.id.set_Voltage)
     Button setVoltage;
-
+    @BindView(R.id.et_set_qibaotime)
+    EditText etSetQibaotime;
     private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
     private String Yanzheng = "";//是否验证地理位置
     private String Shangchuan = "";//是否上传错误雷管
+    private String Qibaotime = "5";//设置起爆等待时间
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
@@ -71,6 +75,7 @@ public class SetSystemActivity extends BaseActivity {
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
+        Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
@@ -83,24 +88,21 @@ public class SetSystemActivity extends BaseActivity {
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
         }
-        Handler_tip = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle b = msg.getData();
-                String shellStr = b.getString("shellStr");
-                if (msg.arg1 == 1) {
-                    show_Toast(getString(R.string.text_systip_3));
-                } else if (msg.arg1 == 2) {
-                    show_Toast(getString(R.string.text_systip_2));
-                } else if (msg.arg1 == 3) {
-                    show_Toast("充电时间请大于8s");
-                } else if (msg.arg1 == 4) {
-                    show_Toast(getString(R.string.text_systip_1));
-                }
+        etSetQibaotime.setText(Qibaotime);
+        Handler_tip = new Handler(msg -> {
+            Bundle b = msg.getData();
+            String shellStr = b.getString("shellStr");
+            if (msg.arg1 == 1) {
+                show_Toast(getString(R.string.text_systip_3));
+            } else if (msg.arg1 == 2) {
+                show_Toast(getString(R.string.text_systip_2));
+            } else if (msg.arg1 == 3) {
+                show_Toast("充电时间请大于8s");
+            } else if (msg.arg1 == 4) {
+                show_Toast(getString(R.string.text_systip_1));
             }
-        };
+            return false;
+        });
     }
 
     private void getUserMessage() {
@@ -163,6 +165,12 @@ public class SetSystemActivity extends BaseActivity {
                     } else {
                         flag3 = 1;
                     }
+                }
+                if (!TextUtils.isEmpty(etSetQibaotime.getText())) {//起爆等待时间
+                    Log.e("起爆等待时间", "etSetQibaotime: " + etSetQibaotime.getText().toString());
+                    MmkvUtils.savecode("Qibaotime", etSetQibaotime.getText());
+                } else {
+                    flag2 = 1;
                 }
                 message.setId((long) 1);
                 getDaoSession().getMessageBeanDao().update(message);
