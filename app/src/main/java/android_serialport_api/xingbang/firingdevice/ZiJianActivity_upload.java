@@ -409,7 +409,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", "升级");
+            intent.putExtra("dataSend", "更新");
             startActivity(intent);
             dialog.dismiss();
         });
@@ -417,7 +417,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            dialog.dismiss();
 //            finish();
 //        });
-        builder.setNegativeButton("进入程序", (dialog, which) -> {
+        builder.setNegativeButton("不更新", (dialog, which) -> {
             finish();
             Intent intent = new Intent(this, XingbangMain.class);
             startActivity(intent);

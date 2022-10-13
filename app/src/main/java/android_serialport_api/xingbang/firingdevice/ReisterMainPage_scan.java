@@ -1249,26 +1249,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorNoTxt.setText(denatorNo);
         delaytimeTxt.setText(delaytime);
 
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //String a = username.getText().toString().trim();
-                String b = delaytimeTxt.getText().toString().trim();
-                if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                    dialog.dismiss();
-                } else if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
-                    show_Toast(getString(R.string.text_error_tip37));
-                    dialog.dismiss();
-                } else {
-                    Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
-                    modifyDelayTime(selectDenatorId, b);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            //String a = username.getText().toString().trim();
+            String b = delaytimeTxt.getText().toString().trim();
+            if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                dialog.dismiss();
+            } else if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
+                show_Toast(getString(R.string.text_error_tip37));
+                dialog.dismiss();
+            } else {
+                Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
+                modifyDelayTime(selectDenatorId, b);
 //                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                    //    将输入的用户名和密码打印出来
-                    show_Toast(getString(R.string.text_error_tip38));
-                    dialog.dismiss();
-                }
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                //    将输入的用户名和密码打印出来
+                show_Toast(getString(R.string.text_error_tip38));
+                dialog.dismiss();
             }
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {

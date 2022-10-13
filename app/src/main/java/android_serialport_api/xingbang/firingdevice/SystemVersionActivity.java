@@ -32,6 +32,8 @@ public class SystemVersionActivity extends SerialPortActivity {
     TextView btnSoftVersion;
     @BindView(R.id.btn_Hardware_Version)
     TextView btnHardwareVersion;
+    @BindView(R.id.sv_tv_rj_version)
+    TextView rjVersion;
     @BindView(R.id.et_Hardware_Version)
     EditText etHardwareVersion;
     @BindView(R.id.set_Hardware_Version)
@@ -44,9 +46,9 @@ public class SystemVersionActivity extends SerialPortActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sys_version);//version
+        setContentView(R.layout.activity_sys_version);//version 同时在xingbangMain中setUserMessage()更新版本号
         ButterKnife.bind(this);
-// 标题栏
+        // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("config", 0);
         //获取偏好设置的编辑器

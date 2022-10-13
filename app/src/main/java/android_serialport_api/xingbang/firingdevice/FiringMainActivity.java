@@ -1020,7 +1020,7 @@ public class FiringMainActivity extends SerialPortActivity {
             Utils.writeRecord("--起爆检测错误:" + fromData.toString());
         }
 
-        Utils.writeLog("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
+        Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
     }
 
     public void displayInputKeyboard(View v, boolean hasFocus) {

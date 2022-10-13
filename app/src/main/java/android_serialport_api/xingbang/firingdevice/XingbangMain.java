@@ -378,6 +378,7 @@ public class XingbangMain extends BaseActivity {
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
+        MmkvUtils.savecode("rj_version", "KT50_3.25_PT_220919");//软件版本
     }
 
     private void loginToSetEnv() {
@@ -554,11 +555,18 @@ public class XingbangMain extends BaseActivity {
 
             case R.id.btn_main_test://测试
                 long time = System.currentTimeMillis();
+                long time2 = System.nanoTime();
+                Log.e(TAG, "time: "+time );
+                Log.e(TAG, "time2: "+time2 );
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                if (time - endTime < 180000) {//第二次启动时间不重置
+                Log.e(TAG, "endTime: "+endTime );
+                if (time>0 && time - endTime < 180000  ) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
-                    return;
+                    if(a<200){
+                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
+                        Log.e(TAG, "endTime: "+ a );
+                        return;
+                    }
                 }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";

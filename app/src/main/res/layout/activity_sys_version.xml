@@ -33,7 +33,9 @@
             android:text="起爆程序版本号:"
             android:textSize="20sp"
             />
+<!--        同时在xingbangMain中setUserMessage()更新版本号-->
         <TextView
+            android:id="@+id/sv_tv_rj_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
