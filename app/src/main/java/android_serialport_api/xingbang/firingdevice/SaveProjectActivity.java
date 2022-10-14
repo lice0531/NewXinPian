@@ -122,6 +122,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         at_htid.addTextChangedListener(htbh_watcher);//长度监听
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
+        at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
     }
 
     private void loadMoreData() {
@@ -426,6 +427,25 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 at_bprysfz.setBackgroundColor(Color.GREEN);
             }else {
                 at_bprysfz.setBackgroundColor(Color.RED);
+            }
+        }
+    };
+
+    TextWatcher dwdm_watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 13) {
+                at_dwdm.setBackgroundColor(Color.GREEN);
+            } else {
+                at_dwdm.setBackgroundColor(Color.RED);
             }
         }
     };

@@ -209,7 +209,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 Log.e("当前电流", "dangqian_ic: " + dangqian_ic);
 
             }
-//            if ((Preparation_time*0.8 == 9 && busInfo.getBusVoltage() < 6.5)) {
+//            if ((Preparation_time*0.2 == 9 && busInfo.getBusVoltage() < 6.5)) {
 //                Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
 //                AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
 //                        .setTitle("当前电压过低")//设置对话框的标题//"成功起爆"
@@ -507,7 +507,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (displayIc < denatorCount * 12 * 0.25 && firstCount < Preparation_time * 0.8) {//总线电流小于参考值一半,可能出现断路
+                    if (displayIc < denatorCount * 12 * 0.25 && firstCount < Preparation_time * 0.2) {//总线电流小于参考值一半,可能出现断路
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流过小,请检查线路是否出现断路");
                         stage = 5;
@@ -515,7 +515,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.8) {
+                    if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.2) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
                         show_Toast("当前电压异常,请检查线路是否出现短路等情况");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -529,13 +529,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * 24) && firstCount < Preparation_time * 0.8) {//5
+                    } else if (displayIc > (denatorCount * 24) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * 6 && firstCount < Preparation_time * 0.8) {//5
+                    } else if (displayIc < 4 + denatorCount * 6 && firstCount < Preparation_time * 0.2) {//5
                         displayIcStr = displayIcStr + "(疑似断路)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
@@ -549,7 +549,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于4500
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 4500 && firstCount < Preparation_time * 0.8) {
+                    if (displayIc > 4500 && firstCount < Preparation_time * 0.2) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         if (!chongfu) {
@@ -561,7 +561,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         }
                         return;
                     }
-//                    if (busInfo.getBusVoltage() < 6.3&& firstCount > Preparation_time * 0.8) {
+//                    if (busInfo.getBusVoltage() < 6.3&& firstCount > Preparation_time * 0.2) {
 //                        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
 //                                .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
 //                                .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
