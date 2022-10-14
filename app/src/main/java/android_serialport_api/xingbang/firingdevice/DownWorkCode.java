@@ -1277,7 +1277,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String htNo = at_htid.getText().toString();
         String holeDeAmo = at_xmbh.getText().toString();
         String coordxy = at_coordxy.getText().toString().replace("\n", "").replace("，", ",").replace(" ", "");
-        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5) {
+        String []a =coordxy.split("\\.");
+        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5||a.length!=3) {
             tipStr = "经度纬度设置不正确，具体格式为如:116.585989,36.663456";
             return tipStr;
         }
@@ -2402,9 +2403,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() == 13) {
-                at_xmbh.setBackgroundColor(Color.GREEN);
+                at_dwdm.setBackgroundColor(Color.GREEN);
             } else {
-                at_xmbh.setBackgroundColor(Color.RED);
+                at_dwdm.setBackgroundColor(Color.RED);
             }
         }
     };

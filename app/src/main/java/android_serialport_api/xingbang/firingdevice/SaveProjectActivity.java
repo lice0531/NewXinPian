@@ -121,6 +121,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
         at_htid.addTextChangedListener(htbh_watcher);//长度监听
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
+        at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
     }
 
@@ -220,6 +221,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         String coordxy = at_coordxy.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
         String dwdm = at_dwdm.getText().toString().trim().replace(" ", "");
         String name = at_projectName.getText().toString().trim().replace(" ", "");
+        String []a =coordxy.split("\\.");
         if(htid.length()>1&&htid.length()<15){
             return "当前合同编号小于15位,请重新输入";
         }
@@ -233,7 +235,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             return "请输入项目名称";
         }
 
-        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5) {
+        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5||a.length!=3) {
             tipStr = "经度纬度设置不正确，具体格式为如:116.585989,36.663456";
             return tipStr;
         }
@@ -429,4 +431,24 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             }
         }
     };
+    TextWatcher dwdm_watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 13) {
+                at_dwdm.setBackgroundColor(Color.GREEN);
+            } else {
+                at_dwdm.setBackgroundColor(Color.RED);
+            }
+        }
+    };
+
+
 }
