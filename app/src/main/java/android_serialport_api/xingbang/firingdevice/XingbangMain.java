@@ -279,6 +279,7 @@ public class XingbangMain extends BaseActivity {
             }
         }).start();
     }
+
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
 //        Log.e(TAG, "message: " + message.toString());
@@ -523,9 +524,9 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_test://测试
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                if(time - endTime < 180000){//第二次启动时间不重置
-                    int a =(int) (180000-(time - endTime))/1000+5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a,"组网");
+                if (time - endTime < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
                     return;
                 }
                 Log.e("测试页面", "测试: ");
@@ -553,12 +554,12 @@ public class XingbangMain extends BaseActivity {
                         return;
                     }
                 }
-                 time = System.currentTimeMillis();
-                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                time = System.currentTimeMillis();
+                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
-                if(time - endTime < 180000){//第二次启动时间不重置
-                    int a =(int) (180000-(time - endTime))/1000+5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测",a,"起爆");
+                if (time - endTime < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
                     return;
                 }
                 String str5 = "起爆";
@@ -652,16 +653,12 @@ public class XingbangMain extends BaseActivity {
                     baseinfo.setRegdate(a[12]);
                     baseinfo.setWire(a[13]);
                     baseinfo.setName(a[14]);
-                    if (a.length == 16) {
-                        baseinfo.setDenatorIdSup(a[15]);
-                    } else if (a.length > 16) {
-                        baseinfo.setZhu_yscs(a[16]);
-                        baseinfo.setCong_yscs(a[17]);
-                        baseinfo.setPiece(a[18]);
-                    } else if (a.length > 18) {
-                        baseinfo.setDuan(Integer.parseInt(a[19]));
-                        baseinfo.setDuanNo(a[20]);
-                    }
+                    baseinfo.setDenatorIdSup(a[15]);
+                    baseinfo.setZhu_yscs(a[16]);
+                    baseinfo.setCong_yscs(a[17]);
+                    baseinfo.setPiece(a[18]);
+                    baseinfo.setDuan(Integer.parseInt(a[19]));
+                    baseinfo.setDuanNo(a[20]);
                     getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 } else {
                     f.delete();//如果字段个数不对,先删除list,再跳出循环
@@ -952,9 +949,9 @@ public class XingbangMain extends BaseActivity {
     private java.util.Timer mOffTime;
     private android.app.Dialog mDialog;
 
-    private void initDialog_fangdian(String tip,int daojishi,String c) {
+    private void initDialog_fangdian(String tip, int daojishi, String c) {
         String str5 = c;
-        Log.e(TAG, "倒计时: "+daojishi);
+        Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
         mOffTextView.setText(tip + "\n放电倒计时：");
@@ -973,9 +970,9 @@ public class XingbangMain extends BaseActivity {
                 .setNegativeButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
-                    if(str5.equals("组网")){
+                    if (str5.equals("组网")) {
                         intent5 = new Intent(this, TestDenatorActivity.class);
-                    }else {
+                    } else {
                         Log.e("验证2", "Yanzheng: " + Yanzheng);
                         if (Yanzheng.equals("验证")) {
                             intent5 = new Intent(this, VerificationActivity.class);
@@ -1023,7 +1020,7 @@ public class XingbangMain extends BaseActivity {
                 if (countTime > 0) {
                     countTime--;
                 }
-                Log.e(TAG, "countTime: "+countTime );
+                Log.e(TAG, "countTime: " + countTime);
                 Message msg = new Message();
                 msg.what = countTime;
                 mOffHandler.sendMessage(msg);

@@ -27,7 +27,7 @@ public class DetonatorTypeNew {
     private String zhu_yscs;//主芯片延时参数
     @Property(nameInDb = "cong_yscs")
     private String cong_yscs;//从芯片延时参数
-    @Property(nameInDb = "time")
+    @Property(nameInDb = "time")//牵扯到删除问题(自动删除历史记录的时候,删除相同的下载数据,所以时间是22-10-20)
     private String time;//从芯片延时参数
 
     @Generated(hash = 350380064)

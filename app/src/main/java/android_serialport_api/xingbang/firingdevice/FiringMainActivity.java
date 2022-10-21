@@ -2062,8 +2062,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //        endTest();
         ctlLinePanel(4);//修改页面显示项
         getErrorBlastCount();
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-        sendCmd(initBuf2);
+//        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+//        sendCmd(initBuf2);
     }
 
     private void initDialog(String tip, int daojishi) {

@@ -89,7 +89,7 @@ public class PracticeActivity extends BaseActivity {
     @BindView(R.id.ll_firing_4)
     LinearLayout llFiring4;
     @BindView(R.id.activity_practice)
-    ScrollView activityPractice;
+    LinearLayout activityPractice;
     @BindView(R.id.but_write)
     Button butWrite;
     @BindView(R.id.btn_read)
@@ -493,8 +493,9 @@ public class PracticeActivity extends BaseActivity {
                 }).start();
                 break;
             case R.id.btn_read_log:
-                String log = Utils.fenxiLog(path);
-                registerLog(log);
+                Utils.saveExecl();
+//                String log = Utils.fenxiLog(path);
+//                registerLog(log);
                 break;
             case R.id.but_send://发送
                 StringBuffer sb = new StringBuffer();

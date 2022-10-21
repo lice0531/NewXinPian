@@ -52,6 +52,7 @@ import javax.crypto.spec.DESedeKeySpec;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.SysLog;
@@ -1779,16 +1780,16 @@ public class Utils {
     /**
      * 保存文件,把软存中的数据存入磁盘中
      */
-    public static void saveFile_1() {
+    public static void saveExecl() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String content = " ";
+            String content = GreenDaoMaster.getAllshengchan();
             if (!content.equals("")) {
                 //列表中有数据
                 File file = new File(Environment.getExternalStorageDirectory() + "/xb/");
                 if (!file.exists()) {
                     file.mkdir();
                 }
-                String path = Environment.getExternalStorageDirectory() + "/xb/" + "test.txt";
+                String path = Environment.getExternalStorageDirectory() + "/xb/" + "shengchan.csv";
 //                FileUtil fileUtil = new FileUtil(this);
                 try {
                     FileOutputStream fos = new FileOutputStream(new File(path));

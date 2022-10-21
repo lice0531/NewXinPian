@@ -253,7 +253,7 @@ public class GreenDaoMaster {
 
     public static String getAllFromInfo() {
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称,从芯片码,主延时参数,从延时参数\n";
+        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称,从芯片码,主延时参数,从延时参数,区域,段,段号\n";
         String content;
         for (int i = 0; i < list.size(); i++) {
             content = list.get(i).getId() + "," + list.get(i).getBlastserial() + "," + list.get(i).getSithole() + ","
@@ -261,7 +261,23 @@ public class GreenDaoMaster {
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
-                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "," + list.get(i).getPiece()+ "," + list.get(i).getDuan()+ "," + list.get(i).getDuanNo() + "\n";
+                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + ","
+                    + list.get(i).getPiece() + "," + list.get(i).getDuan() + "," + list.get(i).getDuanNo() + "\n";
+            str = str + content;
+        }
+        return str;
+    }
+
+    public static String getAllshengchan() {
+        String content = "";//A620000942422
+        List<DetonatorTypeNew> list = getDaoSession().getDetonatorTypeNewDao().loadAll();
+        String str = "";
+        Log.e("生产", "list.size() : " + list.size());
+        for (int i = 0; i < list.size(); i++) {
+            content = list.get(i).getShellBlastNo() + ","
+                    + list.get(i).getShellBlastNo() + "," +
+                    list.get(i).getDetonatorId() + list.get(i).getZhu_yscs() + ","
+                    + list.get(i).getTime() + "\n";
             str = str + content;
         }
         return str;
@@ -269,16 +285,25 @@ public class GreenDaoMaster {
 
     //丹灵下载后更新雷管芯片码
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
-
+        Log.e("插入数据", "lgBean: " );
+        //94242214050
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
-            String uid = "A62F400" + lgBean.getGzm().substring(0, 6);
-            String yscs = lgBean.getGzm().substring(6);
+            String uid = "";
+            String yscs = "";
+            String duan = "";
+            uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+            yscs = lgBean.getGzm().substring(6, 10);
+
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
 //                Log.e("查询数据库中是否有对应的数据", "db: " + db);
                 db.setDenatorId(uid);
                 db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                if (lgBean.getGzm().length() == 11) {
+                    duan = lgBean.getGzm().substring(10);
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成段位了
+                }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
                 registerDetonator_typeNew(db);
                 Utils.saveFile();//把软存中的数据存入磁盘中
@@ -301,6 +326,8 @@ public class GreenDaoMaster {
         detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
         detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
+        detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());
+        //牵扯到删除问题(自动删除历史记录的时候,删除相同的下载数据,所以时间是22-10-20)
         detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
@@ -339,6 +366,7 @@ public class GreenDaoMaster {
     public static void delAllMessage() {
         getDaoSession().getShouQuanDao().deleteAll();
     }
+
     /**
      * 从数据库表中拿数据
      *
@@ -407,12 +435,13 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
+
     /**
      * 查询雷管 区域正序(序号)
      *
      * @param piece 区域号 1 2 3 4 5
      */
-    public List<DenatorBaseinfo> queryDetonatorRegionAndDUanAsc(String piece,int duan) {
+    public List<DenatorBaseinfo> queryDetonatorRegionAndDUanAsc(String piece, int duan) {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
@@ -545,7 +574,7 @@ public class GreenDaoMaster {
 
     public static void setDenatorType() {
         List<Denator_type> msg = getDaoSession().getDenator_typeDao().loadAll();
-        if(msg.size()==0){
+        if (msg.size() == 0) {
             Denator_type message = new Denator_type();
             message.setDeTypeName("scyb");
             message.setDeTypeSecond("10000");
@@ -554,9 +583,10 @@ public class GreenDaoMaster {
         }
 
     }
+
     public static void setFactory() {
         List<Defactory> msg = getDaoSession().getDefactoryDao().loadAll();
-        if(msg.size()==0){
+        if (msg.size() == 0) {
             Defactory message = new Defactory();
             message.setDeName("scyb");
             message.setDeEntCode("56");
@@ -570,9 +600,9 @@ public class GreenDaoMaster {
      * @param duan
      * @return
      */
-    public List<DenatorBaseinfo> queryLeiguanDuan(int duan,String mRegion) {
+    public List<DenatorBaseinfo> queryLeiguanDuan(int duan, String mRegion) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        Log.e("查询", "段位雷管: " );
+        Log.e("查询", "段位雷管: ");
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
     }
@@ -580,14 +610,14 @@ public class GreenDaoMaster {
     /**
      * 检查重复雷管
      */
-    public int  getDuan(String shellBlastNo) {
+    public int getDuan(String shellBlastNo) {
         DenatorBaseinfo a = mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shellBlastNo))
                 .unique();
-        if(a!=null){
+        if (a != null) {
             return a.getDuan();
-        }else {
+        } else {
             return 1;
         }
 

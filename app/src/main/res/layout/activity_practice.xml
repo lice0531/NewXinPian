@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_practice"
     android:layout_width="match_parent"
@@ -8,30 +9,30 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
         android:id="@+id/ll_firing_4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
 
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:titleTextColor="@color/white" />
-
-        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -438,14 +439,15 @@
 
             </RelativeLayout>
 
-            <Button
-                android:id="@+id/btn_read_log"
-                style="@style/allbtntstyle"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:text="分析日志"
-                android:visibility="invisible" />
+
         </LinearLayout>
+        <Button
+            android:id="@+id/btn_read_log"
+            style="@style/allbtntstyle"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="生成表格"
+            android:visibility="gone" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

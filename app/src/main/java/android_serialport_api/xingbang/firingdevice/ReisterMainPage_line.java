@@ -398,7 +398,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private String duan_set = "0";//是duan1还是duan2
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
-    private String TAG="单发注册";
+    private String TAG = "单发注册";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -406,7 +407,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         ButterKnife.bind(this);
         SoundPlayUtils.init(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         //扫描参数设置
         init();
@@ -560,7 +561,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                         txt_currentVolt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
                         txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
                         // 判断当前电流是否偏大
-                        if (Math.round(busInfo.getBusCurrentIa() * 1000) > 24) {
+                        if (Math.round(busInfo.getBusCurrentIa() * 1000) > 60) {
                             txt_currentIC.setTextColor(Color.RED);
                         } else {
                             txt_currentIC.setTextColor(Color.GREEN);
@@ -601,7 +602,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 show_Toast("已达到最大延时限制" + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与"+lg_Piece+"区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
@@ -612,7 +613,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 show_Toast("找不到对应的生产数据,请先导入生产数据");
             } else if (msg.what == 99) {
                 adapter.notifyDataSetChanged();
-            }else if (msg.what == 2001) {
+            } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
                 SoundPlayUtils.play(4);
             } else {
@@ -626,7 +627,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 if (busInfo != null) {
                     txt_currentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
                     txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
-                    if (Math.round(busInfo.getBusCurrentIa()) > 24) {//判断当前电流是否偏大
+                    if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
                         txt_currentIC.setTextColor(Color.RED);
                     } else {
                         txt_currentIC.setTextColor(Color.GREEN);
@@ -734,7 +735,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
     }
-
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -931,7 +931,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     }
 
     public void hideInputKeyboard() {
-
+        et_startDelay.clearFocus();//取消焦点
         edit_start_entBF2Bit_st.clearFocus();//取消焦点
         edit_start_entproduceDate_st.clearFocus();
         edit_start_entAT1Bit_st.clearFocus();
@@ -1148,12 +1148,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
             // TODO 开启进度条
 
             new Thread(() -> {
-                int duan1 =  new GreenDaoMaster().getDuan(shellBlastNo);
-                Log.e("单发删除", "duan1: "+duan1);
+                int duan1 = new GreenDaoMaster().getDuan(shellBlastNo);
+                Log.e("单发删除", "duan1: " + duan1);
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
-                Utils.writeRecord("--删除雷管:"+shellBlastNo);
+                Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 //更新每段雷管数量
                 Message msg = new Message();
                 msg.arg1 = duan1;
@@ -1311,14 +1311,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
             //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
             //C000120A FF 00 67D0FA00 03 A6 1704 7F24 C0
-            try {
-                Thread.sleep(500);//
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //2  连续发三次询问电流指令
-            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
-            sendCmd(reCmd);
+
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
             zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
             if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
@@ -1329,6 +1322,14 @@ public class ReisterMainPage_line extends SerialPortActivity {
             }
             zhuce_Flag = 1;
 
+            try {
+                Thread.sleep(500);//
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //2  连续发三次询问电流指令
+            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
+            sendCmd(reCmd);
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
 //            if (initCloseCmdReFlag == 1) {//打开电源
@@ -1346,7 +1347,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
             if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                if (busInfo.getBusCurrentIa() > 24) {//判断当前电流是否偏大
+                if (busInfo.getBusCurrentIa() > 60) {//判断当前电流是否偏大//20221019(范总说取消掉单发注册电流判断)
                     tipInfoFlag = 7;
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                     SoundPlayUtils.play(4);
@@ -1354,12 +1355,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                 }
 //                else {
-                    if (zhuce_form != null) {//管厂码,特征码,雷管id
+                if (zhuce_form != null) {//管厂码,特征码,雷管id
 //                        // 获取 管壳码
 //                        String shellNo = new GreenDaoMaster().getShellNo(detonatorId);
-                        insertSingleDenator(detonatorId, zhuce_form);//单发注册
-                        zhuce_Flag = 0;
-                    }
+                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
+                    zhuce_Flag = 0;
+                }
 
 //                }
             }
@@ -1412,7 +1413,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         Log.e("查询生产数据库查管壳码", "factoryCode: " + factoryCode);
         Log.e("查询生产数据库查管壳码", "facCode: " + facCode);
 //        Log.e("查询生产数据库查管壳码", "ShellBlastNo: " + detonatorTypeNew.getShellBlastNo());
-        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode)&&!facCode.equals("A6")) {
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode) && !facCode.equals("A6")) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             return -1;
         }
@@ -1447,6 +1448,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 return -1;
             }
+        }
+        if (maxSecond != 0 && start > maxSecond) {//开始延时超出最大范围
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+            return -1;
         }
 
         if (maxSecond != 0 && f1 > maxSecond) {//
@@ -1494,7 +1499,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
             }
             denatorBaseinfo.setBlastserial(maxNo);
-            denatorBaseinfo.setSithole(maxNo+"");
+            denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setDenatorId(detonatorId);
             denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
@@ -1589,7 +1594,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));
         if (list_lg.size() > 0) {
             lg_No = list_lg.get(0).getBlastserial() + "";
-            lg_Piece=list_lg.get(0).getPiece();
+            lg_Piece = list_lg.get(0).getPiece();
             singleShellNo = list_lg.get(0).getShellBlastNo();
             return true;
         } else {
@@ -1746,7 +1751,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 break;
 
             case R.id.btn_singleReister:
-
+                hideInputKeyboard();
 //                if (delay_set.equals("0")) {
 //                    show_Toast("请设置延时");
 //                    break;
@@ -2732,8 +2737,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 .setPositiveButton("确认", (dialog1, which) -> {
 
                     GreenDaoMaster master = new GreenDaoMaster();
-                    List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan,mRegion);
-                    List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan,mRegion);
+                    List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);
+                    List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan, mRegion);
                     for (int i = 0; i < list.size(); i++) {
                         DenatorBaseinfo lg = list.get(i);
                         lg.setDelay(list2.get(list.size() - 1 - i).getDelay());
@@ -2997,7 +3002,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private void showDuanSum(int a) {
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
         int totalNum = list.size();//得到数据的总条数
-        Log.e(TAG, "当前区域段数totalNum: "+totalNum );
+        Log.e(TAG, "当前区域段数totalNum: " + totalNum);
         switch (a) {
             case 1:
                 reNumF1.setText(totalNum + "");
@@ -3126,7 +3131,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
      * 获取最大段号
      */
     private int getMaxDuanNo() {
-        Cursor cursor = db.rawQuery("select max(duan) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece =? ", new String[]{mRegion} );
+        Cursor cursor = db.rawQuery("select max(duan) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece =? ", new String[]{mRegion});
         if (cursor != null && cursor.moveToNext()) {
             String maxDuan = cursor.getString(0);
             if (maxDuan != null) {
