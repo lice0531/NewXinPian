@@ -399,7 +399,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * 24) && displayIc > 10 || displayIc > 4500) {// "电流过大";
+                } else if (displayIc > (denatorCount * 24) && displayIc > 10 ) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
