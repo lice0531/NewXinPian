@@ -1331,18 +1331,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             dialog.dismiss();
 
             // TODO 开启进度条
-
+            runPbDialog();
             new Thread(() -> {
                 // 删除某一发雷管
+
+                int duan =new GreenDaoMaster().getDuan(shellBlastNo);
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
                 //更新每段雷管数量
                 Message msg = new Message();
-                msg.arg1 =new GreenDaoMaster().getDuan(shellBlastNo);
+                msg.arg1 =duan;
                 mHandler_showNum.sendMessage(msg);
                 // 区域 更新视图
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                pb_show = 0;
             }).start();
 
         });
@@ -1416,73 +1419,73 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         builder.show();
     }
 
-    private void modifyBlastBaseInfo(String serialNo, String hoteNo, String delaytime, final String denatorNo) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // builder.setIcon(R.drawable.ic_launcher);
-        //   builder.setTitle("修改延时信息");
-        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
-        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
-        //    设置我们自己定义的布局文件作为弹出框的Content
-        builder.setView(view);
-
-        final EditText serialNoTxt = (EditText) view.findViewById(R.id.serialNo);
-        final EditText denatorNoTxt = (EditText) view.findViewById(R.id.denatorNo);
-        final EditText delaytimeTxt = (EditText) view.findViewById(R.id.delaytime);
-
-        serialNoTxt.setEnabled(false);
-        denatorNoTxt.setEnabled(false);
-
-        serialNoTxt.setText(serialNo);
-        denatorNoTxt.setText(denatorNo);
-        delaytimeTxt.setText(delaytime);
-
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //String a = username.getText().toString().trim();
-                String b = delaytimeTxt.getText().toString().trim();
-                if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                    dialog.dismiss();
-                } else if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
-                    show_Toast(getString(R.string.text_error_tip37));
-                    dialog.dismiss();
-                } else {
-                    Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
-                    modifyDelayTime(selectDenatorId, b);
-//                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                    //    将输入的用户名和密码打印出来
-                    show_Toast(getString(R.string.text_error_tip38));
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setNeutralButton("删除", (dialog, which) -> {
-            dialog.dismiss();
-            pb_show = 1;
-            runPbDialog();
-            Utils.writeRecord("-单发删除:" + "-删除管壳码:" + denatorNo + "-延时" + delaytime);
-            new Thread(() -> {
-                String whereClause = "shellBlastNo = ?";
-                String[] whereArgs = {denatorNo};
-                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
-                Utils.deleteData(mRegion);//重新排序雷管
-//                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                tipDlg.dismiss();
-                Utils.saveFile();//把软存中的数据存入磁盘中
-                pb_show = 0;
-            }).start();
-        });
-        builder.show();
-    }
+//    private void modifyBlastBaseInfo(String serialNo, String hoteNo, String delaytime, final String denatorNo) {
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        // builder.setIcon(R.drawable.ic_launcher);
+//        //   builder.setTitle("修改延时信息");
+//        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+//        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
+//        //    设置我们自己定义的布局文件作为弹出框的Content
+//        builder.setView(view);
+//
+//        final EditText serialNoTxt = (EditText) view.findViewById(R.id.serialNo);
+//        final EditText denatorNoTxt = (EditText) view.findViewById(R.id.denatorNo);
+//        final EditText delaytimeTxt = (EditText) view.findViewById(R.id.delaytime);
+//
+//        serialNoTxt.setEnabled(false);
+//        denatorNoTxt.setEnabled(false);
+//
+//        serialNoTxt.setText(serialNo);
+//        denatorNoTxt.setText(denatorNo);
+//        delaytimeTxt.setText(delaytime);
+//
+//        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                //String a = username.getText().toString().trim();
+//                String b = delaytimeTxt.getText().toString().trim();
+//                if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
+//                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+//                    dialog.dismiss();
+//                } else if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
+//                    show_Toast(getString(R.string.text_error_tip37));
+//                    dialog.dismiss();
+//                } else {
+//                    Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
+//                    modifyDelayTime(selectDenatorId, b);
+////                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
+//                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//                    //    将输入的用户名和密码打印出来
+//                    show_Toast(getString(R.string.text_error_tip38));
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//            }
+//        });
+//        builder.setNeutralButton("删除", (dialog, which) -> {
+//            dialog.dismiss();
+//            pb_show = 1;
+//            runPbDialog();
+//            Utils.writeRecord("-单发删除:" + "-删除管壳码:" + denatorNo + "-延时" + delaytime);
+//            new Thread(() -> {
+//                String whereClause = "shellBlastNo = ?";
+//                String[] whereArgs = {denatorNo};
+//                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
+//                Utils.deleteData(mRegion);//重新排序雷管
+////                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
+//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//                tipDlg.dismiss();
+//                Utils.saveFile();//把软存中的数据存入磁盘中
+//                pb_show = 0;
+//            }).start();
+//        });
+//        builder.show();
+//    }
 
     //更新延时
     public int modifyDelayTime(String id, String delay) {
@@ -1693,7 +1696,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 delay = delay + f2;
             }
         }
-        int duanNUM = getDuanNo(duan);//也得做区域区分
+        int duanNUM =getDuanNo(duan,mRegion);//也得做区域区分
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
@@ -1768,7 +1771,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
-        int duanNUM = getDuanNo(duan);//也得做区域区分
+        int duanNUM = getDuanNo(duan,mRegion);//也得做区域区分
 
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
@@ -1866,7 +1869,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 break;
             }
-            int duanNUM = getDuanNo(duan);//也得做区域区分
+            int duanNUM = getDuanNo(duan,mRegion);//也得做区域区分
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
@@ -3660,6 +3663,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     private int getDuanNo(int duan) {
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =?", new String[]{duan + ""});
+        int totalNum = cursor.getCount();//得到数据的总条数
+        cursor.close();
+        return totalNum;
+    }
+    /***
+     * 得到某段的总数
+     * @return
+     */
+    private int getDuanNo(int duan,String piece) {
+        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "",piece});
         int totalNum = cursor.getCount();//得到数据的总条数
         cursor.close();
         return totalNum;

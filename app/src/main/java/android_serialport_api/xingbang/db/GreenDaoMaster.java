@@ -446,7 +446,7 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
-                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderAsc(DenatorBaseinfoDao.Properties.Id)
                 .list();
     }
 
@@ -459,7 +459,7 @@ public class GreenDaoMaster {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
-                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderDesc(DenatorBaseinfoDao.Properties.Id)
                 .list();
     }
 

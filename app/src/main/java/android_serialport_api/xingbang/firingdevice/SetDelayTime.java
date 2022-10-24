@@ -354,7 +354,7 @@ public class SetDelayTime extends BaseActivity {
             dialog.dismiss();
 
             // TODO 开启进度条
-
+            runPbDialog();
             new Thread(() -> {
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
@@ -362,7 +362,7 @@ public class SetDelayTime extends BaseActivity {
                 Utils.writeRecord("--删除雷管:"+shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
-
+                pb_show = 0;
             }).start();
 
         });

@@ -408,6 +408,8 @@ public class DelDenatorMainPage extends BaseActivity  {
                         //设置对话框的按钮
                         .setNegativeButton("取消", (dialog12, which) -> dialog12.dismiss())
                         .setPositiveButton("确认删除", (dialog1, which) -> {
+                            pb_show = 1;
+                            runPbDialog();
                             String checstr = checkData();
                             if (checstr == null || checstr.trim().length() < 1) {
                                 //起始序号
@@ -415,8 +417,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                                 //终点序号
                                 String endNoStr = setDelayTimeEndNo.getText().toString();
                                 deleteDenatorforNo(startNoStr, endNoStr);
-                                pb_show = 1;
-                                runPbDialog();
+
                                 Utils.deleteData(mRegion);//重新排序雷管
                                 loadMoreData();//获取数据保存到list
                                 //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)

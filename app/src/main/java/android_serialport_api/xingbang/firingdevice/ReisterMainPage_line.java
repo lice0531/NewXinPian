@@ -1146,7 +1146,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             dialog.dismiss();
 
             // TODO 开启进度条
-
+            runPbDialog();
             new Thread(() -> {
                 int duan1 = new GreenDaoMaster().getDuan(shellBlastNo);
                 Log.e("单发删除", "duan1: " + duan1);
@@ -1158,10 +1158,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 Message msg = new Message();
                 msg.arg1 = duan1;
                 mHandler_showNum.sendMessage(msg);
-
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
-
+                pb_show = 0;
             }).start();
 
         });
@@ -1475,7 +1474,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 delay = delay + f2;
             }
         }
-        int duanNUM = getDuanNo(duan);//也得做区域区分
+        int duanNUM =getDuanNo(duan,mRegion);//也得做区域区分
 
         if (!zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
             maxNo++;
@@ -2981,7 +2980,16 @@ public class ReisterMainPage_line extends SerialPortActivity {
         cursor.close();
         return totalNum;
     }
-
+    /***
+     * 得到某段的总数
+     * @return
+     */
+    private int getDuanNo(int duan,String piece) {
+        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "",piece});
+        int totalNum = cursor.getCount();//得到数据的总条数
+        cursor.close();
+        return totalNum;
+    }
     /***
      * 得到某段的总数
      * @return
