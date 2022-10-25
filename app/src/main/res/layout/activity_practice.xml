@@ -448,6 +448,6 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:text="生成表格"
-            android:visibility="gone" />
+            android:visibility="invisible" />
     </LinearLayout>
 </LinearLayout>

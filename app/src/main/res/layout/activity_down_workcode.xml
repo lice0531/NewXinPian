@@ -352,7 +352,7 @@
                         android:gravity="center"
                         android:hint="@string/text_reister_2b"
                         android:maxLength="2"
-                        android:numeric="integer"
+                        android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base"
                         style="@style/alltextstyle"
@@ -370,7 +370,7 @@
                         android:gravity="center"
                         android:hint="@string/text_reister_5b"
                         android:maxLength="5"
-                        android:numeric="integer"
+                        android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base"
                         style="@style/alltextstyle"
@@ -404,24 +404,11 @@
                         android:gravity="center"
                         android:hint="@string/text_reister_5b"
                         android:maxLength="5"
-                        android:numeric="integer"
+                        android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base"
                         style="@style/alltextstyle"/>
                 </LinearLayout>
-
-                <Button
-                    android:visibility="gone"
-                    android:id="@+id/btn_ReisterScanStart_st"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1.5"
-                    android:background="@drawable/bt_mainpage_style"
-                    android:gravity="center"
-                    android:text="@string/text_reister_scan"
-                    android:textColor="@color/bt_fg_base"
-                    android:textSize="15sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -452,7 +439,7 @@
                         android:gravity="center"
                         android:hint="@string/text_reister_2b"
                         android:maxLength="2"
-                        android:numeric="integer"
+                        android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base"
                         style="@style/alltextstyle"
@@ -469,7 +456,7 @@
                         android:gravity="center"
                         android:hint="@string/text_reister_5b"
                         android:maxLength="5"
-                        android:numeric="integer"
+                        android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base"
                         style="@style/alltextstyle" />
@@ -501,7 +488,7 @@
                         android:gravity="center"
                         android:hint="@string/text_reister_5b"
                         android:maxLength="5"
-                        android:numeric="integer"
+                        android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textColor="@color/rangle_fc_base"
                         style="@style/alltextstyle" />
@@ -520,6 +507,69 @@
                     android:textColor="@color/bt_fg_base"
                     style="@style/alltextstyle" />
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_num"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/childReisterPageLineHeight"
+                >
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6">
+                    <EditText
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/et_duan"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="段号"
+                        android:maxLength="1"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="/段号" />
+                    <EditText
+                        android:id="@+id/et_num"
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="2dp"
+                        android:background="@drawable/translucent"
+                        android:gravity="center"
+                        android:hint="连续注册"
+                        android:maxLength="5"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/childReisterPageEditHeight"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="/个数" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

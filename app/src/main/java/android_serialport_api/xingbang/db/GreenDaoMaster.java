@@ -44,6 +44,7 @@ public class GreenDaoMaster {
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
+        this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
     }
 
 
@@ -276,7 +277,7 @@ public class GreenDaoMaster {
         for (int i = 0; i < list.size(); i++) {
             content = list.get(i).getShellBlastNo() + ","
                     + list.get(i).getShellBlastNo() + "," +
-                    list.get(i).getDetonatorId() + list.get(i).getZhu_yscs() + ","
+                    list.get(i).getDetonatorId() + list.get(i).getZhu_yscs() +"0"+ ","
                     + list.get(i).getTime() + "\n";
             str = str + content;
         }
@@ -292,17 +293,23 @@ public class GreenDaoMaster {
             String yscs = "";
             String duan = "";
             uid = "A62F400" + lgBean.getGzm().substring(0, 6);
-            yscs = lgBean.getGzm().substring(6, 10);
+            if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                yscs = lgBean.getGzm().substring(6, 10);
+            }
+
 
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
 //                Log.e("查询数据库中是否有对应的数据", "db: " + db);
                 db.setDenatorId(uid);
-                db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                if(lgBean.getGzm().length()>=10){
+                    db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                }
+
                 if (lgBean.getGzm().length() == 11) {
                     duan = lgBean.getGzm().substring(10);
-                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成段位了
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
                 registerDetonator_typeNew(db);
@@ -373,7 +380,8 @@ public class GreenDaoMaster {
      * @return
      */
     public static List<ShouQuan> getAllShouQuan() {
-        return getDaoSession().getShouQuanDao().loadAll();
+//        return mShouquanDao.queryBuilder().orderDesc(ShouQuanDao.Properties.Id).list();
+        return getDaoSession().getShouQuanDao().queryBuilder().orderDesc(ShouQuanDao.Properties.Id).list();
     }
 
     /**

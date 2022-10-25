@@ -105,13 +105,12 @@ public class SendMsgActivity extends BaseActivity {
     private String mRegion;     // 区域
     private Handler mHandler_0 = new Handler();     // UI处理
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_msg);
         ButterKnife.bind(this);
-
+        initHandle();
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //获取 区域参数
@@ -120,7 +119,7 @@ public class SendMsgActivity extends BaseActivity {
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
         setTitleRegion(mRegion, -1);
-        initHandle();
+
         loadMoreData();
 
         Log.e("本机ip", "ip:: " + getlocalip());
@@ -129,7 +128,6 @@ public class SendMsgActivity extends BaseActivity {
             String[] b = getlocalip().split("\\.");
             textIpStart.setText(b[0] + "." + b[1] + "." + b[2] + ".");
         }
-
     }
 
     private void initHandle() {
@@ -140,6 +138,9 @@ public class SendMsgActivity extends BaseActivity {
                 case 1:
                     // 从客户端接收到消息
 //                    runPbDialog();
+                    Log.e("从客户端收到的雷管", "mRegion: " + mRegion);
+                    mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+                    Log.e("从客户端收到的雷管", "mRegion: " + mRegion);
                     show_Toast("接收成功,正在导入数据,请稍等");
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
@@ -151,7 +152,9 @@ public class SendMsgActivity extends BaseActivity {
 //                            tipDlg.dismiss();
                             show_Toast("没有接收到数据");
                         }
+
                     }).start();
+
                     break;
 
                 case 2:
@@ -178,11 +181,23 @@ public class SendMsgActivity extends BaseActivity {
             switch (msg.what) {
                 // 区域 更新视图
                 case 1001:
-                    Log.e("liyi_1001", "更新视图 区域" + mRegion);
+                    Log.e("1001", "更新视图 区域" + mRegion);
+
                     // 查询全部雷管 倒叙(序号)
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
+                    break;
+                case 1002:
+                    // 查询全部雷管 倒叙(序号)
+                    Log.e("1002", "更新视图 区域" + mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    // 设置标题区域
+                    Log.e("1002", "更新视图 mListData.size()" + mListData.size());
+                    String str = " 区域" + mRegion + "(数量: " + mListData.size() + ")";
+
+//                    setTitleRegion(mRegion, mListData.size());
+                    show_Toast("导入"+mListData.size()+"发雷管成功");
                     break;
                 default:
                     break;
@@ -215,7 +230,6 @@ public class SendMsgActivity extends BaseActivity {
     //获取雷管
     private void loadMoreData() {
         list_uid.clear();
-
         list_uid = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
         denatorCount = list_uid.size();
     }
@@ -241,7 +255,7 @@ public class SendMsgActivity extends BaseActivity {
     }
 
     /**
-     * 检查重复的数据
+     * 检查重复的芯片码
      *
      * @param denatorId
      */
@@ -264,11 +278,15 @@ public class SendMsgActivity extends BaseActivity {
         String shellNo;
         int maxNo = getMaxNumberNo();
         int reCount = 0;
-        Log.e("接收注册", "lg.length: " + lg.length);
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");
+            String[] duan=a[3].split("-");
             if (checkRepeatDenatorId(a[0])) {//检查重复数据
+                reCount++;
+                continue;
+            }
+            if (checkRepeatShellNo(a[2])) {//检查重复数据
                 reCount++;
                 continue;
             }
@@ -278,7 +296,7 @@ public class SendMsgActivity extends BaseActivity {
             denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
             denator.setShellBlastNo(a[2]);
-            denator.setDuan(Integer.parseInt(a[3].substring(0, 1)));
+            denator.setDuan(Integer.parseInt(duan[0]));
             denator.setDuanNo(a[3]);
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
@@ -292,8 +310,19 @@ public class SendMsgActivity extends BaseActivity {
             reCount++;
         }
         pb_show = 0;
-        show_Toast_ui("导入成功");
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
         return reCount;
+    }
+    /**
+     * 检查重复的数据
+     *
+     * @param shellNo
+     * @return
+     */
+    public boolean checkRepeatShellNo(String shellNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list_lg = master.checkRepeatShellNo(shellNo);
+        return list_lg.size() > 0;
     }
 
     @OnClick({R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile})
@@ -342,6 +371,10 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
+                    if (list_uid.get(i).getDenatorId()==null) {
+                        show_Toast("数据信息不完整,缺少UID码,请检查数据");
+                        return;
+                    }
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo() + ",");
                     } else {
@@ -466,7 +499,7 @@ public class SendMsgActivity extends BaseActivity {
                         }
                         buffer.append("\n");
                         //
-                        Log.e("接收消息", "buffer.toString(): " + buffer.toString());
+//                        Log.e("接收消息", "buffer.toString(): " + buffer.toString());
                         Message m = new Message();
                         m.what = 1;
                         m.obj = buffer.toString();
@@ -529,6 +562,15 @@ public class SendMsgActivity extends BaseActivity {
     protected void onStart() {
         hideInputKeyboard();
         super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (executorService != null && (!executorService.isShutdown() )) {
+            executorService.shutdown();
+//            executorService.shutdownNow();
+        }
+        super.onDestroy();
     }
 
     //隐藏键盘
@@ -879,7 +921,6 @@ public class SendMsgActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         mRegion = String.valueOf(item.getOrder());
-
         switch (item.getItemId()) {
 
             case R.id.item_1:
@@ -904,13 +945,15 @@ public class SendMsgActivity extends BaseActivity {
      * 设置标题区域
      */
     private void setTitleRegion(String region, int size) {
-
+        Log.e("1002", "更新视图 size" + size);
         String str;
-        if (size == -1) {
-            str = " 区域" + region;
-        } else {
-            str = " 区域" + region + "(数量: " + size + ")";
-        }
+        str = " 区域" + region;
+//        if (size == -1) {
+//            str = " 区域" + region;
+//        } else {
+//            str = " 区域" + region + "(数量: " + size + ")";
+//        }
+        Log.e("1002", "更新视图 str" + str);
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数

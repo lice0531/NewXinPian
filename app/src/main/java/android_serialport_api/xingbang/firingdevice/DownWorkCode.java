@@ -146,8 +146,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     EditText edit_start_entAT1Bit_st;
     @BindView(R.id.entboxNoAndSerial_st)//开始流水号
     EditText edit_start_entboxNoAndSerial_st;
-    @BindView(R.id.btn_ReisterScanStart_st)//开始码扫描
-    Button btnReisterScanStartSt;
     @BindView(R.id.entBF2Bit_ed)//结束厂家码
     EditText edit_end_entBF2Bit_en;
     @BindView(R.id.entproduceDate_ed)//结束日期码
@@ -156,8 +154,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     EditText edit_end_entAT1Bit_ed;
     @BindView(R.id.entboxNoAndSerial_ed)//结束流水号
     EditText edit_end_entboxNoAndSerial_ed;
-    @BindView(R.id.btn_ReisterScanStart_ed)//结束码扫描
-    Button btnReisterScanStartEd;
     @BindView(R.id.btn_inputOk)
     Button btnInputOk;
     @BindView(R.id.ly_input)
@@ -188,6 +184,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     TextView textView10;
     @BindView(R.id.setDelayTimeMainPage)
     ScrollView setDelayTimeMainPage;
+    @BindView(R.id.et_num)
+    EditText etNum;
+    @BindView(R.id.ll_num)
+    LinearLayout llNum;
+    @BindView(R.id.et_duan)
+    EditText etDuan;
     private ShouQuanAdapter mAdapter_sq;//授权
     private SQLiteDatabase db;
     private Handler mHandler_httpresult;
@@ -1406,18 +1408,17 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //        int maxNo = getMaxNumberNo();
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
-        int flag = 0;
-        ContentValues values = new ContentValues();
+        int duan = Integer.parseInt(etDuan.getText().toString());
+
         int reCount = 0;
         for (int i = start; i <= end; i++) {
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo) == 1) {
                 tipInfoFlag = 89;
-                flag = 1;
                 break;
             }
             DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
-
+            int duanNUM = getDuanNo(duan,mRegion);//也得做区域区分
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
@@ -1431,6 +1432,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             denatorBaseinfo.setErrorName("");
             denatorBaseinfo.setWire("");//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
+            denatorBaseinfo.setDuan(duan);
+            denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));
             if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
                 denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
@@ -1550,8 +1553,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String edproDt = edit_end_entproduceDate_ed.getText().toString();
         String ed1Bit = edit_end_entAT1Bit_ed.getText().toString();
         String edsno = edit_end_entboxNoAndSerial_ed.getText().toString();
-
-        if (!StringUtils.isNotBlank(st2Bit)) {
+        String addNum = etNum.getText().toString();
+        String duan = etDuan.getText().toString();
+        if (!StringUtils.isNotBlank(duan)) {
+            tipStr = "段位不能为空";
+            return tipStr;
+        }if (!StringUtils.isNotBlank(st2Bit)) {
             tipStr = getResources().getString(R.string.text_error_tip11);//"起始厂家码不能为空"
             return tipStr;
         }
@@ -1579,8 +1586,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             tipStr = getResources().getString(R.string.text_error_tip17);//  "结束特征码不能为空";
             return tipStr;
         }
-        if (!StringUtils.isNotBlank(edsno)) {
-            tipStr = getResources().getString(R.string.text_error_tip18);//  "结束序列号不能为空";
+        if (!StringUtils.isNotBlank(edsno)&& !StringUtils.isNotBlank(addNum)) {
+            tipStr = "结束序列号和连续注册个数不能同时为空";//  "结束序列号不能为空";
             return tipStr;
         }
         if (!st2Bit.equals(ed2Bit)) {
@@ -1608,20 +1615,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             tipStr = getResources().getString(R.string.text_error_tip25);//  "开始序号不是数字";
             return tipStr;
         }
-        if (!Utils.isNum(edsno)) {
+        if (!Utils.isNum(edsno) && !StringUtils.isNotBlank(addNum)) {
             tipStr = getResources().getString(R.string.text_error_tip26);//  "结束序号不是数字";
             return tipStr;
         }
-        int start = Integer.parseInt(stsno);
-        int end = Integer.parseInt(edsno);
-        if (end < start) {
-            tipStr = getResources().getString(R.string.text_error_tip27);//  "结束序号不能小于开始序号";
-        }
-        if (start < 0 || end > 99999) {
-            tipStr = getResources().getString(R.string.text_error_tip28);//  "起始/结束序号不符合要求";
-        }
-        if ((end - start) > 1000)
-            tipStr = getResources().getString(R.string.text_error_tip29);//  "每一次注册数量不能大于1000";
         return tipStr;
     }
 
@@ -2153,8 +2150,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
 
-    @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_ReisterScanStart_st,
-            R.id.btn_ReisterScanStart_ed, R.id.btn_inputOk,
+    @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_inputOk,
             R.id.ly_setUpdata, R.id.btn_inputGKM, R.id.btn_location, R.id.btn_scanReister, R.id.btn_setdelay,
             R.id.btn_clear_htid, R.id.btn_clear_xmbh, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
     public void onViewClicked(View view) {
@@ -2237,15 +2233,48 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     final String prex = st2Bit + stproDt + st1Bit;
                     String edsno = edit_end_entboxNoAndSerial_ed.getText().toString();//结束流水号
                     final int start = Integer.parseInt(stsno);
-                    final int end = Integer.parseInt(edsno);
+                    String addNum = etNum.getText().toString();
                     pb_show = 1;
                     runPbDialog();
-                    new Thread(() -> {
-                        insertDenator(prex, start, end);
-                        Log.e("添加码", "prex: " + prex);
-                        Log.e("添加码", "start: " + start);
-                        Log.e("添加码", "end: " + end);
-                    }).start();
+                    if (addNum.length() > 0) {
+                        if (Integer.parseInt(addNum) > 500) {
+                            show_Toast("单次最大注册不能超过500发");
+                            return;
+                        }
+                        if (edsno.length() > 1) {
+                            show_Toast("终止序号和连续注册个数不能同时输入");
+                            return;
+                        }
+                        final int num = Integer.parseInt(addNum);//连续注册个数
+
+                        new Thread(() -> {
+                            insertDenator(prex, start, start + (num - 1));
+                        }).start();
+                        return;
+                    }else {
+                        int end = Integer.parseInt(edsno);
+                        if (end < start) {
+                            show_Toast(getResources().getString(R.string.text_error_tip27));//  "结束序号不能小于开始序号";
+                            return;
+                        }
+                        if (edsno.length() < 5) {
+                            show_Toast("结束序号必须为5位");//  "结束序号不能小于开始序号";
+                            return;
+                        }
+                        if (start < 0 || end > 99999) {
+                            show_Toast(getResources().getString(R.string.text_error_tip28));//  "起始/结束序号不符合要求";
+                            return;
+                        }
+                        if ((end - start) > 1000) {
+                            show_Toast(getResources().getString(R.string.text_error_tip29));//  "每一次注册数量不能大于1000";
+                            return;
+                        }
+                        new Thread(() -> {
+                            insertDenator(prex, start, end);
+                        }).start();
+                    }
+
+
 //                    loadMoreData_lg(currentPage);//查询所有雷管
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 } else {
@@ -2302,28 +2331,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 break;
             case R.id.btn_clear_sfz:
                 deleteHistory("history_bprysfz", at_bprysfz);
-                break;
-            case R.id.btn_ReisterScanStart_st:
-                hideInputKeyboard();
-                if (continueScanFlag == 0) {
-                    continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
-                } else {
-                    continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
-                }
-                sanButtonFlag = 2;
-                break;
-            case R.id.btn_ReisterScanStart_ed:
-                hideInputKeyboard();
-                if (continueScanFlag == 0) {
-                    continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
-                } else {
-                    continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
-                }
-                sanButtonFlag = 2;
                 break;
 
         }
@@ -2503,5 +2510,14 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         Log.e("liyi_Region", "已选择" + str);
     }
-
+    /***
+     * 得到某段的总数
+     * @return
+     */
+    private int getDuanNo(int duan,String piece) {
+        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "",piece});
+        int totalNum = cursor.getCount();//得到数据的总条数
+        cursor.close();
+        return totalNum;
+    }
 }
