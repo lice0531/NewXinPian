@@ -2041,10 +2041,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scanReister:
-//                if (delay_set.equals("0")) {
-//                    show_Toast("请设置延时");
-//                    break;
-//                }
+                if (checkDelay()) return;
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length() < 1) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
                     break;
@@ -2094,24 +2091,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_f1:
                 hideInputKeyboard();
-                if (reEtF1.getText().equals("")) {
-                    show_Toast("当前设置延时为空,请重新设置");
-                    return;
-                }
-                if (et_startDelay.getText().equals("")) {
-                    show_Toast("当前开始延时为空,请重新设置");
-                    return;
-                }
-                if (maxSecond != 0) {
-                    if (Integer.parseInt(reEtF1.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                    if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
-                        show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                }
+                if (checkDelay()) return;
                 delay_set = "f1";
                 flag2 = 0;
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2132,25 +2112,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_f2:
                 hideInputKeyboard();
-                if (reEtF2.getText().toString().equals("")) {
-                    show_Toast("当前设置延时为空,请重新设置");
-                    Log.e("f2", reEtF2.getText().toString());
-                    return;
-                }
-                if (et_startDelay.getText().equals("")) {
-                    show_Toast("当前开始延时为空,请重新设置");
-                    return;
-                }
-                if (maxSecond != 0) {
-                    if (Integer.parseInt(reEtF2.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                    if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
-                        show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                }
+                if (checkDelay()) return;
                 delay_set = "f2";
                 flag1 = 0;
                 reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2176,6 +2138,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 startActivityForResult(intent3, 1);
                 break;
             case R.id.btn_single:
+                if (checkDelay()) return;
                 if (llStart.getVisibility() == View.GONE) {
                     lySetDelay.setVisibility(View.GONE);
                     llSingle.setVisibility(View.GONE);
@@ -2641,6 +2604,33 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
         }
+    }
+
+    private boolean checkDelay() {
+        if (reEtF1.getText().toString().equals("")) {
+            show_Toast("当前设置延时为空,请重新设置");
+            Log.e("f2", reEtF2.getText().toString());
+            return true;
+        }if (reEtF2.getText().toString().equals("")) {
+            show_Toast("当前设置延时为空,请重新设置");
+            Log.e("f2", reEtF2.getText().toString());
+            return true;
+        }
+        if (et_startDelay.getText().length()==0) {
+            show_Toast("当前起始延时为空,请重新设置");
+            return true;
+        }
+        if (maxSecond != 0) {
+            if (Integer.parseInt(reEtF2.getText().toString()) > maxSecond) {
+                show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                return true;
+            }
+            if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
+                show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                return true;
+            }
+        }
+        return false;
     }
 
     //跳转页面后更新数据
