@@ -37,6 +37,7 @@ import android_serialport_api.xingbang.custom.VerificationAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
@@ -306,35 +307,24 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
     }
 
     private void loadShouQuan() {
-        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_SHOUQUAN;//+" order by htbh "
-        Cursor cursor = db.rawQuery(sql, null);
-        if (cursor != null) {
-            Gson gson = new Gson();
-            DanLingBean danLingBean;
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
-                String xmbh = cursor.getString(1); //获取第二列的值 ,序号
-                String htbh= cursor.getString(2);
-                String json = cursor.getString(3);//管壳号
-                String errNum = cursor.getString(4);//错误数量
-                String qbzt = cursor.getString(5);//起爆状态
-                String coordxy = cursor.getString(11);//经纬度
-                String spare1 = cursor.getString(13);//工程名称
-                danLingBean = gson.fromJson(json, DanLingBean.class);
-                Map<String, Object> item = new HashMap<String, Object>();
-                item.put("id", id);
-                item.put("htbh", htbh);
-                item.put("xmbh", xmbh);
-                item.put("qbzt", qbzt);
-                item.put("spare1", spare1);
-                item.put("coordxy", coordxy);
-                item.put("errNum", errNum);
-                item.put("danLingBean", danLingBean);
-                map_dl.add(item);
-
-            }
-            cursor.close();
+        List<ShouQuan> list = GreenDaoMaster.getAllShouQuan();
+//        Log.e("查询", "list : " + list.toString());
+        Gson gson = new Gson();
+        DanLingBean danLingBean;
+        for (ShouQuan sq : list) {
+            danLingBean = gson.fromJson(sq.getJson(), DanLingBean.class);
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("id", sq.getId());
+            item.put("htbh", sq.getHtbh());
+            item.put("xmbh", sq.getXmbh());
+            item.put("qbzt", sq.getQbzt());
+            item.put("errNum", sq.getErrNum());
+            item.put("coordxy", sq.getCoordxy());
+            item.put("spare1", sq.getSpare1());
+            item.put("danLingBean", danLingBean);
+            map_dl.add(item);
         }
+
     }
 
     public int updataState(String id) {
@@ -367,7 +357,9 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
             }
         }
         show_Toast("在准爆范围内,可以起爆");
-        qbxm_id = (String) map_dl.get(position).get("id");
+        Log.e("验证数据", "map_dl.get(position): "+map_dl.get(position).toString() );
+        Log.e("验证数据", "map_dl.get(position).get(id): "+map_dl.get(position).get("id"));
+        qbxm_id =  map_dl.get(position).get("id")+"";
         qbxm_name = map_dl.get(position).get("spare1").toString();
         Intent intent = new Intent(this, FiringMainActivity.class);
         Bundle bundle = new Bundle();

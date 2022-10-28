@@ -599,6 +599,13 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         });
     }
 
+    @Override
+    protected void onResume() {
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        super.onResume();
+    }
+
     //获取配置文件中的值
     private void getPropertiesData() {
         pro_bprysfz = (String) MmkvUtils.getcode("pro_bprysfz", "");//证件号码
