@@ -807,8 +807,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {//待测雷管数小于1执行方法
 //                                    exit = true;//结束线程
-//                                    byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-//                                    sendCmd(initBuf2);
+                                    byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+                                    sendCmd(initBuf2);
                                     stage = 4;
                                     Thread.sleep(500);
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());

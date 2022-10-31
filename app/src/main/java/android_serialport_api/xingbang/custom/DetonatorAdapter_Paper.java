@@ -102,6 +102,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             }
             if (mLine == 3 || mLine == 5) {
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
+                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuanNo());
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
                 } else {
@@ -142,6 +143,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
         TextView mTvDelay;
         TextView mTvShellBlastNo;
         TextView mTvStatus;
+        TextView mTvDuanNo;
 
         ViewHolder(View view) {
             super(view);
@@ -150,6 +152,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             mTvDelay = view.findViewById(R.id.tv_delay);
             mTvShellBlastNo = view.findViewById(R.id.tv_shellBlastNo);
             mTvStatus = view.findViewById(R.id.tv_status);
+            mTvDuanNo = view.findViewById(R.id.tv_duanNo);
         }
     }
 

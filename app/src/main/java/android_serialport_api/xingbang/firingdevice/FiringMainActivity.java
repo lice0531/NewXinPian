@@ -615,8 +615,7 @@ public class FiringMainActivity extends SerialPortActivity {
         builder.setTitle(getString(R.string.text_alert_tip));
         builder.setMessage(getString(R.string.text_alert_tip2));//"总线上有未处理的雷管，是否继续起爆？"
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-            if (flag == 1) {
-            } else {
+            if (flag != 1) {
                 fourOnlineDenatorFlag = 3;
             }
             dialog.dismiss();
@@ -758,8 +757,8 @@ public class FiringMainActivity extends SerialPortActivity {
         // 给ListView绑定内容
         ListView listview = getlistview.findViewById(R.id.X_listview);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no,R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+                new String[]{"serialNo", "duanNo", "shellNo", "errorName", "delay"},
+                new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         listview.setAdapter(adapter);
         Builder builder = new Builder(this);
@@ -1227,6 +1226,9 @@ public class FiringMainActivity extends SerialPortActivity {
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
 //                increase(6);//0635此处功能为直接跳到第六阶段
+            } else {
+                fourOnlineDenatorFlag = 2;
+                noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
             }
 
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
@@ -1607,6 +1609,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
+                                    byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+                                    sendCmd(initBuf2);
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
@@ -2233,7 +2237,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
         errlistview.setVisibility(View.GONE);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
+                new String[]{"serialNo", "duanNo", "shellNo", "errorName", "delay"},
                 new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);
