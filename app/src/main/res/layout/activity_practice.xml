@@ -261,6 +261,27 @@
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
             android:background="@color/label_color" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <Button
+                android:id="@+id/but_delete"
+                style="@style/allbtntstyle"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="90dp"
+                android:text="清除缓存" />
+
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/label_color" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"

@@ -33,6 +33,7 @@ import android.widget.Toast;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -116,7 +117,8 @@ public class PracticeActivity extends BaseActivity {
     Button butVersion;
     @BindView(R.id.but_sendMsg)
     Button but_sendMsg;
-
+    @BindView(R.id.but_delete)
+    Button butDelete;
     private DatabaseHelper mMyDatabaseHelper;
     private List<VoBlastModel> list_uid = new ArrayList<>();
     private SQLiteDatabase db;
@@ -459,7 +461,9 @@ public class PracticeActivity extends BaseActivity {
 
 
 
-    @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_test, R.id.but_sendMsg})
+    @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_write, R.id.btn_read, R.id.btn_read_log,
+            R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version,
+            R.id.but_test, R.id.but_sendMsg, R.id.but_delete})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -480,7 +484,28 @@ public class PracticeActivity extends BaseActivity {
                 Intent intent2 = new Intent(this, TestICActivity.class);
                 startActivity(intent2);
                 break;
+            case R.id.but_delete://清除缓存
+                String filePath;
+                String filePath2;
+                boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+                if (hasSDCard) {
+                    filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
+                } else {
+                    filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
+                }
+                if (hasSDCard) {
+                    filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
+                } else {
+                    filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
+                }
+                File dir = new File(filePath);
+                Utils.deleteFile(dir);
+                File dir2 = new File(filePath2);
+                Utils.deleteFile(dir2);
+//                Utils.deleteDirWihtFile("/程序运行日志/");
+//                Utils.deleteDirWihtFile("/XB程序日志/");
 
+                break;
             case R.id.but_write://写入雷管
                 if (currentPage == 1) {
                     loadMoreData_out();

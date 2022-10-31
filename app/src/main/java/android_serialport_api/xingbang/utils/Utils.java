@@ -2310,4 +2310,51 @@ public class Utils {
         }
     }
 
+    public static void deleteDirWihtFile(String str) {
+        String filePath;
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        if (hasSDCard) {
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + str ;
+        } else {
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + str ;
+        }
+        Log.e("删除数据", "deleteDirWihtFile: 1" );
+        File dir = new File(filePath);
+
+
+
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(str); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
+        Log.e("删除数据", "deleteDirWihtFile: 2" );
+    }
+
+    public static  void deleteFile(File file) {
+        Log.e("删除数据", "deleteDirWihtFile: 1" );
+        if (file.isFile()) {
+            file.delete();
+            return;
+        }
+        Log.e("删除数据", "deleteDirWihtFile: 2" );
+        if(file.isDirectory()){
+            File[] childFiles = file.listFiles();
+            if (childFiles == null || childFiles.length == 0) {
+                file.delete();
+                return;
+            }
+
+            for (int i = 0; i < childFiles.length; i++) {
+                Log.e("删除数据", "i" +i);
+                deleteFile(childFiles[i]);
+            }
+            file.delete();
+        }
+    }
+
 }
