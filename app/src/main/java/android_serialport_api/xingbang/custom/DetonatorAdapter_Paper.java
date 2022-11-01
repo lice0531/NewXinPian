@@ -100,9 +100,17 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
                     holder.mTvStatus.setTextColor(Color.RED);
                 }
             }
-            if (mLine == 3 || mLine == 5) {
+            if (mLine == 3) {
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
                 holder.mTvDuanNo.setText(detonatorBaseInfo.getDuanNo());
+                if (detonatorBaseInfo.getErrorCode().equals("FF")) {
+                    holder.mTvStatus.setTextColor(Color.GREEN);
+                } else {
+                    holder.mTvStatus.setTextColor(Color.RED);
+                }
+            }
+            if (mLine == 5) {
+                holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
                 } else {
