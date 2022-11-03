@@ -619,6 +619,7 @@ public class PracticeActivity extends BaseActivity {
         Utils.deleteFile(dir2);
 //                Utils.deleteDirWihtFile("/程序运行日志/");
 //                Utils.deleteDirWihtFile("/XB程序日志/");
+        show_Toast("删除成功");
     }
 
     @Override
