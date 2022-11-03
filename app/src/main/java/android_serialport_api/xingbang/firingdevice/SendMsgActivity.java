@@ -228,6 +228,7 @@ public class SendMsgActivity extends BaseActivity {
             item.setStatusCode(list.get(i).getStatusCode());
             item.setStatusName(list.get(i).getStatusName());
             item.setDenatorId(list.get(i).getDenatorId());
+            item.setZhu_yscs(list.get(i).getZhu_yscs());
             list_uid.add(item);
         }
         denatorCount = list.size();
@@ -290,6 +291,7 @@ public class SendMsgActivity extends BaseActivity {
         Log.e("接收注册", "lg.length: " + lg.length);
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
+            Log.e("接收注册", "shellNo: " + shellNo);
             String[] a = shellNo.split("#");
             if (checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
@@ -300,8 +302,11 @@ public class SendMsgActivity extends BaseActivity {
             denator.setBlastserial(maxNo);
             denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
-            if (a.length == 3) {
+            if (a.length >= 3) {
                 denator.setShellBlastNo(a[2]);
+            }
+            if(a.length == 4){
+                denator.setZhu_yscs(a[3]);
             }
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
@@ -311,6 +316,7 @@ public class SendMsgActivity extends BaseActivity {
             denator.setErrorName("");
             denator.setWire("");
             denator.setPiece(mRegion);
+
             Log.e("接收注册", "denator: " + denator.toString());
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
             reCount++;
@@ -367,7 +373,7 @@ public class SendMsgActivity extends BaseActivity {
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + ",");
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo()  + "#" + list_uid.get(i).getZhu_yscs()+ ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
                     }
