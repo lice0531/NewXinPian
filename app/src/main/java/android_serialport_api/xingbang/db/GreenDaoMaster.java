@@ -343,16 +343,31 @@ public class GreenDaoMaster {
 
     //丹灵下载后更新雷管芯片码
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
-
+        Log.e("插入数据", "lgBean: " );
+        //94242214050
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
-            String uid = "A62F400" + lgBean.getGzm().substring(0, 6);
-            String yscs = lgBean.getGzm().substring(6);
+            String uid = "";
+            String yscs = "";
+            String duan = "";
+            uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+            if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                yscs = lgBean.getGzm().substring(6, 10);
+            }
+
+
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
 //                Log.e("查询数据库中是否有对应的数据", "db: " + db);
                 db.setDenatorId(uid);
-                db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                if(lgBean.getGzm().length()>=10){
+                    db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                }
+
+                if (lgBean.getGzm().length() == 11) {//非煤许版本不更新延时
+                    duan = lgBean.getGzm().substring(10);
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
                 registerDetonator_typeNew(db);
                 Utils.saveFile();//把软存中的数据存入磁盘中
