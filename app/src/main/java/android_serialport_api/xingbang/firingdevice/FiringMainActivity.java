@@ -24,7 +24,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -37,7 +36,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Logger;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
@@ -397,16 +395,16 @@ public class FiringMainActivity extends SerialPortActivity {
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 11000) {
                     displayIcStr = displayIcStr + "(疑似短路)";
-                    setIcView();//设置颜色
+                    setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                 } else if (displayIc > (denatorCount * 24) && displayIc > 10 ) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
-                    setIcView();//设置颜色
+                    setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else if (displayIc < (4 + denatorCount * 6)) {
                     displayIcStr = displayIcStr + "(疑似断路)";
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
-                    setIcView();//设置颜色
+                    setIcView(Color.BLACK);//设置颜色
                 } else {
                     ll_firing_IC_2.setTextColor(Color.GREEN);
                     ll_firing_IC_4.setTextColor(Color.GREEN);
@@ -532,12 +530,12 @@ public class FiringMainActivity extends SerialPortActivity {
         });
     }
 
-    private void setIcView() {
-        ll_firing_IC_2.setTextColor(Color.RED);
-        ll_firing_IC_4.setTextColor(Color.RED);
-        ll_firing_IC_5.setTextColor(Color.RED);
-        ll_firing_IC_6.setTextColor(Color.RED);
-        ll_firing_IC_7.setTextColor(Color.RED);
+    private void setIcView(int red) {
+        ll_firing_IC_2.setTextColor(red);
+        ll_firing_IC_4.setTextColor(red);
+        ll_firing_IC_5.setTextColor(red);
+        ll_firing_IC_6.setTextColor(red);
+        ll_firing_IC_7.setTextColor(red);
     }
 
     private void setDialogTextColor(AlertDialog dialog, int red) {

@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -485,25 +486,21 @@ public class PracticeActivity extends BaseActivity {
                 startActivity(intent2);
                 break;
             case R.id.but_delete://清除缓存
-                String filePath;
-                String filePath2;
-                boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-                if (hasSDCard) {
-                    filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
-                } else {
-                    filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
-                }
-                if (hasSDCard) {
-                    filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
-                } else {
-                    filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
-                }
-                File dir = new File(filePath);
-                Utils.deleteFile(dir);
-                File dir2 = new File(filePath2);
-                Utils.deleteFile(dir2);
-//                Utils.deleteDirWihtFile("/程序运行日志/");
-//                Utils.deleteDirWihtFile("/XB程序日志/");
+                AlertDialog dialog = new AlertDialog.Builder(PracticeActivity.this)
+                        .setTitle("是否清除程序日志等缓存")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前正在进行清除程序日志缓存操作,请确认是否清除!")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("确定", (dialog13, which) -> {
+                            dialog13.dismiss();
+                            deleteRiZhi();
+                        })
+                        .setNeutralButton("退出", (dialog2, which) -> {
+                            dialog2.dismiss();
+                            finish();
+                        })
+                        .create();
+                dialog.show();
+
 
                 break;
             case R.id.but_write://写入雷管
@@ -600,6 +597,28 @@ public class PracticeActivity extends BaseActivity {
 //                startActivity(new Intent(this, TestActivity.class));
                 break;
         }
+    }
+
+    private void deleteRiZhi(){
+        String filePath;
+        String filePath2;
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        if (hasSDCard) {
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
+        } else {
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
+        }
+        if (hasSDCard) {
+            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
+        } else {
+            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
+        }
+        File dir = new File(filePath);
+        Utils.deleteFile(dir);
+        File dir2 = new File(filePath2);
+        Utils.deleteFile(dir2);
+//                Utils.deleteDirWihtFile("/程序运行日志/");
+//                Utils.deleteDirWihtFile("/XB程序日志/");
     }
 
     @Override

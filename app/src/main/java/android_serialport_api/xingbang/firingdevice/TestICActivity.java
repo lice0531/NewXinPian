@@ -77,7 +77,7 @@ public class TestICActivity extends SerialPortActivity {
                     tvCeshiDianliu.setTextColor(Color.RED);
                 } else if (dianliu < 4+denatorCount*6) {
                     displayIcStr = displayIcStr + "(疑似断路)";
-                    tvCeshiDianliu.setTextColor(Color.RED);
+                    tvCeshiDianliu.setTextColor(Color.BLACK);
                 } else {
                     tvCeshiDianliu.setTextColor(Color.GREEN);
                 }

@@ -424,13 +424,13 @@ public class TestDenatorActivity extends SerialPortActivity {
         View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
 
         // 给ListView绑定内容
-        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
 //        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
 //                new String[]{"serialNo", "shellNo", "errorName", "delay"},
 //                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
 //        // 给listview加入适配器
 //        errlistview.setAdapter(adapter);
-        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+        ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
         errlistview.setAdapter(mAdapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.text_alert_tablename1));//"错误雷管列表"
@@ -507,7 +507,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
-                    if (displayIc == 0) {
+                    if (displayIc == 0 && firstCount < Preparation_time * 0.4) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流为0,请检查线路是否正确连接");
                         stage = 5;
@@ -545,7 +545,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < 4 + denatorCount * 6 && firstCount < Preparation_time * 0.5) {//5
                         displayIcStr = displayIcStr + "(疑似断路)";
-                        ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
+                        ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
@@ -1246,9 +1246,9 @@ public class TestDenatorActivity extends SerialPortActivity {
 //        errlistview.setAdapter(adapter);
 
         // 给ListView绑定内容
-        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
         errlistview.setVisibility(View.GONE);
-        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+        ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
         errlistview.setAdapter(mAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

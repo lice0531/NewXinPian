@@ -378,7 +378,7 @@ public class XingbangMain extends BaseActivity {
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
-        MmkvUtils.savecode("rj_version", "KT50_3.25_PT_220919");//软件版本
+        MmkvUtils.savecode("rj_version", "KT50_3.25_PT_221103");//软件版本
     }
 
     private void loginToSetEnv() {
