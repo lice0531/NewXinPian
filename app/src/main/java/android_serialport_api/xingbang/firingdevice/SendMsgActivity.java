@@ -306,6 +306,7 @@ public class SendMsgActivity extends BaseActivity {
             denator.setErrorName("");
             denator.setWire("");
             denator.setPiece(mRegion);
+            denator.setZhu_yscs(a[4]);
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
             reCount++;
         }
@@ -376,7 +377,7 @@ public class SendMsgActivity extends BaseActivity {
                         return;
                     }
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo() + ",");
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo()+ "#" + list_uid.get(i).getZhu_yscs() + ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
                     }

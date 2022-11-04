@@ -86,7 +86,10 @@ public class FourStatusCmd {
                 int icLowInt = Integer.parseInt(strLow2, 16);
 //				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
                 double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
-                float busCurrent = (float) (icTotal*1.8);//*400
+                float busCurrent = (float) (icTotal*1.8)-10;//*400//减10是减0带载的电流
+                if(busCurrent<0){
+                    busCurrent=0;
+                }
                 busCurrent = Utils.getFloatToFormat(busCurrent, 2, 4);
                 vo.setBusCurrentIa(busCurrent);//设置总线电流
 

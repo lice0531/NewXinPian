@@ -34,10 +34,11 @@
             android:textSize="20sp"
             />
         <TextView
+            android:id="@+id/txt_rj_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="KT50_3.25_PT_221026"
+            android:text="KT50_3.25_PT_221103"
             android:textSize="20sp"
             />
     </LinearLayout>

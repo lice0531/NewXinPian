@@ -32,6 +32,8 @@ public class SystemVersionActivity extends SerialPortActivity {
     TextView btnSoftVersion;
     @BindView(R.id.btn_Hardware_Version)
     TextView btnHardwareVersion;
+    @BindView(R.id.txt_rj_version)
+    TextView rj_version;
     @BindView(R.id.et_Hardware_Version)
     EditText etHardwareVersion;
     @BindView(R.id.set_Hardware_Version)
@@ -46,6 +48,8 @@ public class SystemVersionActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sys_version);//version
         ButterKnife.bind(this);
+        //初始化在主页面,全局搜索默认值
+        rj_version.setText((String)MmkvUtils.getcode("rj_version","KT50_3.25_PT_221103"));
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("config", 0);
