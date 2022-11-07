@@ -55,15 +55,19 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     private String cong_yscs;//
     @Property(nameInDb = "piece")
     private String piece;           // 区域
+    @Property(nameInDb = "duan")
+    private String duan;           // 区域
+    @Property(nameInDb = "duanNo")
+    private String duanNo;           // 区域
 
 
 
-    @Generated(hash = 228066582)
+    @Generated(hash = 2001321596)
     public DenatorBaseinfo(Long id, int blastserial, String sithole, String shellBlastNo,
             String denatorId, int delay, String statusCode, String statusName,
             String errorName, String errorCode, String authorization, String remark,
             String regdate, String wire, String name, String denatorIdSup, String zhu_yscs,
-            String cong_yscs, String piece) {
+            String cong_yscs, String piece, String duan, String duanNo) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -83,6 +87,8 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
         this.zhu_yscs = zhu_yscs;
         this.cong_yscs = cong_yscs;
         this.piece = piece;
+        this.duan = duan;
+        this.duanNo = duanNo;
     }
 
     @Generated(hash = 1775503899)
@@ -302,5 +308,21 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
 
     public void setCong_yscs(String cong_yscs) {
         this.cong_yscs = cong_yscs;
+    }
+
+    public String getDuan() {
+        return this.duan;
+    }
+
+    public void setDuan(String duan) {
+        this.duan = duan;
+    }
+
+    public String getDuanNo() {
+        return this.duanNo;
+    }
+
+    public void setDuanNo(String duanNo) {
+        this.duanNo = duanNo;
     }
 }

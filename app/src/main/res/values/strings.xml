@@ -354,4 +354,5 @@
     <string name="continue_Loc_tile">连续定位</string>
     <string name="one_Loc_tile">单次定位</string>
     <string name="title_activity_practice">辅助功能</string>
+    <string name="txt_duan">段号</string>
 </resources>

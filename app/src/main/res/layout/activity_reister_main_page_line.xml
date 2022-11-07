@@ -26,6 +26,53 @@
 
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="段别" />
+
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="数量" />
+
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="2"
+            android:background="@color/colorPrimary"
+            android:text="段间延时/ms"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="2"
+            android:background="@color/colorPrimary"
+            android:numeric="integer"
+            android:text="段内延时/ms"
+            android:textSize="18sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -234,143 +281,6 @@
                     style="@style/alltextstyle"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/ly_setDelay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
-
-                    <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="8dp">
-
-                        <TextView
-                            android:id="@+id/textView9"
-                            style="@style/allbtntstyle"
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bt_mainpage_style"
-                            android:text="@string/text_delay_start"
-                            />
-
-                        <EditText
-                            android:id="@+id/setDelayTime_startDelaytime"
-                            android:layout_width="0dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="20dp"
-                            android:layout_weight="1.5"
-                            android:background="@drawable/translucent"
-                            android:gravity="left"
-                            android:hint="@string/text_delay_start"
-                            android:maxLength="6"
-                            android:numeric="integer"
-                            android:padding="5dp"
-                            android:textColor="@color/rangle_fc_base"
-                            android:textSize="@dimen/fireChildPageLabelFontSize" />
-
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/text_unit_hm"
-                            android:textSize="@dimen/childPageEditFontSize" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:layout_marginTop="8dp">
-
-                        <Button
-                            android:id="@+id/re_btn_f1"
-                            style="@style/allbtntstyle"
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bt_mainpage_style"
-                            android:text="F1延时" />
-
-                        <EditText
-                            android:id="@+id/re_et_f1"
-                            android:layout_width="0dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="20dp"
-                            android:layout_weight="1.5"
-                            android:background="@drawable/translucent"
-                            android:gravity="left"
-                            android:hint="F1延时"
-                            android:maxLength="6"
-                            android:numeric="integer"
-                            android:padding="5dp"
-                            android:textColor="@color/rangle_fc_base"
-                            android:textSize="@dimen/fireChildPageLabelFontSize" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/text_unit_hm"
-                            android:textSize="@dimen/childPageEditFontSize" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="65dp"
-                        android:layout_marginTop="8dp">
-
-                        <Button
-                            android:id="@+id/re_btn_f2"
-                            style="@style/allbtntstyle"
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bt_mainpage_style"
-                            android:text="F2延时" />
-
-                        <EditText
-                            android:id="@+id/re_et_f2"
-                            android:layout_width="0dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="20dp"
-                            android:layout_weight="1.5"
-                            android:background="@drawable/translucent"
-                            android:gravity="left"
-                            android:hint="F2延时"
-                            android:maxLength="6"
-                            android:numeric="integer"
-                            android:padding="5dp"
-                            android:textColor="@color/rangle_fc_base"
-                            android:textSize="@dimen/fireChildPageLabelFontSize" />
-
-                        <TextView
-                            android:id="@+id/textView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/text_unit_hm"
-                            android:textSize="@dimen/childPageEditFontSize" />
-                    </TableRow>
-                </TableLayout>
-
-            </LinearLayout>
 
 
             <LinearLayout
@@ -392,6 +302,430 @@
 
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ly_setDelay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/textView9"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="@string/text_delay_start" />
+
+                        <EditText
+                            android:id="@+id/setDelayTime_startDelaytime"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1.5"
+                            android:background="@drawable/translucent"
+                            android:gravity="left"
+                            android:hint="@string/text_delay_start"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:text="0"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize" />
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/text_unit_hm"
+                            android:textSize="@dimen/childPageEditFontSize" />
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f1"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="1段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f1"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f1"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:text="0"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_1"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="0"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f2"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="2段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f2"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f2"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:text="25"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_2"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="25"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f3"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="3段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f3"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f3"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:text="50"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_3"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="50"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f4"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="4段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f4"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f4"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:text="75"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_4"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="75"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/re_btn_f5"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="5段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f5"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f5"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:text="100"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_5"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="100"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone">
+
+                        <Button
+                            android:id="@+id/re_btn_f6"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="6段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f6"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f6"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:text="125"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_6"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="125"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone">
+
+                        <Button
+                            android:id="@+id/re_btn_f7"
+                            style="@style/allbtntstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bt_mainpage_style"
+                            android:text="7段" />
+
+                        <TextView
+                            android:id="@+id/re_num_f7"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:text="0" />
+
+                        <EditText
+                            android:id="@+id/re_et_f7"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/translucent"
+                            android:focusable="false"
+                            android:gravity="right|center_vertical"
+                            android:maxLength="6"
+                            android:numeric="integer"
+                            android:padding="5dp"
+                            android:text="130"
+                            android:textColor="@color/rangle_fc_base"
+                            android:textSize="@dimen/fireChildPageLabelFontSize"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/re_text_7"
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/translucent"
+                            android:gravity="center"
+                            android:text="130"
+                            android:textColor="@color/rangle_fc_base" />
+                    </TableRow>
+
+                </TableLayout>
+
+            </LinearLayout>
+
 
 
             <LinearLayout
@@ -508,7 +842,7 @@
                         android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
-                        android:text="@string/text_list_kong" />
+                        android:text="@string/txt_duan" />
 
                     <TextView
                         style="@style/alltextstyle"

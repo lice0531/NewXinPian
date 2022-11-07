@@ -300,8 +300,9 @@ public class SendMsgActivity extends BaseActivity {
             denator.setBlastserial(maxNo);
             denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
-            if (a.length == 3) {
+            if (a.length >= 3) {
                 denator.setShellBlastNo(a[2]);
+                denator.setZhu_yscs(a[3]);
             }
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
@@ -852,12 +853,9 @@ public class SendMsgActivity extends BaseActivity {
             detonatorTypeNew.setTime(time);
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
-            if (a.length == 3) {//不算从芯片生产数据
+            if (a.length >= 3) {//不算从芯片生产数据
                 detonatorTypeNew.setZhu_yscs(a[2]);
-            } else if (a.length == 5) {
-                detonatorTypeNew.setDetonatorIdSup(a[2]);
-                detonatorTypeNew.setZhu_yscs(a[3]);
-                detonatorTypeNew.setCong_yscs(a[4]);
+                detonatorTypeNew.setCong_yscs(a[3]);
             }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
