@@ -549,6 +549,7 @@
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/bt_mainpage_style"
                     android:text="修改延时"
+                    android:visibility="gone"
                     android:textColor="@color/bt_fg_base"
                     style="@style/alltextstyle" />
                 <Button

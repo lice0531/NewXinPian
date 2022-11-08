@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -290,10 +291,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             edit_start_entBF2Bit_st.setText(factoryCode);
         }
 
-        showDenatorSum();//显示雷管总数
-        for (int i = 1; i < 6; i++) {
-            showDuanSum(i);
-        }
+
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
         Utils.writeRecord("---进入单发注册页面---");
@@ -304,6 +302,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
+
+        showDenatorSum();//显示雷管总数
+        for (int i = 1; i < 6; i++) {
+            showDuanSum(i);
+        }
+        delay_set = "f1";
+        initButton(delay_set);
     }
 
     private void initView() {
@@ -417,7 +422,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         txt_currentVolt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
                         txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
                         // 判断当前电流是否偏大
-                        if (Math.round(busInfo.getBusCurrentIa() * 1000) > 24) {
+                        if (Math.round(busInfo.getBusCurrentIa() * 1000) > 60) {
                             txt_currentIC.setTextColor(Color.RED);
                         } else {
                             txt_currentIC.setTextColor(Color.GREEN);
@@ -483,7 +488,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 if (busInfo != null) {
                     txt_currentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
                     txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
-                    if (Math.round(busInfo.getBusCurrentIa()) > 24) {//判断当前电流是否偏大
+                    if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
                         txt_currentIC.setTextColor(Color.RED);
                     } else {
                         txt_currentIC.setTextColor(Color.GREEN);
@@ -1265,7 +1270,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
             if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                if (busInfo.getBusCurrentIa() > 24) {//判断当前电流是否偏大
+                if (busInfo.getBusCurrentIa() > 60) {//判断当前电流是否偏大
                     tipInfoFlag = 7;
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                     SoundPlayUtils.play(4);
@@ -1349,29 +1354,26 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
         int delay = 0;
-
-        if(detonatorTypeNew.getCong_yscs()!=null){
+        if (delay_set.equals("f1")) {//获取延时和段数
+            duan = "1";
+        } else if (delay_set.equals("f2")) {
+            duan = "2";
+        } else if (delay_set.equals("f3")) {
+            duan = "3";
+        } else if (delay_set.equals("f4")) {
+            duan = "4";
+        } else if (delay_set.equals("f5")) {
+            duan = "5";
+        }else {
+            duan = "1";
+        }
+        if(detonatorTypeNew!=null&&detonatorTypeNew.getCong_yscs()!=null){
             duan = detonatorTypeNew.getCong_yscs();
         }
 
-        if (delay_set.equals("f1")) {//获取延时和段数
-            duan = "1";
-
-        } else if (delay_set.equals("f2")) {
-            duan = "2";
-
-        } else if (delay_set.equals("f3")) {
-            duan = "3";
-
-        } else if (delay_set.equals("f4")) {
-            duan = "4";
-
-        } else if (delay_set.equals("f5")) {
-            duan = "5";
-
-        }
         switch (duan){
             case "1":
+                delay = 0;
                 break;
             case "2":
                 delay = 25;
@@ -1428,7 +1430,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             //向数据库插入数据
         }
-
+        Message msg = new Message();
+        msg.arg1 = Integer.parseInt(duan);
+        mHandler_showNum.sendMessage(msg);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         SoundPlayUtils.play(1);
         return 0;
@@ -2298,4 +2302,34 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         }
     }
 
+    //设置被选中按钮颜色
+    private void initButton(String delay_set) {
+        hideInputKeyboard();
+        initView();
+        switch (delay_set) {
+            case "f1":
+//                reEtF1.setBackgroundResource(R.drawable.textview_border_green);
+                reNumF1.setBackgroundResource(R.drawable.textview_border_green);
+                reText1.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f2":
+//                reEtF2.setBackgroundResource(R.drawable.textview_border_green);
+                reNumF2.setBackgroundResource(R.drawable.textview_border_green);
+                reText2.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f3":
+                reNumF3.setBackgroundResource(R.drawable.textview_border_green);
+                reText3.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f4":
+                reNumF4.setBackgroundResource(R.drawable.textview_border_green);
+                reText4.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f5":
+                reNumF5.setBackgroundResource(R.drawable.textview_border_green);
+                reText5.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+        }
+
+    }
 }

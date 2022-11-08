@@ -87,7 +87,8 @@
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_below="@id/dm_ll_2"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="@dimen/delaytime_pg_left"

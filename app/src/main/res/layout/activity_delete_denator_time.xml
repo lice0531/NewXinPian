@@ -179,7 +179,7 @@
                     android:layout_width="50dp"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
-                    android:text="@string/text_list_kong"
+                    android:text="@string/txt_duan"
                     style="@style/alltextstyle"/>
 
                 <TextView

@@ -556,23 +556,19 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_test://测试
                 long time = System.currentTimeMillis();
                 long time2 = System.nanoTime();
-                Log.e(TAG, "time: "+time );
-                Log.e(TAG, "time2: "+time2 );
+                Log.e(TAG, "time: " + time);
+                Log.e(TAG, "time2: " + time2);
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                Log.e(TAG, "endTime: "+endTime );
-                if (time>0 && time - endTime < 180000  ) {//第二次启动时间不重置
-                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if(a<200){
-                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
-                        Log.e(TAG, "endTime: "+ a );
-                        return;
-                    }
+                int daojishi = (int) (180 - (time - endTime) / 1000);
+                Log.e(TAG, "endTime: " + endTime);
+                Log.e(TAG, "daojishi: " + daojishi);
+                if (time > 0 && daojishi < 190 && daojishi > 0) {//第二次启动时间不重置
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "组网");
+                    Log.e(TAG, "endTime: " + daojishi);
+                    return;
                 }
-                Log.e("测试页面", "测试: ");
-                String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);//金建华
-                intent2.putExtra("dataSend", str2);
-                startActivityForResult(intent2, 1);
+                startActivity(intent2);
                 break;
 
             // 单发检测
@@ -587,22 +583,27 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
+
+                time = System.currentTimeMillis();
+                Log.e(TAG, "time: " + time);
+                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                daojishi = (int) (180 - (time - endTime) / 1000);
+                Log.e(TAG, "endTime: " + endTime);
+                Log.e(TAG, "daojishi: " + daojishi);
+                if (time > 0 && daojishi < 190 && daojishi > 0) {//第二次启动时间不重置
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "组网");
+                    Log.e(TAG, "daojishi: " + daojishi);
+                    return;
+                }
+
                 for (int i = 0; i < lg2_yanshi.size(); i++) {
                     if (lg2_yanshi.get(i).equals("0")) {
                         createDialog();
                         return;
                     }
                 }
-                time = System.currentTimeMillis();
-                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
-                if (time - endTime < 180000) {//第二次启动时间不重置
-                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
-                    return;
-                }
                 String str5 = "起爆";
-                Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
                 if (Yanzheng.equals("验证")) {
                     //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
@@ -675,7 +676,7 @@ public class XingbangMain extends BaseActivity {
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
-                if (a.length == 19) {
+                if (a.length == 21) {
 //向数据库插入数据
                     DenatorBaseinfo baseinfo = new DenatorBaseinfo();
                     baseinfo.setBlastserial(Integer.parseInt(a[1]));
@@ -692,13 +693,12 @@ public class XingbangMain extends BaseActivity {
                     baseinfo.setRegdate(a[12]);
                     baseinfo.setWire(a[13]);
                     baseinfo.setName(a[14]);
-                    if (a.length == 16) {
-                        baseinfo.setDenatorIdSup(a[15]);
-                    } else if (a.length > 16) {
-                        baseinfo.setZhu_yscs(a[16]);
-                        baseinfo.setCong_yscs(a[17]);
-                        baseinfo.setPiece(a[18]);
-                    }
+                    baseinfo.setDenatorIdSup(a[15]);
+                    baseinfo.setZhu_yscs(a[16]);
+                    baseinfo.setCong_yscs(a[17]);
+                    baseinfo.setPiece(a[18]);
+                    baseinfo.setDuan(a[19]);
+                    baseinfo.setDuanNo(a[20]);
                     getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 } else {
                     f.delete();//如果字段个数不对,先删除list,再跳出循环
@@ -910,13 +910,17 @@ public class XingbangMain extends BaseActivity {
         StringBuilder a = new StringBuilder();
         if (mRegion1) {
             a.append("1");
-        }if (mRegion2) {
+        }
+        if (mRegion2) {
             a.append(",2");
-        }if (mRegion3) {
+        }
+        if (mRegion3) {
             a.append(",3");
-        }if (mRegion4) {
+        }
+        if (mRegion4) {
             a.append(",4");
-        }if (mRegion5) {
+        }
+        if (mRegion5) {
             a.append(",5");
         }
         String str = " 区域" + a;
@@ -924,7 +928,7 @@ public class XingbangMain extends BaseActivity {
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数(单选的时候要放开,多选关闭)
 //        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
-        totalbar_title.setText(mOldTitle+"/"+str);
+        totalbar_title.setText(mOldTitle + "/" + str);
     }
 
     /**

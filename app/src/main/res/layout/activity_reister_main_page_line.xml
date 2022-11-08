@@ -748,6 +748,7 @@
                     android:layout_height="50dp"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/bt_mainpage_style"
+                    android:visibility="gone"
                     android:text="修改延时" />
                 <Button
                     android:id="@+id/btn_inputOk"

@@ -335,7 +335,8 @@ public class GreenDaoMaster {
                     + list.get(i).getStatusCode() + "," + list.get(i).getStatusName() + "," + list.get(i).getErrorName() + ","
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
-                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + "," + list.get(i).getPiece() + "\n";
+                    + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + ","
+                    + list.get(i).getPiece()+ "," +list.get(i).getDuan()+ "," +list.get(i).getDuanNo() + "\n";
             str = str + content;
         }
         return str;
