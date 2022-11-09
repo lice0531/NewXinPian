@@ -1389,7 +1389,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 break;
 
         }
-        int duanNUM =new GreenDaoMaster().getDuanNo(mRegion,duan);;
+        int duanNUM =new GreenDaoMaster().getDuanNo(mRegion,duan);
 
 
         if (!zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用

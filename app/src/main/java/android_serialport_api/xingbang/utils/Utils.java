@@ -1697,34 +1697,39 @@ public class Utils {
     }
 
     /**
-     * 重新排序雷管
+     * 煤许 重新排序雷管
      */
     public static void deleteData(String mRegion) {
-        List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
-        Log.e("排序雷管", "list_lg: " + list_lg.size());
-        for (int i = 0; i < list_lg.size(); i++) {
-            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-            denatorBaseinfo.setId(list_lg.get(i).getId());
-            denatorBaseinfo.setBlastserial(i + 1);
-            denatorBaseinfo.setSithole((i + 1)+"");
-            denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
-            denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
-            denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
-            denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
-            denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
-            denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
-            denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
-            denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
-            denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
-            denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
-            denatorBaseinfo.setWire(list_lg.get(i).getWire());
-            denatorBaseinfo.setName(list_lg.get(i).getName());
-            denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
-            denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
-            denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
-            denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
-            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+        for (int m = 1; m < 6; m++){
+            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().getDuanNoList(mRegion,m+"");
+            Log.e("排序雷管", "list_lg: " + list_lg.size());
+            for (int i = 0; i < list_lg.size(); i++) {
+                DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+                denatorBaseinfo.setId(list_lg.get(i).getId());
+                denatorBaseinfo.setBlastserial(i + 1);
+                denatorBaseinfo.setSithole((i + 1)+"");
+                denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
+                denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
+                denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
+                denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
+                denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
+                denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
+                denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
+                denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
+                denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
+                denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
+                denatorBaseinfo.setWire(list_lg.get(i).getWire());
+                denatorBaseinfo.setName(list_lg.get(i).getName());
+                denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
+                denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
+                denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
+                denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
+                denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+                denatorBaseinfo.setDuanNo(list_lg.get(i).getDuan()+"-"+(i + 1));
+                getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+            }
         }
+
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
 

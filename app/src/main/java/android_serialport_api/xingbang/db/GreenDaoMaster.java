@@ -712,4 +712,12 @@ public class GreenDaoMaster {
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list().size();
     }
+    public  List<DenatorBaseinfo> getDuanNoList(String piece,String duan ) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
 }
