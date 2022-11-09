@@ -106,7 +106,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
         if (IntervalUtil.isFastClick_2()) {
-            GetFileName("KT50_V1.3_16V", ".bin");
+            GetFileName("KT50_V1.3_17V", ".bin");//17V是电流11000,16V是改变前的
         }
     }
 

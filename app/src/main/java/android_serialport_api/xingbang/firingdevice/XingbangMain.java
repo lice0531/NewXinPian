@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -55,8 +57,12 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.utils.upload.FTP;
+import android_serialport_api.xingbang.utils.upload.IntervalUtil;
+import android_serialport_api.xingbang.utils.upload.XbUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,6 +72,8 @@ import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.annotation.NonNull;
+
+import org.apache.commons.net.ftp.FTPFile;
 
 
 public class XingbangMain extends BaseActivity {
@@ -137,6 +145,27 @@ public class XingbangMain extends BaseActivity {
     private int region_0, region_1, region_2, region_3, region_4, region_5;
     private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
     TextView totalbar_title;
+
+    // FTP参数
+    private FTP mFTP;
+    private String mIP = "182.92.61.78";
+    private String mUserName = "xingbang";
+    private String mPassWord = "xingbang666";
+    private String mSaveDirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xb";
+    private List<FTPFile> mList_FtpFileName = new ArrayList<>();
+    // E2
+    private int mGetFrom;                       // 1:从Assets获得 2:从文件管理器获得 3:从xb获得
+    private String mFileName = "micro.bin";     // 1
+    private Uri mUri;                           // 2
+    private List<byte[]> mList_Byte = new ArrayList<>();
+    private int mNumber_E2 = 0;
+    private int mIndex_E2 = 0;
+    private int mFormat = 1024;
+    private String mTip = "";
+    //
+    public volatile String mDownLoadFilePath;   // 下载文件路径 3
+    public volatile long mDownLoadFileSize;     // 下载文件大小
+    private String version_cloud;
 
     @Override
     protected void onPause() {
@@ -225,8 +254,20 @@ public class XingbangMain extends BaseActivity {
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
         Beta.checkUpgrade();
-    }
 
+        initFTP();              // 初始化FTP
+        if (IntervalUtil.isFastClick_2()) {//防止连点
+            GetFileName("KT50_Second_Version_", ".apk");//17V是电流11000,16V是改变前的
+        }
+    }
+    /**
+     * 初始化FTP
+     */
+    private void initFTP() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        mFTP = new FTP(mIP, mUserName, mPassWord);
+    }
     /**
      * 初始化控件
      */
@@ -1142,5 +1183,75 @@ public class XingbangMain extends BaseActivity {
         builder.show();
     }
 
+    private void GetFileName(String name, String type) {
 
+        // 如果是Bin文件
+        if (type.equals(".bin")) {
+            mGetFrom = 3;    // 从xb获得
+        }
+        Log.e("是否有网", NetUtils.haveNetWork(this) + "");
+        // 网络判断
+        if (!NetUtils.haveNetWork(this)) {
+            return;
+        }
+
+        try {
+            String ftpFileName = null;  // 所需文件在 服务器文件名称
+            String version_ftp;         // 所需文件在 服务器的版本号
+//            mPath_Local = "";           // 所需文件在 本地文件路径
+            String version_self;        // 当前使用 软件版本(apk升级参数)
+            String time_0 = null;       // bin文件日期最新日期
+
+            // 如果登录成功
+            if (mFTP.openConnect()) {
+                // 获取服务器文件列表
+                mList_FtpFileName.clear();
+                mList_FtpFileName = mFTP.listFiles("/");
+//                Log.e("下载目录", mList_FtpFileName.toString());//所有文件目录
+                // 获取本地APK文件列表
+                for (int i = 0; i < mList_FtpFileName.size(); i++) {
+                    String fileName = mList_FtpFileName.get(i).getName();
+                    long fileSize = mList_FtpFileName.get(i).getSize();
+
+                    if (fileName.contains(name)) {
+                        Log.e("下载目录", fileName);//KT50_Second_Version_26.apk
+                        Log.e("下载目录",  fileName.substring(fileName.indexOf("_"), fileName.indexOf(".apk")));
+                        // 如果是Bin文件
+                        if (type.equals(".apk")) {
+
+                            // 截取bin文件日期
+                            String time_1 = fileName.substring(fileName.indexOf("_") + 1, fileName.indexOf(".bin"));
+
+                            // 如果 这是第一个符合条件文件
+                            if (time_0 == null) {
+                                ftpFileName = fileName;
+                                time_0 = time_1;
+                                mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
+                                mDownLoadFileSize = fileSize;
+                                version_cloud = ftpFileName;
+                                Log.e("Download_Bin_1", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
+                            }
+                            // 如果 这是第n个符合条件文件
+//                            else {
+//
+//                                // 例如: permit_20210131.bin 比对 permit_20210319.bin
+//                                Log.e("Download_Bin_2", "time_0: " + time_0);
+//                                Log.e("Download_Bin_2", "time_1: " + time_1);
+//
+//                                if (TimeUtils.isDate2Bigger(time_0, time_1)) {
+//                                    Log.e("Download_Bin_2", "boolean: " + TimeUtils.isDate2Bigger(time_0, time_1));
+//                                    ftpFileName = fileName;
+//                                    mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
+//                                    mDownLoadFileSize = fileSize;
+//                                    Log.e("Download_Bin_2", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
+//                                }
+//                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
