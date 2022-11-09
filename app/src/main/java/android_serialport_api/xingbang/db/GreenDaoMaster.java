@@ -717,7 +717,7 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
-                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderAsc(DenatorBaseinfoDao.Properties.Id)
                 .list();
     }
 }
