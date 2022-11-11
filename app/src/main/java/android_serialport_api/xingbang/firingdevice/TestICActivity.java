@@ -69,10 +69,10 @@ public class TestICActivity extends SerialPortActivity {
                 float dianliu = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
                 String displayIcStr = dianliu + "μA";// 保留两位小数
 
-                if (dianliu > 11000) {
+                if (dianliu > 4800) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     tvCeshiDianliu.setTextColor(Color.RED);
-                } else if (dianliu < 11000 && dianliu > denatorCount * 24) {
+                } else if (dianliu < 4800 && dianliu > denatorCount * 24) {
                     displayIcStr = displayIcStr + "(电流过大)";
                     tvCeshiDianliu.setTextColor(Color.RED);
                 } else if (dianliu < 4+denatorCount*6) {

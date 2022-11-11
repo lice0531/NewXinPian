@@ -92,7 +92,7 @@ public class SendMsgActivity extends BaseActivity {
     private LoadingDialog tipDlg = null;
     private Handler mHandler_2 = new Handler();//显示进度条
     private From42Power busInfo;
-    private List<VoBlastModel> list_uid = new ArrayList<>();
+    private List<DenatorBaseinfo> list_uid = new ArrayList<>();
     private int denatorCount = 0;//雷管总数
     /**
      * 线程池
@@ -216,40 +216,17 @@ public class SendMsgActivity extends BaseActivity {
     private void loadMoreData() {
         list_uid.clear();
 
-        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
-        for (int i = 0; i < list.size(); i++) {
-            VoBlastModel item = new VoBlastModel();
-            item.setBlastserial(list.get(i).getBlastserial());
-            item.setSithole(list.get(i).getSithole());
-            item.setDelay((short) list.get(i).getDelay());
-            item.setShellBlastNo(list.get(i).getShellBlastNo());
-            item.setErrorCode(list.get(i).getErrorCode());
-            item.setErrorName(list.get(i).getErrorName());
-            item.setStatusCode(list.get(i).getStatusCode());
-            item.setStatusName(list.get(i).getStatusName());
-            item.setDenatorId(list.get(i).getDenatorId());
-            list_uid.add(item);
-        }
-        denatorCount = list.size();
+        list_uid = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+        denatorCount = list_uid.size();
     }
 
     //导出数据
     private void loadMoreData_out() {
         list_uid.clear();
         StringBuilder sb = new StringBuilder();
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (int i = 0; i < list.size(); i++) {
-            sb.append(list.get(i).getShellBlastNo()).append("#").append(list.get(i).getDenatorId()).append("#").append(list.get(i).getZhu_yscs()).append(",");
-            VoBlastModel item = new VoBlastModel();
-            item.setBlastserial(list.get(i).getBlastserial());
-            item.setSithole(list.get(i).getSithole());
-            item.setDelay((short) list.get(i).getDelay());
-            item.setShellBlastNo(list.get(i).getShellBlastNo());
-            item.setErrorCode(list.get(i).getErrorCode());
-            item.setErrorName(list.get(i).getErrorName());
-            item.setStatusCode(list.get(i).getStatusCode());
-            item.setStatusName(list.get(i).getStatusName());
-            list_uid.add(item);
+        list_uid = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        for (int i = 0; i < list_uid.size(); i++) {
+            sb.append(list_uid.get(i).getShellBlastNo()).append("#").append(list_uid.get(i).getDenatorId()).append("#").append(list_uid.get(i).getZhu_yscs()).append(",");
         }
 
         Utils.writeLeiGuan(sb.toString());
@@ -281,18 +258,20 @@ public class SendMsgActivity extends BaseActivity {
     /**
      * 注册雷管
      */
-    private int registerDetonator(String leiguan) {
+    private void registerDetonator(String leiguan) {
 
         String[] lg = leiguan.split(",");
         String shellNo;
         int maxNo = getMaxNumberNo();
-        int reCount = 0;
-        Log.e("接收注册", "lg.length: " + lg.length);
+        Log.e("接收注册", "lg.length: " + leiguan);
+        if(lg[0].length()<13){
+            show_Toast("数据不完整");
+            return ;
+        }
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
-            String[] a = shellNo.split("#");
+            String[] a = shellNo.split("#");//芯片码//延时//管壳码//延时参数//段号
             if (checkRepeatDenatorId(a[0])) {//检查重复数据
-                reCount++;
                 continue;
             }
             maxNo++;
@@ -300,10 +279,8 @@ public class SendMsgActivity extends BaseActivity {
             denator.setBlastserial(maxNo);
             denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
-            if (a.length >= 3) {
-                denator.setShellBlastNo(a[2]);
-                denator.setZhu_yscs(a[3]);
-            }
+            denator.setShellBlastNo(a[2]);
+            denator.setZhu_yscs(a[3]);
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
             denator.setStatusCode("02");
@@ -312,13 +289,14 @@ public class SendMsgActivity extends BaseActivity {
             denator.setErrorName("");
             denator.setWire("");
             denator.setPiece(mRegion);
+            denator.setDuanNo(a[4]);
+            denator.setDuan(a[4].split("-")[0]);
             Log.e("接收注册", "denator: " + denator.toString());
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
-            reCount++;
         }
         pb_show = 0;
         show_Toast_ui("导入成功");
-        return reCount;
+        return ;
     }
 
     @OnClick({R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile})
@@ -367,10 +345,14 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
+                    if (list_uid.get(i).getDenatorId() == null) {
+                        show_Toast("当前雷管没有芯片码,传输错误!");
+                        return;
+                    }
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + ",");
-                    } else {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" +
+                                list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getZhu_yscs() + "#" +
+                                list_uid.get(i).getDuanNo() + ",");
                     }
 
 //                    Log.e("添加信息", "sb: " + (list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ","));
@@ -960,7 +942,7 @@ public class SendMsgActivity extends BaseActivity {
 //                }
                 String a[] = line.split(",", -1);
                 //,,,5620811H08989,085060B804,,,,,,,,,,,,,,
-          Log.e("写入文件数据",a[3]+"--"+a[4]);
+                Log.e("写入文件数据", a[3] + "--" + a[4]);
                 String uid = "A62F400" + a[4].substring(0, 6);
                 String yscs = a[4].substring(6);
                 DenatorBaseinfo baseinfo = new DenatorBaseinfo();

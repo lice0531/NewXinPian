@@ -48,7 +48,7 @@ public class SystemVersionActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sys_version);//version 同时在xingbangMain中setUserMessage()更新版本号
         ButterKnife.bind(this);
-        rjVersion.setText((String)MmkvUtils.getcode("rj_version", "KT50_3.25_PT_221103"));//软件修改日期
+        rjVersion.setText((String)MmkvUtils.getcode("rj_version", "KT50_3.25_PT_221109"));//软件修改日期
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("config", 0);

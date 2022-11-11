@@ -378,7 +378,7 @@ public class XingbangMain extends BaseActivity {
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
-        MmkvUtils.savecode("rj_version", "KT50_3.25_PT_221103");//软件版本
+        MmkvUtils.savecode("rj_version", "KT50_3.25_PT_221109");//软件版本
     }
 
     private void loginToSetEnv() {
@@ -591,7 +591,7 @@ public class XingbangMain extends BaseActivity {
                 Log.e(TAG, "endTime: " + endTime);
                 Log.e(TAG, "daojishi: " + daojishi);
                 if (time > 0 && daojishi < 190 && daojishi > 0) {//第二次启动时间不重置
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "组网");
+                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "起爆");
                     Log.e(TAG, "daojishi: " + daojishi);
                     return;
                 }

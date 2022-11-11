@@ -27,8 +27,9 @@
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp">
+        android:layout_height="25dp"
+        android:layout_marginTop="1dp"
+        >
 
         <TextView
             style="@style/allbtntstyle"
@@ -36,7 +37,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:text="段别" />
+            android:text="段别"
+            android:textSize="20sp"/>
 
         <TextView
             style="@style/allbtntstyle"
@@ -45,7 +47,8 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:text="数量" />
+            android:text="数量"
+            android:textSize="20sp"/>
 
         <TextView
             style="@style/allbtntstyle"
@@ -55,7 +58,7 @@
             android:layout_weight="2"
             android:background="@color/colorPrimary"
             android:text="段间延时/ms"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <TextView
             style="@style/allbtntstyle"
@@ -361,7 +364,7 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:layout_marginTop="8dp">
+                        android:layout_marginTop="3dp">
 
                         <Button
                             android:id="@+id/re_btn_f1"

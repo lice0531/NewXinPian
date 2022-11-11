@@ -189,6 +189,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     EditText editScanLiushui;
     @BindView(R.id.ll_single)
     LinearLayout llSingle;
+    @BindView(R.id.zc_ll_title)
+    LinearLayout zcLlTitle;
     @BindView(R.id.re_gkm)
     LinearLayout regkm;
     @BindView(R.id.text_gkm1)
@@ -2031,7 +2033,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_single:
                 if (llStart.getVisibility() == View.GONE) {
                     lySetDelay.setVisibility(View.GONE);
-                    llSingle.setVisibility(View.GONE);
+                    zcLlTitle.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.VISIBLE);
                     llStart.setVisibility(View.VISIBLE);
                     llEnd.setVisibility(View.VISIBLE);
                     llNum.setVisibility(View.VISIBLE);
@@ -2039,7 +2042,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnSingle.setText("返回");
                 } else {
                     lySetDelay.setVisibility(View.VISIBLE);
-                    llSingle.setVisibility(View.VISIBLE);
+                    zcLlTitle.setVisibility(View.VISIBLE);
+                    llSingle.setVisibility(View.GONE);
                     llStart.setVisibility(View.GONE);
                     llEnd.setVisibility(View.GONE);
                     llNum.setVisibility(View.GONE);

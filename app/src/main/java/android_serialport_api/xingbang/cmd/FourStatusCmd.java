@@ -86,7 +86,7 @@ public class FourStatusCmd {
                 int icLowInt = Integer.parseInt(strLow2, 16);
 //				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
                 double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
-                float busCurrent = (float) (icTotal*1.8)-10;//*400
+                float busCurrent = (float) (icTotal)-10;//*400
                 if(busCurrent<0){
                     busCurrent=0;
                 }

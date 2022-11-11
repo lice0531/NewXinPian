@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.custom;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,13 +51,14 @@ public class ErrListAdapter extends BaseAdapter {
             viewHolder.X_item_shellno = convertView.findViewById(R.id.X_item_shellno);
             viewHolder.X_item_delay = convertView.findViewById(R.id.X_item_delay);
             viewHolder.X_item_errorname = convertView.findViewById(R.id.X_item_errorname);
-
+            viewHolder.X_item_duanNo = convertView.findViewById(R.id.X_item_duan);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        Log.e("错误列表adapter", "list.get(position): "+list.get(position) );
         viewHolder.X_item_no.setText((position + 1)+"");//雷管uid
+        viewHolder.X_item_duanNo.setText((String)list.get(position).get("duanNo"));//段号
         viewHolder.X_item_shellno.setText((String) list.get(position).get("shellNo"));//管壳码
         viewHolder.X_item_delay.setText(list.get(position).get("delay")+"");//延时
         viewHolder.X_item_errorname.setText((String) list.get(position).get("errorName"));//错误
@@ -69,6 +71,7 @@ public class ErrListAdapter extends BaseAdapter {
         private TextView X_item_shellno;
         private TextView X_item_delay;
         private TextView X_item_errorname;
+        private TextView X_item_duanNo;
     }
 
 
