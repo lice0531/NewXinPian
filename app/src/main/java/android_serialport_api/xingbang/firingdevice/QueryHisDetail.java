@@ -268,6 +268,7 @@ public class QueryHisDetail extends BaseActivity {
     //获取配置文件中的值
     private void getPropertiesData() {
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan","是");
+        Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
     }
 
     private void getUserMessage() {

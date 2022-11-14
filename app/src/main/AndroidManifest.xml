@@ -280,7 +280,8 @@
             android:name=".firingdevice.UpLoadLogActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_set_page_time"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- 百度地图设置 -->
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!-- 百度地图设置 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -288,7 +289,8 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="E6zOg0dIA7iW4IAVZ7isv4ylAoA2bhaY" /> <!-- 腾讯自动更新设置 -->
+            android:value="E6zOg0dIA7iW4IAVZ7isv4ylAoA2bhaY" />
+        <!-- 腾讯自动更新设置 -->
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
