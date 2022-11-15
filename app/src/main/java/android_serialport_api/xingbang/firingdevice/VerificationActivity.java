@@ -86,6 +86,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
     private List<VoBlastModel> list_data = new ArrayList<>();
     private LocationService locationService;
     private String mRegion;     // 区域
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,20 +97,11 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         //获取区号
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_SHOUQUAN, null);
-        totalNum = cursor.getCount();//得到数据的总条数
-        Cursor cursor2 = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO, null);
-        lg_totalNum = cursor2.getCount();//得到数据的总条数,为了验证做对比
-        totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
-        cursor.close();
-        cursor2.close();
-        if (1 == currentPage) {
-            loadShouQuan();
-            loadMoreData();
+        loadShouQuan();
+        loadMoreData();
 
-        }
         mAdapter = new VerificationAdapter(this, map_dl, R.layout.item_list_shouquan);
         lvYanzheng.setAdapter(mAdapter);
         lvYanzheng.setOnItemClickListener(this);
@@ -351,15 +343,15 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         }
         for (int i = 0; i < list_lg2.size(); i++) {
             if (!list_lg_down.contains(list_lg2.get(i))) {
-                Log.e("对比", "list_lg_down: "+list_lg_down+"---list_lg2.get(i)"+list_lg2.get(i) );
+                Log.e("对比", "list_lg_down: " + list_lg_down + "---list_lg2.get(i)" + list_lg2.get(i));
                 show_Toast("注册雷管与下载雷管不符");
                 return;
             }
         }
         show_Toast("在准爆范围内,可以起爆");
-        Log.e("验证数据", "map_dl.get(position): "+map_dl.get(position).toString() );
-        Log.e("验证数据", "map_dl.get(position).get(id): "+map_dl.get(position).get("id"));
-        qbxm_id =  map_dl.get(position).get("id")+"";
+        Log.e("验证数据", "map_dl.get(position): " + map_dl.get(position).toString());
+        Log.e("验证数据", "map_dl.get(position).get(id): " + map_dl.get(position).get("id"));
+        qbxm_id = map_dl.get(position).get("id") + "";
         qbxm_name = map_dl.get(position).get("spare1").toString();
         Intent intent = new Intent(this, FiringMainActivity.class);
         Bundle bundle = new Bundle();
@@ -404,6 +396,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 break;
         }
     }
+
     /**
      * 加载数据
      */
@@ -424,35 +417,6 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         }
 
 
-    }
-    private void loadMoreData_all_lg() {
-
-        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, "statusCode=?", new String[]{"02"}, null, null, " blastserial asc");
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                int serialNo = cursor.getInt(1); //获取第二列的值 ,序号
-                int holeNo = cursor.getInt(2);
-                String shellNo = cursor.getString(3);//管壳号
-                int delay = cursor.getInt(5);
-                String stCode = cursor.getString(6);//状态
-                String stName = cursor.getString(7);//
-                String errorCode = cursor.getString(9);//状态
-                String errorName = cursor.getString(8);//
-
-                VoBlastModel item = new VoBlastModel();
-                item.setBlastserial(serialNo);
-                item.setSithole(holeNo+"");
-                item.setDelay((short) delay);
-                item.setShellBlastNo(shellNo);
-                item.setErrorCode(errorCode);
-                item.setErrorName(errorName);
-                item.setStatusCode(stCode);
-                item.setStatusName(stName);
-                list_data.add(item);
-            }
-            cursor.close();
-            this.currentPage++;
-        }
     }
 
 
