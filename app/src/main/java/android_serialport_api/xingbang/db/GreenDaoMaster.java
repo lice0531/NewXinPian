@@ -455,7 +455,8 @@ public class GreenDaoMaster {
      * @return
      */
     public static List<ShouQuan> getAllShouQuan() {
-        return getDaoSession().getShouQuanDao().loadAll();
+//        return getDaoSession().getShouQuanDao().loadAll();
+        return getDaoSession().getShouQuanDao().queryBuilder().orderDesc(ShouQuanDao.Properties.Id).list();
     }
 
     /**
