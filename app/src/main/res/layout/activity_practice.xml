@@ -260,10 +260,11 @@
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
             android:background="@color/label_color" />
-
+<!--        清空缓存,自动删除稳定了的话可以删除该功能-->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="80dp"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/but_delete"
@@ -280,7 +281,8 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
-            android:background="@color/label_color" />
+            android:background="@color/label_color"
+            android:visibility="gone"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"

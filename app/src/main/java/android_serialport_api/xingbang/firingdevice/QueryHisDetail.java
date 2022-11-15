@@ -469,7 +469,7 @@ public class QueryHisDetail extends BaseActivity {
         new Thread(() -> {
             Looper.prepare();
             if (updata(fireDateId, htid, jd, wd).equals("0")) {//updata是上传中爆网方法成功返回0
-                modifyUploadStatus(fireDateId, getString(R.string.text_query_uploaded));//
+//                modifyUploadStatus(fireDateId, getString(R.string.text_query_uploaded));//
                 updataState_sq_zb(fireDateId, pos);
 
                 if (list_savedate != null && list_savedate.size() > 0) {

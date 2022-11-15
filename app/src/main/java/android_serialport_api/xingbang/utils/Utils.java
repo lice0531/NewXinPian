@@ -2336,24 +2336,27 @@ public class Utils {
     }
 
     public static  void deleteFile(File file) {
-        Log.e("删除数据", "deleteDirWihtFile: 1" );
         if (file.isFile()) {
             file.delete();
             return;
         }
-        Log.e("删除数据", "deleteDirWihtFile: 2" );
         if(file.isDirectory()){
             File[] childFiles = file.listFiles();
             if (childFiles == null || childFiles.length == 0) {
                 file.delete();
                 return;
             }
-
-            for (int i = 0; i < childFiles.length; i++) {
-                Log.e("删除数据", "i" +i);
-                deleteFile(childFiles[i]);
+            if(childFiles.length>60){
+                for (int i = 0; i < childFiles.length-5; i++) {
+                    Log.e("删除数据", "childFiles[i].getName()" +childFiles[i].getName());
+                    deleteFile(childFiles[i]);
+                }
             }
-            file.delete();
+//            for (int i = 0; i < childFiles.length; i++) {
+//                Log.e("删除数据", "childFiles[i].getName()" +childFiles[i].getName());
+//                deleteRiZhi(childFiles[i]);
+//            }
+//            file.delete();
         }
     }
 
