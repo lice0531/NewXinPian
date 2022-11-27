@@ -1062,26 +1062,6 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
-//            else if(time - endTime < 180000){
-//                int a =(int) (180000-(time - endTime))/1000+5;
-//                AlertDialog dialog = new Builder(FiringMainActivity.this)
-//                        .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-//                        .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待"+a+"秒后再进入起爆页面进行检测。")//设置对话框的内容"本次任务成功起爆！"
-//                        //设置对话框的按钮
-//                        .setNeutralButton("退出", (dialog13, which) -> {
-//                            dialog13.dismiss();
-//                            finish();
-//                        })
-//                        .setNegativeButton("继续", (dialog2, which) -> {
-//                            dialog2.dismiss();
-//                            firstThread.start();
-//                        })
-//                        .create();
-//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-//                dialog.show();
-//
-////                initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行起爆",a);
-//            }
             else {
                 firstThread.start();
             }
@@ -2137,74 +2117,9 @@ public class FiringMainActivity extends SerialPortActivity {
         mOffTime.schedule(tt, 1000, 1000);
     }
 
-    private void initDialog_fangdian(String tip, int daojishi) {
-
-        mOffTextView = new TextView(this);
-        mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n放电倒计时：");
-        mDialog = new AlertDialog.Builder(this)
-                .setTitle("系统提示")
-                .setCancelable(false)
-                .setView(mOffTextView)
-//                .setPositiveButton("确定", (dialog, id) -> {
-//                    mOffTime.cancel();//清除计时
-//                    stopXunHuan();//关闭后的一些操作
-//                })
-                .setNeutralButton("退出", (dialog, id) -> {
-                    dialog.cancel();
-                    mOffTime.cancel();
-                    closeThread();
-                    closeForm();
-                })
-                .setNegativeButton("继续", (dialog2, which) -> {
-                    dialog2.dismiss();
-                    firstThread.start();
-                    mOffTime.cancel();
-                })
-                .create();
-        mDialog.show();
-        mDialog.setCanceledOnTouchOutside(false);
-
-        mOffHandler = new Handler(msg -> {
-            if (msg.what > 0) {
-                //动态显示倒计时
-                mOffTextView.setText(tip + "\n放电倒计时：" + msg.what);
-            } else {
-                //倒计时结束自动关闭
-                if (mDialog != null) {
-                    mDialog.dismiss();
-
-                }
-//                off();//关闭后的操作
-                firstThread.start();
-                mOffTime.cancel();
-            }
-            return false;
-        });
-
-        //倒计时
-
-        mOffTime = new Timer(true);
-        TimerTask tt = new TimerTask() {
-            private int countTime = daojishi;
-
-            public void run() {
-                if (countTime > 0) {
-                    countTime--;
-                }
-                if (countTime == 118) {
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                    sendCmd(reCmd);
-                }
-                Message msg = new Message();
-                msg.what = countTime;
-                mOffHandler.sendMessage(msg);
-            }
-        };
-        mOffTime.schedule(tt, 1000, 1000);
-    }
 
     private void initDialog_zanting(String tip) {
+        if (!FiringMainActivity.this.isFinishing()) {
         chongfu = true;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
@@ -2226,20 +2141,22 @@ public class FiringMainActivity extends SerialPortActivity {
                 })
                 .create();
         dialog.show();
+        }
     }
 
     private void initDialog_zanting2(String tip) {
-        chongfu = true;//已经检测了一次
-        loadErrorBlastModel();
+        if (!FiringMainActivity.this.isFinishing()) {
+            chongfu = true;//已经检测了一次
+            loadErrorBlastModel();
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
-        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
-        llview.setVisibility(View.GONE);
-        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
-        text_tip.setText(tip);
-        text_tip.setVisibility(View.VISIBLE);
-        // 给ListView绑定内容
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
+            LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+            llview.setVisibility(View.GONE);
+            TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+            text_tip.setText(tip);
+            text_tip.setVisibility(View.VISIBLE);
+            // 给ListView绑定内容
 //        ListView errlistview = getlistview.findViewById(R.id.X_listview);
 //        errlistview.setVisibility(View.GONE);
 //        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
@@ -2248,16 +2165,16 @@ public class FiringMainActivity extends SerialPortActivity {
 //        // 给listview加入适配器
 //        errlistview.setAdapter(adapter);
 
-        // 给ListView绑定内容
-        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
-        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
-        errlistview.setAdapter(mAdapter);
+            // 给ListView绑定内容
+            ListView errlistview = getlistview.findViewById(R.id.X_listview);
+            ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+            errlistview.setAdapter(mAdapter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("系统提示");//"错误雷管列表"
-        builder.setView(getlistview);
-        builder.setPositiveButton("重检", (dialog, which) -> {
-            dialogOFF(dialog);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("系统提示");//"错误雷管列表"
+            builder.setView(getlistview);
+            builder.setPositiveButton("重检", (dialog, which) -> {
+                dialogOFF(dialog);
 //            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
 //            sendCmd(reCmd);
 //            try {
@@ -2265,23 +2182,24 @@ public class FiringMainActivity extends SerialPortActivity {
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
-            off();//重新检测
-            dialog.dismiss();
+                off();//重新检测
+                dialog.dismiss();
 
-        });
-        builder.setNeutralButton("充电", (dialog, which) -> {
-            dialogOFF(dialog);
-            stopXunHuan();
-            dialog.dismiss();
-        });
-        builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
+            });
+            builder.setNeutralButton("充电", (dialog, which) -> {
+                dialogOFF(dialog);
+                stopXunHuan();
+                dialog.dismiss();
+            });
+            builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
 //            stopXunHuan();
-            llview.setVisibility(View.VISIBLE);
-            text_tip.setVisibility(View.GONE);
-            errlistview.setVisibility(View.VISIBLE);
-            dialogOn(dialog);
-        });
-        builder.create().show();
+                llview.setVisibility(View.VISIBLE);
+                text_tip.setVisibility(View.GONE);
+                errlistview.setVisibility(View.VISIBLE);
+                dialogOn(dialog);
+            });
+            builder.create().show();
+        }
     }
 
     /**

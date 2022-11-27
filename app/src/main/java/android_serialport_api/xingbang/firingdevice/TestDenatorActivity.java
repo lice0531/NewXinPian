@@ -664,7 +664,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
-                } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 12 * 1.1)) {
+                } else if (errtotal > 0 &&busInfo!=null&& busInfo.getBusCurrentIa() > (denatorCount * 12 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 12 * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
                     stopXunHuan();//检测完成
                 } else {
@@ -1138,9 +1138,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         mOffTextView.setTextSize(25);
         mOffTextView.setText(tip + "\n放电倒计时：");
         mDialog = new AlertDialog.Builder(this)
-                .setTitle("系统提示")
-                .setCancelable(false)
-                .setView(mOffTextView)
+                .setTitle("系统提示").setCancelable(false).setView(mOffTextView)
 //                .setPositiveButton("确定", (dialog, id) -> {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
@@ -1194,85 +1192,78 @@ public class TestDenatorActivity extends SerialPortActivity {
     }
 
     private void initDialog_tip(String tip) {
-        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
-                .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-                .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
-                //设置对话框的按钮
-                .setNeutralButton("继续", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
-                .setNegativeButton("退出", (dialog12, which) -> {
-                    stopXunHuan();
-                })
-                .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {
+            AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                    .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNeutralButton("继续", (dialog1, which) -> {
+                        off();//重新检测
+                        dialog1.dismiss();
+                    }).setNegativeButton("退出", (dialog12, which) -> {
+                        stopXunHuan();
+                    }).create();
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting(String tip) {
-        chongfu = true;//已经检测了一次
-        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
-                .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-                .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
-                //设置对话框的按钮
-                .setNeutralButton("继续", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
-                .setNegativeButton("退出", (dialog12, which) -> {
-                    stopXunHuan();
-                })
-                .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {
+            chongfu = true;//已经检测了一次
+            AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                    .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNeutralButton("继续", (dialog1, which) -> {
+                        off();//重新检测
+                        dialog1.dismiss();
+                    }).setNegativeButton("退出", (dialog12, which) -> {
+                        stopXunHuan();
+                    }).create();
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting2(String tip) {
-        chongfu = true;//已经检测了一次
-        loadErrorBlastModel();
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
-        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
-        llview.setVisibility(View.GONE);
-        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
-        text_tip.setText(tip);
-        text_tip.setVisibility(View.VISIBLE);
-        // 给ListView绑定内容
-//        ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
-//        errlistview.setVisibility(View.GONE);
-//        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-//                new String[]{"serialNo", "shellNo", "errorName", "delay"},
-//                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
-//        // 给listview加入适配器
-//        errlistview.setAdapter(adapter);
+        //xActivity即为本界面的Activity
+        if (!TestDenatorActivity.this.isFinishing()) {
+            chongfu = true;//已经检测了一次
+            loadErrorBlastModel();
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
+            LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+            llview.setVisibility(View.GONE);
+            TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+            text_tip.setText(tip);
+            text_tip.setVisibility(View.VISIBLE);
+            // 给ListView绑定内容
+            ListView errlistview = getlistview.findViewById(R.id.X_listview);
+            errlistview.setVisibility(View.GONE);
+            ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+            errlistview.setAdapter(mAdapter);
 
-        // 给ListView绑定内容
-        ListView errlistview = getlistview.findViewById(R.id.X_listview);
-        errlistview.setVisibility(View.GONE);
-        ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
-        errlistview.setAdapter(mAdapter);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("系统提示");//"错误雷管列表"
+            builder.setView(getlistview);
+            builder.setPositiveButton("继续", (dialog, which) -> {
+                dialogOFF(dialog);
+                off();//重新检测
+                dialog.dismiss();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("系统提示");//"错误雷管列表"
-        builder.setView(getlistview);
-        builder.setPositiveButton("继续", (dialog, which) -> {
-            dialogOFF(dialog);
-            off();//重新检测
-            dialog.dismiss();
-
-        });
-        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
-            dialogOFF(dialog);
-            stopXunHuan();
-            dialog.dismiss();
-        });
-        builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
+            });
+            builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+                dialogOFF(dialog);
+                stopXunHuan();
+                dialog.dismiss();
+            });
+            builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
 //            stopXunHuan();
-            llview.setVisibility(View.VISIBLE);
-            text_tip.setVisibility(View.GONE);
-            errlistview.setVisibility(View.VISIBLE);
-            dialogOn(dialog);
-        });
-        builder.create().show();
+                llview.setVisibility(View.VISIBLE);
+                text_tip.setVisibility(View.GONE);
+                errlistview.setVisibility(View.VISIBLE);
+                dialogOn(dialog);
+            });
+            builder.create().show();
+        }
+
     }
 
     /**

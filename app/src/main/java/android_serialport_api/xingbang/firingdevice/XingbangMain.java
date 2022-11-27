@@ -1185,10 +1185,6 @@ public class XingbangMain extends BaseActivity {
 
     private void GetFileName(String name, String type) {
 
-        // 如果是Bin文件
-        if (type.equals(".bin")) {
-            mGetFrom = 3;    // 从xb获得
-        }
         Log.e("是否有网", NetUtils.haveNetWork(this) + "");
         // 网络判断
         if (!NetUtils.haveNetWork(this)) {
