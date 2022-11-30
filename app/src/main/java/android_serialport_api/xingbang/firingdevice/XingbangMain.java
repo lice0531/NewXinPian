@@ -346,7 +346,7 @@ public class XingbangMain extends BaseActivity {
         message.setJiance_time("5");
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
-        MmkvUtils.savecode("rj_version","KT50_3.25_PT_221103");
+        MmkvUtils.savecode("rj_version","KT50_3.25_PT_221128");
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
     }
 

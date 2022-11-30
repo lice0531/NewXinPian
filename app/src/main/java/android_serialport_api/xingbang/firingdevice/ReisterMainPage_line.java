@@ -40,6 +40,7 @@ import com.scandecode.inf.ScanInterface;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -629,7 +630,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
             if (tipInfoFlag == 1) {
                 if (busInfo != null) {
                     txt_currentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
-                    txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
+                    BigDecimal b = BigDecimal.valueOf((busInfo.getBusCurrentIa()*1.25/1.2));//处理大额数据专用类
+                    float dianliu = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+                    txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + dianliu + "μA");
                     if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
                         txt_currentIC.setTextColor(Color.RED);
                     } else {

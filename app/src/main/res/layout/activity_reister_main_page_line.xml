@@ -1316,10 +1316,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp">
-
                     <TextView
                         android:id="@+id/txt_currentVolt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/text_reister_vol"
@@ -1328,7 +1327,7 @@
 
                     <TextView
                         android:id="@+id/txt_currentIC"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/text_reister_ele"

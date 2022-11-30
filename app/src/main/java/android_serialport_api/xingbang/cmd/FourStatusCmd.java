@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
 
+import java.math.BigDecimal;
+
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.Utils;
@@ -86,9 +88,11 @@ public class FourStatusCmd {
                 int icLowInt = Integer.parseInt(strLow2, 16);
 //				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
                 double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
-                float busCurrent = (float) (icTotal*1.8)-10;//*400//减10是减0带载的电流
-                if(busCurrent<0){
-                    busCurrent=0;
+                float f1 = (float) (icTotal * 1.8) - 10;//*400//减10是减0带载的电流
+                BigDecimal b = new BigDecimal(f1);
+                float busCurrent = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();//保留两位小数
+                if (busCurrent < 0) {
+                    busCurrent = 0;
                 }
                 busCurrent = Utils.getFloatToFormat(busCurrent, 2, 4);
                 vo.setBusCurrentIa(busCurrent);//设置总线电流

@@ -398,11 +398,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * 24) && displayIc > 10 || displayIc > 11000) {// "电流过大";
+                } else if (displayIc > (denatorCount * 30) && displayIc > 10 || displayIc > 11000) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (4 + denatorCount * 6)) {
+                } else if (displayIc < (4 + denatorCount * 7.5)) {
                     displayIcStr = displayIcStr + "(疑似断路)";
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView();//设置颜色
@@ -795,8 +795,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
-        tv__qb_dianliu_1.setText(denatorCount * 12 + "μA");
-        tv__qb_dianliu_2.setText(denatorCount * 12 + "μA");
+        tv__qb_dianliu_1.setText(denatorCount * 15 + "μA");
+        tv__qb_dianliu_2.setText(denatorCount * 15 + "μA");
     }
 
 
@@ -1352,14 +1352,14 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 //
 //                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 12 + 100)) {//小于参考值 ，部分错
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 15 + 100)) {//小于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
 //                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
-//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行重新检测。");//弹出框
 //                    } else {
@@ -1471,7 +1471,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 15 + 100) {//小于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
@@ -1480,7 +1480,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
