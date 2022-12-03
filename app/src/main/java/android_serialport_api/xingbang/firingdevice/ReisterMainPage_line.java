@@ -306,7 +306,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             String shellBlastNo = info.getShellBlastNo();
 
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo);
+            modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
         });
         this.isSingleReisher = 0;
     }
@@ -968,7 +968,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String uid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -976,10 +976,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
         EditText et_delay = view.findViewById(R.id.delaytime);
+        EditText et_uid = view.findViewById(R.id.UIDNo);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
+        et_uid.setText(uid);
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
@@ -1023,60 +1025,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         builder.show();
     }
 
-    private void modifyBlastBaseInfo(String serialNo, String hoteNo, String delaytime, final String denatorNo) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
-        //    设置我们自己定义的布局文件作为弹出框的Content
-        builder.setView(view);
-        final EditText serialNoTxt = (EditText) view.findViewById(R.id.serialNo);
-        final EditText denatorNoTxt = (EditText) view.findViewById(R.id.denatorNo);
-        final EditText delaytimeTxt = (EditText) view.findViewById(R.id.delaytime);
-        serialNoTxt.setEnabled(false);
-        denatorNoTxt.setEnabled(false);
-        serialNoTxt.setText(serialNo);
-        denatorNoTxt.setText(denatorNo);
-        delaytimeTxt.setText(delaytime);
-        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-            //String a = username.getText().toString().trim();
-            String b = delaytimeTxt.getText().toString().trim();
-            if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                dialog.dismiss();
-            } else if (b.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(b) > maxSecond) {
-                show_Toast(getString(R.string.text_error_tip37));
-                dialog.dismiss();
-            } else {
-                Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
-                modifyDelayTime(selectDenatorId, b);
-//                getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                //    将输入的用户名和密码打印出来
-                show_Toast(getString(R.string.text_error_tip38));
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
-
-        });
-        builder.setNeutralButton("删除", (dialog, which) -> {
-            dialog.dismiss();
-            runPbDialog();
-            Utils.writeRecord("-单发删除:" + "-删除管壳码:" + denatorNo + "-延时" + delaytime);
-            new Thread(() -> {
-                String whereClause = "shellBlastNo = ?";
-                String[] whereArgs = {denatorNo};
-                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
-                Utils.deleteData(mRegion);//重新排序雷管
-//                getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                tipDlg.dismiss();
-                Utils.saveFile();//把软存中的数据存入磁盘中
-                pb_show = 1;
-            }).start();
-
-        });
-        builder.show();
-    }
 
     public int modifyDelayTime(String id, String delay) {
         ContentValues values = new ContentValues();

@@ -548,6 +548,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_scan.this, a);
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
+            mAdapter.setOnItemLongClick(position -> {
+                DenatorBaseinfo info = mListData.get(position);
+                int no = info.getBlastserial();
+                int delay = info.getDelay();
+                String shellBlastNo = info.getShellBlastNo();
+                // 序号 延时 管壳码
+                modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
+            });
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
 
@@ -654,7 +662,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo);
+            modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
         });
         this.isSingleReisher = 0;
 
@@ -1131,7 +1139,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String uid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -1139,10 +1147,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
         EditText et_delay = view.findViewById(R.id.delaytime);
+        EditText et_uid = view.findViewById(R.id.UIDNo);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
+        et_uid.setText(uid);
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
