@@ -488,9 +488,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
             int no = info.getBlastserial();
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
+            String denatorId = info.getDenatorId();
 
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo);
+            modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
         });
         this.isSingleReisher = 0;
     }
@@ -739,6 +740,19 @@ public class ReisterMainPage_line extends SerialPortActivity {
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+            mAdapter.setOnItemLongClick(position -> {
+                Log.e("长按", "mListData.size(): " + mListData.size());
+                Log.e("长按", "position: " + position);
+                DenatorBaseinfo info = mListData.get(position);
+
+                int no = info.getBlastserial();
+                int delay = info.getDelay();
+                String shellBlastNo = info.getShellBlastNo();
+                String denatorId = info.getDenatorId();
+
+                // 序号 延时 管壳码
+                modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
+            });
         });
     }
 
@@ -1135,18 +1149,20 @@ public class ReisterMainPage_line extends SerialPortActivity {
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog_xinpianma, null);
         builder.setView(view);
 
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
+        EditText et_uid = view.findViewById(R.id.denatorId);
         EditText et_delay = view.findViewById(R.id.delaytime);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
+        et_uid.setText(denatorId);
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
@@ -1671,6 +1687,16 @@ public class ReisterMainPage_line extends SerialPortActivity {
         }
     }
 
+    /**
+     * 注册列表的第一发雷管的芯片码是否在历史列表里
+     */
+    private int serchFristLGINdenatorHisByDenatorId(String no) {
+        if (no.length() > 12) {
+            return getDaoSession().getDenatorHis_DetailDao().queryBuilder().where(DenatorHis_DetailDao.Properties.DenatorId.eq(no)).list().size();
+        } else {
+            return 0;
+        }
+    }
     private void showAlertDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("注册提示")
@@ -1747,8 +1773,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
                     String shellBlastNo = serchFristLG();
                     int num = serchFristLGINdenatorHis(shellBlastNo);
-
-                    if (num > 0) {
+                    int num2 = serchFristLGINdenatorHisByDenatorId(shellBlastNo);
+                    Log.e(TAG, "芯片码在历史记录中num2: "+num2 );
+                    if (num > 0||num2>0) {
                         showAlertDialog();
                     }
                     show_Toast("请等待电流电压显示出来后，再连接雷管!");

@@ -144,6 +144,7 @@ public class SendMsgActivity extends BaseActivity {
                     show_Toast("接收成功,正在导入数据,请稍等");
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
+//                        String leiguan = lg;//去除回车
                         Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
                         if (leiguan != null) {
                             // 注册雷管
@@ -270,10 +271,11 @@ public class SendMsgActivity extends BaseActivity {
     }
 
     /**
-     * 注册雷管
+     * 注册雷管 数据互传接收方法
      */
     private int registerDetonator(String leiguan) {
-
+        //第一种 4条
+        //第二种 2条
         String[] lg = leiguan.split(",");
         String shellNo;
         int maxNo = getMaxNumberNo();
@@ -281,8 +283,9 @@ public class SendMsgActivity extends BaseActivity {
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");
+            Log.e("分割", "a.length: "+a.length );
             String[] duan=a[3].split("-");
-            if (checkRepeatDenatorId(a[0])) {//检查重复数据
+            if (!a[0].equals("无")&&checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
                 continue;
             }
@@ -364,7 +367,7 @@ public class SendMsgActivity extends BaseActivity {
 //                registerLog(log);
                 readCVS();
                 break;
-            case R.id.but_send://发送
+            case R.id.but_send://数据互传 发送
                 StringBuffer sb = new StringBuffer();
                 Log.e("发送消息", "list_uid: " + list_uid.size());
                 if (list_uid.size() == 0) {
@@ -372,17 +375,12 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
-                    if (list_uid.get(i).getDenatorId()==null) {
-                        show_Toast("数据信息不完整,缺少UID码,请检查数据");
-                        return;
-                    }
-                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo()+ "#" + list_uid.get(i).getZhu_yscs() + ",");
-                    } else {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
-                    }
+//                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
+                        sb.append((list_uid.get(i).getDenatorId()+"").replace("null","无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo()+ "#" + (list_uid.get(i).getZhu_yscs()+"").replace("null","无") + ",");
+//                    } else {
+//                        sb.append(list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ",");
+//                    }
 
-//                    Log.e("添加信息", "sb: " + (list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ","));
                 }
                 String ip = textIpStart.getText().toString() + textSetviceIp.getText().toString();
                 if (TextUtils.isEmpty(ip)) {

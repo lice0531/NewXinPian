@@ -183,6 +183,7 @@ public class QueryCurrentDetail extends BaseActivity {
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
             mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
+
         });
     }
 

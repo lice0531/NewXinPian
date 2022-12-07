@@ -734,6 +734,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+            mAdapter.setOnItemLongClick(position -> {
+                Log.e("长按", "mListData.size(): " + mListData.size());
+                Log.e("长按", "position: " + position);
+                DenatorBaseinfo info = mListData.get(position);
+
+                int no = info.getBlastserial();
+                int delay = info.getDelay();
+                String shellBlastNo = info.getShellBlastNo();
+                String denatorId = info.getDenatorId();
+                // 序号 延时 管壳码
+                modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
+            });
         });
 
 
@@ -840,8 +852,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int no = info.getBlastserial();
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
+            String denatorId = info.getDenatorId();
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo);
+            modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
         });
         this.isSingleReisher = 0;
 
@@ -1269,7 +1282,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         //检查重复数据
         if (checkRepeatShellNo(shellNo)) {
-            singleShellNo = "";
             singleShellNo = shellNo;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
@@ -1315,18 +1327,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog_xinpianma, null);
         builder.setView(view);
 
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
+        EditText et_uid = view.findViewById(R.id.denatorId);
         EditText et_delay = view.findViewById(R.id.delaytime);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
+        et_uid.setText(denatorId);
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();

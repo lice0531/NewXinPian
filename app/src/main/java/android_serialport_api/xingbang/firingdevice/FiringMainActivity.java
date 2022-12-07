@@ -468,15 +468,14 @@ public class FiringMainActivity extends SerialPortActivity {
             if (firstWaitCount > 8 && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
+                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog12, which) -> {
-                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                            sendCmd(reCmd);
+
                             dialog12.dismiss();
-//                                    closeThread();
                             closeForm();
                             finish();
                         })

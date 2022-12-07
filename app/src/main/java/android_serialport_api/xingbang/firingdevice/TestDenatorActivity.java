@@ -291,20 +291,14 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_return = (Button) findViewById(R.id.btn_firing_return_4);
         btn_return.setOnClickListener(v -> {
             closeThread();
-            Intent intentTemp = new Intent();
-            intentTemp.putExtra("backString", "");
-            setResult(1, intentTemp);
-            finish();
+            closeForm();
         });
 
         btn_return_complete = findViewById(R.id.btn_test_return);
 
         btn_return_complete.setOnClickListener(v -> {
             closeThread();
-            Intent intentTemp = new Intent();
-            intentTemp.putExtra("backString", "");
-            setResult(1, intentTemp);
-            finish();
+            closeForm();
         });
 
         btn_firing_lookError_4 = (Button) findViewById(R.id.btn_test_lookError);
@@ -499,12 +493,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
-                    if (displayIc == 0) {
+                    if (displayIc == 0 && firstCount == Preparation_time * 0.5) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流为0,请检查线路是否正确连接");
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                        closeForm();
                         return;
                     }
                     if (displayIc < denatorCount * 15 * 0.25 && firstCount < Preparation_time * 0.2) {//总线电流小于参考值一半,可能出现断路
@@ -552,44 +547,36 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (displayIc > 11000 && firstCount < Preparation_time * 0.2) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
-                        if (!chongfu) {
-                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
-                        } else {
-                            byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                            sendCmd(reCmd);
-                            initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
-                        }
+//                        if (!chongfu) {
+//                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
+//                        } else {
+//                            sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                            initDialog_msg("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
+//                        }
                         return;
                     }
-//                    if (busInfo.getBusVoltage() < 6.3&& firstCount > Preparation_time * 0.2) {
-//                        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
-//                                .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
-//                                .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
-//                                //设置对话框的按钮
-//                                .setNeutralButton("继续", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        dialog.dismiss();
-//                                    }
-//                                })
-//                                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-//                                        sendCmd(reCmd);
-//                                        dialog.dismiss();
-//                                        closeThread();
-//                                        closeForm();
-//                                        Utils.writeRecord("电压过低,电压="+busInfo.getBusVoltage()+"V");
-//                                        finish();
-//
-//                                    }
-//                                })
-//                                .create();
-//                        dialog.show();
-//                    }
+                    if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.5) {
+                        closeThread();
+                        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
+                                .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
+                                .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次进行检测")//设置对话框的内容"本次任务成功起爆！"
+                                //设置对话框的按钮
+                                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                                        dialog.dismiss();
 
-//                    ll_firing_errorNum_4.setText(""+busInfo.getFiringVoltage()) ;
+                                        closeForm();
+                                        Utils.writeRecord("电压过低,电压="+busInfo.getBusVoltage()+"V");
+                                        finish();
+
+                                    }
+                                })
+                                .create();
+                        dialog.show();
+                    }
+
                 }
                 secondTxt.setText(getString(R.string.text_test_tip1) + firstCount);//"等待总线稳定:"
                 break;
@@ -621,40 +608,44 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 11000) {//大于11000u ，全错
                     Log.e(TAG, "大于11000u ，全错: ");
-                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                    sendCmd(reCmd);
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
-                    }
+//                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+//                    sendCmd(reCmd);
+//                    if (chongfu) {
+                        initDialog_msg("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+//                    }
+//                    else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+//                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {//小于11000u ，全错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_msg("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+//                    }
+//                    else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+//                    }
 
                     Log.e(TAG, "小于11000u ，全错: stage=" + stage);
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * 15 + 100) {//小于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-                    if (chongfu) {
-                        initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
-                    } else {
-                        initDialog_zanting2("请查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_msg("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后再进行检测!");//弹出框
+//                    }
+//                    else {
+//                        initDialog_zanting2("请查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
+//                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-                    if (chongfu) {
-                        initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。");//弹出框
-                    } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_msg("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
+//                    }
+//                    else {
+//                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+//                    }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 15 * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
@@ -1200,7 +1191,27 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .create();
         dialog.show();
     }
+    private void initDialog_msg(String tip) {
+        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
+                .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                //设置对话框的按钮
+                .setNeutralButton("确定", (dialog1, which) -> {
 
+                    dialog1.dismiss();
+                    stopXunHuan();
+                    secondTxt.setText(tip);
+                })
+//                .setNegativeButton("退出", (dialog12, which) -> {
+//                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+//                    dialog12.dismiss();
+//                    closeForm();
+//                    finish();
+//
+//                })
+                .create();
+        dialog.show();
+    }
     private void initDialog_zanting(String tip) {
         chongfu = true;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)

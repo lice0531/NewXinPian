@@ -108,38 +108,6 @@
             android:text="开始测试" />
 
     </RelativeLayout>
-    <TextView
-        android:layout_marginTop="@dimen/dp20"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="点击开始测试后"
-        android:textSize="30sp"
-        style="@style/alltextstyle"/>
-    <TextView
-        android:layout_marginTop="@dimen/dp10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="1.正常电流值=当前管数量*10"
-        android:layout_gravity="center"
-        android:gravity="start"
-        android:textSize="25sp"
-        style="@style/alltextstyle"/>
-    <TextView
-        android:layout_marginTop="@dimen/dp10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="start"
-        android:textSize="25sp"
-        android:text="2.提示疑似断路时,请检查总线"
-        style="@style/alltextstyle"/>
-    <TextView
-        android:layout_marginTop="@dimen/dp10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="3.提示疑似短路时,请检查总线"
-        android:layout_gravity="center"
-        android:gravity="start"
-        android:textSize="25sp"
-        style="@style/alltextstyle"/>
+
+
 </LinearLayout>

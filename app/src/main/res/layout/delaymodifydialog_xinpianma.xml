@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:id="@+id/dm_ll_1"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="@dimen/delaytime_pg_left"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="序号"
+            style="@style/alltextstyle"/>
+
+        <EditText
+            android:id="@+id/serialNo"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/translucent"
+            android:gravity="left"
+            android:hint="序号"
+            android:maxLength="20"
+            android:focusable="false"
+            android:padding="5dp"
+            style="@style/alltextstyle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childReisterPageLabelFontSize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dm_ll_2"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/dm_ll_1"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="@dimen/delaytime_pg_left"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="管壳码"
+            style="@style/alltextstyle"/>
+
+        <EditText
+            android:id="@+id/denatorNo"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/translucent"
+            android:gravity="left"
+            android:hint="管壳码"
+            android:maxLength="13"
+            android:focusable="false"
+            android:padding="5dp"
+            style="@style/alltextstyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childReisterPageLabelFontSize" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/dm_ll_4"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/dm_ll_2"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="@dimen/delaytime_pg_left"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="芯片码"
+            style="@style/alltextstyle"/>
+
+        <EditText
+            android:id="@+id/denatorId"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/translucent"
+            android:gravity="left"
+            android:hint="芯片码"
+            android:maxLength="13"
+            android:focusable="false"
+            android:padding="5dp"
+            style="@style/alltextstyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childReisterPageLabelFontSize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dm_ll_3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/dm_ll_4"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="@dimen/delaytime_pg_left"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="延时"
+            style="@style/alltextstyle"/>
+
+        <EditText
+            android:id="@+id/delaytime"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/translucent"
+            android:gravity="left"
+            android:hint="延时"
+            android:maxLength="6"
+            android:numeric="integer"
+            android:padding="5dp"
+            style="@style/alltextstyle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childReisterPageLabelFontSize" />
+    </LinearLayout>
+
+
+</RelativeLayout>
