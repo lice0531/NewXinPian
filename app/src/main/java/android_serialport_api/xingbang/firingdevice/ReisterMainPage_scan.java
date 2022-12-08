@@ -21,7 +21,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -521,18 +520,24 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else {
                 String barCode;
                 String denatorId;
-                if (data.length() == 28) {//Y5620413H00009A630FD74D87604
+                if (data.length() == 28) {
+                    //Y5620413H00009A630FD74D87604()
+                    //5620722H12345+000ABCDEF+B603+0+1  13 22 26 27 28
                     Log.e("扫码", "data: " + data);
                     //5620302H00001A62F400FFF20AB603
                     //5420302H00001A6F4FFF20AB603
                     //Y5620413H00009A630FD74D87604
                     barCode = data.substring(1, 14);
-                    String a = data.substring(14, 24);
+                    String a = data.substring(13, 22);
                     denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                    Log.e("扫码", "barCode: " + barCode);
-                    Log.e("扫码", "denatorId: " + denatorId);
-                    Log.e("扫码", "data.substring(24): " + data.substring(24));
-                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+
+                    //内蒙版
+                    barCode = data.substring(0, 13);
+                    denatorId =  "A621"+data.substring(13, 22);
+                    String yscs = data.substring(22, 26);
+                    String version = data.substring(26, 27);
+                    String duan = data.substring(27, 28);
+                    insertSingleDenator_2(barCode, denatorId, yscs,version,duan);//同时注册管壳码和芯片码
                 } else {
                     barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                     insertSingleDenator(barCode);
@@ -1748,7 +1753,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /***
      * 扫码注册方法
      */
-    private int insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+    private int insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
         if (shellNo.length() != 13) {
             return -1;
         }
@@ -1793,7 +1798,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
-        int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
+        int a=0;
+        if(duan_scan.equals("0")){//普通雷管按当前页面选择的来
+            a=duan;
+        }else {
+            a=Integer.parseInt(duan_scan);//煤许雷管按二维码设置的来
+        }
+        int duanNUM = getDuanNo(a, mRegion);//也得做区域区分
 
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
@@ -1810,8 +1821,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setPiece(mRegion);
         denatorBaseinfo.setDenatorId(denatorId);
         denatorBaseinfo.setZhu_yscs(yscs);
-        denatorBaseinfo.setDuan(duan);
-        denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));
+        denatorBaseinfo.setDuan(a);
+        denatorBaseinfo.setDuanNo(a + "-" + (duanNUM + 1));
+        denatorBaseinfo.setAuthorization(version);//雷管芯片型号
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
