@@ -393,7 +393,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 11000) {
+                if (displayIc > 9000) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -449,11 +449,11 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //电流大于4000,重启检测阶段
+            //电流大于9000,重启检测阶段
             if (secondCount < Preparation_time * 0.1 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 11000) {
+                if (displayIc > 9000) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
                     if (!chongfu) {
@@ -806,8 +806,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
-        tv__qb_dianliu_1.setText(denatorCount * 12 + "μA");
-        tv__qb_dianliu_2.setText(denatorCount * 12 + "μA");
+        tv__qb_dianliu_1.setText(denatorCount * 30 + "μA");
+        tv__qb_dianliu_2.setText(denatorCount * 30 + "μA");
     }
 
 
@@ -1345,14 +1345,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
 //                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
-//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 11000) {//大于4000u ，全错
+//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于4000u ，全错
 //                    Log.e(TAG, "大于4000u ，全错: ");
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
-//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {//小于4000u ，全错
+//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于4000u ，全错
 //
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
@@ -1461,7 +1461,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e(TAG, "execStage: 10");
                 if (totalerrorNum == 0) {
                     stopXunHuan();
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 11000) {//大于11000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
@@ -1470,7 +1470,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     } else {
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
                     }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {//小于11000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {

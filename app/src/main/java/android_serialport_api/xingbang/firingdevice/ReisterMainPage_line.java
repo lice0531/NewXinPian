@@ -586,6 +586,18 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_line.this, a);
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
+            mAdapter.setOnItemLongClick(position -> {
+                Log.e("长按", "mListData.size(): " + mListData.size());
+                Log.e("长按", "position: " + position);
+                DenatorBaseinfo info = mListData.get(position);
+
+                int no = info.getBlastserial();
+                int delay = info.getDelay();
+                String shellBlastNo = info.getShellBlastNo();
+
+                // 序号 延时 管壳码
+                modifyBlastBaseInfo(no, delay, shellBlastNo);
+            });
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
     }
