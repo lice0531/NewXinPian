@@ -1070,7 +1070,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             tipStr = getResources().getString(R.string.text_error_tip11);//"起始厂家码不能为空"
             return tipStr;
         }
-        if (StringUtils.isBlank(stsno)) {
+        if (StringUtils.isBlank(stsno)&&stsno.length()!=5) {
             tipStr = "开始流水号不能为空";//"起始厂家码不能为空"
             return tipStr;
         }
