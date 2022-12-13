@@ -717,7 +717,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         if (!save_start.equals("1")) {
             et_startDelay.setText(save_start);
         } else {
-            et_startDelay.setText("10");
+            et_startDelay.setText("0");
         }
 
 //        List<denatorBaseinfo> list = LitePal.findAll(denatorBaseinfo.class);

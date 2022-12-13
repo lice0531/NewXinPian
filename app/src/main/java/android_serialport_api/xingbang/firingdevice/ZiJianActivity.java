@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +78,7 @@ public class ZiJianActivity extends SerialPortActivity {
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
+        deleteRiZhi();
     }
 
     private void quanxian() {
@@ -325,5 +328,29 @@ public class ZiJianActivity extends SerialPortActivity {
             byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
             sendCmd(powerCmd);
         }
+    }
+
+    private void deleteRiZhi(){
+        String filePath;
+        String filePath2;
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        if (hasSDCard) {
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
+        } else {
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
+        }
+        if (hasSDCard) {
+            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
+        } else {
+            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
+        }
+
+        File dir = new File(filePath);
+        Utils.deleteRiZhi(dir);
+        File dir2 = new File(filePath2);
+        Utils.deleteRiZhi(dir2);
+//                Utils.deleteDirWihtFile("/程序运行日志/");
+//                Utils.deleteDirWihtFile("/XB程序日志/");
+//        show_Toast("删除成功");
     }
 }

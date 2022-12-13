@@ -719,7 +719,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (!save_start.equals("1")) {
             et_startDelay.setText(save_start);
         } else {
-            et_startDelay.setText("10");
+            et_startDelay.setText("0");
         }
 
         regkm.setOnClickListener(v -> {
@@ -1291,6 +1291,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
+
         String yue = shellNo.substring(3, 5);
         String ri = shellNo.substring(5, 7);
 
@@ -1762,6 +1763,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return -1;
         }
         if (check(shellNo) == -1) {
+            return -1;
+        }
+        if(checkRepeatdenatorId(denatorId)){//芯片码查重
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
 //        int maxNo = getMaxNumberNo();
