@@ -309,19 +309,6 @@ public class TestDenatorActivity extends SerialPortActivity {
         });
     }
 
-    private void getDenatorType() {
-        String selection = "isSelected = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOR_TYPE, null, selection, selectionArgs, null, null, null);
-        String second = "0";
-        if (cursor != null && cursor.moveToFirst()) {
-            if (cursor.getString(2).matches("\\d+")) {//判断是否是数字
-                second = cursor.getString(2);
-            }
-            cursor.close();
-        }
-        maxSecond = Integer.parseInt(second) * 1000;
-    }
 
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
@@ -499,7 +486,6 @@ public class TestDenatorActivity extends SerialPortActivity {
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                        closeForm();
                         return;
                     }
                     if (displayIc < denatorCount * 15 * 0.25 && firstCount < Preparation_time * 0.2) {//总线电流小于参考值一半,可能出现断路
@@ -1200,7 +1186,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     dialog1.dismiss();
                     stopXunHuan();
-                    secondTxt.setText(tip);
+                    secondTxt.setText("检测完毕");
                 })
 //                .setNegativeButton("退出", (dialog12, which) -> {
 //                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22

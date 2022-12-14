@@ -402,7 +402,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (4 + denatorCount * 7.5)) {
+                } else if (displayIc < (4 + denatorCount * 9)) {
                     displayIcStr = displayIcStr + "(疑似断路)";
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView();//设置颜色

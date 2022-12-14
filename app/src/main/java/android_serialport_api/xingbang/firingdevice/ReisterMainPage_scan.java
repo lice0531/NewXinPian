@@ -1335,18 +1335,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog_xinpianma, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
 
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
-        EditText et_uid = view.findViewById(R.id.denatorId);
         EditText et_delay = view.findViewById(R.id.delaytime);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        et_uid.setText(denatorId);
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
