@@ -647,14 +647,20 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }
 
                     Log.e(TAG, "小于4800u ，全错: stage=" + stage);
-                } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum > 0&& busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
+                    // (从上面取下来的条件)
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-                    if (chongfu) {
+                    if (chongfu) {//李斌要修改之前的
                         initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
                     } else {
                         initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
                     }
+//                    if (chongfu) {
+//                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
+//                    } else {
+//                        initDialog("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
+//                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
@@ -1180,7 +1186,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 if (countTime > 0) {
                     countTime--;
                 }
-                if (countTime == 118) {
+                if (countTime == 4) {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
                 }
