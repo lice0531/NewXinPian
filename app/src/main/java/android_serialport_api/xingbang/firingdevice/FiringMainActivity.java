@@ -403,15 +403,12 @@ public class FiringMainActivity extends SerialPortActivity {
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else if (displayIc < (4 + denatorCount * 9)) {
-                    displayIcStr = displayIcStr + "(疑似断路)";
+//                    displayIcStr = displayIcStr + "(疑似断路)";
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
-                    setIcView();//设置颜色
+//                    setIcView();//设置颜色
+                    setIcView_Green();
                 } else {
-                    ll_firing_IC_2.setTextColor(Color.GREEN);
-                    ll_firing_IC_4.setTextColor(Color.GREEN);
-                    ll_firing_IC_5.setTextColor(Color.GREEN);
-                    ll_firing_IC_6.setTextColor(Color.GREEN);
-                    ll_firing_IC_7.setTextColor(Color.GREEN);
+                    setIcView_Green();
                     if (displayIc < 8) {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                     } else {
@@ -534,6 +531,14 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_IC_5.setTextColor(Color.RED);
         ll_firing_IC_6.setTextColor(Color.RED);
         ll_firing_IC_7.setTextColor(Color.RED);
+    }
+
+    private void setIcView_Green() {
+        ll_firing_IC_2.setTextColor(Color.GREEN);
+        ll_firing_IC_4.setTextColor(Color.GREEN);
+        ll_firing_IC_5.setTextColor(Color.GREEN);
+        ll_firing_IC_6.setTextColor(Color.GREEN);
+        ll_firing_IC_7.setTextColor(Color.GREEN);
     }
 
     private void setDialogTextColor(AlertDialog dialog, int red) {

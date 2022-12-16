@@ -480,19 +480,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
+                    ll_firing_IC_4.setTextSize(20);
                     if (displayIc == 0 && firstCount == Preparation_time * 0.5) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流为0,请检查线路是否正确连接");
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                        return;
-                    }
-                    if (displayIc < denatorCount * 15 * 0.25 && firstCount < Preparation_time * 0.2) {//总线电流小于参考值一半,可能出现断路
-                        ll_firing_IC_4.setTextColor(Color.RED);
-                        show_Toast("当前电流过小,请检查线路是否出现断路");
-                        stage = 5;
-                        Utils.writeRecord("总线电流小于参考值一半,可能出现断路");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
@@ -509,17 +502,18 @@ public class TestDenatorActivity extends SerialPortActivity {
                         displayIcStr = displayIcStr + "(疑似短路)";
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-
+                        ll_firing_IC_4.setTextSize(15);
                     } else if (displayIc > (denatorCount * 30) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
-                        ll_firing_IC_4.setTextSize(20);
+                        ll_firing_IC_4.setTextSize(15);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < 4 + denatorCount * 9 && firstCount < Preparation_time * 0.2) {//5
-                        displayIcStr = displayIcStr + "(疑似断路)";
-                        ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
-                        ll_firing_IC_4.setTextSize(20);
+//                        displayIcStr = displayIcStr + "(疑似断路)";
+//                        ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
+//                        ll_firing_IC_4.setTextSize(20);
+                        ll_firing_IC_4.setTextColor(Color.GREEN);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
                         ll_firing_IC_4.setTextColor(Color.GREEN);
@@ -542,6 +536,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.5) {
+                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                                 .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
@@ -550,13 +545,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 .setNegativeButton("退出", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                                         dialog.dismiss();
-
                                         closeForm();
                                         Utils.writeRecord("电压过低,电压="+busInfo.getBusVoltage()+"V");
                                         finish();
-
                                     }
                                 })
                                 .create();
