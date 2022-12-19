@@ -517,6 +517,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
                         ll_firing_IC_4.setTextColor(Color.GREEN);
+                        ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
                     }
                     ll_firing_IC_4.setText(displayIcStr);

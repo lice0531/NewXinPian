@@ -410,7 +410,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else {
                     setIcView_Green();
                     if (displayIc < 8) {
-                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     } else {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流正常");
                     }
@@ -447,23 +447,23 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //电流大于4000,重启检测阶段
-            if (secondCount < Preparation_time * 0.1 && stage == 2 && busInfo != null) {
+            //电流大于11000,重启检测阶段
+            if (secondCount < Preparation_time * 0.2 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
-                float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 11000) {
+                Log.e(TAG, "secondCount: " + secondCount);
+                if (busInfo.getBusCurrentIa() > 11000) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
-                    if (chongfu) {
+                    if (!chongfu) {//单次的话要取非
                         initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                     }
                 }
             }
 
-            if (firstWaitCount > 8 && busInfo.getBusVoltage() < 6.3) {
+            if (firstWaitCount < 2 && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
-                closeThread();
                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"

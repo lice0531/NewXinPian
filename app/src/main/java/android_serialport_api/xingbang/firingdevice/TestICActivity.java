@@ -106,7 +106,7 @@ public class TestICActivity extends SerialPortActivity {
                     byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
                     sendCmd(powerCmd);
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -179,7 +179,6 @@ public class TestICActivity extends SerialPortActivity {
      * 处理接收到的cmd命令
      */
     private void doWithReceivData(String cmd, byte[] cmdBuf, int size) {
-        Log.e("软件版本返回的命令", "cmd: " + cmd);
         byte[] locatBuf = new byte[size];
         System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
         String fromCommad = Utils.bytesToHexFun(locatBuf);
@@ -191,7 +190,7 @@ public class TestICActivity extends SerialPortActivity {
 
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("命令", "busInfo: " + busInfo.toString());
+//            Log.e("命令", "busInfo: " + busInfo.toString());
             busHandler.sendMessage(busHandler.obtainMessage());
 
         } else if ("22".equals(cmd)) { // 关闭测试
