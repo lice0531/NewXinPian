@@ -413,7 +413,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.put("delay", d.getDelay());
             errDeData.add(item);
         }
-        Log.e(TAG, "errDeData: " + errDeData.toString());
+//        Log.e(TAG, "errDeData: " + errDeData.toString());
     }
 
     /***
@@ -460,8 +460,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         blastQueue.clear();
         errorList.clear();
 
-//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
+//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
             VoBlastModel item = new VoBlastModel();
@@ -483,7 +483,36 @@ public class TestDenatorActivity extends SerialPortActivity {
         tv_dianliu.setText(denatorCount * 12 + "μA");//参考电流
 
     }
+    /**
+     * 加载数据
+     */
+    private void loadMoreData_err() {
+        blastQueue.clear();
+        errorList.clear();
 
+//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        //int count=0;
+        for (DenatorBaseinfo a : denatorBaseinfos) {
+            VoBlastModel item = new VoBlastModel();
+            item.setBlastserial(a.getBlastserial());
+            item.setDelay((short) a.getDelay());
+            item.setShellBlastNo(a.getShellBlastNo());
+            item.setDenatorId(a.getDenatorId());
+            item.setDenatorIdSup(a.getDenatorIdSup());
+            item.setZhu_yscs(a.getZhu_yscs());
+            item.setCong_yscs(a.getCong_yscs());
+            if (a.getStatusCode().equals("02")) {
+                list_lg.add(item);
+                blastQueue.offer(item);
+            }
+        }
+
+        denatorCount = blastQueue.size();
+        Log.e("错误加雷管队列", "denatorCount: " + denatorCount);
+//        tv_dianliu.setText(denatorCount * 12 + "μA");//参考电流
+
+    }
 
     public void execStage(Message msg) {
         switch (stage) {
@@ -1116,7 +1145,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void off() {
         initParam();//先重置数据
         chongfu = true;//已经检测了一次
-        loadMoreData();
+        loadMoreData_err();
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
         byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
         sendCmd(powerCmd);
