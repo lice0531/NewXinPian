@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.os.Build;
 
@@ -44,19 +43,16 @@ import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From22WriteDelay;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.ErrListAdapter;
-import android_serialport_api.xingbang.custom.LeiGuanAdapter;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
-import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.CommonDialog;
-import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
@@ -115,11 +111,13 @@ public class TestDenatorActivity extends SerialPortActivity {
     private int errtotal = 0;//错误数量
     private int Preparation_time;//准备时间
     private int totalerrorNum;//错误雷管数量
+
     private String TAG = "组网测试";
     private String version = "02";
     private boolean chongfu = false;//是否已经检测了一次
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
+    private int ic_cankao = 19;//雷管参考电流
 
     //初始化
     private void initParam() {
@@ -480,7 +478,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         denatorCount = blastQueue.size();
         Log.e("雷管队列", "denatorCount: " + denatorCount);
-        tv_dianliu.setText(denatorCount * 30 + "μA");//参考电流
+        tv_dianliu.setText(denatorCount * ic_cankao + "μA");//参考电流
 
     }
 
@@ -516,7 +514,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (displayIc < denatorCount * 30 * 0.25 && firstCount < Preparation_time * 0.5) {//总线电流小于参考值一半,可能出现断路
+                    if (displayIc < denatorCount * ic_cankao * 0.25 && firstCount < Preparation_time * 0.5) {//总线电流小于参考值一半,可能出现断路
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流过小,请检查线路是否出现断路");
                         stage = 5;
@@ -538,13 +536,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * 60) && firstCount < Preparation_time * 0.5) {//5
+                    } else if (displayIc > (denatorCount * ic_cankao * 2) && firstCount < Preparation_time * 0.5) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * 15 && firstCount < Preparation_time * 0.5) {//5
+                    } else if (displayIc < 4 + denatorCount * ic_cankao && firstCount < Preparation_time * 0.5) {//5
                         displayIcStr = displayIcStr + "(疑似断路)";
                         ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
@@ -630,8 +628,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于9000u ，全错: ");
-                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                    sendCmd(reCmd);
+                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
@@ -647,7 +644,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }
 
                     Log.e(TAG, "小于9000u ，全错: stage=" + stage);
-                } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * 30 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
                     if (chongfu) {
@@ -656,7 +653,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 30 + 100)) {//大于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
                     if (chongfu) {
@@ -665,7 +662,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
-                } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * 30 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 30 * 1.1)) {
+                } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * ic_cankao * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
                     stopXunHuan();//检测完成
                 } else {

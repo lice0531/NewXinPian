@@ -198,6 +198,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
+    private int ic_cankao =19;//雷管参考电流
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -397,11 +398,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * 60) && displayIc > 10 ) {// "电流过大";
+                } else if (displayIc > (denatorCount * ic_cankao *2) && displayIc > 10 ) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (4 + denatorCount * 15)) {
+                } else if (displayIc < (4 + denatorCount * ic_cankao)) {
                     displayIcStr = displayIcStr + "(疑似断路)";
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.BLACK);//设置颜色
@@ -450,7 +451,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于9000,重启检测阶段
-            if (secondCount < Preparation_time * 0.1 && stage == 2 && busInfo != null) {
+            if (secondCount < Preparation_time * 0.2 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 9000) {
@@ -464,7 +465,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (firstWaitCount > 8 && busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < Preparation_time * 0.4&& busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -806,8 +807,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
-        tv__qb_dianliu_1.setText(denatorCount * 30 + "μA");
-        tv__qb_dianliu_2.setText(denatorCount * 30 + "μA");
+        tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
+        tv__qb_dianliu_2.setText(denatorCount * ic_cankao + "μA");
     }
 
 
@@ -1361,14 +1362,14 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 //
 //                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 12 + 100)) {//小于参考值 ，部分错
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * ic_danfa + 100)) {//小于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
 //                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
-//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_danfa + 100)) {//大于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行重新检测。");//弹出框
 //                    } else {
@@ -1480,7 +1481,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 30 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
@@ -1489,7 +1490,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 30 + 100)) {//大于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
