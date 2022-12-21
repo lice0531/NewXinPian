@@ -464,7 +464,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (firstWaitCount > 8 && busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < Preparation_time * 0.4  && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)

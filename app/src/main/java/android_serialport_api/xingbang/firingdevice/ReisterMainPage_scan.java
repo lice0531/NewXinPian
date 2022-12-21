@@ -1651,7 +1651,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         for (int i = start; i <= end; i++) {
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo)) {
-                singleShellNo = "";
                 singleShellNo = shellNo;
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
                 break;
@@ -1661,7 +1660,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
 //                pb_show = 0;
 //                return -1;
-//            }
+//            }8
             if (delay_set.equals("f1")) {//获取最大延时有问题
                 if (maxNo == 0) {
                     delay = delay + start_delay;
