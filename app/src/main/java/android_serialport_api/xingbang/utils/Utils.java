@@ -2395,4 +2395,30 @@ public class Utils {
         }
         return "当前日志为空";
     }
+
+    public static  void deleteRiZhi(File file) {
+        if (file.isFile()) {
+            file.delete();
+            return;
+        }
+        if(file.isDirectory()){
+            File[] childFiles = file.listFiles();
+            if (childFiles == null || childFiles.length == 0) {
+                file.delete();
+                return;
+            }
+            if(childFiles.length>60){
+                for (int i = 0; i < childFiles.length-5; i++) {
+                    Log.e("删除数据", "childFiles[i].getName()" +childFiles[i].getName());
+                    deleteRiZhi(childFiles[i]);
+                }
+            }
+//            for (int i = 0; i < childFiles.length; i++) {
+//                Log.e("删除数据", "childFiles[i].getName()" +childFiles[i].getName());
+//                deleteRiZhi(childFiles[i]);
+//            }
+//            file.delete();
+        }
+    }
+
 }

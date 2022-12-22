@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         if (IntervalUtil.isFastClick_2()) {
             GetFileName("KT50_V1.3_16V", ".bin");
         }
+        deleteRiZhi();
     }
 
     /**
@@ -424,5 +426,29 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             dialog.dismiss();
         });
         builder.create().show();
+    }
+
+    private void deleteRiZhi(){
+        String filePath;
+        String filePath2;
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        if (hasSDCard) {
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
+        } else {
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
+        }
+        if (hasSDCard) {
+            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
+        } else {
+            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
+        }
+
+        File dir = new File(filePath);
+        Utils.deleteRiZhi(dir);
+        File dir2 = new File(filePath2);
+        Utils.deleteRiZhi(dir2);
+//                Utils.deleteDirWihtFile("/程序运行日志/");
+//                Utils.deleteDirWihtFile("/XB程序日志/");
+//        show_Toast("删除成功");
     }
 }

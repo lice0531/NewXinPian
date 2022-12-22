@@ -67,7 +67,7 @@ public class FourStatusCmd {
                 int voltLowInt = Integer.parseInt(strLow, 16);
                 //可调电压版本,系数为0.011,不可调为0.006
 //				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
-                double voltTotal = (volthigh + voltLowInt) * 3.0 * 11 / 4.096 / 1000;//新芯片
+                double voltTotal = (volthigh + voltLowInt) * 3.0 * 11 / 4.096 / 1000*1.18;//新芯片
 //				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.011;//可调电压
                 float busVoltage = (float) voltTotal;
                 busVoltage = Utils.getFloatToFormat(busVoltage, 2, 4);

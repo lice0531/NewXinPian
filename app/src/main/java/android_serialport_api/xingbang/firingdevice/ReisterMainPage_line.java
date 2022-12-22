@@ -420,7 +420,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 case 1003:
                     if (busInfo != null) {
                         txt_currentVolt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-                        txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
+                        txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000*2) + "μA");
                         // 判断当前电流是否偏大
                         if (Math.round(busInfo.getBusCurrentIa() * 1000) > 60) {
                             txt_currentIC.setTextColor(Color.RED);
