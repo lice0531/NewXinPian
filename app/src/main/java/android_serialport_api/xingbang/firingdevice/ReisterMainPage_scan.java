@@ -384,13 +384,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     //5620302H00001A62F400FFF20AB603
                     //5420302H00001A6F4FFF20AB603
                     //Y5620413H00009A630FD74D87604
-                    barCode = data.substring(1, 14);
-                    String a = data.substring(14, 24);
-                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                    Log.e("扫码", "barCode: " + barCode);
-                    Log.e("扫码", "denatorId: " + denatorId);
-                    Log.e("扫码", "data.substring(24): " + data.substring(24));
-                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                    //5620722H12345+000ABCDEF+B603+0+1  13 22 26 27 28
+//                    barCode = data.substring(1, 14);
+//                    String a = data.substring(14, 24);
+//                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+//                    Log.e("扫码", "barCode: " + barCode);
+//                    Log.e("扫码", "denatorId: " + denatorId);
+//                    Log.e("扫码", "data.substring(24): " + data.substring(24));
+//                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+
+                    //内蒙版
+                    barCode = data.substring(0, 13);
+                    denatorId =  "A621"+data.substring(13, 22);
+                    String yscs = data.substring(22, 26);
+                    String version = data.substring(26, 27);
+                    String duan = data.substring(27, 28);
+                    insertSingleDenator_2(barCode, denatorId, yscs,version,duan);//同时注册管壳码和芯片码
                 } else if (data.length() == 29) {
                     Log.e("扫码", "data: " + data);
                     //Y 5620413H00009 A630FD74D8 7604 1
@@ -1700,6 +1709,118 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
         return 0;
     }
+
+    /***
+     * 扫码注册方法
+     */
+    private int insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
+        if (shellNo.length() != 13) {
+            return -1;
+        }
+        if (et_startDelay.getText().length()==0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+            return -1;
+        }
+        if (check(shellNo) == -1) {
+            return -1;
+        }
+        if(checkRepeatdenatorId(denatorId)){//芯片码查重
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
+
+
+
+//        int maxNo = getMaxNumberNo();
+        int start_delay = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
+        int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
+        int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
+//        int delay = getMaxDelay(maxNo);//获取最大延时
+
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+
+        switch (duan_scan) {
+            case "1":
+                delay = 0;
+                break;
+            case "2":
+                delay = 25;
+                break;
+            case "3":
+                delay = 50;
+                break;
+            case "4":
+                delay = 75;
+                break;
+            case "5":
+                delay = 100;
+                break;
+        }
+
+        Log.e("扫码", "delay_set: " + delay_set);
+//        if (delay_set.equals("f1")) {
+//            if (maxSecond != 0 && delay + f1 > maxSecond) {//
+//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+//                return -1;
+//            }
+//        } else if (delay_set.equals("f2")) {
+//            if (maxSecond != 0 && delay + f2 > maxSecond) {//
+//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+//                return -1;
+//            }
+//        }
+//        if (delay_set.equals("f1")) {//获取最大延时有问题
+//            if (maxNo == 0) {
+//                delay = delay + start_delay;
+//            } else {
+//                delay = delay + f1;
+//            }
+//        } else if (delay_set.equals("f2")) {
+//            if (maxNo == 0) {
+//                delay = delay + start_delay;
+//            } else {
+//                delay = delay + f2;
+//            }
+//        }
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+//        int a=0;
+//        if(duan_scan.equals("0")){//普通雷管按当前页面选择的来
+//            a=duan;
+//        }else {
+//            a=Integer.parseInt(duan_scan);//煤许雷管按二维码设置的来
+//        }
+        int duanNUM = new GreenDaoMaster().getDuanNo(duan_scan, mRegion);//也得做区域区分
+
+        maxNo++;
+        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+        denatorBaseinfo.setBlastserial(maxNo);
+        denatorBaseinfo.setSithole(maxNo + "");
+        denatorBaseinfo.setShellBlastNo(shellNo);
+        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setErrorCode("FF");
+        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setWire("");//桥丝状态
+        denatorBaseinfo.setPiece(mRegion);
+        denatorBaseinfo.setDenatorId(denatorId);
+        denatorBaseinfo.setZhu_yscs(yscs);
+        denatorBaseinfo.setDuan(duan_scan);
+        denatorBaseinfo.setDuanNo(duan_scan + "-" + (duanNUM + 1));
+        denatorBaseinfo.setAuthorization(version);//雷管芯片型号
+        //向数据库插入数据
+        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
+        Utils.saveFile();//把闪存中的数据存入磁盘中
+        SoundPlayUtils.play(1);
+        return 0;
+    }
+
+
 
     /***
      * 手动输入注册(通过开始管壳码和截止管壳码计算出所有管壳码)
