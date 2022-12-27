@@ -698,7 +698,7 @@ public class Utils {
 
     public static String getDateFormatToFileName() {
         Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd,HH:mm:ss");
         String dateString = formatter.format(date);
 
         return dateString;
@@ -724,7 +724,7 @@ public class Utils {
 
     public static String getDateFormatLong(Date date) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss:SSS");
+        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         String dateString = formatter.format(date);
 
         return dateString;

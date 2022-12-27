@@ -90,7 +90,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         ButterKnife.bind(this);
         initPower();                // 初始化上电方式()
         powerOnDevice(PIN_ADSL);    // 上电
-// 标题栏
+    // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //获取偏好设置的编辑器
         SharedPreferences sp = getSharedPreferences("config", 0);
@@ -107,7 +107,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
         if (IntervalUtil.isFastClick_2()) {
-            GetFileName("KT50_V", ".bin");
+            GetFileName("KT50_V1.3_17V_", ".bin");//11000版本的bin要和之前的bin区分开
         }
         deleteRiZhi();
     }
@@ -254,8 +254,9 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     busHandler.sendMessage(busHandler.obtainMessage(1));
 
                     Thread.sleep(1000);
-                    if (firstCount == 2) {
+                    if (firstCount == 3) {
                         test();//检测设备是否正常
+//                        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
                     }
                     if (firstCount == 0) {
                         exit = true;

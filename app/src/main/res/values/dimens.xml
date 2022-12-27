@@ -39,7 +39,7 @@
     <dimen name="setenv_BT_Width">120dp</dimen>
 
     <dimen name="test_pg_Left">100dp</dimen>
-    <dimen name="test_pg_middle">80dp</dimen>
+    <dimen name="test_pg_middle">120dp</dimen>
 
 
     <dimen name="delaytime_pg_left">40dp</dimen>

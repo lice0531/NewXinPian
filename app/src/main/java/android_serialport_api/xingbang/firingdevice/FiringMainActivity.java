@@ -392,8 +392,9 @@ public class FiringMainActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
-                String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
+                String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
+                ll_firing_IC_4.setTextSize(20);
                 if (displayIc > 11000) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
@@ -531,6 +532,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_IC_5.setTextColor(Color.RED);
         ll_firing_IC_6.setTextColor(Color.RED);
         ll_firing_IC_7.setTextColor(Color.RED);
+        ll_firing_IC_4.setTextSize(15);
     }
 
     private void setIcView_Green() {
@@ -539,6 +541,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_IC_5.setTextColor(Color.GREEN);
         ll_firing_IC_6.setTextColor(Color.GREEN);
         ll_firing_IC_7.setTextColor(Color.GREEN);
+        ll_firing_IC_4.setTextSize(20);
     }
 
     private void setDialogTextColor(AlertDialog dialog, int red) {

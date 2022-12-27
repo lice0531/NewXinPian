@@ -14,7 +14,6 @@
     <color name="green">#00ff00</color>
     <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#60000000</color>
-    <color name="colorGrey">#333333</color>     // 用于重要文字，内容标题等。
     <color name="label_color">#5B5B5B</color>
 
     <color name="child_pg_bg">#ffffffff</color>
@@ -134,4 +133,19 @@
     <color name="color_zhuce1">#d9d6c3</color>
     <color name="color_zhuce2">#f2eada</color>
     <color name="color_zhuce3">#f6f5ec</color>
+
+    <!--  字体颜色-->
+    <color name="text_title">#1b1b1b</color>
+    <color name="text_sub">#9B9B9B</color>       // 用于次要文字，辅助文字，提示，注释等。
+    <color name="text_content">#818181</color>
+    <color name="text_hint">#c7c7c7</color>
+    <color name="text_black">#404040</color>
+
+    <!--  常用色  -->
+    <color name="colorOrange">#D85D27</color>   // 主色系，用于按钮，Tab bar，操作按钮，图标等主功能操作使用的色彩。
+    <color name="colorLevel">#F5A623</color>    // 主色系，主要用于按钮，区分有色图标未选中状态等操作所使用的色彩。
+    <color name="colorRed">#FF0015</color>      // 辅助色，小面积使用，主要用于信息提示，错误提醒，严重破坏或不可撤回等后果的操作/提示。
+    <color name="colorBlue">#0073FF</color>     // 辅助色，主要用于图标，区分有色图标等色彩。
+    <color name="colorGrey">#333333</color>     // 用于重要文字，内容标题等。
+    <color name="colorGreen">#31E738</color>    //
 </resources>

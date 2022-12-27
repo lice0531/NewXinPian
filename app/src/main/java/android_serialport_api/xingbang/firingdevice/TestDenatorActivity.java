@@ -474,7 +474,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     break;
                 }
                 if (busInfo != null) {//8秒后再显示电压电流
-                    String displayIcStr = "" + busInfo.getBusCurrentIa() + "μA";
+                    String displayIcStr = "" + (int)busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
                     //displayIc =
                     dangqian_ic = busInfo.getBusCurrentIa();
@@ -620,7 +620,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
+                        initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框

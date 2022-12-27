@@ -79,7 +79,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
-                android:text="0.0μA"
+                android:text="0μA"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -400,7 +400,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
-                android:text="0.0μA"
+                android:text="0μA"
                 style="@style/alltextstyle"/>
 
             <TextView
@@ -659,7 +659,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="0.0μA"
+                android:text="0μA"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -769,7 +769,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
-                android:text="0.0μA"
+                android:text="0μA"
                 style="@style/alltextstyle" />
 
             <TextView
