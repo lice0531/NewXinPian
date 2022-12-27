@@ -183,7 +183,7 @@ public class QueryHisDetail extends BaseActivity {
                             blastdate = fireDate;
                         }
                         Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
-                        if (pro_coordxy.length() < 2 && jd != null) {
+                        if (pro_coordxy.length() < 2 && jd == null) {
                             show_Toast("经纬度为空，不能执行上传");
                             return;
                         }
