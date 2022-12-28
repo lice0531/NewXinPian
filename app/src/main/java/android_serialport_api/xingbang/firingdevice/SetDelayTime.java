@@ -256,7 +256,7 @@ public class SetDelayTime extends BaseActivity {
         startNoTxt.setText("1");
 
         holeDeAmoTxt.setText("1");
-        startDelayTxt.setText("10");
+        startDelayTxt.setText("0");
         holeinDelayTxt.setText("0");
         holeBetweentTxt.setText("10");
 

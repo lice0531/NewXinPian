@@ -107,7 +107,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
         if (IntervalUtil.isFastClick_2()) {
-            GetFileName("KT50_V1.3_17V_", ".bin");//11000版本的bin要和之前的bin区分开
+            GetFileName("NM_KT50_V1.3_17V_", ".bin");//11000版本的bin要和之前的bin区分开
         }
         deleteRiZhi();
     }
