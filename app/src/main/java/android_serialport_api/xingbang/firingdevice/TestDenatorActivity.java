@@ -609,25 +609,25 @@ public class TestDenatorActivity extends SerialPortActivity {
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * 15 + 100) {//小于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-//                    if (chongfu) {
+                    if (chongfu) {
                         initDialog_msg("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后再进行检测!");//弹出框
-//                    }
-//                    else {
-//                        initDialog_zanting2("请查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
-//                    }
+                    }
+                    else {
+                        initDialog("请查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
+                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 }
-//                else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
-//                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-//                    sendCmd(reCmd);
-//                    if (chongfu) {
-//                        initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
-//                    }
-//                    else {
-//                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
-//                    }
-//                    Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
-//                }
+                else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
+                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+                    sendCmd(reCmd);
+                    if (chongfu) {
+                        initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
+                    }
+                    else {
+                        initDialog("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+                    }
+                    Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
+                }
                 else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 15 * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
                     stopXunHuan();//检测完成
@@ -1139,13 +1139,13 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         mOffTime = new Timer(true);
         TimerTask tt = new TimerTask() {
-            private int countTime = 5;
+            private int countTime = 5;//倒计时时间
 
             public void run() {
                 if (countTime > 0) {
                     countTime--;
                 }
-                if (countTime == 118) {
+                if (countTime == 4) {//在第几秒发断电指令
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
                 }
