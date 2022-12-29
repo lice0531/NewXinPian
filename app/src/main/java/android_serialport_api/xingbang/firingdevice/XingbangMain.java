@@ -214,7 +214,7 @@ public class XingbangMain extends BaseActivity {
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
-        Beta.checkUpgrade();
+//        Beta.checkUpgrade();
     }
 
     /**
