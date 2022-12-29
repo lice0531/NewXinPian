@@ -122,7 +122,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private String mRegion;     // 区域
 
     //初始化
-    private void initParam() {
+    //off()方法 true 获取全部雷管  flase 获取错误雷管
+    private void initParam(boolean all_lg) {
         initCloseCmdReFlag = 0;
         revCloseCmdReFlag = 0;
         revOpenCmdReFlag = 0;//打开电压指令
@@ -142,7 +143,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         reThirdWriteCount = 0;//检测返回数量
         errtotal = 0;//错误数量
         totalerrorNum = 0;//错误数量总数
-//        denatorCount = 0;
+        if(all_lg){
+            denatorCount = 0;
+        }
     }
 
     @Override
@@ -171,7 +174,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         blastQueue = new LinkedList<>();
         errorList = new LinkedList<>();
         getUserMessage();//放在前面
-        initParam();//清空所有数据,要放在读取数据的方法之前
+        initParam(false);//清空所有数据,要放在读取数据的方法之前
         initView();
         loadMoreData();//读取数据
         initHandler();
@@ -442,7 +445,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     private void endTest() {
         closeThread();
-        initParam();
+        initParam(false);
     }
 
 
@@ -592,7 +595,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         if (!chongfu) {
-                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
+                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",true);//弹出框
                         } else {
                             byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                             sendCmd(reCmd);
@@ -665,7 +668,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
                     }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4800) {//小于4800u ，全错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
@@ -673,7 +676,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
                     }
 
                     Log.e(TAG, "小于4800u ，全错: stage=" + stage);
@@ -684,12 +687,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {//李斌要修改之前的
                         initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。",false);//弹出框
                     }
 //                    if (chongfu) {
 //                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
 //                    } else {
-//                        initDialog("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
+//                        initDialog("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!",false);//弹出框
 //                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
@@ -698,7 +701,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。");//弹出框
                     } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。",false);//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else if (errtotal > 0 &&busInfo!=null&& busInfo.getBusCurrentIa() > (denatorCount * 12 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 12 * 1.1)) {
@@ -1141,11 +1144,17 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     /**
      * 倒计结束后,重新上电开始检测
+     * //off()方法 true 获取全部雷管  flase 获取错误雷管
      */
-    private void off() {
-        initParam();//先重置数据
+    private void off(boolean all_lg) {
+        initParam(all_lg);//先重置数据
         chongfu = true;//已经检测了一次
-        loadMoreData_err();
+        if(all_lg){
+            loadMoreData();
+        }else {
+            loadMoreData_err();
+        }
+
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
         byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
         sendCmd(powerCmd);
@@ -1168,8 +1177,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
         sendCmd(initBuf2);
     }
-
-    private void initDialog(String tip) {
+    //off()方法 true 获取全部雷管  flase 获取错误雷管
+    private void initDialog(String tip,boolean all_lg) {
 
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
@@ -1180,12 +1189,12 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNegativeButton("退出", (dialog, id) -> {
-                    dialog.cancel();
-                    mOffTime.cancel();
-                    closeThread();
-                    closeForm();
-                })
+//                .setNegativeButton("退出", (dialog, id) -> {
+//                    dialog.cancel();
+//                    mOffTime.cancel();
+//                    closeThread();
+//                    closeForm();
+//                })
 
                 .create();
         mDialog.show();
@@ -1200,7 +1209,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 if (mDialog != null) {
                     mDialog.dismiss();
                 }
-                off();//关闭后的操作
+                off(all_lg);//关闭后的操作
                 mOffTime.cancel();
             }
             return false;
@@ -1227,14 +1236,14 @@ public class TestDenatorActivity extends SerialPortActivity {
         };
         mOffTime.schedule(tt, 1000, 1000);
     }
-
+    //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initDialog_tip(String tip) {
         if (!TestDenatorActivity.this.isFinishing()) {
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
                     .setNeutralButton("继续", (dialog1, which) -> {
-                        off();//重新检测
+                        off(true);//重新检测
                         dialog1.dismiss();
                     }).setNegativeButton("退出", (dialog12, which) -> {
                         stopXunHuan();
@@ -1250,7 +1259,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
                     .setNeutralButton("继续", (dialog1, which) -> {
-                        off();//重新检测
+                        off(true);//重新检测
                         dialog1.dismiss();
                     }).setNegativeButton("退出", (dialog12, which) -> {
                         stopXunHuan();
@@ -1282,7 +1291,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             builder.setView(getlistview);
             builder.setPositiveButton("继续", (dialog, which) -> {
                 dialogOFF(dialog);
-                off();//重新检测
+                off(true);//重新检测
                 dialog.dismiss();
 
             });

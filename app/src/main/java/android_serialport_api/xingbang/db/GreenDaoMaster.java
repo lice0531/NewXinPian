@@ -344,8 +344,8 @@ public class GreenDaoMaster {
     //丹灵下载后更新雷管芯片码
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
         Log.e("插入数据", "lgBean: " );
-        //9D092C 2B04 四川之前的密码
-        //94242214050
+        //9D092C 2B04 四川之前的10位密码
+        //942422 1405 0 内蒙11位
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
             String uid = "";
             String yscs = "";
