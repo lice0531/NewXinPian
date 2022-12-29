@@ -139,7 +139,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         reThirdWriteCount = 0;//检测返回数量
         errtotal = 0;//错误数量
         totalerrorNum = 0;//错误数量总数
-        denatorCount = 0;
+//        denatorCount = 0;
     }
 
     @Override
@@ -456,6 +456,37 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     }
 
+    /**
+     * 加载错误雷管数据
+     */
+    private void loadMoreData_err() {
+        blastQueue.clear();
+        errorList.clear();
+
+//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        //int count=0;
+        for (DenatorBaseinfo a : denatorBaseinfos) {
+            VoBlastModel item = new VoBlastModel();
+            item.setBlastserial(a.getBlastserial());
+            item.setDelay((short) a.getDelay());
+            item.setShellBlastNo(a.getShellBlastNo());
+            item.setDenatorId(a.getDenatorId());
+            item.setDenatorIdSup(a.getDenatorIdSup());
+            item.setZhu_yscs(a.getZhu_yscs());
+            item.setCong_yscs(a.getCong_yscs());
+            if (a.getStatusCode().equals("02")) {
+                list_lg.add(item);
+                blastQueue.offer(item);
+            }
+        }
+
+//        denatorCount = blastQueue.size();
+        Log.e("错误加雷管队列", "denatorCount: " + denatorCount);
+        Log.e("错误加雷管队列", "blastQueue.size(): " + blastQueue.size());
+//        tv_dianliu.setText(denatorCount * 15 + "μA");//参考电流
+
+    }
 
     public void execStage(Message msg) {
         switch (stage) {
@@ -505,9 +536,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextSize(15);
                     } else if (displayIc > (denatorCount * 30) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
+                        Log.e(TAG, "denatorCount: "+denatorCount);
                         displayIcStr = displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
-                        ll_firing_IC_4.setTextSize(15);
+                        ll_firing_IC_4.setTextSize(18);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < 4 + denatorCount * 9 && firstCount < Preparation_time * 0.2) {//5
 //                        displayIcStr = displayIcStr + "(疑似断路)";
@@ -613,7 +645,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         initDialog_msg("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后再进行检测!");//弹出框
                     }
                     else {
-                        initDialog("请查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
+                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 }
@@ -624,7 +656,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
                     }
                     else {
-                        initDialog("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 }
@@ -1072,7 +1104,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void off() {
         initParam();//先重置数据
         chongfu = true;//已经检测了一次
-        loadMoreData();
+        loadMoreData_err();
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
         byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
         sendCmd(powerCmd);
