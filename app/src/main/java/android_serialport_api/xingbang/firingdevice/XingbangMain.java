@@ -255,10 +255,10 @@ public class XingbangMain extends BaseActivity {
         Utils.writeRecord("---进入主页面---");
 //        Beta.checkUpgrade();
 
-//        initFTP();              // 初始化FTP
-//        if (IntervalUtil.isFastClick_2()) {//防止连点
-//            GetFileName("SC_KT50_Second_Version_16", ".apk");//17V是电流11000,16V是改变前的
-//        }
+        initFTP();              // 初始化FTP
+        if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
+            GetFileName("KT50_Second_Version_", ".apk");//17V是电流11000,16V是改变前的
+        }
     }
     /**
      * 初始化FTP
