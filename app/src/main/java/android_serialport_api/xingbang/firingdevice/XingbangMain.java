@@ -257,7 +257,7 @@ public class XingbangMain extends BaseActivity {
 
 //        initFTP();              // 初始化FTP
 //        if (IntervalUtil.isFastClick_2()) {//防止连点
-//            GetFileName("KT50_Second_Version_", ".apk");//17V是电流11000,16V是改变前的
+//            GetFileName("SC_KT50_Second_Version_16", ".apk");//17V是电流11000,16V是改变前的
 //        }
     }
     /**
@@ -1184,7 +1184,7 @@ public class XingbangMain extends BaseActivity {
 
     private void GetFileName(String name, String type) {
 
-        Log.e("是否有网", NetUtils.haveNetWork(this) + "");
+//        Log.e("是否有网", NetUtils.haveNetWork(this) + "");
         // 网络判断
         if (!NetUtils.haveNetWork(this)) {
             return;
