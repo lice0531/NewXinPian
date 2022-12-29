@@ -1211,6 +1211,9 @@ public class XingbangMain extends BaseActivity {
                     if (fileName.contains(name)) {
                         Log.e("下载目录", fileName);//KT50_Second_Version_26.apk
                         Log.e("下载目录",  fileName.substring(fileName.indexOf("_"), fileName.indexOf(".apk")));
+
+
+
                         // 如果是Bin文件
                         if (type.equals(".apk")) {
 
@@ -1226,21 +1229,6 @@ public class XingbangMain extends BaseActivity {
                                 version_cloud = ftpFileName;
                                 Log.e("Download_Bin_1", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
                             }
-                            // 如果 这是第n个符合条件文件
-//                            else {
-//
-//                                // 例如: permit_20210131.bin 比对 permit_20210319.bin
-//                                Log.e("Download_Bin_2", "time_0: " + time_0);
-//                                Log.e("Download_Bin_2", "time_1: " + time_1);
-//
-//                                if (TimeUtils.isDate2Bigger(time_0, time_1)) {
-//                                    Log.e("Download_Bin_2", "boolean: " + TimeUtils.isDate2Bigger(time_0, time_1));
-//                                    ftpFileName = fileName;
-//                                    mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
-//                                    mDownLoadFileSize = fileSize;
-//                                    Log.e("Download_Bin_2", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
-//                                }
-//                            }
                         }
                     }
                 }
