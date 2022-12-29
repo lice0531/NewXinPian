@@ -142,7 +142,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         reThirdWriteCount = 0;//检测返回数量
         errtotal = 0;//错误数量
         totalerrorNum = 0;//错误数量总数
-        denatorCount = 0;
+//        denatorCount = 0;
     }
 
     @Override
@@ -508,7 +508,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             }
         }
 
-        denatorCount = blastQueue.size();
+//        denatorCount = blastQueue.size();
         Log.e("错误加雷管队列", "denatorCount: " + denatorCount);
 //        tv_dianliu.setText(denatorCount * 12 + "μA");//参考电流
 
@@ -684,7 +684,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {//李斌要修改之前的
                         initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
                     } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。");//弹出框
                     }
 //                    if (chongfu) {
 //                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
@@ -698,7 +698,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (chongfu) {
                         initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。");//弹出框
                     } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。");//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else if (errtotal > 0 &&busInfo!=null&& busInfo.getBusCurrentIa() > (denatorCount * 12 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 12 * 1.1)) {

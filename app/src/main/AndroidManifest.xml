@@ -303,6 +303,11 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="级联设置"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- BootReceiver是上面建的广播类 -->
+        <!-- 下载apk页面 -->
+        <activity
+            android:name=".firingdevice.DownLoadActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

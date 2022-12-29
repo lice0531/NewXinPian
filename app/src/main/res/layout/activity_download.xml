@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <!--  上布局 起爆器下载  -->
+        <LinearLayout
+            android:id="@+id/ll_download_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="选择起爆器版本:"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="4dp"
+                android:layout_weight="1">
+
+                <org.angmarch.views.NiceSpinner
+                    android:id="@+id/nice_spinner_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:autoSizeTextType="uniform"
+                    app:backgroundSelector="@color/text_hint"
+                    app:popupTextAlignment="start"
+                    app:textTint="@color/colorOrange" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btn_download_0"
+                    style="@style/btn_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="下载" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <!--  下布局 按钮布局  -->
+        <LinearLayout
+            android:id="@+id/ll_download_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="下载常用工具:"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_download_1"
+                    style="@style/btn_style"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="下载 腾讯QQ" />
+
+                <Button
+                    android:id="@+id/btn_download_2"
+                    style="@style/btn_style"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="下载 截屏工具" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_download_3"
+                    style="@style/btn_style"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="读取手机信息" />
+
+                <Button
+                    android:id="@+id/btn_download_4"
+                    style="@style/btn_style"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="无" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--  信息布局  -->
+        <RelativeLayout
+            android:id="@+id/rl_download_center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_download_bottom"
+            android:layout_below="@id/ll_download_top"
+            android:padding="10dp">
+
+            <!-- \n\n如需常用工具\n直接点击 底部按钮 开始下载 -->
+            <TextView
+                android:id="@+id/tv_download_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="请先选择 起爆器程序版本后\n点击 下载按钮 开始下载"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

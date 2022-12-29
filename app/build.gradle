@@ -109,6 +109,8 @@ dependencies {
     debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
     releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
+    // Spinner(下拉列表)
+    implementation 'com.github.arcadefire:nice-spinner:1.4.4'
 
     //androidx项目(UI框架)
 //    implementation 'com.github.xuexiangjys:XUI:1.1.8'

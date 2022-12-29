@@ -858,7 +858,7 @@ public class QueryHisDetail extends BaseActivity {
             Log.e("上传信息-日志", log);
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.15D"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", MmkvUtils.getcode("rj_version", "KT50_3.25_PT_221130"));//软件版本
+            object.put("rj_version", MmkvUtils.getcode("rj_version", "KT50_3.25_PT_221229"));//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {
