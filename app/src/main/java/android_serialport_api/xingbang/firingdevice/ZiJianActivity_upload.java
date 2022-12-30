@@ -110,6 +110,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
         if (IntervalUtil.isFastClick_2()) {
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
+            //UpgradeActivity里面的对应值也要改
             GetFileName(CJ+"KT50_V1.3_16V", ".bin");//17V是电流11000,16V是改变前的
         }
         deleteRiZhi();
@@ -285,12 +286,10 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     Log.e("自检", "version: " + version);
                     Log.e("自检", "version_cloud: " + version_cloud);
 
-                    if (version_cloud != null&&version_cloud.substring(0,16).equals(version.substring(0,16)) && !version.contains(version_cloud)) {
+                    if (version_cloud != null&&version_cloud.substring(0,16).equals(version.substring(0,16)) &&!version_cloud .contains(version)) {
                         Log.e("自检", "对比version_cloud.substring(0,16).equals(version.substring(0,16)): " + version_cloud.substring(0,16).equals(version.substring(0,16)));
                         ziJianThread.exit = true;
                         createDialog();
-
-
                     }
                     break;
             }
@@ -399,7 +398,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", "更新");
+            intent.putExtra("dataSend", "四川更新1");
             startActivity(intent);
             dialog.dismiss();
         });
