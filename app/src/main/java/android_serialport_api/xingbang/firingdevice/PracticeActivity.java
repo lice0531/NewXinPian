@@ -211,10 +211,10 @@ public class PracticeActivity extends BaseActivity {
                 float dianliu = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
                 String displayIcStr = dianliu + "μA";// 保留两位小数
 
-                if (dianliu > 4800) {
+                if (dianliu > 4750) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     tvCeshiDianliu.setTextColor(Color.RED);
-                } else if (dianliu < 4800 && dianliu > denatorCount * 24) {
+                } else if (dianliu < 4750 && dianliu > denatorCount * 24) {
                     displayIcStr = displayIcStr + "(电流过大)";
                     tvCeshiDianliu.setTextColor(Color.RED);
                 } else if (dianliu < 8) {

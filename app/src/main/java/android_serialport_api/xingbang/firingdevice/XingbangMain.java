@@ -259,7 +259,10 @@ public class XingbangMain extends BaseActivity {
 
         initFTP();              // 初始化FTP
         if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
-            GetFileName("SC_KT50_Second_Version_16", ".apk");//17V是电流11000,16V是改变前的
+            //16是改变前的
+            //17是电流11000,电压17V
+            //15是电流11000,电压16V
+            GetFileName("SC_KT50_Second_Version_16", ".apk");
         }
     }
     /**
@@ -1038,7 +1041,7 @@ public class XingbangMain extends BaseActivity {
 
     private TextView mOffTextView;
     private Handler mOffHandler;
-    private java.util.Timer mOffTime;
+    private Timer mOffTime;
     private android.app.Dialog mDialog;
 
     private void initDialog_fangdian(String tip, int daojishi, String c) {
@@ -1209,7 +1212,7 @@ public class XingbangMain extends BaseActivity {
                         int v= Integer.parseInt(fileName.substring(fileName.length()-6, fileName.indexOf(".apk")));
                         Log.e("下载目录3",  v+"");
                         if(v>pi.versionCode){//网络版本大于本机版本就升级
-                            createDialog_download();
+                            createDialog_download(name);
                         }
 
                     }
@@ -1223,7 +1226,7 @@ public class XingbangMain extends BaseActivity {
     /***
      * 建立对话框
      */
-    public void createDialog_download() {
+    public void createDialog_download(String name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("升级提醒");//"说明"
         builder.setMessage("检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
@@ -1231,7 +1234,7 @@ public class XingbangMain extends BaseActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, DownLoadActivity.class);
-            intent.putExtra("dataSend", "四川更新1");
+            intent.putExtra("dataSend", name);
 //            intent.putExtra("dataSend", "四川更新2");//11000版本升级
             startActivity(intent);
             dialog.dismiss();
