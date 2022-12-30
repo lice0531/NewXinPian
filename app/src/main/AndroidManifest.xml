@@ -280,7 +280,8 @@
             android:name=".firingdevice.UpLoadLogActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_set_page_time"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- 百度地图设置 -->
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!-- 百度地图设置 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -306,7 +307,9 @@
         <!-- 下载apk页面 -->
         <activity
             android:name=".firingdevice.DownLoadActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:label="APP升级"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"

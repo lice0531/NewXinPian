@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 import org.angmarch.views.NiceSpinner;
@@ -97,6 +99,16 @@ public class DownLoadActivity extends BaseActivity {
         initData();
         initView();
         initHandler();          // 初始化Handler
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String shengji = (String) bundle.get("dataSend");
+        Log.e("升级", "传递-dataSend: "+ shengji);
+        if(shengji.equals("四川更新1")){//下载项目
+//            if (IntervalUtil.isFastClick_2()) {
+                Download_APK("SC_KT50_Second_Version_16");
+//            }
+        }
     }
 
     /**

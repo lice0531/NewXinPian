@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
@@ -257,7 +259,7 @@ public class XingbangMain extends BaseActivity {
 
         initFTP();              // 初始化FTP
         if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
-            GetFileName("KT50_Second_Version_", ".apk");//17V是电流11000,16V是改变前的
+            GetFileName("SC_KT50_Second_Version_16", ".apk");//17V是电流11000,16V是改变前的
         }
     }
     /**
@@ -1183,20 +1185,11 @@ public class XingbangMain extends BaseActivity {
     }
 
     private void GetFileName(String name, String type) {
-
-//        Log.e("是否有网", NetUtils.haveNetWork(this) + "");
         // 网络判断
         if (!NetUtils.haveNetWork(this)) {
             return;
         }
-
         try {
-            String ftpFileName = null;  // 所需文件在 服务器文件名称
-            String version_ftp;         // 所需文件在 服务器的版本号
-//            mPath_Local = "";           // 所需文件在 本地文件路径
-            String version_self;        // 当前使用 软件版本(apk升级参数)
-            String time_0 = null;       // bin文件日期最新日期
-
             // 如果登录成功
             if (mFTP.openConnect()) {
                 // 获取服务器文件列表
@@ -1206,35 +1199,50 @@ public class XingbangMain extends BaseActivity {
                 // 获取本地APK文件列表
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {
                     String fileName = mList_FtpFileName.get(i).getName();
-                    long fileSize = mList_FtpFileName.get(i).getSize();
-
+                    //name  ==  SC_KT50_Second_Version_16
+                    //fileName =SC_KT50_Second_Version_16_32
                     if (fileName.contains(name)) {
-                        Log.e("下载目录", fileName);//KT50_Second_Version_26.apk
-                        Log.e("下载目录",  fileName.substring(fileName.indexOf("_"), fileName.indexOf(".apk")));
-
-
-
-                        // 如果是Bin文件
-                        if (type.equals(".apk")) {
-
-                            // 截取bin文件日期
-                            String time_1 = fileName.substring(fileName.indexOf("_") + 1, fileName.indexOf(".bin"));
-
-                            // 如果 这是第一个符合条件文件
-                            if (time_0 == null) {
-                                ftpFileName = fileName;
-                                time_0 = time_1;
-                                mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
-                                mDownLoadFileSize = fileSize;
-                                version_cloud = ftpFileName;
-                                Log.e("Download_Bin_1", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
-                            }
+                        Log.e("下载目录1", fileName);//KT50_Second_Version_26.apk
+                        Log.e(TAG, "name: "+name);
+                        PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
+                        Log.e("下载目录2", pi.versionCode+"");//KT50_Second_Version_26.apk
+                        int v= Integer.parseInt(fileName.substring(fileName.length()-6, fileName.indexOf(".apk")));
+                        Log.e("下载目录3",  v+"");
+                        if(v>pi.versionCode){//网络版本大于本机版本就升级
+                            createDialog_download();
                         }
+
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /***
+     * 建立对话框
+     */
+    public void createDialog_download() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("升级提醒");//"说明"
+        builder.setMessage("检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
+        builder.setPositiveButton("进行更新", (dialog, which) -> {
+//            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
+            finish();
+            Intent intent = new Intent(this, DownLoadActivity.class);
+            intent.putExtra("dataSend", "四川更新1");
+//            intent.putExtra("dataSend", "四川更新2");//11000版本升级
+            startActivity(intent);
+            dialog.dismiss();
+        });
+//        builder.setNeutralButton("退出", (dialog, which) -> {
+//            dialog.dismiss();
+//            finish();
+//        });
+        builder.setNegativeButton("不更新", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.create().show();
     }
 }

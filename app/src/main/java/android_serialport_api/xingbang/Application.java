@@ -127,7 +127,7 @@ public class Application extends MultiDexApplication {
         }
 
 
-        Beta.autoCheckUpgrade = false;
+//        Beta.autoCheckUpgrade = false;
         Bugly.init(this, "2f6814070f", false);//四川id(腾讯错误日志)//原来的id e43df75202
 
         String dir = Environment.getExternalStorageDirectory() + File.separator + "Xingbang" + "/mmkv";

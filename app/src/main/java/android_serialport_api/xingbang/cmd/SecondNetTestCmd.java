@@ -15,7 +15,7 @@ public class SecondNetTestCmd {
 		String command = addr + DefCommand.CMD_2_NETTEST_1+"00";
 		return DefCommand.getCommadBytes(command);
 	}
-	public static byte[] send21(String addr,String qiaosi,String version){
+	public static byte[] send20(String addr,String qiaosi,String version){
 
 		String command = addr + DefCommand.CMD_2_NETTEST_1+"01"+version+qiaosi;
 		return DefCommand.getCommadBytes(command);

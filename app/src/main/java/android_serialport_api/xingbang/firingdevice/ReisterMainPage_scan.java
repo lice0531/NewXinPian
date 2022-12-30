@@ -347,13 +347,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     //5620302H00001A62F400FFF20AB603
                     //5420302H00001A6F4FFF20AB603
                     //Y5620413H00009A630FD74D87604
-                    barCode = data.substring(1, 14);
-                    String a = data.substring(14, 24);
-                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                    Log.e("扫码", "barCode: " + barCode);
-                    Log.e("扫码", "denatorId: " + denatorId);
-                    Log.e("扫码", "data.substring(24): " + data.substring(24));
-                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                    //M5621132A9999900F491EF8B0922
+                    if(data.charAt(0) == 'Y'){
+                        barCode = data.substring(1, 14);
+                        String a = data.substring(14, 24);
+                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        Log.e("扫码", "barCode: " + barCode);
+                        Log.e("扫码", "denatorId: " + denatorId);
+                        Log.e("扫码", "data.substring(24): " + data.substring(24));
+                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                    }
+
                 } else {
                     barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                     insertSingleDenator(barCode);

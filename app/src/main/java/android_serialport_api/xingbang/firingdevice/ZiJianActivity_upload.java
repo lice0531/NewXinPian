@@ -82,7 +82,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
-
+    public String CJ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,8 +106,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
+
+        CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
         if (IntervalUtil.isFastClick_2()) {
-            GetFileName("KT50_V1.3_17V", ".bin");//17V是电流11000,16V是改变前的
+            //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
+            GetFileName(CJ+"KT50_V1.3_16V", ".bin");//17V是电流11000,16V是改变前的
         }
         deleteRiZhi();
     }
@@ -136,9 +139,6 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
         try {
             String ftpFileName = null;  // 所需文件在 服务器文件名称
-            String version_ftp;         // 所需文件在 服务器的版本号
-//            mPath_Local = "";           // 所需文件在 本地文件路径
-            String version_self;        // 当前使用 软件版本(apk升级参数)
             String time_0 = null;       // bin文件日期最新日期
 
             // 如果登录成功
@@ -146,7 +146,6 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                 // 获取服务器文件列表
                 mList_FtpFileName.clear();
                 mList_FtpFileName = mFTP.listFiles("/");
-//                Log.e("下载目录", mList_FtpFileName.toString());
 
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {
                     String fileName = mList_FtpFileName.get(i).getName();
@@ -169,21 +168,6 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                                 version_cloud = ftpFileName;
                                 Log.e("Download_Bin_1", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
                             }
-                            // 如果 这是第n个符合条件文件
-//                            else {
-//
-//                                // 例如: permit_20210131.bin 比对 permit_20210319.bin
-//                                Log.e("Download_Bin_2", "time_0: " + time_0);
-//                                Log.e("Download_Bin_2", "time_1: " + time_1);
-//
-//                                if (TimeUtils.isDate2Bigger(time_0, time_1)) {
-//                                    Log.e("Download_Bin_2", "boolean: " + TimeUtils.isDate2Bigger(time_0, time_1));
-//                                    ftpFileName = fileName;
-//                                    mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
-//                                    mDownLoadFileSize = fileSize;
-//                                    Log.e("Download_Bin_2", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
-//                                }
-//                            }
                         }
                     }
                 }
@@ -295,10 +279,14 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     tvZjNum.setText(firstCount + "s");
                     break;
                 case 2:
-
+                    //旧version: KT50_V1.3_16V_V1.3.15D
+                    //新version: SC_KT50_V1.3_16V_V1.3.15D
+                    //version_cloud: SC_KT50_V1.3_16V_V1.3.16B.bin
                     Log.e("自检", "version: " + version);
                     Log.e("自检", "version_cloud: " + version_cloud);
-                    if (version_cloud != null && !version_cloud.contains(version)) {
+
+                    if (version_cloud != null&&version_cloud.substring(0,16).equals(version.substring(0,16)) && !version.contains(version_cloud)) {
+                        Log.e("自检", "对比version_cloud.substring(0,16).equals(version.substring(0,16)): " + version_cloud.substring(0,16).equals(version.substring(0,16)));
                         ziJianThread.exit = true;
                         createDialog();
 
@@ -391,8 +379,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                 output.append((char) Integer.parseInt(str, 16));
             }
             Log.e("软件版本返回的命令", "output: " + output);
-            version = output.toString();
-            MmkvUtils.savecode("yj_version", output.toString());
+            version = CJ+output;
+            MmkvUtils.savecode("yj_version",version);
             Message msg = new Message();
             msg.what = 2;
             msg.obj = output.toString();

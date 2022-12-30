@@ -826,8 +826,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //进入测试模式
-                                byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00");//20
-                                sendCmd(powerCmd);
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20
                             }
                             if (firstCount == 0) {
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
