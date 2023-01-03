@@ -534,7 +534,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     break;
                 }
                 if (busInfo != null) {//8秒后再显示电压电流
-                    String displayIcStr = "" + busInfo.getBusCurrentIa() + "μA";
+                    String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
                     //displayIc =
                     dangqian_ic = busInfo.getBusCurrentIa();

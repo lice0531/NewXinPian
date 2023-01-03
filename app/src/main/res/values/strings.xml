@@ -253,7 +253,7 @@
     <string name="text_del_ok">删除成功</string>
 
     <string name="text_firing_tip1">测试准备阶段</string>
-    <string name="text_firing_num">待测雷管数量:</string>
+    <string name="text_firing_num">待测数量:</string>
     <string name="text_firing_errnum">错误数量 :</string>
     <string name="text_firing_tip2">测试准备阶段</string>
     <string name="text_firing_tip3">是否进入充电模式？</string>

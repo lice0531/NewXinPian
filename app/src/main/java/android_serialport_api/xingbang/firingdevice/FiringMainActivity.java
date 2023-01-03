@@ -391,7 +391,7 @@ public class FiringMainActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
-                String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
+                String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 4750) {
                     displayIcStr = displayIcStr + "(疑似短路)";
@@ -1563,9 +1563,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (firstCmdReFlag == 0 && firstWaitCount < 1) {
                                 exit = true;
                             }
-                            if (firstWaitCount > 1) {
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
-                            }
+//                            if (firstWaitCount > 1) {
+//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
+//                            }
 
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
@@ -1581,7 +1581,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             } else {//
                                 //得到电流电压信息
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101获取电源状态指令
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                             }
 
                             Thread.sleep(1000);
@@ -1589,7 +1589,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 3://写入延时时间，检测结果看雷管是否正常
+
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
+                                Log.e("第4阶段-increase", "thirdWriteCount:"+thirdWriteCount);
 //                                Thread.sleep(50);
                                 thirdStartTime = 0;
                                 writeDenator = null;
