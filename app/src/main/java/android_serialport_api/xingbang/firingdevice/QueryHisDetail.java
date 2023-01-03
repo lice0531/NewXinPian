@@ -58,6 +58,7 @@ import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
+import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -72,6 +73,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -160,6 +162,10 @@ public class QueryHisDetail extends BaseActivity {
             public void onButtonClicked(View v, int position) {
                 switch (v.getId()) {
                     case R.id.bt_upload://上传按钮
+                        if (!NetUtils.haveNetWork(getContext())) {
+                            show_Toast("请检查网络!");
+                            return;
+                        }
                         int pos = (Integer) v.getTag(R.id.bt_upload);//位置
                         String blastdate = list_savedate.get(pos).getBlastdate();//日期
                         String htbh = list_savedate.get(pos).getProjectNo();//合同编号
