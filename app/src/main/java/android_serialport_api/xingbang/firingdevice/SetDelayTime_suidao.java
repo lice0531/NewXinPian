@@ -1230,7 +1230,7 @@ public class SetDelayTime_suidao extends BaseActivity {
     }
 
     private void setData() {
-        setDelayTimeStartDelaytime1.setText(MmkvUtils.decodeString("setDelayTimeStartDelaytime1", "10"));//开始时间
+        setDelayTimeStartDelaytime1.setText(MmkvUtils.decodeString("setDelayTimeStartDelaytime1", "0"));//开始时间
 
         etDuanDelaytime1.setText(MmkvUtils.decodeString("etDuanDelaytime1", "0"));//间隔时间
         etDuanTotal1.setText(MmkvUtils.decodeString("etDuanTotal1", "0"));//段中雷管数

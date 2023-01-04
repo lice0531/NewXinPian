@@ -93,7 +93,7 @@
                     android:maxLength="6"
                     android:numeric="integer"
                     android:padding="5dp"
-                    android:text="10"
+                    android:text="0"
                     android:textColor="@color/rangle_fc_base"
                     android:textSize="@dimen/childPageEditFontSize" />
 

@@ -537,6 +537,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String yscs = data.substring(22, 26);
                     String version = data.substring(26, 27);
                     String duan = data.substring(27, 28);
+
                     insertSingleDenator_2(barCode, denatorId, yscs,version,duan);//同时注册管壳码和芯片码
                 } else {
                     barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
@@ -645,6 +646,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("找不到对应的生产数据,请先导入生产数据");
             } else if (msg.what == 11) {
                 show_Toast("输入的日期格式不对");
+            }else if (msg.what == 12) {
+                show_Toast("当前雷管为煤许产品,注册失败");
             } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
                 SoundPlayUtils.play(4);
@@ -1754,6 +1757,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     private int insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
         if (shellNo.length() != 13) {
+            return -1;
+        }
+        if(!duan_scan.equals("0")){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
         if (et_startDelay.getText().length()==0) {
