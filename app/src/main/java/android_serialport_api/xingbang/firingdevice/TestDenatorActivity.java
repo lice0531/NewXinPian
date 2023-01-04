@@ -199,8 +199,6 @@ public class TestDenatorActivity extends SerialPortActivity {
         // getDenatorType();
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
-        Log.e(TAG, "stage: " + stage);
-
         sendOpenThread = new SendOpenPower();
         sendOpenThread.start();
 
@@ -209,7 +207,6 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void initHandler() {
         //接受消息之后更新imageview视图
         mHandler_1 = new Handler(msg -> {
-            Log.e(TAG, "stage: " + stage);
             execStage(msg);
             return false;
         });
@@ -591,7 +588,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于4800
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 4750 && firstCount < Preparation_time * 0.5) {
+                    if (displayIc > 4750 && firstCount == 0) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
 //                        if (!chongfu) {
@@ -872,8 +869,6 @@ public class TestDenatorActivity extends SerialPortActivity {
                             break;
 
                         case 3://写入延时时间，检测结果看雷管是否正常
-                            Log.e(TAG, "reThirdWriteCount: "+reThirdWriteCount );
-                            Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
                             if (reThirdWriteCount == thirdWriteCount) {
                                 thirdStartTime = 0;
                                 writeDenator = null;
