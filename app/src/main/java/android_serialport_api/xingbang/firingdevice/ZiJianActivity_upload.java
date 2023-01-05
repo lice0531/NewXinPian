@@ -82,7 +82,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
-
+    public String CJ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,8 +106,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
+        CJ="NM_";//SC-四川 NM-内蒙(不同的版本需要修改)
         if (IntervalUtil.isFastClick_2()) {
-            GetFileName("NM_KT50_V1.3_17V_", ".bin");//11000版本的bin要和之前的bin区分开
+            //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
+            //UpgradeActivity里面的对应值也要改
+            GetFileName(CJ+"KT50_V1.3_16V", ".bin");//17V是电流11000,16V是改变前的
         }
         deleteRiZhi();
     }
@@ -402,7 +405,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                 output.append((char) Integer.parseInt(str, 16));
             }
             Log.e("软件版本返回的命令", "output: " + output);
-            version = output.toString();
+            version = CJ+output;
             MmkvUtils.savecode("yj_version", output.toString());
             Message msg = new Message();
             msg.what = 2;

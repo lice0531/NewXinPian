@@ -105,7 +105,7 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:id="@+id/et_set_Preparation"
+                    android:id="@+id/et_set_Jiancetime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -128,7 +128,7 @@
                     android:textSize="20sp" />
 
                 <EditText
-                    android:id="@+id/et_set_Jiancetime"
+                    android:id="@+id/et_set_Preparation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
