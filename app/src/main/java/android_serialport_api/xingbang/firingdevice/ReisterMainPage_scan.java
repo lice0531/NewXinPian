@@ -1760,7 +1760,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return -1;
         }
         if(!duan_scan.equals("0")){
-            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(12));
             return -1;
         }
         if (et_startDelay.getText().length()==0) {
