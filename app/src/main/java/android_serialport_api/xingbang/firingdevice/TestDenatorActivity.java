@@ -115,6 +115,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private String TAG = "组网测试";
     private String version = "02";
     private boolean chongfu = false;//是否已经检测了一次
+    private boolean send_kg = true;//是否已经发送了40
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
 
@@ -140,6 +141,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errtotal = 0;//错误数量
         totalerrorNum = 0;//错误数量总数
 //        denatorCount = 0;
+        send_kg=true;
     }
 
     @Override
@@ -333,7 +335,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             }
             dialog.dismiss();
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
             closeThread();
             closeForm();
@@ -557,18 +559,18 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于11000
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 11000 && firstCount < Preparation_time * 0.2) {
+                    if (displayIc > 11000 && firstCount == 0) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
 //                        if (!chongfu) {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
 //                        } else {
-//                            sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                            sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                             initDialog_msg("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理后,重新进行检测。");//弹出框
 //                        }
                         return;
                     }
-                    if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.5) {
+                    if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.2) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
@@ -792,7 +794,25 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
+                            if (firstCount == Preparation_time-10 ) {//Preparation_time-1
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                            }
+                            if (firstCount == Preparation_time-13 ) {//Preparation_time-1
+                                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
+
+                            }
+//                            if (firstCount == Preparation_time-14) {//经过测试初始化命令需要6秒
+//                                //切换模块芯片版本
+//                                if (version.equals("01")) {
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+//                                } else {
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//                                }
+//                            }
+                            if (firstCount == Preparation_time-14 ) {//Preparation_time-1
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
+                            }
+                            if (firstCount < (Preparation_time-15) ) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
@@ -991,8 +1011,8 @@ public class TestDenatorActivity extends SerialPortActivity {
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
             Log.e("是否有未注册雷管", "noReisterFlag: " + noReisterFlag);
-            byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-            sendCmd(powerCmd);
+//            byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+//            sendCmd(powerCmd);
             //在测试流程,返回都是FF
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
@@ -1008,19 +1028,23 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 开启总线电源指令
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if(send_kg){
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                revOpenCmdReFlag = 1;
+                sendOpenThread.exit = true;
+                Log.e("开启电源指令", "revOpenCmdReFlag: " + revOpenCmdReFlag);
+                stage = 1;
+                if (blastQueue.size() > 0 && !chongfu) {
+                    firstThread = new ThreadFirst();
+                    firstThread.start();
+                }
+                send_kg=false;
             }
-            revOpenCmdReFlag = 1;
-            sendOpenThread.exit = true;
-            Log.e("开启电源指令", "revOpenCmdReFlag: " + revOpenCmdReFlag);
-            stage = 1;
-            if (blastQueue.size() > 0 && !chongfu) {
-                firstThread = new ThreadFirst();
-                firstThread.start();
-            }
+
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46 切换版本
 
         }
@@ -1209,12 +1233,18 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNeutralButton("确定", (dialog1, which) -> {
+                .setPositiveButton("确定", (dialog1, which) -> {
 
                     dialog1.dismiss();
                     stopXunHuan();
                     secondTxt.setText("检测完毕");
                 })
+//                .setNeutralButton("确定", (dialog1, which) -> {
+//
+//                    dialog1.dismiss();
+//                    stopXunHuan();
+//                    secondTxt.setText("检测完毕");
+//                })
 //                .setNegativeButton("退出", (dialog12, which) -> {
 //                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
 //                    dialog12.dismiss();

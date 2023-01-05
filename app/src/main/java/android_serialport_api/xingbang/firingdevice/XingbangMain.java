@@ -314,7 +314,7 @@ public class XingbangMain extends BaseActivity {
         server_http = (String) MmkvUtils.getcode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 20);
+        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 32);
         ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 48);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
@@ -338,7 +338,7 @@ public class XingbangMain extends BaseActivity {
         message.setServer_http("http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
-        message.setPreparation_time("20");
+        message.setPreparation_time("32");
         message.setChongdian_time("48");
         message.setServer_type1("1");
         message.setServer_type2("0");

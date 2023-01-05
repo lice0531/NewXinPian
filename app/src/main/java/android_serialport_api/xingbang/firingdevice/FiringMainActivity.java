@@ -395,7 +395,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 ll_firing_IC_4.setTextSize(20);
-                if (displayIc > 11000) {
+                if (displayIc > 11000&&stage!=6) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
