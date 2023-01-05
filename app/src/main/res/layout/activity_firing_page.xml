@@ -654,7 +654,7 @@
 
             <TextView
                 android:id="@+id/ll_firing_IC_6"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
