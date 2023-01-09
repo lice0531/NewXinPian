@@ -393,13 +393,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    Log.e("扫码", "data.substring(24): " + data.substring(24));
 //                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
 
-                    //内蒙版
-                    barCode = data.substring(0, 13);
-                    denatorId =  "A621"+data.substring(13, 22);
+                    //四川版  //Y 5630106A07499 00F30C9F 9F09 2 5
+                    barCode = data.substring(1, 14);
+                    denatorId = "A6210" + data.substring(14, 22);
                     String yscs = data.substring(22, 26);
                     String version = data.substring(26, 27);
                     String duan = data.substring(27, 28);
-                    insertSingleDenator_2(barCode, denatorId, yscs,version,duan);//同时注册管壳码和芯片码
+                    insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                 } else if (data.length() == 29) {
                     Log.e("扫码", "data: " + data);
                     //Y 5620413H00009 A630FD74D8 7604 1
@@ -1732,10 +1732,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
 //        int maxNo = getMaxNumberNo();
-        int start_delay = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
-        int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
-        int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
-//        int delay = getMaxDelay(maxNo);//获取最大延时
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
@@ -1759,30 +1755,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
         Log.e("扫码", "delay_set: " + delay_set);
-//        if (delay_set.equals("f1")) {
-//            if (maxSecond != 0 && delay + f1 > maxSecond) {//
-//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-//                return -1;
-//            }
-//        } else if (delay_set.equals("f2")) {
-//            if (maxSecond != 0 && delay + f2 > maxSecond) {//
-//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-//                return -1;
-//            }
-//        }
-//        if (delay_set.equals("f1")) {//获取最大延时有问题
-//            if (maxNo == 0) {
-//                delay = delay + start_delay;
-//            } else {
-//                delay = delay + f1;
-//            }
-//        } else if (delay_set.equals("f2")) {
-//            if (maxNo == 0) {
-//                delay = delay + start_delay;
-//            } else {
-//                delay = delay + f2;
-//            }
-//        }
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
 //        int a=0;
 //        if(duan_scan.equals("0")){//普通雷管按当前页面选择的来
@@ -1812,6 +1784,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setAuthorization(version);//雷管芯片型号
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+        Message msg = new Message();
+        msg.arg1 = Integer.parseInt(duan_scan);
+        msg.obj = delay_set;
+        mHandler_showNum.sendMessage(msg);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);

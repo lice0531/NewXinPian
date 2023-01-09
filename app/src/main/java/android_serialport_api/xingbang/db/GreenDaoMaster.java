@@ -346,6 +346,7 @@ public class GreenDaoMaster {
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
         Log.e("插入数据", "lgBean: " );
         //94242214050
+        //F42F1C 2E0A 2 5
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
             String uid = "";
             String yscs = "";
@@ -365,8 +366,8 @@ public class GreenDaoMaster {
                     db.setZhu_yscs(yscs);//有延时参数就更新延时参数
                 }
 
-                if (lgBean.getGzm().length() == 11) {//煤许下载更新延时,非煤许不更新延时
-                    duan = lgBean.getGzm().substring(10);
+                if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                    duan = lgBean.getGzm().substring(11,12);
                     int delay=0;
                     switch (duan){
                         case "1":
@@ -388,6 +389,7 @@ public class GreenDaoMaster {
                         db.setDelay(delay);
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+//                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
                 registerDetonator_typeNew(db);
@@ -699,7 +701,7 @@ public class GreenDaoMaster {
             Defactory message = new Defactory();
             message.setDeName("scyb");
             message.setDeEntCode("56");
-            message.setDeFeatureCode("H");
+            message.setDeFeatureCode("A");
             message.setIsSelected("是");
             getDaoSession().getDefactoryDao().insert(message);
         }
