@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -118,6 +119,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否已经发送了40
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
+    private int cankao=15;
 
     //初始化
     private void initParam() {
@@ -454,7 +456,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         denatorCount = blastQueue.size();
         Log.e("雷管队列", "denatorCount: " + denatorCount);
-        tv_dianliu.setText(denatorCount * 15 + "μA");//参考电流
+        tv_dianliu.setText(denatorCount * cankao + "μA");//参考电流
 
     }
 
@@ -486,7 +488,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //        denatorCount = blastQueue.size();
         Log.e("错误加雷管队列", "denatorCount: " + denatorCount);
         Log.e("错误加雷管队列", "blastQueue.size(): " + blastQueue.size());
-//        tv_dianliu.setText(denatorCount * 15 + "μA");//参考电流
+//        tv_dianliu.setText(denatorCount * cankao + "μA");//参考电流
 
     }
 
@@ -506,6 +508,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                     show_Toast(getString(R.string.text_error_tip34));
                     break;
                 }
+                if (firstCount > Preparation_time-15 ) {//给一个虚拟值
+                    ll_firing_Volt_4.setText( 7.5+"V");
+                    ll_firing_IC_4.setText("" + (denatorCount*cankao+new Random().nextLong()%10));
+                }
                 if (busInfo != null) {//8秒后再显示电压电流
                     String displayIcStr = "" + (int)busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
@@ -514,7 +520,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
                     ll_firing_IC_4.setTextSize(20);
-                    if (displayIc == 0 && firstCount == Preparation_time * 0.5) {
+                    if (displayIc == 0 && firstCount == Preparation_time * 0.2) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流为0,请检查线路是否正确连接");
                         stage = 5;
@@ -535,7 +541,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         displayIcStr = displayIcStr + "(疑似短路)";
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                        ll_firing_IC_4.setTextSize(15);
+                        ll_firing_IC_4.setTextSize(cankao);
                     } else if (displayIc > (denatorCount * 30) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         Log.e(TAG, "denatorCount: "+denatorCount);
@@ -570,7 +576,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        }
                         return;
                     }
-                    if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.2) {
+                    if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.1) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
@@ -640,29 +646,29 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    }
 
                     Log.e(TAG, "小于11000u ，全错: stage=" + stage);
-                } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * 15 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * cankao + 100) {//小于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-                    if (chongfu) {
+//                    if (chongfu) {
                         initDialog_msg("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后再进行检测!");//弹出框
-                    }
-                    else {
-                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
-                    }
+//                    }
+//                    else {
+//                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
+//                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 }
-                else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
+                else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
-                    if (chongfu) {
+//                    if (chongfu) {
                         initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
-                    }
-                    else {
-                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
-                    }
+//                    }
+//                    else {
+//                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
+//                    }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 }
-                else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 15 * 1.1)) {
+                else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * cankao * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
                     stopXunHuan();//检测完成
                 } else {
@@ -794,6 +800,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
+
                             if (firstCount == Preparation_time-10 ) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                             }

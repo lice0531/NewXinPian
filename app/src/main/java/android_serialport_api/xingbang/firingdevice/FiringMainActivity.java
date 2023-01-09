@@ -199,6 +199,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
+    private int cankao = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -449,7 +450,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于11000,重启检测阶段
-            if (secondCount < Preparation_time * 0.2 && stage == 2 && busInfo != null) {
+            if (secondCount < JianCe_time * 0.2 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 Log.e(TAG, "secondCount: " + secondCount);
                 if (busInfo.getBusCurrentIa() > 11000) {
@@ -461,7 +462,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < Preparation_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < JianCe_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                 closeThread();
@@ -573,7 +574,7 @@ public class FiringMainActivity extends SerialPortActivity {
         secondCmdFlag = 0;
         zeroCount = 0;
         zeroCmdReFlag = 0;
-        secondCount = Preparation_time;//第二阶段 计时器
+        secondCount = JianCe_time;//第二阶段 计时器
         fourthDisplay = 0;//第4步，是否显示
         thirdWriteCount = 0;//雷管发送计数器
         sevenDisplay = 0;//第7步，是否显示
@@ -800,8 +801,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
-        tv__qb_dianliu_1.setText(denatorCount * 15 + "μA");
-        tv__qb_dianliu_2.setText(denatorCount * 15 + "μA");
+        tv__qb_dianliu_1.setText(denatorCount * cankao + "μA");
+        tv__qb_dianliu_2.setText(denatorCount * cankao + "μA");
     }
 
 
@@ -1357,14 +1358,14 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 //
 //                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 15 + 100)) {//小于参考值 ，部分错
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * cankao + 100)) {//小于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
 //                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
-//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
+//                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {//大于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行重新检测。");//弹出框
 //                    } else {
@@ -1478,7 +1479,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 15 + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * cankao + 100) {//小于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
@@ -1488,7 +1489,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 15 + 100)) {//大于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
