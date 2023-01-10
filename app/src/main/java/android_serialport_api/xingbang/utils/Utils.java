@@ -392,8 +392,9 @@ public class Utils {
         Log.e("ID转换", "facode: " + facode + ",feature: " + feature + ",denatorId: " + denatorId);
         String a = feature.substring(0, 1);
         String b = feature.substring(1);
+        Log.e("ID转换", "facode: " + facode + ",b: " + b + ",a: " + a + ",denatorId: " + denatorId);
         //从20年开始为2,到30年要改为3
-        return facode + "2" + b + a + denatorId;
+        return facode + "21" + a + denatorId;
     }
 
 
