@@ -118,7 +118,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
     private int ic_cankao = 19;//雷管参考电流
-
+    private boolean send_kg = true;//是否已经发送了40
     //初始化
     private void initParam() {
         initCloseCmdReFlag = 0;
@@ -141,6 +141,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errtotal = 0;//错误数量
         totalerrorNum = 0;//错误数量总数
         denatorCount = 0;
+        send_kg=true;
     }
 
     @Override
@@ -536,13 +537,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * ic_cankao * 2) && firstCount < Preparation_time * 0.5) {//5
+                    } else if (displayIc > (denatorCount * ic_cankao * 2) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * ic_cankao && firstCount < Preparation_time * 0.5) {//5
+                    } else if (displayIc < 4 + denatorCount * ic_cankao && firstCount < Preparation_time * 0.2) {//5
                         displayIcStr = displayIcStr + "(疑似断路)";
                         ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
@@ -794,7 +795,26 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
+
+                            if (firstCount == Preparation_time-10 ) {//Preparation_time-1
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                            }
+                            if (firstCount == Preparation_time-13 ) {//Preparation_time-1
+                                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
+
+                            }
+//                            if (firstCount == Preparation_time-14) {//经过测试初始化命令需要6秒
+//                                //切换模块芯片版本
+//                                if (version.equals("01")) {
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+//                                } else {
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//                                }
+//                            }
+                            if (firstCount == Preparation_time-14 ) {//Preparation_time-1
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
+                            }
+                            if (firstCount < (Preparation_time-15) ) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
@@ -1010,18 +1030,21 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 开启总线电源指令
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            revOpenCmdReFlag = 1;
-            sendOpenThread.exit = true;
-            Log.e("开启电源指令", "revOpenCmdReFlag: " + revOpenCmdReFlag);
-            stage = 1;
-            if (blastQueue.size() > 0 && !chongfu) {
-                firstThread = new ThreadFirst();
-                firstThread.start();
+            if(send_kg){
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                revOpenCmdReFlag = 1;
+                sendOpenThread.exit = true;
+                Log.e("开启电源指令", "revOpenCmdReFlag: " + revOpenCmdReFlag);
+                stage = 1;
+                if (blastQueue.size() > 0 && !chongfu) {
+                    firstThread = new ThreadFirst();
+                    firstThread.start();
+                }
+                send_kg=false;
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46 切换版本
 

@@ -451,7 +451,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于9000,重启检测阶段
-            if (secondCount < Preparation_time * 0.2 && stage == 2 && busInfo != null) {
+            if (secondCount < JianCe_time * 0.2 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 9000) {
@@ -465,7 +465,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < Preparation_time * 0.4&& busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < JianCe_time * 0.4&& busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -568,7 +568,7 @@ public class FiringMainActivity extends SerialPortActivity {
         secondCmdFlag = 0;
         zeroCount = 0;
         zeroCmdReFlag = 0;
-        secondCount = Preparation_time;//第二阶段 计时器
+        secondCount = JianCe_time;//第二阶段 计时器
         fourthDisplay = 0;//第4步，是否显示
         thirdWriteCount = 0;//雷管发送计数器
         sevenDisplay = 0;//第7步，是否显示
