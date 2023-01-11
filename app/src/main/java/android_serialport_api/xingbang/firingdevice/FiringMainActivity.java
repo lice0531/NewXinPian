@@ -198,7 +198,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int ic_cankao =19;//雷管参考电流
+    private int ic_cankao = 19;//雷管参考电流
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,15 +394,15 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 9000) {
+                if (displayIc > 9000 && stage != 6) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * ic_cankao *2) && displayIc > 10 ) {// "电流过大";
+                } else if (displayIc > (denatorCount * ic_cankao * 2) && displayIc > 10 && stage != 6) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (4 + denatorCount * ic_cankao)) {
+                } else if (displayIc < (4 + denatorCount * ic_cankao) && stage != 6) {
                     displayIcStr = displayIcStr + "(疑似断路)";
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.BLACK);//设置颜色
@@ -465,7 +465,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < JianCe_time * 0.4&& busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < JianCe_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -769,8 +769,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //        listview.setAdapter(adapter);
 
         // 给ListView绑定内容
-        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
-        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item_duan);
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item_duan);
         errlistview.setAdapter(mAdapter);
 
         Builder builder = new Builder(this);
@@ -2251,8 +2251,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //        errlistview.setAdapter(adapter);
 
         // 给ListView绑定内容
-        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
-        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item_duan);
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item_duan);
         errlistview.setAdapter(mAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

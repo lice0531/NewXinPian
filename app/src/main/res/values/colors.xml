@@ -134,4 +134,23 @@
     <color name="color_zhuce1">#d9d6c3</color>
     <color name="color_zhuce2">#f2eada</color>
     <color name="color_zhuce3">#f6f5ec</color>
+
+    <!--  常用色  -->
+    <color name="colorOrange">#D85D27</color>   // 主色系，用于按钮，Tab bar，操作按钮，图标等主功能操作使用的色彩。
+    <color name="colorLevel">#F5A623</color>    // 主色系，主要用于按钮，区分有色图标未选中状态等操作所使用的色彩。
+    <color name="colorRed">#FF0015</color>      // 辅助色，小面积使用，主要用于信息提示，错误提醒，严重破坏或不可撤回等后果的操作/提示。
+    <color name="colorBlue">#0073FF</color>     // 辅助色，主要用于图标，区分有色图标等色彩。
+    <color name="colorGreen">#31E738</color>    //
+
+
+    <color name="colorNot">#D8D8D8</color>       // 用于按钮，不可点击场景等。
+    <color name="color_bg">#F3F3F3</color>       // 用于分隔条、全局背景色。
+    <color name="cutting_line">#E9E9E9</color>   // 用于分隔线，不可点击场景等。
+
+    <!--  字体颜色-->
+    <color name="text_title">#1b1b1b</color>
+    <color name="text_sub">#9B9B9B</color>       // 用于次要文字，辅助文字，提示，注释等。
+    <color name="text_content">#818181</color>
+    <color name="text_hint">#c7c7c7</color>
+    <color name="text_black">#404040</color>
 </resources>

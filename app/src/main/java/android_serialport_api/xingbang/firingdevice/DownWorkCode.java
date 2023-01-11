@@ -259,7 +259,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入项目下载页面---");
-        test();//模拟下载
+//        test();//模拟下载
     }
 
     private void initUi() {

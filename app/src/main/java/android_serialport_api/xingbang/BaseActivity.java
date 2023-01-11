@@ -1,11 +1,14 @@
 package android_serialport_api.xingbang;
 
+import static android_serialport_api.xingbang.Application.mContext;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.DeviceControl;
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -23,14 +26,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.orhanobut.dialogplus.DialogPlus;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
+import android_serialport_api.xingbang.utils.LoadingUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class  BaseActivity extends AppCompatActivity {
 	
 	protected Application mApplication;
 	private BaseActivity oContext;
+	// 通用
+	public DialogPlus mDialogPlus;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
@@ -43,6 +50,13 @@ public class  BaseActivity extends AppCompatActivity {
 		oContext = this;// 把当前的上下文对象赋值给BaseActivity
 		addActivity();// 调用添加方法
 	}
+
+	// 进度条
+	public void showDialog() {
+		mDialogPlus = LoadingUtils.loadDialog(mContext);
+		mDialogPlus.show();
+	}
+
 	// 添加Activity方法
 	public void addActivity() {
 		mApplication.addActivity_(oContext);// 调用myApplication的添加Activity方法
@@ -302,5 +316,12 @@ public class  BaseActivity extends AppCompatActivity {
 			}
 		});
 	}
+
+	public String[] mArr_Permissions = new String[]{
+//            Manifest.permission.ACCESS_FINE_LOCATION,
+//            Manifest.permission.ACCESS_COARSE_LOCATION,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE,
+			Manifest.permission.READ_PHONE_STATE
+	};
 
 }

@@ -33,6 +33,7 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.upload.FTP;
+import android_serialport_api.xingbang.utils.upload.InitConst;
 import android_serialport_api.xingbang.utils.upload.IntervalUtil;
 import android_serialport_api.xingbang.utils.upload.Result;
 import android_serialport_api.xingbang.utils.upload.XbUtils;
