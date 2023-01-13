@@ -1585,9 +1585,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (firstCmdReFlag == 0 && firstWaitCount < 1) {
                                 exit = true;
                             }
-                            if (firstWaitCount > 1) {
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
-                            }
+//                            if (firstWaitCount > 1) {
+//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
+//                            }
 
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;

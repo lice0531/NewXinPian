@@ -342,7 +342,7 @@ public class GreenDaoMaster {
         return str;
     }
 
-    //丹灵下载后更新雷管芯片码
+    //丹灵下载后更新雷管芯片码//在线下载,离线下载
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
         Log.e("插入数据", "lgBean: " );
         //94242214050

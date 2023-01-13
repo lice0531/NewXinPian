@@ -44,6 +44,7 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
@@ -141,7 +142,7 @@ public class DownOfflineActivity extends BaseActivity {
         }
         try {
             res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
-            Utils.writeLog("离线下载" + res);
+            Utils.writeRecord("离线下载:" + res);
         } catch (IllegalArgumentException e) {
             show_Toast("解密失败,请检查txt文件是否正确或密码是否正确");
             e.printStackTrace();
@@ -172,7 +173,11 @@ public class DownOfflineActivity extends BaseActivity {
                         }
                     }
                 }
-
+                if (danLingBean.getLgs().getLg().size() > 0) {//更新雷管信息
+                    for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                    }
+                }
                 if (err != 0) {
                     show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                 }
