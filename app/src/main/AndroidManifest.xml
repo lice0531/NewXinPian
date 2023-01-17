@@ -35,20 +35,26 @@
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
+            android:name=".firingdevice.ChoseDuanActivity"
+            android:exported="false"
+            android:label="选择段位"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
             android:name=".firingdevice.SendMsgActivity"
+            android:exported="false"
             android:label="数据互传"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UpgradeActivity"
+            android:exported="false"
             android:label="程序升级"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.TestICActivity"
+            android:exported="false"
             android:label="快速测试电流"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.UpdataDelayActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -109,18 +115,19 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_title"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <!-- 自检页面 -->
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- 自检页面 -->
         <activity
             android:name=".firingdevice.ZiJianActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".firingdevice.ZiJianActivity_upload"
@@ -133,7 +140,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".firingdevice.SetDelayTime"
             android:configChanges="orientation|keyboardHidden"
@@ -280,8 +286,7 @@
             android:name=".firingdevice.UpLoadLogActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_set_page_time"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <!-- 百度地图设置 -->
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- 百度地图设置 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -289,8 +294,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="E6zOg0dIA7iW4IAVZ7isv4ylAoA2bhaY" />
-        <!-- 腾讯自动更新设置 -->
+            android:value="E6zOg0dIA7iW4IAVZ7isv4ylAoA2bhaY" /> <!-- 腾讯自动更新设置 -->
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"

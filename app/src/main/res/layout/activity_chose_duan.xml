@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".firingdevice.ChoseDuanActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="3dp">
+
+        <TextView
+            android:id="@+id/textView12"
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="段别"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="数量"
+            android:textSize="18sp" />
+
+
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1.5"
+            android:background="@color/colorPrimary"
+            android:text="延时翻转"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/ly_setDuanDelay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TableLayout
+            android:id="@+id/tl_delay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TableRow
+                android:id="@+id/tr_1"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/re_btn_f1"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="1段" />
+
+                <TextView
+                    android:id="@+id/re_num_f1"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei1"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_2"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/re_btn_f2"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="2段" />
+
+                <TextView
+                    android:id="@+id/re_num_f2"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei2"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_3"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/re_btn_f3"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="3段" />
+
+                <TextView
+                    android:id="@+id/re_num_f3"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei3"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_4"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f4"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="4段" />
+
+                <TextView
+                    android:id="@+id/re_num_f4"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei4"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_5"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f5"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="5段" />
+
+                <TextView
+                    android:id="@+id/re_num_f5"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei5"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_6"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f6"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="6段" />
+
+                <TextView
+                    android:id="@+id/re_num_f6"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei6"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_7"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f7"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="7段" />
+
+                <TextView
+                    android:id="@+id/re_num_f7"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei7"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_8"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f8"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="8段" />
+
+                <TextView
+                    android:id="@+id/re_num_f8"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei8"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_9"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f9"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="9段" />
+
+                <TextView
+                    android:id="@+id/re_num_f9"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei9"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_10"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f10"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="10段" />
+
+                <TextView
+                    android:id="@+id/re_num_f10"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei10"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_11"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f11"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="11段" />
+
+                <TextView
+                    android:id="@+id/re_num_f11"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei11"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_12"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f12"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="12段" />
+
+                <TextView
+                    android:id="@+id/re_num_f12"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei12"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_13"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f13"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="13段" />
+
+                <TextView
+                    android:id="@+id/re_num_f13"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei13"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_14"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f14"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="14段" />
+
+                <TextView
+                    android:id="@+id/re_num_f14"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei14"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_15"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f15"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="15段" />
+
+                <TextView
+                    android:id="@+id/re_num_f15"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei15"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_16"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f16"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="16段" />
+
+                <TextView
+                    android:id="@+id/re_num_f16"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei16"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_17"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f17"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="17段" />
+
+                <TextView
+                    android:id="@+id/re_num_f17"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei17"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_18"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f18"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="18段" />
+
+                <TextView
+                    android:id="@+id/re_num_f18"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei18"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_19"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f19"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="19段" />
+
+                <TextView
+                    android:id="@+id/re_num_f19"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei19"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tr_20"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/re_btn_f20"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="20段" />
+
+                <TextView
+                    android:id="@+id/re_num_f20"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/translucent"
+                    android:text="0" />
+
+
+                <Button
+                    android:id="@+id/re_et_nei20"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLength="6"
+                    android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan"
+
+                    />
+
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>

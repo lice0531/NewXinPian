@@ -414,7 +414,8 @@ public class XingbangMain extends BaseActivity {
                 String str1 = "设置";
                 Intent intent = new Intent(XingbangMain.this, SetEnvMainActivity.class);
                 intent.putExtra("dataSend", str1);
-                startActivityForResult(intent, 1);
+                startActivity(intent);
+
                 dialog.dismiss();
             } else if (!a.equals("xingbang")) {
                 show_Toast("用户名错误");
