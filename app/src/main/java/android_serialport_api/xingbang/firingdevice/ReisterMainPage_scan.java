@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -77,6 +78,10 @@ import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -143,7 +148,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     @BindView(R.id.txt_reisteramount)
     TextView txtReisteramount;
     @BindView(R.id.factory_listView)
-    MyRecyclerView mListView;
+    RecyclerView mListView;
     @BindView(R.id.ly_showData)
     LinearLayout lyShowData;
     @BindView(R.id.container)
@@ -344,6 +349,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     @BindView(R.id.re_et_nei20)
     Button btnFan20;
 
+    @BindView(R.id.btn_addDelay)
+    Button btnAddDelay;
+
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -412,11 +420,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int maxDuanNo = 3;
     private Handler mHandler_showNum = new Handler();//显示雷管数量
     private String duan_set = "0";//是duan1还是duan2
-    private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
 
     private String TAG = "扫码注册";
-
+    private ActivityResultLauncher<Intent> intentActivityResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -437,27 +444,38 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         scan();//扫描初始化//扫描参数设置
         hideInputKeyboard();//隐藏焦点
         Utils.writeRecord("---进入手动输入和扫码注册页面---");
-        showDenatorSum();//显示雷管总数,要放在初始化区号后
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
+        MmkvUtils.savecode("duan",1);//每次进入都重置段位参数
         //初始化段间延时显示
-        int maxduan = getMaxDuanNo();
-        Log.e("显示", "maxduan: " + maxduan);
-        if (maxduan < 3) {
-            maxDuanNo = 3;
-        } else {
-            maxDuanNo = maxduan;
-            for (int i = maxDuanNo; i > 3; i--) {
-                setView(i);
-                Log.e("显示", "maxDuanNo: " + maxDuanNo);
+//        int maxduan = getMaxDuanNo();
+//        Log.e("显示", "maxduan: " + maxduan);
+//        if (maxduan < 3) {
+//            maxDuanNo = 3;
+//        } else {
+//            maxDuanNo = maxduan;
+//            for (int i = maxDuanNo; i > 3; i--) {
+//                setView(i);
+//                Log.e("显示", "maxDuanNo: " + maxDuanNo);
+//            }
+//        }
+//        //初始化雷管数量
+//        for (int i = 1; i < 21; i++) {
+//            showDuanSum(i);
+//        }
+//        //初始化翻转按钮颜色
+//        setFan();
+
+        intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                //此处是跳转的result回调方法
+                if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+                    String a =result.getData().getStringExtra("data_return");
+                    Log.e(TAG, "返回数据: "+a );
+                }
             }
-        }
-        //初始化雷管数量
-        for (int i = 1; i < 21; i++) {
-            showDuanSum(i);
-        }
-        //初始化翻转按钮颜色
-        setFan();
+        });
     }
 
     private void getUserMessage() {
@@ -1117,7 +1135,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         adapter.changeCursor(null);
 
     }
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        duan = (int) MmkvUtils.getcode("duan",1);
+        btnAddDelay.setText("段位:"+duan);
+    }
     @Override
     protected void onResume() {
         //         获取 区域参数
@@ -2356,8 +2379,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
 
             case R.id.btn_addDelay:
-                maxDuanNo = maxDuanNo + 1;
-                setView(maxDuanNo);
+//                maxDuanNo = maxDuanNo + 1;
+//                setView(maxDuanNo);
+
+                Intent intent = new Intent(this,ChoseDuanActivity.class);
+                intentActivityResultLauncher.launch(intent);
                 break;
             case R.id.re_btn_f1:
                 hideInputKeyboard();

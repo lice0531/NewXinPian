@@ -572,7 +572,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
 //                        } else {
                             sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                            initDialog_msg("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理后,重新进行检测。");//弹出框
+                            initDialog_msg("当前电流过大,请检查线夹等部位是否存在浸水进泥等情况,排查处理后,重新进行检测。");//弹出框
 //                        }
                         return;
                     }
@@ -630,7 +630,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
 //                    sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+                        initDialog_msg("请检查线夹等部位是否有进水进泥等情况,确认无误后再进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
@@ -639,7 +639,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+                        initDialog_msg("请检查线夹等部位是否有进水进泥等情况,确认无误后再进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框

@@ -620,53 +620,17 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
                         android:background="@drawable/bt_mainpage_style"
-                        android:text="添加段位"
+                        android:text="选择段位"
                         android:textSize="20sp"/>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        style="@style/allbtntstyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@color/colorPrimary"
-                        android:text="段别"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        style="@style/allbtntstyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="2dp"
-                        android:layout_weight="1"
-                        android:background="@color/colorPrimary"
-                        android:text="数量"
-                        android:textSize="18sp" />
-
-
-                    <TextView
-                        style="@style/allbtntstyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="2dp"
-                        android:layout_weight="1.5"
-                        android:background="@color/colorPrimary"
-                        android:text="延时翻转"
-                        android:textSize="18sp" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ly_setDuanDelay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TableLayout
                         android:id="@+id/tl_delay"
@@ -1574,7 +1538,7 @@
 
                     </LinearLayout>
 
-                    <android_serialport_api.xingbang.custom.MyRecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/factory_listView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

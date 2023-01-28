@@ -453,6 +453,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
 
+        MmkvUtils.savecode("duan",1);//每次进入都重置段位参数
 //        //初始化段间延时显示
 //        int maxduan = getMaxDuanNo();
 //        Log.e("显示", "maxduan: " + maxduan);
