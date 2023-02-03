@@ -333,8 +333,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
         if (message.size() > 0) {
-//            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());
-            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());//跟起爆测试一样
+            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());
+//            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());//跟起爆测试一样
             version = message.get(0).getVersion();
             Log.e(TAG, "version: " + version);
         }
