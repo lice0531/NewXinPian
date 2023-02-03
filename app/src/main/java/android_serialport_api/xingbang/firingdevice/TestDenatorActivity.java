@@ -501,12 +501,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                     break;
                 }
                 if (busInfo != null) {//8秒后再显示电压电流
-                    String displayIcStr = "" + busInfo.getBusCurrentIa() + "μA";
+                    String displayIcStr = "" + (int)busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
                     //displayIc =
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
-                    ll_firing_IC_4.setText("" + displayIcStr);
+                    ll_firing_IC_4.setText(displayIcStr);
                     if (displayIc == 0 && firstCount < Preparation_time * 0.4) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流为0,请检查线路是否正确连接");
@@ -560,11 +560,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (displayIc > 9000 && firstCount < Preparation_time * 0.5) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
+                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                         if (!chongfu) {
                             initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
                         } else {
-                            byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                            sendCmd(reCmd);
                             initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                         }
                         return;

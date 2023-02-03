@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="KT50_3.25_PT_MX_230110"
+            android:text="KT50_3.25_MX_230203"
             android:textSize="20sp"
             />
     </LinearLayout>
@@ -159,5 +159,6 @@
         android:layout_height="wrap_content"
         style="@style/allbtntstyle"
         android:text="检查是否需要更新软件版本"
+        android:visibility="gone"
         />
 </LinearLayout>

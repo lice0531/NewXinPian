@@ -67,7 +67,7 @@ public class TestICActivity extends SerialPortActivity {
             if (busInfo != null) {
                 BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类
                 float dianliu = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
-                String displayIcStr = dianliu + "μA";// 保留两位小数
+                String displayIcStr = (int)dianliu + "μA";// 保留两位小数
 
                 if (dianliu > 11000) {
                     displayIcStr = displayIcStr + "(疑似短路)";

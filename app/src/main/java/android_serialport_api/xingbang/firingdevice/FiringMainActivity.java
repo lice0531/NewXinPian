@@ -45,6 +45,7 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
@@ -392,7 +393,7 @@ public class FiringMainActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
-                String displayIcStr = busInfo.getBusCurrentIa() + "μA";//保留两位小数
+                String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 9000 && stage != 6) {
                     displayIcStr = displayIcStr + "(疑似短路)";
@@ -460,6 +461,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     if (!chongfu) {
                         initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
                     } else {
+                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                         initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                     }
                 }
