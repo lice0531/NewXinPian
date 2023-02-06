@@ -436,6 +436,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 13) {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
+
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
                         .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
@@ -470,13 +471,12 @@ public class FiringMainActivity extends SerialPortActivity {
             if (secondCount < JianCe_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
+                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog12, which) -> {
-                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                            sendCmd(reCmd);
                             dialog12.dismiss();
 //                                    closeThread();
                             closeForm();
@@ -1466,16 +1466,14 @@ public class FiringMainActivity extends SerialPortActivity {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                    sendCmd(reCmd);
+                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
                     }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                    sendCmd(reCmd);
+                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
@@ -1484,8 +1482,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                    sendCmd(reCmd);
+
                     if (chongfu) {
                         initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行检测!");//弹出框
                     } else {
@@ -1493,8 +1490,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                    sendCmd(reCmd);
+                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     if (chongfu) {
                         initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行检测。");//弹出框
                     } else {
