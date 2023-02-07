@@ -374,7 +374,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入项目下载页面---");
-//        test();//模拟下载
+//        test();//模拟下载---测试完要记得关闭
         //模拟插入数据
 //        DanLingBean.LgsBean.LgBean lgBean=new DanLingBean.LgsBean.LgBean();
 //        lgBean.setUid("1021019900401");
@@ -384,6 +384,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
     private void test() {
+        show_Toast("测试完要记得关闭测试test方法!!!");
         //旧编码
 //        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"00000DB119124\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"70107707\",\"gzmcwxx\":\"0\"}]}}";
         //新规则
