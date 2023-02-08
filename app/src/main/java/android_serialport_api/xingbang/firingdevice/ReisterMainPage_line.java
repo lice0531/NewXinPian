@@ -318,6 +318,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         setSupportActionBar(findViewById(R.id.toolbar));
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
+        Log.e("原标题initview", "mOldTitle: "+mOldTitle );
         // 设置标题区域
         setTitleRegion(mRegion, -1);
         // 适配器
@@ -2317,7 +2318,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     //设置被选中按钮颜色
     private void initButton(String delay_set) {
         hideInputKeyboard();
-        initView();
+//        initView();//(会导致出现两个区域字段)
         switch (delay_set) {
             case "f1":
 //                reEtF1.setBackgroundResource(R.drawable.textview_border_green);

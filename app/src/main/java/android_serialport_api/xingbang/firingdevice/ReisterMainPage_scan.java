@@ -738,6 +738,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         setSupportActionBar(findViewById(R.id.toolbar));
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
+        Log.e("initview", "mOldTitle: "+mOldTitle );
         // 设置标题区域
         setTitleRegion(mRegion, -1);
         // 适配器
