@@ -387,7 +387,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
             }
         }
         show_Toast("在准爆范围内,可以起爆");
-        qbxm_id = (String) map_dl.get(position).get("id");
+        qbxm_id =  map_dl.get(position).get("id")+"";
         qbxm_name = map_dl.get(position).get("spare1").toString();
         Intent intent = new Intent(this, FiringMainActivity.class);
         Bundle bundle = new Bundle();

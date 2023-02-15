@@ -136,9 +136,6 @@ public class XingbangMain extends BaseActivity {
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loading = new Handler();//显示进度条
     private Handler mHandler_updata = new Handler();//更新主页面信息
-    private Handler mHandler_load = new Handler();//查了雷管
-    private List<DenatorBaseinfo> list_data = new ArrayList<>();
-    private ArrayList<String> lg2_yanshi = new ArrayList<>();
     private String TAG = "主页";
 
     private String mOldTitle;   // 原标题
@@ -182,7 +179,6 @@ public class XingbangMain extends BaseActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        loadMoreData_all_lg();//获取雷管信息
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
         getPropertiesData();
 //        getUserMessage();
@@ -247,10 +243,9 @@ public class XingbangMain extends BaseActivity {
                 pb_show = 0;
                 getUserMessage();//获取用户信息
                 GreenDaoMaster.setDenatorType();//四川默认值
-                GreenDaoMaster.setFactory();//四川默认值
+//                GreenDaoMaster.setFactory();//四川默认值
             }
         }.start();
-        loadMoreData_all_lg();//查询雷管延时是否为0
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
@@ -326,10 +321,6 @@ public class XingbangMain extends BaseActivity {
             }
             return false;
         });
-        mHandler_load = new Handler(msg -> {
-            loadMoreData_all_lg();//查询雷管延时是否为0
-            return false;
-        });
     }
 
 
@@ -392,12 +383,12 @@ public class XingbangMain extends BaseActivity {
         server_http = (String) MmkvUtils.getcode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 35);
-        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 48);
+        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 28);
+        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 68);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.getcode("jiance_time", 40);
+        jiance_time = (int) MmkvUtils.getcode("jiance_time", 28);
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
@@ -416,12 +407,12 @@ public class XingbangMain extends BaseActivity {
         message.setServer_http("http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
-        message.setPreparation_time("35");
-        message.setChongdian_time("48");
+        message.setPreparation_time("28");
+        message.setChongdian_time("68");
         message.setServer_type1("1");
         message.setServer_type2("0");
         message.setPro_dwdm("");
-        message.setJiance_time("40");
+        message.setJiance_time("28");
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
@@ -643,13 +634,6 @@ public class XingbangMain extends BaseActivity {
                     return;
                 }
 
-                for (int i = 0; i < lg2_yanshi.size(); i++) {
-                    if (lg2_yanshi.get(i).equals("0")) {
-                        createDialog();
-                        return;
-                    }
-                }
-
                 String str5 = "起爆";
                 Intent intent5;//金建华
                 if (Yanzheng.equals("验证")) {
@@ -806,54 +790,6 @@ public class XingbangMain extends BaseActivity {
         Log.e("读取数据", "readCVS_pro: ");
     }
 
-    private void loadMoreData_all_lg() {
-        lg2_yanshi.clear();
-        list_data.clear();
-        list_data = new GreenDaoMaster().queryDetonatorRegionDesc();
-        for (int i = 0; i < list_data.size(); i++) {
-            lg2_yanshi.add(list_data.get(i).getDelay() + "");
-        }
-    }
-
-//    private void loadMoreData_all_lg() {
-//        pb_show = 0;
-//        lg2_yanshi.clear();
-//        list_data.clear();
-//        StringBuffer sb = new StringBuffer();
-//        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, "statusCode=?", new String[]{"02"}, null, null, " blastserial asc");
-//        if (cursor != null) {
-//            while (cursor.moveToNext()) {
-//                int serialNo = cursor.getInt(1); //获取第二列的值 ,序号
-//                int holeNo = cursor.getInt(2);
-//                String shellNo = cursor.getString(3);//管壳号
-//                int delay = cursor.getInt(5);
-//                String stCode = cursor.getString(6);//状态
-//                String stName = cursor.getString(7);//
-//                String errorCode = cursor.getString(9);//状态
-//                String errorName = cursor.getString(8);//
-//
-//                sb.append(shellNo).append("#").append(delay).append(",");
-//
-//                VoBlastModel item = new VoBlastModel();
-//                item.setBlastserial(serialNo);
-//                item.setSithole(holeNo);
-//                item.setDelay((short) delay);
-//                item.setShellBlastNo(shellNo);
-//                item.setErrorCode(errorCode);
-//                item.setErrorName(errorName);
-//                item.setStatusCode(stCode);
-//                item.setStatusName(stName);
-//                list_data.add(item);
-//            }
-//            cursor.close();
-//        }
-//        for (int i = 0; i < list_data.size(); i++) {
-//            lg2_yanshi.add(list_data.get(i).getDelay() + "");
-//        }
-//        Utils.writeLeiGuan(sb.toString());//保存一份txt备份
-//        Log.e("雷管txt备份", "备份成功");
-//        Log.e("起爆延时验证", lg2_yanshi.toString());
-//    }
 
     /***
      * 建立对话框
@@ -1181,7 +1117,6 @@ public class XingbangMain extends BaseActivity {
                 setTitleRegion();
                 // 显示提示
                 show_Toast("已选择 " + a);
-                mHandler_load.sendMessage(mHandler_load.obtainMessage());
             } else {
                 show_Toast("请至少选择一个区域");
             }

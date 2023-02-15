@@ -144,13 +144,13 @@ public class SetSystemActivity extends BaseActivity {
                 }
 
                 int flag1 = 0, flag2 = 0, flag3 = 0;
-                if (!TextUtils.isEmpty(etSetPreparation.getText())) {//准备时间
+                if (!TextUtils.isEmpty(etSetPreparation.getText())) {//网络测试准备时间
                     message.setPreparation_time(etSetPreparation.getText().toString());
                     Log.e("准备时间", "Preparation_time: " + etSetPreparation.getText().toString());
                 } else {
                     flag1 = 1;
                 }
-                if (!TextUtils.isEmpty(etSetJiancetime.getText())) {//组网检测时间
+                if (!TextUtils.isEmpty(etSetJiancetime.getText())) {//起爆检测时间
                     Log.e("组网检测时间", "etSetJiancetime: " + etSetJiancetime.getText().toString());
                     message.setJiance_time(etSetJiancetime.getText().toString());
                 } else {

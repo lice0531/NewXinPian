@@ -88,9 +88,9 @@
 
     <string name="language_select">当前选择的语言: %s</string>
     <string name="title_activity_set_languages">语言设置</string>
-    <string name="et_hint_ceshi">默认20s</string>
-    <string name="et_hint_chongdian">默认48s</string>
-    <string name="et_hint_zuwang">默认40s</string>
+    <string name="et_hint_ceshi">默认28s</string>
+    <string name="et_hint_chongdian">默认68s</string>
+    <string name="et_hint_zuwang">默认28s</string>
 
     <string name="text_tip_delete">删除</string>
     <string name="text_tip_modify">修改</string>

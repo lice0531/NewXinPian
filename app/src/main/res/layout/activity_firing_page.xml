@@ -8,7 +8,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -44,7 +45,7 @@
                 android:id="@+id/ll_firing_Volt_5"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0.0V"
@@ -75,11 +76,11 @@
             <TextView
                 android:id="@+id/ll_firing_IC_5"
                 android:layout_width="@dimen/fire_pg_middle"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:layout_gravity="center"
-                android:gravity="right"
-                android:text="0.0μA"
+                android:gravity="right|center_vertical"
+                android:text="0μA"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -162,7 +163,7 @@
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:gravity="right"
                 android:text="0.0V"
                 style="@style/alltextstyle"/>
@@ -192,10 +193,10 @@
             <TextView
                 android:id="@+id/ll_firing_IC_2"
                 android:layout_width="@dimen/fire_pg_middle"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:text="0μA"
                 style="@style/alltextstyle"/>
 
@@ -219,14 +220,14 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
-                android:text="@string/text_firing_num"
+                android:text="@string/text_test_num"
                 style="@style/alltextstyle"/>
 
             <TextView
                 android:id="@+id/ll_firing_deAmount_2"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0"
@@ -251,7 +252,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
-                android:text="@string/text_firing_errnum"
+                android:text="@string/text_test_errnum"
                 style="@style/alltextstyle"/>
 
             <TextView
@@ -259,7 +260,7 @@
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:gravity="right"
                 android:text="0"
                 style="@style/alltextstyle"/>
@@ -282,14 +283,14 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="参考电流"
+                android:text="参考电流:"
                 style="@style/alltextstyle"/>
 
             <TextView
                 android:id="@+id/tv__qb_dianliu_2"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0μA"
@@ -365,7 +366,7 @@
                 android:id="@+id/ll_firing_Volt_4"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0.0V"
@@ -396,11 +397,11 @@
             <TextView
                 android:id="@+id/ll_firing_IC_4"
                 android:layout_width="@dimen/fire_pg_middle"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:layout_gravity="center"
-                android:gravity="right"
-                android:text="0.0μA"
+                android:gravity="right|center_vertical"
+                android:text="0μA"
                 style="@style/alltextstyle"/>
 
             <TextView
@@ -429,7 +430,7 @@
                 android:id="@+id/ll_firing_deAmount_4"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0"
@@ -461,7 +462,7 @@
                 android:id="@+id/ll_firing_errorAmount_4"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0"
@@ -486,14 +487,14 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="参考电流"
+                android:text="参考电流:"
                 style="@style/alltextstyle" />
 
             <TextView
                 android:id="@+id/tv__qb_dianliu_1"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0μA"
@@ -592,7 +593,7 @@
                 android:id="@+id/ll_firing_Volt_6"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0.0V"
@@ -624,7 +625,7 @@
                 android:id="@+id/ll_firing_Hv_6"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0.0V"
@@ -655,11 +656,11 @@
             <TextView
                 android:id="@+id/ll_firing_IC_6"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:layout_gravity="center"
-                android:text="0.0μA"
+                android:gravity="right|center_vertical"
+                android:text="0μA"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -734,7 +735,7 @@
                 android:id="@+id/ll_firing_Volt_7"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0.0V"
@@ -765,11 +766,11 @@
             <TextView
                 android:id="@+id/ll_firing_IC_7"
                 android:layout_width="@dimen/fire_pg_middle"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:layout_gravity="center"
-                android:gravity="right"
-                android:text="0.0μA"
+                android:gravity="right|center_vertical"
+                android:text="0μA"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -799,7 +800,7 @@
                 android:id="@+id/ll_firing_Hv_7"
                 android:layout_width="@dimen/fire_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="0.0V"

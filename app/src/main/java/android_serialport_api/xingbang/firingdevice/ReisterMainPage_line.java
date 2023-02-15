@@ -2232,6 +2232,57 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
 
     /**
+     * 重置控件
+     */
+    private void resetView() {
+//        reEtF1.setBackgroundResource(R.drawable.translucent);
+//        reEtF2.setBackgroundResource(R.drawable.translucent);
+//        et_startDelay.setBackgroundResource(R.drawable.translucent);
+
+//        reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+//        reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+
+//        reEtF1.clearFocus();
+//        reEtF2.clearFocus();
+//        et_startDelay.clearFocus();
+    }
+
+    /**
+     * 点击item
+     */
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mRegion = String.valueOf(item.getOrder());
+
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+            case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
+                // 显示提示
+                show_Toast("已选择 区域" + mRegion);
+                // 延时选择重置
+                resetView();
+                delay_set = "0";
+                //初始化雷管数量
+                for (int i = 1; i < 21; i++) {
+                    showDuanSum(i);
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /**
      * 创建菜单
      */
     @Override
@@ -2248,32 +2299,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         return super.onPrepareOptionsMenu(menu);
     }
 
-    /**
-     * 点击item
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        mRegion = String.valueOf(item.getOrder());
-
-        switch (item.getItemId()) {
-
-            case R.id.item_1:
-            case R.id.item_2:
-            case R.id.item_3:
-            case R.id.item_4:
-            case R.id.item_5:
-                // 区域 更新视图
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                // 显示提示
-                show_Toast("已选择 区域" + mRegion);
-                delay_set = "0";
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
 
     /**
      * 设置标题区域

@@ -90,7 +90,7 @@ public class FourStatusCmd {
                 if(busCurrent<0){
                     busCurrent=0;
                 }
-                busCurrent = Utils.getFloatToFormat(busCurrent, 2, 4);
+                busCurrent = Utils.getFloatToFormat(busCurrent, 0, 4);
                 vo.setBusCurrentIa(busCurrent);//设置总线电流
 
 

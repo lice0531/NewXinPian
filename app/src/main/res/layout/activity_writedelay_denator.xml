@@ -49,7 +49,7 @@
                 android:layout_width="@dimen/test_pg_middle"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:gravity="right"
                 android:text="0V"
                 android:textColor="@color/label_color"
@@ -68,7 +68,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="60dp">
 
             <TextView
                 android:id="@+id/textView"
@@ -85,9 +85,9 @@
             <TextView
                 android:id="@+id/ll_firing_IC_4"
                 android:layout_width="@dimen/test_pg_middle"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
                 android:text="0μA"
                 android:textColor="@color/label_color"
                 android:layout_gravity="center_vertical"
@@ -123,7 +123,7 @@
                 android:id="@+id/ll_firing_deAmount_4"
                 android:layout_width="@dimen/test_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:gravity="right"
                 android:text="0"
                 android:textColor="@color/label_color"
@@ -160,7 +160,7 @@
                 android:id="@+id/ll_firing_errorAmount_4"
                 android:layout_width="@dimen/test_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:gravity="right"
                 android:text="0"
                 android:textColor="@color/color_green"
@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="参考电流"
+                android:text="参考电流:"
                 android:textColor="@color/label_color"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"
@@ -196,7 +196,7 @@
                 android:id="@+id/tv_dianliu"
                 android:layout_width="@dimen/test_pg_middle"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:gravity="right"
                 android:text="0μA"
                 android:textColor="@color/label_color"

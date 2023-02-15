@@ -375,12 +375,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else {
                 String barCode;
                 String denatorId;
-                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-                    barCode = data.substring(0, 13);
-                    denatorId = data.substring(13, 26);
-                    insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
-                } else if (data.length() == 28) {
-                    Log.e("扫码", "data: " + data);
+//                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+//                    barCode = data.substring(0, 13);
+//                    denatorId = data.substring(13, 26);
+//                    insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
+//                } else
+                if (data.length() == 28) {
+                    Log.e("扫码1", "data: " + data);
                     //5620302H00001A62F400FFF20AB603
                     //5420302H00001A6F4FFF20AB603
                     //Y5620413H00009A630FD74D87604
@@ -392,47 +393,26 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    Log.e("扫码", "denatorId: " + denatorId);
 //                    Log.e("扫码", "data.substring(24): " + data.substring(24));
 //                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
-
-                    //四川版  //Y 5630106A07499 00F30C9F 9F09 2 5
-                    barCode = data.substring(1, 14);
-                    denatorId = "A6210" + data.substring(14, 22);
-                    String yscs = data.substring(22, 26);
-                    String version = data.substring(26, 27);
-                    String duan = data.substring(27, 28);
-                    insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
-                } else if (data.length() == 29) {
-                    Log.e("扫码", "data: " + data);
-                    //Y 5620413H00009 A630FD74D8 7604 1
-                    barCode = data.substring(1, 14);
-                    String a = data.substring(14, 24);//uid
-                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                    duan = data.substring(28);
-                    Log.e("扫码", "duan: " + duan);
-                    Log.e("扫码", "barCode: " + barCode);
-                    Log.e("扫码", "denatorId: " + denatorId);
-                    Log.e("扫码", "data.substring(24): " + data.substring(24));
-                    switch (duan) {
-                        case "1":
-                            delay_set = "f1";
-                            break;
-                        case "2":
-                            delay_set = "f2";
-                            break;
-                        case "3":
-                            delay_set = "f3";
-                            break;
-                        case "4":
-                            delay_set = "f4";
-                            break;
-                        case "5":
-                            delay_set = "f5";
-                            break;
+                    String a = data.substring(0, 1);
+                    if (a.equals("Y")) {
+                        //四川版  //Y 5630106A07499 00F30C9F 9F09 2 5
+                        barCode = data.substring(1, 14);
+                        denatorId = "A6210" + data.substring(14, 22);
+                        String yscs = data.substring(22, 26);
+                        String version = data.substring(26, 27);
+                        String duan = data.substring(27, 28);
+                        insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
+                    } else {
+                        //山东版  //1030213A00000 700F442CE E10A 1 2
+                        barCode = data.substring(0, 13);
+                        denatorId = "A621" + data.substring(13, 22);
+                        String yscs = data.substring(22, 26);
+                        String version = data.substring(26, 27);
+                        String duan = data.substring(27, 28);
+                        insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                     }
-                    initButton(delay_set);
-                    insertSingleDenator_2(barCode, denatorId, data.substring(24, 28));//同时注册管壳码和芯片码
-                } else {
-                    barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
-                    insertSingleDenator(barCode);
+
+
                 }
                 hideInputKeyboard();//隐藏光标
             }
@@ -738,7 +718,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         setSupportActionBar(findViewById(R.id.toolbar));
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
-        Log.e("initview", "mOldTitle: "+mOldTitle );
+        Log.e("initview", "mOldTitle: " + mOldTitle);
         // 设置标题区域
         setTitleRegion(mRegion, -1);
         // 适配器
@@ -1080,7 +1060,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             tipStr = getResources().getString(R.string.text_error_tip11);//"起始厂家码不能为空"
             return tipStr;
         }
-        if (StringUtils.isBlank(stsno)||stsno.length()!=5) {
+        if (StringUtils.isBlank(stsno) || stsno.length() != 5) {
             tipStr = "开始流水号不能为空";//"起始厂家码不能为空"
             return tipStr;
         }
@@ -1145,8 +1125,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return tipStr;
         }
         //90418
+        //
         String yue = stproDt.substring(1, 3);
         String ri = stproDt.substring(3, 5);
+        //1030213A00000
+        //5620418A00001
+        Log.e("验证日期", "stproDt: " + stproDt);
+        Log.e("验证日期", "yue: " + yue);
+        Log.e("验证日期", "ri: " + ri);
         if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
             tipStr = "输入日期格式不对";
             return tipStr;
@@ -1166,6 +1152,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         //特征码
         String facFea = Utils.getDetonatorShellToFeatureStr(shellNo);
         //雷管信息有误，管厂码不正确，请检查
+        Log.e("管厂码", "shellNo: " + shellNo);
+        Log.e("管厂码", "factoryCode: " + factoryCode);
+        Log.e("管厂码", "facCode: " + facCode);
         if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.indexOf(facCode) < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             return -1;
@@ -1718,18 +1707,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (shellNo.length() != 13) {
             return -1;
         }
-        if (et_startDelay.getText().length()==0) {
+        if (et_startDelay.getText().length() == 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
         if (check(shellNo) == -1) {
             return -1;
         }
-        if(checkRepeatdenatorId(denatorId)){//芯片码查重
+        if (checkRepeatdenatorId(denatorId)) {//芯片码查重
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
-
 
 
 //        int maxNo = getMaxNumberNo();
@@ -1796,7 +1784,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         SoundPlayUtils.play(1);
         return 0;
     }
-
 
 
     /***
@@ -3055,6 +3042,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
+                //初始化雷管数量
+                for (int i = 1; i < 21; i++) {
+                    showDuanSum(i);
+                }
                 return true;
 
             default:
@@ -3106,8 +3097,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private void showDuanSum(int a) {
-        List<DenatorBaseinfo> list = LitePal.select().where("duan = ?", a + "").find(DenatorBaseinfo.class);
-        int totalNum = list.size();//得到数据的总条数
+        int totalNum = new GreenDaoMaster().getDuanNo(mRegion, (a + ""));//得到数据的总条数
         switch (a) {
             case 1:
                 reNumF1.setText(totalNum + "");

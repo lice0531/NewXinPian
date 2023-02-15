@@ -64,6 +64,7 @@
                 style="@style/allbtntstyle"
                 android:text="输入管壳码"
                 android:textSize="20sp"
+                android:visibility="gone"
                 />
 
             <Button

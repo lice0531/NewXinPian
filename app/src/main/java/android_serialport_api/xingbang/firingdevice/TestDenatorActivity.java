@@ -546,12 +546,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * ic_cankao && firstCount < Preparation_time * 0.2) {//5
-                        displayIcStr = displayIcStr + "(疑似断路)";
-                        ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
-                        ll_firing_IC_4.setTextSize(20);
-                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
-                    } else {
+                    }
+//                    else if (displayIc < 4 + denatorCount * ic_cankao && firstCount < Preparation_time * 0.2) {//5
+//                        displayIcStr = displayIcStr + "(疑似断路)";
+//                        ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
+//                        ll_firing_IC_4.setTextSize(20);
+//                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
+//                    }
+                    else {
                         ll_firing_IC_4.setTextColor(Color.GREEN);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
                     }
@@ -560,7 +562,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于9000
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 9000 && firstCount < Preparation_time * 0.5) {
+                    if (displayIc > 9000 && firstCount < Preparation_time * 0.2) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试

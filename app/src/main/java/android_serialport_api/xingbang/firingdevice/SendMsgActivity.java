@@ -129,7 +129,7 @@ public class SendMsgActivity extends BaseActivity {
             String[] b = getlocalip().split("\\.");
             textIpStart.setText(b[0] + "." + b[1] + "." + b[2] + ".");
         }
-
+        Log.e("区域", "mRegion: "+mRegion );
     }
 
     private void initHandle() {
@@ -140,10 +140,11 @@ public class SendMsgActivity extends BaseActivity {
                 case 1:
                     // 从客户端接收到消息
 //                    runPbDialog();
+                    mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
                     show_Toast("接收成功,正在导入数据,请稍等");
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
-                        Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
+//                        Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
                         if (leiguan != null) {
                             // 注册雷管
                             registerDetonator(leiguan);
@@ -183,6 +184,7 @@ public class SendMsgActivity extends BaseActivity {
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
+                    loadMoreData();//更新雷管
                     break;
                 default:
                     break;
@@ -259,11 +261,12 @@ public class SendMsgActivity extends BaseActivity {
      * 注册雷管
      */
     private void registerDetonator(String leiguan) {
-
+        boolean chongfu =false;
         String[] lg = leiguan.split(",");
         String shellNo;
         int maxNo = getMaxNumberNo();
         Log.e("接收注册", "lg.length: " + leiguan);
+        Log.e("接收注册", "区域mRegion: " + mRegion);
         if(lg[0].length()<13){
             show_Toast("数据不完整");
             return ;
@@ -272,6 +275,7 @@ public class SendMsgActivity extends BaseActivity {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");//芯片码//延时//管壳码//延时参数//段号
             if (checkRepeatDenatorId(a[0])) {//检查重复数据
+                chongfu=true;
                 continue;
             }
             maxNo++;
@@ -291,12 +295,17 @@ public class SendMsgActivity extends BaseActivity {
             denator.setPiece(mRegion);
             denator.setDuanNo(a[4]);
             denator.setDuan(a[4].split("-")[0]);
-            Log.e("接收注册", "denator: " + denator.toString());
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
         }
         pb_show = 0;
-        show_Toast_ui("导入成功");
-        return ;
+
+        if(chongfu){
+            show_Toast("导入成功,有数据注册重复");
+        }else {
+            show_Toast("导入成功");
+        }
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
     }
 
     @OnClick({R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile})
@@ -473,6 +482,7 @@ public class SendMsgActivity extends BaseActivity {
                         }
                         buffer.append("\n");
                         //
+
                         Log.e("接收消息", "buffer.toString(): " + buffer.toString());
                         Message m = new Message();
                         m.what = 1;
@@ -896,6 +906,7 @@ public class SendMsgActivity extends BaseActivity {
                 // 显示提示
                 show_Toast("已选择 区域" + mRegion);
                 // 延时选择重置
+                Log.e("点击item", "mRegion: "+mRegion);
                 return true;
 
             default:
