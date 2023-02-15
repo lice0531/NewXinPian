@@ -409,7 +409,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
-
+                    for (int i = 1; i < 6; i++) {
+                        showDuanSum(i);
+                    }
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
 

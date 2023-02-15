@@ -448,10 +448,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 重新排序 更新视图
                 case 1002:
                     // 雷管孔号排序 并 重新查询
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
-
+                    for (int i = 1; i < 6; i++) {
+                        showDuanSum(i);
+                    }
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
 
@@ -3043,7 +3045,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 resetView();
                 delay_set = "0";
                 //初始化雷管数量
-                for (int i = 1; i < 21; i++) {
+                for (int i = 1; i < 6; i++) {
                     showDuanSum(i);
                 }
                 return true;
