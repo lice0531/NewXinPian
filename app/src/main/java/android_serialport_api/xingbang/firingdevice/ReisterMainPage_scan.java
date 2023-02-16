@@ -282,6 +282,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private String duan = "";//duan
     // 雷管列表
     private Handler mHandler_showNum = new Handler();//显示雷管数量
+    private Handler mHandler_showNum_all = new Handler();//显示雷管数量
 
 
     @Override
@@ -426,6 +427,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             showDuanSum(pos);
             if (delay_set != null) {
                 initView_true(delay_set);
+            }
+            return false;
+        });
+        mHandler_showNum_all = new Handler(msg -> {
+            for (int i = 1; i < 6; i++) {
+                showDuanSum(i);
             }
             return false;
         });
@@ -1872,10 +1879,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         pb_show = 0;
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
-        Message msg = new Message();
-        msg.arg1 = Integer.parseInt(duan);
-        msg.obj = delay_set;
-        mHandler_showNum.sendMessage(msg);
+
+        mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
+
         Utils.saveFile();//把软存中的数据存入磁盘中
         return reCount;
     }
@@ -3045,9 +3051,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 resetView();
                 delay_set = "0";
                 //初始化雷管数量
-                for (int i = 1; i < 6; i++) {
-                    showDuanSum(i);
-                }
+                mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
                 return true;
 
             default:
