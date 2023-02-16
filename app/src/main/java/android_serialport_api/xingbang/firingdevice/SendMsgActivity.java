@@ -298,13 +298,13 @@ public class SendMsgActivity extends BaseActivity {
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
         }
         pb_show = 0;
-
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         if(chongfu){
             show_Toast("导入成功,有数据注册重复");
         }else {
             show_Toast("导入成功");
         }
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
 
     }
 

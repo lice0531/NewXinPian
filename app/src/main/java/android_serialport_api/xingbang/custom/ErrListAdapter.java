@@ -57,7 +57,8 @@ public class ErrListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         Log.e("错误列表adapter", "list.get(position): "+list.get(position) );
-        viewHolder.X_item_no.setText((position + 1)+"");//雷管uid
+//        viewHolder.X_item_no.setText((position + 1)+"");//雷管uid
+        viewHolder.X_item_no.setText(list.get(position).get("serialNo")+"");//序号
         viewHolder.X_item_duanNo.setText((String)list.get(position).get("duanNo"));//段号
         viewHolder.X_item_shellno.setText((String) list.get(position).get("shellNo"));//管壳码
         viewHolder.X_item_delay.setText(list.get(position).get("delay")+"");//延时
