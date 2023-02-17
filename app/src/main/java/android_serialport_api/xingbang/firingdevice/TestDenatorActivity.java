@@ -336,8 +336,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
         if (message.size() > 0) {
-//            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());
-            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());//跟起爆测试一样
+//            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());//跟起爆测试一样
+            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());
             version = message.get(0).getVersion();
             Log.e(TAG, "version: " + version);
         }
@@ -566,11 +566,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
-                        if (!chongfu) {
-                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
-                        } else {
-                            initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
-                        }
+//                        if (!chongfu) {
+//                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
+//                        } else {
+                            initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
+//                        }
                         return;
                     }
 //                    if (busInfo.getBusVoltage() < 6.3&& firstCount > Preparation_time * 0.5) {
@@ -634,34 +634,34 @@ public class TestDenatorActivity extends SerialPortActivity {
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于9000u ，全错: ");
                     sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
+//                    } else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+//                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
                     sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
+//                    } else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
+//                    }
 
                     Log.e(TAG, "小于9000u ，全错: stage=" + stage);
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
                     sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
-                    if (chongfu) {
-                        initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
-                    } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后,点击继续重新检测。");//弹出框
-                    }
+//                    if (chongfu) {
+//                        initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
+//                    } else {
+                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后再重新检测。");//弹出框
+//                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
                     sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
                     if (chongfu) {
-                        initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。");//弹出框
+                        initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再重新检测。");//弹出框
                     } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+                        initDialog_zanting2("请检查错误的雷管是否存在连接线断开或线夹进水进泥等情况!检查无误后再重新检测。");//弹出框
                     }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * ic_cankao * 1.1)) {
@@ -1220,10 +1220,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNeutralButton("继续", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
+//                .setNeutralButton("继续", (dialog1, which) -> {
+//                    off();//重新检测
+//                    dialog1.dismiss();
+//                })
                 .setNegativeButton("退出", (dialog12, which) -> {
                     stopXunHuan();
                 })
@@ -1237,10 +1237,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNeutralButton("继续", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
+//                .setNeutralButton("继续", (dialog1, which) -> {
+//                    off();//重新检测
+//                    dialog1.dismiss();
+//                })
                 .setNegativeButton("退出", (dialog12, which) -> {
                     stopXunHuan();
                 })
@@ -1276,17 +1276,18 @@ public class TestDenatorActivity extends SerialPortActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("系统提示");//"错误雷管列表"
         builder.setView(getlistview);
-        builder.setPositiveButton("继续", (dialog, which) -> {
-            dialogOFF(dialog);
-            off();//重新检测
-            dialog.dismiss();
-
-        });
-        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialogOFF(dialog);
             stopXunHuan();
             dialog.dismiss();
+
+
         });
+//        builder.setNeutralButton("继续", (dialog, which) -> {
+//            dialogOFF(dialog);
+//            off();//重新检测
+//            dialog.dismiss();
+//        });
         builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
 //            stopXunHuan();
             llview.setVisibility(View.VISIBLE);

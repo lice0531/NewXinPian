@@ -105,7 +105,7 @@ public class QueryCurrentDetail extends BaseActivity {
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
 
         totalbar_title = findViewById(R.id.title_text);
-        totalbar_title.setText("删除");
+        totalbar_title.setText("查看当前雷管");
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setOnClickListener(v -> {

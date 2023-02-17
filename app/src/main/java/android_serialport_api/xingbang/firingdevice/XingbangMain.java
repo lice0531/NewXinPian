@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -257,6 +258,14 @@ public class XingbangMain extends BaseActivity {
             //15是电流11000,电压16V
             GetFileName("SC_KT50_Second_MX_Version_16", ".apk");
         }
+        PackageInfo pi = null;
+        try {
+            pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
+            Log.e("下载目录2", pi.versionCode+"");//KT50_Second_Version_26.apk
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -416,7 +425,6 @@ public class XingbangMain extends BaseActivity {
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
-        MmkvUtils.savecode("rj_version", "KT50_3.25_PT_221109");//软件版本
     }
 
     private void loginToSetEnv() {

@@ -461,11 +461,12 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (displayIc > 9000) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
+
                     if (!chongfu) {
                         initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
                     } else {
-                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                        initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
+                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                        initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,再进行检测。");//弹出框
                     }
                 }
             }
@@ -1469,35 +1470,35 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再续进行检测。");//弹出框
+//                    } else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
+//                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    } else {
-                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+//                    } else {
+//                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
+//                    }
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
 
-                    if (chongfu) {
-                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行检测!");//弹出框
-                    } else {
-                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting2("请查看错误雷管列表,检查错误雷管后,再进行检测。");//弹出框
+//                    } else {
+//                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
+//                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                    if (chongfu) {
-                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行检测。");//弹出框
-                    } else {
-                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting2("请查错误的雷管,检查无误后,再进行检测。");//弹出框
+//                    } else {
+//                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+//                    }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else {
                     stopXunHuan();//检测完成
@@ -2212,14 +2213,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNeutralButton("重检", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
-                .setNegativeButton("退出", (dialog12, which) -> {
+//                .setNeutralButton("重检", (dialog1, which) -> {
+//                    off();//重新检测
+//                    dialog1.dismiss();
+//                })
+                .setNegativeButton("取消", (dialog12, which) -> {
                     dialog12.cancel();
-                    closeThread();
-                    closeForm();
+//                    closeThread();
+//                    closeForm();
                 })
                 .setPositiveButton("继续", (dialog12, which) -> {
 //                    off();//重新检测
@@ -2258,7 +2259,7 @@ public class FiringMainActivity extends SerialPortActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("系统提示");//"错误雷管列表"
         builder.setView(getlistview);
-        builder.setPositiveButton("重检", (dialog, which) -> {
+        builder.setPositiveButton("取消", (dialog, which) -> {
             dialogOFF(dialog);
 //            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
 //            sendCmd(reCmd);
@@ -2267,15 +2268,15 @@ public class FiringMainActivity extends SerialPortActivity {
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
-            off();//重新检测
+//            off();//重新检测
             dialog.dismiss();
 
         });
-        builder.setNeutralButton("充电", (dialog, which) -> {
-            dialogOFF(dialog);
-            stopXunHuan();
-            dialog.dismiss();
-        });
+//        builder.setNeutralButton("充电", (dialog, which) -> {
+//            dialogOFF(dialog);
+//            stopXunHuan();
+//            dialog.dismiss();
+//        });
         builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
 //            stopXunHuan();
             llview.setVisibility(View.VISIBLE);
