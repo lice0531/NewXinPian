@@ -824,8 +824,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 //进入测试模式
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20
                             }
-                            Log.e(TAG, "firstCount1: "+firstCount );
-                            if (firstCount <= 0) {
+
+
+                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+                            }
+                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
+                            if (firstCount <= 1) {
                                 Log.e(TAG, "firstCount2: "+firstCount );
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
                                 Thread.sleep(1000);//为了发40后等待
@@ -833,17 +838,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-
-                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
-                            }
-
                             firstCount--;
                             if (firstCount == -10) {
                                 Log.e(TAG, "退出流程: ");
                                 exit = true;
                                 break;
                             }
+
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
 

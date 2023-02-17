@@ -262,6 +262,7 @@ public class XingbangMain extends BaseActivity {
             //16是改变前的
             //17是电流11000,电压17V
             //15是电流11000,电压16V
+            //18是电流11000,1+5阶段有个等待5分钟提示1.3.1C
             GetFileName("SC_KT50_Second_Version_15", ".apk");
         }
     }
