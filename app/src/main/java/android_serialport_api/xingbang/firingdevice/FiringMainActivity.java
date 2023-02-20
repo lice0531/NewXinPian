@@ -393,7 +393,7 @@ public class FiringMainActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
-                String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";//保留两位小数
+                String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 9000 && stage != 6) {
                     displayIcStr = displayIcStr + "(疑似短路)";
@@ -462,12 +462,22 @@ public class FiringMainActivity extends SerialPortActivity {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
 
-                    if (!chongfu) {
-                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-                    } else {
-                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                        initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,再进行检测。");//弹出框
-                    }
+//                    if (!chongfu) {
+//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
+//                    } else {
+                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                    AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                            .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                            .setMessage("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,再进行检测。")//设置对话框的内容"本次任务成功起爆！"
+                            //设置对话框的按钮
+                            .setNegativeButton("退出", (dialog12, which) -> {
+                                dialog12.cancel();
+                                closeThread();
+                                closeForm();
+                            })
+                            .create();
+                    dialog.show();
+//                    }
                 }
             }
 
@@ -1471,14 +1481,14 @@ public class FiringMainActivity extends SerialPortActivity {
                     Log.e(TAG, "大于4000u ，全错: ");
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再续进行检测。");//弹出框
+                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再续进行检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
 //                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
 //                    }
@@ -1487,7 +1497,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
 
 //                    if (chongfu) {
-                        initDialog_zanting2("请查看错误雷管列表,检查错误雷管后,再进行检测。");//弹出框
+                    initDialog_zanting2("请查看错误雷管列表,检查错误雷管后,再进行检测。");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
@@ -1495,7 +1505,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
-                        initDialog_zanting2("请查错误的雷管,检查无误后,再进行检测。");//弹出框
+                    initDialog_zanting2("请查错误的雷管,检查无误后,再进行检测。");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
 //                    }

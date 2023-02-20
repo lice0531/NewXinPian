@@ -563,7 +563,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                     //电流大于9000
 //                    Log.e(TAG, "displayIc: " + displayIc);
                     if (displayIc > 9000 && firstCount < Preparation_time * 0.2) {
-                        stage = 7;
+                        stage = 5;
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
                         mHandler_1.handleMessage(Message.obtain());
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
 //                        if (!chongfu) {
@@ -571,6 +577,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        } else {
                             initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
 //                        }
+                        endTest();
                         return;
                     }
 //                    if (busInfo.getBusVoltage() < 6.3&& firstCount > Preparation_time * 0.5) {
