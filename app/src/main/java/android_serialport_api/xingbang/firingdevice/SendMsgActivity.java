@@ -152,7 +152,9 @@ public class SendMsgActivity extends BaseActivity {
 //                            tipDlg.dismiss();
                             show_Toast("没有接收到数据");
                         }
+
                     }).start();
+                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                     break;
 
                 case 2:
@@ -298,7 +300,7 @@ public class SendMsgActivity extends BaseActivity {
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
         }
         pb_show = 0;
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
         if(chongfu){
             show_Toast("导入成功,有数据注册重复");
         }else {
@@ -340,7 +342,7 @@ public class SendMsgActivity extends BaseActivity {
                     }
                 }).start();
                 break;
-            case R.id.btn_read_log:
+            case R.id.btn_read_log://分析日志
 //                String log = Utils.fenxiLog(path);
 //
 //                registerLog(log);
@@ -921,17 +923,17 @@ public class SendMsgActivity extends BaseActivity {
     private void setTitleRegion(String region, int size) {
 
         String str;
-        if (size == -1) {
+//        if (size == -1) {
             str = " 区域" + region;
-        } else {
-            str = " 区域" + region + "(数量: " + size + ")";
-        }
+//        } else {
+//            str = " 区域" + region + "(数量: " + size + ")";
+//        }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, region);
 
-        Log.e("liyi_Region", "已选择" + str);
+        Log.e("liyi_Region", "已选择" + str+"  数量: " + size);
     }
 
     private void readCVS() {
