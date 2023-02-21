@@ -293,9 +293,14 @@ public class SendMsgActivity extends BaseActivity {
             shellNo = lg[i - 1];
             Log.e("接收注册", "shellNo: " + shellNo);
             String[] a = shellNo.split("#");
-            if (checkRepeatDenatorId(a[0])) {//检查重复数据
+            Log.e("接收注册", "a[0]: " + a[0]);
+            if (a[0].length()>5&&checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
                 continue;
+            }
+            if(a[0].equals("null")){
+                a[0]="";
+                a[3]="";
             }
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
@@ -372,7 +377,7 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
-                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
+                    if (list_uid.get(i).getShellBlastNo().length() == 13 ) {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo()  + "#" + list_uid.get(i).getZhu_yscs()+ ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
@@ -922,6 +927,7 @@ public class SendMsgActivity extends BaseActivity {
                 // 显示提示
                 show_Toast("已选择 区域" + mRegion);
                 // 延时选择重置
+                loadMoreData();
                 return true;
 
             default:
@@ -936,11 +942,11 @@ public class SendMsgActivity extends BaseActivity {
     private void setTitleRegion(String region, int size) {
 
         String str;
-        if (size == -1) {
+//        if (size == -1) {
             str = " 区域" + region;
-        } else {
-            str = " 区域" + region + "(数量: " + size + ")";
-        }
+//        } else {
+//            str = " 区域" + region + "(数量: " + size + ")";
+//        }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数

@@ -678,7 +678,7 @@ public class GreenDaoMaster {
             Defactory message = new Defactory();
             message.setDeName("scyb");
             message.setDeEntCode("56");
-            message.setDeFeatureCode("H");
+//            message.setDeFeatureCode("H");
             message.setIsSelected("是");
             getDaoSession().getDefactoryDao().insert(message);
         }
