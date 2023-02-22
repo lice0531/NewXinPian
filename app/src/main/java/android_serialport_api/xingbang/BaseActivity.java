@@ -149,6 +149,13 @@ public class  BaseActivity extends AppCompatActivity {
 				e.printStackTrace();
 			}
 			Log.e("BaseActivity", "实例化 DeviceControl");
+		}else if (mPowerOnMode == 3) {
+			try {
+				mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 25);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Log.e("BaseActivity", "实例化 DeviceControl");
 		}  else {
 			Log.e("BaseActivity", "实例化 空");
 		}

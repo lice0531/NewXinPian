@@ -57,7 +57,11 @@ public class Application extends MultiDexApplication {
         if (mSerialPort == null) {
             switch (Build.DEVICE) {
                 // KT50 起爆器设备
-                case "KT50_B2": {
+                case "KT50": {//新设备
+                    mSportName = "/dev/ttyS0";//ttyS0或者ttyS1
+                    mPowerIndex = 3;
+                    break;
+                } case "KT50_B2": {
                     mSportName = "/dev/ttyMT1";
                     mPowerIndex = 0;
                     break;
@@ -78,7 +82,7 @@ public class Application extends MultiDexApplication {
                     Log.e("上电", "当前机型为: " + Build.DEVICE + " 该机型没有被适配");
                     break;
             }
-            Log.e("application", "device: " + Build.DEVICE + "串口号: " + mSportName+" mPowerIndex:"+mPowerIndex);
+            Log.e("系统参数", "device: " + Build.DEVICE + "  串口号: " + mSportName+" mPowerIndex:"+mPowerIndex);
             mSerialPort = new SerialPort(new File(mSportName), 115200, 0, 8, 1);
         }
         return mSerialPort;
