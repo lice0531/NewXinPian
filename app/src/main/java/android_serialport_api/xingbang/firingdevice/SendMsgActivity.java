@@ -276,9 +276,13 @@ public class SendMsgActivity extends BaseActivity {
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");//芯片码//延时//管壳码//延时参数//段号
-            if (checkRepeatDenatorId(a[0])) {//检查重复数据
+            if (a[0].length()>5&&checkRepeatDenatorId(a[0])) {//检查重复数据
                 chongfu=true;
                 continue;
+            }
+            if(a[0].equals("null")){
+                a[0]="";
+                a[3]="";
             }
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
