@@ -140,6 +140,7 @@ public class SendMsgActivity extends BaseActivity {
                 case 1:
                     // 从客户端接收到消息
 //                    runPbDialog();
+                    mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
                     show_Toast("接收成功,正在导入数据,请稍等");
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车

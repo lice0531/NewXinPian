@@ -417,7 +417,7 @@ public class XingbangMain extends BaseActivity {
         message.setServer_http("http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
-        message.setPreparation_time("20");
+        message.setPreparation_time("28");
         message.setChongdian_time("48");
         message.setServer_type1("1");
         message.setServer_type2("0");
