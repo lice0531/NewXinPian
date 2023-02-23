@@ -2140,15 +2140,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 if (llStart.getVisibility() == View.GONE) {
                     lySetDelay.setVisibility(View.GONE);
                     zcLlTitle.setVisibility(View.GONE);
+                    btnScanReister.setVisibility(View.GONE);
                     llSingle.setVisibility(View.VISIBLE);
                     llStart.setVisibility(View.VISIBLE);
                     llEnd.setVisibility(View.VISIBLE);
                     llNum.setVisibility(View.VISIBLE);
                     btnInputOk.setVisibility(View.VISIBLE);
-                    btnSingle.setText("返回");
+                    btnSingle.setText("选择段位");
                 } else {
                     lySetDelay.setVisibility(View.VISIBLE);
                     zcLlTitle.setVisibility(View.VISIBLE);
+                    btnScanReister.setVisibility(View.VISIBLE);
                     llSingle.setVisibility(View.GONE);
                     llStart.setVisibility(View.GONE);
                     llEnd.setVisibility(View.GONE);
