@@ -41,7 +41,6 @@ import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
 
 import org.apache.commons.lang.StringUtils;
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -404,7 +403,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         String yscs = data.substring(22, 26);
                         String version = data.substring(26, 27);
                         duan = data.substring(27, 28);
-                        insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
+                        insertSingleDenator_28(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                     } else {
                         //山东版  //1030213A00000 700F442CE E10A 1 2
                         barCode = data.substring(0, 13);
@@ -412,16 +411,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         String yscs = data.substring(22, 26);
                         String version = data.substring(26, 27);
                         duan = data.substring(27, 28);
-                        insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
+                        insertSingleDenator_28(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                     }
 
 
                 }
-                else if(data.length() == 14){
-                    barCode = data.substring(0, 13);
-                    duan = data.substring(13, 14);
-                    insertSingleDenator(barCode);
-                }
+//                else if(data.length() == 14){
+//                    barCode = data.substring(0, 13);
+//                    duan = data.substring(13, 14);
+//                    insertSingleDenator_14(barCode);
+//                }
                 hideInputKeyboard();//隐藏光标
             }
         });
@@ -1551,9 +1550,91 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     /***
-     * 单发注册方法(扫码注册,单发输入会用到)
+     * 单发输入注册方法
      */
     private int insertSingleDenator(String shellNo) {
+        if (shellNo.length() != 13) {
+            return -1;
+        }
+        if (check(shellNo) == -1) {
+            return -1;
+        }
+//        String denatorId = serchDenatorId(shellNo);
+        DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
+        //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
+        if (detonatorTypeNew != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
+//        if (detonatorTypeNew == null) {
+//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
+//            return -1;
+//        }
+
+//        int maxNo = getMaxNumberNo();
+//        int delay = getMaxDelay(maxNo);//获取最大延时
+        // 获取 该区域 最大序号
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
+        // 获取 该区域 最大序号的延时
+        int delay = 0;
+        if (delay_set.equals("f1")) {//获取延时和段数
+            duan = "1";
+            delay = 0;
+        } else if (delay_set.equals("f2")) {
+            duan = "2";
+            delay = 25;
+        } else if (delay_set.equals("f3")) {
+            duan = "3";
+            delay = 50;
+        } else if (delay_set.equals("f4")) {
+            duan = "4";
+            delay = 75;
+        } else if (delay_set.equals("f5")) {
+            duan = "5";
+            delay = 100;
+        } else {
+            duan = "1";
+            delay = 0;
+        }
+        int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
+
+
+        maxNo++;
+        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+        denatorBaseinfo.setBlastserial(maxNo);
+        denatorBaseinfo.setSithole(maxNo + "");
+        denatorBaseinfo.setShellBlastNo(shellNo);
+        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setErrorCode("FF");
+        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setWire("");//桥丝状态
+        denatorBaseinfo.setPiece(mRegion);
+        denatorBaseinfo.setDuan(duan);//段
+        denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
+        if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+            denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
+            denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+        }
+        //向数据库插入数据
+        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+        Message msg = new Message();
+        msg.arg1 = Integer.parseInt(duan);
+        msg.obj = delay_set;
+        mHandler_showNum.sendMessage(msg);
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        Utils.saveFile();//把闪存中的数据存入磁盘中
+        SoundPlayUtils.play(1);
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
+        return 0;
+    }
+
+    /***
+     * 扫14位管壳码
+     */
+    private int insertSingleDenator_14(String shellNo) {
         if (shellNo.length() != 13) {
             return -1;
         }
@@ -1638,7 +1719,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /***
      * 扫码注册方法
      */
-    private int insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+    private int insertSingleDenator_28(String shellNo, String denatorId, String yscs) {
         if (shellNo.length() != 13) {
             return -1;
         }
@@ -1708,7 +1789,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /***
      * 扫码注册方法
      */
-    private int insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
+    private int insertSingleDenator_28(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
         if (shellNo.length() != 13) {
             return -1;
         }

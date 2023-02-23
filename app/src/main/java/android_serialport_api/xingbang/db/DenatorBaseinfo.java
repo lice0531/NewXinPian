@@ -96,13 +96,12 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     }
 
 
-
     @Override
     public String toString() {
         return "DenatorBaseinfo{" +
                 "id=" + id +
                 ", blastserial=" + blastserial +
-                ", sithole=" + sithole +
+                ", sithole='" + sithole + '\'' +
                 ", shellBlastNo='" + shellBlastNo + '\'' +
                 ", denatorId='" + denatorId + '\'' +
                 ", delay=" + delay +
@@ -119,6 +118,8 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
                 ", piece='" + piece + '\'' +
+                ", duan='" + duan + '\'' +
+                ", duanNo='" + duanNo + '\'' +
                 '}';
     }
 

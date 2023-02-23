@@ -70,6 +70,8 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
+import android_serialport_api.xingbang.custom.ErrDuanAdapter;
+import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.ShouQuanAdapter;
@@ -193,6 +195,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private ShouQuanAdapter mAdapter_sq;//授权
     private SQLiteDatabase db;
     private Handler mHandler_httpresult;
+    private Handler mHandler_httpresult2;
     private Handler mHandler_1 = new Handler();//错误提示
     private Handler mHandler2;
     private String selectDenatorId;
@@ -244,6 +247,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
     private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
     private TextView totalbar_title;
+
+    private ArrayList<Map<String, Object>> list_data = new ArrayList<>();//段位错误的雷管信息
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -377,7 +382,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         //新规则
 //        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
         //二代煤许模拟
-        String res2 ="{\"cwxx\":\"0\",\"sqrq\":\"2023-02-17 10:57:14\",\"sbbhs\":[{\"sbbh\":\"F56A6M22076\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"富兴煤矿\",\"zbqyjd\":\"108.348469\",\"zbqywd\":\"31.586952\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5630206A02001\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC3CF9C0921\",\"gzmcwxx\":\"0\"}]}}";
+        String res2 ="{\"cwxx\":\"0\",\"sqrq\":\"2023-02-17 10:57:14\",\"sbbhs\":[{\"sbbh\":\"F56A6M22076\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"富兴煤矿\",\"zbqyjd\":\"108.348469\",\"zbqywd\":\"31.586952\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5630206A02001\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC1CF9C0921\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02002\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC2CF9C0922\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02003\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC3CF9C0923\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02004\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC4CF9C0924\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02005\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC5CF9C0925\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02006\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC6CF9C0921\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02007\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC7CF9C0922\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02008\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC8CF9C0923\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02009\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC9CF9C0924\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02010\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDA1CF9C0921\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02011\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDA2CF9C0922\",\"gzmcwxx\":\"0\"}]}}";
         //二代模拟
 //        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0121\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0222\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0323\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0521\",\"gzmcwxx\":\"0\"}]}}";
         //模拟下载150发雷管
@@ -439,6 +444,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
                     }
                 }
+//                mHandler_httpresult2.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
                 mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//项目下载成功
             }
         } catch (JSONException e) {
@@ -572,6 +578,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mHandler_httpresult = new Handler(msg -> {
             loadMoreData_sq();//读取数据
             mAdapter_sq.notifyDataSetChanged();
+            return false;
+        });
+        mHandler_httpresult2 = new Handler(msg -> {
+            loadMoreData_duanErr();
             return false;
         });
         mHandler2 = new Handler(msg -> {
@@ -1123,6 +1133,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                                 GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
                             }
+
                         }
 
                         if (err != 0) {
@@ -1721,44 +1732,55 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     /**
      * 查询所有雷管
      */
-    private void loadMoreData_lg(int cp) {
-        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO;
+    private void loadMoreData_duanErr() {
+        String sql = "Select * from denatorBaseinfo where duan != cong_yscs" ;
         Cursor cursor = db.rawQuery(sql, null);//new String[]{(index) + "", pageSize + ""}
-        list_all.clear();
-        this.currentPage = cp;
+        list_data.clear();
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 int serialNo = cursor.getInt(1); //获取第二列的值 ,序号
-                int holeNo = cursor.getInt(2);
                 String shellNo = cursor.getString(3);//管壳号
-                int delay = cursor.getInt(5);
-                String stCode = cursor.getString(6);//状态
-                String stName = cursor.getString(7);//
-                String errorCode = cursor.getString(9);//状态
-                String errorName = cursor.getString(8);//
+                String cong_yscs = cursor.getString(17);//密码中的段
+                String duan = cursor.getString(19);//段
+                String duanNo = cursor.getString(20);//段
 
-                VoBlastModel item = new VoBlastModel();
-                item.setBlastserial(serialNo);
-                item.setSithole(holeNo + "");
-                item.setDelay((short) delay);
-                item.setShellBlastNo(shellNo);
-                item.setErrorCode(errorCode);
-                item.setErrorName(errorName);
-                item.setStatusCode(stCode);
-                item.setStatusName(stName);
-                list_all.add(item);
+                Map<String, Object> item = new HashMap<>();
+                item.put("serialNo",serialNo);
+                item.put("shellNo", shellNo);
+                item.put("cong_yscs", cong_yscs);
+                item.put("duan", duan);
+                item.put("duanNo", duanNo);
+                list_data.add(item);
             }
             cursor.close();
-            this.currentPage++;
         }
-        if (list_all == null) {
-            show_Toast("请注册雷管!");
+        if (list_data != null) {
+            createDialog();
         }
-        list_uid.clear();
-        for (int i = 0; i < list_all.size(); i++) {
-            list_uid.add(list_all.get(i).getShellBlastNo());
-        }
-        Log.e("雷管", "list_uid: " + list_uid.toString());
+        Log.e("雷管", "list_uid: "+list_data.size()+"==" + list_data);
+
+    }
+    /***
+     * 建立错误对话框
+     */
+    public void createDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View getlistview = inflater.inflate(R.layout.firing_errorduan_listview, null);
+
+        // 给ListView绑定内容
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+//        SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
+//                new String[]{"serialNo", "shellNo", "errorName", "delay"},
+//                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+//        // 给listview加入适配器
+//        errlistview.setAdapter(adapter);
+        ErrDuanAdapter mAdapter = new ErrDuanAdapter(this, list_data, R.layout.firing_errorduan_item);
+        errlistview.setAdapter(mAdapter);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.text_alert_tablename1));//"错误雷管列表"
+        builder.setView(getlistview);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 
     /**

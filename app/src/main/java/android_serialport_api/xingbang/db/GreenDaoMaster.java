@@ -306,6 +306,13 @@ public class GreenDaoMaster {
                 .unique();
     }
 
+    public List<DenatorBaseinfo> checkShellNo_2() {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Duan.notEq(DenatorBaseinfoDao.Properties.Cong_yscs))
+                .list();
+    }
+
     /**
      * 查询生产列表中的重复雷管
      */
@@ -344,7 +351,6 @@ public class GreenDaoMaster {
 
     //丹灵下载后更新雷管芯片码//在线下载,离线下载
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
-        Log.e("插入数据", "lgBean: " );
         //94242214050
         //F42F1C 2E0A 2 5
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
@@ -392,11 +398,12 @@ public class GreenDaoMaster {
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
-                registerDetonator_typeNew(db);
+                registerDetonator_typeNew(db);//更新到生产数据库中
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
         }
+
     }
 
     /**
@@ -413,6 +420,7 @@ public class GreenDaoMaster {
         detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
         detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
+        detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());
         detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
