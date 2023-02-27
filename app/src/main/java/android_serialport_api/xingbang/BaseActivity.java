@@ -151,11 +151,11 @@ public class  BaseActivity extends AppCompatActivity {
 			Log.e("BaseActivity", "实例化 DeviceControl");
 		}else if (mPowerOnMode == 3) {
 			try {
-				mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 25);
+				mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156,170,7,9);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			Log.e("BaseActivity", "实例化 DeviceControl");
+			Log.e("BaseActivity", "KT50新设备 DeviceControlSpd");
 		}  else {
 			Log.e("BaseActivity", "实例化 空");
 		}
@@ -193,6 +193,13 @@ public class  BaseActivity extends AppCompatActivity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else if (mPowerOnMode == 3) {// 新款KT50上电
+			Log.e("BaseActivity", "新款KT50 主板上电");
+			try {
+				mDeviceControlSpd.PowerOnDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -221,6 +228,14 @@ public class  BaseActivity extends AppCompatActivity {
 		}// DC 主板下电
 		if (mPowerOnMode == 2) {
 			Log.e("BaseActivity", "DC 主板下电");
+			try {
+				mDeviceControlSpd.PowerOffDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}if (mPowerOnMode == 3) {
+			Log.e("BaseActivity", "新款KT50 主板下电");
 			try {
 				mDeviceControlSpd.PowerOffDevice();
 			} catch (IOException e) {

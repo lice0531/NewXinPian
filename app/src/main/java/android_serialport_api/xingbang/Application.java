@@ -57,11 +57,7 @@ public class Application extends MultiDexApplication {
         if (mSerialPort == null) {
             switch (Build.DEVICE) {
                 // KT50 起爆器设备
-                case "KT50": {//新设备
-                    mSportName = "/dev/ttyS0";//ttyS0或者ttyS1
-                    mPowerIndex = 3;
-                    break;
-                } case "KT50_B2": {
+                case "KT50_B2": {
                     mSportName = "/dev/ttyMT1";
                     mPowerIndex = 0;
                     break;
@@ -76,6 +72,11 @@ public class Application extends MultiDexApplication {
                 case "FG50": {//波特率230400
                     mSportName = "/dev/ttyS0";
                     mPowerIndex = 2;
+                    break;
+                }
+                case "KT50": {//新设备
+                    mSportName = "/dev/ttyS0";//ttyS0或者ttyS1
+                    mPowerIndex = 3;
                     break;
                 }
                 default:
