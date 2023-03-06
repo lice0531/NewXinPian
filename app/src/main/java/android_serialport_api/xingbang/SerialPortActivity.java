@@ -185,11 +185,14 @@ public abstract class SerialPortActivity extends BaseActivity {
 
     }
 
+    /**
+     * 负责把分开的两条命令拼接成一个
+     * */
     protected int completeValidCmd(String cmd) {
         if (cmd == null) return -1;
         if (revCmd == null) revCmd = "";
         this.afterCmd = "";
-        revCmd += cmd;
+        revCmd += cmd;//把分两次发送的命令拼一起
         //分解判断命令
         String reVal = analysisCmd(revCmd);
         if (reVal.equals("00")) {

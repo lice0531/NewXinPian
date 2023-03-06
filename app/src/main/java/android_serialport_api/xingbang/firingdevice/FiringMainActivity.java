@@ -278,6 +278,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         String device = Build.DEVICE;
         switch (device) {
+            case "KT50":
             case "KT50_B2": {
                 ll_txt_firing_7.setText(R.string.text_firing_tip5_2);
                 break;
@@ -392,6 +393,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
+                Log.e(TAG, "busInfo: "+busInfo.toString() );
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
@@ -435,7 +437,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 13) {
+            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 13 && busInfo != null) {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
 
@@ -456,7 +458,6 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //电流大于9000,重启检测阶段
             if (secondCount < JianCe_time * 0.2 && stage == 2 && busInfo != null) {
-                Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 9000) {
                     increase(99);//暂停阶段
@@ -481,7 +482,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < JianCe_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < JianCe_time * 0.4 && busInfo != null && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
@@ -1146,7 +1147,7 @@ public class FiringMainActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        if (completeValidCmd(fromCommad) == 0) {
+        if (completeValidCmd(fromCommad) == 0) {//分析命令是否完整,不完整就把分两次发送的命令拼一起
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
             else this.revCmd = "";
@@ -1159,7 +1160,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, cmdBuf);//处理cmd命令
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
 
                 }
             }
@@ -1189,6 +1190,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            increase(3);
 
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
+            Log.e("起爆测试结果", "解析31cmd: " + Utils.bytesToHexFun(locatBuf));
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
 
             if (fromData != null && writeDenator != null) {
@@ -1200,8 +1202,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
+                Log.e("起爆测试结果", "fromData.toString(): " + fromData.toString());
             }
-            Log.e("起爆测试结果", "fromData.toString(): " + fromData.toString());
+
 //            Log.e(TAG, "错误雷管数量--totalerrorNum: " + totalerrorNum);
 
 
@@ -1622,6 +1625,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 3://写入延时时间，检测结果看雷管是否正常
+//                            Log.e(TAG, "reThirdWriteCount: "+reThirdWriteCount );
+//                            Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
 //                                Thread.sleep(50);
                                 thirdStartTime = 0;
@@ -1695,7 +1700,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 4000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 9000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                    Log.e(TAG, "长时间没有返回spanTime: "+spanTime );
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
@@ -1903,7 +1909,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 4000 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 6000 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 单片机未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
@@ -1979,7 +1985,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     keyFireCmd = 1;
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_5 && Build.DEVICE.equals("KT50_B2")) {
+        } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2")||Build.DEVICE.equals("KT50"))) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {

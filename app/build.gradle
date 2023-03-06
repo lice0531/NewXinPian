@@ -106,8 +106,9 @@ dependencies {
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'me.weyye.hipermission:library:1.0.3'//权限申请
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'//折线图
+    implementation "io.github.vincent-series:smart-toast:4.0.6"
 //    异常捕获
-    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
+//    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
     releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
 

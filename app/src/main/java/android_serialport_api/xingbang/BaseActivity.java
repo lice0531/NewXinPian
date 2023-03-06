@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.serialport.DeviceControlSpd;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.coder.vincent.smart_toast.SmartToast;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
@@ -71,15 +73,24 @@ public class  BaseActivity extends AppCompatActivity {
 	}
 	/* 把Toast定义成一个方法  可以重复使用，使用时只需要传入需要提示的内容即可*/
 	public void show_Toast(String text) {
-		Utils.showToast(this,text,3000);
+//		Utils.showToast(this,text,3000);
+		SmartToast.classic()
+				.config()
+				.messageColor(Color.RED)
+				.backgroundColorResource(R.color.toast_bg_color)
+				.messageSize(30f)//设置文本大小，单位sp，默认14sp
+				.messageBold(true)//设置文本为粗体，默认false
+				.apply()
+				.show(text);
 	}
     public void show_Toast_ui(String text) {
         Looper.prepare();
-		Utils.showToast(this,text,3000);
+//		Utils.showToast(this,text,3000);
+		SmartToast.classic().show(text);
         Looper.loop();
     }
 	public void show_Toast_long(String text) {
-		Utils.showToast(this,text,5000);
+		SmartToast.classic().showLong(text);
 	}
 
 	@SuppressLint("BlockedPrivateApi")
@@ -284,7 +295,7 @@ public class  BaseActivity extends AppCompatActivity {
 		boolean before = mGpiot1.isHi(name);
 		mGpiot1.setEnable(name, !before);
 		Log.e("BaseActivity", "optGpio: " + name);
-		Toast.makeText(this, name + "由 " + (before ? "高" : "低") + "，变成 " + (!before ? "高" : "低"), Toast.LENGTH_LONG).show();
+		show_Toast(name + "由 " + (before ? "高" : "低") + "，变成 " + (!before ? "高" : "低"));
 	}
 
 	/**

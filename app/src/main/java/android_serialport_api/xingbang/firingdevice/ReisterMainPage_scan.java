@@ -1226,7 +1226,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             default:
                 break;
         }
-        Toast.makeText(this, Temp + "处理", Toast.LENGTH_SHORT).show();
+        show_Toast(Temp + "处理");
         return super.onContextItemSelected(item);
     }
 
@@ -1319,7 +1319,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 String a = username.getText().toString().trim();
                 String b = password.getText().toString().trim();
                 //    将输入的用户名和密码打印出来
-                Toast.makeText(ReisterMainPage_scan.this, "管壳码: " + a + ", 延时: " + b, Toast.LENGTH_SHORT).show();
+                show_Toast("管壳码: " + a + ", 延时: " + b + "处理");
             }
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {

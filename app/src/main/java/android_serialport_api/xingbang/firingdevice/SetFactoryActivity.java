@@ -308,7 +308,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
                         show_Toast(getString(R.string.text_fac_tip1));
                     }
                 } else {
-                    Toast.makeText(SetFactoryActivity.this, checstr, Toast.LENGTH_SHORT).show();
+                    show_Toast(checstr);
                 }
                 getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
                 break;
