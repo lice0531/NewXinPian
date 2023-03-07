@@ -94,6 +94,7 @@ import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -1170,6 +1171,150 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         });
     }
 
+
+    private void upload_xingbang() {
+        pb_show = 1;
+        runPbDialog();//loading画面
+        final String key = "jadl12345678912345678912";
+        String url = Utils.httpurl_xb_upload;//煋邦下载
+        OkHttpClient client = new OkHttpClient();
+
+        String sfz = at_bprysfz.getText().toString().trim().replace(" ", "");//证件号码
+        String tx_htid = at_htid.getText().toString().trim().replace(" ", "");//合同编号 15位
+        String tv_xmbh = at_xmbh.getText().toString().trim().replace(" ", "");//项目编号
+        final String[] xy = at_coordxy.getText().toString().replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
+        String tv_dwdm = at_dwdm.getText().toString().trim();//单位代码 13位
+
+        String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
+        Log.e("uid", uid);
+
+        MediaType JSON = MediaType.parse("application/json;charset=utf-8");
+        JSONObject json = new JSONObject();
+        try {
+            json.put("sbbh", equ_no);//起爆器设备编号XBTS0003
+            json.put("jd", xy[0]);//经度
+            json.put("wd", xy[1]);//纬度
+            json.put("uid", uid);//雷管uid
+            json.put("xmbh", tv_xmbh);//项目编号370101318060006
+            json.put("htid", tx_htid);//合同编号370100X15040027
+            json.put("dwdm", tv_dwdm);//单位代码
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                show_Toast_ui("网络请求失败,请检查网络后再次尝试");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                String res ;
+                try {
+                    res = response.body().string();//response.body()只能调用一次,第二次调用就会变成null
+                } catch (Exception e) {
+                    show_Toast_ui("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+                    return;
+                }
+                Log.e("网络请求返回", "res: " + res);
+                Utils.writeRecord("---煋邦返回:" + res);
+                Gson gson = new Gson();
+                DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
+                try {
+                    JSONObject object1 = new JSONObject(res);
+                    String cwxx = object1.getString("cwxx");
+                    if (cwxx.equals("0")) {
+                        int err = 0;
+                        for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                            if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
+                                err++;
+                            }
+                        }
+                        Log.e("下载的雷管", "错误数量: " + err);
+                        if (danLingBean.getCwxx().equals("0")) {
+                            if (danLingBean.getZbqys().getZbqy().size() > 0) {
+                                double zbqyjd = Double.parseDouble(xy[0]);//116.456535
+                                double zbqywd = Double.parseDouble(xy[1]);//37.427541
+                                for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
+                                    double jingdu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd());
+                                    double weidu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
+                                    double banjing = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqybj());
+                                    //判断经纬度
+                                    LngLat start = new LngLat(zbqyjd, zbqywd);
+                                    LngLat end = new LngLat(jingdu, weidu);
+                                    double juli3 = AMapUtils.calculateLineDistance(start, end);
+//                                    Log.e("经纬度", "juli3: " + juli3);
+                                    if (juli3 < banjing) {
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+//                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                    }
+                                }
+                            }
+                        }
+                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+
+                        if (danLingBean.getLgs().getLg().size() > 0) {
+                            for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                            }
+                        }
+
+                        if (err != 0) {
+                            Log.e("下载", "err: " + err);
+//                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
+                        }
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
+                        pb_show = 0;//loding画面结束
+                    } else if (cwxx.equals("1")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(1, object1.getString("cwxxms")));
+                    } else if (cwxx.equals("2")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(2));
+                    } else if (cwxx.equals("3")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(3));//该起爆器未设置作业任务
+                    } else if (cwxx.equals("4")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(4));//起爆器在黑名单中
+                    } else if (cwxx.equals("5")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(5));//起爆位置不在起爆区域内
+                    } else if (cwxx.equals("6")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(6));//起爆位置在禁爆区域内
+                    } else if (cwxx.equals("7")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(7));//该起爆器已注销/报废
+                    } else if (cwxx.equals("8")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(8));//禁爆任务
+                    } else if (cwxx.equals("9")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(9));//作业合同存在项目
+                    } else if (cwxx.equals("10")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(10));//作业任务未设置准爆区域
+                    } else if (cwxx.equals("11")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(11));//离线下载不支持生产厂家试爆
+                    } else if (cwxx.equals("12")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(12));//营业性单位必须设置合同或者项目
+                    } else if (cwxx.equals("99")) {
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage(99, danLingBean.getCwxxms()));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                pb_show = 0;//loding画面结束
+            }
+        });
+    }
+
+
+
     /***
      * 发送初始化命令
      */
@@ -2205,6 +2350,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
                                 upload();
+//                                upload_xingbang();
                             }
                         }).create();
                 dialog.show();

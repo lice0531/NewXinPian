@@ -116,10 +116,6 @@ public class Application extends MultiDexApplication {
         locationService = new LocationService(getApplicationContext());
 
 //      打开错误日志，保存到sd卡
-//        CrashHandler crashHandler = CrashHandler.getInstance();// 注册crashHandler
-//        crashHandler.init(getApplicationContext());
-//        MyCrashHandler crashHandler = MyCrashHandler.getInstance();
-//        crashHandler.init(this);
         if(!isApkInDebug(getApplicationContext())){
             //测试过的错误拦截
             CrashExceptionHandler crashExceptionHandler = CrashExceptionHandler.newInstance();
