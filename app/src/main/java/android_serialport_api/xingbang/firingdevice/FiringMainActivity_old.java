@@ -1,6 +1,8 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -26,6 +28,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -45,7 +51,6 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
-import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
@@ -68,18 +73,12 @@ import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
 
-import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 /**
  * @author lice
  * 起爆页面
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class FiringMainActivity extends SerialPortActivity {
+public class FiringMainActivity_old extends SerialPortActivity {
 
     private Button btn_return1;
     private Button btn_return2;
@@ -194,17 +193,12 @@ public class FiringMainActivity extends SerialPortActivity {
     private int isshow = 0;
     private float cankao_ic = 0;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
-    private List<VoDenatorBaseInfo> denatorlist1 = new ArrayList<>();
-    private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
     private int ic_cankao = 19;//雷管参考电流
-
-    private boolean version_1 = true;
-    private boolean version_2 = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -352,7 +346,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if (msg.what == 1) {
                 show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
             } else if (msg.what == 2) {
-                AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                AlertDialog dialog = new Builder(FiringMainActivity_old.this)
                         .setTitle("当前雷管信息不完整")//设置对话框的标题
                         .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
                         //设置对话框的按钮
@@ -398,7 +392,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
-                Log.e(TAG, "busInfo: " + busInfo.toString());
+                Log.e(TAG, "busInfo: "+busInfo.toString() );
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
@@ -446,7 +440,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
 
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                AlertDialog dialog = new Builder(FiringMainActivity_old.this)
                         .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
                         .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
@@ -472,7 +466,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
 //                    } else {
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                    AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                    AlertDialog dialog = new Builder(FiringMainActivity_old.this)
                             .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                             .setMessage("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,再进行检测。")//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
@@ -491,7 +485,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                AlertDialog dialog = new Builder(FiringMainActivity_old.this)
                         .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
@@ -581,7 +575,7 @@ public class FiringMainActivity extends SerialPortActivity {
      * 初始化变量
      */
     private void initParam() {
-        FiringMainActivity.stage = 0;
+        FiringMainActivity_old.stage = 0;
         writeVo = null;
         firstWaitCount = 3;
         Wait_Count = 5;
@@ -632,7 +626,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     //提示对话框,提示有未注册雷管或者未处理雷管
     public void disPlayNoReisterDenator(final int flag) {
-        Builder builder = new Builder(FiringMainActivity.this);
+        Builder builder = new Builder(FiringMainActivity_old.this);
         builder.setTitle(getString(R.string.text_alert_tip));
         builder.setMessage(getString(R.string.text_alert_tip2));//"总线上有未处理的雷管，是否继续起爆？"
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
@@ -779,7 +773,7 @@ public class FiringMainActivity extends SerialPortActivity {
      * 建立错误对话框
      */
     public void createDialog() {
-        LayoutInflater inflater = LayoutInflater.from(FiringMainActivity.this);
+        LayoutInflater inflater = LayoutInflater.from(FiringMainActivity_old.this);
         View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
         // 给ListView绑定内容
 //        ListView listview = getlistview.findViewById(R.id.X_listview);
@@ -806,16 +800,12 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void loadBlastModel() {
         list_all_lg.clear();
-        denatorlist1.clear();
-        denatorlist2.clear();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
 //        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
         List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
-        denatorlist1 = new ArrayList<>();
-        denatorlist2 = new ArrayList<>();
         for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
             vo.setBlastserial(d.getBlastserial());
@@ -825,31 +815,11 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setDenatorIdSup(d.getDenatorIdSup());
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
-            vo.setRemark(d.getRemark());
-            if (d.getRemark().equals("1")) {
-                denatorlist1.add(vo);
-            }
-            if (d.getRemark().equals("2")) {
-                denatorlist2.add(vo);
-            }
-//            allBlastQu.offer(vo);
-//            list_all_lg.add(vo);
+            allBlastQu.offer(vo);
+            list_all_lg.add(vo);
         }
-        for (VoDenatorBaseInfo b:denatorlist2) {
-            allBlastQu.offer(b);
-            list_all_lg.add(b);
-        }
-        for (VoDenatorBaseInfo a:denatorlist1) {
-            allBlastQu.offer(a);
-            list_all_lg.add(a);
-        }
-
         denatorCount = allBlastQu.size();
-        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
-        Log.e(TAG, "denatorlist1: "+denatorlist1.size() );
-        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
-        Log.e(TAG, "denatorlist2: "+denatorlist2.size() );
-        Log.e(TAG, "list_all_lg: "+list_all_lg.toString() );
+
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
@@ -1093,7 +1063,7 @@ public class FiringMainActivity extends SerialPortActivity {
         //发送初始化命令
         if (!firstThread.isAlive()) {
             if (denatorCount == 0) {
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                AlertDialog dialog = new Builder(FiringMainActivity_old.this)
                         .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
                         .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
@@ -1219,7 +1189,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            increase(3);
 
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
-//            Log.e("起爆测试结果", "解析31cmd: " + Utils.bytesToHexFun(locatBuf));//测试一条命令分两次发测试用的
+            Log.e("起爆测试结果", "解析31cmd: " + Utils.bytesToHexFun(locatBuf));
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
 
             if (fromData != null && writeDenator != null) {
@@ -1306,7 +1276,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
-            if (FiringMainActivity.stage == 1) {
+            if (FiringMainActivity_old.stage == 1) {
                 firstCmdReFlag = 1;
                 if (version.equals("01")) {
                     sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
@@ -1314,7 +1284,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
                 }
             }
-            if (FiringMainActivity.stage == 8) {
+            if (FiringMainActivity_old.stage == 8) {
                 byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
                 sendCmd(initBuf);
                 Utils.writeRecord("第一次发送起爆指令--");
@@ -1495,7 +1465,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setPositiveButton(getString(R.string.text_firing_tip17), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(FiringMainActivity.this, QueryHisDetail.class);
+                                    Intent intent = new Intent(FiringMainActivity_old.this, QueryHisDetail.class);
                                     startActivityForResult(intent, 1);
                                     dialog.dismiss();
                                     closeThread();
@@ -1667,12 +1637,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
-                                if (version_1&&thirdWriteCount==denatorlist2.size()&&denatorlist2.size()!=0) {
-                                    version_1 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-                                    Thread.sleep(500);
-                                    continue;
-                                }
+
                                 //检测两次
 //                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
 //                                    //如果过错误数量不为为0才发第二次
@@ -1695,15 +1660,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
-                                Log.e(TAG, "ShellBlastNo: "+write.getShellBlastNo()+" version:"+write.getRemark() );
 
-//                                if (write.getRemark().equals("2") && version_2) {
-//                                    version_2 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-////                                    Thread.sleep(500);
-//                                    allBlastQu.offer(write);
-//                                    continue;
-//                                }
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
@@ -1743,7 +1700,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
                                 if (spanTime > 9000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
-                                    Log.e(TAG, "长时间没有返回spanTime: " + spanTime);
+                                    Log.e(TAG, "长时间没有返回spanTime: "+spanTime );
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
@@ -1782,9 +1739,6 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             Log.e("充电检测WaitCount", Wait_Count + "");
                             //说明电源打开命令未返回
-                            if(Wait_Count==3){
-                                sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-                            }
                             if (Wait_Count == 1) {
 //                              exit = true;
                                 secondCmdFlag = 1;
@@ -2030,7 +1984,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     keyFireCmd = 1;
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2") || Build.DEVICE.equals("KT50"))) {
+        } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2")||Build.DEVICE.equals("KT50"))) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -2090,7 +2044,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private TextView mOffTextView;
     private Handler mOffHandler;
-    private java.util.Timer mOffTime;
+    private Timer mOffTime;
     private android.app.Dialog mDialog;
     private CommonDialog dialog;//自定义dialog
 
@@ -2145,7 +2099,7 @@ public class FiringMainActivity extends SerialPortActivity {
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
         mOffTextView.setText(tip + "\n放电倒计时：");
-        mDialog = new AlertDialog.Builder(this)
+        mDialog = new Builder(this)
                 .setTitle("系统提示")
                 .setCancelable(false)
                 .setView(mOffTextView)
@@ -2206,7 +2160,7 @@ public class FiringMainActivity extends SerialPortActivity {
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
         mOffTextView.setText(tip + "\n放电倒计时：");
-        mDialog = new AlertDialog.Builder(this)
+        mDialog = new Builder(this)
                 .setTitle("系统提示")
                 .setCancelable(false)
                 .setView(mOffTextView)
@@ -2270,7 +2224,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private void initDialog_zanting(String tip) {
         chongfu = true;//已经检测了一次
-        AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+        AlertDialog dialog = new Builder(FiringMainActivity_old.this)
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
@@ -2317,7 +2271,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item_duan);
         errlistview.setAdapter(mAdapter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Builder builder = new Builder(this);
         builder.setTitle("系统提示");//"错误雷管列表"
         builder.setView(getlistview);
         builder.setPositiveButton("取消", (dialog, which) -> {

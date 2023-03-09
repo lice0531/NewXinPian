@@ -357,6 +357,7 @@ public class GreenDaoMaster {
             String uid = "";
             String yscs = "";
             String duan = "";
+            String version = "";
             uid = "A62F400" + lgBean.getGzm().substring(0, 6);
             if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
                 yscs = lgBean.getGzm().substring(6, 10);
@@ -374,6 +375,7 @@ public class GreenDaoMaster {
 
                 if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
                     duan = lgBean.getGzm().substring(11,12);
+                    version = lgBean.getGzm().substring(10,11);
                     int delay=0;
                     switch (duan){
                         case "1":
@@ -395,6 +397,7 @@ public class GreenDaoMaster {
                         db.setDelay(delay);
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                    db.setRemark(version);
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);

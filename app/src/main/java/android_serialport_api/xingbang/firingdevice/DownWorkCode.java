@@ -1179,6 +1179,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
     private void upload_xingbang() {
+        show_Toast("当前为煋邦测试下载");
         pb_show = 1;
         runPbDialog();//loading画面
         String url = Utils.httpurl_xb_upload;//煋邦下载
@@ -2370,7 +2371,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setPositiveButton("确认下载", (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
-                                upload();
+//                                upload();
+                                upload_xingbang();
                             }
                         }).create();
                 dialog.show();

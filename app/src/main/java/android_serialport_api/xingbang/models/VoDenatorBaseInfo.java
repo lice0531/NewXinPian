@@ -11,6 +11,7 @@ public class VoDenatorBaseInfo  {
 	private short delay;//延时
 	private String zhu_yscs;//主芯片延时参数
 	private String cong_yscs;//从芯片延时参数
+	private String remark;//版本号
 
 	public String getZhu_yscs() {
 		return zhu_yscs;
@@ -63,13 +64,25 @@ public class VoDenatorBaseInfo  {
 		this.denatorId = denatorId;
 	}
 
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	@Override
 	public String toString() {
 		return "VoDenatorBaseInfo{" +
 				"blastserial=" + blastserial +
 				", shellBlastNo='" + shellBlastNo + '\'' +
+				", denatorId='" + denatorId + '\'' +
+				", denatorIdSup='" + denatorIdSup + '\'' +
 				", delay=" + delay +
-				", denatorId=" + denatorId +
+				", zhu_yscs='" + zhu_yscs + '\'' +
+				", cong_yscs='" + cong_yscs + '\'' +
+				", remark='" + remark + '\'' +
 				'}';
 	}
 }
