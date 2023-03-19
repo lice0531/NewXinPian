@@ -54,7 +54,7 @@ public class ErrDuanAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Log.e("错误列表adapter", "list.get(position): "+list.get(position) );
+//        Log.e("错误列表adapter", "list.get(position): "+list.get(position) );
 //        viewHolder.X_item_no.setText((position + 1)+"");//雷管uid
         viewHolder.X_item_no.setText(list.get(position).get("serialNo")+"");//序号
         viewHolder.X_item_duanNo.setText((String)list.get(position).get("duanNo"));//段号

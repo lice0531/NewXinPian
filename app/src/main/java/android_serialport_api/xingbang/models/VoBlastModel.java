@@ -82,11 +82,11 @@ public class VoBlastModel extends VoDenatorBaseInfo {
 	public void setAuthorization(String authorization) {
 		this.authorization = authorization;
 	}
-	public String getRemark() {
+	public String getVersion() {
 		return remark;
 	}
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public void setVersion(String version) {
+		this.remark = version;
 	}
 	public String getRegdate() {
 		return regdate;

@@ -45,7 +45,6 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
-import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
@@ -198,6 +197,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
+    private int totalNum;//雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
@@ -825,31 +825,32 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setDenatorIdSup(d.getDenatorIdSup());
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
-            vo.setRemark(d.getRemark());
-            if (d.getRemark().equals("1")) {
+            vo.setVersion(d.getAuthorization());//芯片版本
+            if (d.getAuthorization().equals("01")) {
                 denatorlist1.add(vo);
             }
-            if (d.getRemark().equals("2")) {
+            if (d.getAuthorization().equals("02")) {
                 denatorlist2.add(vo);
             }
 //            allBlastQu.offer(vo);
 //            list_all_lg.add(vo);
         }
-        for (VoDenatorBaseInfo b:denatorlist2) {
+        for (VoDenatorBaseInfo b : denatorlist2) {
             allBlastQu.offer(b);
             list_all_lg.add(b);
         }
-        for (VoDenatorBaseInfo a:denatorlist1) {
+        for (VoDenatorBaseInfo a : denatorlist1) {
             allBlastQu.offer(a);
             list_all_lg.add(a);
         }
 
         denatorCount = allBlastQu.size();
-        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
-        Log.e(TAG, "denatorlist1: "+denatorlist1.size() );
-        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
-        Log.e(TAG, "denatorlist2: "+denatorlist2.size() );
-        Log.e(TAG, "list_all_lg: "+list_all_lg.toString() );
+//        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
+        Log.e(TAG, "denatorlist1: " + denatorlist1.size());
+//        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
+        Log.e(TAG, "denatorlist2: " + denatorlist2.size());
+        Log.e(TAG, "denatorCount: " + denatorCount);
+        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
@@ -1309,9 +1310,9 @@ public class FiringMainActivity extends SerialPortActivity {
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
                 if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+                    sendCmd(FourStatusCmd.send46("00", "01",denatorCount));//20(第一代)
                 } else {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+                    sendCmd(FourStatusCmd.send46("00", "02",denatorCount));//20(第二代)
                 }
             }
             if (FiringMainActivity.stage == 8) {
@@ -1667,9 +1668,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
-                                if (version_1&&thirdWriteCount==denatorlist2.size()&&denatorlist2.size()!=0) {
+                                Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
+                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
+                                    if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0 ) {// 有2代为0的时候
                                     version_1 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "01",denatorCount));//20(第一代)
                                     Thread.sleep(500);
                                     continue;
                                 }
@@ -1695,15 +1698,9 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
-                                Log.e(TAG, "ShellBlastNo: "+write.getShellBlastNo()+" version:"+write.getRemark() );
+                                Log.e(TAG, "ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion());
 
-//                                if (write.getRemark().equals("2") && version_2) {
-//                                    version_2 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-////                                    Thread.sleep(500);
-//                                    allBlastQu.offer(write);
-//                                    continue;
-//                                }
+
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
@@ -1782,8 +1779,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             Log.e("充电检测WaitCount", Wait_Count + "");
                             //说明电源打开命令未返回
-                            if(Wait_Count==3){
-                                sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+                            if (Wait_Count == 3) {
+                                sendCmd(FourStatusCmd.send46("00", "02",denatorCount));//20(第一代)
                             }
                             if (Wait_Count == 1) {
 //                              exit = true;
@@ -1990,22 +1987,31 @@ public class FiringMainActivity extends SerialPortActivity {
     private void getblastQueue() {
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (DenatorBaseinfo denatorBaseinfo : list) {
-            int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
-            String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
-            String denatorId = denatorBaseinfo.getDenatorId();//管壳号
-            String denatorIdSup = denatorBaseinfo.getDenatorIdSup();//管壳号
-            short delay = (short) denatorBaseinfo.getDelay();//获取第三列的值
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//多选区域
+
+        for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
-            vo.setBlastserial(serialNo);
-            vo.setDelay(delay);
-            vo.setShellBlastNo(shellNo);
-            vo.setDenatorId(denatorId);
-            vo.setDenatorIdSup(denatorIdSup);
-            vo.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
-            vo.setCong_yscs(denatorBaseinfo.getCong_yscs());
-            allBlastQu.offer(vo);
+            vo.setBlastserial(d.getBlastserial());
+            vo.setDelay((short) d.getDelay());
+            vo.setShellBlastNo(d.getShellBlastNo());
+            vo.setDenatorId(d.getDenatorId());
+            vo.setDenatorIdSup(d.getDenatorIdSup());
+            vo.setZhu_yscs(d.getZhu_yscs());
+            vo.setCong_yscs(d.getCong_yscs());
+            vo.setVersion(d.getAuthorization());//芯片版本
+            if (d.getAuthorization().equals("01")) {
+                denatorlist1.add(vo);
+            }
+            if (d.getAuthorization().equals("02")) {
+                denatorlist2.add(vo);
+            }
+        }
+        for (VoDenatorBaseInfo b : denatorlist2) {
+            allBlastQu.offer(b);
+        }
+        for (VoDenatorBaseInfo a : denatorlist1) {
+            allBlastQu.offer(a);
         }
         reThirdWriteCount = 0;
         thirdWriteCount = 0;

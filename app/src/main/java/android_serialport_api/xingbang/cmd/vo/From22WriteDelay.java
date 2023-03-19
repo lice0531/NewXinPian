@@ -89,6 +89,12 @@ public class From22WriteDelay {
 		if("FF".equals(this.getCommicationStatus())){
 			name=Application.getContext().getString(R.string.text_communication_state4);
 			return name;
+		}if("F1".equals(this.getCommicationStatus())){
+			name=Application.getContext().getString(R.string.text_communication_state4);
+			return name;
+		}if("F2".equals(this.getCommicationStatus())){
+			name=Application.getContext().getString(R.string.text_communication_state4);
+			return name;
 		}
 		return Application.getContext().getString(R.string.text_communication_state5);
 	}

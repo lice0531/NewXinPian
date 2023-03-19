@@ -257,7 +257,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     //煤许
     private String duan = "";//duan
     private Handler mHandler_showNum = new Handler();//显示雷管数量
-    private boolean switchScan = false;//是否扫码
+    private boolean switchScan = true;//是否扫码
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,9 +298,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         Utils.writeRecord("---进入单发注册页面---");
         if (version.equals("01")) {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
         } else {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+            sendCmd(FourStatusCmd.send46("00", "01"));//20(第二代)
         }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
@@ -499,7 +499,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 show_Toast("已达到最大延时限制" + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
@@ -1295,17 +1295,18 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendCmd(reCmd);
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
             zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
-            if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")&&switchScan) {
+            if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
                 tipInfoFlag = 5;//提示类型桥丝不正常
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
                 Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
-                zhuce_Flag = 1;
-            }else {
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(11));
+
             }
+//            else {//&&switchScan  先扫码再注册,上面的方法是判断桥丝的
+//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(11));
+//            }
 
-
+            zhuce_Flag = 1;
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
 //            if (initCloseCmdReFlag == 1) {//打开电源
@@ -1446,8 +1447,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         if (!zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
             maxNo++;
             //从绑码库中获取到的数据
-//            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-            DenatorBaseinfo denatorBaseinfo = serchLastLG();
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+//            DenatorBaseinfo denatorBaseinfo = serchLastLG();
             Log.e("列表最后一发雷管", "denatorBaseinfo: "+denatorBaseinfo.getShellBlastNo() );
             if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
                 denatorBaseinfo.setShellBlastNo(detonatorTypeNew.getShellBlastNo());
@@ -1459,15 +1460,26 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
             }
 
+            if(zhuce_form.getReadStatus().equals("F1")){
+                denatorBaseinfo.setAuthorization("01");
+            }else if(zhuce_form.getReadStatus().equals("F2")){
+                denatorBaseinfo.setAuthorization("02");
+            }else{
+                denatorBaseinfo.setAuthorization("02");
+            }
+
+            Log.e("单发注册", "zhuce_form.getReadStatus(): "+zhuce_form.getReadStatus() );
+
+
             if (zhuce_form.getDenaIdSup() != null) {
                 String detonatorId_Sup = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaIdSup());
                 denatorBaseinfo.setDenatorIdSup(detonatorId_Sup);//从芯片
                 denatorBaseinfo.setCong_yscs(detonatorTypeNew.getCong_yscs());
                 Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
             }
-//            denatorBaseinfo.setBlastserial(maxNo);
-//            denatorBaseinfo.setSithole(maxNo + "");
-//            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setBlastserial(maxNo);
+            denatorBaseinfo.setSithole(maxNo + "");
+            denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setDenatorId(detonatorId);
             denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
             denatorBaseinfo.setStatusCode("02");
@@ -1475,11 +1487,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setErrorCode("FF");
             denatorBaseinfo.setErrorName("正常");
             denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
-//            denatorBaseinfo.setPiece(mRegion);
-//            denatorBaseinfo.setDuan(duan);//段
-//            denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
+            denatorBaseinfo.setPiece(mRegion);
+            denatorBaseinfo.setDuan(duan);//段
+            denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
             //向数据库插入数据
-            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+            getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             //向数据库插入数据
             switchScan=true;
         }

@@ -253,4 +253,18 @@ public class FourStatusCmd {
         return DefCommand.getCommadBytes(command);
     }
 
+    public static byte[] send46(String addr, String version,int total) {
+        int a;
+        if (total == 0) {
+            a = 0;
+        } else {
+            a = (total - 1) / 50;
+        }
+
+        String b = Utils.intToHex(a);
+        String c = Utils.addZero(b, 2);
+        String command = addr + DefCommand.CMD_4_XBSTATUS_7 + "02" + version + c;//46
+        return DefCommand.getCommadBytes(command);
+    }
+
 }

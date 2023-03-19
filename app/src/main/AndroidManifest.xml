@@ -279,6 +279,11 @@
             android:label="离线下载"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".firingdevice.DownLoadActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="程序下载"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".firingdevice.UpLoadLogActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_set_page_time"

@@ -18,8 +18,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "statusName text, "//状态名称
             + "errorName text, "//错误名称
             + "errorCode text, "//错误代码//通信状态 ,00-与雷管通信失败，01-延期写入不一致，FF-通信成功，AF-未返回命令
-            + "authorization text, "//授权
-            + "remark text, " //评论
+            + "authorization text, "//授权  记录芯片版本
+            + "remark text, " //评论  已起爆/未起爆
             + "regdate text, " //注册日期
             + "wire text, "//桥丝状态
             + "name text, "

@@ -22,11 +22,11 @@ public class DetonatorTypeNew {
     @Property(nameInDb = "denatorId")
     private String detonatorId;    // 芯片码——2
     @Property(nameInDb = "denatorIdSup")
-    private String detonatorIdSup;    // 从芯片码——3
+    private String detonatorIdSup;    // 芯片版本
     @Property(nameInDb = "zhu_yscs")
     private String zhu_yscs;//主芯片延时参数
     @Property(nameInDb = "cong_yscs")
-    private String cong_yscs;//从芯片延时参数
+    private String cong_yscs;//煤许段位
     @Property(nameInDb = "time")
     private String time;//从芯片延时参数
 

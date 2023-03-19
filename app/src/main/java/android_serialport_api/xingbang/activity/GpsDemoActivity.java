@@ -288,7 +288,7 @@ public class GpsDemoActivity extends CheckPermissionsActivity implements View.On
             if (null != mOneLocTV) {
                 mOneLocTV.setText(sb.toString());
                 gpsTvTip.setText(sb.toString());
-                Log.e("定位", "信息: "+sb.toString() );
+//                Log.e("定位", "信息: "+sb.toString() );
             }
         }
     };

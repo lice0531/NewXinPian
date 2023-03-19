@@ -162,6 +162,7 @@ public class DownOfflineActivity extends BaseActivity {
 
                 int err = 0;
                 for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                    Log.e(TAG, "danLingBean.getLgs().getLg().get(i): "+danLingBean.getLgs().getLg().get(i) );
                     if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
                         err++;
                     }

@@ -101,13 +101,13 @@ public class DownLoadActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         String shengji = (String) bundle.get("dataSend");
-        Log.e("升级", "传递-dataSend: " + shengji);
-        if (shengji.equals("SC_KT50_Second_Version_16")) {//下载项目 16V板子 16V程序
-            Download_APK("SC_KT50_Second_Version_16");
-        } else if (shengji.equals("SC_KT50_Second_Version_15")) {//下载项目 16V板子 17V程序
-            Download_APK("SC_KT50_Second_Version_15");
-        } else if (shengji.equals("SC_KT50_Second_Version_17")) {//下载项目  17V板子 17V程序
-            Download_APK("SC_KT50_Second_Version_17");
+        Log.e("升级", "传递-dataSend: " + shengji);//SC_KT50_Second_MX_Version_16
+        if (shengji.equals("SC_KT50_Second_MX_Version_16")) {//下载项目 16V板子 16V程序
+            Download_APK("SC_KT50_Second_MX_Version_16");
+        } else if (shengji.equals("SC_KT50_Second_MX_Version_15")) {//下载项目 16V板子 17V程序
+            Download_APK("SC_KT50_Second_MX_Version_15");
+        } else if (shengji.equals("SC_KT50_Second_MX_Version_17")) {//下载项目  17V板子 17V程序
+            Download_APK("SC_KT50_Second_MX_Version_17");
         }
     }
 
@@ -133,6 +133,7 @@ public class DownLoadActivity extends BaseActivity {
         mList_version.add("KT50_NeiMeng_Version");   // KT50_NeiMeng_Version_20.apk 5
         mList_version.add("KT50_ZheJiang_Version");   // KT50_ZheJiang_Version_20.apk 6
         mList_version.add("KT50_Second_Version");   // KT50_Permit_Version_20.apk 7
+        mList_version.add("SC_KT50_Second_MX_Version_16");   // KT50_Permit_Version_20.apk 7
 
 //        mList_version.add("KT50_Test_Version");     // KT50_Test_Version.apk 9
 //        mList_version.add("ST327_Test_Version");    // ST327_Test_Version.apk 10

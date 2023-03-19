@@ -88,6 +88,7 @@ public class SendMsgActivity extends BaseActivity {
 
 
     private Handler handler_zhuce;
+    private Handler mHandler_showToast;
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
     private Handler mHandler_2 = new Handler();//显示进度条
@@ -194,6 +195,30 @@ public class SendMsgActivity extends BaseActivity {
 
             return false;
         });
+
+        mHandler_showToast = new Handler(msg -> {
+            switch (msg.what) {
+                // 区域 更新视图
+                case 1:
+                    show_Toast("导入成功,有数据注册重复");
+                    break;
+                case 2:
+                    show_Toast("导入成功");
+                    break;
+                case 3:
+                    show_Toast("数据不完整");
+                    break;
+                case 4:
+                    show_Toast("当前文件目录里没有 雷管文件.txt");
+                    break;
+                case 5:
+                    show_Toast("读取成功");
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        });
     }
 
     private void runPbDialog() {
@@ -270,7 +295,8 @@ public class SendMsgActivity extends BaseActivity {
         Log.e("接收注册", "lg.length: " + leiguan);
         Log.e("接收注册", "区域mRegion: " + mRegion);
         if(lg[0].length()<13){
-            show_Toast("数据不完整");
+
+            mHandler_showToast.sendMessage(mHandler_showToast.obtainMessage(3));
             return ;
         }
         for (int i = lg.length; i > 0; i--) {
@@ -301,14 +327,15 @@ public class SendMsgActivity extends BaseActivity {
             denator.setPiece(mRegion);
             denator.setDuanNo(a[4]);
             denator.setDuan(a[4].split("-")[0]);
+            denator.setAuthorization(a[5]);//导入默认是02版
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
         }
         pb_show = 0;
 
         if(chongfu){
-            show_Toast("导入成功,有数据注册重复");
+            mHandler_showToast.sendMessage(mHandler_showToast.obtainMessage(1));
         }else {
-            show_Toast("导入成功");
+            mHandler_showToast.sendMessage(mHandler_showToast.obtainMessage(2));
         }
 
 
@@ -342,7 +369,8 @@ public class SendMsgActivity extends BaseActivity {
                     } else {
                         tipDlg.dismiss();
                         pb_show = 0;
-                        show_Toast_ui("当前文件目录里没有 雷管文件.txt");
+                        mHandler_showToast.sendMessage(mHandler_showToast.obtainMessage(4));
+
                     }
                 }).start();
                 break;
@@ -367,7 +395,7 @@ public class SendMsgActivity extends BaseActivity {
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" +
                                 list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getZhu_yscs() + "#" +
-                                list_uid.get(i).getDuanNo() + ",");
+                                list_uid.get(i).getDuanNo()+ "#" +list_uid.get(i).getAuthorization() + ",");
                     }
 
 //                    Log.e("添加信息", "sb: " + (list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ","));
@@ -855,10 +883,16 @@ public class SendMsgActivity extends BaseActivity {
                 detonatorTypeNew.setZhu_yscs(a[2]);
                 detonatorTypeNew.setCong_yscs(a[3]);
             }
+            if(a.length==5){
+                detonatorTypeNew.setDetonatorIdSup(a[4]);
+            }else {
+                detonatorTypeNew.setDetonatorIdSup("02");
+            }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
-        show_Toast_ui("读取成功");
+        mHandler_showToast.sendMessage(mHandler_showToast.obtainMessage(5));
+
     }
 
     /**

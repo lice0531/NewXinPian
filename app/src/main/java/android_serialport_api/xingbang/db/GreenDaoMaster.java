@@ -397,7 +397,7 @@ public class GreenDaoMaster {
                         db.setDelay(delay);
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
-                    db.setRemark(version);
+                    db.setAuthorization("0"+version);
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
@@ -422,8 +422,9 @@ public class GreenDaoMaster {
         DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
         detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
         detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
+        detonatorTypeNew.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
-        detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());
+        detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
         detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
