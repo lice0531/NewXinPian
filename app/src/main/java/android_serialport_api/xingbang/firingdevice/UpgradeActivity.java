@@ -134,7 +134,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("KT50_V", ".bin");
+                    Download_File("SC_KT50_V1.3_MX", ".bin");
                 }
             }
         }

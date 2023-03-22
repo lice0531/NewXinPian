@@ -503,7 +503,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
 
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     list_uid.clear();
@@ -526,8 +526,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     if (mRegion5) {
                         a.append(",5");
                     }
+
                     // 设置标题区域
-                    setTitleRegion(a.toString(), mListData.size());
+                    setTitleRegion(mRegion, mListData.size());
                     break;
 
                 // 重新排序 更新视图

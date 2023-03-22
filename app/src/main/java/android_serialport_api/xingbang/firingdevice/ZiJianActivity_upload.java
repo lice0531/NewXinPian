@@ -24,6 +24,8 @@ import java.util.List;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
@@ -107,12 +109,15 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
         CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
-        if (IntervalUtil.isFastClick_2()) {
+        if (IntervalUtil.isFastClick_2()) {//SC_KT50_V1.3_MXDB
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改
-            GetFileName(CJ+"KT50_V1.3_MXDB", ".bin");//17V是电流11000,16V是改变前的
+            GetFileName(CJ+"KT50_V1.3_MX", ".bin");//17V是电流11000,16V是改变前的
+
         }
         deleteRiZhi();
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, "1");
     }
 
     /**
@@ -414,7 +419,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", "更新");
+            intent.putExtra("dataSend", "升级");
             startActivity(intent);
             dialog.dismiss();
         });

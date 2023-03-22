@@ -200,6 +200,7 @@ public class QueryHisDetail extends BaseActivity {
                         if (server_type2.equals("2")) {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
+                        Log.e("读取日志1", "blastdate: " + blastdate);
                         upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
 
                         break;
@@ -854,11 +855,11 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(",")[0].substring(2).replace("/","-")));//日志
-            Log.e("上传信息-日志", log);
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));//日志
+            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.15D"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_230315");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_230321");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {

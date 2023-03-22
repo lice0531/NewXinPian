@@ -256,7 +256,8 @@ public class XingbangMain extends BaseActivity {
             //16是改变前的
             //17是电流11000,电压17V
             //15是电流11000,电压16V
-            GetFileName("SC_KT50_Second_MX_Version_16", ".apk");
+            GetFileName("SC_KT50_Second_MX_Version_16", ".apk");//
+//            GetFileName("SC_KT50_Second_MX_Version_14", ".apk");//支持14位扫码版本
         }
         PackageInfo pi = null;
         try {
@@ -294,12 +295,14 @@ public class XingbangMain extends BaseActivity {
         totalbar_title = findViewById(R.id.title_text);
 
         ImageView iv_add = findViewById(R.id.title_add);
+        iv_add.setVisibility(View.GONE);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setOnClickListener(v -> {
             choiceQuYu();
         });
         iv_back.setOnClickListener(v -> finish());
         iv_back.setVisibility(View.GONE);
+
 
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
@@ -899,22 +902,22 @@ public class XingbangMain extends BaseActivity {
      */
     private void setTitleRegion() {
         StringBuilder a = new StringBuilder();
-        if (mRegion1) {
-            a.append("1");
-        }
-        if (mRegion2) {
-            a.append(",2");
-        }
-        if (mRegion3) {
-            a.append(",3");
-        }
-        if (mRegion4) {
-            a.append(",4");
-        }
-        if (mRegion5) {
-            a.append(",5");
-        }
-        String str = " 区域" + a;
+//        if (mRegion1) {
+//            a.append("1");
+//        }
+//        if (mRegion2) {
+//            a.append(",2");
+//        }
+//        if (mRegion3) {
+//            a.append(",3");
+//        }
+//        if (mRegion4) {
+//            a.append(",4");
+//        }
+//        if (mRegion5) {
+//            a.append(",5");
+//        }
+        String str = " 区域" + mRegion;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数(单选的时候要放开,多选关闭)

@@ -108,6 +108,8 @@ public class DownLoadActivity extends BaseActivity {
             Download_APK("SC_KT50_Second_MX_Version_15");
         } else if (shengji.equals("SC_KT50_Second_MX_Version_17")) {//下载项目  17V板子 17V程序
             Download_APK("SC_KT50_Second_MX_Version_17");
+        } else if (shengji.equals("SC_KT50_Second_MX_Version_14")) {//下载项目  支持14位的
+            Download_APK("SC_KT50_Second_MX_Version_14");
         }
     }
 

@@ -166,7 +166,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 case 1001:
                     // 查询全部雷管 倒叙(序号)
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     txTotal.setText(getString(R.string.text_total) + mListData.size());
                     mAdapter.notifyDataSetChanged();
@@ -188,12 +188,12 @@ public class QueryCurrentDetail extends BaseActivity {
                         a.append(",5");
                     }
                     // 设置标题区域
-                    setTitleRegion(a.toString(), mListData.size());
+                    setTitleRegion(mRegion, mListData.size());
                     break;
                 case 1005://按管壳码排序
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
@@ -215,7 +215,7 @@ public class QueryCurrentDetail extends BaseActivity {
                         b.append(",5");
                     }
                     // 设置标题区域
-                    setTitleRegion(b.toString(), mListData.size());
+                    setTitleRegion(mRegion, mListData.size());
                     break;
             }
             return false;

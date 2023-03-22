@@ -2364,14 +2364,16 @@ public class Utils {
      * 读入TXT文件
      */
     public static String readLog_cmd(String blastdate) {//2021-08-20
+        Log.e("读取日志1", "blastdate: " + blastdate);
         String time;
         if (blastdate.length() == 8) {
             time = blastdate;
         } else {
-            time = blastdate.split(",")[0].replace("/", "-").substring(2);
+            time = blastdate.split(" ")[0].replace("/", "-");
         }
 
         String pathname = Environment.getExternalStorageDirectory().toString() + File.separator + "xb程序日志" + File.separator + time + ".txt";
+        Log.e("读取日志", "blastdate: " + blastdate);
         Log.e("读取日志", "time: " + time);
         Log.e("读取日志", "pathname: " + pathname);
         // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件

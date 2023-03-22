@@ -662,7 +662,7 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
 
 //        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where  statusCode=? and errorCode<> ? and piece = ?";
 //        Cursor cursor = db.rawQuery(sql, new String[]{"02", "FF", mRegion});
@@ -762,7 +762,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -813,7 +813,7 @@ public class FiringMainActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
 //        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//不分区域
         denatorlist1 = new ArrayList<>();
         denatorlist2 = new ArrayList<>();
         for (DenatorBaseinfo d : denatorlist) {
@@ -826,11 +826,10 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
             vo.setVersion(d.getAuthorization());//芯片版本
-            if (d.getAuthorization().equals("01")) {
-                denatorlist1.add(vo);
-            }
             if (d.getAuthorization().equals("02")) {
                 denatorlist2.add(vo);
+            } else {
+                denatorlist1.add(vo);
             }
 //            allBlastQu.offer(vo);
 //            list_all_lg.add(vo);
@@ -936,7 +935,7 @@ public class FiringMainActivity extends SerialPortActivity {
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
 
-        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
         for (DenatorBaseinfo dbf : list) {
             DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
             denatorHis_detail.setBlastserial(dbf.getBlastserial());
@@ -1310,9 +1309,9 @@ public class FiringMainActivity extends SerialPortActivity {
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
                 if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "01",denatorCount));//20(第一代)
+                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                 } else {
-                    sendCmd(FourStatusCmd.send46("00", "02",denatorCount));//20(第二代)
+                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第二代)
                 }
             }
             if (FiringMainActivity.stage == 8) {
@@ -1321,7 +1320,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("第一次发送起爆指令--");
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
-            Log.e("起爆页面", "成功切换版本");
+            Log.e("起爆页面", "发送46指令");
         } else {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
@@ -1668,12 +1667,12 @@ public class FiringMainActivity extends SerialPortActivity {
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
-                                Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
-                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
-                                    if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0 ) {// 有2代为0的时候
+//                                Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
+//                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
+                                if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
                                     version_1 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "01",denatorCount));//20(第一代)
-                                    Thread.sleep(500);
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                    Thread.sleep(100);
                                     continue;
                                 }
                                 //检测两次
@@ -1780,7 +1779,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             Log.e("充电检测WaitCount", Wait_Count + "");
                             //说明电源打开命令未返回
                             if (Wait_Count == 3) {
-                                sendCmd(FourStatusCmd.send46("00", "02",denatorCount));//20(第一代)
+                                sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
                             if (Wait_Count == 1) {
 //                              exit = true;
@@ -1988,7 +1988,7 @@ public class FiringMainActivity extends SerialPortActivity {
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//多选区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//多选区域
 
         for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
@@ -2000,11 +2000,10 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
             vo.setVersion(d.getAuthorization());//芯片版本
-            if (d.getAuthorization().equals("01")) {
-                denatorlist1.add(vo);
-            }
             if (d.getAuthorization().equals("02")) {
                 denatorlist2.add(vo);
+            } else {
+                denatorlist1.add(vo);
             }
         }
         for (VoDenatorBaseInfo b : denatorlist2) {

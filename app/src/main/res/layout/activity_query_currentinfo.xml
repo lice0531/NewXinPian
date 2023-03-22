@@ -15,12 +15,13 @@
         layout="@layout/title_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:visibility="gone">
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

@@ -298,7 +298,7 @@ public class SetDelayTime_suidao extends BaseActivity {
         });
 
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc();
+        List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
 
         deTotalTxt.setText(getString(R.string.text_delay_total) + list.size());//"雷管总数量："
         endNoTxt.setText("" + list.size());
@@ -323,7 +323,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                     Log.e("liyi_1001", "更新视图 区域" + mRegion);
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     StringBuilder a = new StringBuilder();
@@ -353,7 +353,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                 // 重新排序 更新视图
                 case 1002:
                     // 雷管孔号排序 并 重新查询
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     StringBuilder b = new StringBuilder();
@@ -378,7 +378,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                     show_Toast("已选择 " + b);
                     break;
                 case 1005://按管壳码排序
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();

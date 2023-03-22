@@ -128,7 +128,7 @@ public class SetDelayTime extends BaseActivity {
                     Log.e("liyi_1001", "更新视图 区域" + mRegion);
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     StringBuilder a = new StringBuilder();

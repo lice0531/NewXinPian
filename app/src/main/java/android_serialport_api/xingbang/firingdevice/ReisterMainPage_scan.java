@@ -94,9 +94,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     EditText entproduceDateSt;
     @BindView(R.id.entAT1Bit_st)
     EditText entAT1BitSt;
-    @BindView(R.id.entboxNoAndSerial_st1)
+    @BindView(R.id.entboxNoAndSerial_st1)//开始盒号
     EditText entboxNoAndSerialSt1;
-    @BindView(R.id.entboxNoAndSerial_st2)
+    @BindView(R.id.entboxNoAndSerial_st2)//开始流水号
     EditText entboxNoAndSerialSt2;
     @BindView(R.id.btn_ReisterScanStart_st)
     Button btnReisterScanStartSt;
@@ -416,11 +416,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
                 }
-//                else if(data.length() == 14){
-//                    barCode = data.substring(0, 13);
-//                    duan = data.substring(13, 14);
-//                    insertSingleDenator_14(barCode);
-//                }
+                else if(data.length() == 14){
+                    barCode = data.substring(0, 13);
+                    duan = data.substring(13, 14);
+                    insertSingleDenator_14(barCode);
+                }
                 hideInputKeyboard();//隐藏光标
             }
         });
@@ -488,7 +488,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    }
 //                    break;
                 case 1005://按管壳码排序
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
@@ -752,6 +752,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         this.isSingleReisher = 0;
 
         //扫描结束
+
         //单发输入监听
         editScanChangjia.addTextChangedListener(single_1_changjia);
         editScanRiqi.addTextChangedListener(single_1_riqi);
@@ -1068,7 +1069,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String ed2Bit = edit_end_entBF2Bit_en.getText().toString();
         String edproDt = edit_end_entproduceDate_ed.getText().toString();
         String ed1Bit = edit_end_entAT1Bit_ed.getText().toString();
-        String edsno = entboxNoAndSerialEd1.getText().toString() + entboxNoAndSerialEd2.getText().toString();
+        String edsno =  entboxNoAndSerialEd2.getText().toString();
         String addNum = etNum.getText().toString();
 
         if (StringUtils.isBlank(st2Bit)) {
@@ -1145,9 +1146,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String ri = stproDt.substring(3, 5);
         //1030213A00000
         //5620418A00001
-        Log.e("验证日期", "stproDt: " + stproDt);
-        Log.e("验证日期", "yue: " + yue);
-        Log.e("验证日期", "ri: " + ri);
+//        Log.e("验证日期", "stproDt: " + stproDt);
+//        Log.e("验证日期", "yue: " + yue);
+//        Log.e("验证日期", "ri: " + ri);
         if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
             tipStr = "输入日期格式不对";
             return tipStr;
@@ -1168,8 +1169,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String facFea = Utils.getDetonatorShellToFeatureStr(shellNo);
         //雷管信息有误，管厂码不正确，请检查
         Log.e("管厂码", "shellNo: " + shellNo);
-        Log.e("管厂码", "factoryCode: " + factoryCode);
-        Log.e("管厂码", "facCode: " + facCode);
+//        Log.e("管厂码", "factoryCode: " + factoryCode);
+//        Log.e("管厂码", "facCode: " + facCode);
         if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.indexOf(facCode) < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             return -1;
@@ -1619,7 +1620,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
             denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
         }else {
-            denatorBaseinfo.setAuthorization("0"+version);//雷管芯片型号
+            denatorBaseinfo.setAuthorization("02");//雷管芯片型号
         }
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
@@ -2285,9 +2286,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String st2Bit = edit_start_entBF2Bit_st.getText().toString();
                     String stproDt = edit_start_entproduceDate_st.getText().toString();
                     String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-                    String stsno = entboxNoAndSerialSt1.getText().toString() + entboxNoAndSerialSt2.getText().toString();
+                    String stsno = entboxNoAndSerialSt2.getText().toString();
                     prex = st2Bit + stproDt + st1Bit;
-                    String edsno = entboxNoAndSerialEd1.getText().toString() + entboxNoAndSerialEd2.getText().toString();
+                    String edsno =  entboxNoAndSerialEd2.getText().toString();
                     String addNum = etNum.getText().toString();
                     start = Integer.parseInt(stsno);//开始流水号
 
@@ -2317,8 +2318,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             show_Toast(getResources().getString(R.string.text_error_tip27));//  "结束序号不能小于开始序号";
                             return;
                         }
-                        if (edsno.length() < 5) {
-                            show_Toast("结束序号必须为5位");//  "结束序号不能小于开始序号";
+                        if (edsno.length() < 3) {
+                            show_Toast("结束序号必须为3位");//  "结束序号不能小于开始序号";
                             return;
                         }
                         if (stproDt.length() < 5) {
@@ -2913,6 +2914,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         public void afterTextChanged(Editable s) {
             //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
             if (s.length() == 2) {
+                entboxNoAndSerialEd1.setText("" + entboxNoAndSerialSt1.getText());
                 entboxNoAndSerialSt1.setBackgroundColor(Color.GREEN);
                 entboxNoAndSerialSt2.setFocusable(true);
                 entboxNoAndSerialSt2.setFocusableInTouchMode(true);
