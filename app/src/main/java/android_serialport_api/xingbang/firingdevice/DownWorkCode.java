@@ -407,7 +407,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //        String res2 ="{\"cwxx\":\"0\",\"sqrq\":\"2023-02-17 10:57:14\",\"sbbhs\":[{\"sbbh\":\"F56A6M22076\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"富兴煤矿\",\"zbqyjd\":\"108.348469\",\"zbqywd\":\"31.586952\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5630206A02001\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC1CF9C0921\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02002\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC2CF9C0922\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02003\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC3CF9C0923\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02004\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC4CF9C0924\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02005\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC5CF9C0925\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02006\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC6CF9C0921\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02007\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC7CF9C0922\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02008\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC8CF9C0923\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02009\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDC9CF9C0924\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02010\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDA1CF9C0921\",\"gzmcwxx\":\"0\"},{\"uid\":\"5630206A02011\",\"yxq\":\"2023-02-20 10:57:14\",\"gzm\":\"FDA2CF9C0922\",\"gzmcwxx\":\"0\"}]}}";
 
         //二代模拟
-        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0121\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0222\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0323\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0521\",\"gzmcwxx\":\"0\"}]}}";
+//        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0121\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0222\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0323\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0521\",\"gzmcwxx\":\"0\"}]}}";
+
+        //错误经纬度下载
+        String res2 ="{\"cwxx\":\"0\",\"sqrq\":\"2023-02-27 09:29:50\",\"sbbhs\":[{\"sbbh\":\"F56A6800261\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"讲治镇光明隧道出口\",\"zbqyjd\":\"107.94954\",\"zbqywd\":\"31.026169\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道进口\",\"zbqyjd\":\"107.89732\",\"zbqywd\":\"341.0355\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道出口\",\"zbqyjd\":\"107.846616\",\"zbqywd\":\"31.045254\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5621126H81213\",\"yxq\":\"2023-03-02 09:29:50\",\"gzm\":\"939D64B603\",\"gzmcwxx\":\"0\"}]}}";
         //模拟下载150发雷管
 //        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-08-14 09:29:20\",\"sbbhs\":[{\"sbbh\":\"F560600002\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"德凤矿业\",\"zbqyjd\":\"104.802639\",\"zbqywd\":\"28.351421\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620705H84983\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA8BC04104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80098\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA3C1EF003\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84834\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB66FD6B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84951\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB7877240421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84839\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB8E7BA304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84833\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB76FF5404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80075\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0532474D0422\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80054\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"053CBBD70323\"," +
 //                "\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84973\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA9C0CD50424\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84980\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB6CDD460425\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80029\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAC4BE990422\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84959\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB84EA170421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80040\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82384AA30321\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80056\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04D128DD0321\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80077\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"058FC41B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80059\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA440A3804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80047\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"050A593104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80019\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FABF1FF304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80052\",\"yxq\":\"2022-08-17 09:29:20\"" +
@@ -444,21 +447,29 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 Log.e("下载的雷管", "错误数量: " + err);
                 if (danLingBean.getCwxx().equals("0")) {
                     if (danLingBean.getZbqys().getZbqy().size() > 0) {
-//                        double zbqyjd = Double.parseDouble(xy[0]);//116.456535
-//                        double zbqywd = Double.parseDouble(xy[1]);//37.427541
+                        double zbqyjd = Double.parseDouble("107.94954");//116.456535
+                        double zbqywd = Double.parseDouble("31.026169");//37.427541
                         for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
                             double jingdu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd());
                             double weidu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
                             double banjing = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqybj());
+                            LngLat start;
+                            LngLat end;
                             //判断经纬度
-//                            LngLat start = new LngLat(zbqyjd, zbqywd);
-//                            LngLat end = new LngLat(jingdu, weidu);
-//                            double juli3 = AMapUtils.calculateLineDistance(start, end);
-//                            Log.e("经纬度", "juli3: " + juli3);
-//                            if (juli3 < banjing) {
+                            try {
+                                 start = new LngLat(zbqyjd, zbqywd);
+                                 end = new LngLat(jingdu, weidu);
+                            }catch (Exception e){
+                                show_Toast("备案信息有误:"+danLingBean.getZbqys().getZbqy().get(i).getZbqymc()+","+danLingBean.getZbqys().getZbqy().get(i).getZbqyjd()+","+danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
+                                break;
+                            }
+
+                            double juli3 = AMapUtils.calculateLineDistance(start, end);
+                            Log.e("经纬度", "juli3: " + juli3);
+                            if (juli3 < banjing) {
                             insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
-//                            }
+                            }
                         }
                     }
                 }

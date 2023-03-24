@@ -714,7 +714,7 @@ public class XingbangMain extends BaseActivity {
                     i = 1;
                     continue;
                 }
-                String a[] = line.split(",", -1);
+                String a[] = line.replace("null","").split(",", -1);
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);

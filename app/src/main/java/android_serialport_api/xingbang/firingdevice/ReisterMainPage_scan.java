@@ -416,11 +416,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
                 }
-                else if(data.length() == 14){
-                    barCode = data.substring(0, 13);
-                    duan = data.substring(13, 14);
-                    insertSingleDenator_14(barCode);
-                }
+//                else if(data.length() == 14){
+//                    barCode = data.substring(0, 13);
+//                    duan = data.substring(13, 14);
+//                    insertSingleDenator_14(barCode);
+//                }
                 hideInputKeyboard();//隐藏光标
             }
         });
@@ -453,7 +453,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
-
+                    mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     break;
@@ -3012,7 +3012,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             //二代芯片新管壳码规则只有28位的Y5620528H01709A637FFC9741B05
             if (index == -1) {
                 if (strParamBarcode.length() == 28) {
-                    subBarCode = strParamBarcode.substring(1, 16);
+                    String a =strParamBarcode.substring(0,1);
+                    if (a.equals("Y")) {
+                        subBarCode = strParamBarcode.substring(1, 16);
+                    }else {
+                        subBarCode = strParamBarcode.substring(0, 15);
+                    }
+
                 } else {
                     subBarCode = strParamBarcode.substring(0, 15);
                 }
@@ -3050,13 +3056,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             entboxNoAndSerialSt1.setText(serialNo);
             entboxNoAndSerialSt2.setText(serialNo2);
 
-            edit_end_entBF2Bit_en.setText("");
-            edit_end_entproduceDate_ed.setText("");
-            edit_end_entAT1Bit_ed.setText("");
-            entboxNoAndSerialEd1.setText("");
-            entboxNoAndSerialEd2.setText("");
+//            edit_end_entBF2Bit_en.setText("");
+//            edit_end_entproduceDate_ed.setText("");
+//            edit_end_entAT1Bit_ed.setText("");
+//            entboxNoAndSerialEd1.setText("");
+//            entboxNoAndSerialEd2.setText("");
             btnReisterScanStartEd.setEnabled(true);
             btnScanReister.setEnabled(true);
+            container1.requestFocus();//获取焦点,
         }
         if (sanButtonFlag == 2) {
             edit_end_entBF2Bit_en.setText(facCode);
@@ -3068,6 +3075,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             entboxNoAndSerialEd2.setText(serialNo2);
             btnReisterScanStartSt.setEnabled(true);
             btnScanReister.setEnabled(true);
+            container1.requestFocus();//获取焦点,
         }
         sanButtonFlag = 0;
     }
