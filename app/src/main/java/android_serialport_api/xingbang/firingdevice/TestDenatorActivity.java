@@ -119,7 +119,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否已经发送了40
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int cankao=15;
+    private int cankao = 15;
 
     //初始化
     private void initParam() {
@@ -143,7 +143,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errtotal = 0;//错误数量
         totalerrorNum = 0;//错误数量总数
 //        denatorCount = 0;
-        send_kg=true;
+        send_kg = true;
     }
 
     @Override
@@ -264,6 +264,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             if (msg.what == 1) {
                 show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
             } else if (msg.what == 2) {
+
                 AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                         .setTitle("当前雷管信息不完整")//设置对话框的标题
                         .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
@@ -274,7 +275,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                         })
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
-                dialog.show();
+                if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
+
             }
             return false;
         });
@@ -405,8 +409,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         // 给ListView绑定内容
         ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no,R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+                new String[]{"serialNo", "duanNo", "shellNo", "errorName", "delay"},
+                new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -508,12 +512,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                     show_Toast(getString(R.string.text_error_tip34));
                     break;
                 }
-                if (firstCount > Preparation_time-15 ) {//电流翻转 给一个虚拟值
-                    ll_firing_Volt_4.setText( 7.5+"V");
-                    ll_firing_IC_4.setText("" + (denatorCount*cankao+new Random().nextLong()%10));
+                if (firstCount > Preparation_time - 15) {//电流翻转 给一个虚拟值
+                    ll_firing_Volt_4.setText(7.5 + "V");
+                    ll_firing_IC_4.setText("" + (denatorCount * cankao + new Random().nextLong() % 10));
                 }
                 if (busInfo != null) {//8秒后再显示电压电流
-                    String displayIcStr = "" + (int)busInfo.getBusCurrentIa() + "μA";
+                    String displayIcStr = "" + (int) busInfo.getBusCurrentIa() + "μA";
                     float displayIc = busInfo.getBusCurrentIa();
                     //displayIc =
                     dangqian_ic = busInfo.getBusCurrentIa();
@@ -544,7 +548,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextSize(cankao);
                     } else if (displayIc > (denatorCount * 30) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
-                        Log.e(TAG, "denatorCount: "+denatorCount);
+                        Log.e(TAG, "denatorCount: " + denatorCount);
                         displayIcStr = displayIcStr + "(电流过大)";
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(18);
@@ -571,29 +575,28 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        if (!chongfu) {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。");//弹出框
 //                        } else {
-                            sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                            initDialog_msg("当前电流过大,请检查线夹等部位是否存在浸水进泥等情况,排查处理后,重新进行检测。");//弹出框
+                        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                        initDialog_msg("当前电流过大,请检查线夹等部位是否存在浸水进泥等情况,排查处理后,重新进行检测。");//弹出框
 //                        }
                         return;
                     }
-                    if (busInfo.getBusVoltage() < 6.3&& firstCount < Preparation_time * 0.1) {
+                    if (busInfo.getBusVoltage() < 6.3 && firstCount < Preparation_time * 0.1) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                                 .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                                 .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次进行检测")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
-                                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        closeForm();
-                                        Utils.writeRecord("电压过低,电压="+busInfo.getBusVoltage()+"V");
-                                        finish();
-                                    }
+                                .setNegativeButton("退出", (dialog1, which) -> {
+                                    dialog1.dismiss();
+                                    closeForm();
+                                    Utils.writeRecord("电压过低,电压=" + busInfo.getBusVoltage() + "V");
+                                    finish();
                                 })
                                 .create();
-                        dialog.show();
+                        if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                            dialog.show();
+                        }
                     }
 
                 }
@@ -630,7 +633,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
 //                    sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("请检查线夹等部位是否有进水进泥等情况,确认无误后再进行检测。");//弹出框
+                    initDialog_msg("请检查线夹等部位是否有进水进泥等情况,确认无误后再进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
@@ -639,7 +642,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("请检查线夹等部位是否有进水进泥等情况,确认无误后再进行检测。");//弹出框
+                    initDialog_msg("请检查线夹等部位是否有进水进泥等情况,确认无误后再进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
@@ -650,25 +653,23 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
 //                    sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后再进行检测!");//弹出框
+                    initDialog_msg("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后再进行检测!");//弹出框
 //                    }
 //                    else {
 //                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
 //                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
-                }
-                else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {//大于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {//大于参考值 ，部分错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
+                    initDialog_msg("请检查错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("检测到有错误雷管,正在进行二次检测,请稍等。");//弹出框
 //                    }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
-                }
-                else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * cankao * 1.1)) {
+                } else if (errtotal > 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * cankao * 1.1)) {
                     initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
                     stopXunHuan();//检测完成
                 } else {
@@ -801,10 +802,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 break;
                             }
                             //二次上电
-                            if (firstCount == Preparation_time-10 ) {//Preparation_time-1
+                            if (firstCount == Preparation_time - 10) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                             }
-                            if (firstCount == Preparation_time-13 ) {//Preparation_time-1
+                            if (firstCount == Preparation_time - 13) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
 
                             }
@@ -816,10 +817,10 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
 //                                }
 //                            }
-                            if (firstCount == Preparation_time-14 ) {//Preparation_time-1
+                            if (firstCount == Preparation_time - 14) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
                             }
-                            if (firstCount < (Preparation_time-17) ) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                            if (firstCount < (Preparation_time - 17)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
@@ -1038,7 +1039,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 开启总线电源指令
-            if(send_kg){
+            if (send_kg) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -1052,7 +1053,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     firstThread = new ThreadFirst();
                     firstThread.start();
                 }
-                send_kg=false;
+                send_kg = false;
             }
 
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46 切换版本
@@ -1238,6 +1239,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .create();
         dialog.show();
     }
+
     private void initDialog_msg(String tip) {
         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
@@ -1265,6 +1267,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 .create();
         dialog.show();
     }
+
     private void initDialog_zanting(String tip) {
         chongfu = true;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
@@ -1296,7 +1299,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
         errlistview.setVisibility(View.GONE);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo","duanNo", "shellNo", "errorName", "delay"},
+                new String[]{"serialNo", "duanNo", "shellNo", "errorName", "delay"},
                 new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);

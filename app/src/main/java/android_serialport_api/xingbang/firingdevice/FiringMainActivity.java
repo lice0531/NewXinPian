@@ -1138,8 +1138,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, cmdBuf);//处理cmd命令
-
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
                 }
             }
         }
