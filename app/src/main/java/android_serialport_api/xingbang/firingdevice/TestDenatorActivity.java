@@ -826,11 +826,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
 
 
-                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
-                            }
-                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
-                            if (firstCount <= 1) {
+//                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
+//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+//                            }
+//                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
+                            if (firstCount <= 0) {
                                 Log.e(TAG, "firstCount2: "+firstCount );
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
                                 Thread.sleep(1000);//为了发40后等待
@@ -838,6 +838,29 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
+                            if (firstCount == Preparation_time-10 ) {//Preparation_time-1
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                            }
+                            if (firstCount == Preparation_time-13 ) {//Preparation_time-1
+                                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
+
+                            }
+//                            if (firstCount == Preparation_time-14) {//经过测试初始化命令需要6秒
+//                                //切换模块芯片版本
+//                                if (version.equals("01")) {
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+//                                } else {
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//                                }
+//                            }
+                            if (firstCount == Preparation_time-14 ) {//Preparation_time-1
+                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
+                            }
+                            if (firstCount < (Preparation_time-16) ) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+
+                            }
+
                             firstCount--;
                             if (firstCount == -10) {
                                 Log.e(TAG, "退出流程: ");
@@ -893,7 +916,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                Log.e("写入延时", "denatorId: " + denatorId);
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
 
-                                short delayTime = 66;
+                                short delayTime = 0;
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);
                                 data = denatorId + delayStr + write.getZhu_yscs();//雷管id+延时时间+主芯片延时参数
