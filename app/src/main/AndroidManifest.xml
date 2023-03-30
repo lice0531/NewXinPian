@@ -41,6 +41,12 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:name=".firingdevice.DownLoadActivity"
+            android:exported="false"
+            android:label="升级程序"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
             android:name=".firingdevice.SendMsgActivity"
             android:exported="false"
             android:label="数据互传"

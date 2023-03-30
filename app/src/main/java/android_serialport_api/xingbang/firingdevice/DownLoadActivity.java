@@ -96,7 +96,11 @@ public class DownLoadActivity extends SerialPortActivity {
         initView();
         initHandler();          // 初始化Handler
 
-        Download_APK("");
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String shengji = (String) bundle.get("dataSend");
+        Log.e("升级", "传递-dataSend: " + shengji);
+        Download_APK(shengji);
     }
 
     @Override
@@ -467,7 +471,7 @@ public class DownLoadActivity extends SerialPortActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, int[] grantResults) {
-            //权限被拒绝方法
+        //权限被拒绝方法
 //        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //            // Permission Granted 授予权限
 //            if (IntervalUtil.isFastClick_2()) {
