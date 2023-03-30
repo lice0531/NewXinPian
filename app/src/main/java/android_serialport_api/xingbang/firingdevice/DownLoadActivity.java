@@ -95,6 +95,8 @@ public class DownLoadActivity extends SerialPortActivity {
         initData();
         initView();
         initHandler();          // 初始化Handler
+
+        Download_APK("");
     }
 
     @Override

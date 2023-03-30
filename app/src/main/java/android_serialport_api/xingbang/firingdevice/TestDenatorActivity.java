@@ -582,7 +582,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }
                     if (busInfo.getBusVoltage() < 6.3 && firstCount < Preparation_time * 0.1) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                        closeThread();
+
                         AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                                 .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                                 .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次进行检测")//设置对话框的内容"本次任务成功起爆！"
@@ -597,6 +597,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
                             dialog.show();
                         }
+                        closeThread();
                     }
 
                 }

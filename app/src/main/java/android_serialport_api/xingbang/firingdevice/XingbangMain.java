@@ -344,12 +344,12 @@ public class XingbangMain extends BaseActivity {
         server_http = (String) MmkvUtils.getcode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 40);
-        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 48);
+        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 50);//组网检测时间
+        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 68);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.getcode("jiance_time", 20);
+        jiance_time = (int) MmkvUtils.getcode("jiance_time", 28);
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
@@ -368,12 +368,12 @@ public class XingbangMain extends BaseActivity {
         message.setServer_http("http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
-        message.setPreparation_time("40");
-        message.setChongdian_time("48");
+        message.setPreparation_time("50");
+        message.setChongdian_time("68");
         message.setServer_type1("1");
         message.setServer_type2("0");
         message.setPro_dwdm("");
-        message.setJiance_time("20");
+        message.setJiance_time("28");
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中

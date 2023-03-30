@@ -1461,39 +1461,42 @@ public class FiringMainActivity extends SerialPortActivity {
                     Log.e(TAG, "大于4000u ，全错: ");
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
-                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    }
+//                    if (chongfu) {
+                        initDialog_zanting_exit("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
+//                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
 //                    }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {//小于11000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {
+                    //小于11000u ，全错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
-                    if (chongfu) {
+//                    if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
-                    }
+//                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
 //                    }
-
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * cankao + 100) {//小于参考值 ，部分错
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * cankao + 100) {
+                    //小于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
-                    if (chongfu) {
+//                    if (chongfu) {
                         initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测!");//弹出框
-                    }
+//                    }
 //                    else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
-                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {//大于参考值 ，部分错
+
+                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankao + 100)) {
+                    //大于参考值 ，部分错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
-                    if (chongfu) {
+//                    if (chongfu) {
                         initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
-                    }
+//                    }
 //                    else {
 //                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
 //                    }
@@ -1584,9 +1587,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (firstCmdReFlag == 0 && firstWaitCount < 1) {
                                 exit = true;
                             }
-                            if (firstWaitCount > 1) {
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
-                            }
+//                            if (firstWaitCount > 2) {
+//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
+//                            }
 
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
@@ -2229,6 +2232,32 @@ public class FiringMainActivity extends SerialPortActivity {
                 })
                 .create();
         dialog.show();
+    }
+
+    private void initDialog_zanting_exit(String tip) {
+        chongfu = true;//已经检测了一次
+        AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                //设置对话框的按钮
+//                .setNeutralButton("重检", (dialog1, which) -> {
+//                    off();//重新检测
+//                    dialog1.dismiss();
+//                })
+                .setNegativeButton("退出", (dialog12, which) -> {
+                    dialog12.cancel();
+                    closeThread();
+                    closeForm();
+                })
+//                .setPositiveButton("继续", (dialog12, which) -> {
+////                    off();//重新检测
+//                    increase(2);
+//                    dialog12.cancel();
+//                })
+                .create();
+        if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting2(String tip) {
