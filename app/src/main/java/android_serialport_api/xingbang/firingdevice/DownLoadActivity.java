@@ -104,12 +104,15 @@ public class DownLoadActivity extends BaseActivity {
         Bundle bundle = intent.getExtras();
         String shengji = (String) bundle.get("dataSend");
         Log.e("升级", "传递-dataSend: " + shengji);
-        if (shengji.equals("SC_KT50_Second_Version_16")) {//下载项目 16V板子 16V程序
-            Download_APK("SC_KT50_Second_Version_16");
-        } else if (shengji.equals("SC_KT50_Second_Version_15")) {//下载项目 16V板子 17V程序
-            Download_APK("SC_KT50_Second_Version_15");
-        } else if (shengji.equals("SC_KT50_Second_Version_17")) {//下载项目  17V板子 17V程序
-            Download_APK("SC_KT50_Second_Version_17");
+//        if (shengji.equals("SC_KT50_Second_Version_16")) {//下载项目 16V板子 16V程序
+//            Download_APK("SC_KT50_Second_Version_16");
+//        } else if (shengji.equals("SC_KT50_Second_Version_15")) {//下载项目 16V板子 17V程序
+//            Download_APK("SC_KT50_Second_Version_15");
+//        } else if (shengji.equals("SC_KT50_Second_Version_17")) {//下载项目  17V板子 17V程序
+//            Download_APK("SC_KT50_Second_Version_17");
+//        }
+        if(shengji.length()>0){
+            Download_APK(shengji);
         }
     }
 

@@ -118,6 +118,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private String TAG = "组网测试";
     private String version = "02";
     private boolean chongfu = false;//是否已经检测了一次
+    private boolean send_kg = true;//是否发送41
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
 
@@ -1074,6 +1075,8 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 开启总线电源指令
+
+            if (send_kg) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -1087,7 +1090,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                     firstThread = new ThreadFirst();
                     firstThread.start();
                 }
-
+                send_kg = false;
+            }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46 切换版本
 
         }
