@@ -810,15 +810,15 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
 
                             }
-//                            if (firstCount == Preparation_time-14) {//经过测试初始化命令需要6秒
-//                                //切换模块芯片版本
-//                                if (version.equals("01")) {
-//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-//                                } else {
-//                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-//                                }
-//                            }
-                            if (firstCount == Preparation_time - 14) {//Preparation_time-1
+                            if (firstCount == Preparation_time-14) {//经过测试初始化命令需要6秒
+                                //切换模块芯片版本
+                                if (version.equals("01")) {
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+                                } else {
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+                                }
+                            }
+                            if (firstCount == Preparation_time - 15) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
                             }
                             if (firstCount < (Preparation_time - 17)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
