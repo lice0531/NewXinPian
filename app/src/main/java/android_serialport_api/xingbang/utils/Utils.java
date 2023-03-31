@@ -720,7 +720,7 @@ public class Utils {
 
     public static String getDateFormatLong(Date date) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss:SSS");
+        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         String dateString = formatter.format(date);
 
         return dateString;
@@ -728,7 +728,7 @@ public class Utils {
 
     public static String getDateFormat_log(Date date) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         String dateString = formatter.format(date);
 
         return dateString;
@@ -1152,10 +1152,8 @@ public class Utils {
 
         if (hasSDCard) {
             filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "leiguan.txt";
-            oldPath = Environment.getExternalStorageDirectory().toString() + File.separator + "leiguan_" + getDateFormatToFileName() + ".txt";
         } else {
             filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "leiguan.txt";
-            oldPath = Environment.getDownloadCacheDirectory().toString() + File.separator + "leiguan_" + getDateFormatToFileName() + ".txt";
         }
         try {
 

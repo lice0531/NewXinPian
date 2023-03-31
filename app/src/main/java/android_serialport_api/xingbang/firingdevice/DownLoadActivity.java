@@ -111,7 +111,7 @@ public class DownLoadActivity extends BaseActivity {
 //        } else if (shengji.equals("SC_KT50_Second_Version_17")) {//下载项目  17V板子 17V程序
 //            Download_APK("SC_KT50_Second_Version_17");
 //        }
-        if(shengji.length()>0){
+        if(shengji.length()>1){
             Download_APK(shengji);
         }
     }

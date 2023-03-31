@@ -854,14 +854,16 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(",")[0].substring(2).replace("/", "-")));//日志
-            Log.e("上传信息-日志", log);
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/", "-")));//日志
+//            Log.e("上传信息-日志", log);
+//            Log.e("上传信息-blastdate", blastdate.split(" ")[0].replace("/", "-"));
+//            Log.e("上传信息-blastdate", blastdate);
+//            Log.e("上传信息-CMD日志", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/", "-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.15D"));//硬件版本
-            PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "KT50_3.25_PT_V1.3.1C_230221");//软件版本
+            object.put("rj_version", "KT50_3.25_PT_V1.3.1C_230331");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
-        } catch (JSONException| PackageManager.NameNotFoundException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         //3des加密
