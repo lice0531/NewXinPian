@@ -2374,8 +2374,8 @@ public class Utils {
 
         String pathname = Environment.getExternalStorageDirectory().toString() + File.separator + "xb程序日志" + File.separator + time + ".txt";
         Log.e("读取日志", "blastdate: " + blastdate);
-        Log.e("读取日志", "time: " + time);
-        Log.e("读取日志", "pathname: " + pathname);
+//        Log.e("读取日志", "time: " + time);
+//        Log.e("读取日志", "pathname: " + pathname);
         // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件
         //防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw;
         //不关闭文件会导致资源的泄露，读写文件都同理

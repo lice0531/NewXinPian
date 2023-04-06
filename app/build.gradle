@@ -13,7 +13,7 @@ android {
         applicationId "android_serialport_api.xingbang"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 33
+        versionCode 34
         versionName "3.25"
         ndk {
             //设置支持的SO库架构

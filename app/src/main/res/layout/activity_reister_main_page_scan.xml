@@ -822,7 +822,7 @@
                     android:gravity="center"
                     android:text="单发"
                     android:textSize="@dimen/childReisterPageLabelFontSize"
-
+                    style="@style/alltextstyle"
                     />
 
                 <LinearLayout

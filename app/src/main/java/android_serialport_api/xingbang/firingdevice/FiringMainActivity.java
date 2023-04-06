@@ -410,6 +410,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
+                } else if (displayIc > (denatorCount * ic_cankao * 3) && displayIc > 10 && stage == 6) {// "电流过大";
+                    displayIcStr = displayIcStr + "(电流过大)";
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 }
 //                else if (displayIc < (4 + denatorCount * ic_cankao) && stage != 6) {
 //                    displayIcStr = displayIcStr + "(疑似断路)";
@@ -1672,7 +1676,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
                                     version_1 = false;//发一次就不要发了
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
-                                    Thread.sleep(100);
+                                    Thread.sleep(1000);
                                     continue;
                                 }
                                 //检测两次

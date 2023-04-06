@@ -35,7 +35,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
@@ -254,9 +253,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private volatile int initOpenCmdReFlag = 0;
     private volatile int revCloseCmdReFlag = 0;
     private volatile int revOpenCmdReFlag = 0;
-    private ZhuceThread zhuceThread;
     private volatile String prex = "";
-    private volatile int start = 0;
+    private volatile int start_ls = 0;
     private volatile int num = 0;
     private ProgressDialog builder = null;
     private LoadingDialog tipDlg = null;
@@ -416,11 +414,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
                 }
-//                else if(data.length() == 14){
-//                    barCode = data.substring(0, 13);
-//                    duan = data.substring(13, 14);
-//                    insertSingleDenator_14(barCode);
-//                }
+                else if(data.length() == 14){
+                    barCode = data.substring(0, 13);
+                    duan = data.substring(13, 14);
+                    insertSingleDenator_14(barCode);
+                }
                 hideInputKeyboard();//隐藏光标
             }
         });
@@ -1028,16 +1026,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }
-        if (zhuceThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                zhuceThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-//                zhuceThread.interrupt();
-//            Log.e("关闭线程", "关闭线程: ");
         }
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
@@ -1969,7 +1957,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             reCount++;
         }
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         pb_show = 0;
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -2286,11 +2273,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String st2Bit = edit_start_entBF2Bit_st.getText().toString();
                     String stproDt = edit_start_entproduceDate_st.getText().toString();
                     String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-                    String stsno = entboxNoAndSerialSt2.getText().toString();
+                    String stsno = entboxNoAndSerialSt1.getText().toString()+entboxNoAndSerialSt2.getText().toString();
                     prex = st2Bit + stproDt + st1Bit;
-                    String edsno =  entboxNoAndSerialEd2.getText().toString();
+                    String ed_xh =  entboxNoAndSerialEd1.getText().toString();//结束箱号
+                    String ed_ls =  entboxNoAndSerialEd2.getText().toString();//结束流水
                     String addNum = etNum.getText().toString();
-                    start = Integer.parseInt(stsno);//开始流水号
+                    start_ls = Integer.parseInt(stsno);//开始流水号
 
 
                     if (addNum.length() > 0) {
@@ -2298,7 +2286,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             show_Toast("单次最大注册不能超过500发");
                             return;
                         }
-                        if (edsno.length() > 1) {
+                        if (ed_ls.length() > 1) {
                             show_Toast("终止序号和连续注册个数不能同时输入");
                             return;
                         }
@@ -2306,19 +2294,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
-                            insertDenator(prex, start, start + (num - 1));
-                            Log.e("手动输入", "厂号日期: " + prex);
-                            Log.e("手动输入", "start: " + start);
+                            insertDenator(prex, start_ls, start_ls + (num - 1));
+                            Log.e("手动输入", "厂号日期: " + prex+"--start: " + start_ls);
                             pb_show = 0;
                         }).start();
                         return;
                     } else {
-                        final int end = Integer.parseInt(edsno);//结束流水号
-                        if (end < start) {
+                        final int end = Integer.parseInt(ed_xh+ed_ls);//结束流水号
+                        if (end < start_ls) {
                             show_Toast(getResources().getString(R.string.text_error_tip27));//  "结束序号不能小于开始序号";
                             return;
                         }
-                        if (edsno.length() < 3) {
+                        if (ed_ls.length() < 3) {
                             show_Toast("结束序号必须为3位");//  "结束序号不能小于开始序号";
                             return;
                         }
@@ -2326,20 +2313,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             show_Toast("日期编码必须为5位");//  "结束序号不能小于开始序号";
                             return;
                         }
-                        if (start < 0 || end > 99999) {
+                        if (start_ls < 0 || end > 99999) {
                             show_Toast(getResources().getString(R.string.text_error_tip28));//  "起始/结束序号不符合要求";
                             return;
                         }
-                        if ((end - start) > 1000) {
+                        if ((end - start_ls) > 1000) {
                             show_Toast(getResources().getString(R.string.text_error_tip29));//  "每一次注册数量不能大于1000";
                             return;
                         }
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
-                            insertDenator(prex, start, end);
+                            insertDenator(prex, start_ls, end);
                             Log.e("手动输入", "prex: " + prex);
-                            Log.e("手动输入", "start: " + start);
+                            Log.e("手动输入", "start: " + start_ls);
                             Log.e("手动输入", "end: " + end);
                             pb_show = 0;
                         }).start();
@@ -2504,18 +2491,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
     }
 
-    private class ZhuceThread extends Thread {
-        public volatile boolean exit = false;
-
-        public void run() {
-            while (exit) {
-
-                insertDenator(prex, start, start + (num - 1));
-
-            }
-
-        }
-    }
 
 
     private class ScanBar extends Thread {

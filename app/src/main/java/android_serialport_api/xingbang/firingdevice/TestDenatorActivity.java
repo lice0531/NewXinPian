@@ -819,7 +819,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-
+                            if (firstCount < Preparation_time-2 && firstCount > (Preparation_time - 9)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+                            }
                             if (firstCount == Preparation_time - 10) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                             }
@@ -870,7 +872,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {
                                     version_1 = false;//发一次就不要发了
                                     sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-                                    Thread.sleep(500);
+                                    Thread.sleep(1000);
                                     continue;
                                 }
 
