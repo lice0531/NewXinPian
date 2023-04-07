@@ -21,11 +21,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
@@ -45,16 +43,12 @@ import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
-import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
-import android_serialport_api.xingbang.db.Defactory;
-import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -68,8 +62,6 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import androidx.annotation.NonNull;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -562,14 +554,14 @@ public class XingbangMain extends BaseActivity {
                 }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
-                Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);//金建华
+                Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);
                 intent2.putExtra("dataSend", str2);
                 startActivityForResult(intent2, 1);
                 break;
 
             // 单发检测
             case R.id.btn_main_delayTime:
-                Intent intent3 = new Intent(this, ReisterMainPage_line.class);//金建华
+                Intent intent3 = new Intent(this, ReisterMainPage_line.class);
                 startActivityForResult(intent3, 1);
                 break;
 

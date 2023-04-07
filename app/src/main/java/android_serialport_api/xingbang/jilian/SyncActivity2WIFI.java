@@ -51,7 +51,6 @@ import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
 import android_serialport_api.xingbang.firingdevice.VerificationActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
-import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

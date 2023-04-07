@@ -557,7 +557,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String duan = data.substring(27, 28);
 
                     insertSingleDenator_2(barCode, denatorId, yscs,version,duan);//同时注册管壳码和芯片码
-                } else {
+                } else if(data.length() == 13){
                     barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                     insertSingleDenator(barCode);
                 }
@@ -3225,7 +3225,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     //扫码方法
     private void decodeBar(String strParamBarcode) {
 
-        String subBarCode;
+        String subBarCode = strParamBarcode;
 
         if (strParamBarcode.trim().length() > 14) {
             int index = strParamBarcode.indexOf("SC:");
@@ -3234,28 +3234,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("不正确的编码，请扫描选择正确的编码");
                 return;
             }
-            //二代芯片新管壳码规则只有28位的Y5620528H01709A637FFC9741B05
-            if (index == -1) {
+            //四川28位的Y5620528H01709A637FFC9741B05
+            //内蒙28位的5620722H12345000ABCDEFB60301
+
                 if (strParamBarcode.length() == 28) {
-                    subBarCode = strParamBarcode.substring(1, 16);
-                } else {
-                    subBarCode = strParamBarcode.substring(0, 15);
+                    if(strParamBarcode.substring(0, 1).equals("Y")){
+                        subBarCode = strParamBarcode.substring(1, 14);
+                    }else {
+                        subBarCode = strParamBarcode.substring(0, 13);
+                    }
+
                 }
-
-            } else {//旧版带SC:开头的
-                subBarCode = strParamBarcode.substring(index + 3, index + 16);
-            }
-
-            if (subBarCode.trim().length() < 13) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
-                return;
-            }
         } else {
-            if (strParamBarcode.trim().length() == 14) {//煤许雷管
-                subBarCode = strParamBarcode.substring(0, 13);
-            } else if (strParamBarcode.trim().length() == 13) {
-                subBarCode = strParamBarcode;
-            } else if (strParamBarcode.trim().length() == 13) {
+            if (strParamBarcode.trim().length() == 13) {
                 subBarCode = strParamBarcode;
             } else
                 return;
@@ -3273,9 +3264,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             edit_start_entAT1Bit_st.setText(featureCode);
             edit_start_entboxNoAndSerial_st.setText(serialNo);
 
-            edit_end_entBF2Bit_en.setText("");
-            edit_end_entproduceDate_ed.setText("");
-            edit_end_entAT1Bit_ed.setText("");
+//            edit_end_entBF2Bit_en.setText("");
+//            edit_end_entproduceDate_ed.setText("");
+//            edit_end_entAT1Bit_ed.setText("");
             edit_end_entboxNoAndSerial_ed.setText("");
             btnReisterScanStartEd.setEnabled(true);
             btnScanReister.setEnabled(true);

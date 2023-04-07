@@ -100,7 +100,10 @@ public class DownLoadActivity extends SerialPortActivity {
         Bundle bundle = intent.getExtras();
         String shengji = (String) bundle.get("dataSend");
         Log.e("升级", "传递-dataSend: " + shengji);
-        Download_APK(shengji);
+        if(shengji!=null){
+            Download_APK(shengji);
+        }
+
     }
 
     @Override

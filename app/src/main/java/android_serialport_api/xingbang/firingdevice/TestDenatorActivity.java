@@ -54,7 +54,6 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.CommonDialog;
-import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
@@ -514,7 +513,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 }
                 if (firstCount > Preparation_time - 15) {//电流翻转 给一个虚拟值
                     ll_firing_Volt_4.setText(7.5 + "V");
-                    ll_firing_IC_4.setText("" + (denatorCount * cankao + new Random().nextLong() % 10));
+                    ll_firing_IC_4.setText("" + (denatorCount * cankao + new Random().nextLong() % 10)+"μA");
                 }
                 if (busInfo != null) {//8秒后再显示电压电流
                     String displayIcStr = "" + (int) busInfo.getBusCurrentIa() + "μA";

@@ -2216,20 +2216,20 @@ public class FiringMainActivity extends SerialPortActivity {
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNeutralButton("重检", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
+//                .setNeutralButton("重检", (dialog1, which) -> {
+//                    off();//重新检测
+//                    dialog1.dismiss();
+//                })
                 .setNegativeButton("退出", (dialog12, which) -> {
                     dialog12.cancel();
                     closeThread();
                     closeForm();
                 })
-                .setPositiveButton("继续", (dialog12, which) -> {
-//                    off();//重新检测
-                    increase(2);
-                    dialog12.cancel();
-                })
+//                .setPositiveButton("继续", (dialog12, which) -> {
+////                    off();//重新检测
+//                    increase(2);
+//                    dialog12.cancel();
+//                })
                 .create();
         dialog.show();
     }

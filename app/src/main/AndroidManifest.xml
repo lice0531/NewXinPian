@@ -206,6 +206,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/t_xingbang_main_page_btn_test"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".firingdevice.SetDenatorTypeActivity"
             android:configChanges="orientation|keyboardHidden"
