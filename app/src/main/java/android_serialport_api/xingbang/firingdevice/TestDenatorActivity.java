@@ -378,7 +378,8 @@ public class TestDenatorActivity extends SerialPortActivity {
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+//        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
         totalerrorNum = list.size();//得到数据的总条数
         ll_firing_errorNum_4.setText("" + totalerrorNum);
 //        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where statusCode =? and errorCode<> ?";
@@ -409,7 +410,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+//        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -467,7 +469,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         errorList.clear();
         denatorlist1.clear();
         denatorlist2.clear();
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);//不分区域
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();//不分区域
+//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);//分区域
         denatorlist1 = new ArrayList<>();
         denatorlist2 = new ArrayList<>();
         //int count=0;

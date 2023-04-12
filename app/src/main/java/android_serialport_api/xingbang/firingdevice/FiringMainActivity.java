@@ -666,7 +666,8 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+//        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
 
 //        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where  statusCode=? and errorCode<> ? and piece = ?";
 //        Cursor cursor = db.rawQuery(sql, new String[]{"02", "FF", mRegion});
@@ -766,7 +767,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+//        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -817,7 +819,8 @@ public class FiringMainActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
 //        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//不分区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
+//        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//单选区域
         denatorlist1 = new ArrayList<>();
         denatorlist2 = new ArrayList<>();
         for (DenatorBaseinfo d : denatorlist) {
@@ -939,7 +942,8 @@ public class FiringMainActivity extends SerialPortActivity {
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
 
-        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
+//        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);分区域
         for (DenatorBaseinfo dbf : list) {
             DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
             denatorHis_detail.setBlastserial(dbf.getBlastserial());
@@ -1992,7 +1996,8 @@ public class FiringMainActivity extends SerialPortActivity {
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//多选区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//多选区域
+//        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//单选区域
 
         for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
