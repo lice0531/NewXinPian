@@ -74,6 +74,11 @@ public class Application extends MultiDexApplication {
                     mPowerIndex = 2;
                     break;
                 }
+                case "KT50": {//新设备
+                    mSportName = "/dev/ttyS0";//ttyS0或者ttyS1
+                    mPowerIndex = 3;
+                    break;
+                }
                 default:
                     Log.e("上电", "当前机型为: " + Build.DEVICE + " 该机型没有被适配");
                     break;

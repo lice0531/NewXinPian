@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang;
 
+import static android_serialport_api.xingbang.Application.mContext;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Timer;
@@ -12,6 +14,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.serialport.DeviceControlSpd;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.coder.vincent.smart_toast.SmartToast;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
@@ -36,7 +40,7 @@ public class  BaseActivity extends AppCompatActivity {
 	private BaseActivity oContext;
 	// 通用
 	public DialogPlus mDialogPlus;
-	public Context mContext;
+
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
 		//禁止横屏
@@ -48,12 +52,7 @@ public class  BaseActivity extends AppCompatActivity {
 		oContext = this;// 把当前的上下文对象赋值给BaseActivity
 		addActivity();// 调用添加方法
 	}
-	public String[] mArr_Permissions = new String[]{
-//            Manifest.permission.ACCESS_FINE_LOCATION,
-//            Manifest.permission.ACCESS_COARSE_LOCATION,
-			Manifest.permission.WRITE_EXTERNAL_STORAGE,
-			Manifest.permission.READ_PHONE_STATE
-	};
+
 	// 进度条
 	public void showDialog() {
 		mDialogPlus = LoadingUtils.loadDialog(mContext);
@@ -74,15 +73,38 @@ public class  BaseActivity extends AppCompatActivity {
 	}
 	/* 把Toast定义成一个方法  可以重复使用，使用时只需要传入需要提示的内容即可*/
 	public void show_Toast(String text) {
-		Utils.showToast(this,text,3000);
+//		Utils.showToast(this,text,3000);
+		SmartToast.classic()
+				.config()
+				.messageColor(Color.RED)
+//				.backgroundColorResource(R.color.toast_bg_color)
+				.messageSize(30f)//设置文本大小，单位sp，默认14sp
+				.messageBold(true)//设置文本为粗体，默认false
+				.apply()
+				.show(text);
 	}
     public void show_Toast_ui(String text) {
         Looper.prepare();
-		Utils.showToast(this,text,3000);
+//		Utils.showToast(this,text,3000);
+		SmartToast.classic()
+				.config()
+				.messageColor(Color.RED)
+//				.backgroundColorResource(R.color.toast_bg_color)
+				.messageSize(30f)//设置文本大小，单位sp，默认14sp
+				.messageBold(true)//设置文本为粗体，默认false
+				.apply()
+				.show(text);
         Looper.loop();
     }
 	public void show_Toast_long(String text) {
-		Utils.showToast(this,text,5000);
+		SmartToast.classic()
+				.config()
+				.messageColor(Color.RED)
+//				.backgroundColorResource(R.color.toast_bg_color)
+				.messageSize(30f)//设置文本大小，单位sp，默认14sp
+				.messageBold(true)//设置文本为粗体，默认false
+				.apply()
+				.show(text);
 	}
 
 	@SuppressLint("BlockedPrivateApi")
@@ -152,6 +174,13 @@ public class  BaseActivity extends AppCompatActivity {
 				e.printStackTrace();
 			}
 			Log.e("BaseActivity", "实例化 DeviceControl");
+		}else if (mPowerOnMode == 3) {
+			try {
+				mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156,170,7,9);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Log.e("BaseActivity", "KT50新设备 DeviceControlSpd");
 		}  else {
 			Log.e("BaseActivity", "实例化 空");
 		}
@@ -189,6 +218,13 @@ public class  BaseActivity extends AppCompatActivity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else if (mPowerOnMode == 3) {// 新款KT50上电
+			Log.e("BaseActivity", "新款KT50 主板上电");
+			try {
+				mDeviceControlSpd.PowerOnDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -217,6 +253,14 @@ public class  BaseActivity extends AppCompatActivity {
 		}// DC 主板下电
 		if (mPowerOnMode == 2) {
 			Log.e("BaseActivity", "DC 主板下电");
+			try {
+				mDeviceControlSpd.PowerOffDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}if (mPowerOnMode == 3) {
+			Log.e("BaseActivity", "新款KT50 主板下电");
 			try {
 				mDeviceControlSpd.PowerOffDevice();
 			} catch (IOException e) {
@@ -265,7 +309,7 @@ public class  BaseActivity extends AppCompatActivity {
 		boolean before = mGpiot1.isHi(name);
 		mGpiot1.setEnable(name, !before);
 		Log.e("BaseActivity", "optGpio: " + name);
-		Toast.makeText(this, name + "由 " + (before ? "高" : "低") + "，变成 " + (!before ? "高" : "低"), Toast.LENGTH_LONG).show();
+		show_Toast(name + "由 " + (before ? "高" : "低") + "，变成 " + (!before ? "高" : "低"));
 	}
 
 	/**
@@ -319,5 +363,12 @@ public class  BaseActivity extends AppCompatActivity {
 			}
 		});
 	}
+
+	public String[] mArr_Permissions = new String[]{
+//            Manifest.permission.ACCESS_FINE_LOCATION,
+//            Manifest.permission.ACCESS_COARSE_LOCATION,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE,
+			Manifest.permission.READ_PHONE_STATE
+	};
 
 }
