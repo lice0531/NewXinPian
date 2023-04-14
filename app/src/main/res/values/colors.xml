@@ -142,4 +142,6 @@
     <color name="colorBlue">#0073FF</color>     // 辅助色，主要用于图标，区分有色图标等色彩。
     <color name="colorGreen">#31E738</color>    //
     <color name="text_hint">#c7c7c7</color>
+
+    <color name="toast_bg_color">#D4D4D4</color>
 </resources>

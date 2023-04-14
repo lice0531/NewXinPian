@@ -825,9 +825,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
 
 
-//                            if (firstCount > 1 && firstCount < Preparation_time - 1) {//Preparation_time-1
-//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
-//                            }
+                            if (firstCount > Jiance_time -9 && firstCount < Jiance_time - 1) {//Preparation_time-1
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+                            }
 //                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
                             if (firstCount <= 0) {
                                 Log.e(TAG, "firstCount2: "+firstCount );
@@ -857,7 +857,6 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
                             if (firstCount < (Jiance_time -16) ) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
-
                             }
 
                             firstCount--;
