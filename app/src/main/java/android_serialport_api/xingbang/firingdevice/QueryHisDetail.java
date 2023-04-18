@@ -182,7 +182,7 @@ public class QueryHisDetail extends BaseActivity {
                             saveFireResult(fireDate);
                             blastdate = fireDate;
                         }
-                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
+//                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
                         if (pro_coordxy.length() < 2 && jd == null) {
                             show_Toast("经纬度为空，不能执行上传");
                             return;
@@ -860,7 +860,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-blastdate", blastdate);
 //            Log.e("上传信息-CMD日志", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/", "-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.15D"));//硬件版本
-            object.put("rj_version", "KT50_3.25_PT_V1.3.1C_230331");//软件版本
+            object.put("rj_version", "KT50_3.25_PT_V1.3.1C_230417");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException e) {

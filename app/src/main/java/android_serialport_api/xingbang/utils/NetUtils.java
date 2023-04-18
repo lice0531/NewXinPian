@@ -289,7 +289,7 @@ public class NetUtils {
         } else {
 
             //没有网络
-            Toast.makeText(context, "网络错误，请检查您的网络！", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "网络错误，请检查您的网络！", Toast.LENGTH_SHORT).show();
             return NETWORK_NONE;
         }
 

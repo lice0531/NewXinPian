@@ -277,6 +277,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         String device = Build.DEVICE;
         switch (device) {
+            case "KT50":
             case "KT50_B2": {
                 ll_txt_firing_7.setText(R.string.text_firing_tip5_2);
                 break;
@@ -1123,7 +1124,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, cmdBuf);//处理cmd命令
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
 
                 }
             }
@@ -1946,7 +1947,7 @@ public class FiringMainActivity extends SerialPortActivity {
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")) {
+        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")&& !Build.DEVICE.equals("KT50")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -1954,7 +1955,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     keyFireCmd = 1;
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_5 && Build.DEVICE.equals("KT50_B2")) {
+        } else if (keyCode == KeyEvent.KEYCODE_5 &&( Build.DEVICE.equals("KT50_B2")||Build.DEVICE.equals("KT50"))) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {

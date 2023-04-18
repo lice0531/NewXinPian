@@ -1338,7 +1338,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else {
                 String cmd = DefCommand.getCmd(fromCommad);
                 if (cmd != null) {
-                    doWithReceivData(cmd, cmdBuf);
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, localBuf);
                 }
             }
         } else {
