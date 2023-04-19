@@ -166,6 +166,13 @@ public class UpgradeActivity extends SerialPortActivity {
                 e.printStackTrace();
             }
             Log.e("BaseActivity", "实例化 DeviceControl");
+        }else if (mPowerOnMode == 3) {
+            try {
+                mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156,170,7,9);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.e("BaseActivity", "实例化 DeviceControl");
         }  else {
             Log.e("BaseActivity", "实例化 空");
         }
