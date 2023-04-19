@@ -329,7 +329,7 @@ public class XingbangMain extends BaseActivity {
             Log.e("起爆器编号", "equ_no: " + equ_no);
             if (!equ_no.equals("")) {
                 tvMainNo.setText("设备编号:" + equ_no);
-                CrashReport.setUserId(equ_no);
+//                CrashReport.setUserId(equ_no);
             }
             return false;
         });
