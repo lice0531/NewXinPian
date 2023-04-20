@@ -459,9 +459,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
                     if (!chongfu) {
-                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-                    } else {
-                        initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
+//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
+//                    } else {
+                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));
+                        initDialog_zanting_stop("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
                     }
                 }
             }
@@ -2150,6 +2151,29 @@ public class FiringMainActivity extends SerialPortActivity {
                 })
                 .create();
         dialog.show();
+        }
+    }
+
+    private void initDialog_zanting_stop(String tip) {
+        if (!FiringMainActivity.this.isFinishing()) {
+            chongfu = true;//已经检测了一次
+            AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                    .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                    .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+
+                    .setNegativeButton("退出", (dialog12, which) -> {
+                        dialog12.cancel();
+                        closeThread();
+                        closeForm();
+                    })
+//                    .setPositiveButton("继续", (dialog12, which) -> {
+////                    off();//重新检测
+//                        increase(2);
+//                        dialog12.cancel();
+//                    })
+                    .create();
+            dialog.show();
         }
     }
 
