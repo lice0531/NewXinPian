@@ -107,8 +107,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
 
-//        CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
-        CJ="XB_";//实验用
+        CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
+//        CJ="XB_";//实验用
         if (IntervalUtil.isFastClick_2()) {
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改
