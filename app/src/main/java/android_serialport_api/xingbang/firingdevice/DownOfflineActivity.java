@@ -44,6 +44,7 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
@@ -172,7 +173,11 @@ public class DownOfflineActivity extends BaseActivity {
                         }
                     }
                 }
-
+                if (danLingBean.getLgs().getLg().size() > 0) {
+                    for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                    }
+                }
                 if (err != 0) {
                     show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                 }

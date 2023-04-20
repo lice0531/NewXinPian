@@ -641,13 +641,31 @@ public class XbUtils {
 //        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-
+    public static void install(Activity activity,String path) {
+        File apk = new File(path);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //注意第二个参数，要保持和manifest中android:authorities的值相同
+            Uri uri = FileProvider.getUriForFile(activity,
+                    activity.getPackageName() + ".fileProvider", apk);
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(apk), "application/vnd.android.package-archive");
+        }
+        try {
+            activity.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 打开安装包(兼容8.0)
      */
     public static void openAPKFile_8(Activity activity, String path) {
         String mimeDefault = "application/vnd.android.package-archive";
-
+        Log.e("打开apk", "1: " );
         File apkFile = null;
         if (!TextUtils.isEmpty(path)) {
             // mApkUri是apk下载完成后在本地的存储路径
@@ -656,7 +674,7 @@ public class XbUtils {
         if (apkFile == null) {
             return;
         }
-
+        Log.e("打开apk", "2: " );
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -668,6 +686,7 @@ public class XbUtils {
                 intent.setDataAndType(contentUri, mimeDefault);
                 // 兼容8.0
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Log.e("打开apk", "3: " );
                     // 如果没有权限
                     if (!activity.getPackageManager().canRequestPackageInstalls()) {
                         startInstallPermissionSettingActivity(activity);
@@ -675,11 +694,13 @@ public class XbUtils {
                     }
                 }
             } else {
+                Log.e("打开apk", "4: " );
                 intent.setDataAndType(Uri.fromFile(apkFile), mimeDefault);
             }
             if (activity.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
                 //如果APK安装界面存在，携带请求码跳转。使用forResult是为了处理用户 取消 安装的事件。外面这层判断理论上来说可以不要，但是由于国内的定制，这个加上还是比较保险的
                 activity.startActivityForResult(intent, 3500);
+                Log.e("打开apk", "5: " );
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -704,13 +725,15 @@ public class XbUtils {
 
         // 兼容8.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
             // 如果没有权限
             if (!activity.getPackageManager().canRequestPackageInstalls()) {
                 startInstallPermissionSettingActivity(activity);
             }
             // 如果有权限
             else {
-                openAPKFile_8(activity, path);
+//                openAPKFile_8(activity, path);
+                install(activity, path);
             }
         }
         // 8.0以下

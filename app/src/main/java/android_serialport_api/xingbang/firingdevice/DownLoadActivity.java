@@ -5,6 +5,7 @@ import static android_serialport_api.xingbang.Application.mContext;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 
 import org.angmarch.views.NiceSpinner;
@@ -111,6 +113,7 @@ public class DownLoadActivity extends BaseActivity {
 //        } else if (shengji.equals("SC_KT50_Second_Version_17")) {//下载项目  17V板子 17V程序
 //            Download_APK("SC_KT50_Second_Version_17");
 //        }
+        mNS_Version.setSelectedIndex(6);//默认二代PT10
         if(shengji.length()>1){
             Download_APK(shengji);
         }
@@ -164,6 +167,7 @@ public class DownLoadActivity extends BaseActivity {
                 mNS_Version.setSelectedIndex(i);
             }
         }
+
         mBtnVersion = findViewById(R.id.btn_download_0);
         mBtnVersion.setOnClickListener(v -> {
             if (IntervalUtil.isFastClick_2()) {//下载项目
@@ -316,6 +320,9 @@ public class DownLoadActivity extends BaseActivity {
 
 
     }
+
+
+
 
 
 //    /**
