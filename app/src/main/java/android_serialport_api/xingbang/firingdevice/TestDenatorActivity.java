@@ -585,14 +585,13 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于4800
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 11000 && firstCount == Jiance_time * 0.1) {
+                    if (displayIc > 11000 && firstCount == 1) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
 //                        if (!chongfu) {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",true);//弹出框
 //                        } else {
-                            byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                            sendCmd(reCmd);
+                            sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                             initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
 //                        }
                         return;
