@@ -209,11 +209,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private EditText edit_start_entBF2Bit_st;//开始厂家码
     private EditText edit_start_entproduceDate_st;//开始日期码
     private EditText edit_start_entAT1Bit_st;//开始特征码
-//    private EditText entboxNoAndSerialSt1;//开始流水号
+    //    private EditText entboxNoAndSerialSt1;//开始流水号
     private EditText edit_end_entBF2Bit_en;//结束厂家码
     private EditText edit_end_entproduceDate_ed;//结束日期码
     private EditText edit_end_entAT1Bit_ed;//结束特征码
-//    private EditText entboxNoAndSerialEd1;//结束流水号
+    //    private EditText entboxNoAndSerialEd1;//结束流水号
     private String singleShellNo;//单发注册
     private String lg_No;//重复雷管管壳码
     private String lg_Piece;//重复雷管区号
@@ -314,6 +314,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         scanDecode.getBarCode(data -> {
             Log.e("扫码", "data: " + data);
+            Log.e("扫码", "data.length(): " + data.length());
             if (deleteList()) return;
             hideInputKeyboard();//隐藏光标
             //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
@@ -321,48 +322,57 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 updateMessage("01");
             } else if (data.length() == 28) {//P53904180500005390418050000
                 updateMessage("02");
-            } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-                updateMessage("02");
             }
+
             if (data.length() == 19) {//扫描箱号
                 addXiangHao(data);
-            }
-            if (sanButtonFlag > 0) {//扫码结果设置到输入框里
-                Log.e("扫码注册", "data: " + data);
-                decodeBar(data);
-                Message msg = new Message();
-                msg.obj = data;
-                msg.what = 9;
-                mHandler_tip.sendMessage(msg);
-                scanDecode.stopScan();
             } else {
-                String barCode;
-                String denatorId;
-                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-                    barCode = data.substring(0, 13);
-                    denatorId = data.substring(13, 26);
-                    insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
-                } else if (data.length() == 28) {
-                    Log.e("扫码", "data: " + data);
-                    //5620302H00001A62F400FFF20AB603
-                    //5420302H00001A6F4FFF20AB603
-                    //Y5620413H00009A630FD74D87604
-                    //M5621132A9999900F491EF8B0922
-                    if(data.charAt(0) == 'Y'){
-                        barCode = data.substring(1, 14);
-                        String a = data.substring(14, 24);
-                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                        Log.e("扫码", "barCode: " + barCode);
-                        Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
-                    }
-
+                if (sanButtonFlag > 0) {//扫码结果设置到输入框里
+                    Log.e("扫码注册", "data: " + data);
+                    decodeBar(data);
+                    Message msg = new Message();
+                    msg.obj = data;
+                    msg.what = 9;
+                    mHandler_tip.sendMessage(msg);
+                    scanDecode.stopScan();
                 } else {
-                    barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
-                    insertSingleDenator(barCode);
+                    String barCode;
+                    String denatorId;
+                    if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+                        barCode = data.substring(0, 13);
+                        denatorId = data.substring(13, 26);
+                        insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
+                    } else if (data.length() == 28) {
+                        Log.e("扫码", "data: " + data);
+                        //5620302H00001A62F400FFF20AB603
+                        //5420302H00001A6F4FFF20AB603
+                        //Y5620413H00009A630FD74D87604
+                        //M5621132A9999900F491EF8B0922
+                        if (data.charAt(0) == 'Y') {
+                            barCode = data.substring(1, 14);
+                            String a = data.substring(14, 24);
+                            denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                            Log.e("扫码", "barCode: " + barCode);
+                            Log.e("扫码", "denatorId: " + denatorId);
+                            Log.e("扫码", "data.substring(24): " + data.substring(24));
+                            insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                        }else {
+                            barCode = data.substring(0, 13);
+                            String a = data.substring(13, 23);
+                            denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                            Log.e("扫码", "barCode: " + barCode);
+                            Log.e("扫码", "denatorId: " + denatorId);
+                            Log.e("扫码", "data.substring(24): " + data.substring(24));
+                            insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                        }
+
+                    }
+//                    else if{
+//                        barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
+//                        insertSingleDenator(barCode);
+//                    }
+                    hideInputKeyboard();//隐藏光标
                 }
-                hideInputKeyboard();//隐藏光标
             }
         });
     }
@@ -464,7 +474,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("找不到对应的生产数据,请先导入生产数据");
             } else if (msg.what == 11) {
                 show_Toast("输入的日期格式不对");
-            }else if (msg.what == 2001) {
+            } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
                 SoundPlayUtils.play(4);
             } else {
@@ -558,7 +568,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 int delay = info.getDelay();
                 String shellBlastNo = info.getShellBlastNo();
                 // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
+                modifyBlastBaseInfo(no, delay, shellBlastNo, info.getDenatorId());
             });
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
@@ -639,8 +649,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+//        new Thread(() -> {
+//            insertDenator(prex, finalStrNo, finalEndNo);//添加
+//        }).start();
+
+        pb_show = 1;
+        runPbDialog();
         new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);//添加
+            insertDenator(prex, finalStrNo, finalEndNo);
+            Log.e("手动输入", "厂号日期: " + prex);
+            Log.e("手动输入", "start: " + start);
+            pb_show = 0;
         }).start();
     }
 
@@ -666,7 +685,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
+            modifyBlastBaseInfo(no, delay, shellBlastNo, info.getDenatorId());
         });
         this.isSingleReisher = 0;
 
@@ -737,7 +756,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             edit_start_entAT1Bit_st.setFocusable(false);
             editScanTezheng.setFocusable(false);
         }
-        Log.e("厂家", "factoryCode: "+factoryCode+"--factoryCode:"+factoryCode );
+        Log.e("厂家", "factoryCode: " + factoryCode + "--factoryCode:" + factoryCode);
         if (factoryCode != null && factoryCode.trim().length() > 0) {
             edit_end_entBF2Bit_en.setText(factoryCode);
             edit_start_entBF2Bit_st.setText(factoryCode);
@@ -982,20 +1001,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String st2Bit = edit_start_entBF2Bit_st.getText().toString();
         String stproDt = edit_start_entproduceDate_st.getText().toString();
         String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-        String stsno = entboxNoAndSerialSt1.getText().toString()+entboxNoAndSerialSt2.getText().toString();
+        String stsno = entboxNoAndSerialSt1.getText().toString() + entboxNoAndSerialSt2.getText().toString();
 
         String ed2Bit = edit_end_entBF2Bit_en.getText().toString();
         String edproDt = edit_end_entproduceDate_ed.getText().toString();
         String ed1Bit = edit_end_entAT1Bit_ed.getText().toString();
-        String edsno = entboxNoAndSerialEd1.getText().toString()+entboxNoAndSerialEd2.getText().toString();
+        String edsno = entboxNoAndSerialEd1.getText().toString() + entboxNoAndSerialEd2.getText().toString();
         String addNum = etNum.getText().toString();
 
         if (StringUtils.isBlank(st2Bit)) {
             tipStr = getResources().getString(R.string.text_error_tip11);//"起始厂家码不能为空"
             return tipStr;
         }
-        if (StringUtils.isBlank(stsno)|| stsno.length() != 5) {
-            tipStr = "开始流水号不能为空";//"起始厂家码不能为空"
+        if (StringUtils.isBlank(stsno) || stsno.length() != 5) {
+            tipStr = "开始流水号不能为空";
             return tipStr;
         }
         if (StringUtils.isBlank(stproDt)) {
@@ -1071,7 +1090,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private int check(String shellNo) {
 
-        if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
+        if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
@@ -1176,8 +1195,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         builder.setPositiveButton("确定", (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            Log.e("单发修改", "delay1: "+delay1 );
-            Log.e("单发修改", "maxSecond: "+maxSecond );
+            Log.e("单发修改", "delay1: " + delay1);
+            Log.e("单发修改", "maxSecond: " + maxSecond);
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
 
@@ -1549,12 +1568,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /***
      * 扫码注册方法
      */
-    private int insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+        if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.equals(shellNo.substring(0,2)) ) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));//  "管厂码与系统中定义的管厂码不一致";
+            return  ;
+        }
+        //雷管信息有误，特征码不正确，请检查 5620819H00001
+        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.equals(shellNo.substring(7,8))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+            return ;
+        }
         if (shellNo.length() != 13) {
-            return -1;
+            return ;
         }
         if (check(shellNo) == -1) {
-            return -1;
+            return ;
         }
 //        int maxNo = getMaxNumberNo();
         int start_delay = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
@@ -1568,12 +1596,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+                return ;
             }
         } else if (delay_set.equals("f2")) {
             if (maxSecond != 0 && delay + f2 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+                return ;
             }
         }
         if (delay_set.equals("f1")) {//获取最大延时有问题
@@ -1612,7 +1640,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        return 0;
+        return ;
     }
 
     /***
@@ -1838,7 +1866,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    show_Toast("请设置延时");
 //                    break;
 //                }
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
+                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
@@ -2001,7 +2029,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_inputOk:
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
+                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
@@ -2013,9 +2041,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String st2Bit = edit_start_entBF2Bit_st.getText().toString();
                     String stproDt = edit_start_entproduceDate_st.getText().toString();
                     String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-                    String stsno = entboxNoAndSerialSt1.getText().toString()+entboxNoAndSerialSt2.getText().toString();
+                    String stsno = entboxNoAndSerialSt1.getText().toString() + entboxNoAndSerialSt2.getText().toString();
                     prex = st2Bit + stproDt + st1Bit;
-                    String edsno = entboxNoAndSerialEd1.getText().toString()+entboxNoAndSerialEd2.getText().toString();
+                    String edsno = entboxNoAndSerialEd1.getText().toString() + entboxNoAndSerialEd2.getText().toString();
                     String addNum = etNum.getText().toString();
                     start = Integer.parseInt(stsno);//开始流水号
 
@@ -2089,7 +2117,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 finish();
                 break;
             case R.id.btn_singleReister:
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1||et_startDelay.getText().length()<1) {
+                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
@@ -2636,6 +2664,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         @Override
         public void afterTextChanged(Editable s) {
             //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
@@ -2655,9 +2684,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         @Override
         public void afterTextChanged(Editable s) {
             //编辑框内容变化之后会调用该方法，s为编辑框内容变化后的内容
@@ -2762,7 +2793,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String facCode = subBarCode.substring(0, 2);
         String dayCode = subBarCode.substring(2, 7);
         String featureCode = subBarCode.substring(7, 8);
-        String serialNo = subBarCode.substring(8,10);
+        String serialNo = subBarCode.substring(8, 10);
         String serialNo2 = subBarCode.substring(10);
         Log.e("注册页面--扫码注册", "facCode: " + facCode + "  dayCode:" + dayCode + "  featureCode:" + featureCode + "  serialNo:" + serialNo);
 

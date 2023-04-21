@@ -290,7 +290,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     if (version_cloud != null&&version_cloud.substring(0,16).equals(version.substring(0,16)) &&!version_cloud .contains(version)) {
                         Log.e("自检", "对比version_cloud.substring(0,16).equals(version.substring(0,16)): " + version_cloud.substring(0,16).equals(version.substring(0,16)));
                         ziJianThread.exit = true;
-                        createDialog();
+                        createDialog(version_cloud);
                     }
                     break;
             }
@@ -390,8 +390,9 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     /***
      * 建立对话框
+     * @param version_cloud
      */
-    public void createDialog() {
+    public void createDialog(String version_cloud) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("升级提醒");//"说明"
         builder.setMessage("检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
@@ -399,7 +400,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", "四川更新1");
+            intent.putExtra("dataSend", version_cloud);
             startActivity(intent);
             dialog.dismiss();
         });

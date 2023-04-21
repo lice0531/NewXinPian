@@ -185,6 +185,15 @@ public class SendMsgActivity extends BaseActivity {
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     break;
+                case 1:
+                    show_Toast("导入成功");
+                    break;
+                case 2:
+                    show_Toast("读取成功");
+                    break;
+                case 3:
+                    show_Toast("当前文件目录里没有 雷管文件.txt");
+                    break;
                 default:
                     break;
             }
@@ -295,13 +304,13 @@ public class SendMsgActivity extends BaseActivity {
             Log.e("接收注册", "shellNo: " + shellNo);
             String[] a = shellNo.split("#");
             Log.e("接收注册", "a[0]: " + a[0]);
-            if (a[0].length()>5&&checkRepeatDenatorId(a[0])) {//检查重复数据
+            if (a[0].length() > 5 && checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
                 continue;
             }
-            if(a[0].equals("null")){
-                a[0]="";
-                a[3]="";
+            if (a[0].equals("null")) {
+                a[0] = "";
+                a[3] = "";
             }
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
@@ -311,7 +320,7 @@ public class SendMsgActivity extends BaseActivity {
             if (a.length >= 3) {
                 denator.setShellBlastNo(a[2]);
             }
-            if(a.length == 4){
+            if (a.length == 4) {
                 denator.setZhu_yscs(a[3]);
             }
             denator.setDelay(Integer.parseInt(a[1]));
@@ -328,7 +337,7 @@ public class SendMsgActivity extends BaseActivity {
             reCount++;
         }
         pb_show = 0;
-        show_Toast_ui("导入成功");
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1));
         return reCount;
     }
 
@@ -360,7 +369,8 @@ public class SendMsgActivity extends BaseActivity {
                     } else {
                         tipDlg.dismiss();
                         pb_show = 0;
-                        show_Toast_ui("当前文件目录里没有 雷管文件.txt");
+
+                        mHandler_0.sendMessage(mHandler_0.obtainMessage(3));
                     }
                 }).start();
                 break;
@@ -378,8 +388,8 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
-                    if (list_uid.get(i).getShellBlastNo().length() == 13 ) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo()  + "#" + list_uid.get(i).getZhu_yscs()+ ",");
+                    if (list_uid.get(i).getShellBlastNo().length() == 13) {
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getZhu_yscs() + ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
                     }
@@ -874,7 +884,8 @@ public class SendMsgActivity extends BaseActivity {
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
-        show_Toast_ui("读取成功");
+
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(2));
     }
 
     /**
@@ -944,7 +955,7 @@ public class SendMsgActivity extends BaseActivity {
 
         String str;
 //        if (size == -1) {
-            str = " 区域" + region;
+        str = " 区域" + region;
 //        } else {
 //            str = " 区域" + region + "(数量: " + size + ")";
 //        }
@@ -975,7 +986,7 @@ public class SendMsgActivity extends BaseActivity {
 //                }
                 String a[] = line.split(",", -1);
                 //,,,5620811H08989,085060B804,,,,,,,,,,,,,,
-          Log.e("写入文件数据",a[3]+"--"+a[4]);
+                Log.e("写入文件数据", a[3] + "--" + a[4]);
                 String uid = "A62F400" + a[4].substring(0, 6);
                 String yscs = a[4].substring(6);
                 DenatorBaseinfo baseinfo = new DenatorBaseinfo();
