@@ -653,13 +653,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            insertDenator(prex, finalStrNo, finalEndNo);//添加
 //        }).start();
 
-        pb_show = 1;
-        runPbDialog();
+//        pb_show = 1;
+//        runPbDialog();
         new Thread(() -> {
             insertDenator(prex, finalStrNo, finalEndNo);
             Log.e("手动输入", "厂号日期: " + prex);
             Log.e("手动输入", "start: " + start);
-            pb_show = 0;
+//            pb_show = 0;
         }).start();
     }
 
