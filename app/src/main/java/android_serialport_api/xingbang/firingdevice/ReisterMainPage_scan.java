@@ -1569,7 +1569,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 扫码注册方法
      */
     private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
-        if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.equals(shellNo.substring(0,2)) ) {
+        Log.e("检查管厂码", "factoryCode: "+factoryCode );
+        Log.e("检查管厂码", "shellNo.substring(0,2): "+shellNo.substring(0,2) );
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0,2)) ) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));//  "管厂码与系统中定义的管厂码不一致";
             return  ;
         }

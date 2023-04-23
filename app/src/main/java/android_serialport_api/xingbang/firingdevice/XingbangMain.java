@@ -419,11 +419,11 @@ public class XingbangMain extends BaseActivity {
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
         message.setPreparation_time("28");
-        message.setChongdian_time("48");
+        message.setChongdian_time("68");
         message.setServer_type1("1");
         message.setServer_type2("0");
         message.setPro_dwdm("");
-        message.setJiance_time("5");
+        message.setJiance_time("28");
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
