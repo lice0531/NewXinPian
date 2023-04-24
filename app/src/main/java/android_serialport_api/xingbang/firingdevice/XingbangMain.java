@@ -395,11 +395,11 @@ public class XingbangMain extends BaseActivity {
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
         Preparation_time = (int) MmkvUtils.getcode("preparation_time", 50);
-        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 48);
+        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 68);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.getcode("jiance_time", 50);
+        jiance_time = (int) MmkvUtils.getcode("jiance_time", 28);
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
@@ -423,7 +423,7 @@ public class XingbangMain extends BaseActivity {
         message.setServer_type1("1");
         message.setServer_type2("0");
         message.setPro_dwdm("");
-        message.setJiance_time("28");
+        message.setJiance_time("50");
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
