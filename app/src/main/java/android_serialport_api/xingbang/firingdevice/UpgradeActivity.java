@@ -100,6 +100,7 @@ public class UpgradeActivity extends SerialPortActivity {
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public volatile Result mResult;             // 下载完成返回结果
     private String shengji = "升级";
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,7 +110,7 @@ public class UpgradeActivity extends SerialPortActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         shengji = (String) bundle.get("dataSend");
-        Log.e(TAG, "传递-dataSend: "+shengji );
+        Log.e(TAG, "传递-dataSend: " + shengji);
         mContext = this;
         initPower();
         // xb文件夹不存在则创建
@@ -125,21 +126,11 @@ public class UpgradeActivity extends SerialPortActivity {
 //        initSerialHelper();     // 初始化串口类
         initHandler();          // 初始化Handler
         initView();             // 初始化控件
-        if(shengji.equals("升级")){
-            //直接下载
-            if (ContextCompat.checkSelfPermission(this, mArr_Permissions[0]) != PackageManager.PERMISSION_GRANTED
-                    ||
-                    ContextCompat.checkSelfPermission(this, mArr_Permissions[1]) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
-            } else {
-                if (IntervalUtil.isFastClick_2()) {
-                    Download_File("KT50_V", ".bin");
-                }
+        if (shengji.length()>0) {
+            if (IntervalUtil.isFastClick_2()) {
+                Download_File(shengji, ".bin");
             }
         }
-
-
     }
 
 
@@ -148,7 +139,7 @@ public class UpgradeActivity extends SerialPortActivity {
      */
     public void initPower() {
         mPowerOnMode = mApplication.getPowerIndex();
-        Log.e("上电", "mPowerOnMode: "+ mPowerOnMode);
+        Log.e("上电", "mPowerOnMode: " + mPowerOnMode);
         if (mPowerOnMode == 0) {
             try {
                 mDeviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
@@ -166,14 +157,14 @@ public class UpgradeActivity extends SerialPortActivity {
                 e.printStackTrace();
             }
             Log.e("BaseActivity", "实例化 DeviceControl");
-        }else if (mPowerOnMode == 3) {
+        } else if (mPowerOnMode == 3) {
             try {
-                mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156,170,7,9);
+                mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156, 170, 7, 9);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Log.e("BaseActivity", "实例化 DeviceControl");
-        }  else {
+        } else {
             Log.e("BaseActivity", "实例化 空");
         }
     }
@@ -198,7 +189,7 @@ public class UpgradeActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-        Log.e(TAG, "收到命令: "+fromCommad );
+        Log.e(TAG, "收到命令: " + fromCommad);
         mHandler.sendMessage(mHandler.obtainMessage(1100, fromCommad));
 
     }
@@ -540,7 +531,7 @@ public class UpgradeActivity extends SerialPortActivity {
             case "E2":
                 // 下一次
                 mIndex_E2 = mIndex_E2 + 1;
-                Log.e("返回E2", "bin文件发送开始 mIndex_E2: " + mIndex_E2+"--mNumber_E2:"+mNumber_E2);
+                Log.e("返回E2", "bin文件发送开始 mIndex_E2: " + mIndex_E2 + "--mNumber_E2:" + mNumber_E2);
 
                 // 下一次 例如: 30 < 31
                 if (mIndex_E2 < mNumber_E2) {
@@ -633,9 +624,9 @@ public class UpgradeActivity extends SerialPortActivity {
 
     private void E0() {
         // 下电
-            powerOffDevice(PIN_ADSL);
-            // 上电
-            powerOnDevice(PIN_ADSL);
+        powerOffDevice(PIN_ADSL);
+        // 上电
+        powerOnDevice(PIN_ADSL);
         // E0 强制升级指令
         byte[] mE0 = Cmd_EX.sendE0();
 //            mSerialHelper.send(mE0, true);
@@ -718,7 +709,7 @@ public class UpgradeActivity extends SerialPortActivity {
             // E2 固件发送和接收
             byte[] mE2 = Cmd_EX.sendE2(ByteUtil.ByteArrToHex(mList_Byte.get(mIndex_E2)));
             sendCmd(mE2);
-            Log.e(TAG, "mNumber_E2: "+mNumber_E2);
+            Log.e(TAG, "mNumber_E2: " + mNumber_E2);
 //                Log.e("UpgradeActivity", "E2 mIndex_E2: " + mIndex_E2 + " E2发送指令: " + ByteUtil.ByteArrToHex(mE2));
 
         } else {

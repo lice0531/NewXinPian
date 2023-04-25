@@ -188,7 +188,7 @@ public class QueryHisDetail extends BaseActivity {
                             saveFireResult(fireDate);
                             blastdate = fireDate;
                         }
-                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
+//                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
                         Log.e("上传-经纬度", "pro_coordxy: "+pro_coordxy );
                         Log.e("上传-经纬度", "jd: "+jd );
                         if (pro_coordxy.length() < 2 && jd == null) {
@@ -863,7 +863,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(",")[0].substring(2).replace("/","-")));//日志
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].substring(2).replace("/","-")));//日志
             Log.e("上传信息-日志", log);
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
