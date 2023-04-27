@@ -559,6 +559,14 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 case 12:
                     show_Toast("营业性单位必须设置合同或者项目");
                     break;
+                case 13:
+                    show_Toast("网络请求失败,请检查网络后再次尝试");
+                    break;
+                case 14:
+                    show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                case 15:
+                    show_Toast("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+                    break;
                 case 89:
                     show_Toast("输入的管壳码重复");
                     break;
@@ -1075,7 +1083,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
-                show_Toast_ui("网络请求失败,请检查网络后再次尝试");
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
             }
 
             @Override
@@ -1084,7 +1092,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 try {
                     res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(response.body().string().toString(), Base64.DEFAULT)));
                 } catch (Exception e) {
-                    show_Toast_ui("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage(14));
                     return;
                 }
                 Log.e("网络请求", "res: " + res);
@@ -1132,7 +1140,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (err != 0) {
                             Log.e("下载", "err: " + err);
-//                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                         }
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
                         pb_show = 0;//loding画面结束
@@ -1216,17 +1223,17 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
-                show_Toast_ui("网络请求失败,请检查网络后再次尝试");
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
-                String res ;
+                String res;
                 try {
                     res = response.body().string();//response.body()只能调用一次,第二次调用就会变成null
                 } catch (Exception e) {
-                    show_Toast_ui("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage(15));
                     return;
                 }
                 Log.e("网络请求返回", "res: " + res);
@@ -1274,7 +1281,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (err != 0) {
                             Log.e("下载", "err: " + err);
-//                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                         }
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
                         pb_show = 0;//loding画面结束
@@ -1312,7 +1318,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         });
     }
-
 
 
     /***
@@ -1571,7 +1576,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 break;
             }
             DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
-            int duanNUM = getDuanNo(duan,mRegion);//也得做区域区分
+            int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
@@ -1711,7 +1716,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         if (!StringUtils.isNotBlank(duan)) {
             tipStr = "段位不能为空";
             return tipStr;
-        }if (!StringUtils.isNotBlank(st2Bit)) {
+        }
+        if (!StringUtils.isNotBlank(st2Bit)) {
             tipStr = getResources().getString(R.string.text_error_tip11);//"起始厂家码不能为空"
             return tipStr;
         }
@@ -1739,7 +1745,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             tipStr = getResources().getString(R.string.text_error_tip17);//  "结束特征码不能为空";
             return tipStr;
         }
-        if (!StringUtils.isNotBlank(edsno)&& !StringUtils.isNotBlank(addNum)) {
+        if (!StringUtils.isNotBlank(edsno) && !StringUtils.isNotBlank(addNum)) {
             tipStr = "结束序列号和连续注册个数不能同时为空";//  "结束序列号不能为空";
             return tipStr;
         }
@@ -2405,7 +2411,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             insertDenator(prex, start, start + (num - 1));
                         }).start();
                         return;
-                    }else {
+                    } else {
                         int end = Integer.parseInt(edsno);
                         if (end < start) {
                             show_Toast(getResources().getString(R.string.text_error_tip27));//  "结束序号不能小于开始序号";
@@ -2664,12 +2670,13 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         Log.e("liyi_Region", "已选择" + str);
     }
+
     /***
      * 得到某段的总数
      * @return
      */
-    private int getDuanNo(int duan,String piece) {
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "",piece});
+    private int getDuanNo(int duan, String piece) {
+        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "", piece});
         int totalNum = cursor.getCount();//得到数据的总条数
         cursor.close();
         return totalNum;
