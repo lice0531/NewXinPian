@@ -200,6 +200,12 @@ public class SendMsgActivity extends BaseActivity {
 //                    setTitleRegion(mRegion, mListData.size());
                     show_Toast("导入"+mListData.size()+"发雷管成功");
                     break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
                 default:
                     break;
             }
@@ -357,7 +363,10 @@ public class SendMsgActivity extends BaseActivity {
                     } else {
                         tipDlg.dismiss();
                         pb_show = 0;
-                        show_Toast_ui("当前文件目录里没有 雷管文件.txt");
+                        Message msg = new Message();
+                        msg.what=1;
+                        msg.obj="当前文件目录里没有 雷管文件.txt";
+                        mHandler_0.sendMessage(msg);
                     }
                 }).start();
                 break;
@@ -879,7 +888,11 @@ public class SendMsgActivity extends BaseActivity {
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
-        show_Toast_ui("读取成功");
+
+        Message msg = new Message();
+        msg.what=1;
+        msg.obj="读取成功";
+        mHandler_0.sendMessage(msg);
     }
 
     /**
