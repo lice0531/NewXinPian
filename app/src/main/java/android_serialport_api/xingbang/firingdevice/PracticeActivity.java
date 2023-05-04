@@ -161,7 +161,7 @@ public class PracticeActivity extends BaseActivity {
 
         initHandle();
 
-        loadMoreData();
+//        loadMoreData();
 //        List<DenatorBaseinfo> denator = LitePal.findAll(DenatorBaseinfo.class);
 //        List<MessageBean> message = LitePal.findAll(MessageBean.class);
 //        Log.e("注册", "denator: " + denator.toString());
