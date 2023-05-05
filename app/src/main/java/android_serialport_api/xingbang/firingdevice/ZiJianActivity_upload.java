@@ -426,7 +426,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", "升级");
+            intent.putExtra("dataSend", CJ+"KT50_V1.3_17V");
             startActivity(intent);
             dialog.dismiss();
         });
