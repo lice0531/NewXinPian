@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -114,6 +115,7 @@ public class QueryHisDetail extends BaseActivity {
     private Button btn_del_all;
 
     private Handler mHandler_2 = new Handler();//显示进度条
+    private Handler mHandler_tip = new Handler();//显示进度条
     private Handler mHandler_update = new Handler();//更新状态
     private LoadingDialog tipDlg = null;
     private int pb_show = 0;
@@ -233,6 +235,29 @@ public class QueryHisDetail extends BaseActivity {
                 }
             }
         });
+
+        mHandler_tip = new Handler(msg -> {
+            switch (msg.what){
+                case 1:
+                    show_Toast("网络请求失败,请检查网络正确连接后,再次上传");
+                    break;
+                case 2:
+                    show_Toast("丹灵上传成功");
+                    break;
+                case 3:
+                    show_Toast("错误信息:" + msg.obj);
+                    break;
+                case 4:
+                    show_Toast("起爆器未备案或未设置作业任务");
+
+                    break;
+                case 5:
+                    show_Toast(msg.obj.toString());
+                    break;
+            }
+            return false;
+        });
+
         mHandler_2 = new Handler(this.getMainLooper()) {
             @SuppressLint("HandlerLeak")
             @Override
@@ -779,7 +804,8 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("网络请求", "IOException: " + e);
-                show_Toast_ui("网络请求失败,请检查网络正确连接后,再次上传");
+
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
 
             }
 
@@ -801,15 +827,25 @@ public class QueryHisDetail extends BaseActivity {
                         if (!server_type2.equals("2")) {
                             pb_show = 0;
                         }
-                        show_Toast_ui("丹灵上传成功");
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+
                     } else if (success.equals("fail")) {
                         String cwxx = object.getString("cwxx");
                         if (cwxx.equals("1")) {
-                            show_Toast_ui("错误信息:" + object.getString("cwxxms"));
+                            Message msg = new Message();
+                            msg.what=3;
+                            msg.obj=object.getString("cwxxms");
+                            mHandler_tip.sendMessage(msg);
+
                         } else if (cwxx.equals("2")) {
-                            show_Toast_ui("起爆器未备案或未设置作业任务");
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+
                         } else {
-                            show_Toast_ui(object.getString("cwxxms"));
+                            Message msg = new Message();
+                            msg.what=5;
+                            msg.obj=object.getString("cwxxms");
+                            mHandler_tip.sendMessage(msg);
+
                         }
                     }
                 } catch (JSONException e) {
@@ -855,11 +891,11 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));//日志
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_230403_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_230504_14");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {
@@ -880,8 +916,6 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
-//                show_Toast_ui("网络请求失败,请检查网络正确连接后,再次上传");
-
             }
 
             @Override

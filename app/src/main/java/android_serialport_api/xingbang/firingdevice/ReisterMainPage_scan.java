@@ -363,6 +363,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             if (data.length() == 19) {//扫描箱号
                 addXiangHao(data);
+                return;
             }
             if (sanButtonFlag > 0) {//扫码结果设置到输入框里
                 Log.e("扫码注册", "data: " + data);

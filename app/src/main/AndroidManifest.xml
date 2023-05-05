@@ -238,11 +238,6 @@
             android:label="@string/title_activity_yanzheng"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".firingdevice.UploadFaceDataActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="信息采集"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".firingdevice.UploadMessageActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="数据上传"

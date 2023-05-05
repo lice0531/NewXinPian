@@ -250,6 +250,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private TextView totalbar_title;
 
     private ArrayList<Map<String, Object>> list_data = new ArrayList<>();//段位错误的雷管信息
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,7 +279,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                "{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00007\",\"fbh\":\"A62D70084684D\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"84684D050414\"},\n" +
 //                "{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00008\",\"fbh\":\"A62D700846764\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"8467647E0414\"},\n" +
 //                "{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00009\",\"fbh\":\"A62D700846B80\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846B80700415\"},{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00010\",\"fbh\":\"A62D700846B5B\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846B5B050415\"}]},\"jbqys\":{\"jbqy\":[]},\"sbbhs\":[{\"sbbh\":\"F9900210001\"},{\"sbbh\":\"BQ2A4221234\"},{\"sbbh\":\"F6410000001\"},{\"sbbh\":\"F64C5000003\"},{\"sbbh\":\"F64C5000004\"}],\"zbqys\":{\"zbqy\":[{\"zbqybj\":\"5000\",\"zbqymc\":\"煋邦煤许测试1\",\"zbqywd\":\"34.297\",\"zbqssj\":null,\"zbqyjd\":\"109.1172\",\"zbjzsj\":null}]},\"sqrq\":\"2023-03-16 14:35:26\",\"cwxx\":\"0\"}";
-        String res2="{\"lgs\":{\"lg\":[{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00011\",\"fbh\":\"A62D700846A8D\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846A8D554E11\"},{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00012\",\"fbh\":\"A62D70084695D\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"84695D004A11\"},{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00013\",\"fbh\":\"A62D7008467DA\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"8467DA001212\"},\n" +
+        String res2 = "{\"lgs\":{\"lg\":[{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00011\",\"fbh\":\"A62D700846A8D\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846A8D554E11\"},{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00012\",\"fbh\":\"A62D70084695D\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"84695D004A11\"},{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00013\",\"fbh\":\"A62D7008467DA\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"8467DA001212\"},\n" +
                 "{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00014\",\"fbh\":\"A62D700846B18\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846B18003A12\"},\n" +
                 "{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00015\",\"fbh\":\"A62D700846891\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846891AA4813\"},\n" +
                 "{\"gzmcwxx\":\"0\",\"uid\":\"5630309B00016\",\"fbh\":\"A62D700846B0A\",\"yxq\":\"2023-03-18 14:35:26\",\"gzm\":\"846B0A002713\"},\n" +
@@ -291,7 +292,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     private void initUi() {
         //获取偏好设置的编辑器
-        pro_name =(String) MmkvUtils.getcode("pro_name","") ;
+        pro_name = (String) MmkvUtils.getcode("pro_name", "");
         at_projectName.setText(pro_name);
 
         mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
@@ -410,7 +411,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0121\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0222\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0323\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B0521\",\"gzmcwxx\":\"0\"}]}}";
 
         //错误经纬度下载
-        String res2 ="{\"cwxx\":\"0\",\"sqrq\":\"2023-02-27 09:29:50\",\"sbbhs\":[{\"sbbh\":\"F56A6800261\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"讲治镇光明隧道出口\",\"zbqyjd\":\"107.94954\",\"zbqywd\":\"31.026169\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道进口\",\"zbqyjd\":\"107.89732\",\"zbqywd\":\"341.0355\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道出口\",\"zbqyjd\":\"107.846616\",\"zbqywd\":\"31.045254\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5621126H81213\",\"yxq\":\"2023-03-02 09:29:50\",\"gzm\":\"939D64B603\",\"gzmcwxx\":\"0\"}]}}";
+        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2023-02-27 09:29:50\",\"sbbhs\":[{\"sbbh\":\"F56A6800261\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"讲治镇光明隧道出口\",\"zbqyjd\":\"107.94954\",\"zbqywd\":\"31.026169\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道进口\",\"zbqyjd\":\"107.89732\",\"zbqywd\":\"341.0355\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道出口\",\"zbqyjd\":\"107.846616\",\"zbqywd\":\"31.045254\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5621126H81213\",\"yxq\":\"2023-03-02 09:29:50\",\"gzm\":\"939D64B603\",\"gzmcwxx\":\"0\"}]}}";
         //模拟下载150发雷管
 //        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-08-14 09:29:20\",\"sbbhs\":[{\"sbbh\":\"F560600002\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"德凤矿业\",\"zbqyjd\":\"104.802639\",\"zbqywd\":\"28.351421\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620705H84983\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA8BC04104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80098\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA3C1EF003\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84834\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB66FD6B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84951\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB7877240421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84839\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB8E7BA304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84833\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB76FF5404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80075\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0532474D0422\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80054\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"053CBBD70323\"," +
 //                "\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84973\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA9C0CD50424\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84980\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB6CDD460425\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80029\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FAC4BE990422\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84959\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB84EA170421\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80040\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"82384AA30321\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80056\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04D128DD0321\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80077\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"058FC41B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80059\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA440A3804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80047\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"050A593104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80019\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FABF1FF304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80052\",\"yxq\":\"2022-08-17 09:29:20\"" +
@@ -457,17 +458,17 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             LngLat end;
                             //判断经纬度
                             try {
-                                 start = new LngLat(zbqyjd, zbqywd);
-                                 end = new LngLat(jingdu, weidu);
-                            }catch (Exception e){
-                                show_Toast("备案信息有误:"+danLingBean.getZbqys().getZbqy().get(i).getZbqymc()+","+danLingBean.getZbqys().getZbqy().get(i).getZbqyjd()+","+danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
+                                start = new LngLat(zbqyjd, zbqywd);
+                                end = new LngLat(jingdu, weidu);
+                            } catch (Exception e) {
+                                show_Toast("备案信息有误:" + danLingBean.getZbqys().getZbqy().get(i).getZbqymc() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
                                 break;
                             }
 
                             double juli3 = AMapUtils.calculateLineDistance(start, end);
                             Log.e("经纬度", "juli3: " + juli3);
                             if (juli3 < banjing) {
-                            insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                             }
                         }
@@ -603,6 +604,16 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     break;
                 case 12:
                     show_Toast("营业性单位必须设置合同或者项目");
+                    break;
+                case 13:
+                case 15:
+                    show_Toast("网络请求失败,请检查网络后再次尝试");
+                    break;
+                case 14:
+                    show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    break;
+                case 16:
+                    show_Toast("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
                     break;
                 case 89:
                     show_Toast("输入的管壳码重复");
@@ -1117,7 +1128,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
-                show_Toast_ui("网络请求失败,请检查网络后再次尝试");
+
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
             }
 
             @Override
@@ -1126,7 +1138,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 try {
                     res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(response.body().string().toString(), Base64.DEFAULT)));
                 } catch (Exception e) {
-                    show_Toast_ui("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage(14));
+
                     return;
                 }
                 Log.e("网络请求", "res: " + res);
@@ -1258,17 +1271,19 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
-                show_Toast_ui("网络请求失败,请检查网络后再次尝试");
+
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(15));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
-                String res ;
+                String res;
                 try {
                     res = response.body().string();//response.body()只能调用一次,第二次调用就会变成null
                 } catch (Exception e) {
-                    show_Toast_ui("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage(16));
                     return;
                 }
                 Log.e("网络请求返回", "res: " + res);
@@ -1483,8 +1498,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String htNo = at_htid.getText().toString();
         String holeDeAmo = at_xmbh.getText().toString();
         String coordxy = at_coordxy.getText().toString().replace("\n", "").replace("，", ",").replace(" ", "");
-        String []a =coordxy.split("\\.");
-        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5||a.length!=3) {
+        String[] a = coordxy.split("\\.");
+        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5 || a.length != 3) {
             tipStr = "经度纬度设置不正确，具体格式为如:116.585989,36.663456";
             return tipStr;
         }
@@ -1539,7 +1554,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         saveHistory("history_dwdm", at_dwdm);//保存输入的经纬度
 
 
-        initAutoComplete("history_htid", at_htid);  
+        initAutoComplete("history_htid", at_htid);
         initAutoComplete("history_xmbh", at_xmbh);
         initAutoComplete("history_bprysfz", at_bprysfz);
         initAutoComplete("history_coordxy", at_coordxy);
@@ -1913,7 +1928,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
      * 查询所有雷管
      */
     private void loadMoreData_duanErr() {
-        String sql = "Select * from denatorBaseinfo where duan != cong_yscs" ;
+        String sql = "Select * from denatorBaseinfo where duan != cong_yscs";
         Cursor cursor = db.rawQuery(sql, null);//new String[]{(index) + "", pageSize + ""}
         list_data.clear();
         if (cursor != null) {
@@ -1925,7 +1940,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 String duanNo = cursor.getString(20);//段
 
                 Map<String, Object> item = new HashMap<>();
-                item.put("serialNo",serialNo);
+                item.put("serialNo", serialNo);
                 item.put("shellNo", shellNo);
                 item.put("cong_yscs", cong_yscs);
                 item.put("duan", duan);
@@ -1937,9 +1952,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         if (list_data != null) {
             createDialog();
         }
-        Log.e("雷管", "list_uid: "+list_data.size()+"==" + list_data);
+        Log.e("雷管", "list_uid: " + list_data.size() + "==" + list_data);
 
     }
+
     /***
      * 建立错误对话框
      */

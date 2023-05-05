@@ -190,8 +190,8 @@ public class FiringMainActivity extends SerialPortActivity {
     ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//起爆雷管
     private String qbxm_id = "-1";
     private String qbxm_name = "";
-    private int isshow = 0;
-    private float cankao_ic = 0;
+    private boolean isshow = true;
+    private float cankao_ic = 0;//记录高压15s参考电流
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private List<VoDenatorBaseInfo> denatorlist1 = new ArrayList<>();
     private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
@@ -414,6 +414,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
+                }else if (displayIc > ( cankao_ic * 0.7)&&displayIc < ( cankao_ic * 0.8) && displayIc > 10 && stage == 6) {// "电流过大";
+                    displayIcStr = displayIcStr + "(电流偏低)";
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
                 }
 //                else if (displayIc < (4 + denatorCount * ic_cankao) && stage != 6) {
 //                    displayIcStr = displayIcStr + "(疑似断路)";
@@ -510,47 +514,45 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //检测电流小于参考值的80%提示弹框
+            //检测电流小于参考值的70%提示弹框
 
-//            if (stage == 6 && busInfo.getBusCurrentIa()  <= cankao_ic * 0.8 && isshow == 0) {
-//                isshow = 1;
-//                firstThread.exit = true;
-//                firstThread.interrupt();
-//                try {
-//                    firstThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                AlertDialog dialog = new Builder(FiringMainActivity.this)
-//                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
-//                        .setMessage("当前起爆器电流异常,可能是总线短路导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
-//                        //设置对话框的按钮
-//                        .setNegativeButton("退出", (dialog1, which) -> {
-//                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-//                            sendCmd(reCmd);
-//                            dialog1.dismiss();
-//                            closeThread();
-//                            closeForm();
-//                            finish();
-//                        })
-//                        .setNeutralButton("确定", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int i) {
-//                                firstThread = new ThreadFirst(allBlastQu);
-//                                firstThread.exit = false;
-//                                firstThread.start();
-//                                dialog.dismiss();
-//                            }
-//                        })
-//                        .create();
-//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-//                dialog.show();
-//
-//            }
+            if (stage == 6  && sixExchangeCount < (ChongDian_time - 15)&& busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow ) {
+                isshow = false;
+                firstThread.exit = true;
+                firstThread.interrupt();
+                try {
+                    firstThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前起爆器电流异常,可能是总线短路导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                            sendCmd(reCmd);
+                            dialog1.dismiss();
+                            closeThread();
+                            closeForm();
+                            finish();
+                        })
+                        .setNeutralButton("确定", (dialog14, i) -> {
+                            firstThread = new ThreadFirst(allBlastQu);
+                            firstThread.exit = false;
+                            firstThread.start();
+                            dialog14.dismiss();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
 
-//            if (stage == 2) {
-//                cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
-//            }
+            }
+
+            if (stage == 6 && sixExchangeCount == (ChongDian_time - 15)) {
+                cankao_ic = busInfo.getBusCurrentIa();//记录高压15s参考电流
+                Log.e(TAG, "记录参考电流: " + cankao_ic);
+            }
 //            busInfo = null;
             return false;
         });
@@ -603,7 +605,7 @@ public class FiringMainActivity extends SerialPortActivity {
         neightCount = 0;//
         eightCmdFlag = 0;
         thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
-        isshow = 0;//弹窗标志
+        isshow = true;//弹窗标志
         reThirdWriteCount = 0;
         totalerrorNum = 0;
 
@@ -1796,12 +1798,16 @@ public class FiringMainActivity extends SerialPortActivity {
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 6://充电阶段
+                            Log.e(TAG, "充电阶段sixExchangeCount: " + sixExchangeCount);
                             if (sixExchangeCount == ChongDian_time) {
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
                             if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
+                            }
+                            if (sixExchangeCount == (ChongDian_time - 13)) {//第8秒时,发送高压充电指令,继电器应该响
+                                Log.e(TAG, "第10s电流: " + busInfo.getBusCurrentIa());
                             }
                             if (sixExchangeCount == 0) {
                                 Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
