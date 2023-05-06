@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.services.outface;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -224,7 +226,7 @@ public class FinishDenatorToUpMain {
 
         String tempequNo = equNo;
         String headMSG = packDataHead(tempequNo, x, y, fireDate, amount);
-
+        Log.e("上传中爆", "headMSG: "+headMSG );
         pkList.add(headMSG);
 
         String totalPackStr = Utils.strPaddingZero(packTotal, 2);
@@ -286,12 +288,14 @@ public class FinishDenatorToUpMain {
         String totalPackStr = Utils.strPaddingZero(packTotal, 2);
         String currentSerial = Utils.strPaddingZero("1", 2);
         int currentPackLen = 0;
-        String dateStr = fireDate.substring(0, 10);
+        String dateStr = fireDate.substring(0, 8);
         dateStr = dateStr.replaceAll("-", "");
-        dateStr = dateStr.substring(2);
-        String timeStr = fireDate.substring(11);
+//        dateStr = dateStr.substring(2);
+        String timeStr = fireDate.substring(9,17);
         timeStr = timeStr.replaceAll(":", "");
-
+        Log.e("上传中爆", "fireDate: "+fireDate );
+        Log.e("上传中爆", "dateStr: "+dateStr );
+        Log.e("上传中爆", "timeStr: "+timeStr );
         String headPrior = "*" + totalPackStr + currentSerial;//数据包总数+数据包序号
         String headAfter = equNo + x + y + dateStr + timeStr + denatorCount;//起爆器编号+经度+纬度+日期+时间+雷管总数
         currentPackLen = headPrior.length() + 3 + headAfter.length() + 3 + 1;//数据包总长度

@@ -1190,6 +1190,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            } else {
             //stage=9;
             eightCmdFlag = 2;
+            //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
 //            saveFireResult_All();
