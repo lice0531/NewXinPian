@@ -84,7 +84,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler errHandler = null;//总线信息
     private Handler Handler_tip = null;//提示信息
     private static volatile int stage;
-    private volatile int firstCount = 28;
+    private volatile int firstCount = 50;
     private volatile int sixCount = 0;
     private volatile VoDenatorBaseInfo writeDenator;
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器

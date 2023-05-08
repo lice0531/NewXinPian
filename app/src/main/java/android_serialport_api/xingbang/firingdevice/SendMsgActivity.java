@@ -201,10 +201,7 @@ public class SendMsgActivity extends BaseActivity {
                     show_Toast("导入"+mListData.size()+"发雷管成功");
                     break;
                 case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
+                    show_Toast(msg.obj.toString());
                     break;
                 default:
                     break;

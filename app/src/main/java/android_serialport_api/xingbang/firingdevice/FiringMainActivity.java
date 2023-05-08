@@ -194,7 +194,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private int isshow = 0;
     private float cankao_ic = 0;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
-    private boolean chongfu = false;//是否已经检测了一次
+    private boolean chongfu = true;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
@@ -457,7 +457,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (busInfo.getBusCurrentIa() > 11000) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
-                    if (!chongfu) {//单次的话要取非
+                    if (chongfu) {//单次的话要取非
+                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                         initDialog_zanting("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
                     }
                 }
@@ -2214,7 +2215,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void initDialog_zanting(String tip) {
-        chongfu = true;//已经检测了一次
+        chongfu = false;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
@@ -2238,7 +2239,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void initDialog_zanting_exit(String tip) {
-        chongfu = true;//已经检测了一次
+        chongfu = false;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
                 .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
@@ -2264,7 +2265,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void initDialog_zanting2(String tip) {
-        chongfu = true;//已经检测了一次
+        chongfu = false;//已经检测了一次
         loadErrorBlastModel();
 
         LayoutInflater inflater = LayoutInflater.from(this);
