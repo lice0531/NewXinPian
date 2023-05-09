@@ -1229,6 +1229,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     private void upload_xingbang() {
         show_Toast("当前为煋邦测试下载");
+        Log.e("loding画面", "画面开始: " );
         pb_show = 1;
         runPbDialog();//loading画面
         String url = Utils.httpurl_xb_upload;//煋邦下载
@@ -1256,7 +1257,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        Log.e("json", json.toString());
         RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
         Request request = new Request.Builder()
                 .url(url)
@@ -1336,6 +1337,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         }
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
                         pb_show = 0;//loding画面结束
+                        Log.e("loding画面", "画面结束: " );
                     } else if (cwxx.equals("1")) {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(1, object1.getString("cwxxms")));
                     } else if (cwxx.equals("2")) {
@@ -2423,8 +2425,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setPositiveButton("确认下载", (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
-                                upload();
-//                                upload_xingbang();
+//                                upload();
+                                upload_xingbang();
                             }
                         }).create();
                 dialog.show();
