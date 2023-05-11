@@ -100,6 +100,7 @@ public class UpgradeActivity extends SerialPortActivity {
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public volatile Result mResult;             // 下载完成返回结果
     private String shengji = "升级";
+    private String BinPath = "/nm/";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -128,7 +129,7 @@ public class UpgradeActivity extends SerialPortActivity {
         initView();             // 初始化控件
         if (shengji.length()>0) {
             if (IntervalUtil.isFastClick_2()) {
-                Download_File(shengji, ".bin");
+                Download_File(shengji,BinPath, ".bin");
             }
         }
     }
@@ -327,7 +328,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("currency", ".bin");
+                    Download_File("currency",BinPath, ".bin");
                 }
             }
         });
@@ -341,7 +342,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("second", ".bin");
+                    Download_File("second",BinPath, ".bin");
                 }
             }
         });
@@ -355,7 +356,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9003);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("permit", ".bin");
+                    Download_File("permit",BinPath, ".bin");
                 }
             }
         });
@@ -375,7 +376,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9004);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("KT50UpgradeProgram", ".apk");
+                    Download_File("KT50UpgradeProgram",BinPath, ".apk");
                 }
             }
             return true;
@@ -426,7 +427,7 @@ public class UpgradeActivity extends SerialPortActivity {
                     // 开始下载
                     new Thread(() -> {
                         try {
-                            mResult = mFTP.download("/", fileName, mSaveDirPath);
+                            mResult = mFTP.download(BinPath, fileName, mSaveDirPath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -748,7 +749,7 @@ public class UpgradeActivity extends SerialPortActivity {
     /**
      * 下载文件
      */
-    private void Download_File(String name, String type) {
+    private void Download_File(String name,String remotePath, String type) {
         Log.e("Download_File", "下载文件名称: " + name + " 下载文件类型: " + type);
         showDialog();        // 进度条
 
@@ -785,13 +786,13 @@ public class UpgradeActivity extends SerialPortActivity {
 
                 // 获取服务器文件列表
                 mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles("/");
-//                Log.e("下载目录", mList_FtpFileName.toString());
+                mList_FtpFileName = mFTP.listFiles(remotePath);
+                Log.e("下载目录", mList_FtpFileName.toString());
 
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {
                     String fileName = mList_FtpFileName.get(i).getName();
                     long fileSize = mList_FtpFileName.get(i).getSize();
-//                    Log.e("Download_File", "服务器 文件序号: " + i + " 文件名称: " + fileName + " 文件大小: " + fileSize);
+                    Log.e("Download_File", "服务器 文件序号: " + i + " 文件名称: " + fileName + " 文件大小: " + fileSize);
 
                     // 符合所需名称
                     if (fileName.contains(name)) {

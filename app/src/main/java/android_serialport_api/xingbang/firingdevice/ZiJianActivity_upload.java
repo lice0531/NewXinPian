@@ -83,6 +83,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public String CJ="";
+    public String BinName="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,12 +108,13 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
-        CJ="NM_";//SC-四川 NM-内蒙(不同的版本需要修改)
-//        CJ="XB_";//测试用
+//        CJ="NM_";//SC-四川 NM-内蒙(不同的版本需要修改)
+        CJ="XB_";//测试用
+        BinName=CJ+"KT50_V1.3_16V";
         if (IntervalUtil.isFastClick_2()) {
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改
-            GetFileName(CJ+"KT50_V1.3_17V", ".bin");//17V是电流11000,16V是改变前的
+            GetFileName(BinName,"/nm/", ".bin");//17V是电流11000,16V是改变前的
         }
         deleteRiZhi();
     }
@@ -126,7 +129,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     }
 
 
-    private void GetFileName(String name, String type) {
+    private void GetFileName(String name,String remotePath, String type) {
 
         // 如果是Bin文件
         if (type.equals(".bin")) {
@@ -149,8 +152,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             if (mFTP.openConnect()) {
                 // 获取服务器文件列表
                 mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles("/");
-//                Log.e("下载目录", mList_FtpFileName.toString());
+                mList_FtpFileName = mFTP.listFiles(remotePath);
+                Log.e("下载目录", mList_FtpFileName.toString());
 
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {
                     String fileName = mList_FtpFileName.get(i).getName();
@@ -426,7 +429,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", CJ+"KT50_V1.3_17V");
+            intent.putExtra("dataSend", BinName);
             startActivity(intent);
             dialog.dismiss();
         });

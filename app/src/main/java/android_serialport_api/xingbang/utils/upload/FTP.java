@@ -160,6 +160,7 @@ public class FTP {
 
         // 绝对路径 /storage/emulated/0/xb/KT50UpgradeProgram_1.0.2.apk
         String path = localPath + "/" + fileName;
+        Log.e("liyi_download", "FTP下载路径 " + remotePath);
         Log.e("liyi_download", "下载至 " + path);
 
         boolean flag;
