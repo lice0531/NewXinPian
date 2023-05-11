@@ -135,6 +135,7 @@ public class UpgradeActivity extends SerialPortActivity {
             } else {
                 if (IntervalUtil.isFastClick_2()) {
                     Download_File("SC_KT50_V1.3_MX", ".bin");
+//                    Download_File("XB_KT50_V1.3_MX", ".bin");//实验用
                 }
             }
         }
