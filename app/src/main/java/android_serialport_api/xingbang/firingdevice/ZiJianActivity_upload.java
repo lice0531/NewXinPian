@@ -113,7 +113,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         if (IntervalUtil.isFastClick_2()) {//SC_KT50_V1.3_MXDB
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改
-            GetFileName(CJ+"KT50_V1.3_MX", ".bin");//17V是电流11000,16V是改变前的
+            GetFileName(CJ+"KT50_V1.3_MX", "/mx/",".bin");//17V是电流11000,16V是改变前的
 
         }
         deleteRiZhi();
@@ -131,7 +131,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     }
 
 
-    private void GetFileName(String name, String type) {
+    private void GetFileName(String name,String remotePath, String type) {
 
         // 如果是Bin文件
         if (type.equals(".bin")) {
@@ -154,7 +154,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             if (mFTP.openConnect()) {
                 // 获取服务器文件列表
                 mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles("/");
+                mList_FtpFileName = mFTP.listFiles(remotePath);
 //                Log.e("下载目录", mList_FtpFileName.toString());
 
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {

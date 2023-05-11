@@ -1,6 +1,8 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -205,7 +207,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private boolean version_1 = true;
     private boolean version_2 = true;
-
+    private long time = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1161,14 +1163,28 @@ public class FiringMainActivity extends SerialPortActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断当点击的是返回键
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            closeThread();
-            closeForm();
-            Utils.writeRecord("---点击返回按键退出界面---");
+
+                exit();//退出方法
             return true;
         }
         return true;
     }
 
+    //退出方法
+    private void exit() {
+
+        //如果在两秒大于2秒
+        if (System.currentTimeMillis() - time > 2000) {
+            //获得当前的时间
+            time = System.currentTimeMillis();
+            show_Toast("再次点击退出程序");
+        } else {
+            closeThread();
+            closeForm();
+            Utils.writeRecord("---点击返回按键退出界面---");
+            //判断当点击的是返回键
+        }
+    }
     @Override
     public void sendInterruptCmd() {
         byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35
