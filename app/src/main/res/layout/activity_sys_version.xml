@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="KT50_3.25_PT_NM_V1.3.1B_230504"
+            android:text="KT50_3.25_PT_NM_V1.3.1C_230504"
             android:textSize="20sp"
             />
     </LinearLayout>
