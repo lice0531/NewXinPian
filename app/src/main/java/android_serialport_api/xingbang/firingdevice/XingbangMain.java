@@ -259,13 +259,6 @@ public class XingbangMain extends BaseActivity {
 //            GetFileName("SC_KT50_Second_MX_Version_16", ".apk");//
             GetFileName("SC_KT50_Second_MX_Version_14", ".apk");//支持14位扫码版本
         }
-        PackageInfo pi = null;
-        try {
-            pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            Log.e("下载目录2", pi.versionCode+"");//KT50_Second_Version_26.apk
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
 
     }
 
