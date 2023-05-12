@@ -322,16 +322,20 @@ public class FiringMainActivity extends SerialPortActivity {
         btn_return6.setOnClickListener(v -> {
             closeThread();
             closeForm();
+//            show_Toast_long("请等待3分钟后进行起爆检测,防止线路中有电,降低起爆效果");
             Utils.writeRecord("---点击退出按钮---");
         });
         btn_return7 = findViewById(R.id.btn_firing_return_7);
         btn_return7.setOnClickListener(v -> {
+            Log.e(TAG, "initView: 2" );
             closeThread();
             closeForm();
+//            show_Toast_long("请等待3分钟后进行起爆检测,防止线路中有电,降低起爆效果");
             Utils.writeRecord("---点击退出按钮---");
         });
         btn_return8 = findViewById(R.id.btn_firing_return_8);
         btn_return8.setOnClickListener(v -> {
+            Log.e(TAG, "initView: 3" );
             closeThread();
             closeForm();
             Utils.writeRecord("---点击退出按钮---");

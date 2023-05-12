@@ -104,7 +104,7 @@ public class  BaseActivity extends AppCompatActivity {
 				.messageSize(30f)//设置文本大小，单位sp，默认14sp
 				.messageBold(true)//设置文本为粗体，默认false
 				.apply()
-				.show(text);
+				.showLong(text);
 	}
 
 	@SuppressLint("BlockedPrivateApi")
