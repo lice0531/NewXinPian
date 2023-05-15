@@ -228,8 +228,8 @@ public class XingbangMain extends BaseActivity {
             //16是改变前的
             //17是电流11000,电压17V
             //15是电流11000,电压16V
-            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
-//            GetFileName("NM_KT50_Second_Version_17", ".apk");
+//            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
+            GetFileName("NM_KT50_Second_Version_17", ".apk");
         }
     }
     /**
