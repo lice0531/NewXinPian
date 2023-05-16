@@ -606,7 +606,7 @@ public class XingbangMain extends BaseActivity {
                 Log.e(TAG, "endTime: " + endTime);
                 Log.e(TAG, "daojishi: " + daojishi);
                 if (time > 0 && daojishi < 190 && daojishi > 0) {//第二次启动时间不重置
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "组网");
+                    initDialog_fangdian("当前系统检测到您尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "组网");
                     Log.e(TAG, "endTime: " + daojishi);
                     return;
                 }

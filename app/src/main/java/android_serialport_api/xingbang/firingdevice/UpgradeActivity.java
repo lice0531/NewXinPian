@@ -134,7 +134,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("SC_KT50_V1.3_MX", ".bin");
+                    Download_File("SC_KT50_V1.3_MX", "/mx/",".bin");
 //                    Download_File("XB_KT50_V1.3_MX", ".bin");//实验用
                 }
             }
@@ -337,7 +337,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("currency", ".bin");
+                    Download_File("currency","/", ".bin");
                 }
             }
         });
@@ -351,7 +351,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("second", ".bin");
+                    Download_File("second", "/",".bin");
                 }
             }
         });
@@ -365,7 +365,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9003);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("permit", ".bin");
+                    Download_File("permit","/", ".bin");
                 }
             }
         });
@@ -385,7 +385,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9004);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("KT50UpgradeProgram", ".apk");
+                    Download_File("KT50UpgradeProgram","/", ".apk");
                 }
             }
             return true;
@@ -436,7 +436,7 @@ public class UpgradeActivity extends SerialPortActivity {
                     // 开始下载
                     new Thread(() -> {
                         try {
-                            mResult = mFTP.download("/", fileName, mSaveDirPath);
+                            mResult = mFTP.download("/mx/", fileName, mSaveDirPath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -758,7 +758,7 @@ public class UpgradeActivity extends SerialPortActivity {
     /**
      * 下载文件
      */
-    private void Download_File(String name, String type) {
+    private void Download_File(String name,String remotePath, String type) {
         Log.e("Download_File", "下载文件名称: " + name + " 下载文件类型: " + type);
         showDialog();        // 进度条
 
@@ -795,7 +795,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
                 // 获取服务器文件列表
                 mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles("/");
+                mList_FtpFileName = mFTP.listFiles(remotePath);
 //                Log.e("下载目录", mList_FtpFileName.toString());
 
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {

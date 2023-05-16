@@ -208,6 +208,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean version_1 = true;
     private boolean version_2 = true;
     private long time = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -314,30 +315,27 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         btn_return4 = findViewById(R.id.btn_firing_return_4);
         btn_return4.setOnClickListener(v -> {
-            closeThread();
-            closeForm();
+
+            dialogExit();
             Utils.writeRecord("---点击退出按钮---");
         });
         btn_return6 = findViewById(R.id.btn_firing_return_6);
         btn_return6.setOnClickListener(v -> {
-            closeThread();
-            closeForm();
+            dialogExit();
 //            show_Toast_long("请等待3分钟后进行起爆检测,防止线路中有电,降低起爆效果");
             Utils.writeRecord("---点击退出按钮---");
         });
         btn_return7 = findViewById(R.id.btn_firing_return_7);
         btn_return7.setOnClickListener(v -> {
-            Log.e(TAG, "initView: 2" );
-            closeThread();
-            closeForm();
+            Log.e(TAG, "initView: 2");
+            dialogExit();
 //            show_Toast_long("请等待3分钟后进行起爆检测,防止线路中有电,降低起爆效果");
             Utils.writeRecord("---点击退出按钮---");
         });
         btn_return8 = findViewById(R.id.btn_firing_return_8);
         btn_return8.setOnClickListener(v -> {
-            Log.e(TAG, "initView: 3" );
-            closeThread();
-            closeForm();
+            Log.e(TAG, "initView: 3");
+            dialogExit();
             Utils.writeRecord("---点击退出按钮---");
         });
         btn_firing_lookError_4 = findViewById(R.id.btn_test_lookError);
@@ -348,6 +346,24 @@ public class FiringMainActivity extends SerialPortActivity {
         //继续起爆
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
         btn_continueOk_4.setOnClickListener(v -> increase(6));
+    }
+
+    private void dialogExit() {
+
+        AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                .setTitle("退出提示")//设置对话框的标题
+                .setMessage("退出后有3分钟放电等待,防止线路中有电,降低起爆效果")//设置对话框的内容
+                //设置对话框的按钮
+                .setNegativeButton("退出", (dialog1, which) -> {
+                    dialog1.dismiss();
+                    closeThread();
+                    closeForm();
+                    finish();
+                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                })
+                .setNeutralButton("取消", (dialog12, which) -> dialog12.dismiss())
+                .create();
+        dialog.show();
     }
 
     @SuppressLint("SetTextI18n")
@@ -420,7 +436,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                }else if (displayIc > ( cankao_ic * 0.7)&&displayIc < ( cankao_ic * 0.8) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > (cankao_ic * 0.7) && displayIc < (cankao_ic * 0.8) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流偏低)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
@@ -522,7 +538,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //检测电流小于参考值的70%提示弹框
 
-            if (stage == 6  && sixExchangeCount < (ChongDian_time - 15)&& busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow ) {
+            if (stage == 6 && sixExchangeCount < (ChongDian_time - 15) && busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow) {
                 isshow = false;
                 firstThread.exit = true;
                 firstThread.interrupt();
@@ -1168,7 +1184,7 @@ public class FiringMainActivity extends SerialPortActivity {
         //判断当点击的是返回键
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-                exit();//退出方法
+            exit();//退出方法
             return true;
         }
         return true;
@@ -1183,12 +1199,16 @@ public class FiringMainActivity extends SerialPortActivity {
             time = System.currentTimeMillis();
             show_Toast("再次点击退出程序");
         } else {
+            if (stage > 3) {
+                MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+            }
             closeThread();
             closeForm();
             Utils.writeRecord("---点击返回按键退出界面---");
             //判断当点击的是返回键
         }
     }
+
     @Override
     public void sendInterruptCmd() {
         byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35
