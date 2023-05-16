@@ -1246,22 +1246,27 @@ public class ReisterMainPage_line extends SerialPortActivity {
         return 1;
     }
 
+
+    @Override
     protected void onDataReceived(byte[] buffer, int size) {
+
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
-
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//        Log.e("注册", "fromCommad: "+fromCommad );
+        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
         if (completeValidCmd(fromCommad) == 0) {
-//            fromCommad = this.revCmd;//如果revcmd不清空,会导致收到40,但却变成上次的13,先屏蔽
-//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-//            else this.revCmd = "";
+            fromCommad = this.revCmd;
+            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+            else this.revCmd = "";
+//            Utils.writeLog("Firing reFrom:" + fromCommad);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                return;
             } else {
                 String cmd = DefCommand.getCmd(fromCommad);
                 if (cmd != null) {
-                    doWithReceivData(cmd, cmdBuf);
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
                 }
             }
         }
