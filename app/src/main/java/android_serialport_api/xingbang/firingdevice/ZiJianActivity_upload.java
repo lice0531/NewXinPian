@@ -85,6 +85,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public String CJ="";
+    public String binName="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,10 +111,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         quanxian();//申请权限
         CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
 //        CJ="XB_";//实验用
+        binName=CJ+"    KT50_V1.3_MX";
         if (IntervalUtil.isFastClick_2()) {//SC_KT50_V1.3_MXDB
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改
-            GetFileName(CJ+"KT50_V1.3_MX", "/mx/",".bin");//17V是电流11000,16V是改变前的
+            GetFileName(binName, "/mx/",".bin");//17V是电流11000,16V是改变前的
 
         }
         deleteRiZhi();
@@ -420,7 +422,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", "升级");
+            intent.putExtra("dataSend", binName);
             startActivity(intent);
             dialog.dismiss();
         });

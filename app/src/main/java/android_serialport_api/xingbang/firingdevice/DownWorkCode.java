@@ -1216,7 +1216,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(11));//离线下载不支持生产厂家试爆
                     } else if (cwxx.equals("12")) {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(12));//营业性单位必须设置合同或者项目
-                    } else if (cwxx.equals("99")) {
+                    } else  {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(99, danLingBean.getCwxxms()));
                     }
                 } catch (JSONException e) {

@@ -125,7 +125,7 @@ public class UpgradeActivity extends SerialPortActivity {
 //        initSerialHelper();     // 初始化串口类
         initHandler();          // 初始化Handler
         initView();             // 初始化控件
-        if(shengji.equals("升级")){
+        if(shengji.length()>0){
             //直接下载
             if (ContextCompat.checkSelfPermission(this, mArr_Permissions[0]) != PackageManager.PERMISSION_GRANTED
                     ||
@@ -134,8 +134,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("SC_KT50_V1.3_MX", "/mx/",".bin");
-//                    Download_File("XB_KT50_V1.3_MX", ".bin");//实验用
+                    Download_File(shengji,"/mx/", ".bin");//实验用
                 }
             }
         }
