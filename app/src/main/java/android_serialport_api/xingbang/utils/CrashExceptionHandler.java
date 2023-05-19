@@ -89,6 +89,7 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         new Thread(() -> {
             Looper.prepare();
+
             // 不能使用这个ToastUtils.show()，不能即时的提示，会因为异常出现问题
 //            ToastUtils.show("很抱歉，程序出现异常，即将退出！");
 //            MyToast.toast(mContext, "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_LONG);

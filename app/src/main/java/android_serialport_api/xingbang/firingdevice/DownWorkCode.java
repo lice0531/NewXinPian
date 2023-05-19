@@ -2438,7 +2438,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                    loadMoreData_lg(currentPage);//查询所有雷管
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 } else {
-                    Toast.makeText(this, checstr1, Toast.LENGTH_SHORT).show();
+                    show_Toast(checstr1);
                 }
 
 

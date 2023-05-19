@@ -522,20 +522,17 @@ public class QueryMainActivity extends BaseActivity {
                 switch (status) {
 
                     case LocationProvider.AVAILABLE:
-
-                        Toast.makeText(context, "当前GPS为可用状态!", Toast.LENGTH_SHORT).show();
+                        show_Toast("当前GPS为可用状态!");
 
                         break;
 
                     case LocationProvider.OUT_OF_SERVICE:
-
-                        Toast.makeText(context, "当前GPS不在服务内", Toast.LENGTH_SHORT).show();
+                        show_Toast("当前GPS不在服务内");
 
                         break;
 
                     case LocationProvider.TEMPORARILY_UNAVAILABLE:
-
-                        Toast.makeText(context, "当前GPS为暂停服务状态", Toast.LENGTH_SHORT).show();
+                        show_Toast("当前GPS为暂停服务状态");
                         break;
 
 
@@ -546,16 +543,14 @@ public class QueryMainActivity extends BaseActivity {
             //GPS开启的时候调用
             @Override
             public void onProviderEnabled(String provider) {
-
-                Toast.makeText(context, "GPS开启了", Toast.LENGTH_SHORT).show();
+                show_Toast("GPS开启了");
 
             }
 
             //GPS关闭的时候调用
             @Override
             public void onProviderDisabled(String provider) {
-
-                Toast.makeText(context, "GPS关闭了", Toast.LENGTH_SHORT).show();
+                show_Toast("GPS关闭了");
 
             }
         });

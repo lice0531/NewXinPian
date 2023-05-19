@@ -139,7 +139,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
           		  insertDenator(user_name,user_pw);
           		 
               }else{
-            	  Toast.makeText(SetUserActivity.this, checstr, Toast.LENGTH_SHORT).show();
+				  show_Toast(checstr);
               }
               
            }
@@ -239,7 +239,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
             default:
                 break;
         }
-        Toast.makeText(this, Temp+"处理", Toast.LENGTH_SHORT).show();
+		show_Toast(Temp+"处理");
         return super.onContextItemSelected(item);
     }
 	/***
@@ -248,7 +248,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	private void insertDenator(String name,String pw){
 		
 		if(checkRepeatUserName(name)==1){
-		    Toast.makeText(SetUserActivity.this, "用户名: " +name+"重复", Toast.LENGTH_SHORT).show();
+			show_Toast("用户名: " +name+"重复");
 		    return ;
 		}
 		
