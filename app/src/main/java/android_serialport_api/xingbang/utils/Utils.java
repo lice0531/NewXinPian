@@ -178,6 +178,68 @@ public class Utils {
 
     }
 
+    //新规则得到的管壳码转换雷管序号Id
+    public static String DetonatorShellToSerialNo_NewDanLing(String shellStr) {
+        String changjia = shellStr.substring(0, 2);
+        String yearStr = shellStr.substring(2, 3);
+        String monthStr = shellStr.substring(3, 5);
+        String dayStr = shellStr.substring(5, 7);
+        String teStr = shellStr.substring(7, 8);
+        String noStr = shellStr.substring(8, 13);
+        int day = Integer.parseInt(dayStr);
+        if(monthStr.equals("11")){
+            monthStr="12";
+        }else if(monthStr.equals("12")){
+            monthStr="13";
+        }
+        int t = Integer.parseInt(monthStr);
+        char a = HEX_CHAR[t];
+//        Log.e("转换", "shellStr: "+shellStr );
+//        Log.e("转换", "shellStr: "+changjia+"2"+yearStr+a+dayStr+teStr+noStr );
+        int year = Integer.parseInt(yearStr);
+        int month = Integer.parseInt(monthStr);
+        int no = Integer.parseInt(noStr);
+        int te = Integer.parseInt(teStr, 16);
+//        Log.e("雷管转化", "year: "+year );
+//        Log.e("雷管转化", "month: "+month );
+//        Log.e("雷管转化", "no: "+no );
+//        Log.e("雷管转化", "te: "+te );
+        int serialId2 = GetSerialNo_NewDanLing(te, month, day, no, year);
+        //INT转换为字节
+        byte[] bytes = intToByteArray(serialId2);
+        //byte转换为16进制
+        return bytesToHexFun(bytes);
+    }
+
+    //根据年月/序号得到雷管ID
+    public static int GetSerialNo_NewDanLing(int te, int month, int day, int serialNo, int year) {//9,7,29,55000,9
+
+        int yearStr;
+//        Log.e("年", "year: "+year );
+        if (year == 1) {
+            yearStr = 0;
+        } else if (year == 2) {
+            yearStr = 1;
+        } else if (year == 3) {
+            yearStr = 2;
+        } else {
+            yearStr = 3;
+        }
+        char c = (char) te;
+        int i = c;
+        day = day << 19;//29
+        month = month << 24;//7
+        te = te << 28;//0
+        i = i << 28;//0
+        yearStr = yearStr << 17;//9
+        int tempNo = serialNo ^ yearStr;
+        tempNo = tempNo ^ day;
+        tempNo = tempNo ^ month;
+        tempNo = tempNo ^ i;
+
+        return tempNo;
+    }
+
     /***
      * 反转雷管ID
      * @param id

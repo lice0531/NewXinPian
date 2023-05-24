@@ -195,6 +195,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isshow = true;
     private float cankao_ic = 0;//记录高压15s参考电流
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
+    private List<VoDenatorBaseInfo> denatorlist0 = new ArrayList<>();
     private List<VoDenatorBaseInfo> denatorlist1 = new ArrayList<>();
     private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
@@ -205,6 +206,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String mRegion;     // 区域
     private int ic_cankao = 19;//雷管参考电流
 
+    private boolean version_0 = true;
     private boolean version_1 = true;
     private boolean version_2 = true;
     private long time = 0;
@@ -630,7 +632,8 @@ public class FiringMainActivity extends SerialPortActivity {
         isshow = true;//弹窗标志
         reThirdWriteCount = 0;
         totalerrorNum = 0;
-
+        version_0 = true;
+        version_1 = true;
     }
 
     private void getUserMessage() {
@@ -834,6 +837,7 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void loadBlastModel() {
         list_all_lg.clear();
+        denatorlist0.clear();
         denatorlist1.clear();
         denatorlist2.clear();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -842,6 +846,7 @@ public class FiringMainActivity extends SerialPortActivity {
         GreenDaoMaster master = new GreenDaoMaster();
 //        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
         List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//不分区域
+        denatorlist0 = new ArrayList<>();
         denatorlist1 = new ArrayList<>();
         denatorlist2 = new ArrayList<>();
         for (DenatorBaseinfo d : denatorlist) {
@@ -856,6 +861,8 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setVersion(d.getAuthorization());//芯片版本
             if (d.getAuthorization().equals("02")) {
                 denatorlist2.add(vo);
+            } else if (d.getAuthorization().equals("00")) {
+                denatorlist0.add(vo);
             } else {
                 denatorlist1.add(vo);
             }
@@ -870,14 +877,17 @@ public class FiringMainActivity extends SerialPortActivity {
             allBlastQu.offer(a);
             list_all_lg.add(a);
         }
+        for (VoDenatorBaseInfo c : denatorlist0) {
+            allBlastQu.offer(c);
+            list_all_lg.add(c);
+        }
 
         denatorCount = allBlastQu.size();
-//        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
+        Log.e(TAG, "denatorlist0: " + denatorlist0.size());
         Log.e(TAG, "denatorlist1: " + denatorlist1.size());
-//        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
         Log.e(TAG, "denatorlist2: " + denatorlist2.size());
         Log.e(TAG, "denatorCount: " + denatorCount);
-        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
+//        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
@@ -1718,10 +1728,17 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
                                 if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
                                     version_1 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));
                                     Thread.sleep(1000);
                                     continue;
                                 }
+                                if (version_0 && thirdWriteCount == denatorlist2.size() + denatorlist1.size() && denatorlist0.size() != 0) {// 有2代为0的时候
+                                    version_0 = false;//发一次就不要发了
+                                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));
+                                    Thread.sleep(1000);
+                                    continue;
+                                }
+
                                 //检测两次
 //                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
 //                                    //如果过错误数量不为为0才发第二次
@@ -1761,9 +1778,13 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
-                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
-                                denatorId = Utils.getReverseDetonatorNo(denatorId);
 
+                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
+
+                                if(tempBaseInfo.getVersion().equals("00")){//兼容一代
+                                     denatorId = Utils.DetonatorShellToSerialNo_NewDanLing(shellStr);//新协议
+                                }
+                                denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
