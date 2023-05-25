@@ -901,7 +901,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 Log.e(TAG, "ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion());
 
                                 String data = "";
-                                if (write.getDenatorId() == null || write.getDenatorId().length() < 8) {
+                                if (!write.getVersion().equals("00") && (write.getDenatorId() == null || write.getDenatorId().length() < 8)) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();
@@ -924,8 +924,13 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                    continue;// || shellStr.length() != 13  //判读是否是十三位
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新编码
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧编码
-                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
+                                String denatorId;//新芯片编码
 //                                Log.e("写入延时", "denatorId: " + denatorId);
+                                if (write.getVersion().equals("00")) {//兼容一代
+                                    denatorId = Utils.DetonatorShellToSerialNo_NewDanLing(write.getShellBlastNo());//一代煤许协议
+                                } else {
+                                    denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
+                                }
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
 
                                 short delayTime = 0;
