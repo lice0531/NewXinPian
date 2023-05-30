@@ -785,7 +785,7 @@ public class XingbangMain extends BaseActivity {
         message.setServer_type2(server_type2);
         message.setPro_dwdm(pro_dwdm);
         message.setJiance_time(String.valueOf(jiance_time));
-        message.setVersion(version);//单片机系统版本/旧01/新02
+        message.setVersion(version);//单片机系统版本/快01/慢02
         if (queryMessage() == 1) {
             message.setId((long) 1);
             getDaoSession().getMessageBeanDao().update(message);

@@ -1858,7 +1858,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setZhu_yscs(yscs);
         denatorBaseinfo.setDuan(duan_scan);
         denatorBaseinfo.setDuanNo(duan_scan + "-" + (duanNUM + 1));
-        denatorBaseinfo.setAuthorization("0"+version);//雷管芯片型号
+        denatorBaseinfo.setAuthorization("00");//雷管芯片型号
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         Message msg = new Message();
