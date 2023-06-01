@@ -323,7 +323,7 @@ public class XingbangMain extends BaseActivity {
         mHandler_updata = new Handler(msg -> {
             Log.e("起爆器编号", "equ_no: " + equ_no);
             if (!equ_no.equals("")) {
-                tvMainNo.setText("设备编号:" + equ_no);
+                tvMainNo.setText(getString(R.string.text_main_sbbh) + equ_no);
                 CrashReport.setUserId(equ_no);
             }
             return false;
@@ -967,7 +967,7 @@ public class XingbangMain extends BaseActivity {
         }if (mRegion5) {
             a.append(",5");
         }
-        String str = " 区域" + a;
+        String str = getString(R.string.text_main_qu) + a;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数(单选的时候要放开,多选关闭)

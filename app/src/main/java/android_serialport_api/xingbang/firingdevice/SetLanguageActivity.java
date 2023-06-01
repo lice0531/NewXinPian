@@ -60,11 +60,6 @@ public class SetLanguageActivity extends BaseActivity {
 //            }
 //        });
         //english
-        findViewById(R.id.btn_en).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectLanguage(3);
-            }
-        });
+        findViewById(R.id.btn_en).setOnClickListener(v -> selectLanguage(3));
     }
 }

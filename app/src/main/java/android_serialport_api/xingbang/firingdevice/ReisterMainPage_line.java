@@ -2190,7 +2190,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         if (size == -1) {
             str = " 区域" + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getString(R.string.text_dfzc_qy) + region + getString(R.string.text_dfzc_sl) + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

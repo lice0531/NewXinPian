@@ -414,7 +414,7 @@
                     android:layout_height="50dp"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="修改延时" />
+                    android:text="@string/text_single_setDelay" />
                 <Button
                     android:id="@+id/btn_inputOk"
                     android:visibility="gone"
@@ -529,7 +529,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="30dp"
-                            android:text="管壳码" />
+                            android:text="@string/text_list_guan" />
                         <TextView
                             android:id="@+id/text_gkm2"
                             style="@style/alltextstyle"

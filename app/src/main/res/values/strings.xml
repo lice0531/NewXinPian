@@ -354,4 +354,20 @@
     <string name="continue_Loc_tile">连续定位</string>
     <string name="one_Loc_tile">单次定位</string>
     <string name="title_activity_practice">辅助功能</string>
+    <string name="text_single_setDelay">修改延时</string>
+    <string name="text_main_sbbh">设备编号：</string>
+    <string name="text_main_dfzc">1.单发检测</string>
+    <string name="text_main_zc">2.注册</string>
+    <string name="text_main_xmgl">3.项目管理</string>
+    <string name="text_main_wlcs">4.网络测试</string>
+    <string name="text_main_qb">5.起爆</string>
+    <string name="text_main_ck">6.查看</string>
+    <string name="text_main_sz">7.设置</string>
+    <string name="text_main_sc">8.删除</string>
+    <string name="text_main_fzgn">9.辅助功能</string>
+    <string name="text_main_tc">10.退出</string>
+    <string name="text_main_qu"> /区域</string>
+    <string name="text_dfzc_qy">" 区域"</string>
+    <string name="text_dfzc_sl">"(数量: "</string>
+
 </resources>
