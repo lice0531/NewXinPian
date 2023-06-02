@@ -174,9 +174,10 @@ public class DownOfflineActivity extends BaseActivity {
                         }
                     }
                 }
+                Log.e(TAG, "danLingBean.getLgs().getLg().size(): "+danLingBean.getLgs().getLg().size() );
                 if (danLingBean.getLgs().getLg().size() > 0) {//更新雷管信息
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                        GreenDaoMaster.updateLgState_lixian(danLingBean.getLgs().getLg().get(i));
                     }
                 }
                 if (err != 0) {

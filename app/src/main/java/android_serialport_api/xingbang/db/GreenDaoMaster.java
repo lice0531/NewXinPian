@@ -408,6 +408,73 @@ public class GreenDaoMaster {
         }
 
     }
+    public static void updateLgState_lixian(DanLingBean.LgsBean.LgBean lgBean) {
+        //94242214050
+        //F42F1C 2E0A 2 5
+        if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
+            String uid = "";
+            String yscs = "";
+            String duan = "";
+            String version = "";
+            uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+            if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                yscs = lgBean.getGzm().substring(6, 10);
+            }
+            if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                duan = lgBean.getGzm().substring(11, 12);
+                version = lgBean.getGzm().substring(10, 11);
+            }
+            DenatorBaseinfo db_sc= new DenatorBaseinfo();
+            db_sc.setShellBlastNo(lgBean.getUid());
+            db_sc.setDenatorId(uid);
+            db_sc.setAuthorization("0"+version);
+            db_sc.setZhu_yscs(yscs);
+            db_sc.setCong_yscs(duan);
+//            db_sc.setRegdate(lgBean.getYxq().substring(0, 8));
+            registerDetonator_typeNew(db_sc);//更新到生产数据库中
+
+            QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+            DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
+            if (db != null) {
+//                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+                db.setDenatorId(uid);
+                if(lgBean.getGzm().length()>=10){
+                    db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                }
+
+                if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                    int delay=0;
+                    switch (duan){
+                        case "1":
+                            break;
+                        case "2":
+                            delay=25;
+                            break;
+                        case "3":
+                            delay=50;
+                            break;
+                        case "4":
+                            delay=75;
+                            break;
+                        case "5":
+                            delay=100;
+                            break;
+                    }
+                    if(!duan.equals("0")){
+                        db.setDelay(delay);
+                    }
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                    db.setAuthorization("0"+version);
+//                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                }
+                getDaoSession().getDenatorBaseinfoDao().update(db);
+
+                Utils.saveFile();//把软存中的数据存入磁盘中
+            }
+
+        }
+
+    }
 
     /**
      * 读取输入注册
@@ -425,7 +492,7 @@ public class GreenDaoMaster {
         detonatorTypeNew.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
-        detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
+//        detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
 

@@ -193,7 +193,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_id = "-1";
     private String qbxm_name = "";
     private boolean isshow = true;
-    private float cankao_ic = 0;//记录高压15s参考电流
+    private float cankao_ic = 0;//记录高压20s参考电流
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private List<VoDenatorBaseInfo> denatorlist1 = new ArrayList<>();
     private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
@@ -538,40 +538,40 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //检测电流小于参考值的70%提示弹框
 
-            if (stage == 6 && sixExchangeCount < (ChongDian_time - 15) && busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow) {
-                isshow = false;
-                firstThread.exit = true;
-                firstThread.interrupt();
-                try {
-                    firstThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前起爆器电流异常,可能是总线短路导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
-                        //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
-                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                            sendCmd(reCmd);
-                            dialog1.dismiss();
-                            closeThread();
-                            closeForm();
-                            finish();
-                        })
-                        .setNeutralButton("确定", (dialog14, i) -> {
-                            firstThread = new ThreadFirst(allBlastQu);
-                            firstThread.exit = false;
-                            firstThread.start();
-                            dialog14.dismiss();
-                        })
-                        .create();
-                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+//            if (stage == 6 && sixExchangeCount < (ChongDian_time - 20) && busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow) {
+//                isshow = false;
+//                firstThread.exit = true;
+//                firstThread.interrupt();
+//                try {
+//                    firstThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                AlertDialog dialog = new Builder(FiringMainActivity.this)
+//                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
+//                        .setMessage("当前起爆器电流异常,可能是总线短路导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+//                        //设置对话框的按钮
+//                        .setNegativeButton("退出", (dialog1, which) -> {
+//                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+//                            sendCmd(reCmd);
+//                            dialog1.dismiss();
+//                            closeThread();
+//                            closeForm();
+//                            finish();
+//                        })
+//                        .setNeutralButton("确定", (dialog14, i) -> {
+//                            firstThread = new ThreadFirst(allBlastQu);
+//                            firstThread.exit = false;
+//                            firstThread.start();
+//                            dialog14.dismiss();
+//                        })
+//                        .create();
+//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+//                dialog.show();
+//
+//            }
 
-            }
-
-            if (stage == 6 && sixExchangeCount == (ChongDian_time - 15)) {
+            if (stage == 6 && sixExchangeCount == (ChongDian_time - 20)) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录高压15s参考电流
                 Log.e(TAG, "记录参考电流: " + cankao_ic);
             }
@@ -1076,11 +1076,11 @@ public class FiringMainActivity extends SerialPortActivity {
         denator.setErrorCode(fromData.getCommicationStatus());
         denator.setErrorName(fromData.getCommicationStatusName());
         //判断雷管状态是否是错误和延时和写入的是否一致
-        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
-            denator.setErrorCode("01");
-            denator.setErrorName("延时写入不一致");
-            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
-        }
+//        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
+//            denator.setErrorCode("01");
+//            denator.setErrorName("延时写入不一致");
+//            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
+//        }
         Application.getDaoSession().update(denator);
 
         //判断雷管状态是否正价错误数量
