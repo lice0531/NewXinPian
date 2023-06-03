@@ -1,5 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
@@ -7,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 
@@ -50,6 +53,8 @@ import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.zxing.activity.CaptureActivity;
+import android_serialport_api.xingbang.zxing.util.Constant;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,6 +62,8 @@ import butterknife.OnClick;
 public class DownOfflineActivity extends BaseActivity {
     @BindView(R.id.btn_openFile)
     Button btnOpenFile;
+    @BindView(R.id.btn_scan)
+    Button btnScan;
     @BindView(R.id.text_filePath)
     TextView textFilePath;
     @BindView(R.id.btn_OK)
@@ -416,7 +423,7 @@ public class DownOfflineActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_openFile, R.id.btn_OK})
+    @OnClick({R.id.btn_openFile, R.id.btn_OK,R.id.btn_scan})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_openFile:
@@ -443,7 +450,30 @@ public class DownOfflineActivity extends BaseActivity {
                 }
 
                 break;
+            case R.id.btn_scan:
+                startQrCode();
+                break;
         }
+    }
+
+
+    // 开始扫码
+    private void startQrCode() {
+        // 申请相机权限
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // 申请权限
+            ActivityCompat.requestPermissions(DownOfflineActivity.this, new String[]{Manifest.permission.CAMERA}, Constant.REQ_PERM_CAMERA);
+            return;
+        }
+        // 申请文件读写权限（部分朋友遇到相册选图需要读写权限的情况，这里一并写一下）
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // 申请权限
+            ActivityCompat.requestPermissions(DownOfflineActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constant.REQ_PERM_EXTERNAL_STORAGE);
+            return;
+        }
+        // 二维码扫码
+        Intent intent = new Intent(DownOfflineActivity.this, CaptureActivity.class);
+        startActivityForResult(intent, Constant.REQ_QR_CODE);
     }
 
     private void saveData() {
