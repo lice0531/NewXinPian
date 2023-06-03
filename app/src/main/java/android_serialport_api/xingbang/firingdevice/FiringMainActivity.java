@@ -459,7 +459,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     ll_firing_IC_6.setTextColor(Color.GREEN);
                     ll_firing_IC_7.setTextColor(Color.GREEN);
                     if (displayIc < 8) {
-                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     } else {
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流正常");
                     }
@@ -1096,8 +1096,8 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         Application.getDaoSession().update(denator);
 
-        //判断雷管状态是否正价错误数量
-        if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
+        //判断雷管状态是否正价错误数量//|| (writeDelay != fromData.getDelayTime())
+        if (!"FF".equals(fromData.getCommicationStatus())&&!"F2".equals(fromData.getCommicationStatus()) &&!"F1".equals(fromData.getCommicationStatus())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
