@@ -32,12 +32,13 @@ import android.graphics.SweepGradient;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.dommy.qrcode.R;
 import com.google.zxing.ResultPoint;
-import com.google.zxing.camera.CameraManager;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.zxing.camera.CameraManager;
 
 
 /**

@@ -228,7 +228,8 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:hint="6位密码"
-                    android:numeric="integer" />
+                    android:maxLength="6"
+                    android:inputType="number" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

@@ -43,6 +43,9 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
@@ -58,6 +61,13 @@ import android_serialport_api.xingbang.zxing.util.Constant;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DownOfflineActivity extends BaseActivity {
     @BindView(R.id.btn_openFile)
@@ -99,6 +109,7 @@ public class DownOfflineActivity extends BaseActivity {
     private String path;
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
+    private Handler mHandler_1;
     private Handler mHandler2;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -122,6 +133,83 @@ public class DownOfflineActivity extends BaseActivity {
             //显示或隐藏loding界面
             if (pb_show == 1 && tipDlg != null) tipDlg.show();
             if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
+        mHandler_1 = new Handler(msg -> {
+            switch (msg.what) {
+                case 0:
+                    show_Toast("项目下载成功");
+                    break;
+                case 1:
+                case 99:
+                    show_Toast(String.valueOf(msg.obj));
+                    break;
+                case 2:
+                    show_Toast("未找到该起爆器设备信息或起爆器未设置作业任务");
+                    break;
+                case 3:
+                    show_Toast("该起爆器未设置作业任务");
+                    break;
+                case 4:
+                    show_Toast("起爆器在黑名单中");
+                    break;
+                case 5:
+                    show_Toast("起爆位置不在起爆区域内");
+                    break;
+                case 6:
+                    show_Toast("起爆位置在禁爆区域内");
+                    break;
+                case 7:
+                    show_Toast("该起爆器已注销/报废");
+                    break;
+                case 8:
+                    show_Toast("禁爆任务");
+                    break;
+                case 9:
+                    show_Toast("作业合同存在项目");
+                    break;
+                case 10:
+                    show_Toast("作业任务未设置准爆区域");
+                    break;
+                case 11:
+                    show_Toast("离线下载不支持生产厂家试爆");
+                    break;
+                case 12:
+                    show_Toast("营业性单位必须设置合同或者项目");
+                    break;
+                case 13:
+                case 15:
+                    show_Toast("网络请求失败,请检查网络后再次尝试");
+                    break;
+                case 14:
+                    show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    break;
+                case 16:
+                    show_Toast("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+                    break;
+                case 17:
+                    String name = msg.obj.toString();
+                    show_Toast("扫码成功");
+                    new Thread(() -> {
+                        upload_xingbang(name);
+                    }).start();
+
+                    break;
+                case 18:
+                    String mima = editMima.getText().toString();//txt中的密文
+                    String res = msg.obj.toString();
+                    if (mima.length() < 6) {
+                        show_Toast("请输入文件6位序列号");
+                    } else {
+                        insertData(res, mima);
+                    }
+                    break;
+                case 89:
+                    show_Toast("输入的管壳码重复");
+                    break;
+
+
+            }
             return false;
         });
 
@@ -274,7 +362,20 @@ public class DownOfflineActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        Log.e("离线下载-结果回调", "requestCode: "+requestCode+"--resultCode: "+resultCode );
+        //扫描结果回调
+        if (requestCode == Constant.REQ_QR_CODE && resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            String scanResult = bundle.getString(Constant.INTENT_EXTRA_KEY_QR_SCAN);
+            Log.e("扫码结果", "scanResult: "+scanResult );
+            //将扫描出的信息显示出来
+
+            Message msg = new Message();
+            msg.obj = scanResult;
+            msg.what=17;
+            mHandler_1.sendMessage(msg);
+        }
+         if (requestCode != Constant.REQ_QR_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开
                 path = uri.getPath();
@@ -292,6 +393,8 @@ public class DownOfflineActivity extends BaseActivity {
                 Toast.makeText(this, path + "222222", Toast.LENGTH_SHORT).show();
             }
         }
+
+
     }
 
     public String getRealPathFromURI(Uri contentUri) {
@@ -451,6 +554,7 @@ public class DownOfflineActivity extends BaseActivity {
 
                 break;
             case R.id.btn_scan:
+                saveData();
                 startQrCode();
                 break;
         }
@@ -577,4 +681,81 @@ public class DownOfflineActivity extends BaseActivity {
             }
         }
     };
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case Constant.REQ_PERM_CAMERA:
+                // 摄像头权限申请
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 获得授权
+                    startQrCode();
+                } else {
+                    // 被禁止授权
+                    Toast.makeText(DownOfflineActivity.this, "请至权限中心打开本应用的相机访问权限", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case Constant.REQ_PERM_EXTERNAL_STORAGE:
+                // 文件读写权限申请
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 获得授权
+                    startQrCode();
+                } else {
+                    // 被禁止授权
+                    Toast.makeText(DownOfflineActivity.this, "请至权限中心打开本应用的文件读写权限", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    private void upload_xingbang(String name) {
+        Log.e("loding画面", "画面开始: " );
+        String url = Utils.httpurl_xb_erweima+name+"/ciphertext";//煋邦下载
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(15));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                String res;
+                try {
+                    res = response.body().string();//response.body()只能调用一次,第二次调用就会变成null
+                } catch (Exception e) {
+
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage(16));
+                    return;
+                }
+                Message msg = new Message();
+                msg.obj = res;
+                msg.what=18;
+                mHandler_1.sendMessage(msg);
+                Log.e("网络请求返回", "response: " + response.toString());
+                Log.e("网络请求返回", "res: " + res);
+                Utils.writeRecord("---煋邦离线扫码返回:" + res);
+
+
+                pb_show = 0;//loding画面结束
+            }
+        });
+    }
+
+
 }
