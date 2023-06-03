@@ -1,11 +1,9 @@
 package android_serialport_api.xingbang.cmd.vo;
 
-import android.content.Context;
-
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 
-public class From32DenatorFiring {
+public class From38Cmd {
 	
 	private String denaId;//雷管id
 	private String denatorStatus;//雷管状态 
@@ -86,12 +84,6 @@ public class From32DenatorFiring {
 			return name;
 		}
 		if("FF".equals(this.getCommicationStatus())){
-			name=Application.getContext().getString(R.string.text_communication_state4);//通讯成功
-			return name;
-		}if("F1".equals(this.getCommicationStatus())){
-			name=Application.getContext().getString(R.string.text_communication_state4);//通讯成功
-			return name;
-		}if("F2".equals(this.getCommicationStatus())){
 			name=Application.getContext().getString(R.string.text_communication_state4);//通讯成功
 			return name;
 		}
