@@ -145,6 +145,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
     private volatile int sixExchangeCount = 48;//第6阶段计时
+    private volatile int sevenCount = 0;//第7阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
     private volatile int eightCmdFlag = 0;//第八阶段命令发出起爆
@@ -1527,6 +1528,19 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 7:
                 ctlLinePanel(7);
+                if(sevenCount==300){
+                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                    AlertDialog dialog = new Builder(this)
+                            .setTitle("提示")//设置对话框的标题//"成功起爆"
+                            .setMessage("检测到您长时间处于高压状态,可能会硬件短路,请先退出后再进入起爆")//设置对话框的内容"本次任务成功起爆！"
+                            //设置对话框的按钮
+                            .setNegativeButton(getString(R.string.text_test_exit), (dialog12, which) -> {
+                                dialog12.dismiss();
+                                finish();
+                            })
+                            .create();
+                    dialog.show();
+                }
                 break;
             case 8:
                 ctlLinePanel(8);
@@ -1902,6 +1916,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 7:
+                            Thread.sleep(1000);
+                            sevenCount++;
+                            Log.e(TAG, "1+5 等待阶段sevenCount: "+sevenCount);
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             sevenDisplay = 1;
