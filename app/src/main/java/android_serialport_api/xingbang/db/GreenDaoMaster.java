@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -401,6 +402,21 @@ public class GreenDaoMaster {
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                     db.setAuthorization("0"+version);
+
+                    //小于0x0600的就是快速
+                    //0x09C1就是慢速的
+                    //0x04C1就是快速的
+                    String yscs2=yscs.substring(2)+yscs.substring(0,2);
+                    BigInteger one = new BigInteger(yscs2,16);
+                    BigInteger two = new BigInteger("0699",16);
+                    if(one.compareTo(two) > 0&&!version.equals("2")){
+                        db.setAuthorization("02");
+                        Log.e("判断产品型号","02");
+                    }else if(one.compareTo(two) < 0&&!version.equals("1")){
+                        Log.e("判断产品型号","01");
+                        db.setAuthorization("01");
+                    }
+
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
