@@ -1366,7 +1366,9 @@ public class FiringMainActivity extends SerialPortActivity {
             //C0003800A040C0
             String fromCommad = Utils.bytesToHexFun(locatBuf);
 //            String chongdian = ThreeFiringCmd.getCheckFrom38(fromCommad);
-            if(fromCommad.length()==16){
+            //C0003800A040C0 没有成功返回
+            //C0003801FF05C5C0 成功返回
+            if(stage==33){
                 reThirdWriteCount++;
             }
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
@@ -1929,6 +1931,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 keyFireCmd = 0;
                                 eightCmdExchangePower = 1;
                             }
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://起爆阶段
 //                            if (eightCount == 1) {
