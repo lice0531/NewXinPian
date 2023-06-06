@@ -443,7 +443,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc > (cankao_ic * 0.7) && displayIc < (cankao_ic * 0.8) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > (cankao_ic * 0.6 ) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流偏低)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
