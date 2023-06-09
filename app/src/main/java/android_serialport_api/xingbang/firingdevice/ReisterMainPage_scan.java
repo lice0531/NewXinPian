@@ -1950,7 +1950,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
                 denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
             }else {
-                denatorBaseinfo.setAuthorization("0"+version);//雷管芯片型号
+                denatorBaseinfo.setAuthorization("00");//雷管芯片型号
             }
 
             //向数据库插入数据

@@ -438,7 +438,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc > (cankao_ic * 0.7) && displayIc < (cankao_ic * 0.8) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > (cankao_ic * 0.6) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流偏低)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
@@ -1779,10 +1779,12 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
 
-                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
+                                String denatorId ;//新芯片
 
                                 if(tempBaseInfo.getVersion().equals("00")){//兼容一代
                                      denatorId = Utils.DetonatorShellToSerialNo_NewDanLing(shellStr);//新协议
+                                } else {
+                                    denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
                                 }
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 short delayTime = write.getDelay();
