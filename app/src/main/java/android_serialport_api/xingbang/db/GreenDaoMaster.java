@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +102,10 @@ public class GreenDaoMaster {
      */
     public List<DenatorBaseinfo> queryErrLeiGuan(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
+        result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
+                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("F1"))
+                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("F2"))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
         return result.list();
     }
     public List<DenatorBaseinfo> queryErrLeiGuan() {
@@ -398,6 +402,24 @@ public class GreenDaoMaster {
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                     db.setAuthorization("0"+version);
+
+                    //小于0x0600的就是快速
+                    //0x09C1就是慢速的
+                    //0x04C1就是快速的
+//                    String yscs2=yscs.substring(2)+yscs.substring(0,2);
+//                    BigInteger one = new BigInteger(yscs2,16);
+//                    BigInteger two = new BigInteger("0699",16);
+//                    Log.e("判断产品型号-lgBean.getGzm()",lgBean.getGzm());
+//                    Log.e("判断产品型号-version",version);
+//                    Log.e("判断产品型号-比较",one.compareTo(two)+"");
+//                    if(one.compareTo(two) > 0&&!version.equals("2")){
+//                        db.setAuthorization("02");
+//                        Log.e("判断产品型号","02");
+//                    }else if(one.compareTo(two) < 0&&!version.equals("1")){
+//                        Log.e("判断产品型号","01");
+//                        db.setAuthorization("01");
+//                    }
+
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
@@ -430,6 +452,22 @@ public class GreenDaoMaster {
             db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
+            //小于0x0600的就是快速
+            //0x09C1就是慢速的
+            //0x04C1就是快速的
+//            String yscs2=yscs.substring(2)+yscs.substring(0,2);
+//            BigInteger one = new BigInteger(yscs2,16);
+//            BigInteger two = new BigInteger("0699",16);
+//            Log.e("判断产品型号-lgBean.getGzm()",lgBean.getGzm());
+//            Log.e("判断产品型号-version",version);
+//            Log.e("判断产品型号-比较",one.compareTo(two)+"");
+//            if(one.compareTo(two) > 0&&!version.equals("2")){
+//                db_sc.setAuthorization("02");
+//                Log.e("判断产品型号","02");
+//            }else if(one.compareTo(two) < 0&&!version.equals("1")){
+//                Log.e("判断产品型号","01");
+//                db_sc.setAuthorization("01");
+//            }
 //            db_sc.setRegdate(lgBean.getYxq().substring(0, 8));
             registerDetonator_typeNew(db_sc);//更新到生产数据库中
 

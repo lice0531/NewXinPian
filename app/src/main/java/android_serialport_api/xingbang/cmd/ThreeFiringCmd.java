@@ -158,6 +158,25 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_3_DETONATE_9+"00";
 		return DefCommand.getCommadBytes(command);
 	}
+
+	/***
+	 *3.8、写入延时时间，检测结果看雷管是否正常
+	 * @param addr
+	 * @param data：共6字节，字节1，字节2，字节3，字节4为ID ，字节5，字节6为延期（ms，低字节在前）
+	 * @return
+	 */
+	public static byte[] send38(String addr, String data){
+		//C0 00 38 04 14E0FF00 D2D4 C0
+		String command;
+//		Log.e("长度", "data: "+data.length() );
+		if(data.length()==8){
+			command = addr + DefCommand.CMD_3_DETONATE_9+"04"+data;
+		}else {
+			command = addr + DefCommand.CMD_3_DETONATE_9+"00";
+		}
+		return DefCommand.getCommadBytes(command);
+	}
+
 	/***
 	 * 校验处理返回  3.3 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电
 	 * @param addr
@@ -308,6 +327,21 @@ public class ThreeFiringCmd {
 			return null;
 		}
 		
+	}
+	/***
+	 * 处理在网读ID检测返回值
+	 * @param from
+	 * @return
+	 */
+	public static String  getCheckFrom38(String from){
+//C0003800A040C0
+		if(from.length()==16){
+			String cmd = DefCommand.decodeCommand(from);
+			return cmd.substring(cmd.length()-2);
+		}else{
+			return null;
+		}
+
 	}
 	/***
 	 *异常终止起爆

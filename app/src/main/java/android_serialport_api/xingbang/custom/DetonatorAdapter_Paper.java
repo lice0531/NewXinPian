@@ -94,7 +94,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             if ( mLine == 5) {
                 holder.mTvSitHole.setText(detonatorBaseInfo.getDuanNo() + "");     // 孔号
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
-                if (detonatorBaseInfo.getErrorCode().equals("FF")) {
+                if (detonatorBaseInfo.getErrorCode().equals("FF")||detonatorBaseInfo.getErrorCode().equals("F2")||detonatorBaseInfo.getErrorCode().equals("F1")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
                 } else {
                     holder.mTvStatus.setTextColor(Color.RED);

@@ -1620,7 +1620,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
+        Utils.writeRecord("扫码注册:--管壳码:" + shellNo + "--延时:" + delay);
         return 0;
     }
 
