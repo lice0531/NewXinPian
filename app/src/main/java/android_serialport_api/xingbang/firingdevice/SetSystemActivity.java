@@ -29,12 +29,16 @@ import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.annotation.NonNull;
+
 public class SetSystemActivity extends BaseActivity {
 
     @BindView(R.id.sw_setsys)
     SwitchButton swSetsys;
     @BindView(R.id.sw_yanzheng)
     SwitchButton swYanzheng;
+    @BindView(R.id.sw_yanzheng_sq)
+    SwitchButton swYanzheng_sq;
     @BindView(R.id.sw_shangchuan)
     SwitchButton swShangchuan;
     @BindView(R.id.et_set_Preparation)
@@ -55,6 +59,7 @@ public class SetSystemActivity extends BaseActivity {
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
     private String Yanzheng = "";//是否验证地理位置
+    private String Yanzheng_sq = "";//是否验雷管已经授权
     private String Shangchuan = "";//是否上传错误雷管
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -70,6 +75,7 @@ public class SetSystemActivity extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
@@ -80,27 +86,26 @@ public class SetSystemActivity extends BaseActivity {
         if (Yanzheng.equals("验证")) {
             swYanzheng.setChecked(true);
         }
+        if (Yanzheng_sq.equals("验证")) {
+            swYanzheng_sq.setChecked(true);
+        }
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
         }
-        Handler_tip = new Handler() {
-            @SuppressLint("HandlerLeak")
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle b = msg.getData();
-                String shellStr = b.getString("shellStr");
-                if (msg.arg1 == 1) {
-                    show_Toast(getString(R.string.text_systip_3));
-                } else if (msg.arg1 == 2) {
-                    show_Toast(getString(R.string.text_systip_2));
-                } else if (msg.arg1 == 3) {
-                    show_Toast("充电时间请大于8s");
-                } else if (msg.arg1 == 4) {
-                    show_Toast(getString(R.string.text_systip_1));
-                }
+        Handler_tip=new Handler(msg -> {
+            Bundle b = msg.getData();
+            String shellStr = b.getString("shellStr");
+            if (msg.arg1 == 1) {
+                show_Toast(getString(R.string.text_systip_3));
+            } else if (msg.arg1 == 2) {
+                show_Toast(getString(R.string.text_systip_2));
+            } else if (msg.arg1 == 3) {
+                show_Toast("充电时间请大于8s");
+            } else if (msg.arg1 == 4) {
+                show_Toast(getString(R.string.text_systip_1));
             }
-        };
+            return false;
+        });
     }
 
     private void getUserMessage() {
@@ -130,6 +135,11 @@ public class SetSystemActivity extends BaseActivity {
                     MmkvUtils.savecode("Yanzheng", "验证");
                 } else {
                     MmkvUtils.savecode("Yanzheng", "不验证");
+                }
+                if (swYanzheng_sq.isChecked()) {
+                    MmkvUtils.savecode("Yanzheng_sq", "验证");
+                } else {
+                    MmkvUtils.savecode("Yanzheng_sq", "不验证");
                 }
                 if (swShangchuan.isChecked()) {
                     MmkvUtils.savecode("Shangchuan", "是");

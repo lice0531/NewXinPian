@@ -111,6 +111,7 @@ public class DownOfflineActivity extends BaseActivity {
     private LoadingDialog tipDlg = null;
     private Handler mHandler_1;
     private Handler mHandler2;
+    private Handler mHandler_loading = new Handler();//显示进度条
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private String TAG = "离线下载";
@@ -129,7 +130,7 @@ public class DownOfflineActivity extends BaseActivity {
         initAutoComplete("history_xmbh", dfAtXmbh);
         initAutoComplete("history_dwdm", dfAtDwdm);
         initAutoComplete("history_bprysfz", dfAtBprysfz);
-        mHandler2 = new Handler(msg -> {
+        mHandler_loading = new Handler(msg -> {
             //显示或隐藏loding界面
             if (pb_show == 1 && tipDlg != null) tipDlg.show();
             if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
@@ -188,8 +189,10 @@ public class DownOfflineActivity extends BaseActivity {
                     show_Toast("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
                     break;
                 case 17:
+                    pb_show = 1;
+                    runPbDialog();
                     String name = msg.obj.toString();
-                    show_Toast("扫码成功");
+//                    show_Toast("扫码成功");
                     new Thread(() -> {
                         upload_xingbang(name);
                     }).start();
@@ -218,6 +221,25 @@ public class DownOfflineActivity extends BaseActivity {
         dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
         dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
     }
+
+    private void runPbDialog() {
+        pb_show = 1;
+        tipDlg = new LoadingDialog(DownOfflineActivity.this);
+        Context context = tipDlg.getContext();
+        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
+        new Thread(() -> {
+            mHandler_loading.sendMessage(mHandler_loading.obtainMessage());
+            try {
+                while (pb_show == 1) {
+                    Thread.sleep(100);
+                }
+                mHandler_loading.sendMessage(mHandler_loading.obtainMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 
     private void insertData(String json, String mima) {
 
@@ -249,7 +271,7 @@ public class DownOfflineActivity extends BaseActivity {
         }
         Gson gson = new Gson();
         DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
-        pb_show = 0;//结束动画
+
         try {
             JSONObject object1 = new JSONObject(res);
             String cwxx = object1.getString("cwxx");
@@ -278,8 +300,9 @@ public class DownOfflineActivity extends BaseActivity {
                 if (err != 0) {
                     show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                 }
-                show_Toast("项目下载成功");
-
+                pb_show = 0;//结束动画
+//                show_Toast("项目下载成功");
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(0));
             }
         } catch (JSONException e) {
             e.printStackTrace();

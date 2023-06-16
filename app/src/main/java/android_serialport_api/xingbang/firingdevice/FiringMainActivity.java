@@ -209,6 +209,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean version_1 = true;
     private boolean version_2 = true;
     private long time = 0;
+    private String Yanzheng_sq = "";//是否验雷管授权
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,7 +231,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
-
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         initParam();//重置参数
         initView();
         initHandle();
@@ -384,6 +385,18 @@ public class FiringMainActivity extends SerialPortActivity {
                 AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
                         .setTitle("当前雷管信息不完整")//设置对话框的标题
                         .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            dialog1.dismiss();
+                            finish();
+                        })
+//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                        .create();
+                dialog.show();
+            }else if (msg.what == 3) {
+                AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                        .setTitle("当前雷管未授权")//设置对话框的标题
+                        .setMessage(msg.obj+"雷管未授权,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
@@ -1789,6 +1802,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
+                                //雷管信息不完整
                                 if (write.getDenatorId() == null||write.getDenatorId().length()<1) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
@@ -1798,6 +1812,18 @@ public class FiringMainActivity extends SerialPortActivity {
                                     closeThread();
                                     break;
                                 }
+                                if(Yanzheng_sq.equals("验证")){
+                                    if (write.getShellBlastNo().startsWith("A6")) {
+                                        Message msg = Handler_tip.obtainMessage();
+                                        msg.what = 3;
+                                        msg.obj=write.getShellBlastNo();
+                                        Handler_tip.sendMessage(msg);
+                                        closeThread();
+                                        break;
+                                    }
+                                }
+
+
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
                                 String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片

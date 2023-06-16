@@ -452,6 +452,7 @@ public class GreenDaoMaster {
             db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
+            db_sc.setRegdate(lgBean.getYxq());
             //小于0x0600的就是快速
             //0x09C1就是慢速的
             //0x04C1就是快速的
@@ -530,7 +531,7 @@ public class GreenDaoMaster {
         detonatorTypeNew.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
-//        detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 8));
+        detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 10));//2023-06-15 17:20:40
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
 
