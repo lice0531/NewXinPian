@@ -278,7 +278,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                         })
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
-                dialog.show();
+                if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }
             return false;
         });
@@ -1264,7 +1266,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 })
                 .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting(String tip) {
@@ -1281,7 +1285,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 })
                 .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting2(String tip) {
