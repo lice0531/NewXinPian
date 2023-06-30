@@ -11,7 +11,7 @@ android {
 //    }
     defaultConfig {
         applicationId "android_serialport_api.xingbang"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 32
         versionName "3.32"

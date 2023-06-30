@@ -861,9 +861,9 @@ public class XingbangMain extends BaseActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提醒");//"说明"
-        builder.setMessage("有未设置延时的雷管,是否继续起爆?");
-        builder.setPositiveButton("继续起爆", (dialog, which) -> {
+        builder.setTitle(R.string.text_alert_tip);//"说明"
+        builder.setMessage(R.string.text_dialog_wszys);
+        builder.setPositiveButton(R.string.text_dialog_jxqb, (dialog, which) -> {
             String str5 = "起爆";
             if (Yanzheng.equals("验证")) {
                 //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
@@ -877,7 +877,7 @@ public class XingbangMain extends BaseActivity {
             }
             dialog.dismiss();
         });
-        builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(R.string.text_dialog_back, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -1130,7 +1130,7 @@ public class XingbangMain extends BaseActivity {
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(R.string.text_dialog_choice);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);

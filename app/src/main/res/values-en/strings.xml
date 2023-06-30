@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Serial Port</string>
+    <string name="app_name">XingBang Detonation software</string>
     <string name="error_configuration">Please configure your serial port first.</string>
     <string name="error_security">You do not have read/write permission to the serial
 		port.</string>
@@ -95,12 +95,12 @@
     <string name="text_tip_handle">Handle</string>
     <string name="text_tip_network">Open Network Services</string>
 
-    <string name="text_alert_sure">YES</string>
+    <string name="text_alert_sure">Determine</string>
     <string name="text_alert_cancel">Cancel</string>
     <string name="text_alert_tip">Tips</string>
     <string name="text_alert_sw">Explain</string>
     <string name="text_alert_tablename1">Error Detonator List</string>
-    <string name="text_alert_del_all">delete all detonators?</string>
+    <string name="text_alert_del_all">Is the number of registered detonators deleted altogether?</string>
     <string name="text_alert_user">Please enter a username and password</string>
     <string name="text_alert_tip1">The detection command has not been completed yet. Please check whether there are unregistered detonators on the bus and whether they continue to detonate.</string>
     <string name="text_alert_tip2">There are unprocessed detonators on the bus. Will they continue to detonate?</string>
@@ -194,7 +194,7 @@
     <string name="text_singleReister_stop">Stop registration</string>
     <string name="text_singleReister">Single shot registration</string>
     <string name="text_reister_scan">Scan</string>
-    <string name="text_return">Return</string>
+    <string name="text_return">Back</string>
     <string name="text_sure">OK</string>
     <string name="text_success">Success</string>
     <string name="text_reister_barcode">Scan information:</string>
@@ -203,16 +203,17 @@
     <string name="text_reister_2b">2</string>
     <string name="text_reister_5b">5</string>
     <string name="text_reister_1b">1</string>
+    <string name="text_reister_3b">3</string>
     <string name="text_reister_scanReister">Scan</string>
     <string name="text_reister_scaning">Sweeping code</string>
     <string name="text_reister_vol">bus voltage:</string>
     <string name="text_reister_ele">bus current:</string>
 
-    <string name="text_list_Serial">serial</string>
-    <string name="text_list_kong">number</string>
-    <string name="text_list_guan">shell code</string>
-    <string name="text_list_delay">delay</string>
-    <string name="text_list_state">login</string>
+    <string name="text_list_Serial">Serial</string>
+    <string name="text_list_kong">Number</string>
+    <string name="text_list_guan">Shell code</string>
+    <string name="text_list_delay">Delay</string>
+    <string name="text_list_state">Status</string>
     <string name="text_list_qibao_data">Detonating date</string>
     <string name="text_list_factory_name">Manufacturer\'s name</string>
     <string name="text_list_fac_num">factory code</string>
@@ -224,12 +225,12 @@
     <string name="text_test_num">Detonator:</string>
     <string name="text_test_errnum">Error:</string>
     <string name="text_test_hint">Message hint:</string>
-    <string name="text_test_see">Check</string>
+    <string name="text_test_see">View</string>
     <string name="text_test_exit">Exit</string>
     <string name="text_test_tip1">Waiting Bus Stability:</string>
     <string name="text_test_tip2">Testing (</string>
     <string name="text_test_tip3">)detonator</string>
-    <string name="text_test_tip4">test complete</string>
+    <string name="text_test_tip4">Test complete</string>
 
     <string name="text_unit_fa">piece </string>
     <string name="text_unit_hm">ms</string>
@@ -254,14 +255,14 @@
     <string name="text_firing_errnum">Error :</string>
     <string name="text_firing_tip2">Test preparation...</string>
     <string name="text_firing_tip3">Enter the charging process？</string>
-    <string name="text_firing_err_lg">Error List</string>
+    <string name="text_firing_err_lg">Wrong detonator</string>
     <string name="text_firing_jixu">Continue</string>
     <string name="text_firing_tip4">Charging, please wait a moment(</string>
     <string name="text_firing_qibao_vol">Detonation voltage :</string>
-    <string name="text_firing_tip5">Ready（press 1&amp;3 together to blast）</string>
-    <string name="text_firing_tip5_2">Ready（press 1&amp;5 together to blast）</string>
+    <string name="text_firing_tip5">Whether to detonate the detonator (press the 1+3 key combination to detonate the detonator)</string>
+    <string name="text_firing_tip5_2">Whether to detonate the detonator (press the 1+5 key combination to detonate the detonator)</string>
     <string name="text_firing_tip6">Count down</string>
-    <string name="text_firing_tip7">preparing to test(</string>
+    <string name="text_firing_tip7">Test preparation phase(</string>
     <string name="text_firing_tip8">Write not returned:</string>
     <string name="text_firing_tip9">Testing (</string>
     <string name="text_firing_tip10">)detonator</string>
@@ -351,7 +352,7 @@
     <string name="stop_continue_Loc">停止连续定位</string>
     <string name="continue_Loc_tile">连续定位</string>
     <string name="one_Loc_tile">单次定位</string>
-    <string name="title_activity_practice">辅助功能</string>
+    <string name="title_activity_practice">Auxiliary functions</string>
     <string name="text_single_setDelay">Modify delay time</string>
     <string name="text_main_sbbh">Equipment No：</string>
     <string name="text_main_dfzc">1.Single shot detection</string>
@@ -367,6 +368,73 @@
     <string name="text_main_qu"> zone</string>
     <string name="text_dfzc_qy"> zone</string>
     <string name="text_dfzc_sl">(Qty: </string>
+    <string name="text_zijian_title">设备初始化中...</string>
+    <string name="text_line_stop">Stopping registration</string>
+    <string name="text_line_single">Single shot registration</string>
+    <string name="text_line_IV">Present voltage:</string>
+    <string name="text_line_ic">Present current:</string>
+    <string name="text_line_tip1">请等待电流电压显示出来后，再连接雷管!</string>
+    <string name="text_line_tip2">当前设置延时为空,请重新设置</string>
+    <string name="text_line_tip3">当前设置延时已超过最大延时</string>
+    <string name="text_line_tip4">ms,请重新设置</string>
+    <string name="text_line_tip5">当前设置延时已超过最大延时</string>
+    <string name="text_line_tip6">当前开始延时已超过最大延时</string>
+    <string name="text_line_tip7">当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册</string>
+    <string name="text_line_tip8">找不到对应的生产数据,请先导入生产数据</string>
+    <string name="text_line_tip9">注册失败</string>
+    <string name="text_line_tip10">未收到单片机返回命令</string>
+    <string name="text_line_tip11">请先设置延时</string>
+    <string name="text_line_tip12">当前注册雷管电流过大,请检查雷管</string>
+    <string name="text_line_tip13">当前雷管有异常,请检测后重新注册</string>
+    <string name="text_line_tip14">当前雷管读码异常,请检查该雷管编码规则</string>
+    <string name="text_line_tip15">输入的管壳码重复</string>
+    <string name="text_line_tip16">当前设置延时为空,请重新设置</string>
+    <string name="text_line_tip17">正在与单片机通讯,请稍等一下再退出注册模式!</string>
+
+    <string name="text_scan_f1">F1 delay</string>
+    <string name="text_scan_f2">F2 delay</string>
+    <string name="text_scan_df">Single shot</string>
+    <string name="text_scan_xgys">Single shot</string>
+    <string name="text_scan_sdsr">Manual input</string>
+    <string name="text_query_ck">View detonator status</string>
+    <string name="text_query_history">Detonation history data</string>
+    <string name="text_query_px">Sorting</string>
+    <string name="text_scan_lxzcgs">Number of consecutive registrations</string>
+    <string name="text_scan_lxgs">Number of consecutive</string>
+    <string name="text_scan_gs">/Number</string>
+    <string name="text_scan_back">Back</string>
+    <string name="text_dialog_xh">Serial number</string>
+    <string name="text_dialog_gkm">Tubcodee and shell</string>
+    <string name="text_dialog_qx">Cancel</string>
+    <string name="text_dialog_sc">Delete</string>
+    <string name="text_dialog_qd">Determine</string>
+    <string name="text_dialog_xgcg">\n Successfully modified</string>
+    <string name="text_delay_sdsz">Tunnel Setup</string>
+    <string name="text_dialog_choice">Please select a region</string>
+    <string name="text_test_ckdl">Reference current</string>
+    <string name="text_dialog_err">Errors</string>
+    <string name="text_test_dlgd">(Excessive current)</string>
+    <string name="text_text_ysdl">(Suspected short circuit)</string>
+    <string name="text_test_ysdl">(Suspected open circuit)</string>
+    <string name="text_firing_qbz">Initiating, please wait a moment</string>
+    <string name="text_firing_qbcg">Successfully detonated!</string>
+    <string name="text_ceshi_ic">Testing the present current</string>
+    <string name="text_ceshi_kscs">Start test</string>
+    <string name="text_activity_kscsdl">Fast test current</string>
+    <string name="text_zone1">Zone 1</string>
+    <string name="text_zone2">Zone 2</string>
+    <string name="text_zone3">Zone 3</string>
+    <string name="text_zone4">Zone 4</string>
+    <string name="text_zone5">Zone 5</string>
+    <string name="text_dialog_wszys">Detonator with no delay set for successful initiation. Continue to detonate?</string>
+    <string name="text_dialog_jxqb">Continue to detonate</string>
+    <string name="text_dialog_back">Back</string>
+    <string name="text_show_1">Selected Zone</string>
+    <string name="text_fz_bbh">VERSION</string>
+    <string name="text_fz_jl">Cascade Settings</string>
+    <string name="text_fz_kscs">Quick test current</string>
+    <string name="text_fz_sjhc">Data exchange</string>
+    <string name="text_fz_qchc">Clear Cache</string>
 
 
 </resources>

@@ -50,7 +50,7 @@
             android:exported="false" />
         <activity
             android:name=".firingdevice.TestICActivity"
-            android:label="快速测试电流"
+            android:label="@string/text_activity_kscsdl"
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
         <activity

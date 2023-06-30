@@ -1176,8 +1176,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
         et_uid.setText(uid);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton(R.string.text_dialog_qx, (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(R.string.text_dialog_sc, (dialog, which) -> {
             dialog.dismiss();
 
             // TODO 开启进度条
@@ -1192,7 +1192,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }).start();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(R.string.text_dialog_qd, (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Log.e("单发修改", "delay1: " + delay1);
@@ -1998,7 +1998,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.VISIBLE);
                     llNum.setVisibility(View.VISIBLE);
                     btnInputOk.setVisibility(View.VISIBLE);
-                    btnSingle.setText("返回");
+                    btnSingle.setText(R.string.text_scan_back);
                 } else {
                     lySetDelay.setVisibility(View.VISIBLE);
                     llSingle.setVisibility(View.VISIBLE);
@@ -2006,7 +2006,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.GONE);
                     llNum.setVisibility(View.GONE);
                     btnInputOk.setVisibility(View.GONE);
-                    btnSingle.setText("手动输入");
+                    btnSingle.setText(getString(R.string.text_scan_sdsr));
                 }
 
                 break;
@@ -2918,9 +2918,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_dfzc_qy)  + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getString(R.string.text_dfzc_qy)  + region +  getString(R.string.text_dfzc_sl) + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

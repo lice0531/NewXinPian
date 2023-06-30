@@ -17,7 +17,7 @@
             android:textColor="@drawable/black"
             style="@style/alltextstyle"
             android:layout_gravity="start"
-            android:text="区域1" />
+            android:text="@string/text_zone1" />
         <CheckBox
             android:id="@+id/dialog_cb_mRegion2"
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:textColor="@drawable/black"
             style="@style/alltextstyle"
             android:layout_gravity="start"
-            android:text="区域2" />
+            android:text="@string/text_zone2" />
         <CheckBox
             android:id="@+id/dialog_cb_mRegion3"
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             android:textColor="@drawable/black"
             style="@style/alltextstyle"
             android:layout_gravity="start"
-            android:text="区域3" />
+            android:text="@string/text_zone3" />
         <CheckBox
             android:id="@+id/dialog_cb_mRegion4"
             android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
             android:textColor="@drawable/black"
             style="@style/alltextstyle"
             android:layout_gravity="start"
-            android:text="区域4" />
+            android:text="@string/text_zone4" />
         <CheckBox
             android:id="@+id/dialog_cb_mRegion5"
             android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
             android:textColor="@drawable/black"
             style="@style/alltextstyle"
             android:layout_gravity="start"
-            android:text="区域5" />
+            android:text="@string/text_zone5" />
     </LinearLayout>
 
 

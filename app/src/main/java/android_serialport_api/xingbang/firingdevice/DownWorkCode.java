@@ -2497,7 +2497,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(R.string.text_dialog_choice);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);

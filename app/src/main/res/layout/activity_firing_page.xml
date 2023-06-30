@@ -486,7 +486,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="参考电流"
+                android:text="@string/text_test_ckdl"
                 style="@style/alltextstyle" />
 
             <TextView

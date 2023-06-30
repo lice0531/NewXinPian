@@ -3,7 +3,6 @@ package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -28,11 +27,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -52,9 +48,7 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
-import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
-import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
@@ -79,7 +73,6 @@ import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -381,8 +374,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 // 电源显示
                 case 1003:
                     if (busInfo != null) {
-                        txt_currentVolt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-                        txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
+                        txt_currentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
+                        txt_currentIC.setText(getResources().getString(R.string.text_reister_ele)+ Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
                         // 判断当前电流是否偏大
                         if (Math.round(busInfo.getBusCurrentIa() * 1000) > 24) {
                             txt_currentIC.setTextColor(Color.RED);
@@ -431,9 +424,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_Toast(getString(R.string.text_line_tip7));
             } else if (msg.what == 10) {
-                show_Toast("找不到对应的生产数据,请先导入生产数据");
+                show_Toast(getString(R.string.text_line_tip8));
             } else if (msg.what == 99) {
                 adapter.notifyDataSetChanged();
             } else if (msg.what == 2001) {
@@ -441,7 +434,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 SoundPlayUtils.play(4);
             } else {
                 SoundPlayUtils.play(4);
-                show_Toast("注册失败");
+                show_Toast(getString(R.string.text_line_tip9));
             }
             return false;
         });
@@ -465,7 +458,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 showDenatorSum();//得到数据的总条数
             }
             if (tipInfoFlag == 3) {//未收到关闭电源命令
-                show_Toast("未收到单片机返回命令");
+                show_Toast(getString(R.string.text_line_tip10));
             }
             if (tipInfoFlag == 4) {//未收到打开电源命令
                 show_Toast(getResources().getString(R.string.text_error_tip6));
@@ -475,18 +468,18 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 6) {//桥丝不正常
-                show_Toast("请先设置延时");
+                show_Toast(getString(R.string.text_line_tip11));
             }
             if (tipInfoFlag == 7) {//桥丝不正常
-                show_Toast("当前注册雷管电流过大,请检查雷管");
+                show_Toast(getString(R.string.text_line_tip12));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 8) {//桥丝不正常
-                show_Toast("当前雷管有异常,请检测后重新注册");
+                show_Toast(getString(R.string.text_line_tip13));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 9) {//桥丝不正常
-                show_Toast("当前雷管读码异常,请检查该雷管编码规则");
+                show_Toast(getString(R.string.text_line_tip14));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 88) {//刷新界面
@@ -495,7 +488,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 edit_end_entboxNoAndSerial_ed.getText().clear();//.setText("")
             }
             if (tipInfoFlag == 89) {//刷新界面
-                show_Toast("输入的管壳码重复");
+                show_Toast(getString(R.string.text_line_tip15));
                 showDenatorSum();
                 SoundPlayUtils.play(4);
             }
@@ -990,8 +983,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
         et_uid.setText(uid);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton(R.string.text_dialog_qx, (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(R.string.text_dialog_sc, (dialog, which) -> {
             dialog.dismiss();
 
             // TODO 开启进度条
@@ -1007,7 +1000,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             }).start();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(R.string.text_dialog_qd, (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
 
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
@@ -1024,7 +1017,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -1524,17 +1517,17 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
                 hideInputKeyboard();
                 if (reEtF1.getText().toString().equals("")) {
-                    show_Toast("当前设置延时为空,请重新设置");
+                    show_Toast(getString(R.string.text_line_tip16));
                     return;
                 }
                 delay_set = "f1";
                 if (maxSecond != 0) {
                     if (Integer.parseInt(reEtF1.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                        show_Toast(getString(R.string.text_line_tip3)  + maxSecond + getString(R.string.text_line_tip4));
                         return;
                     }
                     if (Integer.parseInt(setDelayTimeStartDelaytime.getText().toString()) > maxSecond) {
-                        show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                        show_Toast(getString(R.string.text_line_tip6) + maxSecond + getString(R.string.text_line_tip4));
                         return;
                     }
                 }
@@ -1549,17 +1542,17 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             case R.id.re_btn_f2:
                 hideInputKeyboard();
                 if (reEtF2.getText().toString().equals("")) {
-                    show_Toast("当前设置延时为空,请重新设置");
+                    show_Toast(getString(R.string.text_line_tip2));
                     return;
                 }
                 delay_set = "f2";
                 if (maxSecond != 0) {
                     if (Integer.parseInt(reEtF2.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                        show_Toast(getString(R.string.text_line_tip3) + maxSecond + getString(R.string.text_line_tip4));
                         return;
                     }
                     if (Integer.parseInt(setDelayTimeStartDelaytime.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                        show_Toast(getString(R.string.text_line_tip5) + maxSecond + getString(R.string.text_line_tip4));
                         return;
                     }
                 }
@@ -1588,9 +1581,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     if (num > 0) {
                         showAlertDialog();
                     }
-                    show_Toast("请等待电流电压显示出来后，再连接雷管!");
+                    show_Toast(getString(R.string.text_line_tip1));
                     btnInputOk.setEnabled(false);
-                    btnSingleReister.setText("停止注册");
+                    btnSingleReister.setText(R.string.text_line_stop);
                     isSingleReisher = 1;
                     closeThread();
 //                    closeOpenThread = new CloseOpenPower();
@@ -1599,9 +1592,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
                 } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
                     btnInputOk.setEnabled(true);
-                    btnSingleReister.setText("单发注册");
-                    txt_currentVolt.setText("当前电压:");
-                    txt_currentIC.setText("当前电流:");
+                    btnSingleReister.setText(R.string.text_line_single);
+                    txt_currentVolt.setText(R.string.text_line_IV);
+                    txt_currentIC.setText(R.string.text_line_ic);
                     txt_currentIC.setTextColor(Color.BLACK);
                     isSingleReisher = 0;
                     initCloseCmdReFlag = 0;
@@ -1611,7 +1604,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     // 13 退出注册模式
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
                 } else {
-                    show_Toast("正在与单片机通讯,请稍等一下再退出注册模式!");
+                    show_Toast(getString(R.string.text_line_tip17));
                 }
                 break;
 
@@ -2188,7 +2181,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_dfzc_qy) + region;
         } else {
             str = getString(R.string.text_dfzc_qy) + region + getString(R.string.text_dfzc_sl) + size + ")";
         }

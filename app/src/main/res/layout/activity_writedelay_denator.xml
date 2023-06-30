@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="参考电流"
+                android:text="@string/text_test_ckdl"
                 android:textColor="@color/label_color"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"

@@ -492,7 +492,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_show_1) + mRegion);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -506,9 +506,9 @@ public class DelDenatorMainPage extends BaseActivity  {
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_dfzc_qy)  + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getString(R.string.text_dfzc_qy)  + region + getString(R.string.text_dfzc_sl) + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

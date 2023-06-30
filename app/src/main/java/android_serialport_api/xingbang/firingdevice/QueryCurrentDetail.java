@@ -105,7 +105,7 @@ public class QueryCurrentDetail extends BaseActivity {
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
 
         totalbar_title = findViewById(R.id.title_text);
-        totalbar_title.setText("查看");
+        totalbar_title.setText(getString(R.string.xingbang_main_page_btn_query_current));
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setOnClickListener(v -> {
@@ -348,7 +348,7 @@ public class QueryCurrentDetail extends BaseActivity {
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(R.string.text_dialog_choice);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);

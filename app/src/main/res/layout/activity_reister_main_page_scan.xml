@@ -304,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:text="连续注册个数" />
+                    android:text="@string/text_scan_lxzcgs" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -320,7 +320,7 @@
                         android:layout_marginRight="2dp"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="连续个数"
+                        android:hint="@string/text_scan_lxgs"
                         android:maxLength="5"
                         android:numeric="integer"
                         android:selectAllOnFocus="true" />
@@ -331,7 +331,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="/个数" />
+                        android:text="@string/text_scan_gs" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -400,7 +400,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
-                            android:text="F1延时" />
+                            android:text="@string/text_scan_f1" />
 
                         <EditText
                             android:id="@+id/re_et_f1"
@@ -411,7 +411,7 @@
                             android:layout_weight="1.5"
                             android:background="@drawable/translucent"
                             android:gravity="left"
-                            android:hint="F1延时"
+                            android:hint="@string/text_scan_f1"
                             android:maxLength="6"
                             android:numeric="integer"
                             android:padding="5dp"
@@ -439,7 +439,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
-                            android:text="F2延时" />
+                            android:text="@string/text_scan_f2" />
 
                         <EditText
                             android:id="@+id/re_et_f2"
@@ -450,7 +450,7 @@
                             android:layout_weight="1.5"
                             android:background="@drawable/translucent"
                             android:gravity="left"
-                            android:hint="F2延时"
+                            android:hint="@string/text_scan_f2"
                             android:maxLength="6"
                             android:numeric="integer"
                             android:padding="5dp"
@@ -496,7 +496,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="单发"
+                    android:text="@string/text_scan_df"
                     android:textSize="@dimen/childReisterPageLabelFontSize"
 
                     />
@@ -563,7 +563,7 @@
                         android:layout_weight="2"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="2位"
+                        android:hint="@string/text_reister_2b"
                         android:maxLength="2"
                         android:digits="1234567890"
                         android:inputType="number"
@@ -579,7 +579,7 @@
                         android:layout_weight="3"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="3位"
+                        android:hint="@string/text_reister_3b"
                         android:maxLength="3"
                         android:digits="1234567890"
                         android:inputType="number"
@@ -639,7 +639,7 @@
                     style="@style/allbtntstyle"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
-                    android:text="手动输入"
+                    android:text="@string/text_scan_sdsr"
                     android:visibility="gone" />
 
 
@@ -649,7 +649,7 @@
                     android:layout_width="90dp"
                     android:layout_height="50dp"
                     android:layout_marginLeft="5dp"
-                    android:text="修改延时"
+                    android:text="@string/text_scan_xgys"
                     android:textSize="20sp" />
 
                 <Button
@@ -659,7 +659,7 @@
                     android:layout_height="50dp"
                     android:layout_marginLeft="4dp"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="手动输入"
+                    android:text="@string/text_scan_sdsr"
                     android:textSize="20sp" />
 
                 <Button
@@ -749,7 +749,7 @@
                         android:layout_width="70dp"
                         android:layout_height="30dp"
                         android:background="@drawable/textview_border"
-                        android:text="延时" />
+                        android:text="@string/text_list_delay"/>
                     <LinearLayout
                         android:id="@+id/re_gkm"
                         android:layout_width="match_parent"
@@ -762,7 +762,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="30dp"
-                            android:text="管壳码" />
+                            android:text="@string/text_list_guan"/>
                         <TextView
                             android:id="@+id/text_gkm2"
                             style="@style/alltextstyle"

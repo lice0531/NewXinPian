@@ -254,7 +254,7 @@ public class FiringMainActivity extends SerialPortActivity {
         eightTxt = findViewById(R.id.ll_txt_firing_8);
 
         firstTxt.setText((secondCount + firstWaitCount + Wait_Count) + "s");
-        secondTxt.setText("测试准备阶段 (" + (secondCount + Wait_Count) + "s)");
+        secondTxt.setText(getString(R.string.text_firing_tip7) + (secondCount + Wait_Count) + "s)");
         ll_firing_Volt_2 = findViewById(R.id.ll_firing_Volt_2);
         ll_firing_IC_2 = findViewById(R.id.ll_firing_IC_2);
         ll_firing_Volt_4 = findViewById(R.id.ll_firing_Volt_4);
@@ -396,15 +396,15 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 11000&&stage!=6) {
-                    displayIcStr = displayIcStr + "(疑似短路)";
+                    displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                 } else if (displayIc > (denatorCount * 24) && displayIc > 10 &&stage!=6) {// "电流过大";
-                    displayIcStr = displayIcStr + "(电流过大)";
+                    displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else if (displayIc < (4 + denatorCount * 6)&&stage!=6) {
-                    displayIcStr = displayIcStr + "(疑似断路)";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.BLACK);//设置颜色
                 } else {
@@ -1362,7 +1362,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 break;
             case 5:
-                secondTxt.setText("测试准备阶段 (" + Wait_Count + "s)");//"充电检测 ("
+                secondTxt.setText(getString(R.string.text_firing_tip7) + Wait_Count + "s)");//"充电检测 ("
                 if (Wait_Count <= 0) {//等待结束
 //                    byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
 //                    sendCmd(powerCmd);
@@ -1413,7 +1413,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 eightTxt.setText(getString(R.string.text_firing_tip13) + eightCount + "s");//"倒计时\n"
                 break;
             case 9://起爆之后,弹出对话框
-                eightTxt.setText("起爆成功!");//"起爆成功！"
+                eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
 
@@ -1488,7 +1488,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 11://给范总加的起爆后的放电阶段
                 btn_return8.setVisibility(View.GONE);
-                eightTxt.setText("起爆中,请稍等" + elevenCount + "s");
+                eightTxt.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
                 break;
             case 99://暂停阶段
                 break;
@@ -2051,7 +2051,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_errorAmount_4.setTextColor(Color.GREEN);
         ll_firing_errorAmount_2.setTextColor(Color.GREEN);
         firstTxt.setText((secondCount + firstWaitCount + Wait_Count) + "s");
-        secondTxt.setText("测试准备阶段 (" + (secondCount + Wait_Count) + "s)");
+        secondTxt.setText(getString(R.string.text_firing_tip7) + (secondCount + Wait_Count) + "s)");
 
     }
 

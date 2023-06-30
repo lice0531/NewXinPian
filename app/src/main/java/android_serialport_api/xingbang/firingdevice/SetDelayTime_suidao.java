@@ -1398,7 +1398,7 @@ public class SetDelayTime_suidao extends BaseActivity {
      */
     private void setTitleRegion(String region, int size) {
 
-        String str = " 区域" + region ;
+        String str = getString(R.string.text_dfzc_qy)  + region ;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
@@ -1409,7 +1409,7 @@ public class SetDelayTime_suidao extends BaseActivity {
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(R.string.text_dialog_choice);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
