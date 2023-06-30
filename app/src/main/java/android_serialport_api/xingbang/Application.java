@@ -80,7 +80,7 @@ public class Application extends MultiDexApplication {
                     break;
                 }
                 case "M900": {//新设备
-                    mSportName = "/dev/ttyS0";//ttyS0或者ttyS1
+                    mSportName = "/dev/ttyS1";//ttyS0或者ttyS1
                     mPowerIndex = 4;
                     break;
                 }

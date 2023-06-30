@@ -186,6 +186,7 @@ public class  BaseActivity extends AppCompatActivity {
 			Log.e("BaseActivity", "KT50新设备 DeviceControlSpd");
 		}else if (mPowerOnMode == 4) {
 			mExpDevMgr = new ExpdDevMgr(this);
+//			mExpDevMgr.setExGpio(108,1);//32 17 19   485通信/11 12 13 14   发送/17 19
 			Log.e("BaseActivity", "M900设备");
 		}  else {
 			Log.e("BaseActivity", "实例化 空");
@@ -233,7 +234,9 @@ public class  BaseActivity extends AppCompatActivity {
 			}
 		}else if (mPowerOnMode == 4) {// 新款KT50上电
 			Log.e("BaseActivity", "M900 主板上电");
-			mExpDevMgr.exPowerOn();
+			mExpDevMgr.exPowerOn();//办卡供电
+			mExpDevMgr.setPsamReaderPw(true);
+//			mExpDevMgr.setExGpio(1,1);//32 17 19   485通信/11 12 13 14   发送/17 19
 		}
 
 	}
@@ -287,8 +290,9 @@ public class  BaseActivity extends AppCompatActivity {
 
 		}
 		else if (mPowerOnMode == 4) {// 新款KT50上电
-			Log.e("BaseActivity", "M900 主板上电");
+			Log.e("BaseActivity", "M900 主板下电");
 			mExpDevMgr.exPowerOff();
+			mExpDevMgr.setPsamReaderPw(false);
 		}
 
 	}
