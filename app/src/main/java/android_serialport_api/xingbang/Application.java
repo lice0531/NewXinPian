@@ -52,8 +52,8 @@ public class Application extends MultiDexApplication {
     private int mPowerIndex;
 
     public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
-        SerialPortFinder finder= new SerialPortFinder();
-        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
+//        SerialPortFinder finder= new SerialPortFinder();
+//        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
         if (mSerialPort == null) {
             switch (Build.DEVICE) {
                 // KT50 起爆器设备

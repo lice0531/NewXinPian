@@ -248,7 +248,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         btn_onClick();//button的onClick
 
         handler();//所有的handler
-        scan();//扫描初始化
+//        scan();//扫描初始化
 
         if (factoryFeature != null && factoryFeature.trim().length() == 1) {
             edit_end_entAT1Bit_ed.setText(factoryFeature);
@@ -814,8 +814,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        loadMoreData_all_lg();//
 
         if (db != null) db.close();
-        scanDecode.stopScan();//停止扫描
-        scanDecode.onDestroy();//回复初始状态
+//        scanDecode.stopScan();//停止扫描
+//        scanDecode.onDestroy();//回复初始状态
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
