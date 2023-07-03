@@ -20,6 +20,7 @@ import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -38,6 +39,7 @@ public class GreenDaoMaster {
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
+    private UserMainDao mUserDao;;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -47,6 +49,7 @@ public class GreenDaoMaster {
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
+        this.mUserDao = Application.getDaoSession().getUserMainDao();
     }
 
 
@@ -96,7 +99,16 @@ public class GreenDaoMaster {
         result = result.where(Denator_typeDao.Properties.IsSelected.eq(selected));
         return result.list();
     }
+    public List<UserMain> queryUser(String name) {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        result = result.where(UserMainDao.Properties.Uname.eq(name));
+        return result.list();
+    }
 
+    public List<UserMain> queryAllUser() {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        return result.list();
+    }
     /**
      * 查询错误雷管
      */
