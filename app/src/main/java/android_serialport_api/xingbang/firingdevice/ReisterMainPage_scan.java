@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +40,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kfree.comm.system.ScanQrControl;
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
 
@@ -251,7 +253,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private String mOldTitle;   // 原标题
     private String mRegion = "1";     // 区域
     private boolean switchUid = true;//切换uid/管壳码
-
+    private ScanQrControl mScaner = null;
     // 雷管列表
 
     @Override
@@ -309,72 +311,95 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 扫码注册方法/扫描头返回方法
      */
     private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
-
-        scanDecode.getBarCode(data -> {
-            Log.e("扫码", "data: " + data);
-            Log.e("扫码", "data.length(): " + data.length());
-            if (deleteList()) return;
-            hideInputKeyboard();//隐藏光标
-            //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
-            if (data.length() == 13) {
-                updateMessage("01");
-            } else if (data.length() == 28) {//P53904180500005390418050000
-                updateMessage("02");
-            }
-
-            if (data.length() == 19) {//扫描箱号
-                addXiangHao(data);
-            } else {
-                if (sanButtonFlag > 0) {//扫码结果设置到输入框里
-                    Log.e("扫码注册", "data: " + data);
-                    decodeBar(data);
-                    Message msg = new Message();
-                    msg.obj = data;
-                    msg.what = 9;
-                    mHandler_tip.sendMessage(msg);
-                    scanDecode.stopScan();
-                } else {
-                    String barCode;
-                    String denatorId;
-                    if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-                        barCode = data.substring(0, 13);
-                        denatorId = data.substring(13, 26);
-                        insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
-                    } else if (data.length() == 28) {
-                        Log.e("扫码", "data: " + data);
-                        //5620302H00001A62F400FFF20AB603
-                        //5420302H00001A6F4FFF20AB603
-                        //Y5620413H00009A630FD74D87604
-                        //M5621132A9999900F491EF8B0922
-                        if (data.charAt(0) == 'Y') {
-                            barCode = data.substring(1, 14);
-                            String a = data.substring(14, 24);
-                            denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                            Log.e("扫码", "barCode: " + barCode);
-                            Log.e("扫码", "denatorId: " + denatorId);
-                            Log.e("扫码", "data.substring(24): " + data.substring(24));
-                            insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
-                        }else {
-                            barCode = data.substring(0, 13);
-                            String a = data.substring(13, 23);
-                            denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                            Log.e("扫码", "barCode: " + barCode);
-                            Log.e("扫码", "denatorId: " + denatorId);
-                            Log.e("扫码", "data.substring(24): " + data.substring(24));
-                            insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
-                        }
-
+        switch (Build.DEVICE) {
+            // KT50 起爆器设备
+            case "M900": {
+                // 创建扫描头操作对象，并注册回调
+                mScaner = new ScanQrControl(this);
+                mScaner.registerScanCb(new ScanQrControl.IScan() {
+                    @Override
+                    public void onScanStart(int timeoutSec) {
                     }
+
+                    @Override
+                    public void onScanResult(boolean isSuccess, String scanResultStr) {
+                        Log.e( "扫码结果: ", "ScanResult:" + isSuccess + "|" + scanResultStr);
+                    }
+                });
+                break;
+            }
+            default:{
+                scanDecode = new ScanDecode(this);
+                scanDecode.initService("true");//初始化扫描服务
+
+                scanDecode.getBarCode(data -> {
+                    Log.e("扫码", "data: " + data);
+                    Log.e("扫码", "data.length(): " + data.length());
+                    if (deleteList()) return;
+                    hideInputKeyboard();//隐藏光标
+                    //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
+                    if (data.length() == 13) {
+                        updateMessage("01");
+                    } else if (data.length() == 28) {//P53904180500005390418050000
+                        updateMessage("02");
+                    }
+
+                    if (data.length() == 19) {//扫描箱号
+                        addXiangHao(data);
+                    } else {
+                        if (sanButtonFlag > 0) {//扫码结果设置到输入框里
+                            Log.e("扫码注册", "data: " + data);
+                            decodeBar(data);
+                            Message msg = new Message();
+                            msg.obj = data;
+                            msg.what = 9;
+                            mHandler_tip.sendMessage(msg);
+                            scanDecode.stopScan();
+                        } else {
+                            String barCode;
+                            String denatorId;
+                            if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+                                barCode = data.substring(0, 13);
+                                denatorId = data.substring(13, 26);
+                                insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
+                            } else if (data.length() == 28) {
+                                Log.e("扫码", "data: " + data);
+                                //5620302H00001A62F400FFF20AB603
+                                //5420302H00001A6F4FFF20AB603
+                                //Y5620413H00009A630FD74D87604
+                                //M5621132A9999900F491EF8B0922
+                                if (data.charAt(0) == 'Y') {
+                                    barCode = data.substring(1, 14);
+                                    String a = data.substring(14, 24);
+                                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                                    Log.e("扫码", "barCode: " + barCode);
+                                    Log.e("扫码", "denatorId: " + denatorId);
+                                    Log.e("扫码", "data.substring(24): " + data.substring(24));
+                                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                                }else {
+                                    barCode = data.substring(0, 13);
+                                    String a = data.substring(13, 23);
+                                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                                    Log.e("扫码", "barCode: " + barCode);
+                                    Log.e("扫码", "denatorId: " + denatorId);
+                                    Log.e("扫码", "data.substring(24): " + data.substring(24));
+                                    insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                                }
+
+                            }
 //                    else if{
 //                        barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
 //                        insertSingleDenator(barCode);
 //                    }
-                    hideInputKeyboard();//隐藏光标
-                }
+                            hideInputKeyboard();//隐藏光标
+                        }
+                    }
+                });
             }
-        });
+
+        }
+
+
     }
 
     private void handler() {
@@ -955,6 +980,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             tipDlg.dismiss();
             tipDlg = null;
         }
+        if(mScaner!=null){
+            mScaner.unregisterScanCb();
+        }
+
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         scanDecode.stopScan();//停止扫描
         if (scanBarThread != null) {
@@ -1889,8 +1918,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     //kt50持续扫码线程
                     scanBarThread = new ScanBar();
                     scanBarThread.start();
-                    //st327上电
-                    powerOnScanDevice(PIN_TRACKER_EN);//扫码头上电
+
+                    switch (Build.DEVICE) {
+                        case "M900": {
+                            //M900打开扫码
+                            mScaner.startScan();
+                            break;
+                        }
+                        case "ST327":
+                        case "S337":  {
+                            //st327上电
+                            powerOnScanDevice(PIN_TRACKER_EN);//扫码头上电
+                            break;
+                        }
+                    }
 
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scaning));//"正在扫码"
                     btnReisterScanStartEd.setEnabled(false);
@@ -1902,8 +1943,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnReisterScanStartSt.setEnabled(true);
                     //kt50停止扫码头方法
                     scanDecode.stopScan();//停止扫描
-                    //st327扫码下电
-                    powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                    switch (Build.DEVICE) {
+                        case "M900": {
+                            //M900关闭扫码
+                            mScaner.stopScan();
+                            break;
+                        }
+                        case "ST327":
+                        case "S337":  {
+                            //st327扫码下电
+                            powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                            break;
+                        }
+                    }
+
+
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
                         try {
