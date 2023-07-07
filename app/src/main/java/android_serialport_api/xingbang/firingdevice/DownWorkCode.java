@@ -301,7 +301,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mListView.setLayoutManager(linearLayoutManager);
         mListView.setAdapter(mAdapter);
 
-        scan();//扫描初始化
+//        scan();//扫描初始化
         initHandle();//handle初始化
         edit_start_entBF2Bit_st.addTextChangedListener(st_1_watcher);
         edit_start_entproduceDate_st.addTextChangedListener(st_2_watcher);
@@ -731,40 +731,40 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     /**
      * 扫码注册方法
      */
-    private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
-
-        scanDecode.getBarCode(new ScanInterface.OnScanListener() {
-            @Override
-            public void getBarcode(String data) {
-                // scanInfo = data;
-                if (data.length() == 19) {
-                    Log.e("箱号", "getBarcode: " + data);
-                    addXiangHao(data);//扫描箱号
-                }
-                if (sanButtonFlag > 0) {
-                    scanDecode.stopScan();
-                    decodeBar(data);
-                } else {
-                    if (continueScanFlag == 1) {
-                        String barCode = getContinueScanBlastNo(data);
-                        if (barCode == null) return;
-                        if (checkRepeatShellNo(barCode) == 1) {
-                            singleShellNo = barCode;
-                            isCorrectReisterFea = 4;
-                            mHandler_3.sendMessage(mHandler_3.obtainMessage());
-                            return;
-                        } else {
-                            show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
-                        }
-                        SoundPlayUtils.play(1);
-                        insertSingleDenator(barCode);
-                    }
-                }
-            }
-        });
-    }
+//    private void scan() {
+//        scanDecode = new ScanDecode(this);
+//        scanDecode.initService("true");//初始化扫描服务
+//
+//        scanDecode.getBarCode(new ScanInterface.OnScanListener() {
+//            @Override
+//            public void getBarcode(String data) {
+//                // scanInfo = data;
+//                if (data.length() == 19) {
+//                    Log.e("箱号", "getBarcode: " + data);
+//                    addXiangHao(data);//扫描箱号
+//                }
+//                if (sanButtonFlag > 0) {
+//                    scanDecode.stopScan();
+//                    decodeBar(data);
+//                } else {
+//                    if (continueScanFlag == 1) {
+//                        String barCode = getContinueScanBlastNo(data);
+//                        if (barCode == null) return;
+//                        if (checkRepeatShellNo(barCode) == 1) {
+//                            singleShellNo = barCode;
+//                            isCorrectReisterFea = 4;
+//                            mHandler_3.sendMessage(mHandler_3.obtainMessage());
+//                            return;
+//                        } else {
+//                            show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
+//                        }
+//                        SoundPlayUtils.play(1);
+//                        insertSingleDenator(barCode);
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     /**
      * 停止扫码
@@ -1190,17 +1190,20 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         }
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        scanDecode.stopScan();//停止扫描
-        if (scanBarThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        if(scanDecode!=null){
+            scanDecode.stopScan();//停止扫描
+            if (scanBarThread != null) {
+                scanBarThread.exit = true;  // 终止线程thread
+                try {
+                    scanBarThread.join();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
+            scanDecode.onDestroy();//回复初始状态
         }
-        scanDecode.onDestroy();//回复初始状态
+
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
