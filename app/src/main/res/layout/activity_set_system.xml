@@ -169,7 +169,8 @@
             android:background="@drawable/bt_mainpage_style"
             android:text="设置电压"
             style="@style/allbtntstyle"
-            android:textColor="@color/bt_fg_base" />
+            android:textColor="@color/bt_fg_base"
+            android:visibility="invisible"/>
     </LinearLayout>
     <Button
         android:id="@+id/set_save"

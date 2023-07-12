@@ -451,18 +451,18 @@ public class SendMsgActivity extends BaseActivity {
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开
                 path = uri.getPath();
                 textFilePath.setText(path);
-                Toast.makeText(this, path + "11111", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, path + "11111", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
                 path = getPath(this, uri);
                 textFilePath.setText(path);
-                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
 
             } else {//4.4以下下系统调用方法
                 path = getRealPathFromURI(uri);
                 textFilePath.setText(path);
-                Toast.makeText(this, path + "222222", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, path + "222222", Toast.LENGTH_SHORT).show();
             }
         }
     }
