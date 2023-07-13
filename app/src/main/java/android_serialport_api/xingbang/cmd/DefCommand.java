@@ -27,6 +27,7 @@ public class DefCommand {
 	public static String CMD_3_DETONATE_7="36";//在网读ID检测
 	public static String CMD_3_DETONATE_8="37";//异常终止起爆
 	public static String CMD_3_DETONATE_9="38";//充电检测
+	public static String CMD_3_DETONATE_3A="3A";//秒量
 
 	public static String CMD_4_XBSTATUS_1="40";//获取电源状态指令
 	public static String CMD_4_XBSTATUS_2="41";//开启总线电源指令

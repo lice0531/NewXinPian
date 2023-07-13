@@ -37,20 +37,6 @@
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
-            android:name=".SetMiaoliangActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".SetDianyaActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".firingdevice.SendMsgActivity"
             android:exported="false"
             android:label="数据互传"

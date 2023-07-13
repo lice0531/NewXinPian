@@ -2393,4 +2393,15 @@ public class Utils {
         }
         return "当前日志为空";
     }
+
+    public static boolean isNumber(String str){
+        String reg ="^[0-9]+(.[0-9]+)?$";
+        return str.matches(reg);
+
+    }
+    public final static boolean isNumericT(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$");
+        return pattern.matcher(str).matches();
+
+    }
 }

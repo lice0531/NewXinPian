@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
 
+import java.math.BigInteger;
+
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
 import android_serialport_api.xingbang.utils.Utils;
@@ -337,5 +339,30 @@ public class ThreeFiringCmd {
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
 	}
-	
+	/***
+	 *秒量
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setCmd_3A(String addr) {
+
+		String command = addr + DefCommand.CMD_3_DETONATE_3A + "00";
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 解码写入雷管延时
+	 * @return
+	 */
+	public static Double decode3A( byte[] cmd) {
+		String fromCommad = Utils.bytesToHexFun(cmd);
+		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+		if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+			return null;
+		}
+		String dataHex = realyCmd1.substring(6, 12);//取得返回数据
+		dataHex = dataHex.substring(4)+dataHex.substring(2,4)+dataHex.substring(0,2);
+		double c = new BigInteger(dataHex, 16).intValue();//16进制转10进制
+		return  c/100;
+	}
 }

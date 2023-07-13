@@ -341,7 +341,7 @@
     <string name="text_systip_10"><![CDATA[默 认  类 别]]></string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="app_title">煋邦起爆系统</string>
+    <string name="app_title">秒量</string>
     <string name="add_project_actv_hint">合同,项目,单位代码必填一项</string>
     <string name="qb_tip_err">错误:</string>
     <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
@@ -361,7 +361,7 @@
     <string name="text_main_zc">2.注册</string>
     <string name="text_main_xmgl">3.项目管理</string>
     <string name="text_main_wlcs">4.网络测试</string>
-    <string name="text_main_qb">5.起爆</string>
+    <string name="text_main_qb">5.秒量</string>
     <string name="text_main_ck">6.查看</string>
     <string name="text_main_sz">7.设置</string>
     <string name="text_main_sc">8.删除</string>
