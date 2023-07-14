@@ -1079,11 +1079,11 @@ public class FiringMainActivity extends SerialPortActivity {
         denator.setErrorCode(fromData.getCommicationStatus());
         denator.setErrorName(fromData.getCommicationStatusName());
         //判断雷管状态是否是错误和延时和写入的是否一致
-        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
-            denator.setErrorCode("01");
-            denator.setErrorName("延时写入不一致");
-            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
-        }
+//        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
+//            denator.setErrorCode("01");
+//            denator.setErrorName("延时写入不一致");
+//            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
+//        }
         Application.getDaoSession().update(denator);
 
         //判断雷管状态是否正价错误数量
@@ -1265,7 +1265,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if (!qbxm_id.equals("-1")) {
                 updataState(qbxm_id);
             }
-            increase(9);//跳到第9阶段
+
 
             Log.e("increase", "9");
 //                try {
@@ -1293,9 +1293,9 @@ public class FiringMainActivity extends SerialPortActivity {
 //            }
             //150ms以内,+_1.5, 以上+_1%
             //延时减4
-            while (delayTime>1.5&&delayTime<10){
-                delayTime=delayTime-1;
-            }
+//            while (delayTime>1.5&&delayTime<10){
+//                delayTime=delayTime-1;
+//            }
 //            if (delayTime > 4&&delayTime<10) {
 //                a = delayTime - 4;
 //                if (a > 1 && a < 2) {
@@ -1310,10 +1310,11 @@ public class FiringMainActivity extends SerialPortActivity {
             msg.obj = "秒量返回测试值:" + String.format("%.2f", delayTime);
             Handler_tip.sendMessage(msg);
 
+            increase(9);//跳到第9阶段
+
             try {
                 Thread.sleep(50);
-                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
-                sendCmd(reCmd);
+                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35 退出起爆
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -1528,7 +1529,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 eightTxt.setText(getString(R.string.text_firing_tip13) + eightCount + "s");//"倒计时\n"
                 break;
             case 9://起爆之后,弹出对话框
-                eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
+//                eightTxt.setText("起爆指令发送成功,等待秒量数据返回");//"起爆成功！"
 //                if (eightCmdFlag == 2) {
 //                    eightCmdFlag = 0;
 //

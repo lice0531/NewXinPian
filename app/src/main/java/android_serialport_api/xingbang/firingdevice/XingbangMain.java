@@ -635,12 +635,12 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-                for (int i = 0; i < lg2_yanshi.size(); i++) {
-                    if (lg2_yanshi.get(i).equals("0")) {
-                        createDialog();
-                        return;
-                    }
-                }
+//                for (int i = 0; i < lg2_yanshi.size(); i++) {
+//                    if (lg2_yanshi.get(i).equals("0")) {
+//                        createDialog();
+//                        return;
+//                    }
+//                }
                 time = System.currentTimeMillis();
                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 

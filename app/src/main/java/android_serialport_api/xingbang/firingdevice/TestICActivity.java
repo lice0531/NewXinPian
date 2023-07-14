@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -88,6 +89,14 @@ public class TestICActivity extends SerialPortActivity {
             return false;
         });
 
+//        String fromCommad ="C0003A0374CC18441BC0";//将数组转化为16进制字符串
+//        String cmd = DefCommand.getCmd(fromCommad);
+////                Log.e("返回命令--测试页面", "cmd: "+cmd );
+//        if (cmd != null) {
+//            int localSize = fromCommad.length() / 2;
+//            byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//            doWithReceivData(cmd, localBuf, localSize);
+//        }
     }
 
     private void loadMoreData() {
@@ -209,6 +218,46 @@ public class TestICActivity extends SerialPortActivity {
 //            sendOpenThread.start();
 //            sendOpenThread.exit = true;
 //            revOpenCmdReFlag = 1;
+        }else if (DefCommand.CMD_3_DETONATE_3A.equals(cmd)) {//3A 秒量返回
+            //C0003A03D20400BC18C0
+            Message msg = new Message();
+//            short delayTime = Short.parseShort(et_set_delay.getText().toString());
+            double delayTime = ThreeFiringCmd.decode3A(locatBuf);
+            double a;
+            //随机数
+//            Random random = new Random();
+//            if(delayTime<1000){
+//                a =delayTime+random.nextDouble();
+//            }else {
+//                a =delayTime+random.nextDouble() * 5;
+//            }
+            //150ms以内,+_1.5, 以上+_1%
+            //延时减4
+//            while (delayTime>1.5&&delayTime<10){
+//                delayTime=delayTime-1;
+//            }
+//            if (delayTime > 4&&delayTime<10) {
+//                a = delayTime - 4;
+//                if (a > 1 && a < 2) {
+//                    a = a - 1;
+//                }
+//            } else {
+//                a = delayTime;
+//            }
+//            msg.what=6;
+            Log.e("随机数", "m: " + String.format("%.2f", delayTime));
+
+//            msg.obj = "秒量返回测试值:" + ThreeFiringCmd.decode3A(locatBuf);
+//            msg.obj = "秒量返回测试值:" + String.format("%.2f", delayTime);
+//            Handler_tip.sendMessage(msg);
+
+            try {
+                Thread.sleep(50);
+                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+                sendCmd(reCmd);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
