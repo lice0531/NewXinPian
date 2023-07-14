@@ -146,8 +146,7 @@ public class From32DenatorFiring {
 	@Override
 	public String toString() {
 		return "雷管状态{" +
-				"  通信状态1='" + getCommicationStatusName() + '\'' +
-				", 通信状态2='" + getCommicationStatusCong() + '\'' +
+				"  通信状态='" + getCommicationStatusName() + '\'' +
 				", 管壳码='" + shellNo + '\'' +
 				", 芯片码='" + denaId + '\'' +
 				", 延时=" + delayTime +

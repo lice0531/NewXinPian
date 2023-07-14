@@ -27,7 +27,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.litepal.LitePal;
 
@@ -55,12 +54,14 @@ import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.cmd.vo.From22WriteDelay;
+import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -375,10 +376,10 @@ public class SendMsgActivity extends BaseActivity {
                 }).start();
                 break;
             case R.id.btn_read_log:
-//                String log = Utils.fenxiLog(path);
-//
-//                registerLog(log);
-                readCVS();
+                String log = Utils.fenxiLog(path);
+
+                registerLog(log);
+//                readCVS();
                 break;
             case R.id.but_send://发送
                 StringBuffer sb = new StringBuffer();
@@ -813,18 +814,21 @@ public class SendMsgActivity extends BaseActivity {
     private void registerLog(String logstr) {
         String[] log = logstr.split(",");
         String shellNo;
-        Log.e("分析日志", "log: " + log);
+//        Log.e("分析日志", "log: " + log);
         for (int i = 0; i < log.length; i++) {
             shellNo = log[i];
             if (shellNo.length() != 5) {
                 String[] ml = shellNo.split(":");
-                Log.e("分析日志", "ml: " + ml[2]);
-                String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
-                if (cmd != null) {
-                    int localSize = ml[2].length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
-                    doWithReceivData_fenxi(cmd, localBuf, localSize);
+//                Log.e("分析日志", "ml: " + ml[4]);
+                if(shellNo.contains("<-:")){//只分析返回命令
+                    String cmd = DefCommand.getCmd(ml[4]);//得到 返回命令
+                    if (cmd != null) {
+                        int localSize = ml[4].length() / 2;
+                        byte[] localBuf = Utils.hexStringToBytes(ml[4]);//将字符串转化为数组
+                        doWithReceivData_fenxi(cmd, localBuf, localSize,ml);
+                    }
                 }
+
             }
 
         }
@@ -834,17 +838,27 @@ public class SendMsgActivity extends BaseActivity {
     /**
      * 处理接收到的cmd命令
      */
-    private void doWithReceivData_fenxi(String cmd, byte[] cmdBuf, int size) {
+    private void doWithReceivData_fenxi(String cmd, byte[] cmdBuf, int size, String[] ml) {
         byte[] locatBuf = new byte[size];
         System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
 
         if ("20".equals(cmd)) {//进入测试模式
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("40命令", "busInfo: " + busInfo.toString());
+            Log.e(ml[0]+":"+ml[1]+":"+ml[2],  "电流结果:"+busInfo.toString());
         } else if ("22".equals(cmd)) { // 关闭测试
         } else if ("13".equals(cmd)) { // 关闭电源
         } else if ("41".equals(cmd)) { // 开启总线电源指令
+        }else if ("21".equals(cmd)) {
+            From22WriteDelay fromData = SecondNetTestCmd.decodeFromReceiveDataWriteCommand22("00", locatBuf);
+            Log.e(ml[0]+":"+ml[1]+":"+ml[2], "组网检测结果:"+fromData.toString());
+        }else if ("31".equals(cmd)) {
+            From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
+            Log.e(ml[0]+":"+ml[1]+":"+ml[2],"起爆检测结果:"+ fromData.toString());
+        } else if ("34".equals(cmd)) {
+            Log.e(ml[0]+":"+ml[1]+":"+ml[2], "发送起爆指令:"+"起爆成功: " );
+        }else if ("35".equals(cmd)) {
+            Log.e(ml[0]+":"+ml[1]+":"+ml[2], "发送退出指令:"+"退出起爆流程: " );
         }
     }
 

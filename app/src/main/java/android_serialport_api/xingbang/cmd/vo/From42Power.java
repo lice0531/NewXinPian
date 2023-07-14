@@ -64,7 +64,7 @@ public class From42Power {
 
 	@Override
 	public String toString() {
-		return "From42Power{" +
+		return "Power{" +
 				"电流状态='" + powerStatus + '\'' +
 				", 雷管电流=" + denatorIa +
 				", 总线电压=" + busVoltage +
