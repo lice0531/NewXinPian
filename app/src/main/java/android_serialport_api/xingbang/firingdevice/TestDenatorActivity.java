@@ -11,6 +11,7 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -266,8 +267,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                 show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
             } else if (msg.what == 2) {
                 AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
-                        .setTitle("当前雷管信息不完整")//设置对话框的标题
-                        .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                        .setTitle(R.string.text_test_title1)//设置对话框的标题
+                        .setMessage(R.string.text_text_msg1)//设置对话框的内容
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
@@ -513,6 +514,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     public void execStage(Message msg) {
         switch (stage) {
             case 0:
@@ -538,7 +540,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     ll_firing_IC_4.setText("" + displayIcStr);
                     if (displayIc == 0 && firstCount < Jiance_time * 0.2) {
                         ll_firing_IC_4.setTextColor(Color.RED);
-                        show_Toast("当前电流为0,请检查线路是否正确连接");
+                        show_Toast(getString(R.string.text_test_tip12));
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -555,7 +557,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    }
                     if (busInfo.getBusVoltage() < 6 && firstCount < Jiance_time * 0.5) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
-                        show_Toast("当前电压异常,请检查线路是否出现短路等情况");
+                        show_Toast(getString(R.string.text_test_tip13));
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         stage = 5;
                         Utils.writeRecord("电压异常,电压为" + busInfo.getBusVoltage() + "V");
@@ -661,7 +663,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
+                    initDialog_zanting(getString(R.string.text_test_tip5));//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
@@ -669,7 +671,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
+                    initDialog_zanting(getString(R.string.text_test_tip6));//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
@@ -680,7 +682,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {//李斌要修改之前的
-                    initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
+                    initDialog_zanting2(getString(R.string.text_test_tip7));//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。",false);//弹出框
 //                    }
@@ -694,13 +696,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                    initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。");//弹出框
+                    initDialog_zanting2(getString(R.string.text_test_tip8));//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,请稍等。",false);//弹出框
 //                    }
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else if (errtotal > 0 && busInfo != null && busInfo.getBusCurrentIa() > (denatorCount * 12 * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * 12 * 1.1)) {
-                    initDialog_tip("疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!");
+                    initDialog_tip(getString(R.string.text_test_tip9));
                     stopXunHuan();//检测完成
                 } else {
                     stopXunHuan();//检测完成
@@ -712,12 +714,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                 endTest();
                 ll_1.setVisibility(View.GONE);
                 ll_2.setVisibility(View.VISIBLE);
-                secondTxt.setText("请检查线路是否正确连接");
+                secondTxt.setText(R.string.text_test_tip10);
                 break;
 
             case 6://等待处理错误时间
                 Log.e(TAG, "放电阶段--execStage: " + sixCount);
-                secondTxt.setText("正在放电" + sixCount);//"等待总线稳定:"
+                secondTxt.setText(getString(R.string.text_test_tip11) + sixCount);//"等待总线稳定:"
                 break;
             case 7://等待处理错误时间
                 break;

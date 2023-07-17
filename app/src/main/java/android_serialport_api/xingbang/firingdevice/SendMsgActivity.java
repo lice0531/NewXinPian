@@ -142,7 +142,7 @@ public class SendMsgActivity extends BaseActivity {
                     // 从客户端接收到消息
 //                    runPbDialog();
                     mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-                    show_Toast("接收成功,正在导入数据,请稍等");
+                    show_Toast(getString(R.string.text_send_tip12));
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
                         Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
@@ -151,7 +151,7 @@ public class SendMsgActivity extends BaseActivity {
                             registerDetonator(leiguan);
                         } else {
 //                            tipDlg.dismiss();
-                            show_Toast("没有接收到数据");
+                            show_Toast(getString(R.string.text_send_tip13));
                         }
                     }).start();
                     break;
@@ -187,13 +187,13 @@ public class SendMsgActivity extends BaseActivity {
                     setTitleRegion(mRegion, mListData.size());
                     break;
                 case 1:
-                    show_Toast("导入成功");
+                    show_Toast(getString(R.string.text_send_tip14));
                     break;
                 case 2:
-                    show_Toast("读取成功");
+                    show_Toast(getString(R.string.text_send_tip15));
                     break;
                 case 3:
-                    show_Toast("当前文件目录里没有 雷管文件.txt");
+                    show_Toast(getString(R.string.text_send_tip16));
                     break;
                 default:
                     break;
@@ -265,7 +265,7 @@ public class SendMsgActivity extends BaseActivity {
         }
 
         Utils.writeLeiGuan(sb.toString());
-        show_Toast("写入成功");
+        show_Toast(getString(R.string.text_send_tip17));
     }
 
     /**
@@ -356,7 +356,7 @@ public class SendMsgActivity extends BaseActivity {
                 runPbDialog();
 
                 if (TextUtils.isEmpty(path)) {
-                    show_Toast("请选择雷管列表文件");
+                    show_Toast(getString(R.string.text_send_tip18));
                     return;
                 }
 
@@ -385,7 +385,7 @@ public class SendMsgActivity extends BaseActivity {
                 StringBuffer sb = new StringBuffer();
                 Log.e("发送消息", "list_uid: " + list_uid.size());
                 if (list_uid.size() == 0) {
-                    show_Toast("获取数据异常");
+                    show_Toast(getString(R.string.text_send_tip19));
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
@@ -399,7 +399,7 @@ public class SendMsgActivity extends BaseActivity {
                 }
                 String ip = textIpStart.getText().toString() + textSetviceIp.getText().toString();
                 if (TextUtils.isEmpty(ip)) {
-                    show_Toast("ip地址异常，请检查网络是否连接");
+                    show_Toast(getString(R.string.text_send_tip20));
                     return;
                 }
                 Log.e("发送消息", "sb: " + sb.toString());
@@ -423,10 +423,10 @@ public class SendMsgActivity extends BaseActivity {
                 if (revice_type) {
                     //创建接收文本消息的服务//作为接收端的手机，需要放开。
                     createStringServerSocket();
-                    butReceive.setText("正在接收");
+                    butReceive.setText(R.string.text_send_tip21);
                     revice_type = false;
                 } else {
-                    butReceive.setText("接收数据");
+                    butReceive.setText(R.string.text_send_tip22);
                     revice_type = true;
                 }
                 break;
@@ -476,7 +476,7 @@ public class SendMsgActivity extends BaseActivity {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int ipAddress = wifiInfo.getIpAddress();
         if (ipAddress == 0) {
-            return "请检查是否连接WIFI";
+            return getString(R.string.text_send_tip23);
         }
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
@@ -969,7 +969,7 @@ public class SendMsgActivity extends BaseActivity {
 
         String str;
 //        if (size == -1) {
-        str = " 区域" + region;
+        str =getString(R.string.text_dfzc_qy)  + region;
 //        } else {
 //            str = " 区域" + region + "(数量: " + size + ")";
 //        }

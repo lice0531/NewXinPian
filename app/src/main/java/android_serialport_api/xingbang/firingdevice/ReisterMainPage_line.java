@@ -415,7 +415,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 show_Toast(getResources().getString(R.string.text_error_tip2));
             } else if (msg.what == 3) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_Toast(getString(R.string.text_reister_tip5) + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
                 show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
@@ -665,7 +665,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private int showDenatorSum() {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
-        txtReisteramount.setText("已注册:" + list.size());
+        txtReisteramount.setText(getString(R.string.text_reister_tip1) + list.size());
         return list.size();
     }
 
@@ -930,14 +930,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             default:
                 break;
         }
-        show_Toast(Temp + "处理");
+//        show_Toast(Temp + "处理");
         return super.onContextItemSelected(item);
     }
 
     private void modifyBlastBaseInfo(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请修改雷管信息");
+        builder.setTitle(R.string.text_reister_tip6);
         View view = LayoutInflater.from(this).inflate(R.layout.blastbasedialog, null);
         builder.setView(view);
         final EditText username = (EditText) view.findViewById(R.id.blast_shellBlastNo_field);
@@ -957,7 +957,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             String a = username.getText().toString().trim();
             String b = password.getText().toString().trim();
             //    将输入的用户名和密码打印出来
-            show_Toast("管壳码: " + a + ", 延时: " + b);
+            show_Toast(getString(R.string.text_error_tip3) + a + getString(R.string.text_regist_tip7) + b);
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
@@ -1004,10 +1004,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             String delay1 = et_delay.getText().toString();
 
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getString(R.string.text_reister_tip9) + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                show_Toast("延时为空或大于最大设定延时，修改失败! ");
+                show_Toast(getString(R.string.text_reister_tip8));
 
             } else {
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
@@ -1995,7 +1995,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             int index = strParamBarcode.indexOf("SC:");
             subBarCode = strParamBarcode.substring(index + 3, index + 16);
             if (subBarCode.trim().length() < 13) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
+                show_Toast(getString(R.string.text_reister_tip2));
                 return;
             }
         } else {
@@ -2083,7 +2083,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //判断当点击的是返回键
         if (keyCode == event.KEYCODE_BACK) {
             if (isSingleReisher != 0) {
-                show_Toast("请停止注册后再退出当前页面");
+                show_Toast(getString(R.string.text_reister_tip3));
             } else {
                 finish();
             }
@@ -2162,7 +2162,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_reister_tip4) + mRegion);
                 // 延时选择重置
                 resetView();
                 delay_set = "0";

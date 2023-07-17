@@ -487,14 +487,14 @@ public class PracticeActivity extends BaseActivity {
                 break;
             case R.id.but_delete://清除缓存
                 AlertDialog dialog = new AlertDialog.Builder(PracticeActivity.this)
-                        .setTitle("是否清除程序日志等缓存")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前正在进行清除程序日志缓存操作,请确认是否清除!")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(R.string.text_practice_tip1)//设置对话框的标题//"成功起爆"
+                        .setMessage(R.string.text_practice_tip2)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("确定", (dialog13, which) -> {
+                        .setNegativeButton(R.string.text_qd, (dialog13, which) -> {
                             dialog13.dismiss();
                             deleteRiZhi();
                         })
-                        .setNeutralButton("退出", (dialog2, which) -> {
+                        .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
                             dialog2.dismiss();
                             finish();
                         })
@@ -515,7 +515,7 @@ public class PracticeActivity extends BaseActivity {
                 runPbDialog();
 
                 if (TextUtils.isEmpty(path)) {
-                    show_Toast("请选择雷管列表文件");
+                    show_Toast(getString(R.string.text_practice_tip4));
                     return;
                 }
 
@@ -529,7 +529,7 @@ public class PracticeActivity extends BaseActivity {
                     } else {
                         tipDlg.dismiss();
                         pb_show = 0;
-                        show_Toast_ui("当前文件目录里没有 雷管文件.txt");
+                        show_Toast_ui(getString(R.string.text_practice_tip5));
                     }
                 }).start();
                 break;
@@ -541,7 +541,7 @@ public class PracticeActivity extends BaseActivity {
                 StringBuffer sb = new StringBuffer();
                 Log.e("发送消息", "list_uid: " + list_uid.size());
                 if (list_uid.size() == 0) {
-                    show_Toast("获取数据异常");
+                    show_Toast(getString(R.string.text_practice_tip6));
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
@@ -555,7 +555,7 @@ public class PracticeActivity extends BaseActivity {
                 }
                 String ip = textSetviceIp.getText().toString();
                 if (TextUtils.isEmpty(ip)) {
-                    show_Toast("ip地址异常，请检查网络是否连接");
+                    show_Toast(getString(R.string.text_practice_tip7));
                     return;
                 }
                 Log.e("发送消息", "sb: " + sb.toString());
@@ -578,10 +578,10 @@ public class PracticeActivity extends BaseActivity {
                 if (revice_type) {
                     //创建接收文本消息的服务//作为接收端的手机，需要放开。
                     createStringServerSocket();
-                    butReceive.setText("正在接收");
+                    butReceive.setText(R.string.text_practice_tip8);
                     revice_type = false;
                 } else {
-                    butReceive.setText("接收数据");
+                    butReceive.setText(R.string.text_practice_tip9);
                     revice_type = true;
                 }
                 break;
@@ -619,7 +619,7 @@ public class PracticeActivity extends BaseActivity {
         Utils.deleteFile(dir2);
 //                Utils.deleteDirWihtFile("/程序运行日志/");
 //                Utils.deleteDirWihtFile("/XB程序日志/");
-        show_Toast("删除成功");
+        show_Toast(getString(R.string.text_practice_tip10));
     }
 
     @Override
@@ -654,7 +654,7 @@ public class PracticeActivity extends BaseActivity {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int ipAddress = wifiInfo.getIpAddress();
         if (ipAddress == 0) {
-            return "请检查是否连接WIFI";
+            return getString(R.string.text_practice_tip11);
         }
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));

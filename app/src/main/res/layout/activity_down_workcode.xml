@@ -52,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1.5"
                 android:layout_height="50dp"
-                android:text="清空"
+                android:text="@string/text_down_tip6"
                 style="@style/allbtntstyle"
                 />
             <Button
@@ -62,7 +62,7 @@
                 android:layout_weight="2.2"
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
-                android:text="输入管壳码"
+                android:text="@string/text_down_srgkm"
                 android:textSize="20sp"
                 />
 
@@ -73,7 +73,7 @@
                 android:layout_weight="2"
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
-                android:text="输入项目"
+                android:text="@string/text_down_srxm"
                 android:textSize="20sp"
                 />
 
@@ -85,7 +85,7 @@
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
                 android:textSize="20sp"
-                android:text="保存并下载"
+                android:text="@string/text_down_bc"
                 />
         </LinearLayout>
 
@@ -109,7 +109,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:text="项目名称" />
+                    android:text="@string/text_down_xmmc" />
 
                 <AutoCompleteTextView
                     android:id="@+id/down_at_project_name"
@@ -119,7 +119,7 @@
                     android:layout_weight="5"
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
-                    android:hint="项目名称"
+                    android:hint="@string/text_down_xmmc"
                     android:padding="5dp" />
 
                 <Button
@@ -127,7 +127,7 @@
                     style="@style/allbtntstyle"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
-                    android:text="清空" />
+                    android:text="@string/text_down_tip6" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_1"
@@ -141,7 +141,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     style="@style/alltextstyle"
-                    android:text="合同编号"
+                    android:text="@string/text_down_htbh"
                     />
 
                 <AutoCompleteTextView
@@ -152,7 +152,7 @@
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
                     style="@style/alltextstyle"
-                    android:hint="15位数字"
+                    android:hint="@string/text_down_tip1"
                     android:inputType="number"
                     android:digits="0123456789"
                     android:maxLength="15"
@@ -164,7 +164,7 @@
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     style="@style/allbtntstyle"
-                    android:text="清空"
+                    android:text="@string/text_down_tip6"
                     />
             </LinearLayout>
 
@@ -180,7 +180,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     style="@style/alltextstyle"
-                    android:text="项目编号"
+                    android:text="@string/text_xmbh"
                     />
 
                 <AutoCompleteTextView
@@ -190,7 +190,7 @@
                     android:layout_weight="5"
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
-                    android:hint="15位数字或字母"
+                    android:hint="@string/text_down_tip2"
                     android:maxLength="15"
                     android:padding="5dp"
                     android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
@@ -202,7 +202,7 @@
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     style="@style/allbtntstyle"
-                    android:text="清空"
+                    android:text="@string/text_down_tip6"
                     />
             </LinearLayout>
 
@@ -218,7 +218,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     style="@style/alltextstyle"
-                    android:text="单位代码"
+                    android:text="@string/text_dwdm"
                     />
 
                 <AutoCompleteTextView
@@ -228,7 +228,7 @@
                     android:layout_weight="5"
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
-                    android:hint="13位数字"
+                    android:hint="@string/text_down_tip3"
                     android:maxLength="13"
                     android:inputType="number"
                     android:digits="1234567890"
@@ -257,7 +257,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     style="@style/alltextstyle"
-                    android:text="经度纬度"
+                    android:text="@string/text_jwd"
                     />
 
                 <AutoCompleteTextView
@@ -267,7 +267,7 @@
                     android:layout_weight="5"
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
-                    android:hint="只能输入数字和逗号"
+                    android:hint="@string/text_down_tip4"
                     android:maxLength="22"
                     android:padding="5dp"
                     android:textSize="18sp"
@@ -280,7 +280,7 @@
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     style="@style/allbtntstyle"
-                    android:text="定位"
+                    android:text="@string/text_down_tip7"
                     />
             </LinearLayout>
 
@@ -296,7 +296,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     style="@style/alltextstyle"
-                    android:text="身份证号"
+                    android:text="@string/text_down_sfz"
                     />
 
                 <AutoCompleteTextView
@@ -307,7 +307,7 @@
                     android:layout_weight="5"
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
-                    android:hint="爆破人员身份证"
+                    android:hint="@string/text_down_tip5"
                     android:maxLength="18"
                     android:padding="5dp"
                     android:digits="0123456789X"
@@ -318,7 +318,7 @@
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     style="@style/allbtntstyle"
-                    android:text="清空"
+                    android:text="@string/text_down_tip6"
                     />
             </LinearLayout>
 

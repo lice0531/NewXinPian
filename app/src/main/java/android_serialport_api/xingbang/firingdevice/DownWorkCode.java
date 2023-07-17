@@ -2486,9 +2486,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_dfzc_qy) + region;
         } else {
-            str = " 区域" + region + "(共:" + size + ")";
+            str = getString(R.string.text_dfzc_qy)  + region + "(共:" + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
