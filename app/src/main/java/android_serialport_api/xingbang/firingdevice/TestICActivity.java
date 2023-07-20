@@ -68,7 +68,7 @@ public class TestICActivity extends SerialPortActivity {
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         loadMoreData();
-        mExpDevMgr = new ExpdDevMgr(this);
+
         busHandler = new Handler(msg -> {
             if (busInfo != null) {
                 BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类
@@ -93,35 +93,36 @@ public class TestICActivity extends SerialPortActivity {
             busInfo = null;
             return false;
         });
-        //串口打开监听
-        OnOpenSerialPortListener listener = new OnOpenSerialPortListener() {
-            @Override
-            public void onSuccess(File file) {
-                Log.e("485接口", "onSuccess: "+"在数据接收时" );
-            }
-
-            @Override
-            public void onFail(File file, Status status) {
-                Log.e("485接口", "onFail: "+"在数据接收时" );
-            }
-        };
-        //串口数据监听
-        OnSerialPortDataListener listener2 = new OnSerialPortDataListener() {
-            @Override
-            public void onDataReceived(byte[] bytes) {
-                Log.e("485接口", "onDataSent: "+"在数据接收时" );
-            }
-
-            @Override
-            public void onDataSent(byte[] bytes) {
-                Log.e("485接口", "onDataSent: "+"数据发送完成" );
-            }
-        };
-        mExpDevMgr.set12VEnable(true);
-        mExpDevMgr.openRs485(listener,listener2,115200);
-
-        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-        send485Cmd(powerCmd);
+//        mExpDevMgr = new ExpdDevMgr(this);
+//        //串口打开监听
+//        OnOpenSerialPortListener listener = new OnOpenSerialPortListener() {
+//            @Override
+//            public void onSuccess(File file) {
+//                Log.e("485接口", "onSuccess: "+"在数据接收时" );
+//            }
+//
+//            @Override
+//            public void onFail(File file, Status status) {
+//                Log.e("485接口", "onFail: "+"在数据接收时" );
+//            }
+//        };
+//        //串口数据监听
+//        OnSerialPortDataListener listener2 = new OnSerialPortDataListener() {
+//            @Override
+//            public void onDataReceived(byte[] bytes) {
+//                Log.e("485接口", "onDataSent: "+"在数据接收时" );
+//            }
+//
+//            @Override
+//            public void onDataSent(byte[] bytes) {
+//                Log.e("485接口", "onDataSent: "+"数据发送完成" );
+//            }
+//        };
+//        mExpDevMgr.set12VEnable(true);
+//        mExpDevMgr.openRs485(listener,listener2,115200);
+//
+//        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+//        send485Cmd(powerCmd);
     }
 
     private void loadMoreData() {
@@ -263,14 +264,14 @@ public class TestICActivity extends SerialPortActivity {
         }
     }
 
-    /**
-     * 发送485命令
-     */
-    public void send485Cmd(byte[] mBuffer) {
-        mExpDevMgr.sendBytesRs485(mBuffer);
-        String str = Utils.bytesToHexFun(mBuffer);
-        Log.e("485发送", str);
-    }
+//    /**
+//     * 发送485命令
+//     */
+//    public void send485Cmd(byte[] mBuffer) {
+//        mExpDevMgr.sendBytesRs485(mBuffer);
+//        String str = Utils.bytesToHexFun(mBuffer);
+//        Log.e("485发送", str);
+//    }
 
 
 
