@@ -460,7 +460,7 @@ public class SendMsgActivity extends BaseActivity {
                 path = getPath(this, uri);
                 textFilePath.setText(path);
 //                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
-
+                show_Toast(path);
             } else {//4.4以下下系统调用方法
                 path = getRealPathFromURI(uri);
                 textFilePath.setText(path);
