@@ -195,6 +195,9 @@ public class SendMsgActivity extends BaseActivity {
                 case 3:
                     show_Toast(getString(R.string.text_send_tip16));
                     break;
+                case 4:
+                    show_Toast(msg.obj+"条数据有误");
+                    break;
                 default:
                     break;
             }
@@ -268,27 +271,7 @@ public class SendMsgActivity extends BaseActivity {
         show_Toast(getString(R.string.text_send_tip17));
     }
 
-    /**
-     * 得到最大序号
-     */
-    private int getMaxNumberNo() {
-        return LitePal.max(DenatorBaseinfo.class, "blastserial", int.class);
-    }
 
-    /**
-     * 检查重复的数据
-     *
-     * @param denatorId
-     */
-    public boolean checkRepeatDenatorId(String denatorId) {
-        GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
-        if (denatorBaseinfo.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * 注册雷管
@@ -297,7 +280,7 @@ public class SendMsgActivity extends BaseActivity {
 
         String[] lg = leiguan.split(",");
         String shellNo;
-        int maxNo = getMaxNumberNo();
+        int maxNo = GreenDaoMaster.getMaxNumberNo();
         int reCount = 0;
         Log.e("接收注册", "lg.length: " + lg.length);
         for (int i = lg.length; i > 0; i--) {
@@ -305,7 +288,21 @@ public class SendMsgActivity extends BaseActivity {
             Log.e("接收注册", "shellNo: " + shellNo);
             String[] a = shellNo.split("#");
             Log.e("接收注册", "a[0]: " + a[0]);
-            if (a[0].length() > 5 && checkRepeatDenatorId(a[0])) {//检查重复数据
+            if (a[0].length() < 5 ) {//数据错误
+                reCount++;
+                Log.e("错误序号", "reCount: " + reCount);
+                Message msg = new Message();
+                msg.what=4;
+                msg.obj="第"+reCount+"条,"+shellNo+"有误";
+                mHandler_0.sendMessage(msg);
+
+                continue;
+            }
+            if (a[0].length() > 5 && GreenDaoMaster.checkRepeatDenatorId(a[0])) {//检查重复数据
+                reCount++;
+                continue;
+            }
+            if (a[0].length() > 5 && GreenDaoMaster.checkRepeatShellNo3(a[2])) {//检查重复数据
                 reCount++;
                 continue;
             }
@@ -382,6 +379,10 @@ public class SendMsgActivity extends BaseActivity {
 //                readCVS();
                 break;
             case R.id.but_send://发送
+                if (Utils.isFastDoubleClick()) {
+                    show_Toast("两次发送间隔太快");
+                    return;
+                }
                 StringBuffer sb = new StringBuffer();
                 Log.e("发送消息", "list_uid: " + list_uid.size());
                 if (list_uid.size() == 0) {

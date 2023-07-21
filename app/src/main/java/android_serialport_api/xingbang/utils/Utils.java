@@ -2393,4 +2393,17 @@ public class Utils {
         }
         return "当前日志为空";
     }
+
+    /**
+     * 防止连续点击
+     * */
+    private static long lastClickTime;
+    public static boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();
+        if ( time - lastClickTime < 500) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
+    }
 }

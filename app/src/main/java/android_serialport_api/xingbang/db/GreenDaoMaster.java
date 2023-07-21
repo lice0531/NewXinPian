@@ -5,6 +5,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -682,6 +683,45 @@ public class GreenDaoMaster {
 //            message.setDeFeatureCode("H");
             message.setIsSelected("是");
             getDaoSession().getDefactoryDao().insert(message);
+        }
+    }
+
+
+
+    /**
+     * 得到最大序号
+     */
+    public static int getMaxNumberNo() {
+        return LitePal.max(DenatorBaseinfo.class, "blastserial", int.class);
+    }
+
+    /**
+     * 检查重复的芯片码数据
+     *
+     * @param denatorId
+     */
+    public static boolean checkRepeatDenatorId(String denatorId) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
+        if (denatorBaseinfo.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 检查重复的管壳码数据
+     *
+     * @param shellNo
+     */
+    public static boolean checkRepeatShellNo3(String shellNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatShellNo(shellNo);
+        if (denatorBaseinfo.size() > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
