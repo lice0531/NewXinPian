@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,19 +209,48 @@ public class QueryHisDetail extends BaseActivity {
 
                         break;
                     case R.id.bt_delete:
-                        AlertDialog dialog = new AlertDialog.Builder(QueryHisDetail.this)
-                                .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                                .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
-                                //设置对话框的按钮
-                                .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
-                                .setPositiveButton("确认删除", (dialog12, which) -> {
-                                    String t = (String) v.getTag(R.id.bt_delete);
-                                    if (delHisInfo(t) == 0) {
-                                        show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
-                                    }
-                                    dialog12.dismiss();
-                                }).create();
-                        dialog.show();
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
+                        builder.setTitle("删除提示");//"请输入用户名和密码"
+                        View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                        builder.setView(view);
+                        final EditText password = (EditText) view.findViewById(R.id.password);
+                        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                            String b = password.getText().toString().trim();
+                            if (b == null || b.trim().length() < 1) {
+                                show_Toast(getString(R.string.text_alert_password));
+                                return;
+                            }
+                            if ( b.equals("123")) {
+                                String t = (String) v.getTag(R.id.bt_delete);
+                                if (delHisInfo(t) == 0) {
+                                    show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
+                                }
+                                dialog.dismiss();
+                            } else {
+                                show_Toast("密码错误");
+                            }
+                        });
+                        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+
+                        builder.show();
+
+
+//                        AlertDialog dialog = new AlertDialog.Builder(QueryHisDetail.this)
+//                                .setTitle("删除提示")//设置对话框的标题//"成功起爆"
+//                                .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
+//                                //设置对话框的按钮
+//                                .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+//                                .setPositiveButton("确认删除", (dialog12, which) -> {
+//                                    String t = (String) v.getTag(R.id.bt_delete);
+//                                    if (delHisInfo(t) == 0) {
+//                                        show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
+//                                    }
+//                                    dialog12.dismiss();
+//                                }).create();
+//                        dialog.show();
 
                         break;
                 }
@@ -895,8 +926,13 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_230703_14");//软件版本
-            object.put("name", qbxm_name);//项目名称
+            object.put("rj_version",  "KT50_3.25_MX_230721_14");//软件版本
+            if(qbxm_name!=null&&qbxm_name.length()>0){
+                object.put("name", qbxm_name);//项目名称
+            }else {
+                object.put("name", MmkvUtils.getcode("pro_name", ""));//项目名称
+            }
+
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();

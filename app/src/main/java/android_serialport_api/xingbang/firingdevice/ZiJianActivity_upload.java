@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,7 +20,10 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.R;
@@ -30,6 +34,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -121,6 +126,29 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         deleteRiZhi();
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, "1");
+
+//        deletaBeian();
+    }
+
+    private void deletaBeian() {
+        String time ="";
+        String time2 ="";
+
+        DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date star = dft.parse(time);//开始时间
+            Date endDay=dft.parse(time2);//结束时间
+            long starTime=star.getTime();
+            long endTime=endDay.getTime();
+            long num=(endTime-starTime/24/60/60/1000);//时间戳相差的毫秒数
+            if(num>7){
+                GreenDaoMaster master = new GreenDaoMaster();
+                master.deleteTypeLeiGuan(time);
+            }
+            System.out.println("相差天数为："+num);//除以一天的毫秒数
+        } catch (ParseException | java.text.ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -54,6 +54,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.zxing.activity.CaptureActivity;
@@ -115,7 +116,15 @@ public class DownOfflineActivity extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private String TAG = "离线下载";
-
+    private String equ_no = "";//设备编码
+    private String pro_bprysfz = "";//证件号码
+    private String pro_htid = "";//合同号码
+    private String pro_xmbh = "";//项目编号
+    private String pro_coordxy = "";//经纬度
+    private String pro_dwdm = "";//单位代码
+    private String pro_name = "";//项目名称
+    private String jd = "";
+    private String wd = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,11 +134,42 @@ public class DownOfflineActivity extends BaseActivity {
         db = mMyDatabaseHelper.getReadableDatabase();
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        initHandle();
+        //获取偏好设置的编辑器
 
+
+        getUserMessage();//获取用户信息
         initAutoComplete("history_htid", dfAtHtid);//输入历史记录
         initAutoComplete("history_xmbh", dfAtXmbh);
         initAutoComplete("history_dwdm", dfAtDwdm);
         initAutoComplete("history_bprysfz", dfAtBprysfz);
+        dfAtHtid.addTextChangedListener(htbh_watcher);//长度监听
+        dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
+        dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
+        dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
+    }
+    private void getUserMessage() {
+
+        String selection = "id = ?"; // 选择条件，给null查询所有
+        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
+            pro_bprysfz = cursor.getString(1);
+            pro_htid = cursor.getString(2);
+            pro_xmbh = cursor.getString(3);
+            equ_no = cursor.getString(4);
+            pro_coordxy = cursor.getString(5);
+            pro_dwdm = cursor.getString(15);
+            cursor.close();
+        }
+        dfAtBprysfz.setText(pro_bprysfz);
+        dfAtHtid.setText(pro_htid);
+        dfAtXmbh.setText(pro_xmbh);
+        dfAtDwdm.setText(pro_dwdm);
+
+    }
+
+    private void initHandle() {
         mHandler_loading = new Handler(msg -> {
             //显示或隐藏loding界面
             if (pb_show == 1 && tipDlg != null) tipDlg.show();
@@ -215,11 +255,6 @@ public class DownOfflineActivity extends BaseActivity {
             }
             return false;
         });
-
-        dfAtHtid.addTextChangedListener(htbh_watcher);//长度监听
-        dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
-        dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
-        dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
     }
 
     private void runPbDialog() {

@@ -88,6 +88,16 @@ public class TestICActivity extends SerialPortActivity {
             return false;
         });
 
+        //解析命令用
+//        String fromCommad="C00040080000A2000E00A209EDADC0";
+//        String cmd = DefCommand.getCmd(fromCommad);//得到 返回命令
+//        if (cmd != null) {
+//            int localSize = fromCommad.length() / 2;
+//            byte[] localBuf = Utils.hexStringToBytes(fromCommad);//将字符串转化为数组
+//            doWithReceivData(cmd, localBuf, localSize);
+//        }
+
+
     }
 
     private void loadMoreData() {

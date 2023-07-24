@@ -52,6 +52,11 @@ public class GreenDaoMaster {
         this.mUserDao = Application.getDaoSession().getUserMainDao();
     }
 
+    public ShouQuan getShouquan(int p) {
+        return getDaoSession().getShouQuanDao().queryBuilder().where(ShouQuanDao.Properties.Id.eq(p)).unique();
+
+    }
+
 
     public List<Defactory> queryDefactoryToIsSelected(String selected) {
         QueryBuilder<Defactory> result = mDefactoryDao.queryBuilder();
@@ -753,7 +758,7 @@ public class GreenDaoMaster {
     /**
      * 删除生产数据中的雷管
      */
-    public void deleteTypeLeiGuan(String time) {
+    public  void deleteTypeLeiGuan(String time) {
         QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
         result.where(DetonatorTypeNewDao.Properties.Time.like(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }

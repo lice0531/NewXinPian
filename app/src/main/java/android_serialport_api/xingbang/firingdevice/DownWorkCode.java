@@ -1837,10 +1837,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.e("点击项目", "position: " + position);
+        Log.e("点击项目", "id: " + map_dl.get(position).get("id").toString());
         Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("list_dl", (Serializable) map_dl);
-        bundle.putInt("position", position);
+        bundle.putInt("position", Integer.parseInt(map_dl.get(position).get("id").toString()));
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -1858,11 +1858,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 break;
             case R.id.ly_sq://
             case R.id.tv_chakan_sq:
-                Log.e("点击项目", "position: " + map_dl.get(position));
+                Log.e("点击项目", "position: " + position);
+                Log.e("点击项目", "id: " +  map_dl.get(position).get("id").toString());
                 Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("list_dl", (Serializable) map_dl);
-                bundle.putInt("position", position);
+                bundle.putInt("position", Integer.parseInt(map_dl.get(position).get("id").toString()));
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;

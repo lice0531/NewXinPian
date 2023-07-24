@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,6 +67,7 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
+import android_serialport_api.xingbang.utils.CustomDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
@@ -350,9 +353,42 @@ public class FiringMainActivity extends SerialPortActivity {
         btn_continueOk_4.setOnClickListener(v -> {
 //            increase(6);
 
-            //检测两次
-            increase(33);//之前是4
-            version_1=true;
+//            CustomDialog customDialog = new CustomDialog(FiringMainActivity.this);
+//            customDialog.setsTitle("提示").setsMessage("存在错误雷管，是否强制起爆?")
+//                    .setsCancel("取消", view -> {
+//                        closeThread();
+//                        closeForm();
+//                        finish();
+//                        customDialog.dismiss();
+//                    }).setsConfirm("确定", view -> {
+//                        //检测两次
+//                        increase(33);//之前是4
+//                        version_1 = true;
+//                        customDialog.dismiss();
+//                    }).show();
+            TextView view = new TextView(this);
+            view.setTextSize(25);
+            view.setTextColor(Color.RED);
+            view.setText("存在错误雷管，是否强制起爆?");
+            view.setTypeface(null, Typeface.BOLD);
+            AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                    .setTitle("系统提示")//设置对话框的标题
+                    .setView(view)
+                    //设置对话框的按钮
+                    .setPositiveButton("继续起爆", (dialog2, which) -> {
+                        //检测两次
+                        increase(33);//之前是4
+                        version_1 = true;
+                    })
+                    .setNeutralButton("退出", (dialog2, which) -> {
+//                        closeThread();
+//                        closeForm();
+//                        finish();
+//                        dialog2.dismiss();
+                    })
+                    .create();
+            dialog.show();
+
         });
     }
 
@@ -395,10 +431,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
                     dialog.show();
                 }
-            }else if (msg.what == 3) {
+            } else if (msg.what == 3) {
                 AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
                         .setTitle("当前雷管未授权")//设置对话框的标题
-                        .setMessage(msg.obj+"雷管未授权,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                        .setMessage(msg.obj + "雷管未授权,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
@@ -420,7 +456,7 @@ public class FiringMainActivity extends SerialPortActivity {
         mHandler_tip = new Handler(msg -> {
             String time = (String) msg.obj;
             delHisInfo(time);
-            show_Toast("起爆记录条数最大30条,已删除" + time + "记录");
+            show_Toast("起爆记录条数最大80条,已删除" + time + "记录");
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -460,7 +496,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc > (cankao_ic * 0.6 ) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > (cankao_ic * 0.6) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流偏低)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
@@ -954,10 +990,10 @@ public class FiringMainActivity extends SerialPortActivity {
         int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
 //        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
         if (totalNum < 1) return;
-        //如果总数大于30,删除第一个数据
+        //如果总数大于80,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
-        if (hisTotalNum > 30) {
+        if (hisTotalNum > 80) {
             String time = loadHisMainData();
             Message message = new Message();
             message.obj = time;
@@ -1016,10 +1052,10 @@ public class FiringMainActivity extends SerialPortActivity {
         Cursor cursor = db.rawQuery("Select * from denatorBaseinfo_all", null);
         int totalNum = cursor.getCount();//得到数据的总条数
         if (totalNum < 1) return;
-        //如果总数大于30,删除第一个数据
+        //如果总数大于100,删除第一个数据
         cursor = db.rawQuery("Select * from denatorHis_Main_all", null);
         int hisTotalNum = cursor.getCount();//得到雷管表数据的总条数
-        if (hisTotalNum > 30) {
+        if (hisTotalNum > 80) {
             delHisInfo_all(loadHisMainData());
         }
         Log.e("起爆页面--保存数据2", "totalNum: " + totalNum);
@@ -1106,16 +1142,16 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
 //        }
 
-        if ("F1".equals(fromData.getCommicationStatus()) ) {
+        if ("F1".equals(fromData.getCommicationStatus())) {
             denator.setAuthorization("01");
         }
-        if ("F2".equals(fromData.getCommicationStatus()) ) {
+        if ("F2".equals(fromData.getCommicationStatus())) {
             denator.setAuthorization("02");
         }
         Application.getDaoSession().update(denator);
 
         //判断雷管状态是否正价错误数量//|| (writeDelay != fromData.getDelayTime())
-        if (!"FF".equals(fromData.getCommicationStatus())&&!"F2".equals(fromData.getCommicationStatus()) &&!"F1".equals(fromData.getCommicationStatus())) {
+        if (!"FF".equals(fromData.getCommicationStatus()) && !"F2".equals(fromData.getCommicationStatus()) && !"F1".equals(fromData.getCommicationStatus())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
@@ -1385,7 +1421,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            String chongdian = ThreeFiringCmd.getCheckFrom38(fromCommad);
             //C0003800A040C0 没有成功返回
             //C0003801FF05C5C0 成功返回
-            if(stage==33){
+            if (stage == 33) {
                 reThirdWriteCount++;
             }
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
@@ -1547,7 +1583,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 7:
                 ctlLinePanel(7);
-                if(sevenCount==300){
+                if (sevenCount == 300) {
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     AlertDialog dialog = new Builder(this)
                             .setTitle("提示")//设置对话框的标题//"成功起爆"
@@ -1807,7 +1843,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
                                 //雷管信息不完整
-                                if (write.getDenatorId() == null||write.getDenatorId().length()<1) {
+                                if (write.getDenatorId() == null || write.getDenatorId().length() < 1) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();
@@ -1816,11 +1852,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                     closeThread();
                                     break;
                                 }
-                                if(Yanzheng_sq.equals("验证")){
+                                if (Yanzheng_sq.equals("验证")) {
                                     if (write.getShellBlastNo().startsWith("A6")) {
                                         Message msg = Handler_tip.obtainMessage();
                                         msg.what = 3;
-                                        msg.obj=write.getShellBlastNo();
+                                        msg.obj = write.getShellBlastNo();
                                         Handler_tip.sendMessage(msg);
                                         closeThread();
                                         break;
@@ -1950,7 +1986,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         case 7:
                             Thread.sleep(1000);
                             sevenCount++;
-                            Log.e(TAG, "1+5 等待阶段sevenCount: "+sevenCount);
+                            Log.e(TAG, "1+5 等待阶段sevenCount: " + sevenCount);
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             sevenDisplay = 1;
@@ -2139,7 +2175,7 @@ public class FiringMainActivity extends SerialPortActivity {
         reThirdWriteCount = 0;
         thirdWriteCount = 0;
         firstThread.blastQueue = allBlastQu;
-        Log.e(TAG, "雷管总数allBlastQu.size(): "+allBlastQu.size() );
+        Log.e(TAG, "雷管总数allBlastQu.size(): " + allBlastQu.size());
     }
 
 

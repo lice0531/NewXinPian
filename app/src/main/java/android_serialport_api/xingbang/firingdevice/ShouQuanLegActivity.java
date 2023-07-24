@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LeiGuanAdapter;
 import android_serialport_api.xingbang.custom.LoadListView;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.models.DanLingBean;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +38,15 @@ public class ShouQuanLegActivity extends BaseActivity implements LoadListView.On
         setSupportActionBar(findViewById(R.id.toolbar));
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        map_dl = (List<Map<String, Object>>) bundle.getSerializable("list_dl");
+//        map_dl = (List<Map<String, Object>>) bundle.getSerializable("list_dl");
         int p=bundle.getInt("position");
-        mAdapter= new LeiGuanAdapter(this, (DanLingBean) map_dl.get(p).get("danLingBean"), R.layout.item_list_lg);
+        GreenDaoMaster master = new GreenDaoMaster();
+
+        ShouQuan sq =master.getShouquan(p);
+//        Log.e("显示授权", "sq: "+sq.toString() );
+        Gson gson = new Gson();
+        DanLingBean danLingBean = gson.fromJson(sq.getJson(), DanLingBean.class);
+        mAdapter= new LeiGuanAdapter(this, danLingBean, R.layout.item_list_lg);
         lvSqLg.setAdapter(mAdapter);
         lvSqLg.setLoadMoreListener(this);
     }
