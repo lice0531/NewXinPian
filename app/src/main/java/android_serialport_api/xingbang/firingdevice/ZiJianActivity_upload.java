@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -89,8 +90,9 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
-    public String CJ="";
-    public String binName="";
+    public String CJ = "";
+    public String binName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,41 +116,31 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
-        CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
+        CJ = "SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
 //        CJ="XB_";//实验用
-        binName=CJ+"    KT50_V1.3_MX";
+        binName = CJ + "    KT50_V1.3_MX";
         if (IntervalUtil.isFastClick_2()) {//SC_KT50_V1.3_MXDB
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改
-            GetFileName(binName, "/mx/",".bin");//17V是电流11000,16V是改变前的
+            GetFileName(binName, "/mx/", ".bin");//17V是电流11000,16V是改变前的
 
         }
         deleteRiZhi();
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, "1");
 
-//        deletaBeian();
+        deletaBeian();
     }
 
     private void deletaBeian() {
-        String time ="";
-        String time2 ="";
+        long time = (long) 4 * 86400000;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() - time));
+        Log.e("获取到4天前的日期为", "format1: "+format1 );
+        GreenDaoMaster master = new GreenDaoMaster();
+        master.deleteTypeLeiGuan(format1);
+        master.deleteShouQuan(format1);
 
-        DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date star = dft.parse(time);//开始时间
-            Date endDay=dft.parse(time2);//结束时间
-            long starTime=star.getTime();
-            long endTime=endDay.getTime();
-            long num=(endTime-starTime/24/60/60/1000);//时间戳相差的毫秒数
-            if(num>7){
-                GreenDaoMaster master = new GreenDaoMaster();
-                master.deleteTypeLeiGuan(time);
-            }
-            System.out.println("相差天数为："+num);//除以一天的毫秒数
-        } catch (ParseException | java.text.ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -161,7 +153,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     }
 
 
-    private void GetFileName(String name,String remotePath, String type) {
+    private void GetFileName(String name, String remotePath, String type) {
 
         // 如果是Bin文件
         if (type.equals(".bin")) {
@@ -467,19 +459,19 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         builder.create().show();
     }
 
-    private void deleteRiZhi(){
+    private void deleteRiZhi() {
         String filePath;
         String filePath2;
         boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
         if (hasSDCard) {
-            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/";
         } else {
-            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/";
         }
         if (hasSDCard) {
-            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
+            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/";
         } else {
-            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
+            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/";
         }
 
         File dir = new File(filePath);

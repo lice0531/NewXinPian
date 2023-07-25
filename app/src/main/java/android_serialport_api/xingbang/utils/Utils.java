@@ -743,6 +743,13 @@ public class Utils {
 
         return dateString;
     }
+    public static String getDate_4Y(Date date) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(date);
+
+        return dateString;
+    }
 
     /**
      * 获取指定文件大小

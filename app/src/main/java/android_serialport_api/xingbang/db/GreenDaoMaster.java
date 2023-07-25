@@ -50,6 +50,7 @@ public class GreenDaoMaster {
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
         this.mUserDao = Application.getDaoSession().getUserMainDao();
+        this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
     }
 
     public ShouQuan getShouquan(int p) {
@@ -371,7 +372,7 @@ public class GreenDaoMaster {
     }
 
     //丹灵下载后更新雷管芯片码//在线下载,离线下载
-    public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
+    public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean,String sqrq) {
         //94242214050
         //F42F1C 2E0A 2 5
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
@@ -447,7 +448,7 @@ public class GreenDaoMaster {
         }
 
     }
-    public static void updateLgState_lixian(DanLingBean.LgsBean.LgBean lgBean) {
+    public static void updateLgState_lixian(DanLingBean.LgsBean.LgBean lgBean,String sqrq) {
         //94242214050
         //F42F1C 2E0A 2 5
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
@@ -469,7 +470,7 @@ public class GreenDaoMaster {
             db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
-            db_sc.setRegdate(lgBean.getYxq());
+            db_sc.setRegdate(sqrq.substring(0, 10));
             //小于0x0600的就是快速
             //0x09C1就是慢速的
             //0x04C1就是快速的
@@ -585,6 +586,14 @@ public class GreenDaoMaster {
      */
     public static void delAllMessage() {
         getDaoSession().getShouQuanDao().deleteAll();
+    }
+    /**
+     * 从数据库表中拿数据
+     *
+     * @return
+     */
+    public static void delAllDetonatorTypeNew() {
+        getDaoSession().getDetonatorTypeNewDao().deleteAll();
     }
     /**
      * 从数据库表中拿数据
@@ -760,9 +769,15 @@ public class GreenDaoMaster {
      */
     public  void deleteTypeLeiGuan(String time) {
         QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
-        result.where(DetonatorTypeNewDao.Properties.Time.like(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(DetonatorTypeNewDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
-
+    /**
+     * 删除授权数据
+     */
+    public  void deleteShouQuan(String time) {
+        QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
+        result.where(ShouQuanDao.Properties.Spare2.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
     /**
      * 删除某一发雷管
      */

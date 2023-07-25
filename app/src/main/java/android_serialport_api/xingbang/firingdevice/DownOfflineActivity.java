@@ -44,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.BaseActivity;
@@ -294,7 +295,7 @@ public class DownOfflineActivity extends BaseActivity {
         }
         try {
             res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
-            Utils.writeRecord("离线下载:" + res);
+//            Utils.writeRecord("离线下载:" + res);
         } catch (IllegalArgumentException e) {
             show_Toast("解密失败,请检查txt文件是否正确或密码是否正确");
             e.printStackTrace();
@@ -322,14 +323,14 @@ public class DownOfflineActivity extends BaseActivity {
                 if (danLingBean.getCwxx().equals("0")) {
                     if (danLingBean.getZbqys().getZbqy().size() > 0) {
                         for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
-                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
                         }
                     }
                 }
                 Log.e(TAG, "danLingBean.getLgs().getLg().size(): "+danLingBean.getLgs().getLg().size() );
                 if (danLingBean.getLgs().getLg().size() > 0) {//更新雷管信息
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState_lixian(danLingBean.getLgs().getLg().get(i));
+                        GreenDaoMaster.updateLgState_lixian(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
                     }
                 }
                 if (err != 0) {
@@ -373,7 +374,7 @@ public class DownOfflineActivity extends BaseActivity {
     /**
      * 向数据库中插入数据
      */
-    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name) {
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq) {
         ContentValues values = new ContentValues();
         values.put("htbh", htbh);
         values.put("xmbh", xmbh);
@@ -383,6 +384,7 @@ public class DownOfflineActivity extends BaseActivity {
         values.put("dl_state", "未上传");
         values.put("zb_state", "未上传");
         values.put("spare1", name);
+        values.put("spare2", yxq.substring(0, 10));//申请日期
         values.put("bprysfz",dfAtBprysfz.getText().toString().trim());//身份证号
         values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (dfAtDwdm.getText().toString().trim().length() < 1) {//单位代码
@@ -807,8 +809,7 @@ public class DownOfflineActivity extends BaseActivity {
                 mHandler_1.sendMessage(msg);
                 Log.e("网络请求返回", "response: " + response.toString());
                 Log.e("网络请求返回", "res: " + res);
-                Utils.writeRecord("---煋邦离线扫码返回:" + res);
-
+//                Utils.writeRecord("---煋邦离线扫码返回:" + res);
 
                 pb_show = 0;//loding画面结束
             }

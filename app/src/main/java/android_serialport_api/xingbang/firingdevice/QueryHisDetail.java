@@ -153,7 +153,7 @@ public class QueryHisDetail extends BaseActivity {
 //        denatorQueryHisListview.setAdapter(mAdapter);
 //        denatorQueryHisListview.setLoadMoreListener(this);
 //        denatorQueryHisListview.setOnItemClickListener(this);
-
+        Log.e("保存的项目名称", MmkvUtils.getcode("pro_name", "")+"" );
         // 线性布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         denatorQueryHisListview.setLayoutManager(linearLayoutManager);
@@ -205,6 +205,8 @@ public class QueryHisDetail extends BaseActivity {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
                         Log.e("读取日志1", "blastdate: " + blastdate);
+                        Log.e("qbxm_name", "qbxm_name: " + qbxm_name);
+                        Log.e("qbxm_name", "qbxm_name: " + qbxm_name.length());
                         upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
 
                         break;
@@ -927,7 +929,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("rj_version",  "KT50_3.25_MX_230721_14");//软件版本
-            if(qbxm_name!=null&&qbxm_name.length()>0){
+            if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {
                 object.put("name", MmkvUtils.getcode("pro_name", ""));//项目名称

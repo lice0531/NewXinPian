@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -464,7 +465,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             double juli3 = AMapUtils.calculateLineDistance(start, end);
                             Log.e("经纬度", "juli3: " + juli3);
 //                            if (juli3 < banjing) {//
-                                insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
 //                            }
                         }
@@ -474,7 +475,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                 if (danLingBean.getLgs().getLg().size() > 0) {
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
                     }
                 }
 //                mHandler_httpresult2.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
@@ -1167,7 +1168,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
                                     Log.e("经纬度", "juli3: " + juli3);
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
@@ -1177,7 +1178,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
                             }
 
                         }
@@ -1313,7 +1314,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
                                     Log.e("经纬度", "juli3: " + juli3);
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
@@ -1323,7 +1324,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
                             }
                         }
 
@@ -1874,7 +1875,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     /**
      * 向数据库中插入数据
      */
-    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name) {
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq) {
         ContentValues values = new ContentValues();
         values.put("htbh", htbh);
         values.put("xmbh", xmbh);
@@ -1883,7 +1884,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         values.put("qbzt", "未爆破");
         values.put("dl_state", "未上传");
         values.put("zb_state", "未上传");
-        values.put("spare1", name);
+        values.put("spare1", name);//项目名称
+        values.put("spare2", yxq.substring(0, 10));//下载日期
         values.put("bprysfz", at_bprysfz.getText().toString().trim());//身份证号
         values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (at_dwdm.getText().toString().trim().length() < 1) {//单位代码
@@ -2388,16 +2390,26 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                    lySetUpData.setVisibility(View.GONE);
 //                    btnDownReturn.setText("添加项目");
 //                }
+
+                TextView textview = new TextView(this);
+                textview.setTextSize(25);
+                textview.setTextColor(Color.RED);
+                textview.setText("请确认是否清空所有授权信息,点击确认清空!");
+                textview.setTypeface(null, Typeface.BOLD);
                 AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle("清空提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("请确认是否清空所有下载信息,点击确认清空")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle("清空提示")//设置对话框的标题
+                        .setView(textview)
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-                        .setPositiveButton("确认", (dialog, which) -> {
-                            dialog.dismiss();
+                        .setPositiveButton("确认清空", (dialog3, which) -> {
+                            dialog3.dismiss();
                             GreenDaoMaster.delAllMessage();//清空数据
+                            GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
                             mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
-                        }).create();
+                        })
+                        .setNeutralButton("取消", (dialog3, which) -> {
+                        dialog3.dismiss();
+                        })
+                        .create();
                 dialog2.show();
 
                 break;
