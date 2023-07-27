@@ -264,14 +264,14 @@ public class TestICActivity extends SerialPortActivity {
         }
     }
 
-//    /**
-//     * 发送485命令
-//     */
-//    public void send485Cmd(byte[] mBuffer) {
-//        mExpDevMgr.sendBytesRs485(mBuffer);
-//        String str = Utils.bytesToHexFun(mBuffer);
-//        Log.e("485发送", str);
-//    }
+    /**
+     * 发送485命令
+     */
+    public void send485Cmd(byte[] mBuffer) {
+        mExpDevMgr.sendBytesRs485(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e("485发送", str);
+    }
 
 
 

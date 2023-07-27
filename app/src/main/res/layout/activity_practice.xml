@@ -123,7 +123,7 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="WIFI级联设置页面"
+                android:text="M900级联设置页面"
                 android:visibility="gone" />
         </LinearLayout>
 

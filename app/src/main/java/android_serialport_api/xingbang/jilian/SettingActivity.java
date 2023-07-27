@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,6 +58,7 @@ public class SettingActivity extends BaseActivity {
                 }
                 delay = Integer.parseInt(s.toString());
                 editor.putInt("delay", delay).apply();
+                MmkvUtils.savecode("delay",delay);
             }
         });
 
@@ -80,6 +82,7 @@ public class SettingActivity extends BaseActivity {
                     return;
                 }
                 editor.putString("device", s.toString()).apply();
+                MmkvUtils.savecode("ACode",s.toString());
             }
         });
 
