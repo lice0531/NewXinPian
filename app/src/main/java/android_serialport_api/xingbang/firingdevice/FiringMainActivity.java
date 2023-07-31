@@ -2305,6 +2305,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
         } else if (msg.equals("qibao")) {
+            Log.e("起爆页面", "收到级联起爆指令 " );
             if (sixExchangeCount == 0) {
                 if (stage == 7) {
                     keyFireCmd = 1;

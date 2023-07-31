@@ -42,6 +42,7 @@ import java.util.concurrent.Executors;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
@@ -123,6 +124,18 @@ public class SyncActivity extends BaseActivity {
 
         tvCode.setText(MmkvUtils.getcode("ACode", "").equals("") ? getString(R.string.text_sync_szbh) : (String) MmkvUtils.getcode("ACode", ""));
         getPropertiesData();
+
+
+        switch (Build.DEVICE) {
+            case "KT50":
+            case "KT50_B2": {
+                break;
+            }
+            case "M900": {
+                mExpDevMgr = new ExpdDevMgr(this);
+                break;
+            }
+        }
     }
 
     @Override
@@ -544,6 +557,7 @@ public class SyncActivity extends BaseActivity {
                         } else {
                             btnTest.setText(getString(R.string.text_sync_tip8));
                             btnTest.setEnabled(false);
+                            Log.e("同步", "ACode: "+MmkvUtils.getcode("ACode", ""));
                             final String data = "0001" + MmkvUtils.getcode("ACode", "") + "\n";
                             writeData(data);
                         }
@@ -551,7 +565,6 @@ public class SyncActivity extends BaseActivity {
                     }
                     case "M900": {
 
-                        mExpDevMgr = new ExpdDevMgr(this);
                         //串口打开监听
                         OnOpenSerialPortListener listener = new OnOpenSerialPortListener() {
                             @Override
@@ -569,13 +582,7 @@ public class SyncActivity extends BaseActivity {
                             @Override
                             public void onDataReceived(byte[] bytes) {
                                 String fromCommad = Utils.bytesToHexFun(bytes);//将数组转化为16进制字符串
-                                Log.e("485接口-发送数据", "onDataReceived: " + fromCommad);
-                            }
-
-                            @Override
-                            public void onDataSent(byte[] bytes) {
-                                String fromCommad = Utils.bytesToHexFun(bytes);//将数组转化为16进制字符串
-                                Log.e("485接口-接收数据", "onDataSent: " + fromCommad);
+                                Log.e("485接口-接收数据", "onDataReceived: " + fromCommad);
                                 if (fromCommad.startsWith("A0")) {
                                     Message msg = Message.obtain();
                                     msg.what = 0;
@@ -586,12 +593,18 @@ public class SyncActivity extends BaseActivity {
                                     handler.sendEmptyMessage(3);
                                 }
                             }
+
+                            @Override
+                            public void onDataSent(byte[] bytes) {
+                                String fromCommad = Utils.bytesToHexFun(bytes);//将数组转化为16进制字符串
+                                Log.e("485接口-发送数据", "onDataSent: " + fromCommad);
+                            }
                         };
                         mExpDevMgr.set12VEnable(true);
                         mExpDevMgr.openRs485(listener, listener2, 115200);
+                        final String data = "0001" + MmkvUtils.getcode("ACode", "") + "\n";
 
-//                        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-//                        send485Cmd(powerCmd);
+                        send485Cmd(data);
                         break;
                     }
 
@@ -602,7 +615,15 @@ public class SyncActivity extends BaseActivity {
             case R.id.btn_test1:
                 show_Toast(getString(R.string.text_sync_tip11));
                 isTongBu = false;
-                closeSocket();
+                switch (Build.DEVICE){
+                    case "M900":
+                        send485Cmd("0005"+ MmkvUtils.getcode("ACode", ""));
+                        break;
+                        default:
+                            closeSocket();
+                            break;
+                }
+
                 finish();
 //                String a = "0002" + "D0000005" + "," + "1" + "," + "100" + "," + "0" + "," + "200" + "," + "300" + "," + "";
 ////                writeData(a);
@@ -618,10 +639,12 @@ public class SyncActivity extends BaseActivity {
         /**
      * 发送485命令
      */
-    public void send485Cmd(byte[] mBuffer) {
-        mExpDevMgr.sendBytesRs485(mBuffer);
-        String str = Utils.bytesToHexFun(mBuffer);
-        Log.e("485发送", str);
+    public void send485Cmd(String data ){
+        byte[] powerCmd =Utils.hexStringToBytes(data);
+        mExpDevMgr.sendBytesRs485(powerCmd);
+        String str = Utils.bytesToHexFun(powerCmd);
+        Log.e("485发送-data", data);
+        Log.e("485发送-str", str);
     }
 
     private String myInfo() {

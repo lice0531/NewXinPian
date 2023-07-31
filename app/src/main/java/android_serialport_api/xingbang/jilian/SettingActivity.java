@@ -33,7 +33,7 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tongbu_setting);
         ButterKnife.bind(this);
-// 标题栏
+// 标题栏15:02:11.065
         setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("setting", 0);
         final SharedPreferences.Editor editor = sp.edit();
@@ -82,7 +82,12 @@ public class SettingActivity extends BaseActivity {
                     return;
                 }
                 editor.putString("device", s.toString()).apply();
-                MmkvUtils.savecode("ACode",s.toString());
+                if(s.toString().length()==1){
+                    MmkvUtils.savecode("ACode","0"+s);
+                }else {
+                    MmkvUtils.savecode("ACode",s.toString());
+                }
+
             }
         });
 

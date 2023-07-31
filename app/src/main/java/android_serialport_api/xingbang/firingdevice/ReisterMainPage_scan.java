@@ -1007,17 +1007,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         if(scanDecode!=null){
             scanDecode.stopScan();//停止扫描
-            if (scanBarThread != null) {
-                scanBarThread.exit = true;  // 终止线程thread
-                try {
-                    scanBarThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
             scanDecode.onDestroy();//回复初始状态
         }
-
+        if (scanBarThread != null) {
+            scanBarThread.exit = true;  // 终止线程thread
+            try {
+                scanBarThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 //        Utils.saveFile();//把软存中的数据存入磁盘中
 
 
