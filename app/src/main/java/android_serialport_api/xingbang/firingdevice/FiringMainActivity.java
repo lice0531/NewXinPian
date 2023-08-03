@@ -1701,7 +1701,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (fourthDisplay == 0) {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
-                            Thread.sleep(1000);
+//                            Thread.sleep(1000);
                             break;
                         case 5://充电检测阶段38指令计时器
                             Wait_Count--;
@@ -1730,10 +1730,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (sixCmdSerial == 3) {
                                     //byte[] reCmd  = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");
                                     //sendCmd(reCmd);
+                                    //跳转到1+5倒数计时5分钟阶段
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                    Thread.sleep(1000);
+//                                    Thread.sleep(1000);
                                     increase(7);
-                                    Log.e("第7阶段-increase", "7");
+//                                    Log.e("第7阶段-increase", "7");
                                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                                     break;
                                 }
@@ -1754,8 +1755,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 7:
-                            Thread.sleep(1000);
-                            sevenCount++;
+//                            Thread.sleep(1000);
+//                            sevenCount++;
                             Log.e(TAG, "1+5 等待阶段sevenCount: "+sevenCount);
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1767,7 +1768,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 keyFireCmd = 0;
                                 eightCmdExchangePower = 1;
                             }
-                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://起爆阶段
 //                            if (eightCount == 1) {
