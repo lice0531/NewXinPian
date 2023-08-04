@@ -420,7 +420,7 @@ public class GreenDaoMaster {
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                     db.setAuthorization("0"+version);
-//                    db.setRegdate(sqrq.substring(0, 10));
+                    db.setRegdate(sqrq.substring(0, 10));
                     //小于0x0600的就是快速
                     //0x09C1就是慢速的
                     //0x04C1就是快速的
