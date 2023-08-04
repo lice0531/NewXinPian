@@ -2433,8 +2433,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setPositiveButton("确认下载", (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
-//                                upload();
-                                upload_xingbang();
+                                upload();
+//                                upload_xingbang();
                             }
                         }).create();
                 dialog.show();
