@@ -368,7 +368,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }).show();
             String err = ll_firing_errorAmount_4.getText().toString();
             if (err.equals("0")) {
-                increase(33);//之前是4
+//                increase(33);//之前是4
+                increase(6);//充电阶段
                 version_1 = true;
             } else {
                 TextView view = new TextView(this);
@@ -382,7 +383,8 @@ public class FiringMainActivity extends SerialPortActivity {
                         //设置对话框的按钮
                         .setPositiveButton("继续起爆", (dialog2, which) -> {
                             //检测两次
-                            increase(33);//之前是4
+//                          increase(33);//之前是4
+                            increase(6);//充电阶段
                             version_1 = true;
                         })
                         .setNeutralButton("退出", (dialog2, which) -> {
@@ -1946,16 +1948,16 @@ public class FiringMainActivity extends SerialPortActivity {
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 6://充电阶段
-                            Log.e(TAG, "充电阶段sixExchangeCount: " + sixExchangeCount);
+//                            Log.e(TAG, "充电阶段sixExchangeCount: " + sixExchangeCount);
                             if (sixExchangeCount == ChongDian_time) {
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
-                            if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
+                            if (sixExchangeCount == (ChongDian_time - 5)) {//第5秒时,发送高压充电指令,继电器应该响
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
-                            if (sixExchangeCount == (ChongDian_time - 13)) {//第8秒时,发送高压充电指令,继电器应该响
-                                Log.e(TAG, "第10s电流: " + busInfo.getBusCurrentIa());
+                            if (sixExchangeCount == (ChongDian_time - 10)) {//第5秒时,发送高压充电指令,继电器应该响
+                                increase(33);
                             }
                             if (sixExchangeCount == 0) {
                                 Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
@@ -1979,7 +1981,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
-                            if (sixExchangeCount != (ChongDian_time - 9) && sixExchangeCount != (ChongDian_time - 8) && sixExchangeCount < ChongDian_time - 1) {
+                            if (sixExchangeCount != (ChongDian_time - 6) && sixExchangeCount != (ChongDian_time - 10)&& sixExchangeCount != (ChongDian_time - 9) &&sixExchangeCount != (ChongDian_time - 5) && sixExchangeCount < ChongDian_time - 1) {
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
