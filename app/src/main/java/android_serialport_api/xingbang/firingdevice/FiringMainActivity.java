@@ -488,11 +488,11 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 9000 && stage != 6) {
+                if (displayIc > 9000 && stage != 6 && stage != 33) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * ic_cankao * 2) && displayIc > 10 && stage != 6) {// "电流过大";
+                } else if (displayIc > (denatorCount * ic_cankao * 2) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
@@ -1953,7 +1953,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
-                            if (sixExchangeCount == (ChongDian_time - 5)) {//第5秒时,发送高压充电指令,继电器应该响
+                            if (sixExchangeCount == (ChongDian_time - 3)) {//第5秒时,发送高压充电指令,继电器应该响
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
                             if (sixExchangeCount == (ChongDian_time - 10)) {//第5秒时,发送高压充电指令,继电器应该响
@@ -1981,7 +1981,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
-                            if (sixExchangeCount != (ChongDian_time - 6) && sixExchangeCount != (ChongDian_time - 10)&& sixExchangeCount != (ChongDian_time - 9) &&sixExchangeCount != (ChongDian_time - 5) && sixExchangeCount < ChongDian_time - 1) {
+                            if (sixExchangeCount != (ChongDian_time - 3)&& sixExchangeCount != (ChongDian_time - 4) && sixExchangeCount != (ChongDian_time - 10) && sixExchangeCount != (ChongDian_time - 11)  && sixExchangeCount < ChongDian_time - 1) {
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
