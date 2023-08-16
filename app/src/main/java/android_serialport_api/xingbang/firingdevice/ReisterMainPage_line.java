@@ -1827,13 +1827,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
      * 判断列表第一发是否在历史记录里
      */
     private boolean deleteList() {
-        String shellBlastNo = serchFristLG();//获取第一发雷管
-        int no = serchFristLGINdenatorHis(shellBlastNo);
-        if (no > 0) {
-            showAlertDialog();
-            scanDecode.stopScan();
-            return true;
-        }
+//        String shellBlastNo = serchFristLG();//获取第一发雷管
+//        int no = serchFristLGINdenatorHis(shellBlastNo);
+//        if (no > 0) {
+//            showAlertDialog();
+//            scanDecode.stopScan();
+//            return true;
+//        }
         return false;
     }
     /**
@@ -1953,12 +1953,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    break;
 //                }
                 if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
-                    String shellBlastNo = serchFristLG();
-                    int num = serchFristLGINdenatorHis(shellBlastNo);
-
-                    if (num > 0) {
-                        showAlertDialog();
-                    }
+                    //注册列表中的雷管已在起爆历史记录里(取消)
+//                    String shellBlastNo = serchFristLG();
+//                    int num = serchFristLGINdenatorHis(shellBlastNo);
+//
+//                    if (num > 0) {
+//                        showAlertDialog();
+//                    }
                     show_Toast("请等待电流电压显示出来后，再连接雷管!");
                     btnInputOk.setEnabled(false);
                     btnSingleReister.setText("停止注册");

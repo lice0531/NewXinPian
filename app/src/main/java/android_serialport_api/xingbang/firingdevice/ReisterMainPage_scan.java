@@ -2413,13 +2413,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 判断列表第一发是否在历史记录里
      */
     private boolean deleteList() {
-        String shellBlastNo = serchFristLG();//获取第一发雷管
-        int no = serchFristLGINdenatorHis(shellBlastNo);
-        if (no > 0) {
-            showAlertDialog();
-            scanDecode.stopScan();
-            return true;
-        }
+//        String shellBlastNo = serchFristLG();//获取第一发雷管
+//        int no = serchFristLGINdenatorHis(shellBlastNo);
+//        if (no > 0) {
+//            showAlertDialog();
+//            scanDecode.stopScan();
+//            return true;
+//        }
         return false;
     }
 
