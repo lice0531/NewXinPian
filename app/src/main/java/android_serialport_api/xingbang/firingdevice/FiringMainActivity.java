@@ -248,12 +248,14 @@ public class FiringMainActivity extends SerialPortActivity {
     private void initView() {
         String lowVoltage =(String) MmkvUtils.getcode("lowVoltage", "8.5");
         String highVoltage = (String) MmkvUtils.getcode("highVoltage", "16");
+        String miaoliang = (String) MmkvUtils.getcode("miaoliang", "0");
         ll_0 = (LinearLayout) findViewById(R.id.ll_firing_0);
         et_set_lowVoltage=findViewById(R.id.et_set_lowVoltage);
         et_set_highVoltage=findViewById(R.id.et_set_highVoltage);
         et_set_lowVoltage.setText(lowVoltage);
         et_set_highVoltage.setText(highVoltage);
         et_set_delay=findViewById(R.id.et_set_delay);
+        et_set_delay.setText(miaoliang);
         btn_lowVoltage=findViewById(R.id.btn_lowVoltage);
         btn_highVoltage=findViewById(R.id.btn_highVoltage);
         btn_lowVoltage.setOnClickListener(v -> {
@@ -296,11 +298,11 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         btn_start=findViewById(R.id.btn_start);
         btn_start.setOnClickListener(v -> {
+            MmkvUtils.savecode("miaoliang",et_set_delay.getText().toString());
             ll_0.setVisibility(View.GONE);
             if (!firstThread.isAlive()){//从onstart挪过来的
                 firstThread.start();
             }
-
         });
 
 // 标题栏

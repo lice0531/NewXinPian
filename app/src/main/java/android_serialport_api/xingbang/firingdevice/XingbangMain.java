@@ -644,20 +644,20 @@ public class XingbangMain extends BaseActivity {
                 time = System.currentTimeMillis();
                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
-                if (time - endTime < 180000) {//第二次启动时间不重置
-                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
-                    return;
-                }
+//                if (time - endTime < 180000) {//第二次启动时间不重置
+//                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+//                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
+//                    return;
+//                }
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent5 = new Intent(this, VerificationActivity.class);
-                } else {
+//                if (Yanzheng.equals("验证")) {
+//                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                    intent5 = new Intent(this, VerificationActivity.class);
+//                } else {
                     intent5 = new Intent(this, FiringMainActivity.class);
-                }
+//                }
                 intent5.putExtra("dataSend", str5);
                 startActivityForResult(intent5, 1);
                 break;

@@ -51,7 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="设置低压电压6V-12V(初始值为8.5V)"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:visibility="invisible"/>
 
         <EditText
             android:id="@+id/et_set_lowVoltage"
@@ -61,7 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:inputType="number|numberDecimal"
-            android:hint="默认8.5V"/>
+            android:hint="默认8.5V"
+            android:visibility="invisible"/>
         <Button
             android:id="@+id/btn_lowVoltage"
             android:layout_width="wrap_content"
@@ -70,14 +72,16 @@
             android:text="设置低压"
             android:background="@drawable/bt_mainpage_style"
             style="@style/allbtntstyle"
-            android:textColor="@color/bt_fg_base" />
+            android:textColor="@color/bt_fg_base"
+            android:visibility="invisible"/>
         <TextView
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="设置高压电压10V-20V(初始值为16V)"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:visibility="invisible"/>
 
         <EditText
             android:id="@+id/et_set_highVoltage"
@@ -87,7 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:inputType="number|numberDecimal"
-            android:hint="默认16V" />
+            android:hint="默认16V"
+            android:visibility="invisible"/>
 
         <Button
             android:id="@+id/btn_highVoltage"
@@ -97,7 +102,8 @@
             android:layout_gravity="center"
             android:background="@drawable/bt_mainpage_style"
             android:text="设置高压"
-            android:textColor="@color/bt_fg_base" />
+            android:textColor="@color/bt_fg_base"
+            android:visibility="invisible"/>
         <Button
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"
