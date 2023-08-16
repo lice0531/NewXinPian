@@ -284,7 +284,7 @@ public class FinishDenatorToUpMain {
         y = Utils.strPaddingZero(y, 6);
 
         String denatorCount = Utils.strPaddingZero(amount, 3);
-        equNo = Utils.strPaddingZero(equNo, 8);
+        equNo = Utils.strPaddingZero(equNo, 11);
         String totalPackStr = Utils.strPaddingZero(packTotal, 2);
         String currentSerial = Utils.strPaddingZero("1", 2);
         int currentPackLen = 0;
