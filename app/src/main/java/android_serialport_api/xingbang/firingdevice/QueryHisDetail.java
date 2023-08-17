@@ -449,7 +449,8 @@ public class QueryHisDetail extends BaseActivity {
         }
         if (equ_no.length() > 8) {//中爆网起爆器编号8位
 //            String qbq_no = equ_no.substring(0, 5) + equ_no.substring(8);//截取起爆器编号前5位和后3位
-            String qbq_no = equ_no.substring(1, 3) + equ_no.substring(5);//截取起爆器编号前23位和后6位
+//            String qbq_no = equ_no.substring(1, 3) + equ_no.substring(5);//截取起爆器编号前23位和后6位
+            String qbq_no = equ_no;
             return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, qbq_no, server_ip, server_port, server_http, blastdate);
         }
         return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
@@ -928,7 +929,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_230809_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_230816_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {

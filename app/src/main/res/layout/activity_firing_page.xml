@@ -275,6 +275,38 @@
                 android:text=""
                 android:textSize="@dimen/childPageLabelFontSize" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_turenum" />
+
+            <TextView
+                android:id="@+id/ll_firing_tureNum_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0"
+                android:textColor="@color/color_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -349,7 +381,7 @@
         android:id="@+id/ll_firing_4"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -418,7 +450,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="45dp">
 
             <TextView
                 style="@style/alltextstyle"
@@ -450,7 +482,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="45dp">
 
             <TextView
                 style="@style/alltextstyle"
@@ -480,10 +512,42 @@
                 android:text=""
                 android:textSize="@dimen/childPageLabelFontSize" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_turenum" />
+
+            <TextView
+                android:id="@+id/ll_firing_tureNum"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0"
+                android:textColor="@color/color_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="45dp">
 
             <TextView
                 style="@style/alltextstyle"

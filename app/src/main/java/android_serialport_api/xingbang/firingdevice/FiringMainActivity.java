@@ -105,6 +105,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private TextView ll_firing_deAmount_4;//雷管数
     private TextView ll_firing_deAmount_2;//雷管数
     private TextView ll_firing_errorAmount_4;//错误数
+    private TextView ll_firing_tureNum;
     private TextView ll_firing_errorAmount_2;//错误数
     private TextView tv__qb_dianliu_1;//参考电流
     private TextView tv__qb_dianliu_2;//参考电流
@@ -133,6 +134,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private Handler Handler_tip = null;//提示
     private static Handler mHandler_1 = null;//更新视图
     private static Handler noReisterHandler = null;//没有注册的雷管
+    private static Handler tureHandler = null;//没有注册的雷管
     private To52Test writeVo;
     private static volatile int stage;//
     private static volatile int startFlag = 0;
@@ -203,6 +205,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
+    private int totaltureNum;//错误雷管数量
     private int totalNum;//雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
@@ -279,6 +282,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_deAmount_2 = findViewById(R.id.ll_firing_deAmount_2);//雷管数
         ll_firing_errorAmount_2 = findViewById(R.id.ll_firing_errorAmount_2);//错误数
         ll_firing_errorAmount_4 = findViewById(R.id.ll_firing_errorAmount_4);//错误数
+        ll_firing_tureNum = findViewById(R.id.ll_firing_tureNum);
         tv__qb_dianliu_1 = findViewById(R.id.tv__qb_dianliu_1);//错误数
         tv__qb_dianliu_2 = findViewById(R.id.tv__qb_dianliu_2);//错误数
         ll_firing_Volt_6 = findViewById(R.id.ll_firing_Volt_6);
@@ -481,7 +485,16 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             return false;
         });
-
+        tureHandler = new Handler(msg -> {
+            String tureNumStr = ll_firing_tureNum.getText().toString();
+            if (tureNumStr.trim().length() < 1) {
+                tureNumStr = "0";
+            }
+            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            totaltureNum = Integer.parseInt(tureNumStr) + 1;
+//            ll_firing_tureNum.setTextColor(Color.GREEN);
+            return false;
+        });
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
@@ -1159,9 +1172,12 @@ public class FiringMainActivity extends SerialPortActivity {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
-        } else if ("02".equals(fromData.getCommicationStatus())) {
-            show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
-            Utils.writeRecord("--起爆检测错误:" + fromData.toString());
+        }else {
+             if ("02".equals(fromData.getCommicationStatus())) {
+                show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
+                Utils.writeRecord("--起爆检测错误:" + fromData.toString());
+            }
+            tureHandler.sendMessage(tureHandler.obtainMessage());
         }
 
         Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);

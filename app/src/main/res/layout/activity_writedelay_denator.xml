@@ -106,7 +106,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="45dp">
 
             <TextView
                 android:layout_width="@dimen/test_pg_Left"
@@ -143,7 +143,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="45dp">
 
             <TextView
                 android:layout_width="@dimen/test_pg_Left"
@@ -179,7 +179,43 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="50dp">
+            android:layout_height="45dp">
+
+            <TextView
+                android:layout_width="@dimen/test_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_turenum"
+                android:textColor="@color/label_color"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="@dimen/MainPage_FontSize" />
+
+            <TextView
+                android:id="@+id/ll_firing_tureNum"
+                android:layout_width="@dimen/test_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0"
+                android:textColor="@color/color_green"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="@dimen/MainPage_FontSize" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
 
             <TextView
                 android:layout_width="@dimen/test_pg_Left"

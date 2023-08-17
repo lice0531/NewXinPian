@@ -353,5 +353,6 @@
     <string name="one_Loc_tile">单次定位</string>
     <string name="title_activity_practice">辅助功能</string>
     <string name="txt_duan">段号</string>
+    <string name="text_test_turenum">正确数量:</string>
 
 </resources>

@@ -71,6 +71,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private TextView ll_firing_IC_4;
     private TextView ll_firing_deAmount_4;
     private TextView ll_firing_errorNum_4;
+    private TextView ll_firing_tureNum;
     private TextView tv_dianliu;//参考电流
     private LinearLayout ll_1;
     private LinearLayout ll_2;
@@ -81,6 +82,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler mHandler_1 = null;//总线稳定
     private Handler busHandler_dianliu = null;//电流电压信息
     private Handler errHandler = null;//总线信息
+    private Handler tureHandler = null;//总线信息
     private Handler Handler_tip = null;//提示信息
     private static volatile int stage;
     private volatile int firstCount = 28;
@@ -113,6 +115,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private int errtotal = 0;//错误数量
     private int Preparation_time;//准备时间
     private int totalerrorNum;//错误雷管数量
+    private int totaltureNum;//正确雷管数量
 
     private String TAG = "组网测试";
     private String version = "02";
@@ -248,6 +251,16 @@ public class TestDenatorActivity extends SerialPortActivity {
             ll_firing_errorNum_4.setTextColor(Color.RED);
             return false;
         });
+        tureHandler = new Handler(msg -> {
+            String tureNumStr = ll_firing_tureNum.getText().toString();
+            if (tureNumStr.trim().length() < 1) {
+                tureNumStr = "0";
+            }
+            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            totaltureNum = Integer.parseInt(tureNumStr) + 1;
+//            ll_firing_tureNum.setTextColor(Color.GREEN);
+            return false;
+        });
         noReisterHandler = new Handler(msg -> {
             if (fourOnlineDenatorFlag == 2) {
                 disPlayNoReisterDenator(0);//提示框
@@ -292,6 +305,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         ll_firing_IC_4 = (TextView) findViewById(R.id.ll_firing_IC_4);
         ll_firing_deAmount_4 = (TextView) findViewById(R.id.ll_firing_deAmount_4);
         ll_firing_errorNum_4 = (TextView) findViewById(R.id.ll_firing_errorAmount_4);
+        ll_firing_tureNum = (TextView) findViewById(R.id.ll_firing_tureNum);
         tv_dianliu = (TextView) findViewById(R.id.tv_dianliu);
 
         ll_1 = (LinearLayout) findViewById(R.id.ll_test_st_bt);
@@ -535,14 +549,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
-                    if (displayIc < denatorCount * ic_cankao * 0.25 && firstCount < Preparation_time * 0.5) {//总线电流小于参考值一半,可能出现断路
-                        ll_firing_IC_4.setTextColor(Color.RED);
-                        show_Toast("当前电流过小,请检查线路是否出现断路");
-                        stage = 5;
-                        Utils.writeRecord("总线电流小于参考值一半,可能出现断路");
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                        return;
-                    }
+//                    if (displayIc < denatorCount * ic_cankao * 0.25 && firstCount < Preparation_time * 0.5) {//总线电流小于参考值一半,可能出现断路
+//                        ll_firing_IC_4.setTextColor(Color.RED);
+//                        show_Toast("当前电流过小,请检查线路是否出现断路");
+//                        stage = 5;
+//                        Utils.writeRecord("总线电流小于参考值一半,可能出现断路");
+//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                        return;
+//                    }
                     if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.5) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
                         ll_firing_Volt_4.setTextColor(Color.RED);
@@ -1034,9 +1048,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                 fromData.setShellNo(temp.getShellBlastNo());//设置管壳码
                 fromData.setDenaId(temp.getDenatorId());//设置芯片码
                 updateDenator(fromData, writeDelay);
-                if (!"FF".equals(fromData.getCommicationStatus())) {
+                if (!"FF".equals(fromData.getCommicationStatus())&&!"F1".equals(fromData.getCommicationStatus())&&!"F2".equals(fromData.getCommicationStatus())) {
                     errHandler.sendMessage(errHandler.obtainMessage());
 
+                }else {
+                    tureHandler.sendMessage(tureHandler.obtainMessage());
                 }
                 Utils.writeRecord("--测试结果:" + fromData);
                 Log.e("测试返回数据", "fromData: " + fromData);
