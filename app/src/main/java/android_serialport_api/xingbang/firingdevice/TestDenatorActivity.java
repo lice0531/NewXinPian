@@ -801,13 +801,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-                            //二次上电
+                            //先下电
                             if (firstCount == Preparation_time - 10) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                             }
+                            //再上电
                             if (firstCount == Preparation_time - 13) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
-
                             }
                             if (firstCount == Preparation_time-14) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本

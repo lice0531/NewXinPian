@@ -47,6 +47,7 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
@@ -138,6 +139,11 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
+    private volatile int chongdianSun = 30;//内蒙高压充电阶段
+    private volatile int fangdianSun = 120;//内蒙放电阶段
+    private volatile int chongdianCount = chongdianSun;//内蒙高压充电阶段
+    private volatile int fangdianCount = fangdianSun;//内蒙放电阶段
+
     private volatile int secondCmdFlag = 0;//发出进入起爆模式命令是否返回
     private volatile int fourthDisplay = 0;//第4步，是否显示
     private volatile int thirdWriteCount;//雷管发送计数器
@@ -392,12 +398,12 @@ public class FiringMainActivity extends SerialPortActivity {
         });
 
         busHandler = new Handler(msg -> {
-            if (busInfo != null && firstWaitCount < 2) {
+            if (busInfo != null ) {//&& firstWaitCount < 2
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 ll_firing_IC_4.setTextSize(20);
-                if (displayIc > 11000&&stage!=6) {
+                if (displayIc > 11000 && stage != 6) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -420,8 +426,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 ll_firing_IC_2.setText("" + displayIcStr);
                 ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
-                ll_firing_Volt_5.setText("" + busInfo.getBusVoltage() + "V");
                 ll_firing_IC_4.setText("" + displayIcStr);
+                ll_firing_Volt_5.setText("" + busInfo.getBusVoltage() + "V");
                 ll_firing_IC_5.setText("" + displayIcStr);
                 ll_firing_Volt_6.setText("" + busInfo.getBusVoltage() + "V");
                 ll_firing_IC_6.setText("" + displayIcStr);
@@ -568,7 +574,7 @@ public class FiringMainActivity extends SerialPortActivity {
      * 初始化变量
      */
     private void initParam() {
-        FiringMainActivity.stage = 0;
+        FiringMainActivity.stage = 12;
         writeVo = null;
         firstWaitCount = 3;
         Wait_Count = 5;
@@ -1300,11 +1306,9 @@ public class FiringMainActivity extends SerialPortActivity {
                     //没有桥丝串口返回命令: C000300009C9C0
                     //  有桥丝串口返回命令: C000300009C9C0
                     if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
-                        sendCmd(initBuf);
+                        sendCmd(ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101"));//30指令进入起爆模式(同时检测桥丝)
                     } else {
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
-                        sendCmd(initBuf);
+                        sendCmd(ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100"));//30指令
                     }
                     if (firstCmdReFlag == 1) {
                         ctlLinePanel(2);
@@ -1466,7 +1470,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_zanting_exit("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
+                    initDialog_zanting_exit("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
@@ -1476,7 +1480,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
+                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
@@ -1487,7 +1491,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测!");//弹出框
+                    initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测!");//弹出框
 //                    }
 //                    else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
@@ -1499,7 +1503,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
 //                    if (chongfu) {
-                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
+                    initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
 //                    }
 //                    else {
 //                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
@@ -1540,6 +1544,12 @@ public class FiringMainActivity extends SerialPortActivity {
                 secondTxt.setText(getString(R.string.text_firing_tip9) + thirdWriteCount + getString(R.string.text_firing_tip10));
                 //写入通信未返回
 
+                break;
+            case 12://高压充电阶段
+                firstTxt.setText(chongdianCount + "s");
+                break;
+            case 13://放电阶段
+                firstTxt.setText(fangdianCount + "s");
                 break;
             default:
 
@@ -1923,6 +1933,50 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 99://暂停阶段
                             break;
+                        case 12://新加的高压阶段
+                            if (chongdianCount == chongdianSun) {
+                                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41
+                            }
+                            if (chongdianCount == chongdianSun-1) {
+                                if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
+                                    sendCmd(ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101"));//30指令进入起爆模式(同时检测桥丝)
+                                } else {
+                                    sendCmd(ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100"));//30指令
+                                }
+                            }
+                            if (chongdianCount == chongdianSun-2) {
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00"));//32充电
+                            }
+                            if (chongdianCount == chongdianSun-3) {//第8秒时,发送高压充电指令,继电器应该响
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
+                            }
+                            if (chongdianCount <  chongdianSun-4 && chongdianCount > 1) {
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101
+                            }
+                            if (chongdianCount == 0) {//Preparation_time-1
+                                //关闭电源
+                                stage = 13;
+                            }
+                            Thread.sleep(1000);
+                            chongdianCount--;
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            break;
+                        case 13://新加的放电阶段
+                            //先下电
+                            if (fangdianCount == fangdianSun) {//Preparation_time-1
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35 退出起爆
+                            }
+                            if (fangdianCount < fangdianSun-1 && fangdianCount > 1) {
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101
+                            }
+                            //再上电
+                            if (fangdianCount == 0) {//Preparation_time-1
+                                stage = 0;//关闭电源
+                            }
+                            Thread.sleep(1000);
+                            fangdianCount--;
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            break;
 
                     }
                 }
@@ -1968,7 +2022,7 @@ public class FiringMainActivity extends SerialPortActivity {
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")|| !Build.DEVICE.equals("KT50")) {
+        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2") || !Build.DEVICE.equals("KT50")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -1976,7 +2030,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     keyFireCmd = 1;
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_5 &&( Build.DEVICE.equals("KT50_B2")||Build.DEVICE.equals("KT50"))) {
+        } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2") || Build.DEVICE.equals("KT50"))) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
