@@ -531,6 +531,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
                     if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
                         txt_currentIC.setTextColor(Color.RED);
+                        txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA偏大");
                     } else {
                         txt_currentIC.setTextColor(Color.GREEN);
                     }
