@@ -139,7 +139,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
-    private volatile int chongdianSun = 25;//内蒙高压充电阶段
+    private volatile int chongdianSun = 30;//内蒙高压充电阶段
     private volatile int fangdianSun = 90;//内蒙放电阶段
     private volatile int chongdianCount = chongdianSun;//内蒙高压充电阶段
     private volatile int fangdianCount = fangdianSun;//内蒙放电阶段
