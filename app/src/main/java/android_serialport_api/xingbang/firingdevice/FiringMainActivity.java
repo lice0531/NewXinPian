@@ -139,7 +139,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
-    private volatile int chongdianSun = 30;//内蒙高压充电阶段
+    private volatile int chongdianSun = 40;//内蒙高压充电阶段
     private volatile int fangdianSun = 90;//内蒙放电阶段
     private volatile int chongdianCount = chongdianSun;//内蒙高压充电阶段
     private volatile int fangdianCount = fangdianSun;//内蒙放电阶段
@@ -1947,10 +1947,13 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (chongdianCount == chongdianSun-2) {
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00"));//32充电
                             }
-                            if (chongdianCount == chongdianSun-3) {//第8秒时,发送高压充电指令,继电器应该响
+                            if (chongdianCount == chongdianSun-3) {//
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101
+                            }
+                            if (chongdianCount == chongdianSun-4) {//第8秒时,发送高压充电指令,继电器应该响
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
-                            if (chongdianCount <  chongdianSun-4 && chongdianCount > 1) {
+                            if (chongdianCount <  chongdianSun-5 && chongdianCount > 1) {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101
                             }
                             if (chongdianCount == 0) {//Preparation_time-1
