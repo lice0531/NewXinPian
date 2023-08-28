@@ -139,7 +139,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
-    private volatile int chongdianSun = 40;//内蒙高压充电阶段
+    private volatile int chongdianSun = 42;//内蒙高压充电阶段
     private volatile int fangdianSun = 90;//内蒙放电阶段
     private volatile int chongdianCount = chongdianSun;//内蒙高压充电阶段
     private volatile int fangdianCount = fangdianSun;//内蒙放电阶段
@@ -236,6 +236,7 @@ public class FiringMainActivity extends SerialPortActivity {
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
+        Utils.writeRecord("stage" + stage);
         elevenCount = getMaxDelay() / 1000 + 1;
         Log.e(TAG, "elevenCount: " + elevenCount);
         //级联接收命令注册的eventbus
@@ -1157,11 +1158,14 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
-            increase(1);
-            Log.e("increase", "1");
-            zeroCmdReFlag = 1;
-            byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-            sendCmd(powerCmd);
+            if(stage!=12){
+                increase(1);
+                Log.e("increase", "1");
+                zeroCmdReFlag = 1;
+                byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+                sendCmd(powerCmd);
+            }
+
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
             //得到电流电压信息
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
@@ -1935,25 +1939,28 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 12://新加的高压阶段
                             if (chongdianCount == chongdianSun) {
-                                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41
+                                sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             }
                             if (chongdianCount == chongdianSun-1) {
+                                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41
+                            }
+                            if (chongdianCount == chongdianSun-2) {
                                 if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
                                     sendCmd(ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101"));//30指令进入起爆模式(同时检测桥丝)
                                 } else {
                                     sendCmd(ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100"));//30指令
                                 }
                             }
-                            if (chongdianCount == chongdianSun-2) {
+                            if (chongdianCount == chongdianSun-3) {
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00"));//32充电
                             }
-                            if (chongdianCount == chongdianSun-3) {//
+                            if (chongdianCount == chongdianSun-4) {//
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101
                             }
-                            if (chongdianCount == chongdianSun-4) {//第8秒时,发送高压充电指令,继电器应该响
+                            if (chongdianCount == chongdianSun-5) {//第8秒时,发送高压充电指令,继电器应该响
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
-                            if (chongdianCount <  chongdianSun-5 && chongdianCount > 1) {
+                            if (chongdianCount <  chongdianSun-6 && chongdianCount > 1) {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//00400101
                             }
                             if (chongdianCount == 0) {//Preparation_time-1

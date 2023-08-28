@@ -143,6 +143,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         totalerrorNum = 0;//错误数量总数
 //        denatorCount = 0;
         send_kg = true;
+        chongfu=false;
     }
 
     @Override
@@ -191,6 +192,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         // getDenatorType();
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
+        Utils.writeRecord("开始测试,stage" + stage);
         Log.e(TAG, "stage: " + stage);
 
         sendOpenThread = new SendOpenPower();
