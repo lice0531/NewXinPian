@@ -155,6 +155,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     protected void onDestroy() {
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
+        closeThread();
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
