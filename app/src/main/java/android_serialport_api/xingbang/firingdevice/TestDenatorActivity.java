@@ -194,6 +194,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         Utils.writeRecord("开始测试,stage" + stage);
+        Log.e(TAG, "开始测试,firstCount: "+firstCount );
         Log.e(TAG, "stage: " + stage);
 
         sendOpenThread = new SendOpenPower();
@@ -783,12 +784,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                 try {
                     switch (stage) {
                         case 1:
+                            Log.e(TAG, "firstCount: "+firstCount );
                             if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//46(第一代)
                                 } else {
-                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//46(第二代)
                                 }
                             }
                             Thread.sleep(1000);
