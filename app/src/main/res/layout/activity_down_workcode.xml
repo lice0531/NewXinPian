@@ -67,7 +67,16 @@
                 android:textSize="20sp"
                 android:visibility="gone"
                 />
-
+            <Button
+                android:layout_marginLeft="8dp"
+                android:id="@+id/btn_shouquan"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                style="@style/allbtntstyle"
+                android:text="授权"
+                android:textSize="20sp"
+                />
             <Button
                 android:layout_marginLeft="8dp"
                 android:id="@+id/btn_down_inputOK"

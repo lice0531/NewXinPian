@@ -32,25 +32,31 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:screenOrientation="portrait"
         android:requestLegacyExternalStorage="true"
+        android:screenOrientation="portrait"
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
-            android:name=".firingdevice.SendMsgActivity"
-            android:label="数据互传"
+            android:name=".firingdevice.ShouQuanActivity"
+            android:label="授权数据"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".firingdevice.SendMsgActivity"
+            android:exported="false"
+            android:label="数据互传"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UpgradeActivity"
+            android:exported="false"
             android:label="程序升级"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.TestICActivity"
+            android:exported="false"
             android:label="快速测试电流"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.UpdataDelayActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -111,18 +117,19 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_title"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <!-- 自检页面 -->
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- 自检页面 -->
         <activity
             android:name=".firingdevice.ZiJianActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".firingdevice.ZiJianActivity_upload"
@@ -135,7 +142,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".firingdevice.SetDelayTime"
             android:configChanges="orientation|keyboardHidden"
@@ -309,8 +315,8 @@
             android:name=".zxing.activity.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="扫码"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

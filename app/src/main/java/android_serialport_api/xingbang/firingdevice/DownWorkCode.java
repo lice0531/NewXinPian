@@ -118,6 +118,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     LinearLayout lySetUpData;
     @BindView(R.id.btn_down_return)
     Button btnDownReturn;
+    @BindView(R.id.btn_shouquan)
+    Button btnShouQuan;
     @BindView(R.id.btn_down_inputOK)
     Button btnDownInputOK;
     @BindView(R.id.btn_down_workcode)
@@ -2377,7 +2379,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
 
-    @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_ReisterScanStart_st,
+    @OnClick({R.id.btn_down_return,R.id.btn_shouquan, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_ReisterScanStart_st,
             R.id.btn_ReisterScanStart_ed, R.id.btn_inputOk,
             R.id.ly_setUpdata, R.id.btn_inputGKM, R.id.btn_location, R.id.btn_scanReister, R.id.btn_setdelay,
             R.id.btn_clear_htid, R.id.btn_clear_xmbh, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
@@ -2413,6 +2415,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .create();
                 dialog2.show();
 
+                break;
+            case R.id.btn_shouquan:
+                startActivity(new Intent(this, ShouQuanActivity.class));
                 break;
             case R.id.btn_down_inputOK://保存
 //                hideInputKeyboard();//隐藏键盘

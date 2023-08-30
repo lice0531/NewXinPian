@@ -39,7 +39,7 @@ public class GreenDaoMaster {
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
-    private UserMainDao mUserDao;;
+    private UserMainDao mUserDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -872,6 +872,16 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .orderAsc(DenatorBaseinfoDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuan() {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
 }
