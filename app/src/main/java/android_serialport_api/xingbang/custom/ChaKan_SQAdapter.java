@@ -53,6 +53,14 @@ public class ChaKan_SQAdapter<T> extends RecyclerView.Adapter<ChaKan_SQAdapter.V
     public void setListData(List<T> listData, int index) {
         this.mListData = listData;
         this.mIndex = index;
+    }/**
+     * 加载数据
+     *
+     * @param listData<T>
+     */
+    public void addMoreValue(List<T> listData) {
+        this.mListData.addAll(listData) ;
+
     }
 
     @NonNull
@@ -68,9 +76,18 @@ public class ChaKan_SQAdapter<T> extends RecyclerView.Adapter<ChaKan_SQAdapter.V
 
             List<DetonatorTypeNew> list_detonator = (List<DetonatorTypeNew>) mListData;
 
-//            holder.mTvBlastSerial.setText((list_detonator.size() - position) + "");                 // 序号
-            holder.mTvShellBlastNo.setText(list_detonator.get(position).getDetonatorId());   // 管壳号
+            holder.tv_lg_id.setText((position+1) + "");                 // 序号
+            holder.tv_lg_uid.setText(list_detonator.get(position).getShellBlastNo());   // 管壳号
+            holder.tv_lg_yxq.setText(list_detonator.get(position).getTime());   // 有效期
+            if (list_detonator.get(position).getQibao()!=null){
+                holder.tv_lg_qb.setText(list_detonator.get(position).getQibao()+"");   // 是否起爆
+            }else {
+                holder.tv_lg_qb.setText("");   // 是否起爆
+            }
 
+            if((list_detonator.get(position).getQibao()+"").equals("已起爆")){
+                holder.tv_lg_qb.setTextColor(Color.RED);
+            }
             // 长按
             if (onitemLongClick != null) {
                 holder.itemView.setOnLongClickListener(v -> {
@@ -89,18 +106,17 @@ public class ChaKan_SQAdapter<T> extends RecyclerView.Adapter<ChaKan_SQAdapter.V
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTvBlastSerial;
-        TextView mTvSitHole;
-        TextView mTvDelay;
-        TextView mTvShellBlastNo;
-        TextView mTvStatus;
+        TextView tv_lg_id;
+        TextView tv_lg_uid;
+        TextView tv_lg_yxq;
+        TextView tv_lg_qb;
 
         ViewHolder(View view) {
             super(view);
-            mTvSitHole = view.findViewById(R.id.tv_sithole);
-            mTvDelay = view.findViewById(R.id.tv_delay);
-            mTvShellBlastNo = view.findViewById(R.id.tv_lg_uid);
-            mTvStatus = view.findViewById(R.id.tv_status);
+            tv_lg_id = view.findViewById(R.id.tv_lg_id);
+            tv_lg_uid = view.findViewById(R.id.tv_lg_uid);
+            tv_lg_yxq = view.findViewById(R.id.tv_lg_yxq);
+            tv_lg_qb = view.findViewById(R.id.tv_lg_qb);
         }
     }
 

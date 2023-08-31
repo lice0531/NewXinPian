@@ -550,6 +550,7 @@ public class GreenDaoMaster {
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
         detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 10));//2023-06-15 17:20:40
+        detonatorTypeNew.setQibao("未使用");
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
 
@@ -883,5 +884,51 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
+    }
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Qibao.eq(zt))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuan2(int offset) {
+        return detonatorTypeNewDao.queryBuilder().
+                orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .offset(offset * 50).limit(50).list();
+    }
+
+    /**
+     * 修改授权库中雷管状态
+     *
+     * @param shell 管壳号
+     * @param qibao 状态
+     */
+    public void updateDetonatorTypezt(String shell, String qibao) {
+        DetonatorTypeNew entity = detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shell))
+                .build()
+                .unique();
+        entity.setQibao(qibao);
+        detonatorTypeNewDao.update(entity);
     }
 }

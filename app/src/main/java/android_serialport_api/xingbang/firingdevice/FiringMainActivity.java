@@ -1041,7 +1041,11 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.deleteRecord();//删除日志
 
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+
+        GreenDaoMaster master = new GreenDaoMaster();
         for (DenatorBaseinfo dbf : list) {
+            master.updateDetonatorTypezt(dbf.getShellBlastNo(),"已起爆");//更新授权库中状态
+
             DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
             denatorHis_detail.setBlastserial(dbf.getBlastserial());
             denatorHis_detail.setSithole(dbf.getSithole());

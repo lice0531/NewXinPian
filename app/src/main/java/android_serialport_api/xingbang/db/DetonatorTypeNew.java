@@ -29,10 +29,13 @@ public class DetonatorTypeNew {
     private String cong_yscs;//煤许段位
     @Property(nameInDb = "time")
     private String time;//从芯片延时参数
+    @Property(nameInDb = "qibao")
+    private String qibao;//是否起爆
 
-    @Generated(hash = 350380064)
+    @Generated(hash = 1535113931)
     public DetonatorTypeNew(Long Id, String shellBlastNo, String detonatorId,
-            String detonatorIdSup, String zhu_yscs, String cong_yscs, String time) {
+            String detonatorIdSup, String zhu_yscs, String cong_yscs, String time,
+            String qibao) {
         this.Id = Id;
         this.shellBlastNo = shellBlastNo;
         this.detonatorId = detonatorId;
@@ -40,6 +43,7 @@ public class DetonatorTypeNew {
         this.zhu_yscs = zhu_yscs;
         this.cong_yscs = cong_yscs;
         this.time = time;
+        this.qibao = qibao;
     }
     @Generated(hash = 1791749386)
     public DetonatorTypeNew() {
@@ -87,6 +91,14 @@ public class DetonatorTypeNew {
         this.time = time;
     }
 
+    public String getQibao() {
+        return qibao;
+    }
+
+    public void setQibao(String qibao) {
+        this.qibao = qibao;
+    }
+
     @Override
     public String toString() {
         return "DetonatorTypeNew{" +
@@ -96,6 +108,7 @@ public class DetonatorTypeNew {
                 ", detonatorIdSup='" + detonatorIdSup + '\'' +
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
+                ", qibao='" + qibao + '\'' +
                 '}';
     }
 
