@@ -5,11 +5,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -63,9 +65,10 @@ public class SouSuoSQActivity extends AppCompatActivity {
                 // 区域 更新视图
                 case 1:
                     mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString());
+                    Log.e("查询", "mListData: "+mListData.toString() );
                     mAdapter.setListData(mListData, 0);
                     mAdapter.notifyDataSetChanged();
-
+                    hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 default:
                     break;
@@ -86,5 +89,14 @@ public class SouSuoSQActivity extends AppCompatActivity {
                 mHandler_UI.sendMessage(msg);
                 break;
         }
+    }
+
+    //隐藏键盘
+    public void hideInputKeyboard() {
+
+        edit_gkm.clearFocus();//取消焦点
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
 }

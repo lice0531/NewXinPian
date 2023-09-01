@@ -902,7 +902,7 @@ public class GreenDaoMaster {
     public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm) {
         return detonatorTypeNewDao
                 .queryBuilder()
-                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm))
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }

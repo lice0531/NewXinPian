@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ShouQuanActivity extends AppCompatActivity {
     @BindView(R.id.rv_chakan)
@@ -39,6 +42,8 @@ public class ShouQuanActivity extends AppCompatActivity {
     TextView tv_ysy;
     @BindView(R.id.tv_sq_wsy)
     TextView tv_wsy;
+    @BindView(R.id.btn_ss_px)
+    Button btn_ss_px;
     // 1、page变量，标记每次请求的页面number
     private int page = 1;
     private SmartRefreshLayout refreshLayout;
@@ -46,8 +51,10 @@ public class ShouQuanActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private ChaKan_SQAdapter<DetonatorTypeNew> mAdapter;
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
+    private List<DetonatorTypeNew> mListData_ALL = new ArrayList<>();
     private Handler mHandler_UI = new Handler();     // UI处理
     TextView totalbar_title;
+    private boolean paixu_flag = true;//排序标志
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +97,7 @@ public class ShouQuanActivity extends AppCompatActivity {
                 case 1:
 //                    mListData = new GreenDaoMaster().queryDetonatorShouQuan();
                     mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
+                    mListData_ALL=mListData;
                     mRefreshLayout.finishRefresh(true);
                     mAdapter.setListData(mListData, 0);
                     mAdapter.notifyDataSetChanged();
@@ -97,11 +105,20 @@ public class ShouQuanActivity extends AppCompatActivity {
                     break;
                 case 2:
                     mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
+                    mListData_ALL.addAll(mListData);
                     Log.e("授权页面", "mListData: "+mListData.toString() );
                     mRefreshLayout.finishLoadMore(true);
                     mAdapter.addMoreValue(mListData);
                     mAdapter.notifyDataSetChanged();
                     page++;
+                    break;
+                case 3:
+//                    mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+//                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
+                    Collections.sort(mListData_ALL);
+                    mAdapter.setListData(mListData_ALL, 0);
+                    mAdapter.notifyDataSetChanged();
+
                     break;
                 default:
                     break;
@@ -119,5 +136,18 @@ public class ShouQuanActivity extends AppCompatActivity {
     }
 
 
-
+    @OnClick({R.id.btn_ss_px})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_ss_px:
+//                if (paixu_flag) {
+                    mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
+//                    paixu_flag = false;
+//                } else {
+//                    mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
+//                    paixu_flag = true;
+//                }
+                break;
+        }
+    }
 }

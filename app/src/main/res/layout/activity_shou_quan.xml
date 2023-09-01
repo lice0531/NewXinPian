@@ -37,6 +37,12 @@
                 android:text="已使用:"
                 style="@style/alltextstyle"
                 android:textSize="18sp"/>
+            <Button
+                android:id="@+id/btn_ss_px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="排序"
+                style="@style/allbtntstyle"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
