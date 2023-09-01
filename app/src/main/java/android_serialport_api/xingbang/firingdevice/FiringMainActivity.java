@@ -216,6 +216,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean version_2 = true;
     private long time = 0;
     private String Yanzheng_sq = "";//是否验雷管授权
+    private int duan_total=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -938,6 +939,8 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 //            allBlastQu.offer(vo);
 //            list_all_lg.add(vo);
+
+
         }
         for (VoDenatorBaseInfo b : denatorlist2) {
             allBlastQu.offer(b);

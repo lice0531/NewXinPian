@@ -6,7 +6,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/item_data">
+        <ImageView
+            android:id="@+id/iv_check"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/icon_choose_default"
+            android:button="@null"
+            android:layout_gravity="center"/>
     <TextView
         android:background="@drawable/textview_border"
         android:id="@+id/tv_lg_id"

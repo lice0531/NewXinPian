@@ -913,7 +913,7 @@ public class GreenDaoMaster {
     public List<DetonatorTypeNew> queryDetonatorShouQuan2(int offset) {
         return detonatorTypeNewDao.queryBuilder().
                 orderDesc(DetonatorTypeNewDao.Properties.Id)
-                .offset(offset * 50).limit(50).list();
+                .offset(offset * 500).limit(500).list();
     }
 
     /**

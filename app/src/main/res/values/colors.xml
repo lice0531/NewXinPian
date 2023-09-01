@@ -164,4 +164,11 @@
     <color name="laser_color">#0F0</color>
     <color name="corner_color">#00FF00</color>
     <!-- QRCode scanner color end -->
+
+    <color name="default_color">#48558C</color>
+    <color name="selected_color">#009FE8</color>
+    <color name="app_color">#1F2B5D</color>
+    <color name="app_bg_color">#020C49</color>
+    <color name="gray">#8A96A3</color>
+    <color name="yellow">#F39700</color>
 </resources>
