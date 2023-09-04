@@ -81,7 +81,7 @@
                 android:layout_marginLeft="8dp"
                 android:id="@+id/btn_down_inputOK"
                 android:layout_width="0dp"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
                 android:text="输入项目"

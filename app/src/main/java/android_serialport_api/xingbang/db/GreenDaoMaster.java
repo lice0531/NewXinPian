@@ -15,6 +15,7 @@ import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
@@ -39,6 +40,7 @@ public class GreenDaoMaster {
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
+    private DenatorHis_MainDao denatorHis_mainDao;
     private UserMainDao mUserDao;
 
     public GreenDaoMaster() {
@@ -49,6 +51,7 @@ public class GreenDaoMaster {
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
+        this.denatorHis_mainDao = Application.getDaoSession().getDenatorHis_MainDao();
         this.mUserDao = Application.getDaoSession().getUserMainDao();
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
     }
@@ -539,9 +542,7 @@ public class GreenDaoMaster {
     private static void registerDetonator_typeNew(DenatorBaseinfo leiguan) {
 //        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         // 检查重复数据
-        if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
-            return;
-        }
+
         // 雷管类型_新
         DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
         detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
@@ -551,6 +552,11 @@ public class GreenDaoMaster {
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
         detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 10));//2023-06-15 17:20:40
         detonatorTypeNew.setQibao("未使用");
+
+        if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
+            getDaoSession().getDetonatorTypeNewDao().update(detonatorTypeNew);
+            return;
+        }
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
 
@@ -831,6 +837,22 @@ public class GreenDaoMaster {
                 .list();
     }
 
+    /**
+     * 根据起爆时间删除对应的历史记录
+     */
+    public void deleteForHis(String time) {
+        denatorHis_mainDao
+                .queryBuilder().where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }/**
+     * 根据起爆时间删除历史记录对应的雷管数据
+     */
+    public void deleteForDetail(String time) {
+        denatorHis_detailDao
+                .queryBuilder().where(DenatorHis_DetailDao.Properties.Blastdate.eq(time))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
     public DetonatorTypeNew serchDenatorId(String shellBlastNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryShellBlastNoTypeNew(shellBlastNo);
@@ -885,6 +907,16 @@ public class GreenDaoMaster {
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public void deleteDetonatorShouQuan(String gkm) {
+        detonatorTypeNewDao
+                .queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(gkm))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
     /**
      * 查询生产库中雷管
      */
@@ -913,7 +945,7 @@ public class GreenDaoMaster {
     public List<DetonatorTypeNew> queryDetonatorShouQuan2(int offset) {
         return detonatorTypeNewDao.queryBuilder().
                 orderDesc(DetonatorTypeNewDao.Properties.Id)
-                .offset(offset * 500).limit(500).list();
+                .offset(offset * 100).limit(100).list();
     }
 
     /**
@@ -928,7 +960,12 @@ public class GreenDaoMaster {
                 .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shell))
                 .build()
                 .unique();
-        entity.setQibao(qibao);
-        detonatorTypeNewDao.update(entity);
+        Log.e("更新生产库中的起爆状态", "shell: "+shell );
+        if(entity!=null){
+            Log.e("更新生产库中的起爆状态", "entity: "+entity.toString() );
+            entity.setQibao(qibao);
+            detonatorTypeNewDao.update(entity);
+        }
+
     }
 }

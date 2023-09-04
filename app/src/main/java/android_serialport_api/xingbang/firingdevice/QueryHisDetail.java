@@ -20,6 +20,8 @@ import android.os.Message;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -135,6 +137,7 @@ public class QueryHisDetail extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
@@ -435,7 +438,7 @@ public class QueryHisDetail extends BaseActivity {
     private void showLoadMore() {//刷新页面
 //        loadMoreData(currentPage);
         hisAdapter.setDataSource(list_savedate);
-//        mAdapter.notifyDataSetChanged();
+//        hisAdapter.notifyDataSetChanged();
     }
 
 
@@ -929,7 +932,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_230821_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_230904_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {
@@ -997,6 +1000,74 @@ public class QueryHisDetail extends BaseActivity {
                 dialog.show();
 
                 break;
+        }
+    }
+
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_hisdelete, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+                AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
+                builder.setTitle("删除提示");//"请输入用户名和密码"
+                View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                builder.setView(view);
+                final EditText password = view.findViewById(R.id.password);
+                builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                    String b = password.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
+                    if ( b.equals("123")) {
+                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+                        GreenDaoMaster master = new GreenDaoMaster();
+                        for (DenatorHis_Main his:list) {
+                            if(his.getUploadStatus().equals("已上传")){
+                                master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
+                                master.deleteForHis(his.getBlastdate());
+                                master.deleteForDetail(his.getBlastdate());
+                            }
+                        }
+
+                        show_Toast("删除已上传记录");
+                    } else {
+                        show_Toast("密码错误");
+                    }
+                    loadMoreData(currentPage);//读取数据
+                    showLoadMore();
+                    dialog.dismiss();
+                });
+                builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+
+                builder.show();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

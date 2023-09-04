@@ -30,7 +30,8 @@
         <EditText
             android:id="@+id/edit_gkm"
             android:layout_width="300dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:hint="模糊查询,可输入日期和部分管壳码"/>
         <Button
             android:id="@+id/ss_btn_ss"
             android:layout_width="wrap_content"

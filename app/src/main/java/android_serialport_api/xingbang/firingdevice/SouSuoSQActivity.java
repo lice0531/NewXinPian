@@ -54,7 +54,8 @@ public class SouSuoSQActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sou_suo_sqactivity);
         ButterKnife.bind(this);
 
-// 适配器
+        setSupportActionBar(findViewById(R.id.toolbar));
+        // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new ChaKan_SQAdapter<>(this, 0);
         re_ss.setLayoutManager(linearLayoutManager);
