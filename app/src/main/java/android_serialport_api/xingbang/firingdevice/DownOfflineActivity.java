@@ -384,7 +384,7 @@ public class DownOfflineActivity extends BaseActivity {
         values.put("dl_state", "未上传");
         values.put("zb_state", "未上传");
         values.put("spare1", name);
-        values.put("spare2", yxq.substring(0, 10));//申请日期
+        values.put("spare2", yxq);//申请日期 yxq.substring(0, 10)
         values.put("bprysfz",dfAtBprysfz.getText().toString().trim());//身份证号
         values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (dfAtDwdm.getText().toString().trim().length() < 1) {//单位代码

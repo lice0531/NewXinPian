@@ -48,6 +48,7 @@ import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,6 +100,7 @@ public class ShouQuanActivity extends BaseActivity {
     private boolean editorStatus = false;//是否为编辑状态
     private int index = 0;//当前选中的item数
     private String mRegion;     // 区域
+    private String sqrq;     // 区域
 
 
     @Override
@@ -110,6 +112,9 @@ public class ShouQuanActivity extends BaseActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
 //         获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        sqrq = bundle.getString("sqrq");
 
         RefreshLayout mRefreshLayout = findViewById(R.id.refreshLayout);
         //刷新监听
@@ -141,8 +146,9 @@ public class ShouQuanActivity extends BaseActivity {
                 // 区域 更新视图
                 case 1:
 //                    mListData = new GreenDaoMaster().queryDetonatorShouQuan();
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
-                    Log.e("加载", "mListData.size(): "+mListData.size() );
+//                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
+                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForSqrq(sqrq);
+                    Log.e("加载", "mListData.size(): " + mListData.size());
                     mListData_ALL = mListData;
                     for (DetonatorTypeNew item : mListData) {
 
@@ -171,7 +177,7 @@ public class ShouQuanActivity extends BaseActivity {
                     tv_wsy.setText("未使用:" + list.size());
                     break;
                 case 2:
-                    Log.e("刷新", "mListData.size(): "+mListData.size() );
+                    Log.e("刷新", "mListData.size(): " + mListData.size());
                     mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
 //                    mListData_ALL.addAll(mListData);
 
@@ -221,7 +227,6 @@ public class ShouQuanActivity extends BaseActivity {
         });
         // 更新视图
         mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
-
 
 
     }
@@ -410,24 +415,24 @@ public class ShouQuanActivity extends BaseActivity {
         }
 
         String duan = db.getCong_yscs();
-        String version =db.getDetonatorIdSup();
-        String yscs=db.getZhu_yscs();
-        String delay="";
-        switch (duan){
+        String version = db.getDetonatorIdSup();
+        String yscs = db.getZhu_yscs();
+        String delay = "";
+        switch (duan) {
             case "1":
-                delay="0";
+                delay = "0";
                 break;
             case "2":
-                delay="25";
+                delay = "25";
                 break;
             case "3":
-                delay="50";
+                delay = "50";
                 break;
             case "4":
-                delay="75";
+                delay = "75";
                 break;
             case "5":
-                delay="100";
+                delay = "100";
                 break;
         }
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
@@ -450,8 +455,6 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setDuan(duan);
         denator.setAuthorization(version);//导入默认是02版
         getDaoSession().getDenatorBaseinfoDao().insert(denator);
-
-
 
 
     }

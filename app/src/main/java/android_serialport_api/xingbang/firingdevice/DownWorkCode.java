@@ -1842,9 +1842,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.e("点击项目", "position: " + position);
         Log.e("点击项目", "id: " + map_dl.get(position).get("id").toString());
-        Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
+//        Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
+        Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("position", Integer.parseInt(map_dl.get(position).get("id").toString()));
+        bundle.putString("sqrq", map_dl.get(position).get("spare2").toString());//申请日期
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -2042,6 +2044,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             item.put("errNum", sq.getErrNum());
             item.put("coordxy", sq.getCoordxy());
             item.put("spare1", sq.getSpare1());
+            item.put("spare2", sq.getSpare2());//申请日期
             item.put("danLingBean", danLingBean);
             map_dl.add(item);
         }

@@ -473,7 +473,7 @@ public class GreenDaoMaster {
             db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
-            db_sc.setRegdate(sqrq.substring(0, 10));
+            db_sc.setRegdate(sqrq);//原来是截取到日,现在改到小时
             //小于0x0600的就是快速
             //0x09C1就是慢速的
             //0x04C1就是快速的
@@ -550,11 +550,14 @@ public class GreenDaoMaster {
         detonatorTypeNew.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
-        detonatorTypeNew.setTime(leiguan.getRegdate().substring(0, 10));//2023-06-15 17:20:40
+        detonatorTypeNew.setTime(leiguan.getRegdate());//2023-06-15 17:20:40  leiguan.getRegdate().substring(0, 10)
         detonatorTypeNew.setQibao("未使用");
 
         if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
-            getDaoSession().getDetonatorTypeNewDao().update(detonatorTypeNew);
+            Log.e("更新生产库中的雷管信息", "detonatorTypeNew: "+detonatorTypeNew.toString() );
+            GreenDaoMaster master = new GreenDaoMaster();
+            DetonatorTypeNew detonatorType2 = master.queryShellBlastNoTypeNew(detonatorTypeNew.getShellBlastNo());
+            getDaoSession().getDetonatorTypeNewDao().update(detonatorType2);
             return;
         }
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
@@ -947,7 +950,15 @@ public class GreenDaoMaster {
                 orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .offset(offset * 100).limit(100).list();
     }
-
+    /**
+     * 根据申请日期查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForSqrq(String sqrq) {
+        return detonatorTypeNewDao.queryBuilder().
+                 where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
     /**
      * 修改授权库中雷管状态
      *
