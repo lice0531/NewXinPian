@@ -125,12 +125,12 @@ public class ShouQuanActivity extends BaseActivity {
             }
         });
         //加载监听
-        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
-            }
-        });
+//        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
+//            }
+//        });
 
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
@@ -148,10 +148,9 @@ public class ShouQuanActivity extends BaseActivity {
 //                    mListData = new GreenDaoMaster().queryDetonatorShouQuan();
 //                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
                     mListData = new GreenDaoMaster().queryDetonatorShouQuanForSqrq(sqrq);
+                    mList.clear();
                     Log.e("加载", "mListData.size(): " + mListData.size());
-                    mListData_ALL = mListData;
                     for (DetonatorTypeNew item : mListData) {
-
                         ShouQuanData shouQuanData = new ShouQuanData();
                         shouQuanData.setId(item.getId());
                         shouQuanData.setShellBlastNo(item.getShellBlastNo());
@@ -171,16 +170,15 @@ public class ShouQuanActivity extends BaseActivity {
 //                    mAdapter.notifyDataSetChanged();
                     mRefreshLayout.finishRefresh(true);
                     GreenDaoMaster master = new GreenDaoMaster();
-                    List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("未使用");
-                    List<DetonatorTypeNew> list2 = master.queryDetonatorShouQuan("已起爆");
+                    List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("未使用",sqrq);
+                    List<DetonatorTypeNew> list2 = master.queryDetonatorShouQuan("已起爆",sqrq);
                     tv_ysy.setText("已起爆:" + list2.size());
                     tv_wsy.setText("未使用:" + list.size());
                     break;
                 case 2:
                     Log.e("刷新", "mListData.size(): " + mListData.size());
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
-//                    mListData_ALL.addAll(mListData);
-
+//                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
+                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForSqrq(sqrq);
                     for (DetonatorTypeNew item : mListData) {
                         ShouQuanData shouQuanData = new ShouQuanData();
                         shouQuanData.setId(item.getId());

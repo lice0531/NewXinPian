@@ -923,10 +923,11 @@ public class GreenDaoMaster {
     /**
      * 查询生产库中雷管
      */
-    public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt) {
+    public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt,String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()
                 .where(DetonatorTypeNewDao.Properties.Qibao.eq(zt))
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
