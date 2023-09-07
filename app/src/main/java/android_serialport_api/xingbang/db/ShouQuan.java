@@ -36,7 +36,7 @@ public class ShouQuan extends LitePalSupport {
     private String bprysfz;
     @Property(nameInDb = "coordxy")
     private String coordxy;
-    @Property(nameInDb = "qblgNum")//目前保存的是验证项目时保存的对应id
+    @Property(nameInDb = "qblgNum")//目前保存的是起爆了多少发雷管
     private String qblgNum;
     @Property(nameInDb = "spare1")
     private String spare1;
