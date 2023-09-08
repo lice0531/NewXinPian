@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.ChaKan_SQAdapter;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
@@ -27,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SouSuoSQActivity extends AppCompatActivity {
+public class SouSuoSQActivity extends BaseActivity {
 
 
     @BindView(R.id.ss_btn_ss)
@@ -48,6 +50,7 @@ public class SouSuoSQActivity extends AppCompatActivity {
     private ChaKan_SQAdapter<DetonatorTypeNew> mAdapter;
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
     private Handler mHandler_UI = new Handler();     // UI处理
+    private String sqrq;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,11 @@ public class SouSuoSQActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(findViewById(R.id.toolbar));
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        sqrq = bundle.getString("sqrq");
+
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new ChaKan_SQAdapter<>(this, 0);
@@ -65,8 +73,11 @@ public class SouSuoSQActivity extends AppCompatActivity {
             switch (msg.what) {
                 // 区域 更新视图
                 case 1:
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString());
+                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(),sqrq);
                     Log.e("查询", "mListData: "+mListData.toString() );
+                    if(mListData.size()==0){
+                        show_Toast("未找到当前雷管");
+                    }
                     mAdapter.setListData(mListData, 0);
                     mAdapter.notifyDataSetChanged();
                     hideInputKeyboard();//隐藏键盘,取消焦点

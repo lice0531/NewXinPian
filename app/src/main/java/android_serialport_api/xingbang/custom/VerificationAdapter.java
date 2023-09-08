@@ -105,7 +105,7 @@ public class VerificationAdapter extends BaseAdapter implements OnClickListener 
         } else {
             viewHolder.tv_sq_qbzt.setTextColor(Color.WHITE);
         }
-        viewHolder.tv_sq_sum.setText(((DanLingBean) list.get(position).get("danLingBean")).getLgs().getLg().size() + "发");//总数
+        viewHolder.tv_sq_sum.setText(( list.get(position).get("total") + "发"));//总数
         viewHolder.tv_sq_qbzt.setText((list.get(position).get("qbzt")) + "");//起爆状态
         viewHolder.btn_del_sq.setTag(position);
         viewHolder.btn_del_sq.setOnClickListener(this);

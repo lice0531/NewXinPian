@@ -5,19 +5,16 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,7 +28,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +36,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,13 +48,10 @@ import android_serialport_api.xingbang.custom.LoadHisDetailRecyclerAdapter;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
-import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
-import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
@@ -78,8 +70,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import com.google.android.material.snackbar.Snackbar;
 
 /**
  * 查看历史记录
@@ -932,7 +922,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_230904_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_230907_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {

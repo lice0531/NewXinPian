@@ -323,7 +323,7 @@ public class DownOfflineActivity extends BaseActivity {
                 if (danLingBean.getCwxx().equals("0")) {
                     if (danLingBean.getZbqys().getZbqy().size() > 0) {
                         for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
-                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
+                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq(),danLingBean.getLgs().getLg().size());
                         }
                     }
                 }
@@ -345,36 +345,12 @@ public class DownOfflineActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 向数据库中插入数据
-     */
-    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy) {
-        ContentValues values = new ContentValues();
-        values.put("htbh", htbh);
-        values.put("xmbh", xmbh);
-        values.put("json", json);
-        values.put("errNum", errNum + "");
-        values.put("qbzt", "未爆破");
-        values.put("dl_state", "未上传");
-        values.put("zb_state", "未上传");
-        values.put("bprysfz", dfAtBprysfz.getText().toString().trim());//身份证号
-        values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
-        if (dfAtDwdm.getText().toString().trim().length() < 1) {//单位代码
-            values.put("dwdm", "");
-        } else {
-            values.put("dwdm", dfAtDwdm.getText().toString().trim());
-        }
 
-        Log.e(TAG, "插入数据-成功");
-        db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
-//        Utils.saveFile();//把软存中的数据存入磁盘中
-        saveData(htbh, xmbh, dfAtBprysfz.getText().toString().trim(), coordxy);
-    }
 
     /**
      * 向数据库中插入数据
      */
-    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq) {
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq,int toal) {
         ContentValues values = new ContentValues();
         values.put("htbh", htbh);
         values.put("xmbh", xmbh);
@@ -385,6 +361,7 @@ public class DownOfflineActivity extends BaseActivity {
         values.put("zb_state", "未上传");
         values.put("spare1", name);
         values.put("spare2", yxq);//申请日期 yxq.substring(0, 10)
+        values.put("total", toal);//总数
         values.put("bprysfz",dfAtBprysfz.getText().toString().trim());//身份证号
         values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (dfAtDwdm.getText().toString().trim().length() < 1) {//单位代码

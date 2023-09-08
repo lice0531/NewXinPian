@@ -76,6 +76,7 @@
                 style="@style/allbtntstyle"
                 android:text="授权"
                 android:textSize="20sp"
+                android:visibility="gone"
                 />
             <Button
                 android:layout_marginLeft="8dp"

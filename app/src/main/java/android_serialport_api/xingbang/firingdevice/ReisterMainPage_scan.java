@@ -302,7 +302,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         scan();//扫描初始化//扫描参数设置
         hideInputKeyboard();//隐藏焦点
         Utils.writeRecord("---进入手动输入和扫码注册页面---");
-        showDenatorSum();//显示雷管总数,要放在初始化区号后
+//        showDenatorSum();//显示雷管总数,要放在初始化区号后
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
         showDenatorSum();//显示雷管总数

@@ -113,6 +113,7 @@ public class DetonatorTypeNew implements Comparable<DetonatorTypeNew>{
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
                 ", qibao='" + qibao + '\'' +
+                ", time='" + time + '\'' +
                 '}';
     }
 
@@ -144,9 +145,9 @@ public class DetonatorTypeNew implements Comparable<DetonatorTypeNew>{
             return 1;
         } else {
             if (liushui1 > liushui2) {
-                return -1;
-            } else if (liushui1 < liushui2) {
                 return 1;
+            } else if (liushui1 < liushui2) {
+                return -1;
             } else {
                 return 0;
             }

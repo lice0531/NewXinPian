@@ -298,7 +298,11 @@ public class ShouQuanActivity extends BaseActivity {
         switch (item.getItemId()) {
 
             case R.id.item_1:
-                startActivity(new Intent(this, SouSuoSQActivity.class));
+                Intent intent = new Intent(this, SouSuoSQActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("sqrq", sqrq);//申请日期
+                intent.putExtras(bundle);
+                startActivity(intent);
 
                 return true;
             case R.id.item_2:
@@ -347,6 +351,8 @@ public class ShouQuanActivity extends BaseActivity {
             }
         }
         show_Toast("删除成功");
+        Log.e("删除", "mList.size(): "+mList.size() );
+        master.updataShouQuan(sqrq,mList.size());
         //删除选中的item之后判断是否还有数据，没有则退出编辑模式
         if (mList.size() != 0) {
             index = 0;//删除之后置为0

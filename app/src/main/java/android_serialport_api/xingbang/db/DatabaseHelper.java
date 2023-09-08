@@ -147,7 +147,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "coordxy text,"//经纬度
             + "qblgNum text,"//已起爆雷管数量
             + "spare1 text,"//项目名称
-            + "spare2 text )";//备用2
+            + "spare2 text,"//备用2
+            + "total int )";//总数
 
     //用于创建授权信息表
     public static final String CREATE_PROJECT = "create table Project ("

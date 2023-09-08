@@ -1891,7 +1891,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         values.put("dl_state", "未上传");
         values.put("zb_state", "未上传");
         values.put("spare1", name);//项目名称
-        values.put("spare2", yxq.substring(0, 10));//下载日期
+        values.put("spare2", yxq);//下载日期
+        values.put("total", list_uid.size());//总数
         values.put("bprysfz", at_bprysfz.getText().toString().trim());//身份证号
         values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (at_dwdm.getText().toString().trim().length() < 1) {//单位代码
@@ -2046,6 +2047,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             item.put("coordxy", sq.getCoordxy());
             item.put("spare1", sq.getSpare1());
             item.put("spare2", sq.getSpare2());//申请日期
+            item.put("total", sq.getTotal());
             item.put("danLingBean", danLingBean);
             map_dl.add(item);
         }
@@ -2443,8 +2445,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setPositiveButton("确认下载", (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
-                                upload();
-//                                upload_xingbang();
+//                                upload();
+                                upload_xingbang();//3030431702912
                             }
                         }).create();
                 dialog.show();

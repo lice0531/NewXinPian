@@ -6,7 +6,6 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -444,7 +443,7 @@ public class GreenDaoMaster {
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
-                registerDetonator_typeNew(db);//更新到生产数据库中
+                registerDetonator_typeNew(db,sqrq);//更新到生产数据库中
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
@@ -491,7 +490,7 @@ public class GreenDaoMaster {
 //                db_sc.setAuthorization("01");
 //            }
 //            db_sc.setRegdate(lgBean.getYxq().substring(0, 8));
-            registerDetonator_typeNew(db_sc);//更新到生产数据库中
+            registerDetonator_typeNew(db_sc,sqrq);//更新到生产数据库中
 
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
@@ -539,7 +538,7 @@ public class GreenDaoMaster {
     /**
      * 读取输入注册
      */
-    private static void registerDetonator_typeNew(DenatorBaseinfo leiguan) {
+    private static void registerDetonator_typeNew(DenatorBaseinfo leiguan,String sqrq) {
 //        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         // 检查重复数据
 
@@ -555,9 +554,14 @@ public class GreenDaoMaster {
 
         if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
             Log.e("更新生产库中的雷管信息", "detonatorTypeNew: "+detonatorTypeNew.toString() );
+            Log.e("更新生产库中的雷管信息", "leiguan.getRegdate(): "+leiguan.getRegdate());
+            Log.e("更新生产库中的雷管信息", "sqrq: "+sqrq);
+
             GreenDaoMaster master = new GreenDaoMaster();
             DetonatorTypeNew detonatorType2 = master.queryShellBlastNoTypeNew(detonatorTypeNew.getShellBlastNo());
+            detonatorType2.setTime(sqrq);
             getDaoSession().getDetonatorTypeNewDao().update(detonatorType2);
+            Log.e("更新生产库中的雷管信息", "detonatorType2: "+detonatorType2);
             return;
         }
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
@@ -790,6 +794,15 @@ public class GreenDaoMaster {
         result.where(ShouQuanDao.Properties.Spare2.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
     /**
+     * 删除授权数据
+     */
+    public  void updataShouQuan(String time,int total) {
+        QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
+        ShouQuan shouQuan =result.where(ShouQuanDao.Properties.Spare2.eq(time)).unique();
+        shouQuan.setTotal(total);
+        mShouquanDao.update(shouQuan);
+    }
+    /**
      * 删除某一发雷管
      */
     public void deleteDetonatorForType(String gkm) {
@@ -935,9 +948,10 @@ public class GreenDaoMaster {
     /**
      * 查询生产库中雷管
      */
-    public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm) {
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm,String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
                 .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();

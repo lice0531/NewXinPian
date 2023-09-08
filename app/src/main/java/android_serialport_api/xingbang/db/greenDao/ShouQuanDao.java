@@ -39,6 +39,7 @@ public class ShouQuanDao extends AbstractDao<ShouQuan, Long> {
         public final static Property QblgNum = new Property(12, String.class, "qblgNum", false, "qblgNum");
         public final static Property Spare1 = new Property(13, String.class, "spare1", false, "spare1");
         public final static Property Spare2 = new Property(14, String.class, "spare2", false, "spare2");
+        public final static Property Total = new Property(15, int.class, "total", false, "total");
     }
 
 
@@ -68,7 +69,8 @@ public class ShouQuanDao extends AbstractDao<ShouQuan, Long> {
                 "\"coordxy\" TEXT," + // 11: coordxy
                 "\"qblgNum\" TEXT," + // 12: qblgNum
                 "\"spare1\" TEXT," + // 13: spare1
-                "\"spare2\" TEXT);"); // 14: spare2
+                "\"spare2\" TEXT," + // 14: spare2
+                "\"total\" INTEGER NOT NULL );"); // 15: total
     }
 
     /** Drops the underlying database table. */
@@ -155,6 +157,7 @@ public class ShouQuanDao extends AbstractDao<ShouQuan, Long> {
         if (spare2 != null) {
             stmt.bindString(15, spare2);
         }
+        stmt.bindLong(16, entity.getTotal());
     }
 
     @Override
@@ -235,6 +238,7 @@ public class ShouQuanDao extends AbstractDao<ShouQuan, Long> {
         if (spare2 != null) {
             stmt.bindString(15, spare2);
         }
+        stmt.bindLong(16, entity.getTotal());
     }
 
     @Override
@@ -259,7 +263,8 @@ public class ShouQuanDao extends AbstractDao<ShouQuan, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // coordxy
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // qblgNum
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // spare1
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // spare2
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // spare2
+            cursor.getInt(offset + 15) // total
         );
         return entity;
     }
@@ -281,6 +286,7 @@ public class ShouQuanDao extends AbstractDao<ShouQuan, Long> {
         entity.setQblgNum(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setSpare1(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setSpare2(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setTotal(cursor.getInt(offset + 15));
      }
     
     @Override
