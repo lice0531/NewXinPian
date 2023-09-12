@@ -133,10 +133,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     }
 
     private void deletaBeian() {
-        long time = (long) 5 * 86400000;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() - time));
-        Log.e("获取到4天前的日期为", "format1: "+format1 );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
         GreenDaoMaster master = new GreenDaoMaster();
         master.deleteTypeLeiGuan(format1);
         master.deleteShouQuan(format1);

@@ -1171,7 +1171,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
                                     Log.e("经纬度", "juli3: " + juli3);
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getLgs().getLg().get(0).getYxq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
@@ -1317,7 +1317,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
                                     Log.e("经纬度", "juli3: " + juli3);
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getLgs().getLg().get(0).getYxq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
@@ -2445,12 +2445,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setPositiveButton("确认下载", (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
-//                                upload();
-                                upload_xingbang();//3030431702912
+                                upload();
+//                                upload_xingbang();//3030431702912
                             }
                         }).create();
                 dialog.show();
-                break;
+                break;//3630725223210
             case R.id.btn_inputGKM://输入管壳码
                 if (lyInput.getVisibility() == View.GONE) {
                     btnInputGKM.setText("隐藏内容");

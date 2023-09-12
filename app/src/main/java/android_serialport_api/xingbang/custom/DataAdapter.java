@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.custom;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -23,19 +24,27 @@ public class DataAdapter extends BaseQuickAdapter<ShouQuanData, BaseViewHolder> 
     @Override
     protected void convert(BaseViewHolder helper, ShouQuanData item) {
         int position = helper.getLayoutPosition();
-        helper.setText(R.id.tv_lg_id, (position+1) + "");// 序号
-        helper.setText(R.id.tv_lg_uid, item.getShellBlastNo());// 管壳号
-        helper.setText(R.id.tv_lg_yxq, item.getTime());// 有效期
-        if (item.getQibao()!=null){
-            helper.setText(R.id.tv_lg_qb, item.getQibao());// 是否起爆
+        helper.setText(R.id.tv_lg_id, item.getShellBlastNo() + "");//UID
+        helper.setText(R.id.tv_lg_uid, item.getTime());// yxq
+        if(item.getDetonatorId()!=null&&item.getDetonatorId().length()==13){
+            helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
+                    item.getZhu_yscs()+
+                    item.getDetonatorIdSup().substring(1)+
+                    item.getCong_yscs());// 工作码
         }else {
-            helper.setText(R.id.tv_lg_qb, "");// 是否起爆
+            helper.setText(R.id.tv_lg_yxq,"");
         }
 
-        if((item.getQibao()+"").equals("已起爆")){
-            helper.setTextColor(R.id.tv_lg_qb, Color.RED);// 是否起爆
+        if (item.getQibao()!=null){
+            helper.setText(R.id.tv_lg_qb, item.getQibao());// 状态
         }else {
-            helper.setTextColor(R.id.tv_lg_qb, Color.BLACK);// 是否起爆
+            helper.setText(R.id.tv_lg_qb, "");// 状态
+        }
+
+        if((item.getQibao()+"").equals("雷管正常")){
+            helper.setTextColor(R.id.tv_lg_qb, Color.GREEN);// 是否起爆
+        }else {
+            helper.setTextColor(R.id.tv_lg_qb, Color.RED);// 是否起爆
         }
 
         helper.addOnClickListener(R.id.item_data);//添加item点击事件

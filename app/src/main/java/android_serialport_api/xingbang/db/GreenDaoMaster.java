@@ -6,7 +6,10 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
@@ -422,7 +425,7 @@ public class GreenDaoMaster {
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                     db.setAuthorization("0"+version);
-                    db.setRegdate(sqrq.substring(0, 10));
+                    db.setRegdate(lgBean.getYxq());
                     //小于0x0600的就是快速
                     //0x09C1就是慢速的
                     //0x04C1就是快速的
@@ -472,7 +475,7 @@ public class GreenDaoMaster {
             db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
-            db_sc.setRegdate(sqrq);//原来是截取到日,现在改到小时
+            db_sc.setRegdate(lgBean.getYxq());//原来是截取到日,现在改到小时
             //小于0x0600的就是快速
             //0x09C1就是慢速的
             //0x04C1就是快速的
@@ -550,16 +553,26 @@ public class GreenDaoMaster {
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
         detonatorTypeNew.setTime(leiguan.getRegdate());//2023-06-15 17:20:40  leiguan.getRegdate().substring(0, 10)
-        detonatorTypeNew.setQibao("未使用");
+        detonatorTypeNew.setQibao("雷管正常");
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = sd.format(new Date(System.currentTimeMillis() ));
+        try {
+            Date date1 = sd.parse(format1);//当前日期
+            Date date2 = sd.parse(leiguan.getRegdate());//有效期
+            if(date1.compareTo(date2)>0){
+                detonatorTypeNew.setQibao("雷管过期");
+                detonatorTypeNew.setDetonatorId("");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
-            Log.e("更新生产库中的雷管信息", "detonatorTypeNew: "+detonatorTypeNew.toString() );
-            Log.e("更新生产库中的雷管信息", "leiguan.getRegdate(): "+leiguan.getRegdate());
-            Log.e("更新生产库中的雷管信息", "sqrq: "+sqrq);
 
             GreenDaoMaster master = new GreenDaoMaster();
             DetonatorTypeNew detonatorType2 = master.queryShellBlastNoTypeNew(detonatorTypeNew.getShellBlastNo());
-            detonatorType2.setTime(sqrq);
+            detonatorType2.setTime(leiguan.getRegdate());
             getDaoSession().getDetonatorTypeNewDao().update(detonatorType2);
             Log.e("更新生产库中的雷管信息", "detonatorType2: "+detonatorType2);
             return;
@@ -784,14 +797,14 @@ public class GreenDaoMaster {
     public  void deleteTypeLeiGuan(String time) {
         Log.e("删除生产数据中的雷管", "time: "+time );
         QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
-        result.where(DetonatorTypeNewDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(DetonatorTypeNewDao.Properties.Time.lt(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
     /**
      * 删除授权数据
      */
     public  void deleteShouQuan(String time) {
         QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
-        result.where(ShouQuanDao.Properties.Spare2.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(ShouQuanDao.Properties.Spare2.lt(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
     /**
      * 删除授权数据

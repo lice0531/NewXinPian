@@ -30,6 +30,9 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.litepal.LitePal;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -100,7 +103,7 @@ public class ShouQuanActivity extends BaseActivity {
     private boolean editorStatus = false;//是否为编辑状态
     private int index = 0;//当前选中的item数
     private String mRegion;     // 区域
-    private String sqrq;     // 区域
+    private String sqrq;
 
 
     @Override
@@ -116,6 +119,20 @@ public class ShouQuanActivity extends BaseActivity {
         Bundle bundle = intent.getExtras();
         sqrq = bundle.getString("sqrq");
 
+        Log.e("获取到有效期为", "sqrq: "+sqrq );//2023-07-04 07:58:14
+//        long time = (long) 5 * 86400000;
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat df = new SimpleDateFormat();
+//        Date sq =null;
+//        try {
+//             sq =df.parse(sqrq);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        String format2 = simpleDateFormat.format(sq);
+//        String format1 = simpleDateFormat.format(format2+ time);
+
+//        Log.e("获取到有效期为", "format1: "+format1 );
         RefreshLayout mRefreshLayout = findViewById(R.id.refreshLayout);
         //刷新监听
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -164,16 +181,17 @@ public class ShouQuanActivity extends BaseActivity {
                             mList.add(shouQuanData);
                         }
                     }
+
                     mAdapter2.setNewData(mList);
                     mAdapter2.notifyDataSetChanged();
 //                    mAdapter.setListData(mListData, 0);
 //                    mAdapter.notifyDataSetChanged();
                     mRefreshLayout.finishRefresh(true);
                     GreenDaoMaster master = new GreenDaoMaster();
-                    List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("未使用",sqrq);
+                    List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("雷管正常",sqrq);
                     List<DetonatorTypeNew> list2 = master.queryDetonatorShouQuan("已起爆",sqrq);
                     tv_ysy.setText("已起爆:" + list2.size());
-                    tv_wsy.setText("未使用:" + list.size());
+                    tv_wsy.setText("雷管正常:" + list.size());
                     break;
                 case 2:
                     Log.e("刷新", "mListData.size(): " + mListData.size());
@@ -413,10 +431,12 @@ public class ShouQuanActivity extends BaseActivity {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
             return;
         }
-        if (checkRepeatDenatorId(db.getShellBlastNo())) {//检查重复数据
+        if (checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
             chongfu = true;
             return;
-        }
+        }else {
+
+
 
         String duan = db.getCong_yscs();
         String version = db.getDetonatorIdSup();
@@ -460,7 +480,7 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setAuthorization(version);//导入默认是02版
         getDaoSession().getDenatorBaseinfoDao().insert(denator);
 
-
+        }
     }
 
     /**

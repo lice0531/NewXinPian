@@ -920,7 +920,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("log", log);//日志
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
-            object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
+            object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("rj_version",  "KT50_3.25_MX_230907_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){

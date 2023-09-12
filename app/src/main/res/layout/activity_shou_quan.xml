@@ -71,28 +71,28 @@
             android:orientation="horizontal">
             <TextView
                 android:background="@drawable/textview_border"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="序号"
+                android:text="UID"
                 style="@style/alltextstyle"
                 android:textSize="18sp"/>
             <TextView
                 android:background="@drawable/textview_border"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:id="@+id/tv_lg_uid"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="管壳码"
+                android:text="有效期"
                 style="@style/alltextstyle"
                 android:textSize="18sp"/>
             <TextView
                 android:background="@drawable/textview_border"
-                android:layout_weight="1.5"
+                android:layout_weight="1"
                 android:id="@+id/tv_lg_yxq"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="有效期"
+                android:text="工作码"
                 style="@style/alltextstyle"
                 android:textSize="18sp"/>
             <TextView
