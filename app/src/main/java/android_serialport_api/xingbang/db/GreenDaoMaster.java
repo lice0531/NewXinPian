@@ -529,7 +529,18 @@ public class GreenDaoMaster {
                     db.setAuthorization("0"+version);
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
-                getDaoSession().getDenatorBaseinfoDao().update(db);
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String format1 = sd.format(new Date(System.currentTimeMillis() ));
+                try {
+                    Date date1 = sd.parse(format1);//当前日期
+                    Date date2 = sd.parse(db.getRegdate());//有效期
+                    if (date1.compareTo(date2) <= 0) {
+                        getDaoSession().getDenatorBaseinfoDao().update(db);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
 
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }

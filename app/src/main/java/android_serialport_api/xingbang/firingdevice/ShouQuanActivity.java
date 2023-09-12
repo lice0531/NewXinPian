@@ -425,16 +425,16 @@ public class ShouQuanActivity extends BaseActivity {
         boolean chongfu = false;
         int maxNo = getMaxNumberNo();
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
-        Log.e("接收注册", "区域mRegion: " + mRegion);
         if (db.getShellBlastNo().length() < 13) {
-
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
             return;
         }
-        if (checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
-            chongfu = true;
+        if (db.getDetonatorId().length()==13&&checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
             return;
-        }else {
+        }
+        if (db.getShellBlastNo().length()==13&&checkRepeatShellNo(db.getShellBlastNo())) {//检查重复数据
+            return;
+        }
 
 
 
@@ -480,7 +480,7 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setAuthorization(version);//导入默认是02版
         getDaoSession().getDenatorBaseinfoDao().insert(denator);
 
-        }
+
     }
 
     /**
@@ -498,6 +498,16 @@ public class ShouQuanActivity extends BaseActivity {
     public boolean checkRepeatDenatorId(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
+        if (denatorBaseinfo.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkRepeatShellNo(String shellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatShellNo(shellBlastNo);
         if (denatorBaseinfo.size() > 0) {
             return true;
         } else {

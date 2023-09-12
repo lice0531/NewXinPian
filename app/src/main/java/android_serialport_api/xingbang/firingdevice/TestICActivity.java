@@ -89,7 +89,7 @@ public class TestICActivity extends SerialPortActivity {
         });
 
         //解析命令用
-//        String fromCommad="C00040080000A2000E00A209EDADC0";
+//        String fromCommad="C0004008000027030500110C4EA7C0";
 //        String cmd = DefCommand.getCmd(fromCommad);//得到 返回命令
 //        if (cmd != null) {
 //            int localSize = fromCommad.length() / 2;
@@ -98,6 +98,19 @@ public class TestICActivity extends SerialPortActivity {
 //        }
 
 
+//        String tempData = "0500";//总线电流
+//        String strLow2 = tempData.substring(0, 2);
+//        String strHigh2 = tempData.substring(2);
+//        int ichigh = Integer.parseInt(strHigh2, 16) * 256;
+//        int icLowInt = Integer.parseInt(strLow2, 16);
+////				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
+//        double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
+//        float busCurrent = (float) (icTotal*1.8);//*400
+//        if(busCurrent<0){
+//            busCurrent=0;
+//        }
+//        busCurrent = Utils.getFloatToFormat(busCurrent, 0, 4);
+//        Log.e("电流", "busCurrent: "+busCurrent );
     }
 
     private void loadMoreData() {
@@ -196,13 +209,11 @@ public class TestICActivity extends SerialPortActivity {
         if (DefCommand.CMD_2_NETTEST_1.equals(cmd)) {//进入测试模式
             //stage=3;
             revOpenCmdTestFlag = 1;
-
-
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("命令", "busInfo: " + busInfo.toString());
+            Log.e("命令", "busInfo: " + busInfo.getBusCurrentIa());
+//            Log.e("命令", "busInfo: " + busInfo.toString());
             busHandler.sendMessage(busHandler.obtainMessage());
-
         } else if ("22".equals(cmd)) { // 关闭测试
             //发出关闭获取得到电压电流
             sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));

@@ -343,18 +343,17 @@ public class SouSuoSQActivity extends BaseActivity {
         boolean chongfu = false;
         int maxNo = getMaxNumberNo();
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
-        Log.e("接收注册", "区域mRegion: " + mRegion);
         if (db.getShellBlastNo().length() < 13) {
 
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
             return;
         }
-        if (checkRepeatDenatorId(db.getDetonatorId())) {//检查芯片码重复数据
+        if (db.getDetonatorId().length() == 13 && checkRepeatDenatorId(db.getDetonatorId())) {//检查芯片码重复数据
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
             chongfu = true;
             return;
         }
-        if (checkRepeatDenatorId(db.getShellBlastNo())) {//检查管壳码重复数据
+        if (checkRepeatShellNo(db.getShellBlastNo())) {//检查管壳码重复数据
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
             chongfu = true;
             return;
@@ -429,7 +428,15 @@ public class SouSuoSQActivity extends BaseActivity {
             return false;
         }
     }
-
+    public boolean checkRepeatShellNo(String shellBlastNo) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatShellNo(shellBlastNo);
+        if (denatorBaseinfo.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     //全部选中
     private void setAllItemChecked() {
         if (mAdapter2 == null) return;
