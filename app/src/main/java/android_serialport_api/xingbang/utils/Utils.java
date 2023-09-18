@@ -71,7 +71,8 @@ public class Utils {
     public static String httpurl_zbw = "14.23.69.2";
     public static String httpurl_zbw_port = "1088";
     public static String httpurl_face = "http://125.77.73.145:8180/entweb/WSPROXY.do";
-    public static String httpurl_xb_upload = "http://182.92.61.78:83/Data/QueryGK";
+//    public static String httpurl_xb_upload = "http://182.92.61.78:83/Data/QueryGK";
+    public static String httpurl_xb_upload = "http://apigk.xingbangtech.com:800/Data/QueryGK";
     public static String httpurl_xb_erweima = "http://182.92.61.78:83/APK_Pro/";
     private static SQLiteDatabase db;
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
@@ -702,12 +703,10 @@ public class Utils {
         return dateString;
     }
 
-    public static String getDateFormatToFileName2() {
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmss");
-        String dateString = formatter.format(date);
+    public static String getDateFormat(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        return dateString;
+        return formatter.format(date);
     }
 
     public static String getyyMMddHHmmssToDateFormat(String date) {

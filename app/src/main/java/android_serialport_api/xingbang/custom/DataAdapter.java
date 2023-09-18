@@ -25,7 +25,12 @@ public class DataAdapter extends BaseQuickAdapter<ShouQuanData, BaseViewHolder> 
     protected void convert(BaseViewHolder helper, ShouQuanData item) {
         int position = helper.getLayoutPosition();
         helper.setText(R.id.tv_lg_id, item.getShellBlastNo() + "");//UID
-        helper.setText(R.id.tv_lg_uid, item.getTime());// yxq
+        if((item.getQibao()+"").equals("雷管正常")){
+            helper.setText(R.id.tv_lg_uid, item.getTime());// yxq
+        }else {
+            helper.setText(R.id.tv_lg_uid, "");// yxq
+        }
+
         if(item.getDetonatorId()!=null&&item.getDetonatorId().length()==13){
             helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
                     item.getZhu_yscs()+

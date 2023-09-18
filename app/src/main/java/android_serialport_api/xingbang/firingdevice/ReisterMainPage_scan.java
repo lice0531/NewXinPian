@@ -1570,7 +1570,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        String denatorId = serchDenatorId(shellNo);
         DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
         //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
-        if (detonatorTypeNew != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
+        if (detonatorTypeNew != null &&detonatorTypeNew.getDetonatorId()!=null &&checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
@@ -1585,25 +1585,54 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
         int delay = 0;
-        if (delay_set.equals("f1")) {//获取延时和段数
-            duan = "1";
-            delay = 0;
-        } else if (delay_set.equals("f2")) {
-            duan = "2";
-            delay = 25;
-        } else if (delay_set.equals("f3")) {
-            duan = "3";
-            delay = 50;
-        } else if (delay_set.equals("f4")) {
-            duan = "4";
-            delay = 75;
-        } else if (delay_set.equals("f5")) {
-            duan = "5";
-            delay = 100;
-        } else {
-            duan = "1";
-            delay = 0;
+        if(detonatorTypeNew!=null){
+            duan =detonatorTypeNew.getCong_yscs();
+            switch (duan) {
+                case "1":
+                    delay = 0;
+                    delay_set="f1";
+                    break;
+                case "2":
+                    delay = 25;
+                    delay_set="f2";
+                    break;
+                case "3":
+                    delay = 50;
+                    delay_set="f3";
+                    break;
+                case "4":
+                    delay = 75;
+                    delay_set="f4";
+                    break;
+                case "5":
+                    delay = 100;
+                    delay_set="f5";
+                    break;
+            }
+        }else {
+            if (delay_set.equals("f1")) {//获取延时和段数
+                duan = "1";
+                delay = 0;
+            } else if (delay_set.equals("f2")) {
+                duan = "2";
+                delay = 25;
+            } else if (delay_set.equals("f3")) {
+                duan = "3";
+                delay = 50;
+            } else if (delay_set.equals("f4")) {
+                duan = "4";
+                delay = 75;
+            } else if (delay_set.equals("f5")) {
+                duan = "5";
+                delay = 100;
+            } else {
+                duan = "1";
+                delay = 0;
+            }
         }
+
+
+
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
 
 
@@ -1613,7 +1642,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("FF");
@@ -1625,6 +1654,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
             denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+            denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
             denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
         }else {
             denatorBaseinfo.setAuthorization("02");//雷管芯片型号
@@ -1701,7 +1731,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("FF");
@@ -1713,6 +1743,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
             denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+            denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
             denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
         }else {
             denatorBaseinfo.setAuthorization("02");//雷管芯片型号??不知道直接给个默认值合理不
@@ -1775,7 +1806,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("FF");
@@ -1865,7 +1896,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("FF");
@@ -1954,7 +1985,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setShellBlastNo(shellNo);
             denatorBaseinfo.setDelay(delay);
-            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("FF");
@@ -1966,6 +1997,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
                 denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
                 denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
             }else {
                 denatorBaseinfo.setAuthorization("0"+version);//雷管芯片型号
@@ -2084,6 +2116,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * @return 是否重复
      */
     public boolean checkRepeatdenatorId(String detonatorId) {
+        if(detonatorId.length()==0){
+            return false;
+        }
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));

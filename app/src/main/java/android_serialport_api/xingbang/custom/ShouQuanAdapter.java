@@ -37,6 +37,9 @@ public class ShouQuanAdapter extends BaseAdapter implements OnClickListener{
     }
 
 
+    public void setList(List<Map<String, Object>> list) {
+        this.list = list;
+    }
 
     public interface InnerItemOnclickListener {
         void itemClick(View v);

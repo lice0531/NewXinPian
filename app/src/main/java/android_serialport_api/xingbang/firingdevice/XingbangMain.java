@@ -38,6 +38,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -166,7 +168,8 @@ public class XingbangMain extends BaseActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
     private String version_cloud;
-
+    private String Yanzheng_sq = "";//是否验雷管已经授权
+    private int Yanzheng_sq_size = 0;
     @Override
     protected void onPause() {
         super.onPause();
@@ -176,6 +179,7 @@ public class XingbangMain extends BaseActivity {
     protected void onRestart() {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -262,8 +266,35 @@ public class XingbangMain extends BaseActivity {
 //            GetFileName("XB_KT50_Second_MX_Version_14", ".apk");//支持14位扫码版本
         }
 
-    }
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
 
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        long time2 = (long) 3 * 86400000;
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = sd.format(new Date(System.currentTimeMillis() ));
+        try {
+            Date date3 = sd.parse("2023-09-17 10:24:06");//当前日期
+            String format2 = simpleDateFormat.format(date3.getTime() + time2);
+            Date date1 = sd.parse("2023-07-06 18:06:43");//当前日期
+            Date date2 = sd.parse("2023-07-07 07:58:14");//有效期
+            Log.e("时间对比", "当前日期date1: "+date1 );
+            Log.e("时间对比", "有效期date2: "+date2 );
+            Log.e("时间对比", "format2: "+format2 );
+            Log.e("时间对比", "date1.compareTo(date2): "+date1.compareTo(date2) );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    private void queryBeian() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list_shou= master.queryLeiGuan(format1);
+        Yanzheng_sq_size=list_shou.size();
+        Log.e(TAG, "超过授权日期list_shou: "+list_shou.size() );
+    }
     /**
      * 初始化FTP
      */
@@ -668,6 +699,13 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+                    createDialog();
+                    return;
+                }
+                //3分钟验证
                 long time = System.currentTimeMillis();
                 long time2 = System.nanoTime();
                 Log.e(TAG, "time: " + time);
@@ -697,7 +735,12 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+                    createDialog();
+                    return;
+                }
 
 
                 time = System.currentTimeMillis();
@@ -712,7 +755,7 @@ public class XingbangMain extends BaseActivity {
                     return;
                 }
 
-                GreenDaoMaster master = new GreenDaoMaster();
+                GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
                 List<UserMain> userMainList=master.queryAllUser();
                 if(userMainList.size()!=0){
                     loginToFiring();
@@ -873,22 +916,22 @@ public class XingbangMain extends BaseActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提醒");//"说明"
-        builder.setMessage("有未设置延时的雷管,是否继续起爆?");
-        builder.setPositiveButton("继续起爆", (dialog, which) -> {
-            String str5 = "起爆";
-            if (Yanzheng.equals("验证")) {
-                //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
-                intent5.putExtra("dataSend", str5);
-                startActivityForResult(intent5, 1);
-            } else {
-                Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
-                intent5.putExtra("dataSend", str5);
-                startActivityForResult(intent5, 1);
-            }
-            dialog.dismiss();
-        });
+        builder.setTitle("未授权提醒");//"说明"
+        builder.setMessage("有未授权的雷管,请进行授权后再进行起爆!");
+//        builder.setPositiveButton("继续起爆", (dialog, which) -> {
+//            String str5 = "起爆";
+//            if (Yanzheng.equals("验证")) {
+//                //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
+//                intent5.putExtra("dataSend", str5);
+//                startActivityForResult(intent5, 1);
+//            } else {
+//                Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
+//                intent5.putExtra("dataSend", str5);
+//                startActivityForResult(intent5, 1);
+//            }
+//            dialog.dismiss();
+//        });
         builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
@@ -924,7 +967,7 @@ public class XingbangMain extends BaseActivity {
             baseinfo.setSithole(maxNo + "");
             baseinfo.setShellBlastNo(a[0]);
             baseinfo.setDelay(Integer.parseInt(a[1]));
-            baseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            baseinfo.setRegdate(Utils.getDateFormat(new Date()));
             baseinfo.setStatusCode("02");
             baseinfo.setStatusName("已注册");
             baseinfo.setErrorCode("");

@@ -468,7 +468,7 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
         denator.setDelay(Integer.parseInt(delay));
-        denator.setRegdate(Utils.getDateFormatLong(new Date()));
+        denator.setRegdate(db.getTime());
         denator.setStatusCode("02");
         denator.setStatusName("已注册");
         denator.setErrorCode("FF");

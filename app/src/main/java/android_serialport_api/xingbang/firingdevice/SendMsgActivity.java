@@ -318,7 +318,7 @@ public class SendMsgActivity extends BaseActivity {
             denator.setShellBlastNo(a[2]);
             denator.setZhu_yscs(a[3]);
             denator.setDelay(Integer.parseInt(a[1]));
-            denator.setRegdate(Utils.getDateFormatLong(new Date()));
+            denator.setRegdate(Utils.getDateFormat(new Date()));
             denator.setStatusCode("02");
             denator.setStatusName("已注册");
             denator.setErrorCode("FF");
@@ -858,7 +858,7 @@ public class SendMsgActivity extends BaseActivity {
      * 读取输入注册
      */
     private void registerDetonator_typeNew(String leiguan) {
-        String time = Utils.getDateFormatLong(new Date());
+        String time = Utils.getDateFormat(new Date());
         getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         String[] lg = leiguan.split(",");
         String shellNo;

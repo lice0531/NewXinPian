@@ -216,7 +216,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private TextView txt_currentIC;
     private SendOpenPower sendOpenThread;
     private CloseOpenPower closeOpenThread;
-    private ScanInterface scanDecode;
+//    private ScanInterface scanDecode;
     private volatile int initCloseCmdReFlag = 0;
     private volatile int initOpenCmdReFlag = 0;
     private volatile int revCloseCmdReFlag = 0;
@@ -280,7 +280,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         btn_onClick();//button的onClick
 
         handler();//所有的handler
-        scan();//扫描初始化
 
         if (factoryFeature != null && factoryFeature.trim().length() == 1) {
             edit_end_entAT1Bit_ed.setText(factoryFeature);
@@ -349,67 +348,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         version = messageBean.getVersion() + "";
     }
 
-    private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
-
-        scanDecode.getBarCode(data -> {
-            Log.e("扫码", "data: " + data);
-            if (deleteList()) return;
-            hideInputKeyboard();//隐藏光标
-            //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
-            if (data.length() == 13) {
-                updateMessage("01");
-            } else if (data.length() == 28) {//P53904180500005390418050000
-                updateMessage("02");
-            } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-                updateMessage("02");
-            } else if (data.length() == 14) {//5620302H00001A62F400FFF20AB603
-                updateMessage("02");
-            }
-            if (sanButtonFlag > 0) {//扫码结果设置到输入框里
-                Log.e("扫码注册", "data: " + data);
-                decodeBar(data);
-                Message msg = new Message();
-                msg.obj = data;
-                msg.what = 9;
-                mHandler_tip.sendMessage(msg);
-                scanDecode.stopScan();
-            } else {
-                String barCode;
-                String denatorId;
-                if (data.length() == 28) {
-                    Log.e("扫码1", "data: " + data);
-                    String a = data.substring(0, 1);
-                    if (a.equals("Y")) {
-                        //四川版  //Y 5630106A07499 00F30C9F 9F09 2 5
-                        barCode = data.substring(1, 14);
-                        denatorId = "A6210" + data.substring(14, 22);
-                        String yscs = data.substring(22, 26);
-                        String version = data.substring(26, 27);
-                        duan = data.substring(27, 28);
-                        insertSingleDenator_28(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
-                    } else {
-                        //山东版  //1030213A00000 700F442CE E10A 1 2
-                        barCode = data.substring(0, 13);
-                        denatorId = "A621" + data.substring(13, 22);
-                        String yscs = data.substring(22, 26);
-                        String version = data.substring(26, 27);
-                        duan = data.substring(27, 28);
-                        insertSingleDenator_28(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
-                    }
-
-
-                }
-                else if(data.length() == 14){
-                    barCode = data.substring(0, 13);
-                    duan = data.substring(13, 14);
-                    insertSingleDenator_14(barCode);
-                }
-                hideInputKeyboard();//隐藏光标
-            }
-        });
-    }
 
     private void handler() {
         mHandler_showNum =new Handler(msg -> {
@@ -905,8 +843,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        loadMoreData_all_lg();//
 
         if (db != null) db.close();
-        scanDecode.stopScan();//停止扫描
-        scanDecode.onDestroy();//回复初始状态
+//        scanDecode.stopScan();//停止扫描
+//        scanDecode.onDestroy();//回复初始状态
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -1459,10 +1397,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
                 denatorBaseinfo.setShellBlastNo(detonatorTypeNew.getShellBlastNo());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
                 Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
             } else {
                 denatorBaseinfo.setShellBlastNo(detonatorId);
                 denatorBaseinfo.setZhu_yscs(zhuce_form.getZhu_yscs());
+                denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
                 Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
             }
 
@@ -1487,7 +1427,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setDenatorId(detonatorId);
-            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("FF");
@@ -1508,184 +1448,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         SoundPlayUtils.play(1);
         return 0;
     }
-
-    /***
-     * 扫码注册28位二维码方法
-     */
-    private int insertSingleDenator_28(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
-        if (shellNo.length() != 13) {
-            return -1;
-        }
-        if (check(shellNo) == -1) {
-            return -1;
-        }
-        if (checkRepeatdenatorId(denatorId)) {//芯片码查重
-            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-            return -1;
-        }
-
-
-//        int maxNo = getMaxNumberNo();
-
-        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
-
-        switch (duan) {
-            case "1":
-                delay = 0;
-                delay_set="f1";
-                break;
-            case "2":
-                delay = 25;
-                delay_set="f2";
-                break;
-            case "3":
-                delay = 50;
-                delay_set="f3";
-                break;
-            case "4":
-                delay = 75;
-                delay_set="f4";
-                break;
-            case "5":
-                delay = 100;
-                delay_set="f5";
-                break;
-        }
-
-        Log.e("扫码", "delay_set: " + delay_set);
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
-//        int a=0;
-//        if(duan_scan.equals("0")){//普通雷管按当前页面选择的来
-//            a=duan;
-//        }else {
-//            a=Integer.parseInt(duan_scan);//煤许雷管按二维码设置的来
-//        }
-        int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan_scan);//也得做区域区分
-        Log.e("段雷管总数", "duanNUM: "+duanNUM+"  duan_scan:"+duan_scan+"  mRegion:"+mRegion );
-        maxNo++;
-        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-        denatorBaseinfo.setBlastserial(maxNo);
-        denatorBaseinfo.setSithole(maxNo + "");
-        denatorBaseinfo.setShellBlastNo(shellNo);
-        denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
-        denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setStatusName("已注册");
-        denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("");
-        denatorBaseinfo.setWire("");//桥丝状态
-        denatorBaseinfo.setPiece(mRegion);
-        denatorBaseinfo.setDenatorId(denatorId);
-        denatorBaseinfo.setZhu_yscs(yscs);
-        denatorBaseinfo.setDuan(duan_scan);
-        denatorBaseinfo.setDuanNo(duan_scan + "-" + (duanNUM + 1));
-        denatorBaseinfo.setAuthorization(version);//雷管芯片型号
-        //向数据库插入数据
-        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
-        Message msg = new Message();
-        msg.arg1 = Integer.parseInt(duan_scan);
-        msg.obj = delay_set;
-        mHandler_showNum.sendMessage(msg);
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-
-//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-        Utils.saveFile();//把闪存中的数据存入磁盘中
-        SoundPlayUtils.play(1);
-        return 0;
-    }
-
-    /***
-     * 扫14位管壳码
-     */
-    private int insertSingleDenator_14(String shellNo) {
-        if (shellNo.length() != 13) {
-            return -1;
-        }
-        if (check(shellNo) == -1) {
-            return -1;
-        }
-//        String denatorId = serchDenatorId(shellNo);
-        DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
-        //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
-        if (detonatorTypeNew != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
-            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-            return -1;
-        }
-//        if (detonatorTypeNew == null) {
-//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
-//            return -1;
-//        }
-
-//        int maxNo = getMaxNumberNo();
-//        int delay = getMaxDelay(maxNo);//获取最大延时
-        // 获取 该区域 最大序号
-        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
-        // 获取 该区域 最大序号的延时
-        int delay = 0;
-        switch (duan) {
-            case "1":
-                delay = 0;
-                delay_set="f1";
-                break;
-            case "2":
-                delay = 25;
-                delay_set="f2";
-                break;
-            case "3":
-                delay = 50;
-                delay_set="f3";
-                break;
-            case "4":
-                delay = 75;
-                delay_set="f4";
-                break;
-            case "5":
-                delay = 100;
-                delay_set="f5";
-                break;
-        }
-        int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
-
-
-        maxNo++;
-        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-        denatorBaseinfo.setBlastserial(maxNo);
-        denatorBaseinfo.setSithole(maxNo + "");
-        denatorBaseinfo.setShellBlastNo(shellNo);
-        denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
-        denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setStatusName("已注册");
-        denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("");
-        denatorBaseinfo.setWire("");//桥丝状态
-        denatorBaseinfo.setPiece(mRegion);
-        denatorBaseinfo.setDuan(duan);//段
-        denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
-        denatorBaseinfo.setAuthorization(version);//雷管芯片型号
-        if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
-            denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
-            denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
-            denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
-        }else {
-            denatorBaseinfo.setAuthorization("02");//雷管芯片型号??不知道直接给个默认值合理不
-        }
-        //向数据库插入数据
-        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
-        Message msg = new Message();
-        msg.arg1 = Integer.parseInt(duan);
-        msg.obj = delay_set;
-        mHandler_showNum.sendMessage(msg);
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        Utils.saveFile();//把闪存中的数据存入磁盘中
-        SoundPlayUtils.play(1);
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
-        return 0;
-    }
-
-
-
 
     /***
      * 得到最大序号
@@ -2006,10 +1768,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
+//                    scanDecode.starScan();//启动扫描
                 } else {
                     continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
+//                    scanDecode.stopScan();//停止扫描
                 }
                 sanButtonFlag = 1;
                 break;
@@ -2018,10 +1780,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
+//                    scanDecode.starScan();//启动扫描
                 } else {
                     continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
+//                    scanDecode.stopScan();//停止扫描
                 }
                 sanButtonFlag = 2;
                 break;

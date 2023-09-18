@@ -44,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +55,7 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.models.DanLingOffLinBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -307,16 +309,28 @@ public class DownOfflineActivity extends BaseActivity {
             return;
         }
         Gson gson = new Gson();
-        DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
+        DanLingOffLinBean danLingBean = gson.fromJson(res, DanLingOffLinBean.class);
 
         try {
             JSONObject object1 = new JSONObject(res);
+//            Utils.writeRecord("解密信息"+object1.toString());
             String cwxx = object1.getString("cwxx");
+            String sqrq2=danLingBean.getSqrq();
+            long time2 = (long) 3 * 86400000;
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String yxq="";
+            try {
+                Date date3 = sd.parse(sqrq2);//当前日期
+                yxq = sd.format(date3.getTime() + time2);
+                Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             if (cwxx.equals("0")) {
 
                 int err = 0;
                 for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                    Log.e(TAG, "danLingBean.getLgs().getLg().get(i): "+danLingBean.getLgs().getLg().get(i) );
+//                    Log.e(TAG, "danLingBean.getLgs().getLg().get(i): "+danLingBean.getLgs().getLg().get(i) );
                     if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
                         err++;
                     }
@@ -324,21 +338,20 @@ public class DownOfflineActivity extends BaseActivity {
                 if (danLingBean.getCwxx().equals("0")) {
                     if (danLingBean.getZbqys().getZbqy().size() > 0) {
                         for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
-                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getLgs().getLg().get(0).getYxq(),danLingBean.getLgs().getLg().size());
+                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),yxq,danLingBean.getLgs().getLg().size());
                         }
                     }
                 }
                 Log.e(TAG, "danLingBean.getLgs().getLg().size(): "+danLingBean.getLgs().getLg().size() );
-                Log.e(TAG, "danLingBean.getLgs().getLg().size(): "+danLingBean.getLgs().getLg().size() );
 
                 if (danLingBean.getLgs().getLg().size() > 0) {//更新雷管信息
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState_lixian(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
+                        GreenDaoMaster.updateLgState_lixian(danLingBean.getLgs().getLg().get(i),yxq);
                     }
                 }
-                if (err != 0) {
-                    show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
-                }
+//                if (err != 0) {
+//                    show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
+//                }
                 pb_show = 0;//结束动画
 //                show_Toast("项目下载成功");
                 mHandler_1.sendMessage(mHandler_1.obtainMessage(0));

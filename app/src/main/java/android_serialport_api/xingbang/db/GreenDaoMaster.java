@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.db;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -25,6 +26,7 @@ import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.models.DanLingOffLinBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -377,16 +379,17 @@ public class GreenDaoMaster {
     }
 
     //丹灵下载后更新雷管芯片码//在线下载,离线下载
-    public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean,String sqrq) {
+    public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean,String yxq) {
         //94242214050
         //F42F1C 2E0A 2 5
-        if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
+        if ( !lgBean.getUid().startsWith("00000")) {
             String uid = "";
             String yscs = "";
             String duan = "";
             String version = "";
-            uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+
             if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                uid = "A62F400" + lgBean.getGzm().substring(0, 6);
                 yscs = lgBean.getGzm().substring(6, 10);
             }
 
@@ -425,7 +428,7 @@ public class GreenDaoMaster {
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                     db.setAuthorization("0"+version);
-                    db.setRegdate(lgBean.getYxq());
+                    db.setRegdate(yxq);
                     //小于0x0600的就是快速
                     //0x09C1就是慢速的
                     //0x04C1就是快速的
@@ -446,23 +449,34 @@ public class GreenDaoMaster {
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
-                registerDetonator_typeNew(db,sqrq);//更新到生产数据库中
+
+                if (lgBean.getGzmcwxx().equals("0")){
+                    db.setErrorName("雷管正常");
+                }else if(lgBean.getGzmcwxx().equals("1")){
+                    db.setErrorName("雷管在黑名单中");
+                }else if(lgBean.getGzmcwxx().equals("2")){
+                    db.setErrorName("雷管已使用");
+                }else if(lgBean.getGzmcwxx().equals("3")){
+                    db.setErrorName("申请的雷管UID不存在");
+                }
+
+                registerDetonator_typeNew(db,yxq);//更新到生产数据库中
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
         }
 
     }
-    public static void updateLgState_lixian(DanLingBean.LgsBean.LgBean lgBean,String sqrq) {
+    public static void updateLgState_lixian(DanLingOffLinBean.Lgs.Lg lgBean, String yxq) {
         //94242214050
         //F42F1C 2E0A 2 5
-        if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
+        if ( !lgBean.getUid().startsWith("00000")) {
             String uid = "";
             String yscs = "";
             String duan = "";
             String version = "";
-            uid = "A62F400" + lgBean.getGzm().substring(0, 6);
             if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                uid = "A62F400" + lgBean.getGzm().substring(0, 6);
                 yscs = lgBean.getGzm().substring(6, 10);
             }
             if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
@@ -470,12 +484,23 @@ public class GreenDaoMaster {
                 version = lgBean.getGzm().substring(10, 11);
             }
             DenatorBaseinfo db_sc= new DenatorBaseinfo();
-            db_sc.setShellBlastNo(lgBean.getUid());
+            db_sc.setShellBlastNo(lgBean.getFbh());
             db_sc.setDenatorId(uid);
+
             db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
+
             db_sc.setRegdate(lgBean.getYxq());//原来是截取到日,现在改到小时
+            if (lgBean.getGzmcwxx().equals("0")){
+                db_sc.setErrorName("雷管正常");
+            }else if(lgBean.getGzmcwxx().equals("1")){
+                db_sc.setErrorName("雷管在黑名单中");
+            }else if(lgBean.getGzmcwxx().equals("2")){
+                db_sc.setErrorName("雷管已使用");
+            }else if(lgBean.getGzmcwxx().equals("3")){
+                db_sc.setErrorName("申请的雷管UID不存在");
+            }
             //小于0x0600的就是快速
             //0x09C1就是慢速的
             //0x04C1就是快速的
@@ -492,14 +517,20 @@ public class GreenDaoMaster {
 //                Log.e("判断产品型号","01");
 //                db_sc.setAuthorization("01");
 //            }
-//            db_sc.setRegdate(lgBean.getYxq().substring(0, 8));
-            registerDetonator_typeNew(db_sc,sqrq);//更新到生产数据库中
+            registerDetonator_typeNew(db_sc,yxq);//更新到生产数据库中
 
+
+            SimpleDateFormat sd2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format2 = sd2.format(new Date(System.currentTimeMillis() ));
+//            Utils.writeRecord("format2: " + format2);
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
-//                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+//                Utils.writeRecord("db: " + db.toString());
+//                Utils.writeRecord("uid: " + uid);
                 db.setDenatorId(uid);
+                db.setRegdate(lgBean.getYxq());
                 if(lgBean.getGzm().length()>=10){
                     db.setZhu_yscs(yscs);//有延时参数就更新延时参数
                 }
@@ -534,6 +565,7 @@ public class GreenDaoMaster {
                 try {
                     Date date1 = sd.parse(format1);//当前日期
                     Date date2 = sd.parse(db.getRegdate());//有效期
+                    Utils.writeRecord("date1.compareTo(date2): " + date1.compareTo(date2));
                     if (date1.compareTo(date2) <= 0) {
                         getDaoSession().getDenatorBaseinfoDao().update(db);
                     }
@@ -552,7 +584,7 @@ public class GreenDaoMaster {
     /**
      * 读取输入注册
      */
-    private static void registerDetonator_typeNew(DenatorBaseinfo leiguan,String sqrq) {
+    private static void registerDetonator_typeNew(DenatorBaseinfo leiguan,String yxq) {
 //        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         // 检查重复数据
 
@@ -563,29 +595,56 @@ public class GreenDaoMaster {
         detonatorTypeNew.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
         detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
         detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
-        detonatorTypeNew.setTime(leiguan.getRegdate());//2023-06-15 17:20:40  leiguan.getRegdate().substring(0, 10)
-        detonatorTypeNew.setQibao("雷管正常");
+        detonatorTypeNew.setTime(yxq);//2023-06-15 17:20:40  leiguan.getRegdate().substring(0, 10)
+        detonatorTypeNew.setQibao(leiguan.getErrorName());//先根据丹灵返回是否正常
+
+        //对比时间
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format1 = sd.format(new Date(System.currentTimeMillis() ));
-        try {
-            Date date1 = sd.parse(format1);//当前日期
-            Date date2 = sd.parse(leiguan.getRegdate());//有效期
-            if(date1.compareTo(date2)>0){
-                detonatorTypeNew.setQibao("雷管过期");
-                detonatorTypeNew.setDetonatorId("");
+        String format1 = sd.format(new Date(System.currentTimeMillis() ));//当前时间
+
+        if(leiguan.getErrorName().equals("雷管正常")){
+
+            try {
+                Date date1 = sd.parse(format1);//当前日期
+                Date date2 = sd.parse(leiguan.getRegdate());//有效期
+                if(date1.compareTo(date2)>0){
+                    detonatorTypeNew.setQibao("雷管过期");
+                    detonatorTypeNew.setDetonatorId("");
+                }else {
+                    detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
 
 
+        //检查在授权表中是否重复
         if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
-
             GreenDaoMaster master = new GreenDaoMaster();
             DetonatorTypeNew detonatorType2 = master.queryShellBlastNoTypeNew(detonatorTypeNew.getShellBlastNo());
-            detonatorType2.setTime(leiguan.getRegdate());
+            String time_bf=detonatorType2.getTime();//更新前的时间
+            detonatorType2.setTime(yxq);
+            detonatorType2.setQibao(leiguan.getErrorName());
+            if(detonatorType2.getQibao().equals("雷管正常")){
+                try {
+                    Date date1 = sd.parse(format1);//当前日期
+                    Date date2 = sd.parse(leiguan.getRegdate());//有效期
+                    if(date1.compareTo(date2)>0){
+                        detonatorType2.setQibao("雷管过期");
+                        detonatorType2.setDetonatorId("");
+                    }else {
+                        detonatorType2.setDetonatorId(leiguan.getDenatorId());
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
             getDaoSession().getDetonatorTypeNewDao().update(detonatorType2);
-            Log.e("更新生产库中的雷管信息", "detonatorType2: "+detonatorType2);
+
+//            master.updataShouQuan(time_bf);//更新授权数量(在页面更新了,这里应该不用了)
+//            Log.e("更新生产库中的雷管信息", "detonatorType2: "+detonatorType2);
             return;
         }
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
@@ -801,7 +860,14 @@ public class GreenDaoMaster {
             return 0;
         }
     }
-
+    /**
+     * 删除生产数据中的雷管
+     */
+    public  List<DenatorBaseinfo> queryLeiGuan(String time) {
+        Log.e("查询超时的雷管", "time: "+time );
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Regdate.lt(time)).list();
+    }
     /**
      * 删除生产数据中的雷管
      */
@@ -810,6 +876,16 @@ public class GreenDaoMaster {
         QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
         result.where(DetonatorTypeNewDao.Properties.Time.lt(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
+
+    /**
+     * 删除生产数据中的雷管
+     */
+    public  void deleteTypeLeiGuanFroTime(String time) {
+        Log.e("删除生产数据中的雷管", "time: "+time );
+        QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
+        result.where(DetonatorTypeNewDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
     /**
      * 删除授权数据
      */
@@ -818,13 +894,35 @@ public class GreenDaoMaster {
         result.where(ShouQuanDao.Properties.Spare2.lt(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
     /**
-     * 删除授权数据
+     * 更新授权数量
      */
     public  void updataShouQuan(String time,int total) {
         QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
         ShouQuan shouQuan =result.where(ShouQuanDao.Properties.Spare2.eq(time)).unique();
         shouQuan.setTotal(total);
         mShouquanDao.update(shouQuan);
+    }
+    /**
+     * 更新授权数量
+     */
+    public  void updataShouQuan(String time) {
+        QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
+        List<DetonatorTypeNew> list_total =queryDetonatorShouQuanForSqrq(time);
+        if(time.length()==0){
+            return;
+        }
+        Log.e("更新授权数量", "time: "+time );
+        Log.e("更新授权数量", "list_total: "+list_total );
+            List<ShouQuan> list_sq=result.where(ShouQuanDao.Properties.Spare2.eq(time)).list();
+            for (int a=0;a<list_sq.size();a++){
+                list_sq.get(a).setTotal(list_total.size());
+                if(list_total.size()==0){
+                    mShouquanDao.delete(list_sq.get(a));
+                }else {
+                    mShouquanDao.update(list_sq.get(a));
+                }
+            }
+
     }
     /**
      * 删除某一发雷管
