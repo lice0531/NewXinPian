@@ -610,6 +610,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private long mExitTime = 0;
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //287  288  289
+        Log.e("点击按键", "keyCode: "+keyCode );
+        if (keyCode == KeyEvent.KEYCODE_THUMBS_DOWN ||keyCode == KeyEvent.KEYCODE_PROFILE_SWITCH||keyCode == 289) {//287
+            if(Build.DEVICE.equals("M900")){
+                mScaner.startScan();
+            }
+
+            return true;
+        }
 //        if (keyCode == KeyEvent.KEYCODE_BACK && pb_show == 1) {
 //            if ((System.currentTimeMillis() - mExitTime) > 2000) {// System.currentTimeMillis()无论何时调用，肯定大于2000
 //                show_Toast("正在运行程序请稍后退出");
@@ -3048,5 +3057,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return false;
         }
     }
+
 
 }
