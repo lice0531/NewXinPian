@@ -126,6 +126,12 @@ public class DetonatorTypeNew implements Comparable<DetonatorTypeNew>{
         if(shellBlastNo.contains("A6")){
             return -1;
         }
+        if(shellBlastNo.length()!=13){
+            return 1;
+        }
+        if(denator.getShellBlastNo().length()!=13){
+            return 1;
+        }
         SimpleDateFormat md = new SimpleDateFormat("MMdd");
         Date date1 = null;
         Date date2 = null;

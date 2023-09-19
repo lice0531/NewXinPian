@@ -146,9 +146,16 @@ public class SouSuoSQActivity extends BaseActivity {
                     show_Toast("雷管管壳码长度错误");
                     break;
                 case 4:
-                    Collections.sort(mList);
-                    mAdapter2.setNewData(mList);
-                    mAdapter2.notifyDataSetChanged();
+                    try {
+                        Collections.sort(mList);
+                        mAdapter2.setNewData(mList);
+                        mAdapter2.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        show_Toast("排序失败!");
+                    }
+                    break;
+                case 7:
+                    show_Toast("数据异常,请检查雷管厂家是否正确");
                     break;
                 default:
                     break;
@@ -348,22 +355,29 @@ public class SouSuoSQActivity extends BaseActivity {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
             return;
         }
-        if (db.getDetonatorId().length() == 13 && checkRepeatDenatorId(db.getDetonatorId())) {//检查芯片码重复数据
+        if (db.getShellBlastNo().length() > 13) {
+
+            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
+            return;
+        }
+        //检查芯片码重复数据
+        if (db.getDetonatorId() != null && db.getDetonatorId().length() == 13 && checkRepeatDenatorId(db.getDetonatorId())) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
-            chongfu = true;
             return;
         }
         if (checkRepeatShellNo(db.getShellBlastNo())) {//检查管壳码重复数据
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
-            chongfu = true;
             return;
         }
 
-        Log.e("接收注册", "checkRepeatDenatorId(db.getShellBlastNo()): " + checkRepeatDenatorId(db.getDetonatorId()));
-        Log.e("接收注册", "chongfu: " + chongfu);
-        String duan = db.getCong_yscs();
-        String version = db.getDetonatorIdSup();
-        String yscs = db.getZhu_yscs();
+        String duan = "1";
+        String version = null;
+        String yscs = null;
+        if (db.getDetonatorId() != null) {
+            duan = db.getCong_yscs();
+            version = db.getDetonatorIdSup();
+            yscs = db.getZhu_yscs();
+        }
         String delay = "";
         switch (duan) {
             case "1":
@@ -391,7 +405,11 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
         denator.setDelay(Integer.parseInt(delay));
-        denator.setRegdate(db.getTime());
+        if (db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")) {
+            denator.setRegdate(db.getTime());
+        } else {
+            denator.setRegdate(Utils.getDateFormat(new Date()));
+        }
         denator.setStatusCode("02");
         denator.setStatusName("已注册");
         denator.setErrorCode("FF");
@@ -428,6 +446,7 @@ public class SouSuoSQActivity extends BaseActivity {
             return false;
         }
     }
+
     public boolean checkRepeatShellNo(String shellBlastNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatShellNo(shellBlastNo);
@@ -437,6 +456,7 @@ public class SouSuoSQActivity extends BaseActivity {
             return false;
         }
     }
+
     //全部选中
     private void setAllItemChecked() {
         if (mAdapter2 == null) return;

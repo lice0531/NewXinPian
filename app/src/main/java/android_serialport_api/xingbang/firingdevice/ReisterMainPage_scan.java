@@ -414,8 +414,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
 
 
-                }
-                else if(data.length() == 14){
+                } else if (data.length() == 14) {
                     barCode = data.substring(0, 13);
                     duan = data.substring(13, 14);
                     insertSingleDenator_14(barCode);
@@ -1076,7 +1075,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String ed2Bit = edit_end_entBF2Bit_en.getText().toString();
         String edproDt = edit_end_entproduceDate_ed.getText().toString();
         String ed1Bit = edit_end_entAT1Bit_ed.getText().toString();
-        String edsno =  entboxNoAndSerialEd2.getText().toString();
+        String edsno = entboxNoAndSerialEd2.getText().toString();
         String addNum = etNum.getText().toString();
 
         if (StringUtils.isBlank(st2Bit)) {
@@ -1570,7 +1569,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        String denatorId = serchDenatorId(shellNo);
         DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
         //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
-        if (detonatorTypeNew != null &&detonatorTypeNew.getDetonatorId()!=null &&checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
@@ -1585,31 +1584,33 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
         int delay = 0;
-        if(detonatorTypeNew!=null){
-            duan =detonatorTypeNew.getCong_yscs();
+
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null) {
+            Log.e("单发注册", "detonatorTypeNew: " + detonatorTypeNew.toString());
+            duan = detonatorTypeNew.getCong_yscs();
             switch (duan) {
                 case "1":
                     delay = 0;
-                    delay_set="f1";
+                    delay_set = "f1";
                     break;
                 case "2":
                     delay = 25;
-                    delay_set="f2";
+                    delay_set = "f2";
                     break;
                 case "3":
                     delay = 50;
-                    delay_set="f3";
+                    delay_set = "f3";
                     break;
                 case "4":
                     delay = 75;
-                    delay_set="f4";
+                    delay_set = "f4";
                     break;
                 case "5":
                     delay = 100;
-                    delay_set="f5";
+                    delay_set = "f5";
                     break;
             }
-        }else {
+        } else {
             if (delay_set.equals("f1")) {//获取延时和段数
                 duan = "1";
                 delay = 0;
@@ -1632,7 +1633,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
 
-
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
 
 
@@ -1651,12 +1651,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setPiece(mRegion);
         denatorBaseinfo.setDuan(duan);//段
         denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
-        if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
             denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
             denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
             denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
-        }else {
+        } else {
             denatorBaseinfo.setAuthorization("02");//雷管芯片型号
         }
         //向数据库插入数据
@@ -1685,7 +1685,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        String denatorId = serchDenatorId(shellNo);
         DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
         //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
-        if (detonatorTypeNew != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null &&checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
@@ -1703,23 +1703,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         switch (duan) {
             case "1":
                 delay = 0;
-                delay_set="f1";
+                delay_set = "f1";
                 break;
             case "2":
                 delay = 25;
-                delay_set="f2";
+                delay_set = "f2";
                 break;
             case "3":
                 delay = 50;
-                delay_set="f3";
+                delay_set = "f3";
                 break;
             case "4":
                 delay = 75;
-                delay_set="f4";
+                delay_set = "f4";
                 break;
             case "5":
                 delay = 100;
-                delay_set="f5";
+                delay_set = "f5";
                 break;
         }
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
@@ -1740,12 +1740,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setPiece(mRegion);
         denatorBaseinfo.setDuan(duan);//段
         denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
-        if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null &&!detonatorTypeNew.getDetonatorId().equals("0")) {
             denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
             denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
             denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
-        }else {
+        } else {
             denatorBaseinfo.setAuthorization("02");//雷管芯片型号??不知道直接给个默认值合理不
         }
         //向数据库插入数据
@@ -1780,23 +1780,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         switch (duan) {
             case "1":
                 delay = 0;
-                delay_set="f1";
+                delay_set = "f1";
                 break;
             case "2":
                 delay = 25;
-                delay_set="f2";
+                delay_set = "f2";
                 break;
             case "3":
                 delay = 50;
-                delay_set="f3";
+                delay_set = "f3";
                 break;
             case "4":
                 delay = 75;
-                delay_set="f4";
+                delay_set = "f4";
                 break;
             case "5":
                 delay = 100;
-                delay_set="f5";
+                delay_set = "f5";
                 break;
         }
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
@@ -1860,23 +1860,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         switch (duan) {
             case "1":
                 delay = 0;
-                delay_set="f1";
+                delay_set = "f1";
                 break;
             case "2":
                 delay = 25;
-                delay_set="f2";
+                delay_set = "f2";
                 break;
             case "3":
                 delay = 50;
-                delay_set="f3";
+                delay_set = "f3";
                 break;
             case "4":
                 delay = 75;
-                delay_set="f4";
+                delay_set = "f4";
                 break;
             case "5":
                 delay = 100;
-                delay_set="f5";
+                delay_set = "f5";
                 break;
         }
 
@@ -1889,7 +1889,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            a=Integer.parseInt(duan_scan);//煤许雷管按二维码设置的来
 //        }
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan_scan);//也得做区域区分
-        Log.e("段雷管总数", "duanNUM: "+duanNUM+"  duan_scan:"+duan_scan+"  mRegion:"+mRegion );
+        Log.e("段雷管总数", "duanNUM: " + duanNUM + "  duan_scan:" + duan_scan + "  mRegion:" + mRegion);
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
@@ -1907,7 +1907,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setZhu_yscs(yscs);
         denatorBaseinfo.setDuan(duan_scan);
         denatorBaseinfo.setDuanNo(duan_scan + "-" + (duanNUM + 1));
-        denatorBaseinfo.setAuthorization("0"+version);//雷管芯片型号
+        denatorBaseinfo.setAuthorization("0" + version);//雷管芯片型号
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         Message msg = new Message();
@@ -1958,7 +1958,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             }
             DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
-            if (detonatorTypeNew != null && detonatorTypeNew.getCong_yscs() != null) {
+            if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null && detonatorTypeNew.getCong_yscs() != null) {
                 duan = detonatorTypeNew.getCong_yscs();
             }
             switch (duan) {
@@ -1994,13 +1994,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setPiece(mRegion);
             denatorBaseinfo.setDuan(duan);//段
             denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
-            if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+            if (detonatorTypeNew != null &&detonatorTypeNew.getDetonatorId()!=null&& !detonatorTypeNew.getDetonatorId().equals("0")) {
                 denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
                 denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
                 denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
-            }else {
-                denatorBaseinfo.setAuthorization("0"+version);//雷管芯片型号
+            } else {
+                denatorBaseinfo.setAuthorization("0" + version);//雷管芯片型号
             }
 
             //向数据库插入数据
@@ -2116,7 +2116,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * @return 是否重复
      */
     public boolean checkRepeatdenatorId(String detonatorId) {
-        if(detonatorId.length()==0){
+        if (detonatorId.length() == 0) {
             return false;
         }
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);
@@ -2327,10 +2327,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String st2Bit = edit_start_entBF2Bit_st.getText().toString();
                     String stproDt = edit_start_entproduceDate_st.getText().toString();
                     String st1Bit = edit_start_entAT1Bit_st.getText().toString();
-                    String stsno = entboxNoAndSerialSt1.getText().toString()+entboxNoAndSerialSt2.getText().toString();
+                    String stsno = entboxNoAndSerialSt1.getText().toString() + entboxNoAndSerialSt2.getText().toString();
                     prex = st2Bit + stproDt + st1Bit;
-                    String ed_xh =  entboxNoAndSerialEd1.getText().toString();//结束箱号
-                    String ed_ls =  entboxNoAndSerialEd2.getText().toString();//结束流水
+                    String ed_xh = entboxNoAndSerialEd1.getText().toString();//结束箱号
+                    String ed_ls = entboxNoAndSerialEd2.getText().toString();//结束流水
                     String addNum = etNum.getText().toString();
                     start_ls = Integer.parseInt(stsno);//开始流水号
 
@@ -2349,12 +2349,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         runPbDialog();
                         new Thread(() -> {
                             insertDenator(prex, start_ls, start_ls + (num - 1));
-                            Log.e("手动输入", "厂号日期: " + prex+"--start: " + start_ls);
+                            Log.e("手动输入", "厂号日期: " + prex + "--start: " + start_ls);
                             pb_show = 0;
                         }).start();
                         return;
                     } else {
-                        final int end = Integer.parseInt(ed_xh+ed_ls);//结束流水号
+                        final int end = Integer.parseInt(ed_xh + ed_ls);//结束流水号
                         if (end < start_ls) {
                             show_Toast(getResources().getString(R.string.text_error_tip27));//  "结束序号不能小于开始序号";
                             return;
@@ -2544,7 +2544,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
     }
-
 
 
     private class ScanBar extends Thread {
@@ -3041,10 +3040,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             //二代芯片新管壳码规则只有28位的Y5620528H01709A637FFC9741B05
             if (index == -1) {
                 if (strParamBarcode.length() == 28) {
-                    String a =strParamBarcode.substring(0,1);
+                    String a = strParamBarcode.substring(0, 1);
                     if (a.equals("Y")) {
                         subBarCode = strParamBarcode.substring(1, 16);
-                    }else {
+                    } else {
                         subBarCode = strParamBarcode.substring(0, 15);
                     }
 

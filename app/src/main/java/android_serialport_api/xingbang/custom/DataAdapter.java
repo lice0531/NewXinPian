@@ -25,18 +25,19 @@ public class DataAdapter extends BaseQuickAdapter<ShouQuanData, BaseViewHolder> 
     protected void convert(BaseViewHolder helper, ShouQuanData item) {
         int position = helper.getLayoutPosition();
         helper.setText(R.id.tv_lg_id, item.getShellBlastNo() + "");//UID
-        if((item.getQibao()+"").equals("雷管正常")){
+        if((item.getQibao()+"").equals("雷管正常")||(item.getQibao()+"").equals("已起爆")){
             helper.setText(R.id.tv_lg_uid, item.getTime());// yxq
         }else {
             helper.setText(R.id.tv_lg_uid, "");// yxq
         }
-
-        if(item.getDetonatorId()!=null&&item.getDetonatorId().length()==13){
-            helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
-                    item.getZhu_yscs()+
-                    item.getDetonatorIdSup().substring(1)+
-                    item.getCong_yscs());// 工作码
-        }else {
+        if((item.getQibao()+"").equals("雷管正常")||(item.getQibao()+"").equals("已起爆")){
+            if(item.getDetonatorId()!=null&&item.getDetonatorId().length()==13){
+                helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
+                        item.getZhu_yscs()+
+                        item.getDetonatorIdSup().substring(1)+
+                        item.getCong_yscs());// 工作码
+            }
+        } else {
             helper.setText(R.id.tv_lg_yxq,"");
         }
 

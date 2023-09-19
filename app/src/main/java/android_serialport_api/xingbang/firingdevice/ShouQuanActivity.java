@@ -222,9 +222,14 @@ public class ShouQuanActivity extends BaseActivity {
                 case 3:
 //                    mListData = new GreenDaoMaster().queryDetonatorShouQuan();
 //                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2(page);
-                    Collections.sort(mList);
-                    mAdapter2.setNewData(mList);
-                    mAdapter2.notifyDataSetChanged();
+                    try {
+                        Collections.sort(mList);
+                        mAdapter2.setNewData(mList);
+                        mAdapter2.notifyDataSetChanged();
+                    }catch (Exception e){
+                        show_Toast("排序失败!");
+                    }
+
 
                     break;
                 case 4:
@@ -235,6 +240,9 @@ public class ShouQuanActivity extends BaseActivity {
                     break;
                 case 6:
                     show_Toast("数据不完整");
+                    break;
+                case 7:
+                    show_Toast("数据异常,请检查雷管厂家是否正确");
                     break;
                 default:
                     break;
@@ -428,19 +436,27 @@ public class ShouQuanActivity extends BaseActivity {
         if (db.getShellBlastNo().length() < 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
             return;
-        }
-        if (db.getDetonatorId().length()==13&&checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
+        } if (db.getShellBlastNo().length() > 13) {
+            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
             return;
         }
-        if (db.getShellBlastNo().length()==13&&checkRepeatShellNo(db.getShellBlastNo())) {//检查重复数据
+        if (db.getDetonatorId()!=null&&db.getDetonatorId().length()==13&&checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
+            return;
+        }
+        if (db.getShellBlastNo()!=null&&db.getShellBlastNo().length()==13&&checkRepeatShellNo(db.getShellBlastNo())) {//检查重复数据
             return;
         }
 
 
 
-        String duan = db.getCong_yscs();
-        String version = db.getDetonatorIdSup();
-        String yscs = db.getZhu_yscs();
+        String duan ="1";
+        String version=null;
+        String yscs=null;
+        if (db.getDetonatorId()!=null){
+            duan = db.getCong_yscs();
+            version = db.getDetonatorIdSup();
+            yscs = db.getZhu_yscs();
+        }
         String delay = "";
         switch (duan) {
             case "1":
@@ -468,7 +484,11 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
         denator.setDelay(Integer.parseInt(delay));
-        denator.setRegdate(db.getTime());
+        if(db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")){
+            denator.setRegdate(db.getTime());
+        }else {
+            denator.setRegdate(Utils.getDateFormat(new Date()));
+        }
         denator.setStatusCode("02");
         denator.setStatusName("已注册");
         denator.setErrorCode("FF");

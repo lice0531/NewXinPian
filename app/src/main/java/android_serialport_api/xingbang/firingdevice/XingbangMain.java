@@ -269,23 +269,6 @@ public class XingbangMain extends BaseActivity {
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
 
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        long time2 = (long) 3 * 86400000;
-        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format1 = sd.format(new Date(System.currentTimeMillis() ));
-        try {
-            Date date3 = sd.parse("2023-09-17 10:24:06");//当前日期
-            String format2 = simpleDateFormat.format(date3.getTime() + time2);
-            Date date1 = sd.parse("2023-07-06 18:06:43");//当前日期
-            Date date2 = sd.parse("2023-07-07 07:58:14");//有效期
-            Log.e("时间对比", "当前日期date1: "+date1 );
-            Log.e("时间对比", "有效期date2: "+date2 );
-            Log.e("时间对比", "format2: "+format2 );
-            Log.e("时间对比", "date1.compareTo(date2): "+date1.compareTo(date2) );
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
     private void queryBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

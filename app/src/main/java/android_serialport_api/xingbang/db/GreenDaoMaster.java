@@ -383,10 +383,10 @@ public class GreenDaoMaster {
         //94242214050
         //F42F1C 2E0A 2 5
         if ( !lgBean.getUid().startsWith("00000")) {
-            String uid = "";
-            String yscs = "";
-            String duan = "";
-            String version = "";
+            String uid = null;
+            String yscs = null;
+            String duan = null;
+            String version = null;
 
             if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
                 uid = "A62F400" + lgBean.getGzm().substring(0, 6);
@@ -471,10 +471,10 @@ public class GreenDaoMaster {
         //94242214050
         //F42F1C 2E0A 2 5
         if ( !lgBean.getUid().startsWith("00000")) {
-            String uid = "";
-            String yscs = "";
-            String duan = "";
-            String version = "";
+            String uid = null;
+            String yscs = null;
+            String duan = null;
+            String version = null;
             if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
                 uid = "A62F400" + lgBean.getGzm().substring(0, 6);
                 yscs = lgBean.getGzm().substring(6, 10);
@@ -484,10 +484,12 @@ public class GreenDaoMaster {
                 version = lgBean.getGzm().substring(10, 11);
             }
             DenatorBaseinfo db_sc= new DenatorBaseinfo();
-            db_sc.setShellBlastNo(lgBean.getFbh());
+            db_sc.setShellBlastNo(lgBean.getUid());
             db_sc.setDenatorId(uid);
+            if(version!=null){
+                db_sc.setAuthorization("0"+version);
+            }
 
-            db_sc.setAuthorization("0"+version);
             db_sc.setZhu_yscs(yscs);
             db_sc.setCong_yscs(duan);
 
@@ -565,7 +567,6 @@ public class GreenDaoMaster {
                 try {
                     Date date1 = sd.parse(format1);//当前日期
                     Date date2 = sd.parse(db.getRegdate());//有效期
-                    Utils.writeRecord("date1.compareTo(date2): " + date1.compareTo(date2));
                     if (date1.compareTo(date2) <= 0) {
                         getDaoSession().getDenatorBaseinfoDao().update(db);
                     }
@@ -609,7 +610,7 @@ public class GreenDaoMaster {
                 Date date2 = sd.parse(leiguan.getRegdate());//有效期
                 if(date1.compareTo(date2)>0){
                     detonatorTypeNew.setQibao("雷管过期");
-                    detonatorTypeNew.setDetonatorId("");
+                    detonatorTypeNew.setDetonatorId(null);
                 }else {
                     detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
                 }
@@ -632,7 +633,7 @@ public class GreenDaoMaster {
                     Date date2 = sd.parse(leiguan.getRegdate());//有效期
                     if(date1.compareTo(date2)>0){
                         detonatorType2.setQibao("雷管过期");
-                        detonatorType2.setDetonatorId("");
+                        detonatorType2.setDetonatorId(null);
                     }else {
                         detonatorType2.setDetonatorId(leiguan.getDenatorId());
                     }
