@@ -165,7 +165,23 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:background="@color/app_bg_color" />
+        <TextView
+            android:id="@+id/tv_ture"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="全选正确"
+            android:textColor="@color/white"
+            style="@style/alltextstyle" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_bg_color" />
         <TextView
             android:id="@+id/tv_input"
             android:layout_width="0dp"
@@ -176,23 +192,6 @@
             android:text="注册"
             android:textColor="@color/white"
             style="@style/alltextstyle" />
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:background="@color/app_bg_color" />
 
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/tv_delete"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:foreground="@drawable/bg_white"
-            android:gravity="center"
-            android:text="删除"
-            android:textColor="@color/color_red"
-            style="@style/alltextstyle" />
     </LinearLayout>
 </RelativeLayout >

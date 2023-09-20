@@ -614,9 +614,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //检测电流小于参考值的70%提示弹框
+            //检测电流小于参考值的60%提示弹框
 
-//            if (stage == 6 && sixExchangeCount < (ChongDian_time - 20) && busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow) {
+//            if (stage == 6 && sixExchangeCount < (ChongDian_time - 20) && busInfo.getBusCurrentIa() <= cankao_ic * 0.6 && isshow) {
 //                isshow = false;
 //                firstThread.exit = true;
 //                firstThread.interrupt();

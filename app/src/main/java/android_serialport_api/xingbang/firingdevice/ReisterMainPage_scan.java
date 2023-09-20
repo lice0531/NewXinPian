@@ -714,24 +714,24 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         final String strNo = "00";
         String a = xh[5] + "" + xh[6];
         String endNo = Utils.XiangHao(a);
-//        String duan= String.valueOf(xh[3]);//确定第四位是段位再用
-//        switch (duan){
-//            case "1":
-//                delay_set="f1";
-//                break;
-//            case "2":
-//                delay_set="f2";
-//                break;
-//            case "3":
-//                delay_set="f3";
-//                break;
-//            case "4":
-//                delay_set="f4";
-//                break;
-//            case "5":
-//                delay_set="f5";
-//                break;
-//        }
+        String duan= String.valueOf(xh[3]);//确定第四位是段位再用
+        switch (duan){
+            case "1":
+                delay_set="f1";
+                break;
+            case "2":
+                delay_set="f2";
+                break;
+            case "3":
+                delay_set="f3";
+                break;
+            case "4":
+                delay_set="f4";
+                break;
+            case "5":
+                delay_set="f5";
+                break;
+        }
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);

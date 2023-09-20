@@ -3,21 +3,17 @@ package android_serialport_api.xingbang.firingdevice;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,16 +21,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.android.material.appbar.AppBarLayout;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.litepal.LitePal;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -45,13 +36,10 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.ChaKan_SQAdapter;
 import android_serialport_api.xingbang.custom.DataAdapter;
-import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
-import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
-import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,7 +66,7 @@ public class ShouQuanActivity extends BaseActivity {
     TextView tv_check_all;
     @BindView(R.id.tv_input)
     TextView tv_input;
-    @BindView(R.id.tv_delete)
+    @BindView(R.id.tv_ture)
     TextView tv_delete;
     @BindView(R.id.lay_bottom)
     LinearLayout layBottom;//底部布局
@@ -340,7 +328,7 @@ public class ShouQuanActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_check_all, R.id.tv_input, R.id.tv_delete, R.id.btn_ss_px})
+    @OnClick({R.id.tv_check_all, R.id.tv_input, R.id.tv_ture, R.id.btn_ss_px})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_check_all:
@@ -349,8 +337,8 @@ public class ShouQuanActivity extends BaseActivity {
             case R.id.tv_input:
                 inputLeiGuan();
                 break;
-            case R.id.tv_delete:
-                deleteCheckItem();
+            case R.id.tv_ture:
+                setAllTureChecked();
                 break;
             case R.id.btn_ss_px:
 //                if (paixu_flag) {
@@ -540,6 +528,21 @@ public class ShouQuanActivity extends BaseActivity {
         if (mAdapter2 == null) return;
         for (int i = 0; i < mList.size(); i++) {
             mList.get(i).setSelect(true);
+        }
+        mAdapter2.setNewData(mList);
+        mAdapter2.notifyDataSetChanged();
+        index = mList.size();
+//        tvDelete.setText("删除(" + index + ")");
+    }
+
+    //全部正确选中
+    private void setAllTureChecked() {
+        if (mAdapter2 == null) return;
+        for (int i = 0; i < mList.size(); i++) {
+            if(mList.get(i).getQibao().equals("雷管正常")){
+                mList.get(i).setSelect(true);
+            }
+
         }
         mAdapter2.setNewData(mList);
         mAdapter2.notifyDataSetChanged();

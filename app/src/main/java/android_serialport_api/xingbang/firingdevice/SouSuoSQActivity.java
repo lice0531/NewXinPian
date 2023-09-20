@@ -2,8 +2,6 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +24,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import org.litepal.LitePal;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -70,7 +67,7 @@ public class SouSuoSQActivity extends BaseActivity {
     TextView tv_check_all;
     @BindView(R.id.tv_input)
     TextView tv_input;
-    @BindView(R.id.tv_delete)
+    @BindView(R.id.tv_ture)
     TextView tv_delete;
     // 雷管列表
     private LinearLayoutManager linearLayoutManager;
@@ -248,7 +245,7 @@ public class SouSuoSQActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.tv_check_all, R.id.tv_input, R.id.tv_delete, R.id.ss_btn_ss, R.id.ss_btn_px})
+    @OnClick({R.id.tv_check_all, R.id.tv_input, R.id.tv_ture, R.id.ss_btn_ss, R.id.ss_btn_px})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ss_btn_ss:
@@ -267,7 +264,7 @@ public class SouSuoSQActivity extends BaseActivity {
             case R.id.tv_input:
                 inputLeiGuan();
                 break;
-            case R.id.tv_delete:
+            case R.id.tv_ture:
                 deleteCheckItem();
                 break;
         }
@@ -467,5 +464,18 @@ public class SouSuoSQActivity extends BaseActivity {
         mAdapter2.notifyDataSetChanged();
         index = mList.size();
 //        tvDelete.setText("删除(" + index + ")");
+    }
+
+    //全部正确选中
+    private void setAllTureChecked() {
+        if (mAdapter2 == null) return;
+        for (int i = 0; i < mList.size(); i++) {
+            if(mList.get(i).getQibao().equals("雷管正常")){
+                mList.get(i).setSelect(true);
+            }
+        }
+        mAdapter2.setNewData(mList);
+        mAdapter2.notifyDataSetChanged();
+        index = mList.size();
     }
 }
