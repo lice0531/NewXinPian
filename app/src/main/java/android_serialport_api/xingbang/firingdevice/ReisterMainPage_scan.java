@@ -1586,7 +1586,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delay = 0;
 
         if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null) {
-            Log.e("单发注册", "detonatorTypeNew: " + detonatorTypeNew.toString());
+            Log.e("单发输入", "detonatorTypeNew: " + detonatorTypeNew.toString());
             duan = detonatorTypeNew.getCong_yscs();
             switch (duan) {
                 case "1":

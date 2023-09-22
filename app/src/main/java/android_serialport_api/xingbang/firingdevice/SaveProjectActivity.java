@@ -296,6 +296,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.btn_down_offline:
                 Intent intent = new Intent(this, DownOfflineActivity.class);
                 startActivity(intent);
+                finish();
                 break;
         }
     }

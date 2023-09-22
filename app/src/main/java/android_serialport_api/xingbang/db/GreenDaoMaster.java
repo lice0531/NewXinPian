@@ -625,6 +625,10 @@ public class GreenDaoMaster {
             GreenDaoMaster master = new GreenDaoMaster();
             DetonatorTypeNew detonatorType2 = master.queryShellBlastNoTypeNew(detonatorTypeNew.getShellBlastNo());
             String time_bf=detonatorType2.getTime();//更新前的时间
+            detonatorType2.setDetonatorId(leiguan.getDenatorId());
+            detonatorType2.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
+            detonatorType2.setZhu_yscs(leiguan.getZhu_yscs());
+            detonatorType2.setCong_yscs(leiguan.getCong_yscs());//放得段号
             detonatorType2.setTime(yxq);
             detonatorType2.setQibao(leiguan.getErrorName());
             if(detonatorType2.getQibao().equals("雷管正常")){

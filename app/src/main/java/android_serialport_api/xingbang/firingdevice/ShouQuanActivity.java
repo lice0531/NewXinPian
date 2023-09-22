@@ -107,7 +107,7 @@ public class ShouQuanActivity extends BaseActivity {
         Bundle bundle = intent.getExtras();
         sqrq = bundle.getString("sqrq");
 
-        Log.e("获取到有效期为", "sqrq: "+sqrq );//2023-07-04 07:58:14
+        Log.e("获取到有效期为", "sqrq: " + sqrq);//2023-07-04 07:58:14
 //        long time = (long) 5 * 86400000;
 //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        DateFormat df = new SimpleDateFormat();
@@ -176,8 +176,8 @@ public class ShouQuanActivity extends BaseActivity {
 //                    mAdapter.notifyDataSetChanged();
                     mRefreshLayout.finishRefresh(true);
                     GreenDaoMaster master = new GreenDaoMaster();
-                    List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("雷管正常",sqrq);
-                    List<DetonatorTypeNew> list2 = master.queryDetonatorShouQuan("已起爆",sqrq);
+                    List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("雷管正常", sqrq);
+                    List<DetonatorTypeNew> list2 = master.queryDetonatorShouQuan("已起爆", sqrq);
                     tv_ysy.setText("已起爆:" + list2.size());
                     tv_wsy.setText("雷管正常:" + list.size());
                     break;
@@ -214,7 +214,7 @@ public class ShouQuanActivity extends BaseActivity {
                         Collections.sort(mList);
                         mAdapter2.setNewData(mList);
                         mAdapter2.notifyDataSetChanged();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         show_Toast("排序失败!");
                     }
 
@@ -231,6 +231,32 @@ public class ShouQuanActivity extends BaseActivity {
                     break;
                 case 7:
                     show_Toast("数据异常,请检查雷管厂家是否正确");
+                    break;
+                case 8:
+                    GreenDaoMaster master2 = new GreenDaoMaster();
+                    mListData = master2.queryDetonatorShouQuan("雷管正常", sqrq);
+                    mList.clear();
+                    Log.e("加载", "mListData.size(): " + mListData.size());
+                    for (DetonatorTypeNew item : mListData) {
+                        ShouQuanData shouQuanData = new ShouQuanData();
+                        shouQuanData.setId(item.getId());
+                        shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                        shouQuanData.setDetonatorId(item.getDetonatorId());
+                        shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                        shouQuanData.setCong_yscs(item.getCong_yscs());
+                        shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                        shouQuanData.setQibao(item.getQibao());
+                        shouQuanData.setTime(item.getTime());
+                        if (!mList.contains(shouQuanData)) {
+                            mList.add(shouQuanData);
+                        }
+                    }
+
+                    mAdapter2.setNewData(mList);
+                    mAdapter2.notifyDataSetChanged();
+//                    mAdapter.setListData(mListData, 0);
+//                    mAdapter.notifyDataSetChanged();
+                    mRefreshLayout.finishRefresh(true);
                     break;
                 default:
                     break;
@@ -322,6 +348,9 @@ public class ShouQuanActivity extends BaseActivity {
             case R.id.item_2:
                 updateEditState();
                 return true;
+            case R.id.item_3:
+                mHandler_UI.sendMessage(mHandler_UI.obtainMessage(8));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -365,8 +394,8 @@ public class ShouQuanActivity extends BaseActivity {
             }
         }
         show_Toast("删除成功");
-        Log.e("删除", "mList.size(): "+mList.size() );
-        master.updataShouQuan(sqrq,mList.size());
+        Log.e("删除", "mList.size(): " + mList.size());
+        master.updataShouQuan(sqrq, mList.size());
         //删除选中的item之后判断是否还有数据，没有则退出编辑模式
         if (mList.size() != 0) {
             index = 0;//删除之后置为0
@@ -409,7 +438,7 @@ public class ShouQuanActivity extends BaseActivity {
         }
         updateEditState();
         show_Toast("注册成功");
-        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
+//        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
         mAdapter2.notifyDataSetChanged();
     }
 
@@ -420,27 +449,27 @@ public class ShouQuanActivity extends BaseActivity {
     private void registerDetonator(ShouQuanData db) {
         boolean chongfu = false;
         int maxNo = getMaxNumberNo();
-        Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
+        Log.e("授权导入注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
             return;
-        } if (db.getShellBlastNo().length() > 13) {
+        }
+        if (db.getShellBlastNo().length() > 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
             return;
         }
-        if (db.getDetonatorId()!=null&&db.getDetonatorId().length()==13&&checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
+        if (db.getDetonatorId() != null && db.getDetonatorId().length() == 13 && checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
             return;
         }
-        if (db.getShellBlastNo()!=null&&db.getShellBlastNo().length()==13&&checkRepeatShellNo(db.getShellBlastNo())) {//检查重复数据
+        if (db.getShellBlastNo() != null && db.getShellBlastNo().length() == 13 && checkRepeatShellNo(db.getShellBlastNo())) {//检查重复数据
             return;
         }
 
 
-
-        String duan ="1";
-        String version=null;
-        String yscs=null;
-        if (db.getDetonatorId()!=null){
+        String duan = "1";
+        String version = "02";
+        String yscs = null;
+        if (db.getDetonatorId() != null) {
             duan = db.getCong_yscs();
             version = db.getDetonatorIdSup();
             yscs = db.getZhu_yscs();
@@ -472,9 +501,9 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
         denator.setDelay(Integer.parseInt(delay));
-        if(db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")){
+        if (db.getQibao().equals("雷管正常") || db.getQibao().equals("已起爆")) {
             denator.setRegdate(db.getTime());
-        }else {
+        } else {
             denator.setRegdate(Utils.getDateFormat(new Date()));
         }
         denator.setStatusCode("02");
@@ -486,6 +515,7 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
         denator.setDuan(duan);
         denator.setAuthorization(version);//导入默认是02版
+
         getDaoSession().getDenatorBaseinfoDao().insert(denator);
 
 
@@ -539,7 +569,7 @@ public class ShouQuanActivity extends BaseActivity {
     private void setAllTureChecked() {
         if (mAdapter2 == null) return;
         for (int i = 0; i < mList.size(); i++) {
-            if(mList.get(i).getQibao().equals("雷管正常")){
+            if (mList.get(i).getQibao().equals("雷管正常")) {
                 mList.get(i).setSelect(true);
             }
 
