@@ -393,17 +393,17 @@ public class FiringMainActivity extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
-                String displayIcStr = (int)busInfo.getBusCurrentIa() + "μA";//保留两位小数
+                String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 11000&&stage!=6) {
+                if (displayIc > 11000 && stage != 6) {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * 24) && displayIc > 10 &&stage!=6) {// "电流过大";
+                } else if (displayIc > (denatorCount * 24) && displayIc > 10 && stage != 6) {// "电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (4 + denatorCount * 6)&&stage!=6) {
+                } else if (displayIc < (4 + denatorCount * 6) && stage != 6) {
                     displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.BLACK);//设置颜色
@@ -467,7 +467,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < Preparation_time * 0.4  && busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < Preparation_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -531,6 +531,22 @@ public class FiringMainActivity extends SerialPortActivity {
 //            busInfo = null;
             return false;
         });
+    }
+
+    private void zhanting() {
+        firstThread.exit = true;
+        firstThread.interrupt();
+        try {
+            firstThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void jixu(){
+        firstThread = new ThreadFirst(allBlastQu);
+        firstThread.exit = false;
+        firstThread.start();
     }
 
     private void setIcView(int red) {
@@ -770,8 +786,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //        listview.setAdapter(adapter);
 
         // 给ListView绑定内容
-        ListView errlistview =  getlistview.findViewById(R.id.X_listview);
-        ErrListAdapter mAdapter= new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
         errlistview.setAdapter(mAdapter);
 
         Builder builder = new Builder(this);
@@ -1064,8 +1080,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
-            }
-            else {
+            } else {
                 firstThread.start();
             }
 
@@ -1394,7 +1409,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 7:
                 ctlLinePanel(7);
-                if(sevenCount==300){
+                if (sevenCount == 300) {
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     AlertDialog dialog = new Builder(this)
                             .setTitle("提示")//设置对话框的标题//"成功起爆"
@@ -1596,7 +1611,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         case 3://写入延时时间，检测结果看雷管是否正常
 
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
-                                Log.e("第4阶段-increase", "thirdWriteCount:"+thirdWriteCount);
+                                Log.e("第4阶段-increase", "thirdWriteCount:" + thirdWriteCount);
 //                                Thread.sleep(50);
                                 thirdStartTime = 0;
                                 writeDenator = null;
@@ -1634,7 +1649,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-                                if (write.getDenatorId() == null|| write.getDenatorId().length() < 8) {
+                                if (write.getDenatorId() == null || write.getDenatorId().length() < 8) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();
@@ -1754,10 +1769,10 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
-                        case 7:
+                        case 7://1+5 等待阶段
 //                            Thread.sleep(1000);
 //                            sevenCount++;
-                            Log.e(TAG, "1+5 等待阶段sevenCount: "+sevenCount);
+                            Log.e(TAG, "1+5 等待阶段sevenCount: " + sevenCount);
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             sevenDisplay = 1;
@@ -1770,7 +1785,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
 //                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
-                        case 8://起爆阶段
+                        case 8://5s倒计时后,发送起爆指令,起爆阶段
 //                            if (eightCount == 1) {
 //                                byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                sendCmd(reCmd);
@@ -1847,7 +1862,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-                                if (write.getDenatorId() == null|| write.getDenatorId().length() < 8) {
+                                if (write.getDenatorId() == null || write.getDenatorId().length() < 8) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();
@@ -1950,7 +1965,7 @@ public class FiringMainActivity extends SerialPortActivity {
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")&& !Build.DEVICE.equals("KT50")) {
+        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2") && !Build.DEVICE.equals("KT50")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -1958,7 +1973,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     keyFireCmd = 1;
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_5 &&( Build.DEVICE.equals("KT50_B2")||Build.DEVICE.equals("KT50"))) {
+        } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2") || Build.DEVICE.equals("KT50"))) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -2132,27 +2147,27 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private void initDialog_zanting(String tip) {
         if (!FiringMainActivity.this.isFinishing()) {
-        chongfu = true;//已经检测了一次
-        AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-                .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
-                //设置对话框的按钮
-                .setNeutralButton("重检", (dialog1, which) -> {
-                    off();//重新检测
-                    dialog1.dismiss();
-                })
-                .setNegativeButton("退出", (dialog12, which) -> {
-                    dialog12.cancel();
-                    closeThread();
-                    closeForm();
-                })
-                .setPositiveButton("继续", (dialog12, which) -> {
+            chongfu = true;//已经检测了一次
+            AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                    .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                    .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNeutralButton("重检", (dialog1, which) -> {
+                        off();//重新检测
+                        dialog1.dismiss();
+                    })
+                    .setNegativeButton("退出", (dialog12, which) -> {
+                        dialog12.cancel();
+                        closeThread();
+                        closeForm();
+                    })
+                    .setPositiveButton("继续", (dialog12, which) -> {
 //                    off();//重新检测
-                    increase(2);
-                    dialog12.cancel();
-                })
-                .create();
-        dialog.show();
+                        increase(2);
+                        dialog12.cancel();
+                    })
+                    .create();
+            dialog.show();
         }
     }
 
@@ -2306,7 +2321,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
         } else if (msg.equals("qibao")) {
-            Log.e("起爆页面", "收到级联起爆指令 " );
+            Log.e("起爆页面", "收到级联起爆指令 ");
             if (sixExchangeCount == 0) {
                 if (stage == 7) {
                     keyFireCmd = 1;
