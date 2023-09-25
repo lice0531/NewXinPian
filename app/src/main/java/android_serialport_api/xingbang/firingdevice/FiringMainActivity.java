@@ -1368,6 +1368,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fromData.setShellNo(temp.getShellBlastNo());
                 fromData.setDenaId(temp.getDenatorId());//芯片码
                 Utils.writeRecord("--起爆测试结果:" + fromData);
+//                Utils.writeRecord("--起爆测试结果:" + fromData+", yscs='" + temp.getZhu_yscs() + '\'' +", version='" + temp.getVersion());
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;

@@ -274,7 +274,7 @@ public class XingbangMain extends BaseActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_shou= master.queryLeiGuan(format1);
+        List<DenatorBaseinfo> list_shou= master.queryLeiGuan(format1,mRegion);
         Yanzheng_sq_size=list_shou.size();
         Log.e(TAG, "超过授权日期list_shou: "+list_shou.size() );
     }

@@ -866,12 +866,13 @@ public class GreenDaoMaster {
         }
     }
     /**
-     * 删除生产数据中的雷管
+     * 查询超时的雷管
      */
-    public  List<DenatorBaseinfo> queryLeiGuan(String time) {
+    public  List<DenatorBaseinfo> queryLeiGuan(String time,String mRegion) {
         Log.e("查询超时的雷管", "time: "+time );
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        return result.where(DenatorBaseinfoDao.Properties.Regdate.lt(time)).list();
+        return result.where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .where(DenatorBaseinfoDao.Properties.Regdate.lt(time)).list();
     }
     /**
      * 删除生产数据中的雷管
