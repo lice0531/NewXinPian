@@ -378,7 +378,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e("扫码", "data: " + data);
                     //5620302H00001A62F400FFF20AB603
                     //5420302H00001A6F4FFF20AB603
-                    //Y5620413H00009A630FD74D87604
+                    //Y5620413H00009A630FD74D87604(四川)
                     //M5621132A9999900F491EF8B0922
                     if (data.charAt(0) == 'Y') {
                         barCode = data.substring(1, 14);
@@ -389,13 +389,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e("扫码", "data.substring(24): " + data.substring(24));
                         insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
                     }else {
+                        //1530924217014 000FA546C F203 1 0
                         barCode = data.substring(0, 13);
-                        String a = data.substring(13, 23);
-                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        String a = data.substring(13, 22);
+                        String yscs=data.substring(22, 26);
+                        denatorId="A62"+a;
+//                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                        Log.e("扫码", "yscs: " + data.substring(22, 26));
+                        insertSingleDenator_2(barCode, denatorId, data.substring(22, 26));//同时注册管壳码和芯片码
                     }
 
                 }
@@ -1696,7 +1699,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        return ;
     }
 
     /***

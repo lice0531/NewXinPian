@@ -248,7 +248,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         btn_onClick();//button的onClick
 
         handler();//所有的handler
-//        scan();//扫描初始化
+        scan();//扫描初始化
 
         if (factoryFeature != null && factoryFeature.trim().length() == 1) {
             edit_end_entAT1Bit_ed.setText(factoryFeature);
@@ -323,20 +323,43 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 scanDecode.stopScan();
                 decodeBar(data);
             } else {
-//                if (continueScanFlag == 1) {
-//                    String barCode = getContinueScanBlastNo(data);
-//                    if (barCode == null) return;
-//
-//                    if (checkRepeatShellNo(barCode)) {
-//                        show_Toast(getResources().getString(R.string.text_error_tip9));
-//                        SoundPlayUtils.play(3);
-//                        return;
-//                    } else {
-//                        show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
+                String barCode;
+                String denatorId;
+                if (data.length() == 28) {
+                    Log.e("扫码", "data: " + data);
+                    //5620302H00001A62F400FFF20AB603
+                    //5420302H00001A6F4FFF20AB603
+                    //Y5620413H00009A630FD74D87604(四川)
+                    //M5621132A9999900F491EF8B0922
+                    if (data.charAt(0) == 'Y') {
+                        barCode = data.substring(1, 14);
+                        String a = data.substring(14, 24);
+                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        Log.e("扫码", "barCode: " + barCode);
+                        Log.e("扫码", "denatorId: " + denatorId);
+                        Log.e("扫码", "data.substring(24): " + data.substring(24));
+                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                    }else {
+                        //1530924217014 000FA546C F203 1 0
+                        barCode = data.substring(0, 13);
+                        String a = data.substring(13, 22);
+                        String yscs=data.substring(22, 26);
+                        denatorId="A62"+a;
+//                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        Log.e("扫码", "barCode: " + barCode);
+                        Log.e("扫码", "denatorId: " + denatorId);
+                        Log.e("扫码", "yscs: " + data.substring(22, 26));
+                        insertSingleDenator_2(barCode, denatorId, data.substring(22, 26));//同时注册管壳码和芯片码
+                    }
+
+                }
+//                    else if{
+//                        barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
+//                        insertSingleDenator(barCode);
 //                    }
-//                    SoundPlayUtils.play(1);//1,2,3,4
-//                    insertSingleDenator(barCode);
-//                }
+                hideInputKeyboard();//隐藏光标
+
+
             }
         });
     }
@@ -418,7 +441,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 show_Toast(getString(R.string.text_reister_tip5) + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast(singleShellNo+"三码绑定内容一致");
+//                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
@@ -814,8 +838,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        loadMoreData_all_lg();//
 
         if (db != null) db.close();
-//        scanDecode.stopScan();//停止扫描
-//        scanDecode.onDestroy();//回复初始状态
+        scanDecode.stopScan();//停止扫描
+        scanDecode.onDestroy();//回复初始状态
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -1354,6 +1378,95 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         return 0;
     }
 
+    /***
+     * 扫码注册方法
+     */
+    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+        Log.e("检查管厂码", "factoryCode: "+factoryCode );
+        Log.e("检查管厂码", "shellNo.substring(0,2): "+shellNo.substring(0,2) );
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0,2)) ) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));//  "管厂码与系统中定义的管厂码不一致";
+            return  ;
+        }
+        //雷管信息有误，特征码不正确，请检查 5620819H00001
+        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.equals(shellNo.substring(7,8))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+            return ;
+        }
+        if (shellNo.length() != 13) {
+            return ;
+        }
+        if (check(shellNo) == -1) {
+            return ;
+        }
+//        int maxNo = getMaxNumberNo();
+
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+        Log.e("扫码", "delay_set: " + delay_set);
+
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+
+        maxNo++;
+        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+        denatorBaseinfo.setBlastserial(maxNo);
+        denatorBaseinfo.setSithole(maxNo + "");
+        denatorBaseinfo.setShellBlastNo(shellNo);
+        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setErrorCode("FF");
+        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setWire("");//桥丝状态
+        denatorBaseinfo.setPiece(mRegion);
+        denatorBaseinfo.setDenatorId(denatorId);
+        denatorBaseinfo.setZhu_yscs(yscs);
+        //向数据库插入数据
+        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
+        Utils.saveFile();//把闪存中的数据存入磁盘中
+        SoundPlayUtils.play(1);
+        return ;
+    }
+
+    private int check(String shellNo) {
+
+        //管厂码
+        String facCode = Utils.getDetonatorShellToFactoryCodeStr(shellNo);
+        //特征码
+        String facFea = Utils.getDetonatorShellToFeatureStr(shellNo);
+        //雷管信息有误，管厂码不正确，请检查
+        if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.indexOf(facCode) < 0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return -1;
+        }
+        if (shellNo.length() > 13) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+            return -1;
+        }
+        //雷管信息有误，特征码不正确，请检查
+        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.indexOf(facFea) < 0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+            return -1;
+        }
+        //检查重复数据
+        if (checkRepeatShellNo(shellNo)) {
+            singleShellNo = "";
+            singleShellNo = shellNo;
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
+        String yue = shellNo.substring(3, 5);
+        String ri = shellNo.substring(5, 7);
+
+//        if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
+//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(11));
+//            return -1;
+//        }
+        return 0;
+    }
 
     /***
      * 得到最大序号
