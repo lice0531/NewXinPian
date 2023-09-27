@@ -348,8 +348,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "yscs: " + data.substring(22, 26));
-                        insertSingleDenator_2(barCode, denatorId, data.substring(22, 26));//同时注册管壳码和芯片码
+                        Log.e("扫码", "yscs: " + yscs);
+                        insertSingleDenator_2(barCode, denatorId, yscs);//同时注册管壳码和芯片码
                     }
 
                 }
