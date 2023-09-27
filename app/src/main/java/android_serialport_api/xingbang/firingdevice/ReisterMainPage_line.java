@@ -1399,6 +1399,18 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         if (check(shellNo) == -1) {
             return ;
         }
+
+        DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
+        //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return ;
+        }
+        if(checkRepeatdenatorId(denatorId)){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return ;
+        }
+
 //        int maxNo = getMaxNumberNo();
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
