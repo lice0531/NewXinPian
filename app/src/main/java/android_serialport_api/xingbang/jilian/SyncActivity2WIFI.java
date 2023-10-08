@@ -838,14 +838,15 @@ public class SyncActivity2WIFI extends BaseActivity {
             }
         });
     }
-    //eventbus
+    //eventbus(接收命令)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FirstEvent event) {
-//        String msg = event.getMsg();
-//        if (msg.equals("qibao")) {
-//            String a = "0006";
-//            writeData(a);//
-//        }
+        String msg = event.getMsg();
+
+        if (msg.equals("jieguo")) {
+            String a = "0006";
+            writeData(a);//
+        }
     }
 
     @Override

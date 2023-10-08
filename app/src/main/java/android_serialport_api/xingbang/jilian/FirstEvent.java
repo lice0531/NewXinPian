@@ -10,6 +10,10 @@ public class FirstEvent {
 
     private String position;
 
+    private int tureNum;
+
+    private int errNum;
+
     public FirstEvent(String msg) {
         mMsg = msg;
     }
@@ -22,6 +26,13 @@ public class FirstEvent {
     public FirstEvent(String msg, String data, String position) {
         this.position = position;
     }
+    public FirstEvent(String msg, String data, String position,int tureNum,int errNum) {
+        this.mMsg = msg;
+        this.data = data;
+        this.position = position;
+        this.tureNum = tureNum;
+        this.errNum = errNum;
+    }
 
     public String getMsg() {
         return mMsg;
@@ -33,5 +44,21 @@ public class FirstEvent {
 
     public String getPosition() {
         return position;
+    }
+
+    public int getTureNum() {
+        return tureNum;
+    }
+
+    public void setTureNum(int tureNum) {
+        this.tureNum = tureNum;
+    }
+
+    public int getErrNum() {
+        return errNum;
+    }
+
+    public void setErrNum(int errNum) {
+        this.errNum = errNum;
     }
 }
