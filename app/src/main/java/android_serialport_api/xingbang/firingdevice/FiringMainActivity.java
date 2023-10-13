@@ -199,6 +199,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
+    private boolean dengdai=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -467,7 +468,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < Preparation_time * 0.4 && busInfo.getBusVoltage() < 6.3) {
+            if (secondCount < Preparation_time * 0.4 && busInfo.getBusVoltage() < 6) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -1158,6 +1159,7 @@ public class FiringMainActivity extends SerialPortActivity {
             byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
             sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
+            EventBus.getDefault().post(new FirstEvent("ddjc","01"));
             //得到电流电压信息
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
 //            sendCmd(powerCmd);
@@ -1189,13 +1191,14 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
             sixCmdSerial = 2;
-
+            EventBus.getDefault().post(new FirstEvent("zzcd","01"));
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 3;
 
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            EventBus.getDefault().post(new FirstEvent("qbjg","01"));
 //            if (qibaoNoFlag < 5) {
 //                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
 ////                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
@@ -1337,9 +1340,16 @@ public class FiringMainActivity extends SerialPortActivity {
                 secondTxt.setText(getString(R.string.text_firing_tip9) + thirdWriteCount + getString(R.string.text_firing_tip10));
                 break;
             case 4:
-                ctlLinePanel(4);//修改页面显示项
-                getErrorBlastCount();
-                fourthDisplay = 1;
+                if(dengdai){
+                    int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
+                    int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
+                    EventBus.getDefault().post(new FirstEvent("jcjg","","",allNum,errNum));
+                    ctlLinePanel(4);//修改页面显示项
+                    getErrorBlastCount();
+                    fourthDisplay = 1;
+                    dengdai=false;
+                }
+
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
 //                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
@@ -2333,8 +2343,8 @@ public class FiringMainActivity extends SerialPortActivity {
             closeThread();
             closeForm();
             finish();
-        } else {
-            show_Toast("命令错误");
+        } else if (msg.equals("")) {
+
         }
     }
 

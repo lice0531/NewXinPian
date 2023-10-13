@@ -436,6 +436,7 @@ public class Utils {
         return b & 0xFF;
     }
 
+    //补全
     public static String strPaddingZero(int val, int len) {
 
         return strPaddingZero(String.valueOf(val), len);

@@ -136,6 +136,7 @@ public class SyncActivity extends BaseActivity {
                 break;
             }
         }
+
     }
 
     @Override
@@ -764,6 +765,31 @@ public class SyncActivity extends BaseActivity {
         if (msg.equals("qibao")) {
             String a = "0006";
             writeData(a);
+        }else if(msg.equals("jcjg")){//返回测试结果
+
+            String tureNum=Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum=Utils.strPaddingZero(event.getErrNum(), 3);
+            Log.e("起爆页面返回测试结果", "tureNum: "+tureNum );
+            Log.e("起爆页面返回测试结果", "errNum: "+errNum);
+            send485Cmd("B007"+ MmkvUtils.getcode("ACode", "")+tureNum+errNum);
+        }else if(msg.equals("ddjc")){//等待检测
+            String tureNum=Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum=Utils.strPaddingZero(event.getErrNum(), 3);
+            Log.e("起爆页面返回测试结果", "tureNum: "+tureNum );
+            Log.e("起爆页面返回测试结果", "errNum: "+errNum);
+            send485Cmd("B008"+ MmkvUtils.getcode("ACode", "")+event.getData());
+        }else if(msg.equals("zzcd")){//正在充电
+            String tureNum=Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum=Utils.strPaddingZero(event.getErrNum(), 3);
+            Log.e("起爆页面返回测试结果", "tureNum: "+tureNum );
+            Log.e("起爆页面返回测试结果", "errNum: "+errNum);
+            send485Cmd("B009"+ MmkvUtils.getcode("ACode", "")+event.getData());
+        }else if(msg.equals("qbjg")){//返回起爆结果
+            String tureNum=Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum=Utils.strPaddingZero(event.getErrNum(), 3);
+            Log.e("起爆页面返回测试结果", "tureNum: "+tureNum );
+            Log.e("起爆页面返回测试结果", "errNum: "+errNum);
+            send485Cmd("B010"+ MmkvUtils.getcode("ACode", "")+event.getData());
         }
     }
 
