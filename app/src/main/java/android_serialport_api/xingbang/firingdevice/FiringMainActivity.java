@@ -105,7 +105,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private TextView ll_firing_deAmount_4;//雷管数
     private TextView ll_firing_deAmount_2;//雷管数
     private TextView ll_firing_errorAmount_4;//错误数
-    private TextView ll_firing_tureNum;
+    private TextView ll_firing_tureNum;//正确数量
+    private TextView ll_firing_tureNum2;//正确数量
     private TextView ll_firing_errorAmount_2;//错误数
     private TextView tv__qb_dianliu_1;//参考电流
     private TextView tv__qb_dianliu_2;//参考电流
@@ -283,6 +284,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_errorAmount_2 = findViewById(R.id.ll_firing_errorAmount_2);//错误数
         ll_firing_errorAmount_4 = findViewById(R.id.ll_firing_errorAmount_4);//错误数
         ll_firing_tureNum = findViewById(R.id.ll_firing_tureNum);
+        ll_firing_tureNum2 = findViewById(R.id.ll_firing_tureNum_2);
         tv__qb_dianliu_1 = findViewById(R.id.tv__qb_dianliu_1);//错误数
         tv__qb_dianliu_2 = findViewById(R.id.tv__qb_dianliu_2);//错误数
         ll_firing_Volt_6 = findViewById(R.id.ll_firing_Volt_6);
@@ -487,10 +489,13 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         tureHandler = new Handler(msg -> {
             String tureNumStr = ll_firing_tureNum.getText().toString();
+
             if (tureNumStr.trim().length() < 1) {
                 tureNumStr = "0";
             }
+            Log.e("更新雷管状态","tureNumStr"+tureNumStr);
             ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            ll_firing_tureNum2.setText("" + (Integer.parseInt(tureNumStr) + 1));
             totaltureNum = Integer.parseInt(tureNumStr) + 1;
 //            ll_firing_tureNum.setTextColor(Color.GREEN);
             return false;
@@ -1147,6 +1152,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
 
     public void updateDenator(From32DenatorFiring fromData, int writeDelay) {
+
         if (fromData.getShellNo() == null || fromData.getShellNo().trim().length() < 1) return;
         //greendao更新0817更新
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
@@ -1166,7 +1172,10 @@ public class FiringMainActivity extends SerialPortActivity {
             denator.setAuthorization("02");
         }
         Application.getDaoSession().update(denator);
-
+        if("FF".equals(fromData.getCommicationStatus())){
+            tureHandler.sendMessage(tureHandler.obtainMessage());
+        }
+//        Log.e("更新雷管状态","fromData.getCommicationStatus()"+fromData.getCommicationStatus());
         //判断雷管状态是否正价错误数量//|| (writeDelay != fromData.getDelayTime())
         if (!"FF".equals(fromData.getCommicationStatus()) && !"F2".equals(fromData.getCommicationStatus()) && !"F1".equals(fromData.getCommicationStatus())) {
             twoErrorDenatorFlag = 1;
@@ -1177,7 +1186,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
                 Utils.writeRecord("--起爆检测错误:" + fromData.toString());
             }
-            tureHandler.sendMessage(tureHandler.obtainMessage());
+
         }
 
         Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
@@ -1890,6 +1899,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
 
                                 short delayTime = write.getDelay();
+                                if(delayTime!=0){
+                                    delayTime= (short) (delayTime-5);
+                                }
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr + write.getZhu_yscs();
