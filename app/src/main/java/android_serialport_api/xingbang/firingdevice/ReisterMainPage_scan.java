@@ -388,14 +388,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e("扫码", "denatorId: " + denatorId);
                         Log.e("扫码", "data.substring(24): " + data.substring(24));
                         insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
-                    }else {
+                    }else {//其他规则
                         barCode = data.substring(0, 13);
-                        String a = data.substring(13, 23);
-                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        denatorId = "A621" + data.substring(13, 22);
+                        String yscs = data.substring(22, 26);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
                         Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                        insertSingleDenator_2(barCode, denatorId, yscs);//同时注册管壳码和芯片码
                     }
 
                 }
