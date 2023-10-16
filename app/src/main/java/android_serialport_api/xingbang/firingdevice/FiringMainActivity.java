@@ -218,6 +218,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private long time = 0;
     private String Yanzheng_sq = "";//是否验雷管授权
 
+    private List<String> duanTotal = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,6 +253,26 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "elevenCount: " + elevenCount);
         //级联接收命令注册的eventbus
         EventBus.getDefault().register(this);
+        loadDuan();
+    }
+
+    private void loadDuan() {
+        String sql = "SELECT  duan FROM denatorBaseinfo group by duan ";
+
+        Cursor cursor = getDaoSession().getDatabase().rawQuery(sql,null);
+        if (cursor != null) {  //cursor不位空,可以移动到第一行
+            while (cursor.moveToNext()) {
+                String duanStr = cursor.getString(0);
+                if (duanStr != null) {
+                    duanTotal.add(duanStr);
+                }
+            }
+            cursor.close();
+        }
+        Log.e(TAG, "duanTotal: "+duanTotal );
+//        for (int a =0;a<duanTotal.size();a++){
+//
+//        }
 
     }
 
@@ -959,7 +981,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
         Log.e(TAG, "denatorlist2: " + denatorlist2.size());
         Log.e(TAG, "denatorCount: " + denatorCount);
-        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
+//        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
@@ -1899,9 +1921,30 @@ public class FiringMainActivity extends SerialPortActivity {
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
 
                                 short delayTime = write.getDelay();
-                                if(delayTime!=0){
-                                    delayTime= (short) (delayTime-5);
+                                String duan="";
+                                switch (write.getDelay()){
+                                    case 0:
+                                        duan="1";
+                                        break;
+                                    case 25:
+                                        duan="2";
+                                        break;
+                                    case 50:
+                                        duan="3";
+                                        break;
+                                    case 75:
+                                        duan="4";
+                                        break;
+                                    case 100:
+                                        duan="5";
+                                        break;
                                 }
+                                for (int a=0;a<duanTotal.size();a++){
+                                    if(duanTotal.get(a).equals(duan)){
+                                        delayTime= (short) (a*20);
+                                    }
+                                }
+
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr + write.getZhu_yscs();
@@ -1913,6 +1956,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
                                 //发送31命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
+                                Log.e(TAG, "管壳码: "+write.getShellBlastNo()+" 延时:"+delayTime );
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
