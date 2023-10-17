@@ -1211,7 +1211,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
         }
 
-        Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
+        Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo()  + "-写入延时" + writeDelay);
     }
 
     public void displayInputKeyboard(View v, boolean hasFocus) {
@@ -1391,7 +1391,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 short writeDelay = temp.getDelay();
                 fromData.setShellNo(temp.getShellBlastNo());
                 fromData.setDenaId(temp.getDenatorId());//芯片码
-                Utils.writeRecord("--起爆测试结果:" + fromData);
+                fromData.setDelayTime(writeDelay);
+                Utils.writeRecord("--起爆测试结果:" + fromData+" version ="+temp.getVersion());
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
