@@ -319,6 +319,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                Log.e("箱号", "getBarcode: " + data);
 //                addXiangHao(data);
 //            }
+            GreenDaoMaster.delAllLg();//删除全部雷管
+            Log.e("扫码", "data: " + data);
             if (sanButtonFlag > 0) {
                 scanDecode.stopScan();
                 decodeBar(data);
@@ -344,7 +346,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         barCode = data.substring(0, 13);
                         String a = data.substring(13, 22);
                         String yscs=data.substring(22, 26);
-                        denatorId="A620"+a;
+                        denatorId="A621"+a;
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
@@ -1440,8 +1442,21 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
+
+        send16(denatorId, version);
+
         return ;
     }
+
+
+    private void send16(String Id, String version) {
+        String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(Id);//新芯片编码
+        denatorId = Utils.getReverseDetonatorNo(denatorId);
+        Log.e("16指令", "denatorId: "+denatorId+"  version:"+version );
+        String data = version + denatorId;
+        sendCmd(OneReisterCmd.sendCmd_16("00", data));//16
+    }
+
 
     private int check(String shellNo) {
 

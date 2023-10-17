@@ -430,6 +430,10 @@ public class GreenDaoMaster {
     public static void delAllMessage() {
         getDaoSession().getShouQuanDao().deleteAll();
     }
+
+    public static void delAllLg() {
+        getDaoSession().getDenatorBaseinfoDao().deleteAll();
+    }
     /**
      * 从数据库表中拿数据
      *

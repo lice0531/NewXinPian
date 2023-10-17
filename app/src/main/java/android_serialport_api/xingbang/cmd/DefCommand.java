@@ -13,6 +13,7 @@ public class DefCommand {
 	public static String CMD_1_REISTER_3="12";//自动返回雷管ID号
 	public static String CMD_1_REISTER_4="13";//退出自动注册模式
 	public static String CMD_1_REISTER_5="14";//核心板自检
+	public static String CMD_1_REISTER_6="16";//抽检用
 
 	public static String CMD_2_NETTEST_1="20";//进入测试模式
 	public static String CMD_2_NETTEST_2="21";//写入延时时间，检测结果看雷管是否正常

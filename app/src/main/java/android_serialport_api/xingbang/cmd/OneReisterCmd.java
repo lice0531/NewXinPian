@@ -17,6 +17,8 @@ public class OneReisterCmd {
         return DefCommand.getCommadBytes(command);
     }
 
+
+
     /***
      * 1.1进入自动注册模式(检测桥丝)
      * @param test(00不检测01检测)
@@ -295,6 +297,17 @@ public class OneReisterCmd {
     public static byte[] setToXbCommon_Reister_Test(String data) {
 
         String command = "00" + DefCommand.CMD_1_REISTER_5 + "04" + data;
+        return DefCommand.getCommadBytes(command);
+    }
+
+    /***
+     * 1.6抽检用
+     * @param
+     * @return
+     */
+    public static byte[] sendCmd_16(String addr,String data) {
+
+        String command = addr + DefCommand.CMD_1_REISTER_6 + "05"+data;//001000
         return DefCommand.getCommadBytes(command);
     }
 }
