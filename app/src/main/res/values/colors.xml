@@ -25,7 +25,7 @@
     <color name="rangle_border_base">#A3A3A3</color>
     <color name="bt_bg_base">#1874CD</color>
     <color name="bt_fg_base">#ffffffff</color>
-
+    <color name="totalbar_bg">#299EE3</color>
     <drawable name="dkgray">#80808FF0</drawable>
 
     <drawable name="yello">#F8F8FF00</drawable>

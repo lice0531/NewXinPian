@@ -20,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -125,6 +127,7 @@ public class XingbangMain extends BaseActivity {
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loading = new Handler();//显示进度条
     private Handler mHandler_updata = new Handler();//更新主页面信息
+    private Handler mHandler_load = new Handler();//查了雷管
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
     private String TAG = "主页";
@@ -132,6 +135,7 @@ public class XingbangMain extends BaseActivity {
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private int region_0, region_1, region_2, region_3, region_4, region_5;
+    private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
     // FTP参数
     private FTP mFTP;
     private String mIP = "182.92.61.78";
@@ -139,7 +143,7 @@ public class XingbangMain extends BaseActivity {
     private String mPassWord = "xingbang666";
     private String mSaveDirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xb";
     private List<FTPFile> mList_FtpFileName = new ArrayList<>();
-
+    TextView totalbar_title;
     @Override
     protected void onPause() {
         super.onPause();
@@ -248,11 +252,88 @@ public class XingbangMain extends BaseActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+
+        totalbar_title = findViewById(R.id.title_text);
+
+        ImageView iv_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setOnClickListener(v -> {
+            choiceQuYu();
+        });
+        iv_back.setOnClickListener(v -> finish());
+        iv_back.setVisibility(View.GONE);
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
         setTitleRegion();
 
+    }
+    private void choiceQuYu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+        builder.setTitle(R.string.text_dialog_choice);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
+        builder.setView(view);
+        final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
+        final CheckBox cb_mRegion2 = view.findViewById(R.id.dialog_cb_mRegion2);
+        final CheckBox cb_mRegion3 = view.findViewById(R.id.dialog_cb_mRegion3);
+        final CheckBox cb_mRegion4 = view.findViewById(R.id.dialog_cb_mRegion4);
+        final CheckBox cb_mRegion5 = view.findViewById(R.id.dialog_cb_mRegion5);
+        cb_mRegion1.setChecked(mRegion1);
+        cb_mRegion2.setChecked(mRegion2);
+        cb_mRegion3.setChecked(mRegion3);
+        cb_mRegion4.setChecked(mRegion4);
+        cb_mRegion5.setChecked(mRegion5);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+            if (cb_mRegion1.isChecked() || cb_mRegion2.isChecked() || cb_mRegion3.isChecked() || cb_mRegion4.isChecked() || cb_mRegion5.isChecked()) {
+                StringBuilder a = new StringBuilder();
+                mRegion1 = cb_mRegion1.isChecked();
+                mRegion2 = cb_mRegion2.isChecked();
+                mRegion3 = cb_mRegion3.isChecked();
+                mRegion4 = cb_mRegion4.isChecked();
+                mRegion5 = cb_mRegion5.isChecked();
+                if (mRegion1) {
+                    a.append("区域1");
+                }
+                if (mRegion2) {
+                    a.append(",2");
+                }
+                if (mRegion3) {
+                    a.append(",3");
+                }
+                if (mRegion4) {
+                    a.append(",4");
+                }
+                if (mRegion5) {
+                    a.append(",5");
+                }
+                MmkvUtils.savecode("mRegion1", mRegion1);
+                MmkvUtils.savecode("mRegion2", mRegion2);
+                MmkvUtils.savecode("mRegion3", mRegion3);
+                MmkvUtils.savecode("mRegion4", mRegion4);
+                MmkvUtils.savecode("mRegion5", mRegion5);
+                // 区域 更新视图
+//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                //更新标题
+                setTitleRegion();
+                // 显示提示
+                show_Toast("已选择 " + a);
+                mHandler_load.sendMessage(mHandler_load.obtainMessage());
+            } else {
+                show_Toast("请至少选择一个区域");
+            }
+
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
     }
 
     private void initHandler() {
@@ -273,6 +354,11 @@ public class XingbangMain extends BaseActivity {
                 tvMainNo.setText("设备编号:" + equ_no);
                 CrashReport.setUserId(equ_no);
             }
+            return false;
+        });
+
+        mHandler_load = new Handler(msg -> {
+            loadMoreData_all_lg();//查询雷管延时是否为0
             return false;
         });
     }
@@ -746,13 +832,10 @@ public class XingbangMain extends BaseActivity {
     private void loadMoreData_all_lg() {
         lg2_yanshi.clear();
         list_data.clear();
-//        GreenDaoMaster master = new GreenDaoMaster();
-//        list_data = master.queryDenatorBaseinfoToStatusCode("02");
-        list_data = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+        list_data = new GreenDaoMaster().queryDetonatorRegionDesc();
         for (int i = 0; i < list_data.size(); i++) {
             lg2_yanshi.add(list_data.get(i).getDelay() + "");
         }
-//        Log.e("起爆延时验证", lg2_yanshi.toString());
     }
 
 //    private void loadMoreData_all_lg() {

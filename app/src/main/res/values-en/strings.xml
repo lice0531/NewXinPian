@@ -355,4 +355,10 @@
     <string name="resiter_line_fanzhuan">翻转</string>
     <string name="text_list_duan">段号</string>
 
+    <string name="text_zone1">区域1</string>
+    <string name="text_zone2">区域2</string>
+    <string name="text_zone3">区域3</string>
+    <string name="text_zone4">区域4</string>
+    <string name="text_zone5">区域5</string>
+    <string name="text_dialog_choice">请选择区域</string>
 </resources>

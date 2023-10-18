@@ -356,4 +356,11 @@
     <string name="one_Loc_tile">单次定位</string>
     <string name="title_activity_practice">辅助功能</string>
     <string name="resiter_line_fanzhuan">翻转</string>
+
+    <string name="text_zone1">区域1</string>
+    <string name="text_zone2">区域2</string>
+    <string name="text_zone3">区域3</string>
+    <string name="text_zone4">区域4</string>
+    <string name="text_zone5">区域5</string>
+    <string name="text_dialog_choice">请选择区域</string>
 </resources>
