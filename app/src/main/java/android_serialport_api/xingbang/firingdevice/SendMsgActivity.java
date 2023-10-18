@@ -255,7 +255,7 @@ public class SendMsgActivity extends BaseActivity {
         StringBuilder sb = new StringBuilder();
         list_uid = getDaoSession().getDenatorBaseinfoDao().loadAll();
         for (int i = 0; i < list_uid.size(); i++) {
-            sb.append(list_uid.get(i).getShellBlastNo()).append("#").append(list_uid.get(i).getDenatorId()).append("#").append(list_uid.get(i).getZhu_yscs()).append(",");
+            sb.append(list_uid.get(i).getShellBlastNo()).append("#").append(" ").append("#").append(" ").append("#").append("1").append("#").append("00").append(",");
         }
 
         Utils.writeLeiGuan(sb.toString());
