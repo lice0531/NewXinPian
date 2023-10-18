@@ -446,6 +446,27 @@ public class GreenDaoMaster {
                 .list();
     }
 
+    public List<DenatorBaseinfo> queryDetonatorRegionAsc() {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+        if (mRegion1) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("1"));
+        }if (mRegion2) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("2"));
+        }if (mRegion3) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("3"));
+        }if (mRegion4) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("4"));
+        }if (mRegion5) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("5"));
+        }
+        return mListData;
+    }
+
     /**
      * 查询雷管 区域正序(序号)
      *

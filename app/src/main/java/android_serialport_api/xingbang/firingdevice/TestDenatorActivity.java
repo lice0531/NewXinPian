@@ -440,7 +440,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         blastQueue.clear();
         errorList.clear();
 
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();//不分区域
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
             VoBlastModel item = new VoBlastModel();

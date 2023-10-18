@@ -171,6 +171,11 @@ public class XingbangMain extends BaseActivity {
         getPropertiesData();//重新读取备份数据会导致已修改的数据重置
         // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
         // 设置标题区域
         setTitleRegion();
         // 获取区域雷管数量
@@ -977,12 +982,24 @@ public class XingbangMain extends BaseActivity {
      * 设置标题区域
      */
     private void setTitleRegion() {
-        String str = " 区域" + mRegion;
+        StringBuilder a = new StringBuilder();
+        if (mRegion1) {
+            a.append("1");
+        }if (mRegion2) {
+            a.append(",2");
+        }if (mRegion3) {
+            a.append(",3");
+        }if (mRegion4) {
+            a.append(",4");
+        }if (mRegion5) {
+            a.append(",5");
+        }
+        String str = "区域" + a;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
-        // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
-        Log.e("liyi_Region", "已选择 " + str);
+        // 保存区域参数(单选的时候要放开,多选关闭)
+//        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
+        totalbar_title.setText(mOldTitle+"/"+str);
     }
 
     /**

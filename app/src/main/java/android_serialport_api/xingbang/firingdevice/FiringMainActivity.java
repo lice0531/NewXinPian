@@ -786,7 +786,9 @@ public class FiringMainActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
 //        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//不分区域
+//        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc(mRegion);//不分区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
+
         for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
             vo.setBlastserial(d.getBlastserial());
@@ -1966,6 +1968,7 @@ public class FiringMainActivity extends SerialPortActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         int keyCode = event.getKeyCode();
+        Log.e(TAG, "keyCode: "+keyCode );
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
         } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")|| !Build.DEVICE.equals("KT50")) {
