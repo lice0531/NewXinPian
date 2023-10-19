@@ -15,12 +15,20 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/totalbar"
+            layout="@layout/title_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:visibility="gone">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -31,13 +39,14 @@
                 app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
+
         <LinearLayout
-            android:paddingTop="1dip"
             android:id="@+id/ly_setUpdata"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="1dip">
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -49,21 +58,21 @@
 
                 <Button
                     android:id="@+id/btn_setDelayTime_return"
+                    style="@style/allbtntstyle"
                     android:layout_width="60dp"
                     android:layout_height="40dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="@string/text_return"
-                    style="@style/allbtntstyle" />
+                    android:text="@string/text_return" />
 
                 <Button
                     android:id="@+id/btn_setDelayTime_inputOK"
+                    style="@style/allbtntstyle"
                     android:layout_width="60dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="@string/text_sure"
-                    style="@style/allbtntstyle" />
+                    android:text="@string/text_sure" />
             </LinearLayout>
 
             <LinearLayout
@@ -176,11 +185,11 @@
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
                         android:hint="间隔"
-                        android:layout_marginRight="5dp"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -202,13 +211,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_2"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -249,11 +258,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_2"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -279,13 +288,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_3"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -326,11 +335,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_3"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -356,13 +365,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_4"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -404,10 +413,10 @@
 
                     <EditText
                         android:id="@+id/et_duan_delaytime_4"
-                        android:layout_marginRight="5dp"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -433,13 +442,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_5"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -481,10 +490,10 @@
 
                     <EditText
                         android:id="@+id/et_duan_delaytime_5"
-                        android:layout_marginRight="5dp"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -510,13 +519,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_6"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -557,11 +566,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_6"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -587,13 +596,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_7"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -634,11 +643,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_7"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -664,13 +673,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_8"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -711,11 +720,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_8"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -741,13 +750,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_9"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -788,11 +797,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_9"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -818,13 +827,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_10"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -865,11 +874,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_10"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -895,13 +904,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_11"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -942,11 +951,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_11"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -972,13 +981,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_12"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1019,11 +1028,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_12"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1049,13 +1058,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_13"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1096,11 +1105,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_13"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1126,13 +1135,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_14"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1173,11 +1182,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_14"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1203,13 +1212,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_15"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1250,11 +1259,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_15"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1280,13 +1289,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_16"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1327,11 +1336,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_16"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1357,13 +1366,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_17"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1404,11 +1413,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_17"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1434,13 +1443,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_18"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1481,11 +1490,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_18"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1511,13 +1520,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_19"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1558,11 +1567,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_19"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
@@ -1588,13 +1597,13 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:focusable="false"
                         android:id="@+id/et_duan_num_20"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/translucent"
+                        android:focusable="false"
                         android:gravity="left"
                         android:maxLength="3"
                         android:numeric="integer"
@@ -1635,11 +1644,11 @@
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
-                        android:layout_marginRight="5dp"
                         android:id="@+id/et_duan_delaytime_20"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"

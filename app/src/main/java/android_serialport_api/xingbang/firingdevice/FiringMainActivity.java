@@ -647,10 +647,9 @@ public class FiringMainActivity extends SerialPortActivity {
      * 得到错误雷管数
      */
     private void getErrorBlastCount() {
-        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where  statusCode=? and errorCode<> ? and piece = ?";
-        Cursor cursor = db.rawQuery(sql, new String[]{"02", "FF", mRegion});
-        int totalNum = cursor.getCount();//得到数据的总条数
-        cursor.close();
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        int totalNum = list.size();//得到数据的总条数
         ll_firing_errorAmount_4.setText("" + totalNum);
         if (totalNum != 0) {
             ll_firing_errorAmount_4.setTextColor(Color.RED);
@@ -658,6 +657,27 @@ public class FiringMainActivity extends SerialPortActivity {
             ll_firing_errorAmount_4.setTextColor(Color.GREEN);
         }
 
+    }
+
+    /***
+     * 加载错误雷管
+     */
+    private void loadErrorBlastModel() {
+        errDeData.clear();
+        GreenDaoMaster master = new GreenDaoMaster();
+//        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        for (DenatorBaseinfo d : list) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("serialNo", d.getBlastserial());
+            item.put("duanNo", d.getDuanNo());
+            item.put("shellNo", d.getShellBlastNo());
+            item.put("errorName", d.getErrorName());
+            item.put("delay", d.getDelay());
+            item.put("piece", d.getPiece());
+            errDeData.add(item);
+        }
+        Log.e(TAG, "errDeData: " + errDeData.toString());
     }
 
     /***
@@ -737,24 +757,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
     }
 
-    /***
-     * 加载错误雷管
-     */
-    private void loadErrorBlastModel() {
-        errDeData.clear();
-        GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);
-        for (DenatorBaseinfo d : list) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("serialNo", d.getBlastserial());
-            item.put("duanNo", d.getDuanNo());
-            item.put("shellNo", d.getShellBlastNo());
-            item.put("errorName", d.getErrorName());
-            item.put("delay", d.getDelay());
-            errDeData.add(item);
-        }
-        Log.e(TAG, "errDeData: " + errDeData.toString());
-    }
+
 
     /***
      * 建立错误对话框
@@ -765,8 +768,8 @@ public class FiringMainActivity extends SerialPortActivity {
         // 给ListView绑定内容
         ListView listview = getlistview.findViewById(R.id.X_listview);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo", "duanNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+                new String[]{"serialNo", "duanNo","piece", "shellNo", "errorName", "delay"},
+                new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_quyu,R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         listview.setAdapter(adapter);
         Builder builder = new Builder(this);
@@ -888,7 +891,7 @@ public class FiringMainActivity extends SerialPortActivity {
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
 
-        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
         for (DenatorBaseinfo dbf : list) {
             DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
             denatorHis_detail.setBlastserial(dbf.getBlastserial());

@@ -385,7 +385,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);
+//        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -393,6 +394,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.put("shellNo", d.getShellBlastNo());
             item.put("errorName", d.getErrorName());
             item.put("delay", d.getDelay());
+            item.put("piece", d.getPiece());
             errDeData.add(item);
         }
         Log.e(TAG, "errDeData: " + errDeData.toString());
@@ -408,8 +410,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         // 给ListView绑定内容
         ListView errlistview = (ListView) getlistview.findViewById(R.id.X_listview);
         SimpleAdapter adapter = new SimpleAdapter(this, errDeData, R.layout.firing_error_item,
-                new String[]{"serialNo", "duanNo", "shellNo", "errorName", "delay"},
-                new int[]{R.id.X_item_no, R.id.X_item_duanNo, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
+                new String[]{"serialNo", "duanNo","piece", "shellNo", "errorName", "delay"},
+                new int[]{R.id.X_item_no, R.id.X_item_duanNo,R.id.X_item_quyu, R.id.X_item_shellno, R.id.X_item_errorname, R.id.X_item_delay});
         // 给listview加入适配器
         errlistview.setAdapter(adapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -472,7 +474,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         errorList.clear();
 
 //        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
             VoBlastModel item = new VoBlastModel();
