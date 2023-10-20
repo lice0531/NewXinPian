@@ -74,7 +74,7 @@ public class SetSystemActivity extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
-        Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "否");
         Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);

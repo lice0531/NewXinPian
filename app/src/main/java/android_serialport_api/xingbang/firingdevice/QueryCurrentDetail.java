@@ -194,7 +194,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 case 1005://按管壳码排序
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
