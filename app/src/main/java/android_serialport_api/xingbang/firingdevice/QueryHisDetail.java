@@ -523,12 +523,14 @@ public class QueryHisDetail extends BaseActivity {
     private void getHisDetailList(String blastdate, int type) {
         hisListData.clear();
         Map<String, Object> item = new HashMap<>();
+        item.put("no", getString(R.string.text_list_Serial));//"序号"
         item.put("serialNo", getString(R.string.text_list_Serial));//"序号"
         item.put("shellNo", getString(R.string.text_list_guan));//"管壳码"
         item.put("delay", "" + getString(R.string.text_list_delay));//"延时"
         item.put("errorName", getString(R.string.text_list_state));//"状态"
         hisListData.add(item);
         Cursor cursor;
+        int a = 1;
         if (type == 1) {
             cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null, null, null, null, null);
         } else {
@@ -549,12 +551,14 @@ public class QueryHisDetail extends BaseActivity {
                 String errorName = cursor.getString(8);//错误信息
                 int delay = cursor.getInt(5); //延时
                 item = new HashMap<>();
+                item.put("no", a);
                 item.put("serialNo", serialNo);
                 item.put("shellNo", shellNo);
                 item.put("delay", "" + delay);
                 if (errorName == null || errorName.trim().length() < 1) errorName = " ";
                 item.put("errorName", errorName);
                 hisListData.add(item);
+                a++;
             }
             cursor.close();
         }
@@ -591,7 +595,7 @@ public class QueryHisDetail extends BaseActivity {
         if (count > 0) count -= 1;
         txtView.setText(getString(R.string.text_alert_tip4) + count);//"雷管总数:"
         SimpleAdapter adapter = new SimpleAdapter(QueryHisDetail.this, hisListData, R.layout.query_his_detail_item,
-                new String[]{"serialNo", "shellNo", "delay", "errorName"},
+                new String[]{"no", "shellNo", "delay", "errorName"},
                 new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_delay, R.id.X_item_errorname});
         // 给listview加入适配器
         listview.setAdapter(adapter);
@@ -896,7 +900,7 @@ public class QueryHisDetail extends BaseActivity {
             Log.e("上传信息-日志", log);
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "KT50_3.25_PT_NM_V1.3.1C_231019");//软件版本
+            object.put("rj_version", "KT50_3.25_PT_HF_V1.3.1C_231020");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {

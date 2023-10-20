@@ -103,6 +103,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             if (mLine == 3) {
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
                 holder.mTvDuanNo.setText(detonatorBaseInfo.getDuanNo());
+                holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
                 } else {
@@ -120,6 +121,8 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             if(mLine == 7){//点击管壳码/uid 切换显示
                 holder.mTvShellBlastNo.setText(detonatorBaseInfo.getDenatorId());   // 芯片码
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
+                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuanNo());
+                holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
                 } else {
@@ -152,6 +155,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
         TextView mTvShellBlastNo;
         TextView mTvStatus;
         TextView mTvDuanNo;
+        TextView mTvPiace;
 
         ViewHolder(View view) {
             super(view);
@@ -161,6 +165,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             mTvShellBlastNo = view.findViewById(R.id.tv_shellBlastNo);
             mTvStatus = view.findViewById(R.id.tv_status);
             mTvDuanNo = view.findViewById(R.id.tv_duanNo);
+            mTvPiace = view.findViewById(R.id.tv_piace);
         }
     }
 

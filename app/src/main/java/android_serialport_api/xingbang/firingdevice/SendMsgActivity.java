@@ -183,7 +183,7 @@ public class SendMsgActivity extends BaseActivity {
                 // 区域 更新视图
                 case 1001:
                     Log.e("1001", "更新视图 区域" + mRegion);
-
+                    loadMoreData();
                     // 查询全部雷管 倒叙(序号)
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     // 设置标题区域

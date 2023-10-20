@@ -199,6 +199,165 @@ public class ChoseDuanActivity extends AppCompatActivity {
     @BindView(R.id.re_et_nei20)
     Button btnFan20;
 
+    @BindView(R.id.re_num_f21)
+    TextView reNumF21;
+    @BindView(R.id.re_et_nei21)
+    Button btnFan21;
+    @BindView(R.id.re_btn_f21)
+    Button btnDuan21;
+    @BindView(R.id.tr_22)
+    TableRow tr22;
+    @BindView(R.id.re_num_f22)
+    TextView reNumF22;
+    @BindView(R.id.re_btn_f22)
+    Button btnDuan22;
+    @BindView(R.id.re_et_nei22)
+    Button btnFan22;
+    @BindView(R.id.tr_23)
+    TableRow tr23;
+    @BindView(R.id.re_num_f23)
+    TextView reNumF23;
+    @BindView(R.id.re_btn_f23)
+    Button btnDuan23;
+    @BindView(R.id.re_et_nei23)
+    Button btnFan23;
+    @BindView(R.id.tr_24)
+    TableRow tr24;
+    @BindView(R.id.re_num_f24)
+    TextView reNumF24;
+    @BindView(R.id.re_btn_f24)
+    Button btnDuan24;
+    @BindView(R.id.re_et_nei24)
+    Button btnFan24;
+    @BindView(R.id.tr_25)
+    TableRow tr25;
+    @BindView(R.id.re_num_f25)
+    TextView reNumF25;
+    @BindView(R.id.re_btn_f25)
+    Button btnDuan25;
+    @BindView(R.id.re_et_nei25)
+    Button btnFan25;
+    @BindView(R.id.tr_26)
+    TableRow tr26;
+    @BindView(R.id.re_num_f26)
+    TextView reNumF26;
+    @BindView(R.id.re_btn_f26)
+    Button btnDuan26;
+    @BindView(R.id.re_et_nei26)
+    Button btnFan26;
+    @BindView(R.id.tr_27)
+    TableRow tr27;
+    @BindView(R.id.re_num_f27)
+    TextView reNumF27;
+    @BindView(R.id.re_btn_f27)
+    Button btnDuan27;
+    @BindView(R.id.re_et_nei27)
+    Button btnFan27;
+    @BindView(R.id.tr_28)
+    TableRow tr28;
+    @BindView(R.id.re_num_f28)
+    TextView reNumF28;
+    @BindView(R.id.re_et_nei28)
+    Button btnFan28;
+    @BindView(R.id.re_btn_f28)
+    Button btnDuan28;
+    @BindView(R.id.tr_29)
+    TableRow tr29;
+    @BindView(R.id.re_num_f29)
+    TextView reNumF29;
+    @BindView(R.id.re_btn_f29)
+    Button btnDuan29;
+    @BindView(R.id.re_et_nei29)
+    Button btnFan29;
+    @BindView(R.id.tr_30)
+    TableRow tr30;
+    @BindView(R.id.re_num_f30)
+    TextView reNumF30;
+    @BindView(R.id.re_btn_f30)
+    Button btnDuan30;
+    @BindView(R.id.re_et_nei30)
+    Button btnFan30;
+    @BindView(R.id.tr_31)
+    TableRow tr31;
+    @BindView(R.id.re_num_f31)
+    TextView reNumF31;
+    @BindView(R.id.re_btn_f31)
+    Button btnDuan31;
+    @BindView(R.id.re_et_nei31)
+    Button btnFan31;
+    @BindView(R.id.tr_32)
+    TableRow tr32;
+    @BindView(R.id.re_num_f32)
+    TextView reNumF32;
+    @BindView(R.id.re_btn_f32)
+    Button btnDuan32;
+    @BindView(R.id.re_et_nei32)
+    Button btnFan32;
+    @BindView(R.id.tr_33)
+    TableRow tr33;
+    @BindView(R.id.re_num_f33)
+    TextView reNumF33;
+    @BindView(R.id.re_btn_f33)
+    Button btnDuan33;
+    @BindView(R.id.re_et_nei33)
+    Button btnFan33;
+    @BindView(R.id.tr_34)
+    TableRow tr34;
+    @BindView(R.id.re_num_f34)
+    TextView reNumF34;
+    @BindView(R.id.re_btn_f34)
+    Button btnDuan34;
+    @BindView(R.id.re_et_nei34)
+    Button btnFan34;
+    @BindView(R.id.tr_35)
+    TableRow tr35;
+    @BindView(R.id.re_num_f35)
+    TextView reNumF35;
+    @BindView(R.id.re_btn_f35)
+    Button btnDuan35;
+    @BindView(R.id.re_et_nei35)
+    Button btnFan35;
+    @BindView(R.id.tr_36)
+    TableRow tr36;
+    @BindView(R.id.re_num_f36)
+    TextView reNumF36;
+    @BindView(R.id.re_btn_f36)
+    Button btnDuan36;
+    @BindView(R.id.re_et_nei36)
+    Button btnFan36;
+    @BindView(R.id.tr_37)
+    TableRow tr37;
+    @BindView(R.id.re_num_f37)
+    TextView reNumF37;
+    @BindView(R.id.re_btn_f37)
+    Button btnDuan37;
+    @BindView(R.id.re_et_nei37)
+    Button btnFan37;
+    @BindView(R.id.tr_38)
+    TableRow tr38;
+    @BindView(R.id.re_num_f38)
+    TextView reNumF38;
+    @BindView(R.id.re_btn_f38)
+    Button btnDuan38;
+    @BindView(R.id.re_et_nei38)
+    Button btnFan38;
+    @BindView(R.id.tr_39)
+    TableRow tr39;
+    @BindView(R.id.re_num_f39)
+    TextView reNumF39;
+    @BindView(R.id.re_btn_f39)
+    Button btnDuan39;
+    @BindView(R.id.re_et_nei39)
+    Button btnFan39;
+    @BindView(R.id.tr_40)
+    TableRow tr40;
+    @BindView(R.id.re_num_f40)
+    TextView reNumF40;
+    @BindView(R.id.re_btn_f40)
+    Button btnDuan40;
+    @BindView(R.id.re_et_nei40)
+    Button btnFan40;
+
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
 
@@ -212,6 +371,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
     private String duan_set = "0";//是duan1还是duan2
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
+    private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
     private String TAG = "单发注册";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,11 +425,19 @@ public class ChoseDuanActivity extends AppCompatActivity {
             R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.re_btn_f8, R.id.re_btn_f9, R.id.re_btn_f10, R.id.re_btn_f11, R.id.re_btn_f12, R.id.re_btn_f13,
             R.id.re_btn_f14, R.id.re_btn_f15, R.id.re_btn_f16, R.id.re_btn_f17, R.id.re_btn_f18, R.id.re_btn_f19,
-            R.id.re_btn_f20, R.id.re_et_nei1, R.id.re_et_nei2, R.id.re_et_nei3,
+            R.id.re_btn_f20,R.id.re_btn_f21, R.id.re_btn_f22, R.id.re_btn_f23,
+            R.id.re_btn_f24, R.id.re_btn_f25, R.id.re_btn_f26, R.id.re_btn_f27,
+            R.id.re_btn_f28, R.id.re_btn_f29, R.id.re_btn_f30, R.id.re_btn_f31, R.id.re_btn_f32, R.id.re_btn_f33,
+            R.id.re_btn_f34, R.id.re_btn_f35, R.id.re_btn_f36, R.id.re_btn_f37, R.id.re_btn_f38, R.id.re_btn_f39,
+            R.id.re_btn_f40, R.id.re_et_nei1, R.id.re_et_nei2, R.id.re_et_nei3,
             R.id.re_et_nei4, R.id.re_et_nei5, R.id.re_et_nei6, R.id.re_et_nei7,
             R.id.re_et_nei8, R.id.re_et_nei9, R.id.re_et_nei10, R.id.re_et_nei11, R.id.re_et_nei12, R.id.re_et_nei13,
             R.id.re_et_nei14, R.id.re_et_nei15, R.id.re_et_nei16, R.id.re_et_nei17, R.id.re_et_nei18, R.id.re_et_nei19,
-            R.id.re_et_nei20,})
+            R.id.re_et_nei20,R.id.re_et_nei21, R.id.re_et_nei22, R.id.re_et_nei23,
+            R.id.re_et_nei24, R.id.re_et_nei25, R.id.re_et_nei26, R.id.re_et_nei27,
+            R.id.re_et_nei28, R.id.re_et_nei29, R.id.re_et_nei30, R.id.re_et_nei31, R.id.re_et_nei32, R.id.re_et_nei33,
+            R.id.re_et_nei34, R.id.re_et_nei35, R.id.re_et_nei36, R.id.re_et_nei37, R.id.re_et_nei38, R.id.re_et_nei39,
+            R.id.re_et_nei40})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -393,6 +561,126 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 duan = 20;
                 initUI();
                 reNumF20.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f21:
+                hideInputKeyboard();
+                duan = 21;
+                initUI();
+                reNumF21.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f22:
+                hideInputKeyboard();
+                duan = 22;
+                initUI();
+                reNumF22.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f23:
+                hideInputKeyboard();
+                duan = 23;
+                initUI();
+                reNumF23.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f24:
+                hideInputKeyboard();
+                duan = 24;
+                initUI();
+                reNumF24.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f25:
+                hideInputKeyboard();
+                duan = 25;
+                initUI();
+                reNumF25.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f26:
+                hideInputKeyboard();
+                duan = 26;
+                initUI();
+                reNumF26.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f27:
+                hideInputKeyboard();
+                duan = 27;
+                initUI();
+                reNumF27.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f28:
+                hideInputKeyboard();
+                duan = 28;
+                initUI();
+                reNumF28.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f29:
+                hideInputKeyboard();
+                duan = 29;
+                initUI();
+                reNumF29.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f30:
+                hideInputKeyboard();
+                duan = 30;
+                initUI();
+                reNumF30.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f31:
+                hideInputKeyboard();
+                duan = 31;
+                initUI();
+                reNumF31.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f32:
+                hideInputKeyboard();
+                duan = 32;
+                initUI();
+                reNumF32.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f33:
+                hideInputKeyboard();
+                duan = 33;
+                initUI();
+                reNumF33.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f34:
+                hideInputKeyboard();
+                duan = 34;
+                initUI();
+                reNumF34.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f35:
+                hideInputKeyboard();
+                duan = 35;
+                initUI();
+                reNumF35.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f36:
+                hideInputKeyboard();
+                duan = 36;
+                initUI();
+                reNumF36.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f37:
+                hideInputKeyboard();
+                duan = 37;
+                initUI();
+                reNumF37.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f38:
+                hideInputKeyboard();
+                duan = 38;
+                initUI();
+                reNumF38.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f39:
+                hideInputKeyboard();
+                duan = 39;
+                initUI();
+                reNumF39.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f40:
+                hideInputKeyboard();
+                duan = 40;
+                initUI();
+                reNumF40.setBackgroundResource(R.drawable.textview_border_green);
                 break;
             case R.id.re_et_nei1:
                 fanzhuan(1);
@@ -552,6 +840,166 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     n20 = 0;
                 } else {
                     n20 = 1;
+                }
+                break;
+            case R.id.re_et_nei21:
+                fanzhuan(21);
+                if (n21 == 1) {
+                    n21 = 0;
+                } else {
+                    n21 = 1;
+                }
+                break;
+            case R.id.re_et_nei22:
+                fanzhuan(22);
+                if (n22 == 1) {
+                    n22 = 0;
+                } else {
+                    n22 = 1;
+                }
+                break;
+            case R.id.re_et_nei23:
+                fanzhuan(23);
+                if (n23 == 1) {
+                    n23 = 0;
+                } else {
+                    n23 = 1;
+                }
+                break;
+            case R.id.re_et_nei24:
+                fanzhuan(24);
+                if (n24 == 1) {
+                    n24 = 0;
+                } else {
+                    n24 = 1;
+                }
+                break;
+            case R.id.re_et_nei25:
+                fanzhuan(25);
+                if (n25 == 1) {
+                    n25 = 0;
+                } else {
+                    n25 = 1;
+                }
+                break;
+            case R.id.re_et_nei26:
+                fanzhuan(26);
+                if (n26 == 1) {
+                    n26 = 0;
+                } else {
+                    n26 = 1;
+                }
+                break;
+            case R.id.re_et_nei27:
+                fanzhuan(27);
+                if (n27 == 1) {
+                    n27 = 0;
+                } else {
+                    n27 = 1;
+                }
+                break;
+            case R.id.re_et_nei28:
+                fanzhuan(28);
+                if (n28 == 1) {
+                    n28 = 0;
+                } else {
+                    n28 = 1;
+                }
+                break;
+            case R.id.re_et_nei29:
+                fanzhuan(29);
+                if (n29 == 1) {
+                    n29 = 0;
+                } else {
+                    n29 = 1;
+                }
+                break;
+            case R.id.re_et_nei30:
+                fanzhuan(30);
+                if (n30 == 1) {
+                    n30 = 0;
+                } else {
+                    n30 = 1;
+                }
+                break;
+            case R.id.re_et_nei31:
+                fanzhuan(31);
+                if (n31 == 1) {
+                    n31 = 0;
+                } else {
+                    n31 = 1;
+                }
+                break;
+            case R.id.re_et_nei32:
+                fanzhuan(32);
+                if (n32 == 1) {
+                    n32 = 0;
+                } else {
+                    n32 = 1;
+                }
+                break;
+            case R.id.re_et_nei33:
+                fanzhuan(33);
+                if (n33 == 1) {
+                    n33 = 0;
+                } else {
+                    n33 = 1;
+                }
+                break;
+            case R.id.re_et_nei34:
+                fanzhuan(34);
+                if (n34 == 1) {
+                    n34 = 0;
+                } else {
+                    n34 = 1;
+                }
+                break;
+            case R.id.re_et_nei35:
+                fanzhuan(35);
+                if (n35 == 1) {
+                    n35 = 0;
+                } else {
+                    n35 = 1;
+                }
+                break;
+            case R.id.re_et_nei36:
+                fanzhuan(36);
+                if (n36 == 1) {
+                    n36 = 0;
+                } else {
+                    n36 = 1;
+                }
+                break;
+            case R.id.re_et_nei37:
+                fanzhuan(37);
+                if (n37 == 1) {
+                    n37 = 0;
+                } else {
+                    n37 = 1;
+                }
+                break;
+            case R.id.re_et_nei38:
+                fanzhuan(38);
+                if (n38 == 1) {
+                    n38 = 0;
+                } else {
+                    n38 = 1;
+                }
+                break;
+            case R.id.re_et_nei39:
+                fanzhuan(39);
+                if (n39 == 1) {
+                    n39 = 0;
+                } else {
+                    n39 = 1;
+                }
+                break;
+            case R.id.re_et_nei40:
+                fanzhuan(40);
+                if (n40 == 1) {
+                    n40 = 0;
+                } else {
+                    n40 = 1;
                 }
                 break;
 
@@ -798,7 +1246,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 if (n19 == 1) {
                     btnFan19.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                 } else {
-                    btnFan9.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    btnFan19.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
                 MmkvUtils.savecode("n19", n19);
                 break;
@@ -809,6 +1257,166 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     btnFan20.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
                 MmkvUtils.savecode("n20", n20);
+                break;
+            case 21:
+                if (n21 == 1) {
+                    btnFan21.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan21.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n21", n21);
+                break;
+            case 22:
+                if (n22 == 1) {
+                    btnFan22.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan22.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n22", n22);
+                break;
+            case 23:
+                if (n23 == 1) {
+                    btnFan23.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan23.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n23", n23);
+                break;
+            case 24:
+                if (n24 == 1) {
+                    btnFan24.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan24.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n24", n24);
+                break;
+            case 25:
+                if (n25 == 1) {
+                    btnFan25.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan25.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n25", n25);
+                break;
+            case 26:
+                if (n26 == 1) {
+                    btnFan26.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan26.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n26", n26);
+                break;
+            case 27:
+                if (n27 == 1) {
+                    btnFan27.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan27.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n27", n27);
+                break;
+            case 28:
+                if (n28 == 1) {
+                    btnFan28.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan28.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n28", n28);
+                break;
+            case 29:
+                if (n29 == 1) {
+                    btnFan29.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan29.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n29", n29);
+                break;
+            case 30:
+                if (n30 == 1) {
+                    btnFan30.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan30.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n30", n30);
+                break;
+            case 31:
+                if (n31 == 1) {
+                    btnFan31.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan31.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n31", n31);
+                break;
+            case 32:
+                if (n32 == 1) {
+                    btnFan32.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan32.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n32", n32);
+                break;
+            case 33:
+                if (n33 == 1) {
+                    btnFan33.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan33.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n33", n33);
+                break;
+            case 34:
+                if (n34 == 1) {
+                    btnFan34.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan34.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n34", n34);
+                break;
+            case 35:
+                if (n35 == 1) {
+                    btnFan35.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan35.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n35", n35);
+                break;
+            case 36:
+                if (n36 == 1) {
+                    btnFan36.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan36.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n36", n36);
+                break;
+            case 37:
+                if (n37 == 1) {
+                    btnFan37.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan37.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n37", n37);
+                break;
+            case 38:
+                if (n38 == 1) {
+                    btnFan38.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan38.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n38", n38);
+                break;
+            case 39:
+                if (n39 == 1) {
+                    btnFan39.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan39.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n39", n39);
+                break;
+            case 40:
+                if (n40 == 1) {
+                    btnFan40.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    btnFan40.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode("n40", n40);
                 break;
         }
     }
@@ -834,6 +1442,26 @@ public class ChoseDuanActivity extends AppCompatActivity {
         n18 = (int) MmkvUtils.getcode("n18", 0);
         n19 = (int) MmkvUtils.getcode("n19", 0);
         n20 = (int) MmkvUtils.getcode("n20", 0);
+        n21 = (int) MmkvUtils.getcode("n21", 0);
+        n22 = (int) MmkvUtils.getcode("n22", 0);
+        n23 = (int) MmkvUtils.getcode("n23", 0);
+        n24 = (int) MmkvUtils.getcode("n24", 0);
+        n25 = (int) MmkvUtils.getcode("n25", 0);
+        n26 = (int) MmkvUtils.getcode("n26", 0);
+        n27 = (int) MmkvUtils.getcode("n27", 0);
+        n28 = (int) MmkvUtils.getcode("n28", 0);
+        n29 = (int) MmkvUtils.getcode("n29", 0);
+        n30 = (int) MmkvUtils.getcode("n30", 0);
+        n31 = (int) MmkvUtils.getcode("n31", 0);
+        n32 = (int) MmkvUtils.getcode("n32", 0);
+        n33 = (int) MmkvUtils.getcode("n33", 0);
+        n34 = (int) MmkvUtils.getcode("n34", 0);
+        n35 = (int) MmkvUtils.getcode("n35", 0);
+        n36 = (int) MmkvUtils.getcode("n36", 0);
+        n37 = (int) MmkvUtils.getcode("n37", 0);
+        n38 = (int) MmkvUtils.getcode("n38", 0);
+        n39 = (int) MmkvUtils.getcode("n39", 0);
+        n40 = (int) MmkvUtils.getcode("n40", 0);
         for (int i = 1; i < 21; i++) {
             setBtnColor(i);
         }
@@ -867,7 +1495,26 @@ public class ChoseDuanActivity extends AppCompatActivity {
         reNumF18.setBackgroundResource(R.drawable.translucent);
         reNumF19.setBackgroundResource(R.drawable.translucent);
         reNumF20.setBackgroundResource(R.drawable.translucent);
-
+        reNumF21.setBackgroundResource(R.drawable.translucent);
+        reNumF22.setBackgroundResource(R.drawable.translucent);
+        reNumF23.setBackgroundResource(R.drawable.translucent);
+        reNumF24.setBackgroundResource(R.drawable.translucent);
+        reNumF25.setBackgroundResource(R.drawable.translucent);
+        reNumF26.setBackgroundResource(R.drawable.translucent);
+        reNumF27.setBackgroundResource(R.drawable.translucent);
+        reNumF28.setBackgroundResource(R.drawable.translucent);
+        reNumF29.setBackgroundResource(R.drawable.translucent);
+        reNumF30.setBackgroundResource(R.drawable.translucent);
+        reNumF31.setBackgroundResource(R.drawable.translucent);
+        reNumF32.setBackgroundResource(R.drawable.translucent);
+        reNumF33.setBackgroundResource(R.drawable.translucent);
+        reNumF34.setBackgroundResource(R.drawable.translucent);
+        reNumF35.setBackgroundResource(R.drawable.translucent);
+        reNumF36.setBackgroundResource(R.drawable.translucent);
+        reNumF37.setBackgroundResource(R.drawable.translucent);
+        reNumF38.setBackgroundResource(R.drawable.translucent);
+        reNumF39.setBackgroundResource(R.drawable.translucent);
+        reNumF40.setBackgroundResource(R.drawable.translucent);
 //        lySetDelay.setFocusable(true);
 //        lySetDelay.setFocusableInTouchMode(true);
 //        lySetDelay.requestFocus();
@@ -1033,6 +1680,126 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 reNumF20.setText(totalNum + "");
                 if (totalNum == 0) {
                     MmkvUtils.savecode("n20", 0);
+                }
+                break;
+            case 21:
+                reNumF21.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n21", 0);
+                }
+                break;
+            case 22:
+                reNumF22.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n22", 0);
+                }
+                break;
+            case 23:
+                reNumF23.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n23", 0);
+                }
+                break;
+            case 24:
+                reNumF24.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n24", 0);
+                }
+                break;
+            case 25:
+                reNumF25.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n25", 0);
+                }
+                break;
+            case 26:
+                reNumF26.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n26", 0);
+                }
+                break;
+            case 27:
+                reNumF27.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n27", 0);
+                }
+                break;
+            case 28:
+                reNumF28.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n28", 0);
+                }
+                break;
+            case 29:
+                reNumF29.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n29", 0);
+                }
+                break;
+            case 30:
+                reNumF30.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n30", 0);
+                }
+                break;
+            case 31:
+                reNumF31.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n31", 0);
+                }
+                break;
+            case 32:
+                reNumF32.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n32", 0);
+                }
+                break;
+            case 33:
+                reNumF33.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n33", 0);
+                }
+                break;
+            case 34:
+                reNumF34.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n34", 0);
+                }
+                break;
+            case 35:
+                reNumF35.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n35", 0);
+                }
+                break;
+            case 36:
+                reNumF36.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n36", 0);
+                }
+                break;
+            case 37:
+                reNumF37.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n37", 0);
+                }
+                break;
+            case 38:
+                reNumF38.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n38", 0);
+                }
+                break;
+            case 39:
+                reNumF39.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n39", 0);
+                }
+                break;
+            case 40:
+                reNumF40.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n40", 0);
                 }
                 break;
         }
