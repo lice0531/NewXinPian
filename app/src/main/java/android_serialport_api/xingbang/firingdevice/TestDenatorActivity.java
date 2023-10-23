@@ -454,6 +454,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.setDenatorIdSup(a.getDenatorIdSup());
             item.setZhu_yscs(a.getZhu_yscs());
             item.setCong_yscs(a.getCong_yscs());
+            item.setPiace(a.getPiece());
             if (a.getStatusCode().equals("02")) {
                 list_lg.add(item);
                 blastQueue.offer(item);
@@ -1012,7 +1013,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     errHandler.sendMessage(errHandler.obtainMessage());
 
                 }
-                Utils.writeRecord("--测试结果:" + fromData);
+                Utils.writeRecord("--测试结果:" + fromData+" 区域:"+temp.getPiace());
                 Log.e("测试返回数据", "fromData: " + fromData);
 //
                 writeDenator = null;

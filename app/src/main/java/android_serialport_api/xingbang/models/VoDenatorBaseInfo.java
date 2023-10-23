@@ -11,6 +11,7 @@ public class VoDenatorBaseInfo  {
 	private short delay;//延时
 	private String zhu_yscs;//主芯片延时参数
 	private String cong_yscs;//从芯片延时参数
+	private String piace;//区域
 
 	public String getZhu_yscs() {
 		return zhu_yscs;
@@ -61,6 +62,14 @@ public class VoDenatorBaseInfo  {
 
 	public void setDenatorId(String denatorId) {
 		this.denatorId = denatorId;
+	}
+
+	public String getPiace() {
+		return piace;
+	}
+
+	public void setPiace(String piace) {
+		this.piace = piace;
 	}
 
 	@Override

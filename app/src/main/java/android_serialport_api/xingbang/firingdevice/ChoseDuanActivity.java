@@ -1086,6 +1086,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     for (int i = 0; i < list.size(); i++) {
                         DenatorBaseinfo lg = list.get(i);
                         lg.setDelay(list2.get(list.size() - 1 - i).getDelay());
+                        lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
                     }
 //                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));

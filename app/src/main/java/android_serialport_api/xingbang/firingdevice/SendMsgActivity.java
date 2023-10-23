@@ -138,14 +138,13 @@ public class SendMsgActivity extends BaseActivity {
                 case 1:
                     // 从客户端接收到消息
 //                    runPbDialog();
-                    Log.e("从客户端收到的雷管", "mRegion: " + mRegion);
                     mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-                    Log.e("从客户端收到的雷管", "mRegion: " + mRegion);
                     show_Toast("接收成功,正在导入数据,请稍等");
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
 //                        String leiguan = lg;//去除回车
                         Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
+                        Utils.writeRecord("--从客户端收到的雷管:" + leiguan);
                         if (leiguan != null) {
                             // 注册雷管
                             registerDetonator(leiguan);
