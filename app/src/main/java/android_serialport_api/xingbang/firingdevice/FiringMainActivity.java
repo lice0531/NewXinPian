@@ -801,6 +801,7 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setDenatorIdSup(d.getDenatorIdSup());
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
+            vo.setPiace(d.getPiece());
             allBlastQu.offer(vo);
             list_all_lg.add(vo);
         }
@@ -1181,7 +1182,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 short writeDelay = temp.getDelay();
                 fromData.setShellNo(temp.getShellBlastNo());
                 fromData.setDenaId(temp.getDenatorId());//芯片码
-                Utils.writeRecord("--起爆测试结果:" + fromData.toString());
+                Utils.writeRecord("--起爆测试结果:" + fromData.toString()+" 区域:"+temp.getPiace());
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
