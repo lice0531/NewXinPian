@@ -393,6 +393,7 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 Log.e("发送消息", "sb: " + sb.toString());
+                Utils.writeRecord("--发送数据:"+sb.toString());
                 //与刘鹏飞通讯级联发送
 //                strMessage = sb.toString();
 //                new Thread(sendThread).start();

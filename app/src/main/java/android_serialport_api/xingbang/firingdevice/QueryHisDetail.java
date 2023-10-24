@@ -537,11 +537,11 @@ public class QueryHisDetail extends BaseActivity {
             if (Shangchuan.equals("是")) {
                 String selection = "blastdate = ?"; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
                 String[] selectionArgs = {blastdate};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-                cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
+                cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "piece asc");
             } else {
                 String selection = "blastdate = ?and errorCode = ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
                 String[] selectionArgs = {blastdate, "FF"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
-                cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
+                cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "piece asc");
             }
         }
         if (cursor != null) {  //cursor不位空,可以移动到第一行
