@@ -4,6 +4,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -105,6 +106,7 @@ public class SendMsgActivity extends BaseActivity {
     private String mRegion;     // 区域
     private Handler mHandler_0 = new Handler();     // UI处理
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,7 +199,7 @@ public class SendMsgActivity extends BaseActivity {
                     String str = " 区域" + mRegion + "(数量: " + mListData.size() + ")";
 
 //                    setTitleRegion(mRegion, mListData.size());
-                    show_Toast("导入"+mListData.size()+"发雷管成功");
+                    show_Toast("导入" + mListData.size() + "发雷管成功");
                     break;
                 case 1:
                     show_Toast(msg.obj.toString());
@@ -285,9 +287,9 @@ public class SendMsgActivity extends BaseActivity {
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");
-            Log.e("分割", "a.length: "+a.length );
-            String[] duan=a[3].split("-");
-            if (!a[0].equals("无")&&checkRepeatDenatorId(a[0])) {//检查重复数据
+            Log.e("分割", "a.length: " + a.length);
+            String[] duan = a[3].split("-");
+            if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
                 continue;
             }
@@ -319,6 +321,7 @@ public class SendMsgActivity extends BaseActivity {
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
         return reCount;
     }
+
     /**
      * 检查重复的数据
      *
@@ -360,8 +363,8 @@ public class SendMsgActivity extends BaseActivity {
                         tipDlg.dismiss();
                         pb_show = 0;
                         Message msg = new Message();
-                        msg.what=1;
-                        msg.obj="当前文件目录里没有 雷管文件.txt";
+                        msg.what = 1;
+                        msg.obj = "当前文件目录里没有 雷管文件.txt";
                         mHandler_0.sendMessage(msg);
                     }
                 }).start();
@@ -373,35 +376,47 @@ public class SendMsgActivity extends BaseActivity {
                 readCVS();
                 break;
             case R.id.but_send://数据互传 发送
-                StringBuffer sb = new StringBuffer();
-                Log.e("发送消息", "list_uid: " + list_uid.size());
-                if (list_uid.size() == 0) {
-                    show_Toast("获取数据异常");
-                    return;
-                }
-                for (int i = 0; i < list_uid.size(); i++) {
+                AlertDialog dialog = new AlertDialog.Builder(SendMsgActivity.this)
+                        .setTitle("是否发送当前区域数据")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前正在进行发送操作,请确认是否发送当前区域数据")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("确定", (dialog13, which) -> {
+                            StringBuffer sb = new StringBuffer();
+                            Log.e("发送消息", "list_uid: " + list_uid.size());
+                            if (list_uid.size() == 0) {
+                                show_Toast("获取数据异常");
+                                return;
+                            }
+                            for (int i = 0; i < list_uid.size(); i++) {
 //                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
-                        sb.append((list_uid.get(i).getDenatorId()+"").replace("null","无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo()+ "#" + (list_uid.get(i).getZhu_yscs()+"").replace("null","无") + ",");
+                                sb.append((list_uid.get(i).getDenatorId() + "").replace("null", "无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs() + "").replace("null", "无") + ",");
 //                    } else {
 //                        sb.append(list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ",");
 //                    }
 
-                }
-                String ip = textIpStart.getText().toString() + textSetviceIp.getText().toString();
-                if (TextUtils.isEmpty(ip)) {
-                    show_Toast("ip地址异常，请检查网络是否连接");
-                    return;
-                }
-                Log.e("发送消息", "sb: " + sb.toString());
-                Utils.writeRecord("--发送数据:"+sb.toString());
-                //与刘鹏飞通讯级联发送
+                            }
+                            String ip = textIpStart.getText().toString() + textSetviceIp.getText().toString();
+                            if (TextUtils.isEmpty(ip)) {
+                                show_Toast("ip地址异常，请检查网络是否连接");
+                                return;
+                            }
+                            Log.e("发送消息", "sb: " + sb.toString());
+                            Utils.writeRecord("--发送数据:" + sb.toString());
+                            //与刘鹏飞通讯级联发送
 //                strMessage = sb.toString();
 //                new Thread(sendThread).start();
 
-                // 启动线程 向服务器发送信息//需要换成服务器端的IP地址
-                sendStringMessage(sb.toString(), ip);
+                            // 启动线程 向服务器发送信息//需要换成服务器端的IP地址
+                            sendStringMessage(sb.toString(), ip);
 //                Utils.sendMessage("F5310000",ip,30000,list_upload_uid);
-                hideInputKeyboard();
+                            hideInputKeyboard();
+                        })
+                        .setNeutralButton("取消", (dialog2, which) -> {
+                            dialog2.dismiss();
+                        })
+                        .create();
+                dialog.show();
+
                 break;
 
             case R.id.but_lianjie:
@@ -454,7 +469,7 @@ public class SendMsgActivity extends BaseActivity {
             } else {//4.4以下下系统调用方法
                 path = getRealPathFromURI(uri);
                 textFilePath.setText(path);
-                show_Toast(path+ "222222");
+                show_Toast(path + "222222");
             }
         }
     }
@@ -571,7 +586,7 @@ public class SendMsgActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if (executorService != null && (!executorService.isShutdown() )) {
+        if (executorService != null && (!executorService.isShutdown())) {
             executorService.shutdown();
 //            executorService.shutdownNow();
         }
@@ -887,8 +902,8 @@ public class SendMsgActivity extends BaseActivity {
         pb_show = 0;
 
         Message msg = new Message();
-        msg.what=1;
-        msg.obj="读取成功";
+        msg.what = 1;
+        msg.obj = "读取成功";
         mHandler_0.sendMessage(msg);
     }
 
