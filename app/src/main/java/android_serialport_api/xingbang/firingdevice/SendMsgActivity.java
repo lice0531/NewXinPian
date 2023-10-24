@@ -199,7 +199,7 @@ public class SendMsgActivity extends BaseActivity {
                     String str = " 区域" + mRegion + "(数量: " + mListData.size() + ")";
 
 //                    setTitleRegion(mRegion, mListData.size());
-                    show_Toast("导入" + mListData.size() + "发雷管成功");
+                    show_Toast("导入" + msg.arg1+ "发雷管成功");
                     break;
                 case 1:
                     show_Toast(msg.obj.toString());
@@ -318,7 +318,10 @@ public class SendMsgActivity extends BaseActivity {
             reCount++;
         }
         pb_show = 0;
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
+        Message msg =new Message();
+        msg.what=1002;
+        msg.arg1= lg.length;
+        mHandler_0.sendMessage(msg);
         return reCount;
     }
 
