@@ -223,7 +223,7 @@ public class Utils {
         } else if (year == 3) {
             yearStr = 2;
         } else {
-            yearStr = 3;
+            yearStr = 4;
         }
         char c = (char) te;
         int i = c;

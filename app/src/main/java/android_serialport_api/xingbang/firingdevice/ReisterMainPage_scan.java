@@ -359,7 +359,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
                 updateMessage("02");
             } else if (data.length() == 14) {//5620302H00001A62F400FFF20AB603
-                updateMessage("02");
+                updateMessage("00");
             }
             if (data.length() == 19) {//扫描箱号
                 addXiangHao(data);
@@ -1697,7 +1697,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
             denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
         }else {
-            denatorBaseinfo.setAuthorization("02");//雷管芯片型号??不知道直接给个默认值合理不
+            denatorBaseinfo.setAuthorization("00");//一代芯片默认00
         }
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
@@ -1858,7 +1858,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setZhu_yscs(yscs);
         denatorBaseinfo.setDuan(duan_scan);
         denatorBaseinfo.setDuanNo(duan_scan + "-" + (duanNUM + 1));
-        denatorBaseinfo.setAuthorization("00");//雷管芯片型号
+        denatorBaseinfo.setAuthorization(version);//雷管芯片型号
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         Message msg = new Message();

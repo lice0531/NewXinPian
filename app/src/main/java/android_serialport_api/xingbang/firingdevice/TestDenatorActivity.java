@@ -936,7 +936,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 short delayTime = 0;
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);
-                                data = denatorId + delayStr + write.getZhu_yscs();//雷管id+延时时间+主芯片延时参数
+                                if(write.getZhu_yscs()!=null){
+                                    data = denatorId + delayStr + write.getZhu_yscs();//雷管id+延时时间+主芯片延时参数
+                                }else {
+                                    data = denatorId + delayStr +"0000";//雷管id+延时时间+主芯片延时参数
+                                }
+
 //                                Log.e("测试21延时", "data  " + denatorId + "--" + delayStr);
                                 //发送命令21写入延时时间，检测结果看雷管是否正常
                                 initBuf = SecondNetTestCmd.send21("00", data);//
