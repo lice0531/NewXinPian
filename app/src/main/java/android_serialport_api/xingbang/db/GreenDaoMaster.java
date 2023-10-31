@@ -421,7 +421,22 @@ public class GreenDaoMaster {
         entity.setDelay(delay);
         mDeantorBaseDao.update(entity);
     }
-
+    /**
+     * 修改雷管延时
+     *
+     * @param shell 管壳号
+     * @param delay 延时
+     */
+    public void updateDetonatorDelay(String shell, int delay,String duanNo) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .build()
+                .unique();
+        entity.setDelay(delay);
+        entity.setDuanNo(duanNo);
+        mDeantorBaseDao.update(entity);
+    }
     /**
      * 删除某一发雷管
      */

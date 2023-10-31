@@ -198,7 +198,6 @@ public class ChoseDuanActivity extends AppCompatActivity {
     Button btnDuan20;
     @BindView(R.id.re_et_nei20)
     Button btnFan20;
-
     @BindView(R.id.re_num_f21)
     TextView reNumF21;
     @BindView(R.id.re_et_nei21)

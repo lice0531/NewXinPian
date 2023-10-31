@@ -756,21 +756,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 text_uid.setTextColor(Color.BLACK);
                 text_gkm.setTextColor(Color.GREEN);
             }
+            //切换UID后再设置一下长按方法
             mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_scan.this, a);
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
             mAdapter.setOnItemLongClick(position -> {
-                Log.e("长按", "mListData.size(): " + mListData.size());
-                Log.e("长按", "position: " + position);
                 DenatorBaseinfo info = mListData.get(position);
-
                 int no = info.getBlastserial();
                 int delay = info.getDelay();
                 String shellBlastNo = info.getShellBlastNo();
                 String denatorId = info.getDenatorId();
+                int duan = info.getDuan();
+                String duanNo = info.getDuanNo();
                 // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
+                modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId,duan,duanNo);
             });
         });
 
@@ -868,6 +868,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
         setTitleRegion(mRegion, -1);
+
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new DetonatorAdapter_Paper<>(this, 4);
@@ -879,8 +880,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
             String denatorId = info.getDenatorId();
+            int duan = info.getDuan();
+            String duanNo = info.getDuanNo();
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
+            modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId,duan,duanNo);
         });
         this.isSingleReisher = 0;
 
@@ -1359,7 +1362,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId,final int duan,final String duanNo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -1367,10 +1370,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
         EditText et_delay = view.findViewById(R.id.delaytime);
+        EditText et_duanNo = view.findViewById(R.id.et_duanNo);
+        TextView tv_duan = view.findViewById(R.id.tv_duan);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
+        tv_duan.setText(duan+"");
+        et_duanNo.setText(duanNo);
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
@@ -1380,13 +1387,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             new Thread(() -> {
                 // 删除某一发雷管
 
-                int duan = new GreenDaoMaster().getDuan(shellBlastNo);
+                int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
                 //更新每段雷管数量
                 Message msg = new Message();
-                msg.arg1 = duan;
+                msg.arg1 = duan_guan;
                 mHandler_showNum.sendMessage(msg);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
@@ -1407,7 +1414,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             } else {
                 // 修改雷管延时
-                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));
+                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1),et_duanNo.getText().toString());
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
