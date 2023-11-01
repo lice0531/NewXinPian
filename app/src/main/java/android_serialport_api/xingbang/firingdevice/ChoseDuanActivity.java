@@ -21,7 +21,10 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.a_new.Constants_SP;
@@ -1070,7 +1073,24 @@ public class ChoseDuanActivity extends AppCompatActivity {
         }
     }
 
+    private List<String> list_delay=new ArrayList();
+    private void getDelay() {
+        list_delay.clear();
+        String sql = "SELECT delay FROM denatorBaseinfo group by delay order by delay desc";//+" order by htbh "
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String delay = cursor.getString(0);
+                list_delay.add(delay);
+            }
+            cursor.close();
+        }
+        Log.e(TAG, "list_delay: "+list_delay.toString() );
+    }
     private void fanzhuan(int duan) {
+        getDelay();
+
+
         Log.e("注册页面", "翻转: ");
         AlertDialog dialog = new AlertDialog.Builder(ChoseDuanActivity.this)
                 .setTitle("翻转提示")//设置对话框的标题//"成功起爆"
@@ -1082,8 +1102,11 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     GreenDaoMaster master = new GreenDaoMaster();
                     List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);
                     List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan, mRegion);
+
                     for (int i = 0; i < list.size(); i++) {
                         DenatorBaseinfo lg = list.get(i);
+                        List<DenatorBaseinfo> list3 = master.queryLeiguanDuanNo(lg.getDuanNo(), mRegion);
+                        Log.e(TAG, "重复段号list3: "+list3 );
                         lg.setDelay(list2.get(list.size() - 1 - i).getDelay());
                         lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
@@ -1094,6 +1117,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+
 
     private void setBtnColor(int duanChose) {
         switch (duanChose) {

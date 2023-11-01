@@ -693,6 +693,17 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
     }
 
+    /***
+     * @param duanNo
+     * @return
+     */
+    public List<DenatorBaseinfo> queryLeiguanDuanNo(String duanNo, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+
+        return result.where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
+    }
+
     /**
      * 检查重复雷管
      */
