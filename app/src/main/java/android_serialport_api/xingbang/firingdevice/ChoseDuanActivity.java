@@ -1106,17 +1106,18 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     GreenDaoMaster master = new GreenDaoMaster();
                     List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);
                     List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan, mRegion);
-//                    List<DenatorBaseinfo> list3 = master.queryLeiguanDuanNo(lg.getDuanNo(), mRegion);
+                    List<DenatorBaseinfo> list3 ;
 //                    Log.e(TAG, "重复段号list3: "+list3 );
 
 
                     DaoSession session = getDaoSession();
                     long fromId = -1;
                     String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay,a.duanNo) IN (SELECT delay,duanNo FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*)>1)";
-                    String strSql2 ="";
-                            Cursor c = session.getDatabase().rawQuery(strSql, null);
+                    String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay,a.duanNo) IN (SELECT delay,duanNo FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*)>1)";
+                    Cursor c = session.getDatabase().rawQuery(strSql, null);
                     if (c.moveToFirst()) {
-                        fromId = c.getLong(c.getColumnIndex("ID"));
+                        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+                        long id = c.getLong(c.getColumnIndex("ID"));
 
                     }
                     c.close();
