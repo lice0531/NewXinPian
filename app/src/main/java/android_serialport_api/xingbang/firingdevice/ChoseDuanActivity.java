@@ -34,6 +34,7 @@ import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.greenDao.DaoSession;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -375,6 +376,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
     private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
     private String TAG = "单发注册";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -385,7 +387,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         showDenatorSum();//显示雷管总数
-                //初始化段间延时显示
+        //初始化段间延时显示
         int maxduan = getMaxDuanNo();
         Log.e("显示", "maxduan: " + maxduan);
         if (maxduan < 3) {
@@ -427,7 +429,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
             R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.re_btn_f8, R.id.re_btn_f9, R.id.re_btn_f10, R.id.re_btn_f11, R.id.re_btn_f12, R.id.re_btn_f13,
             R.id.re_btn_f14, R.id.re_btn_f15, R.id.re_btn_f16, R.id.re_btn_f17, R.id.re_btn_f18, R.id.re_btn_f19,
-            R.id.re_btn_f20,R.id.re_btn_f21, R.id.re_btn_f22, R.id.re_btn_f23,
+            R.id.re_btn_f20, R.id.re_btn_f21, R.id.re_btn_f22, R.id.re_btn_f23,
             R.id.re_btn_f24, R.id.re_btn_f25, R.id.re_btn_f26, R.id.re_btn_f27,
             R.id.re_btn_f28, R.id.re_btn_f29, R.id.re_btn_f30, R.id.re_btn_f31, R.id.re_btn_f32, R.id.re_btn_f33,
             R.id.re_btn_f34, R.id.re_btn_f35, R.id.re_btn_f36, R.id.re_btn_f37, R.id.re_btn_f38, R.id.re_btn_f39,
@@ -435,7 +437,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
             R.id.re_et_nei4, R.id.re_et_nei5, R.id.re_et_nei6, R.id.re_et_nei7,
             R.id.re_et_nei8, R.id.re_et_nei9, R.id.re_et_nei10, R.id.re_et_nei11, R.id.re_et_nei12, R.id.re_et_nei13,
             R.id.re_et_nei14, R.id.re_et_nei15, R.id.re_et_nei16, R.id.re_et_nei17, R.id.re_et_nei18, R.id.re_et_nei19,
-            R.id.re_et_nei20,R.id.re_et_nei21, R.id.re_et_nei22, R.id.re_et_nei23,
+            R.id.re_et_nei20, R.id.re_et_nei21, R.id.re_et_nei22, R.id.re_et_nei23,
             R.id.re_et_nei24, R.id.re_et_nei25, R.id.re_et_nei26, R.id.re_et_nei27,
             R.id.re_et_nei28, R.id.re_et_nei29, R.id.re_et_nei30, R.id.re_et_nei31, R.id.re_et_nei32, R.id.re_et_nei33,
             R.id.re_et_nei34, R.id.re_et_nei35, R.id.re_et_nei36, R.id.re_et_nei37, R.id.re_et_nei38, R.id.re_et_nei39,
@@ -1073,7 +1075,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
         }
     }
 
-    private List<String> list_delay=new ArrayList();
+    private List<String> list_delay = new ArrayList();
+
     private void getDelay() {
         list_delay.clear();
         String sql = "SELECT delay FROM denatorBaseinfo group by delay order by delay desc";//+" order by htbh "
@@ -1085,8 +1088,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
             }
             cursor.close();
         }
-        Log.e(TAG, "list_delay: "+list_delay.toString() );
+        Log.e(TAG, "list_delay: " + list_delay.toString());
     }
+
     private void fanzhuan(int duan) {
         getDelay();
 
@@ -1102,11 +1106,25 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     GreenDaoMaster master = new GreenDaoMaster();
                     List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);
                     List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan, mRegion);
+//                    List<DenatorBaseinfo> list3 = master.queryLeiguanDuanNo(lg.getDuanNo(), mRegion);
+//                    Log.e(TAG, "重复段号list3: "+list3 );
+
+
+                    DaoSession session = getDaoSession();
+                    long fromId = -1;
+                    String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay,a.duanNo) IN (SELECT delay,duanNo FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*)>1)";
+                    String strSql2 ="";
+                            Cursor c = session.getDatabase().rawQuery(strSql, null);
+                    if (c.moveToFirst()) {
+                        fromId = c.getLong(c.getColumnIndex("ID"));
+
+                    }
+                    c.close();
+
 
                     for (int i = 0; i < list.size(); i++) {
                         DenatorBaseinfo lg = list.get(i);
-                        List<DenatorBaseinfo> list3 = master.queryLeiguanDuanNo(lg.getDuanNo(), mRegion);
-                        Log.e(TAG, "重复段号list3: "+list3 );
+
                         lg.setDelay(list2.get(list.size() - 1 - i).getDelay());
                         lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
@@ -1117,7 +1135,6 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
         dialog.show();
     }
-
 
 
     private void setBtnColor(int duanChose) {
@@ -1493,13 +1510,13 @@ public class ChoseDuanActivity extends AppCompatActivity {
     }
 
     public void initUI() {
-        Log.e(TAG, "duan: "+duan );
-        MmkvUtils.savecode("duan",duan);
+        Log.e(TAG, "duan: " + duan);
+        MmkvUtils.savecode("duan", duan);
         Intent intent = new Intent();
-        Bundle bundle=new Bundle();
-        bundle.putString("data_return", duan+"");
+        Bundle bundle = new Bundle();
+        bundle.putString("data_return", duan + "");
         intent.putExtras(bundle);
-        setResult(0,intent);
+        setResult(0, intent);
         reNumF1.setBackgroundResource(R.drawable.translucent);
         reNumF2.setBackgroundResource(R.drawable.translucent);
         reNumF3.setBackgroundResource(R.drawable.translucent);
@@ -1555,16 +1572,18 @@ public class ChoseDuanActivity extends AppCompatActivity {
         cursor.close();
         return totalNum;
     }
+
     /***
      * 得到某段的总数
      * @return
      */
-    private int getDuanNo(int duan,String piece) {
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "",piece});
+    private int getDuanNo(int duan, String piece) {
+        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "", piece});
         int totalNum = cursor.getCount();//得到数据的总条数
         cursor.close();
         return totalNum;
     }
+
     /***
      * 得到某段的总数
      * @return
