@@ -19,6 +19,7 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -545,6 +546,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     break;
                 case 12:
                     show_Toast("营业性单位必须设置合同或者项目");
+                    break;
+                case 13:
+                    show_Toast(msg.obj.toString());
                     break;
                 case 89:
                     show_Toast("输入的管壳码重复");
@@ -1090,15 +1094,27 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     double jingdu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd());
                                     double weidu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
                                     double banjing = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqybj());
-                                    //判断经纬度
-                                    LngLat start = new LngLat(zbqyjd, zbqywd);
-                                    LngLat end = new LngLat(jingdu, weidu);
-                                    double juli3 = AMapUtils.calculateLineDistance(start, end);
-                                    Log.e("经纬度", "juli3: " + juli3);
-                                    if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+
+                                    try {//防止有客户经纬度备案错误
+                                        //判断经纬度
+                                        LngLat start = new LngLat(zbqyjd, zbqywd);
+                                        LngLat end = new LngLat(jingdu, weidu);
+                                        double juli3 = AMapUtils.calculateLineDistance(start, end);
+                                        Log.e("经纬度", "juli3: " + juli3);
+                                        if (juli3 < banjing) {
+                                            insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                        }
+                                    }catch (Exception e){
+                                        Message msg = new Message();
+                                        msg.what=13;
+                                        msg.obj="信息备案错误:"+danLingBean.getZbqys().getZbqy().get(i).getZbqymc()
+                                                + "经度:"+danLingBean.getZbqys().getZbqy().get(i).getZbqyjd()
+                                                +"纬度:"+danLingBean.getZbqys().getZbqy().get(i).getZbqywd();
+                                        mHandler_1.sendMessage(msg);
+                                        continue;
                                     }
+
                                 }
                             }
                         }
