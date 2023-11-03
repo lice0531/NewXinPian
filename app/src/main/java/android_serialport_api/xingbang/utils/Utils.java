@@ -1733,7 +1733,18 @@ public class Utils {
                 denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
                 denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
                 denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
-                denatorBaseinfo.setDuanNo(d + "-" + (i + 1));
+                DenatorBaseinfo lg2;
+                if(i>0){
+                     lg2 = new GreenDaoMaster().querylg(list_lg.get(i-1).getShellBlastNo());
+                     if(list_lg.get(i).getDelay()==lg2.getDelay()){
+                         denatorBaseinfo.setDuanNo(lg2.getDuanNo() );
+                     }else {
+                         denatorBaseinfo.setDuanNo((Integer.parseInt(lg2.getDuanNo()) + 1)+"");
+                     }
+                }else {
+                    denatorBaseinfo.setDuanNo("1");
+                }
+
                 getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
             }
         }
