@@ -537,6 +537,20 @@ public class GreenDaoMaster {
                 .list();
     }
 
+    /**
+     * 查询雷管 区域倒序(序号)
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionDesc(int duan,String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .orderDesc(DenatorBaseinfoDao.Properties.Id)
+                .list();
+    }
+
     public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
         List<DenatorBaseinfo> mListData = new ArrayList<>();
         boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
@@ -595,6 +609,28 @@ public class GreenDaoMaster {
             int delay = mList.get(0).getDelay();
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
             return delay;
+            // 如果没数据
+        } else {
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+            return 0;
+        }
+    }
+
+    /**
+     * 获取 该段 最大序号 的段序号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxDuanNo(int duan ,String piece) {
+        // 倒叙查询
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据 该区域 最大序号 的延时
+            String duanNo = mList.get(0).getDuanNo();
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + duanNo);
+            return Integer.parseInt(duanNo);
             // 如果没数据
         } else {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");

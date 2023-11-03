@@ -1115,14 +1115,18 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
                     List<DenatorBaseinfo> list4 =getList(strSql2);//序号最小的重复雷管
 
-                    List<Integer> list_delay =new ArrayList<>();//所有不重复延时
+                    List<Map<String, Object>> list_delay =new ArrayList<>();//所有不重复延时
                     DaoSession session = getDaoSession();
-                    String strSql3 ="SELECT  delay FROM denatorBaseinfo group by delay order by id desc";
+                    String strSql3 ="SELECT  delay , duanNo FROM denatorBaseinfo group by delay order by id desc";
                     Cursor cursor3 = session.getDatabase().rawQuery(strSql3, null);
                     if (cursor3 != null) {
                         while (cursor3.moveToNext()) {
                             int delay = cursor3.getInt(0);
-                            list_delay.add(delay);
+                            String duanNo = cursor3.getString(1);
+                            Map<String, Object> item = new HashMap<String, Object>();
+                            item.put("delay", delay);
+                            item.put("duanNo", duanNo);
+                            list_delay.add(item);
                         }
                         cursor3.close();
                     }
@@ -1151,14 +1155,14 @@ public class ChoseDuanActivity extends AppCompatActivity {
                             DenatorBaseinfo lg2 = master.querylg(list2.get(i-1).getShellBlastNo());
                             Log.e(TAG, "最大序号的list2.get(i-1)"+list2.get(i-1).getShellBlastNo());
                             lg.setDelay(lg2.getDelay());
-//                            lg.setDuanNo(lg2.getDuanNo());
+                            lg.setDuanNo(lg2.getDuanNo());
                         }else {
                             Log.e(TAG, "list_delay.get(0): "+list_delay.get(0));
-                            lg.setDelay(list_delay.get(0));
+                            lg.setDelay((Integer) list_delay.get(0).get("delay"));
+                            lg.setDuanNo(list_delay.get(0).get("duanNo").toString());
                             list_delay.remove(0);
-//                            lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
                         }
-                        lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
+//                        lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
 
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
                         Log.e(TAG, "结束----------------: ");
