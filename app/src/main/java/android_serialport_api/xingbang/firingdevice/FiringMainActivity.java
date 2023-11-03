@@ -134,8 +134,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private static volatile int startFlag = 0;
     private volatile int zeroCount = 0;//起始阶段计数器，发出关闭电源指令时间
     private volatile int zeroCmdReFlag = 0;//第0阶段结束标志 为1时0阶段结束
-    private volatile int firstWaitCount = 3;//第一阶段计时
-    private volatile int Wait_Count = 5;
+    private volatile int firstWaitCount = 2;//第一阶段计时
+    private volatile int Wait_Count = 3;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
     private volatile int secondCmdFlag = 0;//发出进入起爆模式命令是否返回
@@ -641,8 +641,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private void initParam() {
         FiringMainActivity.stage = 0;
         writeVo = null;
-        firstWaitCount = 3;
-        Wait_Count = 5;
+        firstWaitCount = 2;
+        Wait_Count = 3;
         firstCmdReFlag = 0;
         secondCmdFlag = 0;
         zeroCount = 0;
@@ -653,7 +653,7 @@ public class FiringMainActivity extends SerialPortActivity {
         sevenDisplay = 0;//第7步，是否显示
         sixExchangeCount = ChongDian_time;//第6阶段计时(充电时间)
         sixCmdSerial = 1;//命令倒计时
-        eightCount = 5;//第8阶段
+        eightCount = 0;//第8阶段
         neightCount = 0;//
         eightCmdFlag = 0;
         thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
@@ -1841,7 +1841,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
-                            if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
+                            if (sixExchangeCount == (ChongDian_time - 2)) {//第8秒时,发送高压充电指令,继电器应该响
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
                             if (sixExchangeCount == 0) {
