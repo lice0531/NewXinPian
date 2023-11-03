@@ -84,6 +84,14 @@ public class GreenDaoMaster {
     public List<DenatorBaseinfo> queryDenatorBaseinfo() {
         return mDeantorBaseDao.loadAll();
     }
+    /**
+     * 查询所有雷管
+     *
+     * @return
+     */
+    public DenatorBaseinfo querylg(String gkm) {
+        return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm)).unique();
+    }
 
     public List<Project> queryProjectToProject_name(String project_name) {
         QueryBuilder<Project> result = mProjectDao.queryBuilder();

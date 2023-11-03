@@ -1106,35 +1106,126 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     GreenDaoMaster master = new GreenDaoMaster();
                     List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);
                     List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan, mRegion);
-                    List<DenatorBaseinfo> list3 ;
-//                    Log.e(TAG, "重复段号list3: "+list3 );
 
 
+
+                    String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                    List<DenatorBaseinfo> list3 =getList(strSql);//除了序号最小的所有重复雷管
+
+                    String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                    List<DenatorBaseinfo> list4 =getList(strSql2);//序号最小的重复雷管
+
+                    List<Integer> list_delay =new ArrayList<>();//所有不重复延时
                     DaoSession session = getDaoSession();
-                    long fromId = -1;
-                    String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay,a.duanNo) IN (SELECT delay,duanNo FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*)>1)";
-                    String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay,a.duanNo) IN (SELECT delay,duanNo FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay,duanNo HAVING COUNT(*)>1)";
-                    Cursor c = session.getDatabase().rawQuery(strSql, null);
-                    if (c.moveToFirst()) {
-                        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-                        long id = c.getLong(c.getColumnIndex("ID"));
-
+                    String strSql3 ="SELECT  delay FROM denatorBaseinfo group by delay order by id desc";
+                    Cursor cursor3 = session.getDatabase().rawQuery(strSql3, null);
+                    if (cursor3 != null) {
+                        while (cursor3.moveToNext()) {
+                            int delay = cursor3.getInt(0);
+                            list_delay.add(delay);
+                        }
+                        cursor3.close();
                     }
-                    c.close();
 
+                    Log.e(TAG, "list3: "+list3.toString() );
+                    Log.e(TAG, "list4: "+list4.toString() );
+                    Log.e(TAG, "list_delay: "+list_delay.toString() );
+//                    Log.e(TAG, "判断: "+list.contains(list3.get(0)) );
+//                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
+                    //遍历List并比较元素是否相等，判断是否包含"apple"元素
 
                     for (int i = 0; i < list.size(); i++) {
+                        Log.e(TAG, "开始----------------: ");
                         DenatorBaseinfo lg = list.get(i);
+                        Log.e(TAG, "第"+i+"发管: "+lg.toString());
 
-                        lg.setDelay(list2.get(list.size() - 1 - i).getDelay());
+                        boolean contains = false;
+                        for(DenatorBaseinfo db : list3){
+                            if(db.getId().equals(lg.getId())){
+                                contains = true;
+                                break;
+                            }
+                        }
+                        Log.e(TAG, "判断contains: "+contains);
+                        if(contains){
+                            DenatorBaseinfo lg2 = master.querylg(list2.get(i-1).getShellBlastNo());
+                            Log.e(TAG, "最大序号的list2.get(i-1)"+list2.get(i-1).getShellBlastNo());
+                            lg.setDelay(lg2.getDelay());
+//                            lg.setDuanNo(lg2.getDuanNo());
+                        }else {
+                            Log.e(TAG, "list_delay.get(0): "+list_delay.get(0));
+                            lg.setDelay(list_delay.get(0));
+                            list_delay.remove(0);
+//                            lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
+                        }
                         lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
+
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
+                        Log.e(TAG, "结束----------------: ");
                     }
 //                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                     setBtnColor(duan);
                 }).create();
 
         dialog.show();
+    }
+
+    private List<DenatorBaseinfo> getList(String sql){
+        List<DenatorBaseinfo> list_db =new ArrayList<>();
+        DaoSession session = getDaoSession();
+
+        Cursor cursor = session.getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                int blastserial = cursor.getInt(1);
+                String sithole = cursor.getString(2);
+                String shellBlastNo = cursor.getString(3);//管壳号
+                String denatorId = cursor.getString(4);
+                String delay = cursor.getString(5);
+                String statusCode = cursor.getString(6);
+                String statusName = cursor.getString(7);
+                String errorName = cursor.getString(8);
+                String errorCode = cursor.getString(9);
+                String authorization = cursor.getString(10);
+                String remark = cursor.getString(11);
+                String regdate = cursor.getString(12);
+                String wire = cursor.getString(13);
+                String name = cursor.getString(14);
+                String denatorIdSup = cursor.getString(15);
+                String zhu_yscs = cursor.getString(16);
+                String cong_yscs = cursor.getString(17);
+                String piece = cursor.getString(18);
+                int duan = cursor.getInt(19);
+                String duanNo = cursor.getString(20);
+
+                DenatorBaseinfo lg = new DenatorBaseinfo();
+                lg.setId(Long.valueOf(id));
+                lg.setBlastserial(blastserial);
+                lg.setSithole(sithole);
+                lg.setShellBlastNo(shellBlastNo);
+                lg.setDenatorId(denatorId);
+                lg.setDelay(Integer.parseInt(delay));
+                lg.setStatusCode(statusCode);
+                lg.setStatusName(statusName);
+                lg.setErrorName(errorName);
+                lg.setErrorCode(errorCode);
+                lg.setAuthorization(authorization);
+                lg.setRemark(remark);
+                lg.setRegdate(regdate);
+                lg.setWire(wire);
+                lg.setName(name);
+                lg.setDenatorIdSup(denatorIdSup);
+                lg.setZhu_yscs(zhu_yscs);
+                lg.setCong_yscs(cong_yscs);
+                lg.setPiece(piece);
+                lg.setDuan(duan);
+                lg.setDuanNo(duanNo);
+                list_db.add(lg);
+            }
+            cursor.close();
+        }
+        return list_db;
     }
 
 
