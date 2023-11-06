@@ -281,7 +281,6 @@ public class DownOfflineActivity extends BaseActivity {
 
 
     private void insertData(String json, String mima) {
-
         String key = "jadl12345678901234" + mima;
         String res;
         String tx_htid = dfAtHtid.getText().toString().trim().replace(" ", "");//合同编号 15位
@@ -313,7 +312,7 @@ public class DownOfflineActivity extends BaseActivity {
 
         try {
             JSONObject object1 = new JSONObject(res);
-//            Utils.writeRecord("解密信息"+object1.toString());
+            Utils.writeRecord("解密信息"+object1.toString());
             String cwxx = object1.getString("cwxx");
             String sqrq2=danLingBean.getSqrq();
             long time2 = (long) 3 * 86400000;
@@ -605,6 +604,10 @@ public class DownOfflineActivity extends BaseActivity {
                     insertData(json, mima);
                 }
 
+//                //加密流程
+//                String key="jadl12345678901234" + mima;
+//                String json2 = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), json.getBytes()));
+//                Utils.writeRecord(json2);
                 break;
             case R.id.btn_scan:
                 saveData();
