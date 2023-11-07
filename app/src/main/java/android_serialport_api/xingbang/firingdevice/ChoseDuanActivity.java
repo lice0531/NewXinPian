@@ -1109,15 +1109,15 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
 
 
-                    String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                    String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan ="+duan+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
                     List<DenatorBaseinfo> list3 =getList(strSql);//除了序号最小的所有重复雷管
 
-                    String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                    String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = "+duan+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
                     List<DenatorBaseinfo> list4 =getList(strSql2);//序号最小的重复雷管
 
                     List<Map<String, Object>> list_delay =new ArrayList<>();//所有不重复延时
                     DaoSession session = getDaoSession();
-                    String strSql3 ="SELECT  delay , duanNo FROM denatorBaseinfo group by delay order by id desc";
+                    String strSql3 ="SELECT  delay , duanNo FROM denatorBaseinfo where duan ="+duan+" group by delay order by id desc";
                     Cursor cursor3 = session.getDatabase().rawQuery(strSql3, null);
                     if (cursor3 != null) {
                         while (cursor3.moveToNext()) {
@@ -1131,8 +1131,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         cursor3.close();
                     }
 
-                    Log.e(TAG, "list3: "+list3.toString() );
-                    Log.e(TAG, "list4: "+list4.toString() );
+                    Log.e(TAG, duan+"段雷管list: "+list.toString() );
+                    Log.e(TAG, "除了序号最小的所有重复雷管list3: "+list3.toString() );
+                    Log.e(TAG, "序号最小的重复雷管list4: "+list4.toString() );
                     Log.e(TAG, "list_delay: "+list_delay.toString() );
 //                    Log.e(TAG, "判断: "+list.contains(list3.get(0)) );
 //                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
@@ -1150,7 +1151,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        Log.e(TAG, "判断contains: "+contains);
+                        Log.e(TAG, "判断contains: "+contains);//list3是否包含当前雷管
+                        Log.e(TAG, "最大序号的(i-1)"+(i-1));
                         if(contains){
                             DenatorBaseinfo lg2 = master.querylg(list2.get(i-1).getShellBlastNo());
                             Log.e(TAG, "最大序号的list2.get(i-1)"+list2.get(i-1).getShellBlastNo());
