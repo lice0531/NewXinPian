@@ -362,10 +362,20 @@
 
                             <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:layout_height="match_parent"
+                                android:gravity="left|center_vertical"
                                 android:text="@string/text_unit_hm"
                                 android:textSize="@dimen/childPageEditFontSize" />
+
+                            <Button
+                                android:id="@+id/btn_tk_F1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="同孔"
+                                android:layout_weight="0.5"
+                                android:textSize="18sp"
+                                style="@style/allbtntstyle"
+                                />
                         </TableRow>
 
                         <TableRow
@@ -402,10 +412,20 @@
                             <TextView
                                 android:id="@+id/textView3"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:layout_height="match_parent"
+                                android:gravity="left|center_vertical"
                                 android:text="@string/text_unit_hm"
                                 android:textSize="@dimen/childPageEditFontSize" />
+
+                            <Button
+                                android:id="@+id/btn_tk_F2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="同孔"
+                                android:layout_weight="0.5"
+                                android:textSize="18sp"
+                                style="@style/allbtntstyle"
+                                />
                         </TableRow>
                         <!-- 测试扫描头,每次扫描成功都输入-->
                         <TableRow
