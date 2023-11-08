@@ -445,7 +445,28 @@
                     </TableLayout>
 
                 </LinearLayout>
-
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="@dimen/dp1"
+                    android:visibility="visible">
+                    <EditText
+                        android:id="@+id/et_tk"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:hint="跳孔"
+                        android:inputType="number"
+                        />
+                    <Button
+                        android:id="@+id/btn_tk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="跳孔"
+                        style="@style/allbtntstyle"
+                        />
+                </LinearLayout>
                 <LinearLayout
                     android:id="@+id/ll_single"
                     android:layout_width="fill_parent"
