@@ -2092,6 +2092,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     int flag1 = 0;
     int flag2 = 0;
     boolean flag_t1 = true;
+    boolean flag_t2 = true;
 
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_tk_F2, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
@@ -2111,11 +2112,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                 if (flag_t1) {
                     btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_t1=false;
                 } else {
                     btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_t1=true;
                 }
                 break;
             case R.id.btn_tk_F2:
+                btnTkF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_t2) {
+                    btnTkF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_t2=false;
+                } else {
+                    btnTkF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_t2=true;
+                }
                 break;
             case R.id.btn_scanReister:
                 if (checkDelay()) return;
