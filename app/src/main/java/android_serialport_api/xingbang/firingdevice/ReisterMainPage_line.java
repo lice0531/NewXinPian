@@ -448,7 +448,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
-            } else if (msg.what == 6) {
+            } else if (msg.what == 5) {
+                SoundPlayUtils.play(4);
+                show_Toast("三码绑定内容不一致");
+            }  else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_line_tip7));
             } else if (msg.what == 10) {
@@ -1223,7 +1226,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 if (zhuce_form != null) {//管厂码,特征码,雷管id
 //                        // 获取 管壳码
 //                        String shellNo = new GreenDaoMaster().getShellNo(detonatorId);
-                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
+//                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
+                    if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                    }else {
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
+                    }
                     zhuce_Flag = 0;
                 }
 
