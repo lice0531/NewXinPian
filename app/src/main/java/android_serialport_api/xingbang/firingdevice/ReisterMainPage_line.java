@@ -454,6 +454,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             }  else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_line_tip7));
+            }else if (msg.what == 7) {
+                SoundPlayUtils.play(4);
+                show_Toast("请先扫码注册");
             } else if (msg.what == 10) {
                 show_Toast(getString(R.string.text_line_tip8));
             } else if (msg.what == 99) {
@@ -1227,11 +1230,16 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                        // 获取 管壳码
 //                        String shellNo = new GreenDaoMaster().getShellNo(detonatorId);
 //                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
-                    if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                    if(mListData.size()!=0){
+                        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                        }else {
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
+                        }
                     }else {
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));
                     }
+
                     zhuce_Flag = 0;
                 }
 
