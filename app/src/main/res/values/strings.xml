@@ -364,9 +364,9 @@
     <string name="text_main_qb">5.起爆</string>
     <string name="text_main_ck">6.查看</string>
     <string name="text_main_sz">7.设置</string>
-    <string name="text_main_sc">8.删除</string>
-    <string name="text_main_fzgn">9.辅助功能</string>
-    <string name="text_main_tc">10.退出</string>
+    <string name="text_main_sc">删除</string>
+    <string name="text_main_fzgn">辅助功能</string>
+    <string name="text_main_tc">退出</string>
     <string name="text_main_qu"> /区域</string>
     <string name="text_dfzc_qy">" 区域"</string>
     <string name="text_dfzc_sl">"(数量: "</string>

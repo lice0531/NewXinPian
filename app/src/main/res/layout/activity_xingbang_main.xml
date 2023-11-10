@@ -96,17 +96,28 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="1.抽检"
+                android:text="抽检"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
             <Button
                 android:id="@+id/btn_main_reister"
+                android:visibility="gone"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/text_main_zc"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+            <Button
+                android:id="@+id/btn_main_del"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_sc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -131,15 +142,36 @@
                 android:text="@string/text_main_xmgl"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_main_test"
+                android:visibility="gone"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/text_main_wlcs"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+            <Button
+                android:id="@+id/btn_main_help"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_fzgn"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+            <Button
+                android:id="@+id/btn_main_exit"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_tc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -159,7 +191,7 @@
                 android:id="@+id/btn_main_blast"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
-
+                android:visibility="gone"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/text_main_qb"
@@ -168,6 +200,7 @@
 
             <Button
                 android:id="@+id/btn_main_query"
+                android:visibility="gone"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
@@ -189,21 +222,12 @@
 
             <Button
                 android:id="@+id/btn_main_setevn"
+                android:visibility="gone"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/text_main_sz"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
-
-            <Button
-                android:id="@+id/btn_main_del"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_sc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -217,26 +241,6 @@
             android:gravity="center"
             android:showDividers="middle">
 
-            <Button
-                android:id="@+id/btn_main_help"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_fzgn"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
-
-
-            <Button
-                android:id="@+id/btn_main_exit"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_tc"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
 
             <Button
                 android:id="@+id/btn_main_exit2"

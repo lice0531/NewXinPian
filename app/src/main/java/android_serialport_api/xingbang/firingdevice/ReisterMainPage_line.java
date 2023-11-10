@@ -265,11 +265,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
         Utils.writeRecord("---进入单发注册页面---");
-        if (version.equals("01")) {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-        } else {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-        }
+//        if (version.equals("01")) {
+//            sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+//        } else {
+//            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//        }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
 
@@ -346,11 +346,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         barCode = data.substring(0, 13);
                         String a = data.substring(13, 22);
                         String yscs=data.substring(22, 26);
+                         version=data.substring(26, 27);
                         denatorId="A621"+a;
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
                         Log.e("扫码", "yscs: " + yscs);
+                        Log.e("扫码", "version: " + version);
                         insertSingleDenator_2(barCode, denatorId, yscs);//同时注册管壳码和芯片码
                     }
 
@@ -442,8 +444,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_reister_tip5) + maxSecond + "ms");
             } else if (msg.what == 4) {
-                SoundPlayUtils.play(4);
-                show_Toast(singleShellNo+"三码绑定内容一致");
+                SoundPlayUtils.play(2);
+                show_Toast_ture(singleShellNo+"三码绑定内容一致");
 //                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
