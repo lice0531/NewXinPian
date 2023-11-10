@@ -1833,6 +1833,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan,mRegion);//获取该区域 最大序号的延时
+//        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         int delay_start = delay;
         Log.e("扫码", "delay_set: " + delay_set);
         if (delay_set.equals("f1")) {
