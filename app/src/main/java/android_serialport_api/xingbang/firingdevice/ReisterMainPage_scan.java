@@ -1724,6 +1724,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan,mRegion);
+        if(delay==0){
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
         int delay_start = delay;
         Log.e("扫码", "delay_set: " + delay_set);
         if (delay_set.equals("f1")) {
@@ -1833,7 +1836,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan,mRegion);//获取该区域 最大序号的延时
-//        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        if(delay==0){
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
         int delay_start = delay;
         Log.e("扫码", "delay_set: " + delay_set);
         if (delay_set.equals("f1")) {
@@ -1932,8 +1937,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
 //        int maxNo = getMaxNumberNo();
 //        int delay = getMaxDelay(maxNo);//获取最大延时
-        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(duan,mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan,mRegion);//获取该区域 最大序号的延时
+        if(delay==0){
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
         int delay_start = delay;
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//

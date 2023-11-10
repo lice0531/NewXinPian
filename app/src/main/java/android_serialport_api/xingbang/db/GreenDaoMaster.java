@@ -2,12 +2,15 @@ package android_serialport_api.xingbang.db;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import android.database.Cursor;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
@@ -594,6 +597,23 @@ public class GreenDaoMaster {
         }
     }
 
+    public int getPieceMaxNum(int duan ,String piece) {
+        // 倒叙查询
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
+
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据是最大序号
+            int num = mList.get(0).getBlastserial();
+            Log.e("getPieceMaxNum", "获取最大序号: " + num);
+            return num;
+            // 如果没数据
+        } else {
+            Log.e("getPieceMaxNum", "获取最大序号: 0");
+            return 0;
+        }
+    }
+
     /**
      * 获取 该区域 最大序号 的延时
      *
@@ -621,20 +641,33 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxNumDelay(int duan , String piece) {
-        // 倒叙查询
-        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+        int delay;
+        String sql = "select max(delay) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
-        // 如果有数据
-        if (mList.size() > 0) {
-            // 第一个雷管数据 该区域 最大序号 的延时
-            int delay = mList.get(0).getDelay();
-            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: "+delay);
             return delay;
-            // 如果没数据
-        } else {
+        }else {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
         }
+//        // 倒叙查询
+//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+//
+//        // 如果有数据
+//        if (mList.size() > 0) {
+//            // 第一个雷管数据 该区域 最大序号 的延时
+//            int delay = mList.get(0).getDelay();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+//            return delay;
+//            // 如果没数据
+//        } else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
     }
 
     /**
@@ -643,20 +676,38 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxDuanNo(int duan ,String piece) {
-        // 倒叙查询
-        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+        String duanNo;
+        String sql = "select max(duanNo) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
-        // 如果有数据
-        if (mList.size() > 0) {
-            // 第一个雷管数据 该区域 最大序号 的延时
-            String duanNo = mList.get(0).getDuanNo();
-            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + duanNo);
-            return Integer.parseInt(duanNo);
-            // 如果没数据
-        } else {
+        if (cursor != null && cursor.moveToNext()) {
+            duanNo = cursor.getString(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取最大序号: "+duanNo);
+            if(duanNo!=null){
+                return Integer.parseInt(duanNo);
+            }else {
+                return 0;
+            }
+
+        }else {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
         }
+//        // 倒叙查询
+//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+//
+//        // 如果有数据
+//        if (mList.size() > 0) {
+//            // 第一个雷管数据 该区域 最大序号 的延时
+//            String duanNo = mList.get(0).getDuanNo();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + duanNo);
+//            return Integer.parseInt(duanNo);
+//            // 如果没数据
+//        } else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
     }
 
     /**
