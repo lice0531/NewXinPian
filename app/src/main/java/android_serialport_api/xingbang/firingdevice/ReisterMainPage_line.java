@@ -346,7 +346,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         barCode = data.substring(0, 13);
                         String a = data.substring(13, 22);
                         String yscs=data.substring(22, 26);
-                         version=data.substring(26, 27);
+                         version="0"+data.substring(26, 27);
                         denatorId="A621"+a;
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
