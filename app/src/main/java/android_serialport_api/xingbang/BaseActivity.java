@@ -89,7 +89,7 @@ public class  BaseActivity extends AppCompatActivity {
 //		Utils.showToast(this,text,3000);
 		SmartToast.classic()
 				.config()
-				.messageColor(Color.GREEN)
+				.messageColor(Color.BLUE)
 				.backgroundColorResource(R.color.toast_bg_color)
 				.messageSize(30f)//设置文本大小，单位sp，默认14sp
 				.messageBold(true)//设置文本为粗体，默认false
