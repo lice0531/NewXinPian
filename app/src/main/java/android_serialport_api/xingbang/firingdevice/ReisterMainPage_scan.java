@@ -430,6 +430,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private String TAG = "扫码注册";
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
+    private Boolean charu=false;
+    private DenatorBaseinfo db_charu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1378,7 +1381,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         builder.setNegativeButton("插入管壳码", (dialog, which) -> {
             //插入方法
             getSupportActionBar().setTitle("正在插入雷管");
-            DenatorBaseinfo inf=info;
+            db_charu=info;
+            charu=true;
         });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
@@ -1790,7 +1794,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setPiece(mRegion);
         denatorBaseinfo.setDuan(duan);
         denatorBaseinfo.setDuanNo((duanNo2 + 1) + "");
-        if (!flag_t1) {
+        if (!flag_t1) {//同孔
             denatorBaseinfo.setDuanNo((duanNo2) + "");
             denatorBaseinfo.setDelay(delay_start);
         }
