@@ -164,7 +164,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         binding = ActivityQiBaoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();//获取用户信息
         initView();

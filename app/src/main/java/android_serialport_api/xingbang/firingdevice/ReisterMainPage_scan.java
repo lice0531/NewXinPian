@@ -765,7 +765,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 int duan = info.getDuan();
                 String duanNo = info.getDuanNo();
                 // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo);
+                modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo,info);
             });
         });
 
@@ -878,7 +878,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int duan = info.getDuan();
             String duanNo = info.getDuanNo();
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo);
+            modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo,info);
         });
         this.isSingleReisher = 0;
 
@@ -1359,7 +1359,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String denatorId, final int duan, final String duanNo) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String denatorId, final int duan, final String duanNo,DenatorBaseinfo info) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -1375,7 +1375,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         et_shell.setText(shellBlastNo);
         tv_duan.setText(duan + "-");
         et_duanNo.setText(duanNo);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton("插入管壳码", (dialog, which) -> {
+            //插入方法
+            getSupportActionBar().setTitle("正在插入雷管");
+            DenatorBaseinfo inf=info;
+        });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
 
@@ -1421,6 +1425,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             dialog.dismiss();
         });
+
+
         builder.show();
     }
 

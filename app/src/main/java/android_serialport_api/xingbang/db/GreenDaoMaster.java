@@ -808,6 +808,18 @@ public class GreenDaoMaster {
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
     }
+    /***
+     * @param duan
+     * @return
+     */
+    public List<DenatorBaseinfo> queryLeiguanDuan(int duan, String mRegion,String fz) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        Log.e("查询", "段位雷管: ");
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .where(DenatorBaseinfoDao.Properties.Fanzhuan.eq(fz))
+                .list();
+    }
 
     /***
      * @param duanNo

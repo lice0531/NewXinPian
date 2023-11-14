@@ -45,6 +45,7 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         public final static Property Piece = new Property(18, String.class, "piece", false, "piece");
         public final static Property Duan = new Property(19, int.class, "duan", false, "duan");
         public final static Property DuanNo = new Property(20, String.class, "duanNo", false, "duanNo");
+        public final static Property Fanzhuan = new Property(21, String.class, "fanzhuan", false, "fanzhuan");
     }
 
 
@@ -80,7 +81,8 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
                 "\"cong_yscs\" TEXT," + // 17: cong_yscs
                 "\"piece\" TEXT," + // 18: piece
                 "\"duan\" INTEGER NOT NULL ," + // 19: duan
-                "\"duanNo\" TEXT);"); // 20: duanNo
+                "\"duanNo\" TEXT," + // 20: duanNo
+                "\"fanzhuan\" TEXT);"); // 21: fanzhuan
     }
 
     /** Drops the underlying database table. */
@@ -185,6 +187,11 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         if (duanNo != null) {
             stmt.bindString(21, duanNo);
         }
+ 
+        String fanzhuan = entity.getFanzhuan();
+        if (fanzhuan != null) {
+            stmt.bindString(22, fanzhuan);
+        }
     }
 
     @Override
@@ -283,6 +290,11 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         if (duanNo != null) {
             stmt.bindString(21, duanNo);
         }
+ 
+        String fanzhuan = entity.getFanzhuan();
+        if (fanzhuan != null) {
+            stmt.bindString(22, fanzhuan);
+        }
     }
 
     @Override
@@ -313,7 +325,8 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
             cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // cong_yscs
             cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // piece
             cursor.getInt(offset + 19), // duan
-            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20) // duanNo
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // duanNo
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21) // fanzhuan
         );
         return entity;
     }
@@ -341,6 +354,7 @@ public class DenatorBaseinfoDao extends AbstractDao<DenatorBaseinfo, Long> {
         entity.setPiece(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
         entity.setDuan(cursor.getInt(offset + 19));
         entity.setDuanNo(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setFanzhuan(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
      }
     
     @Override

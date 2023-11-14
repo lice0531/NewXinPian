@@ -191,7 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "updataState text, "
             + "updataTime text)";
 
-    public static final int TABLE_VERSION = 23;
+    public static final int TABLE_VERSION = 24;
     public static final String TABLE_NAME_DENATOBASEINFO = "denatorBaseinfo";   //雷管表
     public static final String TABLE_NAME_DENATOBASEINFO_ALL = "denatorBaseinfo_all";   //全部雷管表
     public static final String TABLE_NAME_HISMAIN = "denatorHis_Main";//历史时间表

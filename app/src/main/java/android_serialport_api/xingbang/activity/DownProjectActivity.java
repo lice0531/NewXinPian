@@ -39,7 +39,7 @@ public class DownProjectActivity extends BaseActivity implements ItemProjectAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_project);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         TextView title = findViewById(R.id.title_text);

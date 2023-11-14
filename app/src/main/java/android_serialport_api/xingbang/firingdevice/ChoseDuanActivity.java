@@ -373,7 +373,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
     private Handler mHandler_showNum = new Handler();//显示雷管数量
     private String duan_set = "0";//是duan1还是duan2
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
-    private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
+    private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;//0是未翻转，1是已翻转
     private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
     private String TAG = "单发注册";
 
@@ -687,7 +687,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 reNumF40.setBackgroundResource(R.drawable.textview_border_green);
                 break;
             case R.id.re_et_nei1:
-                fanzhuan(1);
+                fanzhuan(1, n1);
                 if (n1 == 1) {
                     n1 = 0;
                 } else {
@@ -695,7 +695,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei2:
-                fanzhuan(2);
+                fanzhuan(2, n2);
                 if (n2 == 1) {
                     n2 = 0;
                 } else {
@@ -703,7 +703,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei3:
-                fanzhuan(3);
+                fanzhuan(3, n3);
                 if (n3 == 1) {
                     n3 = 0;
                 } else {
@@ -711,7 +711,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei4:
-                fanzhuan(4);
+                fanzhuan(4, n4);
                 if (n4 == 1) {
                     n4 = 0;
                 } else {
@@ -719,7 +719,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei5:
-                fanzhuan(5);
+                fanzhuan(5, n5);
                 if (n5 == 1) {
                     n5 = 0;
                 } else {
@@ -727,7 +727,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei6:
-                fanzhuan(6);
+                fanzhuan(6, n6);
                 if (n6 == 1) {
                     n6 = 0;
                 } else {
@@ -735,7 +735,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei7:
-                fanzhuan(7);
+                fanzhuan(7, n7);
                 if (n7 == 1) {
                     n7 = 0;
                 } else {
@@ -743,7 +743,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei8:
-                fanzhuan(8);
+                fanzhuan(8, n8);
                 if (n8 == 1) {
                     n8 = 0;
                 } else {
@@ -751,7 +751,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei9:
-                fanzhuan(9);
+                fanzhuan(9, n9);
                 if (n9 == 1) {
                     n9 = 0;
                 } else {
@@ -759,7 +759,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei10:
-                fanzhuan(10);
+                fanzhuan(10, n10);
                 if (n10 == 1) {
                     n10 = 0;
                 } else {
@@ -767,7 +767,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei11:
-                fanzhuan(11);
+                fanzhuan(11, n11);
                 if (n11 == 1) {
                     n11 = 0;
                 } else {
@@ -775,7 +775,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei12:
-                fanzhuan(12);
+                fanzhuan(12, n12);
                 if (n12 == 1) {
                     n12 = 0;
                 } else {
@@ -783,7 +783,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei13:
-                fanzhuan(13);
+                fanzhuan(13, n13);
                 if (n13 == 1) {
                     n13 = 0;
                 } else {
@@ -791,7 +791,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei14:
-                fanzhuan(14);
+                fanzhuan(14, n14);
                 if (n14 == 1) {
                     n14 = 0;
                 } else {
@@ -799,7 +799,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei15:
-                fanzhuan(15);
+                fanzhuan(15, n15);
                 if (n15 == 1) {
                     n15 = 0;
                 } else {
@@ -807,7 +807,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei16:
-                fanzhuan(16);
+                fanzhuan(16, n16);
                 if (n16 == 1) {
                     n16 = 0;
                 } else {
@@ -815,7 +815,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei17:
-                fanzhuan(17);
+                fanzhuan(17, n17);
                 if (n17 == 1) {
                     n17 = 0;
                 } else {
@@ -823,7 +823,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei18:
-                fanzhuan(18);
+                fanzhuan(18, n18);
                 if (n18 == 1) {
                     n18 = 0;
                 } else {
@@ -831,7 +831,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei19:
-                fanzhuan(19);
+                fanzhuan(19, n19);
                 if (n19 == 1) {
                     n19 = 0;
                 } else {
@@ -839,7 +839,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei20:
-                fanzhuan(20);
+                fanzhuan(20, n20);
                 if (n20 == 1) {
                     n20 = 0;
                 } else {
@@ -847,7 +847,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei21:
-                fanzhuan(21);
+                fanzhuan(21, n21);
                 if (n21 == 1) {
                     n21 = 0;
                 } else {
@@ -855,7 +855,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei22:
-                fanzhuan(22);
+                fanzhuan(22, n22);
                 if (n22 == 1) {
                     n22 = 0;
                 } else {
@@ -863,7 +863,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei23:
-                fanzhuan(23);
+                fanzhuan(23, n23);
                 if (n23 == 1) {
                     n23 = 0;
                 } else {
@@ -871,7 +871,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei24:
-                fanzhuan(24);
+                fanzhuan(24, n24);
                 if (n24 == 1) {
                     n24 = 0;
                 } else {
@@ -879,7 +879,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei25:
-                fanzhuan(25);
+                fanzhuan(25, n25);
                 if (n25 == 1) {
                     n25 = 0;
                 } else {
@@ -887,7 +887,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei26:
-                fanzhuan(26);
+                fanzhuan(26, n26);
                 if (n26 == 1) {
                     n26 = 0;
                 } else {
@@ -895,7 +895,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei27:
-                fanzhuan(27);
+                fanzhuan(27, n27);
                 if (n27 == 1) {
                     n27 = 0;
                 } else {
@@ -903,7 +903,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei28:
-                fanzhuan(28);
+                fanzhuan(28, n28);
                 if (n28 == 1) {
                     n28 = 0;
                 } else {
@@ -911,7 +911,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei29:
-                fanzhuan(29);
+                fanzhuan(29, n29);
                 if (n29 == 1) {
                     n29 = 0;
                 } else {
@@ -919,7 +919,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei30:
-                fanzhuan(30);
+                fanzhuan(30, n30);
                 if (n30 == 1) {
                     n30 = 0;
                 } else {
@@ -927,7 +927,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei31:
-                fanzhuan(31);
+                fanzhuan(31, n31);
                 if (n31 == 1) {
                     n31 = 0;
                 } else {
@@ -935,7 +935,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei32:
-                fanzhuan(32);
+                fanzhuan(32, n32);
                 if (n32 == 1) {
                     n32 = 0;
                 } else {
@@ -943,7 +943,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei33:
-                fanzhuan(33);
+                fanzhuan(33, n33);
                 if (n33 == 1) {
                     n33 = 0;
                 } else {
@@ -951,7 +951,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei34:
-                fanzhuan(34);
+                fanzhuan(34, n34);
                 if (n34 == 1) {
                     n34 = 0;
                 } else {
@@ -959,7 +959,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei35:
-                fanzhuan(35);
+                fanzhuan(35, n35);
                 if (n35 == 1) {
                     n35 = 0;
                 } else {
@@ -967,7 +967,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei36:
-                fanzhuan(36);
+                fanzhuan(36, n36);
                 if (n36 == 1) {
                     n36 = 0;
                 } else {
@@ -975,7 +975,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei37:
-                fanzhuan(37);
+                fanzhuan(37, n37);
                 if (n37 == 1) {
                     n37 = 0;
                 } else {
@@ -983,7 +983,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei38:
-                fanzhuan(38);
+                fanzhuan(38, n38);
                 if (n38 == 1) {
                     n38 = 0;
                 } else {
@@ -991,7 +991,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei39:
-                fanzhuan(39);
+                fanzhuan(39, n39);
                 if (n39 == 1) {
                     n39 = 0;
                 } else {
@@ -999,7 +999,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_nei40:
-                fanzhuan(40);
+                fanzhuan(40, n40);
                 if (n40 == 1) {
                     n40 = 0;
                 } else {
@@ -1091,8 +1091,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
         Log.e(TAG, "list_delay: " + list_delay.toString());
     }
 
-    private void fanzhuan(int duan) {
-        getDelay();
+    private void fanzhuan(int duan, int fz) {
+//        getDelay();
 
 
         Log.e("注册页面", "翻转: ");
@@ -1104,20 +1104,48 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 .setPositiveButton("确认", (dialog1, which) -> {
 
                     GreenDaoMaster master = new GreenDaoMaster();
-                    List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);
-                    List<DenatorBaseinfo> list2 = master.queryLeiguanDuan(duan, mRegion);
-
-
-
-                    String strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan ="+duan+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                    List<DenatorBaseinfo> list3 =getList(strSql);//除了序号最小的所有重复雷管
-
-                    String strSql2 ="SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = "+duan+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                    List<DenatorBaseinfo> list4 =getList(strSql2);//序号最小的重复雷管
-
-                    List<Map<String, Object>> list_delay =new ArrayList<>();//所有不重复延时
                     DaoSession session = getDaoSession();
-                    String strSql3 ="SELECT  delay , duanNo FROM denatorBaseinfo where duan ="+duan+" group by delay order by id desc";
+                    List<DenatorBaseinfo> list;
+                    List<DenatorBaseinfo> list2;
+                    String strSql;
+                    String strSql2;
+                    String strSql3;
+                    String sql;
+                    Log.e(TAG, "fz: "+fz);
+                    if(fz==0){//翻转
+                        list = master.queryLeiguanDuan(duan, mRegion);
+                        list2 = master.queryLeiguanDuan(duan, mRegion);
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " group by delay order by id desc";
+                        sql = "SELECT delay FROM denatorBaseinfo group by delay order by delay desc";//+" order by htbh "
+
+                    }else {//复位
+                        list = master.queryLeiguanDuan(duan, mRegion,"0");
+                        list2 = master.queryLeiguanDuan(duan, mRegion,"0");
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 group by delay order by id desc";
+                        sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay desc";//+" order by htbh "
+
+                    }
+                    list_delay.clear();
+                    Cursor cursor = session.getDatabase().rawQuery(sql, null);
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+                            String delay = cursor.getString(0);
+                            list_delay.add(delay);
+                        }
+                        cursor.close();
+                    }
+
+
+                    List<DenatorBaseinfo> list3 = getList(strSql);//除了序号最小的所有重复雷管
+
+                    List<DenatorBaseinfo> list4 = getList(strSql2);//序号最小的重复雷管
+
+                    List<Map<String, Object>> list_delay = new ArrayList<>();//所有不重复延时
+
                     Cursor cursor3 = session.getDatabase().rawQuery(strSql3, null);
                     if (cursor3 != null) {
                         while (cursor3.moveToNext()) {
@@ -1131,10 +1159,10 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         cursor3.close();
                     }
 
-                    Log.e(TAG, duan+"段雷管list: "+list.toString() );
-                    Log.e(TAG, "除了序号最小的所有重复雷管list3: "+list3.toString() );
-                    Log.e(TAG, "序号最小的重复雷管list4: "+list4.toString() );
-                    Log.e(TAG, "list_delay: "+list_delay.toString() );
+                    Log.e(TAG, duan + "段雷管list: " + list.toString());
+                    Log.e(TAG, "除了序号最小的所有重复雷管list3: " + list3.toString());
+                    Log.e(TAG, "序号最小的重复雷管list4: " + list4.toString());
+                    Log.e(TAG, "list_delay: " + list_delay.toString());
 //                    Log.e(TAG, "判断: "+list.contains(list3.get(0)) );
 //                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
                     //遍历List并比较元素是否相等，判断是否包含"apple"元素
@@ -1142,33 +1170,36 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     for (int i = 0; i < list.size(); i++) {
                         Log.e(TAG, "开始----------------: ");
                         DenatorBaseinfo lg = list.get(i);
-                        Log.e(TAG, "第"+i+"发管: "+lg.toString());
+                        Log.e(TAG, "第" + i + "发管: " + lg.toString());
 
                         boolean contains = false;
-                        for(DenatorBaseinfo db : list3){
-                            if(db.getId().equals(lg.getId())){
+                        for (DenatorBaseinfo db : list3) {
+                            if (db.getId().equals(lg.getId())) {
                                 contains = true;
                                 break;
                             }
                         }
-                        Log.e(TAG, "判断contains: "+contains);//list3是否包含当前雷管
-                        Log.e(TAG, "最大序号的(i-1)"+(i-1));
-                        if(contains){
-                            DenatorBaseinfo lg2 = master.querylg(list2.get(i-1).getShellBlastNo());
-                            Log.e(TAG, "最大序号的list2.get(i-1)"+list2.get(i-1).getShellBlastNo());
+                        Log.e(TAG, "判断contains: " + contains);//list3是否包含当前雷管
+                        Log.e(TAG, "最大序号的(i-1)" + (i - 1));
+                        if (contains) {
+                            DenatorBaseinfo lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
+                            Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getShellBlastNo());
                             lg.setDelay(lg2.getDelay());
                             lg.setDuanNo(lg2.getDuanNo());
-                        }else {
-                            Log.e(TAG, "list_delay.get(0): "+list_delay.get(0));
+                        } else {
+                            Log.e(TAG, "list_delay.get(0): " + list_delay.get(0));
                             lg.setDelay((Integer) list_delay.get(0).get("delay"));
                             lg.setDuanNo(list_delay.get(0).get("duanNo").toString());
                             list_delay.remove(0);
                         }
 //                        lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
 
+                        lg.setFanzhuan(fz + "");
+
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
                         Log.e(TAG, "结束----------------: ");
                     }
+
 //                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                     setBtnColor(duan);
                 }).create();
@@ -1176,8 +1207,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private List<DenatorBaseinfo> getList(String sql){
-        List<DenatorBaseinfo> list_db =new ArrayList<>();
+    private List<DenatorBaseinfo> getList(String sql) {
+        List<DenatorBaseinfo> list_db = new ArrayList<>();
         DaoSession session = getDaoSession();
 
         Cursor cursor = session.getDatabase().rawQuery(sql, null);
