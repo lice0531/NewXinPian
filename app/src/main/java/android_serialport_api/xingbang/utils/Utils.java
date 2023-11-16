@@ -1792,7 +1792,7 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
-    public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1) {
+    public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1,int delay_add) {
         String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and blastserial > "+db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
         if (cursor != null) {
@@ -1826,7 +1826,7 @@ public class Utils {
                 lg.setSithole((Integer.parseInt(sithole)+1)+"");
                 lg.setShellBlastNo(shellBlastNo);
                 lg.setDenatorId(denatorId);
-                lg.setDelay(Integer.parseInt(delay));
+                lg.setDelay(Integer.parseInt(delay)+delay_add);
                 lg.setStatusCode(statusCode);
                 lg.setStatusName(statusName);
                 lg.setErrorName(errorName);

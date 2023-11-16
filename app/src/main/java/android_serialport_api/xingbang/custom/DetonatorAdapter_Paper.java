@@ -92,7 +92,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
             }
             if ( mLine == 5) {
-                holder.mTvSitHole.setText(detonatorBaseInfo.getDuanNo() + "");     // 孔号
+                holder.mTvSitHole.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());     // 孔号
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);

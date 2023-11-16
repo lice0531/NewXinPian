@@ -1334,7 +1334,7 @@
                             android:layout_width="60dp"
                             android:layout_height="30dp"
                             android:background="@drawable/textview_border"
-                            android:text="@string/text_list_duan" />
+                            android:text="@string/text_list_kong" />
 
                         <TextView
                             style="@style/alltextstyle"

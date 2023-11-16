@@ -1376,9 +1376,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        tv_duan.setText(duan + "-");
+        tv_duan.setText(duan + "-"+duanNo);
         et_duanNo.setText(duanNo+"");
-        builder.setNegativeButton("插入管壳码", (dialog, which) -> {
+        builder.setNegativeButton("插入孔", (dialog, which) -> {
             if(info.getFanzhuan()!=null && info.getFanzhuan().equals("0")){
                 show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
             }else {
@@ -1806,12 +1806,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
         if(charu){
-            Utils.charuData(mRegion,db_charu,flag_t1);//插入雷管的后面所有雷管序号+1
-            int xuhao =db_charu.getBlastserial()+1;
-            int konghao = Integer.parseInt(db_charu.getSithole())+1;
-            denatorBaseinfo.setBlastserial(xuhao);
-            denatorBaseinfo.setSithole(konghao + "");
-            denatorBaseinfo.setDuan(db_charu.getDuan());
             if (!flag_t1) {//同孔
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() );
                 denatorBaseinfo.setDelay(db_charu.getDelay());
@@ -1839,6 +1833,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                     }
                 }
+            Utils.charuData(mRegion,db_charu,flag_t1,delay);//插入雷管的后面所有雷管序号+1
+            int xuhao =db_charu.getBlastserial()+1;
+            int konghao = Integer.parseInt(db_charu.getSithole())+1;
+            denatorBaseinfo.setBlastserial(xuhao);
+            denatorBaseinfo.setSithole(konghao + "");
+            denatorBaseinfo.setDuan(db_charu.getDuan());
+
                 if(flag_t1&&delay==db_charu.getDelay()){
                     show_Toast("没选同孔,不能设置跟选中雷管相同延时");
                     return -1;
