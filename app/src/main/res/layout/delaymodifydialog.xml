@@ -77,6 +77,7 @@
             android:maxLength="5"
             android:numeric="integer"
             android:padding="5dp"
+            android:enabled="false"
             style="@style/alltextstyle"/>
 
         <TextView

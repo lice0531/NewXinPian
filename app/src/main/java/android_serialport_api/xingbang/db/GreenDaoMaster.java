@@ -432,13 +432,32 @@ public class GreenDaoMaster {
         entity.setDelay(delay);
         mDeantorBaseDao.update(entity);
     }
+
+    /**
+     * 修改雷管延时
+     *
+     * @param db 雷管信息
+     */
+    public void updateDetonator(DenatorBaseinfo db) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(db.getShellBlastNo()))
+                .build()
+                .unique();
+//        entity.setId(db.getId());
+        entity.setBlastserial(db.getBlastserial());
+        entity.setSithole(db.getSithole());
+        entity.setDuanNo(db.getDuanNo());
+        Log.e("更新数据", "getDuanNo: "+ db.getDuanNo());
+        mDeantorBaseDao.update(entity);
+    }
     /**
      * 修改雷管延时
      *
      * @param shell 管壳号
      * @param delay 延时
      */
-    public void updateDetonatorDelay(String shell, int delay,String duanNo) {
+    public void updateDetonatorDelay(String shell, int delay,int duanNo) {
         DenatorBaseinfo entity = mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
@@ -523,7 +542,7 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
-                .orderAsc(DenatorBaseinfoDao.Properties.Id)
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
 
@@ -536,7 +555,7 @@ public class GreenDaoMaster {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
-                .orderDesc(DenatorBaseinfoDao.Properties.Id)
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
 
@@ -550,7 +569,15 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
-                .orderDesc(DenatorBaseinfoDao.Properties.Id)
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+    public List<DenatorBaseinfo> queryDetonatorRegionAsc(int duan,String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
 
@@ -676,20 +703,15 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxDuanNo(int duan ,String piece) {
-        String duanNo;
+        int duanNo;
         String sql = "select max(duanNo) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {
-            duanNo = cursor.getString(0);
+            duanNo = cursor.getInt(0);
             cursor.close();
             Log.e("getPieceMaxNumDelay", "获取最大序号: "+duanNo);
-            if(duanNo!=null){
-                return Integer.parseInt(duanNo);
-            }else {
-                return 0;
-            }
-
+            return duanNo;
         }else {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
@@ -806,7 +828,8 @@ public class GreenDaoMaster {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         Log.e("查询", "段位雷管: ");
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
-                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion)).list();
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial).list();
     }
     /***
      * @param duan
@@ -818,6 +841,7 @@ public class GreenDaoMaster {
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
                 .where(DenatorBaseinfoDao.Properties.Fanzhuan.eq(fz))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
 

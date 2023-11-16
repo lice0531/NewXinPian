@@ -773,7 +773,7 @@ public class XingbangMain extends BaseActivity {
                     baseinfo.setCong_yscs(a[17]);
                     baseinfo.setPiece(a[18]);
                     baseinfo.setDuan(Integer.parseInt(a[19]));
-                    baseinfo.setDuanNo(a[20]);
+                    baseinfo.setDuanNo(Integer.parseInt(a[20]));
                     getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 } else {
                     f.delete();//如果字段个数不对,先删除list,再跳出循环

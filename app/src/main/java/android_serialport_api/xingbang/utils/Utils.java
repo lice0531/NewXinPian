@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -36,8 +37,10 @@ import java.math.BigInteger;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -1709,7 +1712,7 @@ public class Utils {
     public static void deleteData(String mRegion) {
 
 //        Log.e("排序雷管", "list_lg: " + list_lg.size());
-        for (int d = 1; d < 21; d++) {
+        for (int d = 1; d < 41; d++) {
             List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion,d);
             for (int i = 0; i < list_lg.size(); i++) {
                 DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
@@ -1739,10 +1742,10 @@ public class Utils {
                      if(list_lg.get(i).getDelay()==lg2.getDelay()){
                          denatorBaseinfo.setDuanNo(lg2.getDuanNo() );
                      }else {
-                         denatorBaseinfo.setDuanNo((Integer.parseInt(lg2.getDuanNo()) + 1)+"");
+                         denatorBaseinfo.setDuanNo((lg2.getDuanNo() + 1));
                      }
                 }else {
-                    denatorBaseinfo.setDuanNo("1");
+                    denatorBaseinfo.setDuanNo(1);
                 }
 
                 getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
@@ -1784,6 +1787,76 @@ public class Utils {
                 getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
             }
         Utils.saveFile();//把软存中的数据存入磁盘中
+    }
+
+    /**
+     * 重新排序雷管(段)
+     */
+    public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1) {
+        String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and blastserial > "+db_charu.getBlastserial();
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                int blastserial = cursor.getInt(1);
+                String sithole = cursor.getString(2);
+                String shellBlastNo = cursor.getString(3);//管壳号
+                String denatorId = cursor.getString(4);
+                String delay = cursor.getString(5);
+                String statusCode = cursor.getString(6);
+                String statusName = cursor.getString(7);
+                String errorName = cursor.getString(8);
+                String errorCode = cursor.getString(9);
+                String authorization = cursor.getString(10);
+                String remark = cursor.getString(11);
+                String regdate = cursor.getString(12);
+                String wire = cursor.getString(13);
+                String name = cursor.getString(14);
+                String denatorIdSup = cursor.getString(15);
+                String zhu_yscs = cursor.getString(16);
+                String cong_yscs = cursor.getString(17);
+                String piece = cursor.getString(18);
+                int duan = cursor.getInt(19);
+                int duanNo = cursor.getInt(20);
+                String fanzhuan =  cursor.getString(21);
+
+                DenatorBaseinfo lg = new DenatorBaseinfo();
+                lg.setId(Long.valueOf(Integer.parseInt(id)+1));
+                lg.setBlastserial(blastserial+1);
+                lg.setSithole((Integer.parseInt(sithole)+1)+"");
+                lg.setShellBlastNo(shellBlastNo);
+                lg.setDenatorId(denatorId);
+                lg.setDelay(Integer.parseInt(delay));
+                lg.setStatusCode(statusCode);
+                lg.setStatusName(statusName);
+                lg.setErrorName(errorName);
+                lg.setErrorCode(errorCode);
+                lg.setAuthorization(authorization);
+                lg.setRemark(remark);
+                lg.setRegdate(regdate);
+                lg.setWire(wire);
+                lg.setName(name);
+                lg.setDenatorIdSup(denatorIdSup);
+                lg.setZhu_yscs(zhu_yscs);
+                lg.setCong_yscs(cong_yscs);
+                lg.setPiece(piece);
+                lg.setDuan(duan);
+                lg.setDuanNo(duanNo);
+                if(db_charu.getDuan()==duan){//同段的序号+1
+                    if(!flag_t1){
+                        lg.setDuanNo(duanNo);
+                    }else {
+                        lg.setDuanNo(duanNo+1);
+                    }
+                }
+
+                lg.setFanzhuan(fanzhuan);
+//                getDaoSession().getDenatorBaseinfoDao().update(lg);
+                new GreenDaoMaster().updateDetonator(lg);
+                Log.e("插入排序", "lg: "+lg.toString());
+            }
+            cursor.close();
+        }
     }
 
     private static Toast toast;

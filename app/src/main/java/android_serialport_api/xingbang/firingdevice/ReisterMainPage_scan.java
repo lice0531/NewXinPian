@@ -512,7 +512,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         scanDecode.getBarCode(data -> {
             Log.e("扫码", "data: " + data);
-            if (deleteList()) return;
+//            if (deleteList()) return;
             hideInputKeyboard();//隐藏光标
             //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
             if (data.length() == 13) {
@@ -766,7 +766,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 String shellBlastNo = info.getShellBlastNo();
                 String denatorId = info.getDenatorId();
                 int duan = info.getDuan();
-                String duanNo = info.getDuanNo();
+                int duanNo = info.getDuanNo();
                 // 序号 延时 管壳码
                 modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo,info);
             });
@@ -879,7 +879,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             String shellBlastNo = info.getShellBlastNo();
             String denatorId = info.getDenatorId();
             int duan = info.getDuan();
-            String duanNo = info.getDuanNo();
+            int duanNo = info.getDuanNo();
             // 序号 延时 管壳码
             modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo,info);
         });
@@ -1362,7 +1362,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String denatorId, final int duan, final String duanNo,DenatorBaseinfo info) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String denatorId, final int duan, final int duanNo,DenatorBaseinfo info) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -1377,12 +1377,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
         tv_duan.setText(duan + "-");
-        et_duanNo.setText(duanNo);
+        et_duanNo.setText(duanNo+"");
         builder.setNegativeButton("插入管壳码", (dialog, which) -> {
-            //插入方法
-            getSupportActionBar().setTitle("正在插入雷管");
-            db_charu=info;
-            charu=true;
+            if(info.getFanzhuan()!=null && info.getFanzhuan().equals("0")){
+                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+            }else {
+                //插入方法
+                getSupportActionBar().setTitle("正在插入雷管");
+                db_charu=info;
+                charu=true;
+            }
+
         });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
@@ -1419,7 +1424,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             } else {
                 // 修改雷管延时
-                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), et_duanNo.getText().toString());
+                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
@@ -1779,6 +1784,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan, mRegion);//获取该区域 最大序号的延时
+        Log.e("扫码", "duanNo2: " + duanNo2);
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
@@ -1793,12 +1799,56 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setWire("");//桥丝状态
         denatorBaseinfo.setPiece(mRegion);
         denatorBaseinfo.setDuan(duan);
-        denatorBaseinfo.setDuanNo((duanNo2 + 1) + "");
+        denatorBaseinfo.setDuanNo((duanNo2 + 1) );
         if (!flag_t1) {//同孔
-            denatorBaseinfo.setDuanNo((duanNo2) + "");
+            denatorBaseinfo.setDuanNo((duanNo2) );
             denatorBaseinfo.setDelay(delay_start);
         }
 
+        if(charu){
+            Utils.charuData(mRegion,db_charu,flag_t1);//插入雷管的后面所有雷管序号+1
+            int xuhao =db_charu.getBlastserial()+1;
+            int konghao = Integer.parseInt(db_charu.getSithole())+1;
+            denatorBaseinfo.setBlastserial(xuhao);
+            denatorBaseinfo.setSithole(konghao + "");
+            denatorBaseinfo.setDuan(db_charu.getDuan());
+            if (!flag_t1) {//同孔
+                denatorBaseinfo.setDuanNo(db_charu.getDuanNo() );
+                denatorBaseinfo.setDelay(db_charu.getDelay());
+            }else {
+                delay=db_charu.getDelay();
+                if (delay_set.equals("f1")) {//获取最大延时有问题
+                    if (maxNo == 0) {
+                        delay = delay + start_delay;
+                    } else {
+                        if(flag_tk){
+                            delay = delay + f1*(tk_num+1);
+                        }else {
+                            delay = delay + f1;
+                        }
+
+                    }
+                } else if (delay_set.equals("f2")) {
+                    if (maxNo == 0) {
+                        delay = delay + start_delay;
+                    } else {
+                        if(flag_tk){
+                            delay = delay + f2*(tk_num+1);
+                        }else {
+                            delay = delay + f2;
+                        }
+                    }
+                }
+                if(flag_t1&&delay==db_charu.getDelay()){
+                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
+                    return -1;
+                }
+                denatorBaseinfo.setDelay(delay);
+                denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
+            }
+
+            charu=false;
+        }
 
 
         if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
@@ -1897,8 +1947,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             a = Integer.parseInt(duan_scan);//煤许雷管按二维码设置的来
         }
         int duanNUM = getDuanNo(a, mRegion);//也得做区域区分
-        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan, mRegion);//获取该区域 最大序号的延时
-
+        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan, mRegion);//获取该区域 最大序号
+        Log.e("扫码", "duanNo2: " + duanNo2);
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
@@ -1915,9 +1965,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setDenatorId(denatorId);
         denatorBaseinfo.setZhu_yscs(yscs);
         denatorBaseinfo.setDuan(a);
-        denatorBaseinfo.setDuanNo((duanNo2 + 1) + "");
+        denatorBaseinfo.setDuanNo((duanNo2 + 1) );
+        Log.e("扫码", "flag_t1: " + flag_t1);
         if (!flag_t1) {
-            denatorBaseinfo.setDuanNo((duanNo2) + "");
+            denatorBaseinfo.setDuanNo((duanNo2) );
             denatorBaseinfo.setDelay(delay_start);
         }
 
@@ -1978,7 +2029,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         for (int i = start; i <= end; i++) {
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo)) {
-                singleShellNo = "";
                 singleShellNo = shellNo;
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
                 break;
@@ -2019,8 +2069,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 break;
             }
-            int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
+//            int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
             int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan, mRegion);//获取该区域 最大序号的延时
+            Log.e("手动输入3", "duanNo2: " + duanNo2);
+            Log.e("手动输入3", "duan: " + duan);
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
@@ -2035,9 +2087,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setWire("");//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
             denatorBaseinfo.setDuan(duan);
-            denatorBaseinfo.setDuanNo((duanNo2 + 1) + "");
+            denatorBaseinfo.setDuanNo((duanNo2 + 1) );
+            Log.e("手动输入3", "flag_t1: " + flag_t1);
             if ( !flag_t1) {
-                denatorBaseinfo.setDuanNo((duanNo2) + "");
+                denatorBaseinfo.setDuanNo((duanNo2) );
                 denatorBaseinfo.setDelay(delay_start);
             }
             if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
@@ -2222,7 +2275,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
                     break;
                 }
-                if (deleteList()) return;
+//                if (deleteList()) return;
                 container1.requestFocus();//获取焦点,
                 scanDecode.starScan();
 
@@ -2361,7 +2414,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
                     break;
                 }
-                if (deleteList()) return;//判断列表第一发是否在历史记录里
+//                if (deleteList()) return;//判断列表第一发是否在历史记录里
                 hideInputKeyboard();
                 String checstr = checkData();//数据校验
 

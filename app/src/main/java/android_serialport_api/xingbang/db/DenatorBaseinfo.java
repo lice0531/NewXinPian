@@ -58,16 +58,19 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     @Property(nameInDb = "duan")
     private int duan;
     @Property(nameInDb = "duanNo")
-    private String duanNo;
+    private int duanNo;
     @Property(nameInDb = "fanzhuan")
     private String fanzhuan;
 
-    @Generated(hash = 2082585673)
+
+
+
+    @Generated(hash = 2002378901)
     public DenatorBaseinfo(Long id, int blastserial, String sithole, String shellBlastNo,
             String denatorId, int delay, String statusCode, String statusName,
             String errorName, String errorCode, String authorization, String remark,
             String regdate, String wire, String name, String denatorIdSup, String zhu_yscs,
-            String cong_yscs, String piece, int duan, String duanNo, String fanzhuan) {
+            String cong_yscs, String piece, int duan, int duanNo, String fanzhuan) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -95,6 +98,8 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     @Generated(hash = 1775503899)
     public DenatorBaseinfo() {
     }
+
+
 
 
     @Override
@@ -161,12 +166,6 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
             }
         }
 
-    }
-    public String getPiece() {
-        return this.piece;
-    }
-    public void setPiece(String piece) {
-        this.piece = piece;
     }
 
     public Long getId() {
@@ -313,6 +312,14 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
         this.cong_yscs = cong_yscs;
     }
 
+    public String getPiece() {
+        return this.piece;
+    }
+
+    public void setPiece(String piece) {
+        this.piece = piece;
+    }
+
     public int getDuan() {
         return this.duan;
     }
@@ -321,11 +328,11 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
         this.duan = duan;
     }
 
-    public String getDuanNo() {
+    public int getDuanNo() {
         return this.duanNo;
     }
 
-    public void setDuanNo(String duanNo) {
+    public void setDuanNo(int duanNo) {
         this.duanNo = duanNo;
     }
 
@@ -336,4 +343,5 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     public void setFanzhuan(String fanzhuan) {
         this.fanzhuan = fanzhuan;
     }
+
 }

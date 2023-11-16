@@ -1612,7 +1612,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             denatorBaseinfo.setWire("");//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
             denatorBaseinfo.setDuan(duan);
-            denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));
+            denatorBaseinfo.setDuanNo((duanNUM + 1));
             if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
                 denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());

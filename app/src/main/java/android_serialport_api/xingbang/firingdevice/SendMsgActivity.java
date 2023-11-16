@@ -304,7 +304,7 @@ public class SendMsgActivity extends BaseActivity {
             denator.setDenatorId(a[0]);
             denator.setShellBlastNo(a[2]);
             denator.setDuan(Integer.parseInt(duan[0]));
-            denator.setDuanNo(a[3]);
+            denator.setDuanNo(Integer.parseInt(a[3]));
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
             denator.setStatusCode("02");

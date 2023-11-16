@@ -1105,39 +1105,39 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                     GreenDaoMaster master = new GreenDaoMaster();
                     DaoSession session = getDaoSession();
-                    List<DenatorBaseinfo> list;
-                    List<DenatorBaseinfo> list2;
-                    String strSql;
-                    String strSql2;
-                    String strSql3;
-                    String sql;
+                    List<DenatorBaseinfo> list;//翻转前
+                    List<DenatorBaseinfo> list2;//翻转后
+                    String strSql;//除了序号最小的所有重复雷管
+                    String strSql2;//序号最小的重复雷管
+                    String strSql3;//所有不重复延时
+                    String sql;//所有延时列表
                     Log.e(TAG, "fz: "+fz);
                     if(fz==0){//翻转
                         list = master.queryLeiguanDuan(duan, mRegion);
                         list2 = master.queryLeiguanDuan(duan, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " group by delay order by id desc";
-                        sql = "SELECT delay FROM denatorBaseinfo group by delay order by delay desc";//+" order by htbh "
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " group by delay order by blastserial desc";
+                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan + " group by delay order by delay desc";//+" order by htbh "
 
                     }else {//复位
                         list = master.queryLeiguanDuan(duan, mRegion,"0");
                         list2 = master.queryLeiguanDuan(duan, mRegion,"0");
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 group by delay order by id desc";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 group by delay order by blastserial desc";
                         sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay desc";//+" order by htbh "
 
                     }
-                    list_delay.clear();
-                    Cursor cursor = session.getDatabase().rawQuery(sql, null);
-                    if (cursor != null) {
-                        while (cursor.moveToNext()) {
-                            String delay = cursor.getString(0);
-                            list_delay.add(delay);
-                        }
-                        cursor.close();
-                    }
+//                    list_delay.clear();
+//                    Cursor cursor = session.getDatabase().rawQuery(sql, null);
+//                    if (cursor != null) {
+//                        while (cursor.moveToNext()) {
+//                            String delay = cursor.getString(0);
+//                            list_delay.add(delay);
+//                        }
+//                        cursor.close();
+//                    }
 
 
                     List<DenatorBaseinfo> list3 = getList(strSql);//除了序号最小的所有重复雷管
@@ -1159,7 +1159,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         cursor3.close();
                     }
 
-                    Log.e(TAG, duan + "段雷管list: " + list.toString());
+                    Log.e(TAG, duan + "段 雷管list: " + list.toString());
                     Log.e(TAG, "除了序号最小的所有重复雷管list3: " + list3.toString());
                     Log.e(TAG, "序号最小的重复雷管list4: " + list4.toString());
                     Log.e(TAG, "list_delay: " + list_delay.toString());
@@ -1172,24 +1172,24 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         DenatorBaseinfo lg = list.get(i);
                         Log.e(TAG, "第" + i + "发管: " + lg.toString());
 
-                        boolean contains = false;
+                        boolean contains = false;//包含在 除了序号最小的所有重复雷管
                         for (DenatorBaseinfo db : list3) {
                             if (db.getId().equals(lg.getId())) {
                                 contains = true;
                                 break;
                             }
                         }
-                        Log.e(TAG, "判断contains: " + contains);//list3是否包含当前雷管
+                        Log.e(TAG, "是否 包含在 除了序号最小的所有重复雷管: " + contains);//list3是否包含当前雷管
                         Log.e(TAG, "最大序号的(i-1)" + (i - 1));
-                        if (contains) {
+                        if (contains) {//包含在 除了序号最小的所有重复雷管
                             DenatorBaseinfo lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
                             Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getShellBlastNo());
                             lg.setDelay(lg2.getDelay());
                             lg.setDuanNo(lg2.getDuanNo());
-                        } else {
+                        } else {//不包含
                             Log.e(TAG, "list_delay.get(0): " + list_delay.get(0));
                             lg.setDelay((Integer) list_delay.get(0).get("delay"));
-                            lg.setDuanNo(list_delay.get(0).get("duanNo").toString());
+                            lg.setDuanNo(Integer.parseInt(list_delay.get(0).get("duanNo").toString()));
                             list_delay.remove(0);
                         }
 //                        lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
@@ -1234,7 +1234,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 String cong_yscs = cursor.getString(17);
                 String piece = cursor.getString(18);
                 int duan = cursor.getInt(19);
-                String duanNo = cursor.getString(20);
+                int duanNo = cursor.getInt(20);
 
                 DenatorBaseinfo lg = new DenatorBaseinfo();
                 lg.setId(Long.valueOf(id));

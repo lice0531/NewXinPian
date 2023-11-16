@@ -297,7 +297,7 @@ public class PracticeActivity extends BaseActivity {
                 denator.setShellBlastNo(a[2]);
             }
             if (a.length == 4) {
-                denator.setDuanNo(a[3]);
+                denator.setDuanNo(Integer.parseInt(a[3]));
                 denator.setDuan(Integer.parseInt(a[3].substring(0,1)));
             }
             denator.setDelay(Integer.parseInt(a[1]));

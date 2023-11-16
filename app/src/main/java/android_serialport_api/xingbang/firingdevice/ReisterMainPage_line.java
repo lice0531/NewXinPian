@@ -1565,7 +1565,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
             denatorBaseinfo.setDuan(duan);
-            denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));
+            denatorBaseinfo.setDuanNo( (duanNUM + 1));
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             //向数据库插入数据
@@ -1801,13 +1801,14 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //                    break;
 //                }
                 if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
-                    String shellBlastNo = serchFristLG();
-                    int num = serchFristLGINdenatorHis(shellBlastNo);
-                    int num2 = serchFristLGINdenatorHisByDenatorId(shellBlastNo);
-                    Log.e(TAG, "芯片码在历史记录中num2: "+num2 );
-                    if (num > 0||num2>0) {
-                        showAlertDialog();
-                    }
+                    //判断第一发是否在历史记录里面
+//                    String shellBlastNo = serchFristLG();
+//                    int num = serchFristLGINdenatorHis(shellBlastNo);
+//                    int num2 = serchFristLGINdenatorHisByDenatorId(shellBlastNo);
+//                    Log.e(TAG, "芯片码在历史记录中num2: "+num2 );
+//                    if (num > 0||num2>0) {
+//                        showAlertDialog();
+//                    }
                     show_Toast("请等待电流电压显示出来后，再连接雷管!");
                     btnInputOk.setEnabled(false);
                     btnSingleReister.setText("停止注册");
