@@ -1804,7 +1804,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setDuanNo((duanNo2) );
             denatorBaseinfo.setDelay(delay_start);
         }
-
+        int delay_add=0;
         if(charu){
             if (!flag_t1) {//同孔
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() );
@@ -1812,6 +1812,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }else {
                 delay=db_charu.getDelay();
                 if (delay_set.equals("f1")) {//获取最大延时有问题
+                    delay_add=f1;
                     if (maxNo == 0) {
                         delay = delay + start_delay;
                     } else {
@@ -1823,6 +1824,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                     }
                 } else if (delay_set.equals("f2")) {
+                    delay_add=f2;
                     if (maxNo == 0) {
                         delay = delay + start_delay;
                     } else {
@@ -1833,7 +1835,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                     }
                 }
-            Utils.charuData(mRegion,db_charu,flag_t1,delay);//插入雷管的后面所有雷管序号+1
+
+            Utils.charuData(mRegion,db_charu,flag_t1,delay_add);//插入雷管的后面所有雷管序号+1
             int xuhao =db_charu.getBlastserial()+1;
             int konghao = Integer.parseInt(db_charu.getSithole())+1;
             denatorBaseinfo.setBlastserial(xuhao);
@@ -3556,7 +3559,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
-        SPUtils.put(this, Constants_SP.RegionCode, region);
+//        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
     }

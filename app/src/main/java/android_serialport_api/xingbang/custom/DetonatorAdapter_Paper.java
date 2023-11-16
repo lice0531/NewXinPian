@@ -102,7 +102,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             }
             if (mLine == 3) {
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
-                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuanNo());
+                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());
                 holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);
@@ -121,7 +121,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
             if(mLine == 7){//点击管壳码/uid 切换显示
                 holder.mTvShellBlastNo.setText(detonatorBaseInfo.getDenatorId());   // 芯片码
                 holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
-                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuanNo());
+                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());
                 holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
                 if (detonatorBaseInfo.getErrorCode().equals("FF")) {
                     holder.mTvStatus.setTextColor(Color.GREEN);

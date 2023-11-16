@@ -448,6 +448,7 @@ public class GreenDaoMaster {
         entity.setBlastserial(db.getBlastserial());
         entity.setSithole(db.getSithole());
         entity.setDuanNo(db.getDuanNo());
+        entity.setDelay(db.getDelay());
         Log.e("更新数据", "getDuanNo: "+ db.getDuanNo());
         mDeantorBaseDao.update(entity);
     }
