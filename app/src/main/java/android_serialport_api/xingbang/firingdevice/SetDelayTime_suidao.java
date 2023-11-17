@@ -1352,7 +1352,7 @@ public class SetDelayTime_suidao extends BaseActivity {
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
-//        SPUtils.put(this, Constants_SP.RegionCode, region);
+        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
     }

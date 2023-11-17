@@ -482,7 +482,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 //此处是跳转的result回调方法
                 if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
                     String a = result.getData().getStringExtra("data_return");
-                    Log.e(TAG, "返回数据: " + a);
+                    Log.e(TAG, "选择页面返回数据: " + a);
                 }
             }
         });
@@ -3537,6 +3537,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 for (int i = 1; i < 21; i++) {
                     showDuanSum(i);
                 }
+                MmkvUtils.savecode("duan", 1);
                 return true;
 
             default:
@@ -3559,7 +3560,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
-//        SPUtils.put(this, Constants_SP.RegionCode, region);
+        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
     }

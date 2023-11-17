@@ -2712,6 +2712,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 for (int i = 1; i < 21; i++) {
                     showDuanSum(i);
                 }
+                MmkvUtils.savecode("duan", 1);
                 return true;
 
             default:
@@ -2734,7 +2735,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
-//        SPUtils.put(this, Constants_SP.RegionCode, region);
+        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
     }
