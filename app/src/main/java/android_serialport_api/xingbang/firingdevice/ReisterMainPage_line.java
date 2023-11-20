@@ -124,8 +124,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
     Button reBtnF2;
     @BindView(R.id.re_et_f2)
     EditText reEtF2;
-    @BindView(R.id.textView3)
-    TextView textView3;
     @BindView(R.id.ly_setDelay)
     LinearLayout lySetDelay;
     @BindView(R.id.btn_return)
@@ -325,6 +323,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
     Button btnFan20;
     @BindView(R.id.btn_addDelay)
     Button btnAddDelay;
+    @BindView(R.id.btn_tk_F1)
+    Button btnTkF1;
+    @BindView(R.id.btn_tk)
+    Button btnTk;
+    @BindView(R.id.et_tk)
+    EditText etTk;
 
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
@@ -408,6 +412,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
     private String TAG = "单发注册";
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
+    private Boolean charu=false;
+    private DenatorBaseinfo db_charu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -516,9 +523,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
             String denatorId = info.getDenatorId();
-
+            int duanNo = info.getDuanNo();
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
+            modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId, duan, duanNo,info);
         });
         this.isSingleReisher = 0;
     }
@@ -776,9 +783,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 int delay = info.getDelay();
                 String shellBlastNo = info.getShellBlastNo();
                 String denatorId = info.getDenatorId();
-
+                int duanNo = info.getDuanNo();
                 // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId);
+                modifyBlastBaseInfo(no, delay, shellBlastNo,denatorId, duan, duanNo,info);
             });
         });
     }
@@ -987,7 +994,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         edit_end_entproduceDate_ed.clearFocus();
         edit_end_entAT1Bit_ed.clearFocus();
         edit_end_entboxNoAndSerial_ed.clearFocus();
-
+        etTk.clearFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
@@ -1176,7 +1183,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     /**
      * 修改雷管延期 弹窗
      */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String denatorId, final int duan, final int duanNo,DenatorBaseinfo info) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -1188,7 +1195,17 @@ public class ReisterMainPage_line extends SerialPortActivity {
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton("插入孔", (dialog, which) -> {
+            if(info.getFanzhuan()!=null && info.getFanzhuan().equals("0")){
+                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+            }else {
+                //插入方法
+                getSupportActionBar().setTitle("正在插入雷管");
+                db_charu=info;
+                charu=true;
+            }
+
+        });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
 
@@ -1493,6 +1510,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        int delay_start = delay;
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -1517,20 +1535,37 @@ public class ReisterMainPage_line extends SerialPortActivity {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
             return -1;
         }
+
+        int tk_num=0;
+        if(etTk.getText().toString()!=null&&etTk.getText().toString().length()>0){
+            tk_num= Integer.parseInt(etTk.getText().toString());
+        }
+
         if (delay_set.equals("f1")) {//获取最大延时有问题
             if (maxNo == 0) {
                 delay = delay + start;
             } else {
-                delay = delay + f1;
+                if(flag_tk){
+                    delay = delay + f1*(tk_num+1);
+                }else {
+                    delay = delay + f1;
+                }
+
             }
         } else if (delay_set.equals("f2")) {
             if (maxNo == 0) {
                 delay = delay + start;
             } else {
-                delay = delay + f2;
+                if(flag_tk){
+                    delay = delay + f2*(tk_num+1);
+                }else {
+                    delay = delay + f2;
+                }
             }
         }
+
         int duanNUM =getDuanNo(duan,mRegion);//也得做区域区分
+        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan, mRegion);//获取该区域 最大序号的延时
 
         if (!zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
             maxNo++;
@@ -1565,11 +1600,66 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
             denatorBaseinfo.setDuan(duan);
-            denatorBaseinfo.setDuanNo( (duanNUM + 1));
+            denatorBaseinfo.setDuanNo((duanNo2 + 1) );
+            if (!flag_t1) {//同孔
+                denatorBaseinfo.setDuanNo((duanNo2) );
+                denatorBaseinfo.setDelay(delay_start);
+            }
+            int delay_add=0;
+            if(charu){
+                if (!flag_t1) {//同孔
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() );
+                    denatorBaseinfo.setDelay(db_charu.getDelay());
+                }else {
+
+                    delay=db_charu.getDelay();
+                    if (delay_set.equals("f1")) {//获取最大延时有问题
+                        delay_add=f1;
+                        if (maxNo == 0) {
+                            delay = delay + start;
+                        } else {
+                            if(flag_tk){
+                                delay = delay + f1*(tk_num+1);
+                            }else {
+                                delay = delay + f1;
+                            }
+                        }
+                    } else if (delay_set.equals("f2")) {
+                        delay_add=f2;
+                        if (maxNo == 0) {
+                            delay = delay + start;
+                        } else {
+                            if(flag_tk){
+                                delay = delay + f2*(tk_num+1);
+                            }else {
+                                delay = delay + f2;
+                            }
+                        }
+                    }
+
+                    if(flag_t1&&delay==db_charu.getDelay()){
+                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
+                        return -1;
+                    }
+                    denatorBaseinfo.setDelay(delay);
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
+                }
+
+                Utils.charuData(mRegion,db_charu,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                int xuhao =db_charu.getBlastserial()+1;
+                int konghao = Integer.parseInt(db_charu.getSithole())+1;
+                denatorBaseinfo.setBlastserial(xuhao);
+                denatorBaseinfo.setSithole(konghao + "");
+                denatorBaseinfo.setDuan(db_charu.getDuan());
+
+                charu=false;
+            }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             //向数据库插入数据
         }
+
+
         //更新每段雷管数量
         Message msg = new Message();
         msg.arg1 = duan;
@@ -1746,11 +1836,15 @@ public class ReisterMainPage_line extends SerialPortActivity {
         dialog.show();
     }
 
+    int flag1 = 0;
+    int flag2 = 0;
+    boolean flag_t1 = true;//同孔标志
+    boolean flag_tk = false;//跳孔标志
     @SuppressLint("NonConstantResourceId")
     @OnClick({R.id.btn_f1, R.id.btn_f2, R.id.btn_singleReister, R.id.btn_LookHistory,
             R.id.btn_setdelay, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed,
             R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2,
-            R.id.setDelayTime_startDelaytime, R.id.btn_addDelay,
+            R.id.setDelayTime_startDelaytime, R.id.btn_addDelay, R.id.btn_tk_F1, R.id.btn_tk,
             R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3,
             R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.re_btn_f8, R.id.re_btn_f9, R.id.re_btn_f10, R.id.re_btn_f11, R.id.re_btn_f12, R.id.re_btn_f13,
@@ -1763,7 +1857,31 @@ public class ReisterMainPage_line extends SerialPortActivity {
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
-
+            case R.id.btn_tk:
+                if(etTk.getText().length()==0){
+                    show_Toast("请输入跳孔个数");
+                    return;
+                }
+                hideInputKeyboard();
+                btnTk.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (!flag_tk) {
+                    btnTk.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_tk = true;
+                } else {
+                    btnTk.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_tk = false;
+                }
+                break;
+            case R.id.btn_tk_F1:
+                btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_t1) {
+                    btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_t1 = false;
+                } else {
+                    btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_t1 = true;
+                }
+                break;
             case R.id.btn_f1:
 
                 hideInputKeyboard();
@@ -2712,7 +2830,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 for (int i = 1; i < 21; i++) {
                     showDuanSum(i);
                 }
+                duan=1;
                 MmkvUtils.savecode("duan", 1);
+                btnAddDelay.setText("段位:" + duan);
                 return true;
 
             default:

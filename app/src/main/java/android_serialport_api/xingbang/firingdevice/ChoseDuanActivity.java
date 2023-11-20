@@ -1185,6 +1185,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
                             DenatorBaseinfo lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
                             Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getShellBlastNo());
                             lg.setDelay(lg2.getDelay());
+                            if(list2.get(i - 1).getDuanNo()==lg2.getDuanNo()){
+
+                            }
                             lg.setDuanNo(lg2.getDuanNo());
                         } else {//不包含
                             Log.e(TAG, "list_delay.get(0): " + list_delay.get(0));

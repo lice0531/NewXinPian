@@ -615,6 +615,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     break;
+                case 1006:
+                    MmkvUtils.savecode("duan", 1);
+                    duan=1;
+                    btnAddDelay.setText("段位:" + duan);
+                    break;
 
 
                 default:
@@ -1810,6 +1815,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() );
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             }else {
+
                 delay=db_charu.getDelay();
                 if (delay_set.equals("f1")) {//获取最大延时有问题
                     delay_add=f1;
@@ -1821,7 +1827,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }else {
                             delay = delay + f1;
                         }
-
                     }
                 } else if (delay_set.equals("f2")) {
                     delay_add=f2;
@@ -1836,13 +1841,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
 
-            Utils.charuData(mRegion,db_charu,flag_t1,delay_add);//插入雷管的后面所有雷管序号+1
-            int xuhao =db_charu.getBlastserial()+1;
-            int konghao = Integer.parseInt(db_charu.getSithole())+1;
-            denatorBaseinfo.setBlastserial(xuhao);
-            denatorBaseinfo.setSithole(konghao + "");
-            denatorBaseinfo.setDuan(db_charu.getDuan());
-
                 if(flag_t1&&delay==db_charu.getDelay()){
                     show_Toast("没选同孔,不能设置跟选中雷管相同延时");
                     return -1;
@@ -1850,6 +1848,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setDelay(delay);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
             }
+
+            Utils.charuData(mRegion,db_charu,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+            int xuhao =db_charu.getBlastserial()+1;
+            int konghao = Integer.parseInt(db_charu.getSithole())+1;
+            denatorBaseinfo.setBlastserial(xuhao);
+            denatorBaseinfo.setSithole(konghao + "");
+            denatorBaseinfo.setDuan(db_charu.getDuan());
 
             charu=false;
         }
@@ -3528,16 +3533,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.item_5:
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+
                 // 显示提示
                 show_Toast("已选择 区域" + mRegion);
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
+
                 //初始化雷管数量
                 for (int i = 1; i < 21; i++) {
                     showDuanSum(i);
                 }
+                duan=1;
                 MmkvUtils.savecode("duan", 1);
+                btnAddDelay.setText("段位:" + duan);
                 return true;
 
             default:

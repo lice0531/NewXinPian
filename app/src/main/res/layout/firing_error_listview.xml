@@ -33,7 +33,7 @@
             android:background="@drawable/textview_border"
             style="@style/alltextstyle"
             android:textSize="15sp"
-            android:text="段号" />
+            android:text="孔号" />
         <TextView
             android:id="@+id/X_item_quyu"
             android:layout_width="0dp"
