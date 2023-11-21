@@ -1507,9 +1507,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
         int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         // 获取 该区域 最大序号
-        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(duan,mRegion);
         // 获取 该区域 最大序号的延时
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan,mRegion);
         int delay_start = delay;
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {

@@ -1105,27 +1105,28 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                     GreenDaoMaster master = new GreenDaoMaster();
                     DaoSession session = getDaoSession();
-                    List<DenatorBaseinfo> list;//翻转前
+                    List<DenatorBaseinfo> list_up;//翻转前
                     List<DenatorBaseinfo> list2;//翻转后
                     String strSql;//除了序号最小的所有重复雷管
                     String strSql2;//序号最小的重复雷管
                     String strSql3;//所有不重复延时
+                    String strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+" group by duanNo order by blastserial desc";//所有不重复孔号
                     String sql;//所有延时列表
                     Log.e(TAG, "fz: "+fz);
                     if(fz==0){//翻转
-                        list = master.queryLeiguanDuan(duan, mRegion);
+                        list_up = master.queryLeiguanDuan(duan, mRegion);
                         list2 = master.queryLeiguanDuan(duan, mRegion);
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " group by delay order by blastserial desc";
-                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan + " group by delay order by delay desc";//+" order by htbh "
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by blastserial desc";
+                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion+ " group by delay order by delay desc";//+" order by htbh "
 
                     }else {//复位
-                        list = master.queryLeiguanDuan(duan, mRegion,"0");
+                        list_up = master.queryLeiguanDuan(duan, mRegion,"0");
                         list2 = master.queryLeiguanDuan(duan, mRegion,"0");
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " and fanzhuan = 0 group by delay order by blastserial desc";
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by blastserial desc";
                         sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay desc";//+" order by htbh "
 
                     }
@@ -1158,18 +1159,29 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         }
                         cursor3.close();
                     }
+                    List<Integer> list_duanNo = new ArrayList<>();//所有不重复延时
 
-                    Log.e(TAG, duan + "段 雷管list: " + list.toString());
+                    Cursor cursor4 = session.getDatabase().rawQuery(strSql4, null);
+                    if (cursor4 != null) {
+                        while (cursor4.moveToNext()) {
+                            int duanNo = cursor4.getInt(0);
+                            list_duanNo.add(duanNo);
+                        }
+                        cursor4.close();
+                    }
+
+                    Log.e(TAG, duan + "段 雷管list: " + list_up.toString());
                     Log.e(TAG, "除了序号最小的所有重复雷管list3: " + list3.toString());
                     Log.e(TAG, "序号最小的重复雷管list4: " + list4.toString());
                     Log.e(TAG, "list_delay: " + list_delay.toString());
+                    Log.e(TAG, "list_duanNo: " + list_duanNo.toString());
 //                    Log.e(TAG, "判断: "+list.contains(list3.get(0)) );
 //                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
                     //遍历List并比较元素是否相等，判断是否包含"apple"元素
 
-                    for (int i = 0; i < list.size(); i++) {
+                    for (int i = 0; i < list_up.size(); i++) {
                         Log.e(TAG, "开始----------------: ");
-                        DenatorBaseinfo lg = list.get(i);
+                        DenatorBaseinfo lg = list_up.get(i);
                         Log.e(TAG, "第" + i + "发管: " + lg.toString());
 
                         boolean contains = false;//包含在 除了序号最小的所有重复雷管
@@ -1179,23 +1191,44 @@ public class ChoseDuanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
+                        boolean contains2 = false;//包含在 序号最小的所有重复雷管
+                        for (DenatorBaseinfo db : list4) {
+                            if (db.getId().equals(lg.getId())) {
+                                contains2 = true;
+                                break;
+                            }
+                        }
+
                         Log.e(TAG, "是否 包含在 除了序号最小的所有重复雷管: " + contains);//list3是否包含当前雷管
                         Log.e(TAG, "最大序号的(i-1)" + (i - 1));
                         if (contains) {//包含在 除了序号最小的所有重复雷管
                             DenatorBaseinfo lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
                             Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getShellBlastNo());
+                            Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getDuanNo());
+                            Log.e(TAG, "最大序号的list2.get(i)" + list2.get(i).getShellBlastNo());
+                            Log.e(TAG, "最大序号的list2.get(i)" + list2.get(i).getDuanNo());
+                            Log.e(TAG, "最大序号的lg2.getDuanNo()" + lg2.getDuanNo());
                             lg.setDelay(lg2.getDelay());
-                            if(list2.get(i - 1).getDuanNo()==lg2.getDuanNo()){
 
+                            if(list2.get(i - 1).getDuanNo()==list2.get(i).getDuanNo()){//同孔,获取前一发孔号
+                                lg.setDuanNo(lg2.getDuanNo());
+                                Log.e(TAG, "翻转最终孔号1:" + lg2.getDuanNo());
+                            }else {//不同孔,在前一发的基础上加1
+                                lg.setDuanNo(list_duanNo.get(0));
+                                Log.e(TAG, "翻转最终孔号2:" + list_duanNo.get(0));
+                                list_duanNo.remove(0);
                             }
-                            lg.setDuanNo(lg2.getDuanNo());
+
                         } else {//不包含
-                            Log.e(TAG, "list_delay.get(0): " + list_delay.get(0));
+                            Log.e(TAG, "是否 包含在 序号最小的所有重复雷管: " + contains2);//list4是否包含当前雷管
+                            Log.e(TAG, "翻转最终孔号3:" + list_duanNo.get(0));
+                            lg.setDuanNo(list_duanNo.get(0));
                             lg.setDelay((Integer) list_delay.get(0).get("delay"));
-                            lg.setDuanNo(Integer.parseInt(list_delay.get(0).get("duanNo").toString()));
+                            Log.e(TAG, "所有不重复延时-list_delay.get(0): " + list_delay.get(0));
+
                             list_delay.remove(0);
+                            list_duanNo.remove(0);
                         }
-//                        lg.setDuanNo(list2.get(list.size() - 1 - i).getDuanNo());
 
                         lg.setFanzhuan(fz + "");
 

@@ -711,11 +711,11 @@ public class GreenDaoMaster {
         if (cursor != null && cursor.moveToNext()) {
             duanNo = cursor.getInt(0);
             cursor.close();
-            Log.e("getPieceMaxNumDelay", "获取最大序号: "+duanNo);
+            Log.e("getPieceMaxNumDelay", "获取最大序号1: "+duanNo);
             return duanNo;
         }else {
-            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
-            return 0;
+            Log.e("getPieceMaxNumDelay", "获取最大序号2 的延时: 1");
+            return 1;
         }
 //        // 倒叙查询
 //        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
