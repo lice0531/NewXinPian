@@ -100,9 +100,10 @@ public class GreenDaoMaster {
      *
      * @return
      */
-    public DenatorBaseinfo querylgMaxduanNo(int duanNo) {
+    public DenatorBaseinfo querylgMaxduanNo(int duanNo,String piece) {
         List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
         return list_lg.get(0);
     }

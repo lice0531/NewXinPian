@@ -55,7 +55,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="段号"
+            android:text="孔号"
             style="@style/alltextstyle"/>
         <TextView
             android:id="@+id/tv_duan"

@@ -1191,17 +1191,19 @@ public class ReisterMainPage_line extends SerialPortActivity {
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
         EditText et_delay = view.findViewById(R.id.delaytime);
-
+        TextView tv_duan = view.findViewById(R.id.tv_duan);
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
+        tv_duan.setText(duan + "-"+duanNo);
         builder.setNegativeButton("插入孔", (dialog, which) -> {
             if(info.getFanzhuan()!=null && info.getFanzhuan().equals("0")){
                 show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
             }else {
                 //插入方法
                 getSupportActionBar().setTitle("正在插入雷管");
-                db_charu=info;
+                GreenDaoMaster master = new GreenDaoMaster();
+                db_charu=master.querylgMaxduanNo(info.getDuanNo(),mRegion);
                 charu=true;
             }
 

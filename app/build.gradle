@@ -112,6 +112,7 @@ dependencies {
 
     // Spinner(下拉列表)
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
+//    implementation "androidx.core:core-splashscreen:1.0.0"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
 
     //androidx项目(UI框架)

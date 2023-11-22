@@ -1390,7 +1390,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 //插入方法
                 getSupportActionBar().setTitle("正在插入雷管");
                 GreenDaoMaster master = new GreenDaoMaster();
-                db_charu=master.querylgMaxduanNo(info.getDuanNo());
+                db_charu=master.querylgMaxduanNo(info.getDuanNo(),mRegion);
+                Log.e(TAG, "选中插入的雷管: "+db_charu.getShellBlastNo()+" 延时:"+db_charu.getDelay() );
                 charu=true;
             }
 
@@ -1816,6 +1817,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         int delay_add=0;
         if(charu){
+            Log.e(TAG, "插入孔前一发延时: "+db_charu.getDelay() );
             if (!flag_t1) {//同孔
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() );
                 denatorBaseinfo.setDelay(db_charu.getDelay());
