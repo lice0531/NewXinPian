@@ -95,6 +95,17 @@ public class GreenDaoMaster {
     public DenatorBaseinfo querylg(String gkm) {
         return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm)).unique();
     }
+    /**
+     * 查询所有雷管
+     *
+     * @return
+     */
+    public DenatorBaseinfo querylgMaxduanNo(int duanNo) {
+        List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
+        return list_lg.get(0);
+    }
 
     public List<Project> queryProjectToProject_name(String project_name) {
         QueryBuilder<Project> result = mProjectDao.queryBuilder();
@@ -643,22 +654,36 @@ public class GreenDaoMaster {
     }
 
     /**
-     * 获取 该区域 最大序号 的延时
+     * 获取 该区域 最大的延时
      *
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxNumDelay(String piece) {
-        // 倒叙查询
-        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
+//        // 倒叙查询
+//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
+//
+//        // 如果有数据
+//        if (mList.size() > 0) {
+//            // 第一个雷管数据 该区域 最大序号 的延时
+//            int delay = mList.get(0).getDelay();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+//            return delay;
+//            // 如果没数据
+//        } else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
 
-        // 如果有数据
-        if (mList.size() > 0) {
-            // 第一个雷管数据 该区域 最大序号 的延时
-            int delay = mList.get(0).getDelay();
-            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+        int delay;
+        String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: "+delay);
             return delay;
-            // 如果没数据
-        } else {
+        }else {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
         }

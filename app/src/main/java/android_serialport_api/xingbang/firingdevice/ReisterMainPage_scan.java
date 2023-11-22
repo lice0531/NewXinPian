@@ -1389,7 +1389,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }else {
                 //插入方法
                 getSupportActionBar().setTitle("正在插入雷管");
-                db_charu=info;
+                GreenDaoMaster master = new GreenDaoMaster();
+                db_charu=master.querylgMaxduanNo(info.getDuanNo());
                 charu=true;
             }
 

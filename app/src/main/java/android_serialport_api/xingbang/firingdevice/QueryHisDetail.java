@@ -863,7 +863,8 @@ public class QueryHisDetail extends BaseActivity {
 
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
-        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
+//        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
+        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
