@@ -1390,7 +1390,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 //插入方法
                 getSupportActionBar().setTitle("正在插入雷管");
                 GreenDaoMaster master = new GreenDaoMaster();
-                db_charu=master.querylgMaxduanNo(info.getDuanNo(),mRegion);
+                db_charu=master.querylgMaxduanNo(info.getDuanNo(),info.getDuan(),mRegion);
+                Log.e(TAG, "选中插入的雷管: "+info.getShellBlastNo()+" 延时:"+info.getDelay() );
                 Log.e(TAG, "选中插入的雷管: "+db_charu.getShellBlastNo()+" 延时:"+db_charu.getDelay() );
                 charu=true;
             }
@@ -1402,12 +1403,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             // TODO 开启进度条
             runPbDialog();
             new Thread(() -> {
-                // 删除某一发雷管
+                int a = new GreenDaoMaster().querylgNum(info.getDuanNo(),info.getDuan(),mRegion);
+                if(a==1){
+                    //查找后一发雷管
+                    DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()+1,info.getDuan(),mRegion);
+                    if(denatorBaseinfo!=null){//
+                        int delay_add = denatorBaseinfo.getDelay()-info.getDelay();
+                        Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                    }
+                }
 
+                // 删除某一发雷管
                 int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
-//                Utils.deleteData(mRegion);//重新排序雷管
+                Utils.deleteData(mRegion);//重新排序雷管
                 //更新每段雷管数量
                 Message msg = new Message();
                 msg.arg1 = duan_guan;

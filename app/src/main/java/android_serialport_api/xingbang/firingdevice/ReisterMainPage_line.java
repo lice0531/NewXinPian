@@ -4,12 +4,10 @@ package android_serialport_api.xingbang.firingdevice;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -24,7 +22,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -51,7 +48,6 @@ import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
-import android_serialport_api.xingbang.custom.MyRecyclerView;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.SerialPortActivity;
@@ -67,7 +63,6 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -1203,7 +1198,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 //插入方法
                 getSupportActionBar().setTitle("正在插入雷管");
                 GreenDaoMaster master = new GreenDaoMaster();
-                db_charu=master.querylgMaxduanNo(info.getDuanNo(),mRegion);
+                db_charu=master.querylgMaxduanNo(info.getDuanNo(),info.getDuan(),mRegion);
                 charu=true;
             }
 
@@ -1214,11 +1209,19 @@ public class ReisterMainPage_line extends SerialPortActivity {
             // TODO 开启进度条
             runPbDialog();
             new Thread(() -> {
+                //查找后一发雷管
+                DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()+1,info.getDuan(),mRegion);
+                if(denatorBaseinfo!=null){//
+                    int delay_add = denatorBaseinfo.getDelay()-info.getDelay();
+                    Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                }
                 int duan1 = new GreenDaoMaster().getDuan(shellBlastNo);
                 Log.e("单发删除", "duan1: " + duan1);
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
+
+
                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 //更新每段雷管数量
                 Message msg = new Message();

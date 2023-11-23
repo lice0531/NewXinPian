@@ -96,16 +96,51 @@ public class GreenDaoMaster {
         return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm)).unique();
     }
     /**
-     * 查询所有雷管
+     * 查询X区域,X段最大序号雷管
      *
      * @return
      */
-    public DenatorBaseinfo querylgMaxduanNo(int duanNo,String piece) {
+    public DenatorBaseinfo querylgMaxduanNo(int duanNo,int duan,String piece) {
         List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
         return list_lg.get(0);
+    }
+
+    /**
+     * 查询X区域,X段最大序号雷管
+     *
+     * @return
+     */
+    public int querylgNum(int duanNo,int duan,String piece) {
+        List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
+        return list_lg.size();
+    }
+
+    /**
+     * 查询X区域,X段后一发雷管
+     *
+     * @return
+     */
+    public DenatorBaseinfo querylgduanNo(int duanNo,int duan,String piece) {
+        List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
+        Log.e("后一发雷管", "list_lg.size: "+list_lg.size() );
+        if(list_lg!=null&&list_lg.size()==1){
+            return list_lg.get(0);
+        }else {
+            return null;
+        }
+
     }
 
     public List<Project> queryProjectToProject_name(String project_name) {
