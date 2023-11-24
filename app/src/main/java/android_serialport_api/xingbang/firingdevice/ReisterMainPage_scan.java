@@ -1388,7 +1388,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
             }else {
                 //插入方法
-                getSupportActionBar().setTitle("正在插入雷管");
+                getSupportActionBar().setTitle("正在插入孔");
                 GreenDaoMaster master = new GreenDaoMaster();
                 db_charu=master.querylgMaxduanNo(info.getDuanNo(),info.getDuan(),mRegion);
                 Log.e(TAG, "选中插入的雷管: "+info.getShellBlastNo()+" 延时:"+info.getDelay() );
