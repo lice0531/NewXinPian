@@ -1650,7 +1650,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
                 }
 
-                Utils.charuData(mRegion,db_charu,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                Utils.charuData(mRegion,db_charu,flag_t1,delay_add,db_charu.getDuan());//插入雷管的后面所有雷管序号+1
                 int xuhao =db_charu.getBlastserial()+1;
                 int konghao = Integer.parseInt(db_charu.getSithole())+1;
                 denatorBaseinfo.setBlastserial(xuhao);
