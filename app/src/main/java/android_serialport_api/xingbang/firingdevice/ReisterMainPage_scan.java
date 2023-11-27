@@ -1858,10 +1858,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
 
-                if(flag_t1&&delay==db_charu.getDelay()){
-                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-                    return -1;
-                }
+//                if(flag_t1&&delay==db_charu.getDelay()){
+//                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
+//                    return -1;
+//                }
                 denatorBaseinfo.setDelay(delay);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
             }
@@ -2034,10 +2034,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
 
-                if(flag_t1&&delay==db_charu.getDelay()){
-                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-                    return -1;
-                }
+//                if(flag_t1&&delay==db_charu.getDelay()){
+//                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
+//                    return -1;
+//                }
                 denatorBaseinfo.setDelay(delay);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
             }
@@ -2209,10 +2209,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                     }
 
-                    if(flag_t1&&delay==db_charu.getDelay()){
-                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-                        return -1;
-                    }
+//                    if(flag_t1&&delay==db_charu.getDelay()){
+//                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
+//                        return -1;
+//                    }
                     denatorBaseinfo.setDelay(delay);
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo()+1);
                 }

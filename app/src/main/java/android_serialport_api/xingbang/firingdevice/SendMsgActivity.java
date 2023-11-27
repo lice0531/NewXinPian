@@ -304,7 +304,7 @@ public class SendMsgActivity extends BaseActivity {
             denator.setDenatorId(a[0]);
             denator.setShellBlastNo(a[2]);
             denator.setDuan(Integer.parseInt(duan[0]));
-            denator.setDuanNo(Integer.parseInt(a[3]));
+            denator.setDuanNo(Integer.parseInt(duan[1]));
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormatLong(new Date()));
             denator.setStatusCode("02");
@@ -392,7 +392,7 @@ public class SendMsgActivity extends BaseActivity {
                             }
                             for (int i = 0; i < list_uid.size(); i++) {
 //                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
-                                sb.append((list_uid.get(i).getDenatorId() + "").replace("null", "无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs() + "").replace("null", "无") + ",");
+                                sb.append((list_uid.get(i).getDenatorId() + "").replace("null", "无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" +list_uid.get(i).getDuan()+"-"+ list_uid.get(i).getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs() + "").replace("null", "无") + ",");
 //                    } else {
 //                        sb.append(list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ",");
 //                    }
