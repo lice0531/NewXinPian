@@ -1736,7 +1736,7 @@ public class Utils {
                 DenatorBaseinfo lg2;
                 if(i>0){
                      lg2 = new GreenDaoMaster().querylg(list_lg.get(i-1).getShellBlastNo());
-                     if(list_lg.get(i).getDelay()==lg2.getDelay()){
+                     if(list_lg.get(i).getDelay()==lg2.getDelay()&&list_lg.get(i).getDuanNo()==lg2.getDuanNo()){//如果和前一发延时一致,那么就设置
                          denatorBaseinfo.setDuanNo(lg2.getDuanNo() );
                      }else {
                          denatorBaseinfo.setDuanNo((lg2.getDuanNo() + 1));

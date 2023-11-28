@@ -267,6 +267,7 @@ public class SendMsgActivity extends BaseActivity {
     public boolean checkRepeatDenatorId(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
+        Log.e("检查重复的芯片码", "数量: "+denatorBaseinfo.size() );
         if (denatorBaseinfo.size() > 0) {
             return true;
         } else {
@@ -326,14 +327,14 @@ public class SendMsgActivity extends BaseActivity {
     }
 
     /**
-     * 检查重复的数据
-     *
+     * 检查重复的管壳码
      * @param shellNo
      * @return
      */
     public boolean checkRepeatShellNo(String shellNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatShellNo(shellNo);
+        Log.e("检查重复的管壳码", "重复数量: "+list_lg.size() );
         return list_lg.size() > 0;
     }
 

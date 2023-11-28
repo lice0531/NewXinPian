@@ -1118,7 +1118,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         list2 = master.queryLeiguanDuan(duan, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by blastserial desc";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by id desc";
                         sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion+ " group by delay order by delay desc";//+" order by htbh "
                         strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+" group by duanNo order by duanNo desc";//所有不重复孔号
                     }else {//复位
@@ -1126,9 +1126,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         list2 = master.queryLeiguanDuan(duan, mRegion,"0");
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by blastserial desc";
-                        sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay desc";//+" order by htbh "
-                        strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+ " and fanzhuan = 0  group by duanNo order by duanNo asc";//所有不重复孔号
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by id asc";
+                        sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay asc";//+" order by htbh "
+                        strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+ " and fanzhuan = 0  group by duanNo order by duanNo desc";//所有不重复孔号
                     }
 //                    list_delay.clear();
 //                    Cursor cursor = session.getDatabase().rawQuery(sql, null);
@@ -1170,8 +1170,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         cursor4.close();
                     }
 
-                    Log.e(TAG, duan + "段 雷管list: " + list_up.toString());
-                    Log.e(TAG, "翻转后的列表: " + list2.toString());
+                    Log.e(TAG, duan + "段 雷管list_up: " + list_up.toString());
+                    Log.e(TAG, "翻转后的列表list2: " + list2.toString());
                     Log.e(TAG, "除了序号最小的所有重复雷管list3: " + list3.toString());
                     Log.e(TAG, "序号最小的重复雷管list4: " + list4.toString());
                     Log.e(TAG, "list_delay: " + list_delay.toString());
@@ -1201,7 +1201,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         }
 
                         Log.e(TAG, "是否 包含在 除了序号最小的所有重复雷管: " + contains);//list3是否包含当前雷管
-                        Log.e(TAG, "最大序号的(i-1)" + (i - 1));
+                        Log.e(TAG, "最大序号的(i-1)=" + (i - 1));
                         if (contains) {//包含在 除了序号最小的所有重复雷管  list2
                             DenatorBaseinfo lg2;
                             if(i==0){
@@ -1218,7 +1218,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                             Log.e(TAG, "最大序号的lg2.getDuanNo()" + lg2.getDuanNo());
                             lg.setDelay(lg2.getDelay());
 
-                            if(list2.get(i - 1).getDuanNo()==list2.get(i).getDuanNo()){//同孔,获取前一发孔号
+                            if(i!=0&&list2.get(i - 1).getDuanNo()==list2.get(i).getDuanNo()){//同孔,获取前一发孔号
                                 lg.setDuanNo(lg2.getDuanNo());
                                 Log.e(TAG, "翻转最终孔号1:" + lg2.getDuanNo());
                             }else {//不同孔,在前一发的基础上加1
@@ -1228,13 +1228,13 @@ public class ChoseDuanActivity extends AppCompatActivity {
                             }
 
                         } else {//不包含
-                            Log.e(TAG, "是否 包含在 序号最小的所有重复雷管: " + contains2);//list4是否包含当前雷管
+                            Log.e(TAG, "是否 包含在 序号最小的所有重复雷管2: " + contains2);//list4是否包含当前雷管
                             Log.e(TAG, "翻转最终孔号3:" + list_duanNo.get(0));
                             Log.e(TAG, "所有不重复延时-list_delay.get(0): " + list_delay.get(0));
                             lg.setDuanNo(list_duanNo.get(0));
                             lg.setDelay((Integer) list_delay.get(0).get("delay"));
 
-
+                            //清除list第一条数据
                             list_delay.remove(0);
                             list_duanNo.remove(0);
                         }
