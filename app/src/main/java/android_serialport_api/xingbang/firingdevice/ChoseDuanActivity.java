@@ -1116,18 +1116,18 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     if(fz==0){//翻转
                         list_up = master.queryLeiguanDuan(duan, mRegion);
                         list2 = master.queryLeiguanDuan(duan, mRegion);
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by id desc";
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
                         sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion+ " group by delay order by delay desc";//+" order by htbh "
                         strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+" group by duanNo order by duanNo desc";//所有不重复孔号
                     }else {//复位
                         list_up = master.queryLeiguanDuan(duan, mRegion,"0");
                         list2 = master.queryLeiguanDuan(duan, mRegion,"0");
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by id asc";
-                        sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay asc";//+" order by htbh "
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by blastserial asc";
+                        sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay asc";//
                         strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+ " and fanzhuan = 0  group by duanNo order by duanNo desc";//所有不重复孔号
                     }
 //                    list_delay.clear();
@@ -1229,6 +1229,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                         } else {//不包含
                             Log.e(TAG, "是否 包含在 序号最小的所有重复雷管2: " + contains2);//list4是否包含当前雷管
+                            Log.e(TAG, "翻转最终孔号3:" + list_duanNo.size());
                             Log.e(TAG, "翻转最终孔号3:" + list_duanNo.get(0));
                             Log.e(TAG, "所有不重复延时-list_delay.get(0): " + list_delay.get(0));
                             lg.setDuanNo(list_duanNo.get(0));

@@ -1898,7 +1898,7 @@ public class Utils {
                 lg.setSithole((Integer.parseInt(sithole)-1)+"");
                 lg.setShellBlastNo(shellBlastNo);
                 lg.setDenatorId(denatorId);
-                if(duan_in==duan){
+                if(duan_in==duan){//相同段延时缩短
                     lg.setDelay(delay-delay_add);
                 }else {
                     lg.setDelay(delay);

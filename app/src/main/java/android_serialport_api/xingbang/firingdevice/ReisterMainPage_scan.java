@@ -1399,33 +1399,48 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
+            if(info.getFanzhuan()!=null && info.getFanzhuan().equals("0")){
+                show_Toast("当前雷管已翻转,请恢复后再删除雷管");
+            }else {
+                // TODO 开启进度条
+                runPbDialog();
+                new Thread(() -> {
 
-            // TODO 开启进度条
-            runPbDialog();
-            new Thread(() -> {
-                int a = new GreenDaoMaster().querylgNum(info.getDuanNo(),info.getDuan(),mRegion);
-                if(a==1){
-                    //查找后一发雷管
-                    DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()+1,info.getDuan(),mRegion);
-                    if(denatorBaseinfo!=null){//
-                        int delay_add = denatorBaseinfo.getDelay()-info.getDelay();
-                        Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                    int a = new GreenDaoMaster().querylgNum(info.getDuanNo(),info.getDuan(),mRegion);
+                    if(a==1){
+                        if(info.getDuanNo()==1){//该段首发雷管,跟后面对比
+                            //查找后一发雷管()
+                            DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()+1,info.getDuan(),mRegion);
+                            if(denatorBaseinfo!=null){//
+                                int delay_add = denatorBaseinfo.getDelay()-info.getDelay();
+                                Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                            }
+                        }else {
+                            //查找前一发雷管()
+                            DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()-1,info.getDuan(),mRegion);
+                            if(denatorBaseinfo!=null){//
+                                int delay_add = info.getDelay()-denatorBaseinfo.getDelay();
+                                Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                            }
+                        }
+
                     }
-                }
 
-                // 删除某一发雷管
-                int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
-                new GreenDaoMaster().deleteDetonator(shellBlastNo);
-                Utils.writeRecord("--删除雷管:" + shellBlastNo);
-                Utils.deleteData(mRegion);//重新排序雷管
-                //更新每段雷管数量
-                Message msg = new Message();
-                msg.arg1 = duan_guan;
-                mHandler_showNum.sendMessage(msg);
-                // 区域 更新视图
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                pb_show = 0;
-            }).start();
+                    // 删除某一发雷管
+                    int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
+                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                    Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                    Utils.deleteData(mRegion);//重新排序雷管
+                    //更新每段雷管数量
+                    Message msg = new Message();
+                    msg.arg1 = duan_guan;
+                    mHandler_showNum.sendMessage(msg);
+                    // 区域 更新视图
+                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                    pb_show = 0;
+                }).start();
+            }
+
 
         });
         builder.setPositiveButton("确定", (dialog, which) -> {
@@ -1450,6 +1465,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 Utils.saveFile();
             }
             dialog.dismiss();
+
         });
 
 

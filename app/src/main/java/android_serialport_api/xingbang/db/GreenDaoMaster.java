@@ -890,7 +890,7 @@ public class GreenDaoMaster {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
-                .orderAsc(DenatorBaseinfoDao.Properties.DuanNo)
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
     /***
@@ -903,7 +903,7 @@ public class GreenDaoMaster {
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
                 .where(DenatorBaseinfoDao.Properties.Fanzhuan.eq(fz))
-                .orderAsc(DenatorBaseinfoDao.Properties.DuanNo)
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
 

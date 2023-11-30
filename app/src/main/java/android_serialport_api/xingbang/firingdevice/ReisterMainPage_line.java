@@ -1209,11 +1209,24 @@ public class ReisterMainPage_line extends SerialPortActivity {
             // TODO 开启进度条
             runPbDialog();
             new Thread(() -> {
-                //查找后一发雷管
-                DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()+1,info.getDuan(),mRegion);
-                if(denatorBaseinfo!=null){//
-                    int delay_add = denatorBaseinfo.getDelay()-info.getDelay();
-                    Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                int a = new GreenDaoMaster().querylgNum(info.getDuanNo(),info.getDuan(),mRegion);//判断该管是否是单孔
+                if(a==1){
+                    if(info.getDuanNo()==1){//该段首发雷管,跟后面对比
+                        //查找后一发雷管()
+                        DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()+1,info.getDuan(),mRegion);
+                        if(denatorBaseinfo!=null){//
+                            int delay_add = denatorBaseinfo.getDelay()-info.getDelay();
+                            Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                        }
+                    }else {
+                        //查找前一发雷管()
+                        DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo()-1,info.getDuan(),mRegion);
+                        if(denatorBaseinfo!=null){//
+                            int delay_add = info.getDelay()-denatorBaseinfo.getDelay();
+                            Utils.jianshaoData(mRegion,info,flag_t1,delay_add,duan);//插入雷管的后面所有雷管序号+1
+                        }
+                    }
+
                 }
                 int duan1 = new GreenDaoMaster().getDuan(shellBlastNo);
                 Log.e("单发删除", "duan1: " + duan1);
@@ -1254,6 +1267,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
                 Utils.saveFile();
             }
+            hideInputKeyboard();//隐藏焦点
             dialog.dismiss();
         });
         builder.show();
