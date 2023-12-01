@@ -394,12 +394,12 @@ public class XingbangMain extends BaseActivity {
         server_http = (String) MmkvUtils.getcode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 50);
-        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 68);
+        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 10);
+        ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 10);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.getcode("jiance_time", 28);
+        jiance_time = (int) MmkvUtils.getcode("jiance_time", 10);
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);

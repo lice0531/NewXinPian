@@ -642,7 +642,7 @@ public class FiringMainActivity extends SerialPortActivity {
         FiringMainActivity.stage = 0;
         writeVo = null;
         firstWaitCount = 2;
-        Wait_Count = 3;
+        Wait_Count = 1;
         firstCmdReFlag = 0;
         secondCmdFlag = 0;
         zeroCount = 0;
