@@ -606,16 +606,16 @@ public class XingbangMain extends BaseActivity {
                 long time2 = System.nanoTime();
                 Log.e(TAG, "time: "+time );
                 Log.e(TAG, "time2: "+time2 );
-                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                Log.e(TAG, "endTime: "+endTime );
-                if (time>0 && time - endTime < 180000  ) {//第二次启动时间不重置
-                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if(a<200){
-                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
-                        Log.e(TAG, "endTime: "+ a );
-                        return;
-                    }
-                }
+//                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+//                Log.e(TAG, "endTime: "+endTime );
+//                if (time>0 && time - endTime < 180000  ) {//第二次启动时间不重置
+//                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+//                    if(a<200){
+//                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
+//                        Log.e(TAG, "endTime: "+ a );
+//                        return;
+//                    }
+//                }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);//金建华
@@ -641,8 +641,8 @@ public class XingbangMain extends BaseActivity {
 //                        return;
 //                    }
 //                }
-                time = System.currentTimeMillis();
-                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+//                time = System.currentTimeMillis();
+//                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
 //                if (time - endTime < 180000) {//第二次启动时间不重置
 //                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
