@@ -137,6 +137,8 @@ public class GreenDaoMaster {
         Log.e("后一发雷管", "list_lg.size: "+list_lg.size() );
         if(list_lg!=null&&list_lg.size()==1){
             return list_lg.get(0);
+        }else if(list_lg.size()>1) {
+            return list_lg.get(list_lg.size()-1);
         }else {
             return null;
         }
