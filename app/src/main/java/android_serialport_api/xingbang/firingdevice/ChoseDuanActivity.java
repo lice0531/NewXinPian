@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.coder.vincent.smart_toast.SmartToast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1243,11 +1245,13 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         lg.setFanzhuan(fz + "");
 
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
+
                         Log.e(TAG, "结束----------------: ");
                     }
-
+                    show_Toast("翻转完成");
 //                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                     setBtnColor(duan);
+
                 }).create();
 
         dialog.show();
@@ -2038,5 +2042,17 @@ public class ChoseDuanActivity extends AppCompatActivity {
             }
         }
         return 3;
+    }
+
+    public void show_Toast(String text) {
+//		Utils.showToast(this,text,3000);
+        SmartToast.classic()
+                .config()
+                .messageColor(Color.RED)
+                .backgroundColorResource(R.color.toast_bg_color)
+                .messageSize(30f)//设置文本大小，单位sp，默认14sp
+                .messageBold(true)//设置文本为粗体，默认false
+                .apply()
+                .show(text);
     }
 }

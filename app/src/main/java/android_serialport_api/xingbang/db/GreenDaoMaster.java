@@ -676,7 +676,7 @@ public class GreenDaoMaster {
 
     public int getPieceMaxNum(int duan ,String piece) {
         // 倒叙查询
-        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
 
         // 如果有数据
         if (mList.size() > 0) {

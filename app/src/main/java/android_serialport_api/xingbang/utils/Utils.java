@@ -1754,6 +1754,60 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
+    public static void deleteData(String mRegion,int duan_del) {
+
+//        Log.e("排序雷管", "list_lg: " + list_lg.size());
+        for (int d = 1; d < 41; d++) {
+            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion,d);
+            for (int i = 0; i < list_lg.size(); i++) {
+                DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+                denatorBaseinfo.setId(list_lg.get(i).getId());
+                denatorBaseinfo.setBlastserial(list_lg.get(i).getBlastserial());
+                denatorBaseinfo.setSithole(list_lg.get(i).getSithole());
+                denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
+                denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
+                denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
+                denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
+                denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
+                denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
+                denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
+                denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
+                denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
+                denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
+                denatorBaseinfo.setWire(list_lg.get(i).getWire());
+                denatorBaseinfo.setName(list_lg.get(i).getName());
+                denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
+                denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
+                denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
+                denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
+                denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+                DenatorBaseinfo lg2;
+                if(list_lg.get(i).getDuan()==duan_del){//只重新排序对应段的雷管,其他段不变
+                    if(i>0){//从第二发开始,跟前一发对比延时
+                        lg2 = new GreenDaoMaster().querylg(list_lg.get(i-1).getShellBlastNo());
+                        if(list_lg.get(i).getDelay()==lg2.getDelay()&&list_lg.get(i).getDuanNo()==lg2.getDuanNo()){//如果和前一发延时一致,那么就设置
+                            denatorBaseinfo.setDuanNo(lg2.getDuanNo() );
+                        }else {
+                            denatorBaseinfo.setDuanNo((lg2.getDuanNo() + 1));
+                        }
+                    }else {
+                        denatorBaseinfo.setDuanNo(1);
+                    }
+                }else {
+                    denatorBaseinfo.setDuanNo(list_lg.get(i).getDuanNo());
+                }
+
+
+                getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+            }
+        }
+        deleteDataforXuHao(mRegion);
+    }
+
+
+    /**
+     * 重新排序雷管(序号)
+     */
     public static void deleteDataforXuHao(String mRegion) {
 
 //        Log.e("排序雷管", "list_lg: " + list_lg.size());
