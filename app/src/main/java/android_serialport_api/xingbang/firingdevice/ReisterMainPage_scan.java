@@ -427,7 +427,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private Handler mHandler_showNum = new Handler();//显示雷管数量
     private String duan_set = "0";//是duan1还是duan2
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
-
+    private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
     private String TAG = "扫码注册";
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
     private Boolean charu = false;
@@ -1399,7 +1399,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
-            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0")) {
+            int d = getFan(info.getDuan());
+//            if(d==0){
+//                show_Toast("当前雷管已翻转,请恢复后再删除雷管");
+//            }
+            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0")||d==0) {
                 show_Toast("当前雷管已翻转,请恢复后再删除雷管");
             } else {
                 // TODO 开启进度条
@@ -2826,166 +2830,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 initUI();
                 reNumF20.setBackgroundResource(R.drawable.textview_border_green);
                 break;
-            case R.id.re_et_nei1:
-                fanzhuan(1);
-                if (n1 == 1) {
-                    n1 = 0;
-                } else {
-                    n1 = 1;
-                }
-                break;
-            case R.id.re_et_nei2:
-                fanzhuan(2);
-                if (n2 == 1) {
-                    n2 = 0;
-                } else {
-                    n2 = 1;
-                }
-                break;
-            case R.id.re_et_nei3:
-                fanzhuan(3);
-                if (n3 == 1) {
-                    n3 = 0;
-                } else {
-                    n3 = 1;
-                }
-                break;
-            case R.id.re_et_nei4:
-                fanzhuan(4);
-                if (n4 == 1) {
-                    n4 = 0;
-                } else {
-                    n4 = 1;
-                }
-                break;
-            case R.id.re_et_nei5:
-                fanzhuan(5);
-                if (n5 == 1) {
-                    n5 = 0;
-                } else {
-                    n5 = 1;
-                }
-                break;
-            case R.id.re_et_nei6:
-                fanzhuan(6);
-                if (n6 == 1) {
-                    n6 = 0;
-                } else {
-                    n6 = 1;
-                }
-                break;
-            case R.id.re_et_nei7:
-                fanzhuan(7);
-                if (n7 == 1) {
-                    n7 = 0;
-                } else {
-                    n7 = 1;
-                }
-                break;
-            case R.id.re_et_nei8:
-                fanzhuan(8);
-                if (n8 == 1) {
-                    n8 = 0;
-                } else {
-                    n8 = 1;
-                }
-                break;
-            case R.id.re_et_nei9:
-                fanzhuan(9);
-                if (n9 == 1) {
-                    n9 = 0;
-                } else {
-                    n9 = 1;
-                }
-                break;
-            case R.id.re_et_nei10:
-                fanzhuan(10);
-                if (n10 == 1) {
-                    n10 = 0;
-                } else {
-                    n10 = 1;
-                }
-                break;
-            case R.id.re_et_nei11:
-                fanzhuan(11);
-                if (n11 == 1) {
-                    n11 = 0;
-                } else {
-                    n11 = 1;
-                }
-                break;
-            case R.id.re_et_nei12:
-                fanzhuan(12);
-                if (n12 == 1) {
-                    n12 = 0;
-                } else {
-                    n12 = 1;
-                }
-                break;
-            case R.id.re_et_nei13:
-                fanzhuan(13);
-                if (n13 == 1) {
-                    n13 = 0;
-                } else {
-                    n13 = 1;
-                }
-                break;
-            case R.id.re_et_nei14:
-                fanzhuan(14);
-                if (n14 == 1) {
-                    n14 = 0;
-                } else {
-                    n14 = 1;
-                }
-                break;
-            case R.id.re_et_nei15:
-                fanzhuan(15);
-                if (n15 == 1) {
-                    n15 = 0;
-                } else {
-                    n15 = 1;
-                }
-                break;
-            case R.id.re_et_nei16:
-                fanzhuan(16);
-                if (n16 == 1) {
-                    n16 = 0;
-                } else {
-                    n16 = 1;
-                }
-                break;
-            case R.id.re_et_nei17:
-                fanzhuan(17);
-                if (n17 == 1) {
-                    n17 = 0;
-                } else {
-                    n17 = 1;
-                }
-                break;
-            case R.id.re_et_nei18:
-                fanzhuan(18);
-                if (n18 == 1) {
-                    n18 = 0;
-                } else {
-                    n18 = 1;
-                }
-                break;
-            case R.id.re_et_nei19:
-                fanzhuan(19);
-                if (n19 == 1) {
-                    n19 = 0;
-                } else {
-                    n19 = 1;
-                }
-                break;
-            case R.id.re_et_nei20:
-                fanzhuan(20);
-                if (n20 == 1) {
-                    n20 = 0;
-                } else {
-                    n20 = 1;
-                }
-                break;
+
         }
     }
 
@@ -4008,9 +3853,114 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         n18 = (int) MmkvUtils.getcode("n18", 0);
         n19 = (int) MmkvUtils.getcode("n19", 0);
         n20 = (int) MmkvUtils.getcode("n20", 0);
-        for (int i = 1; i < 21; i++) {
-            setBtnColor(i);
+        n21 = (int) MmkvUtils.getcode("n21", 0);
+        n22 = (int) MmkvUtils.getcode("n22", 0);
+        n23 = (int) MmkvUtils.getcode("n23", 0);
+        n24 = (int) MmkvUtils.getcode("n24", 0);
+        n25 = (int) MmkvUtils.getcode("n25", 0);
+        n26 = (int) MmkvUtils.getcode("n26", 0);
+        n27 = (int) MmkvUtils.getcode("n27", 0);
+        n28 = (int) MmkvUtils.getcode("n28", 0);
+        n29 = (int) MmkvUtils.getcode("n29", 0);
+        n30 = (int) MmkvUtils.getcode("n30", 0);
+        n31 = (int) MmkvUtils.getcode("n31", 0);
+        n32 = (int) MmkvUtils.getcode("n32", 0);
+        n33 = (int) MmkvUtils.getcode("n33", 0);
+        n34 = (int) MmkvUtils.getcode("n34", 0);
+        n35 = (int) MmkvUtils.getcode("n35", 0);
+        n36 = (int) MmkvUtils.getcode("n36", 0);
+        n37 = (int) MmkvUtils.getcode("n37", 0);
+        n38 = (int) MmkvUtils.getcode("n38", 0);
+        n39 = (int) MmkvUtils.getcode("n39", 0);
+        n40 = (int) MmkvUtils.getcode("n40", 0);
+    }
+
+    public int getFan(int duan){
+        setFan();
+        switch (duan){
+            case 1:
+                return n1;
+            case 2:
+                return n2;
+            case 3:
+                return n3;
+            case 4:
+                return n4;
+            case 5:
+                return n5;
+            case 6:
+                return n6;
+            case 7:
+                return n7;
+            case 8:
+                return n8;
+            case 9:
+                return n9;
+            case 10:
+                return n10;
+            case 11:
+                return n11;
+            case 12:
+                return n12;
+            case 13:
+                return n13;
+            case 14:
+                return n14;
+            case 15:
+                return n15;
+            case 16:
+                return n16;
+            case 17:
+                return n17;
+            case 18:
+                return n18;
+            case 19:
+                return n19;
+            case 20:
+                return n20;
+            case 21:
+                return n21;
+            case 22:
+                return n22;
+            case 23:
+                return n23;
+            case 24:
+                return n24;
+            case 25:
+                return n25;
+            case 26:
+                return n26;
+            case 27:
+                return n27;
+            case 28:
+                return n28;
+            case 29:
+                return n29;
+            case 30:
+                return n30;
+            case 31:
+                return n31;
+            case 32:
+                return n32;
+            case 33:
+                return n33;
+            case 34:
+                return n34;
+            case 35:
+                return n35;
+            case 36:
+                return n36;
+            case 37:
+                return n37;
+            case 38:
+                return n38;
+            case 39:
+                return n39;
+            case 40:
+                return n40;
+
         }
+        return 0;
     }
 
     public void initUI() {
@@ -4223,5 +4173,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         return 3;
     }
+
+
+
 
 }
