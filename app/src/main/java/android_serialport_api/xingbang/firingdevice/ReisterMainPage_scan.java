@@ -1383,8 +1383,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         et_shell.setText(shellBlastNo);
         tv_duan.setText(duan + "-" + duanNo);
         et_duanNo.setText(duanNo + "");
+        int d = getFan(info.getDuan());
+        Log.e(TAG, "是否翻转: "+d );
         builder.setNegativeButton("插入孔", (dialog, which) -> {
-            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0")) {
+            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0")||d==1) {
                 show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
             } else {
                 //插入方法
@@ -1399,11 +1401,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
         builder.setNeutralButton("删除", (dialog, which) -> {
             dialog.dismiss();
-            int d = getFan(info.getDuan());
+
 //            if(d==0){
 //                show_Toast("当前雷管已翻转,请恢复后再删除雷管");
 //            }
-            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0")||d==0) {
+            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0")||d==1) {
                 show_Toast("当前雷管已翻转,请恢复后再删除雷管");
             } else {
                 // TODO 开启进度条

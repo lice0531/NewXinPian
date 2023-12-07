@@ -298,6 +298,9 @@ public class SendMsgActivity extends BaseActivity {
                 reCount++;
                 continue;
             }
+            if(a[0].equals("无")){
+                a[0]="";
+            }
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
             denator.setBlastserial(maxNo);
