@@ -106,8 +106,9 @@ dependencies {
     implementation 'me.weyye.hipermission:library:1.0.3'//权限申请
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'//折线图
     implementation "io.github.vincent-series:smart-toast:4.0.6"
+    compileOnly 'com.google.zxing:core:3.3.0'
 //    异常捕获
-    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
+//    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
     releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
 
     // Spinner(下拉列表)
@@ -119,6 +120,11 @@ dependencies {
 //    implementation 'com.github.xuexiangjys:XUI:1.1.8'
 //    implementation 'com.google.android.material:material:1.4.0'
 //    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+    //RecyclerView适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 }
 
 greendao {

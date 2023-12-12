@@ -2587,8 +2587,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
                     if (addNum.length() > 0) {
-                        if (Integer.parseInt(addNum) > 500) {
-                            show_Toast("单次最大注册不能超过500发");
+                        if (Integer.parseInt(addNum) > 1000) {
+                            show_Toast("单次最大注册不能超过1000发");
                             return;
                         }
                         if (edsno.length() > 1) {

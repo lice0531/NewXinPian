@@ -150,4 +150,20 @@
     <color name="colorGreen">#31E738</color>    //
 
     <color name="toast_bg_color">#D4D4D4</color>
+
+    <!-- QRCode scanner color begin -->
+    <!--    <color name="viewfinder_mask">#60000000</color>-->
+    <!--    <color name="result_view">#B0000000</color>-->
+    <color name="viewfinder_frame">#90FFFFFF</color>
+    <color name="result_point_color">#C0FFFF00</color>
+    <color name="laser_color">#0F0</color>
+    <color name="corner_color">#00FF00</color>
+    <!-- QRCode scanner color end -->
+
+    <color name="default_color">#48558C</color>
+    <color name="selected_color">#009FE8</color>
+    <color name="app_color">#1F2B5D</color>
+    <color name="app_bg_color">#020C49</color>
+    <color name="gray">#8A96A3</color>
+    <color name="yellow">#F39700</color>
 </resources>

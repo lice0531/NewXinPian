@@ -57,6 +57,8 @@ import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -467,7 +469,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                 if (danLingBean.getLgs().getLg().size() > 0) {
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
                     }
                 }
                 mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//项目下载成功
@@ -1104,6 +1106,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
+
                 mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
             }
 
@@ -1114,6 +1117,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(response.body().string().toString(), Base64.DEFAULT)));
                 } catch (Exception e) {
                     mHandler_1.sendMessage(mHandler_1.obtainMessage(14));
+
                     return;
                 }
                 Log.e("网络请求", "res: " + res);
@@ -1123,6 +1127,19 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 try {
                     JSONObject object1 = new JSONObject(res);
                     String cwxx = object1.getString("cwxx");
+
+                    String sqrq2=danLingBean.getSqrq();
+                    long time2 = (long) 3 * 86400000;
+                    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String yxq="";
+                    try {
+                        Date date3 = sd.parse(sqrq2);//当前日期
+                        yxq = sd.format(date3.getTime() + time2);
+                        Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     if (cwxx.equals("0")) {
                         int err = 0;
                         for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
@@ -1144,25 +1161,29 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     LngLat end = new LngLat(jingdu, weidu);
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
                                     Log.e("经纬度", "juli3: " + juli3);
+
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),yxq);
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
                             }
                         }
-                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+
 
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),yxq);
                             }
+
                         }
 
                         if (err != 0) {
                             Log.e("下载", "err: " + err);
+//                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
                         }
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
+                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
                         pb_show = 0;//loding画面结束
                     } else if (cwxx.equals("1")) {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(1, object1.getString("cwxxms")));
@@ -1188,7 +1209,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(11));//离线下载不支持生产厂家试爆
                     } else if (cwxx.equals("12")) {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(12));//营业性单位必须设置合同或者项目
-                    } else if (cwxx.equals("99")) {
+                    } else  {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(99, danLingBean.getCwxxms()));
                     }
                 } catch (JSONException e) {
@@ -1296,7 +1317,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
                             }
                         }
 
@@ -1837,6 +1858,34 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             default:
                 break;
         }
+    }
+
+    /**
+     * 向数据库中插入数据
+     */
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq) {
+        ContentValues values = new ContentValues();
+        values.put("htbh", htbh);
+        values.put("xmbh", xmbh);
+        values.put("json", json);
+        values.put("errNum", errNum);
+        values.put("qbzt", "未爆破");
+        values.put("dl_state", "未上传");
+        values.put("zb_state", "未上传");
+        values.put("spare1", name);//项目名称
+        values.put("spare2", yxq);//下载日期
+        values.put("total", list_uid.size());//总数
+        values.put("bprysfz", at_bprysfz.getText().toString().trim());//身份证号
+        values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
+        if (at_dwdm.getText().toString().trim().length() < 1) {//单位代码
+            values.put("dwdm", "");
+        } else {
+            values.put("dwdm", at_dwdm.getText().toString().trim());
+        }
+
+        Log.e("插入数据", "成功");
+        db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
+        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**

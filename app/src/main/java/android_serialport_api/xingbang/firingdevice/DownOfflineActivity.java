@@ -1,5 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
@@ -7,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 
@@ -40,23 +43,39 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.models.DanLingOffLinBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.zxing.activity.CaptureActivity;
+import android_serialport_api.xingbang.zxing.util.Constant;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class DownOfflineActivity extends BaseActivity {
     @BindView(R.id.btn_openFile)
     Button btnOpenFile;
+    @BindView(R.id.btn_scan)
+    Button btnScan;
     @BindView(R.id.text_filePath)
     TextView textFilePath;
     @BindView(R.id.btn_OK)
@@ -96,6 +115,8 @@ public class DownOfflineActivity extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private String TAG = "离线下载";
+    private Handler mHandler_1;
+    private Handler mHandler_loading = new Handler();//显示进度条
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +127,7 @@ public class DownOfflineActivity extends BaseActivity {
         db = mMyDatabaseHelper.getReadableDatabase();
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        initHandle();
 
         initAutoComplete("history_htid", dfAtHtid);//输入历史记录
         initAutoComplete("history_xmbh", dfAtXmbh);
@@ -123,6 +145,112 @@ public class DownOfflineActivity extends BaseActivity {
         dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
         dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
     }
+    private void initHandle() {
+        mHandler_loading = new Handler(msg -> {
+            //显示或隐藏loding界面
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
+        mHandler_1 = new Handler(msg -> {
+            switch (msg.what) {
+                case 0:
+                    show_Toast("项目下载成功");
+                    break;
+                case 1:
+                case 99:
+                    show_Toast(String.valueOf(msg.obj));
+                    break;
+                case 2:
+                    show_Toast("未找到该起爆器设备信息或起爆器未设置作业任务");
+                    break;
+                case 3:
+                    show_Toast("该起爆器未设置作业任务");
+                    break;
+                case 4:
+                    show_Toast("起爆器在黑名单中");
+                    break;
+                case 5:
+                    show_Toast("起爆位置不在起爆区域内");
+                    break;
+                case 6:
+                    show_Toast("起爆位置在禁爆区域内");
+                    break;
+                case 7:
+                    show_Toast("该起爆器已注销/报废");
+                    break;
+                case 8:
+                    show_Toast("禁爆任务");
+                    break;
+                case 9:
+                    show_Toast("作业合同存在项目");
+                    break;
+                case 10:
+                    show_Toast("作业任务未设置准爆区域");
+                    break;
+                case 11:
+                    show_Toast("离线下载不支持生产厂家试爆");
+                    break;
+                case 12:
+                    show_Toast("营业性单位必须设置合同或者项目");
+                    break;
+                case 13:
+                case 15:
+                    show_Toast("网络请求失败,请检查网络后再次尝试");
+                    break;
+                case 14:
+                    show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    break;
+                case 16:
+                    show_Toast("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+                    break;
+                case 17:
+                    pb_show = 1;
+                    runPbDialog();
+                    String name = msg.obj.toString();
+//                    show_Toast("扫码成功");
+                    new Thread(() -> {
+                        upload_xingbang(name);
+                    }).start();
+
+                    break;
+                case 18:
+                    String mima = editMima.getText().toString();//txt中的密文
+                    String res = msg.obj.toString();
+                    if (mima.length() < 6) {
+                        show_Toast("请输入文件6位序列号");
+                    } else {
+                        insertData(res, mima);
+                    }
+                    break;
+                case 89:
+                    show_Toast("输入的管壳码重复");
+                    break;
+
+
+            }
+            return false;
+        });
+    }
+
+    private void runPbDialog() {
+        pb_show = 1;
+        tipDlg = new LoadingDialog(DownOfflineActivity.this);
+        Context context = tipDlg.getContext();
+        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
+        new Thread(() -> {
+            mHandler_loading.sendMessage(mHandler_loading.obtainMessage());
+            try {
+                while (pb_show == 1) {
+                    Thread.sleep(100);
+                }
+                mHandler_loading.sendMessage(mHandler_loading.obtainMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 
     private void insertData(String json, String mima) {
 
@@ -142,7 +270,7 @@ public class DownOfflineActivity extends BaseActivity {
         }
         try {
             res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
-            Utils.writeLog("离线下载" + res);
+//            Utils.writeRecord("离线下载:" + res);
         } catch (IllegalArgumentException e) {
             show_Toast("解密失败,请检查txt文件是否正确或密码是否正确");
             e.printStackTrace();
@@ -153,15 +281,28 @@ public class DownOfflineActivity extends BaseActivity {
             return;
         }
         Gson gson = new Gson();
-        DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
-        pb_show = 0;//结束动画
+        DanLingOffLinBean danLingBean = gson.fromJson(res, DanLingOffLinBean.class);
+
         try {
             JSONObject object1 = new JSONObject(res);
+//            Utils.writeRecord("解密信息"+object1.toString());
             String cwxx = object1.getString("cwxx");
+            String sqrq2=danLingBean.getSqrq();
+            long time2 = (long) 3 * 86400000;
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String yxq="";
+            try {
+                Date date3 = sd.parse(sqrq2);//当前日期
+                yxq = sd.format(date3.getTime() + time2);
+                Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             if (cwxx.equals("0")) {
 
                 int err = 0;
                 for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+//                    Log.e(TAG, "danLingBean.getLgs().getLg().get(i): "+danLingBean.getLgs().getLg().get(i) );
                     if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
                         err++;
                     }
@@ -169,23 +310,23 @@ public class DownOfflineActivity extends BaseActivity {
                 if (danLingBean.getCwxx().equals("0")) {
                     if (danLingBean.getZbqys().getZbqy().size() > 0) {
                         for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
-                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                            insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),yxq,danLingBean.getLgs().getLg().size());
                         }
                     }
                 }
+                Log.e(TAG, "danLingBean.getLgs().getLg().size(): "+danLingBean.getLgs().getLg().size() );
 
-                if (danLingBean.getLgs().getLg().size() > 0) {
+                if (danLingBean.getLgs().getLg().size() > 0) {//更新雷管信息
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i));
+                        GreenDaoMaster.updateLgState_lixian(danLingBean.getLgs().getLg().get(i),yxq);
                     }
                 }
-                if (err != 0) {
-                    show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
-                }
-
-
-                show_Toast("项目下载成功");
-
+//                if (err != 0) {
+//                    show_Toast(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
+//                }
+                pb_show = 0;//结束动画
+//                show_Toast("项目下载成功");
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(0));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -194,6 +335,11 @@ public class DownOfflineActivity extends BaseActivity {
 
     /**
      * 向数据库中插入数据
+     * @param htbh
+     * @param xmbh
+     * @param json
+     * @param errNum
+     * @param coordxy
      */
     public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy) {
         ContentValues values = new ContentValues();
@@ -217,6 +363,43 @@ public class DownOfflineActivity extends BaseActivity {
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         saveData(htbh, xmbh, dfAtBprysfz.getText().toString().trim(), coordxy);
     }
+
+    /**
+     * 向数据库中插入数据
+     * @param htbh
+     * @param xmbh
+     * @param json
+     * @param errNum
+     * @param coordxy
+     * @param name
+     * @param yxq
+     * @param toal
+     */
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq,int toal) {
+        ContentValues values = new ContentValues();
+        values.put("htbh", htbh);
+        values.put("xmbh", xmbh);
+        values.put("json", json);
+        values.put("errNum", errNum);
+        values.put("qbzt", "未爆破");
+        values.put("dl_state", "未上传");
+        values.put("zb_state", "未上传");
+        values.put("spare1", name);
+        values.put("spare2", yxq);//申请日期 yxq.substring(0, 10)
+        values.put("total", toal);//总数
+        values.put("bprysfz",dfAtBprysfz.getText().toString().trim());//身份证号
+        values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
+        if (dfAtDwdm.getText().toString().trim().length() < 1) {//单位代码
+            values.put("dwdm", "");
+        } else {
+            values.put("dwdm", dfAtDwdm.getText().toString().trim());
+        }
+
+        Log.e("插入数据", "成功");
+        db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
+        Utils.saveFile();//把软存中的数据存入磁盘中
+    }
+
 
     /**
      * 向数据库中插入数据
@@ -268,7 +451,19 @@ public class DownOfflineActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        //扫描结果回调
+        if (requestCode == Constant.REQ_QR_CODE && resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            String scanResult = bundle.getString(Constant.INTENT_EXTRA_KEY_QR_SCAN);
+            Log.e("扫码结果", "scanResult: "+scanResult );
+            //将扫描出的信息显示出来
+
+            Message msg = new Message();
+            msg.obj = scanResult;
+            msg.what=17;
+            mHandler_1.sendMessage(msg);
+        }
+        if (requestCode != Constant.REQ_QR_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开
                 path = uri.getPath();
@@ -417,7 +612,7 @@ public class DownOfflineActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_openFile, R.id.btn_OK})
+    @OnClick({R.id.btn_openFile, R.id.btn_OK,R.id.btn_scan})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_openFile:
@@ -444,9 +639,31 @@ public class DownOfflineActivity extends BaseActivity {
                 }
 
                 break;
+            case R.id.btn_scan:
+                saveData();
+                startQrCode();
+                break;
         }
     }
 
+    // 开始扫码
+    private void startQrCode() {
+        // 申请相机权限
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // 申请权限
+            ActivityCompat.requestPermissions(DownOfflineActivity.this, new String[]{Manifest.permission.CAMERA}, Constant.REQ_PERM_CAMERA);
+            return;
+        }
+        // 申请文件读写权限（部分朋友遇到相册选图需要读写权限的情况，这里一并写一下）
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // 申请权限
+            ActivityCompat.requestPermissions(DownOfflineActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constant.REQ_PERM_EXTERNAL_STORAGE);
+            return;
+        }
+        // 二维码扫码
+        Intent intent = new Intent(DownOfflineActivity.this, CaptureActivity.class);
+        startActivityForResult(intent, Constant.REQ_QR_CODE);
+    }
     private void saveData() {
         saveHistory("history_xmbh", dfAtXmbh);//保存输入的项目编号
         saveHistory("history_htid", dfAtHtid);//保存输入的合同编号
@@ -548,4 +765,49 @@ public class DownOfflineActivity extends BaseActivity {
             }
         }
     };
+
+    private void upload_xingbang(String name) {
+        Log.e("loding画面", "画面开始: " );
+        String url = Utils.httpurl_xb_erweima+name+"/ciphertext";//煋邦下载
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(15));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                String res;
+                try {
+                    res = response.body().string();//response.body()只能调用一次,第二次调用就会变成null
+                } catch (Exception e) {
+
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage(16));
+                    return;
+                }
+                Message msg = new Message();
+                msg.obj = res;
+                msg.what=18;
+                mHandler_1.sendMessage(msg);
+                Log.e("网络请求返回", "response: " + response.toString());
+                Log.e("网络请求返回", "res: " + res);
+//                Utils.writeRecord("---煋邦离线扫码返回:" + res);
+
+                pb_show = 0;//loding画面结束
+            }
+        });
+    }
 }
