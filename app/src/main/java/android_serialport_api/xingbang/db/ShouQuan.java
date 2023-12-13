@@ -42,12 +42,14 @@ public class ShouQuan extends LitePalSupport {
     private String spare1;
     @Property(nameInDb = "spare2")
     private String spare2;
-
-    @Generated(hash = 1544132589)
+    @Property(nameInDb = "total")
+    private int total;
+    
+    @Generated(hash = 1192305140)
     public ShouQuan(Long id, String xmbh, String htbh, String json, String errNum,
             String qbzt, String blastdate, String dl_state, String zb_state,
             String dwdm, String bprysfz, String coordxy, String qblgNum,
-            String spare1, String spare2) {
+            String spare1, String spare2, int total) {
         this.id = id;
         this.xmbh = xmbh;
         this.htbh = htbh;
@@ -63,6 +65,7 @@ public class ShouQuan extends LitePalSupport {
         this.qblgNum = qblgNum;
         this.spare1 = spare1;
         this.spare2 = spare2;
+        this.total = total;
     }
 
     @Generated(hash = 1572074155)
@@ -87,6 +90,7 @@ public class ShouQuan extends LitePalSupport {
                 ", qblgNum='" + qblgNum + '\'' +
                 ", spare1='" + spare1 + '\'' +
                 ", spare2='" + spare2 + '\'' +
+                ", total=" + total +
                 '}';
     }
 
@@ -208,5 +212,13 @@ public class ShouQuan extends LitePalSupport {
 
     public void setSpare2(String spare2) {
         this.spare2 = spare2;
+    }
+
+    public int getTotal() {
+        return this.total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 }

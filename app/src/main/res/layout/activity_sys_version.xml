@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="KT50_PT_HF_V1.3.1C_231122"
+            android:text="KT50_PT_HF_V1.3.1C_231213"
             android:textSize="20sp"
             />
     </LinearLayout>

@@ -19,15 +19,20 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -117,6 +122,17 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             GetFileName(BinName,"/nm/", ".bin");//17V是电流11000,16V是改变前的
         }
         deleteRiZhi();
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, "1");
+        deletaBeian();
+    }
+    private void deletaBeian() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+        GreenDaoMaster master = new GreenDaoMaster();
+        master.deleteTypeLeiGuan(format1);
+        master.deleteShouQuan(format1);
+
     }
 
     /**
