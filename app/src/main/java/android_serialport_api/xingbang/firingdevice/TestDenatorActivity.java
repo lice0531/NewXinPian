@@ -495,18 +495,20 @@ public class TestDenatorActivity extends SerialPortActivity {
                 denatorlist1.add(item);
             }
         }
-        for (VoDenatorBaseInfo b : denatorlist2) {
+        for (VoDenatorBaseInfo a : denatorlist0) {//1代
+            blastQueue.offer(a);
+            list_lg.add(a);
+        }
+        for (VoDenatorBaseInfo a : denatorlist1) {//2代
+            blastQueue.offer(a);
+            list_lg.add(a);
+        }
+        for (VoDenatorBaseInfo b : denatorlist2) {//2代
             blastQueue.offer(b);
             list_lg.add(b);
         }
-        for (VoDenatorBaseInfo a : denatorlist1) {
-            blastQueue.offer(a);
-            list_lg.add(a);
-        }
-        for (VoDenatorBaseInfo a : denatorlist0) {
-            blastQueue.offer(a);
-            list_lg.add(a);
-        }
+
+
         denatorCount = blastQueue.size();
         Log.e("雷管队列", "denatorCount: " + denatorCount);
         tv_dianliu.setText(denatorCount * ic_cankao + "μA");//参考电流
@@ -856,7 +858,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
                             if (firstCount == 1) {//Preparation_time-1  // && firstCount < Preparation_time - 1
-                                sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
+                                sendCmd(FourStatusCmd.send46("00", "00", denatorCount));//20(第一代)
                             }
 
                             firstCount--;
@@ -881,16 +883,16 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
                                 }
-                                if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {
+                                if (version_1 && thirdWriteCount == denatorlist0.size() && denatorlist1.size() != 0) {
                                     version_1 = false;//发一次就不要发了
                                     sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
                                     Thread.sleep(1000);
                                     continue;
                                 }
 
-                                if (version_0 && thirdWriteCount == denatorlist2.size() + denatorlist1.size() && denatorlist0.size() != 0) {
+                                if (version_0 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() && denatorlist0.size() != 0) {
                                     version_0 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "00"));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
                                     Thread.sleep(1000);
                                     continue;
                                 }

@@ -890,17 +890,18 @@ public class FiringMainActivity extends SerialPortActivity {
 //            allBlastQu.offer(vo);
 //            list_all_lg.add(vo);
         }
-        for (VoDenatorBaseInfo b : denatorlist2) {
-            allBlastQu.offer(b);
-            list_all_lg.add(b);
+        for (VoDenatorBaseInfo c : denatorlist0) {
+            allBlastQu.offer(c);
+            list_all_lg.add(c);
         }
+
         for (VoDenatorBaseInfo a : denatorlist1) {
             allBlastQu.offer(a);
             list_all_lg.add(a);
         }
-        for (VoDenatorBaseInfo c : denatorlist0) {
-            allBlastQu.offer(c);
-            list_all_lg.add(c);
+        for (VoDenatorBaseInfo b : denatorlist2) {
+            allBlastQu.offer(b);
+            list_all_lg.add(b);
         }
 
         denatorCount = allBlastQu.size();
@@ -1751,15 +1752,15 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
 //                                Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
 //                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
-                                if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
+                                if (version_1 && thirdWriteCount == denatorlist0.size() && denatorlist1.size() != 0) {// 有2代为0的时候
                                     version_1 = false;//发一次就不要发了
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));
                                     Thread.sleep(1000);
                                     continue;
                                 }
-                                if (version_0 && thirdWriteCount == denatorlist2.size() + denatorlist1.size() && denatorlist0.size() != 0) {// 有2代为0的时候
+                                if (version_0 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() && denatorlist0.size() != 0) {// 有2代为0的时候
                                     version_0 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));
+                                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));
                                     Thread.sleep(1000);
                                     continue;
                                 }
@@ -1874,7 +1875,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Log.e("充电检测WaitCount", Wait_Count + "");
                             //说明电源打开命令未返回
                             if (Wait_Count == 3) {
-                                sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
+                                sendCmd(FourStatusCmd.send46("00", "00", denatorCount));//20(第一代)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
                             if (Wait_Count == 1) {
