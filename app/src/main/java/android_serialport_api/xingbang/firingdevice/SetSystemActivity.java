@@ -45,6 +45,8 @@ public class SetSystemActivity extends BaseActivity {
     Button setSave;
     @BindView(R.id.et_set_chongdiantime)
     EditText etSetChongdiantime;
+    @BindView(R.id.et_set_gaoyatime)
+    EditText etSetGaotime;
     @BindView(R.id.et_set_Jiancetime)
     EditText etSetJiancetime;
     @BindView(R.id.set_Voltage)
@@ -52,6 +54,7 @@ public class SetSystemActivity extends BaseActivity {
 
     private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
+    private int GaoYa_time;//高压时间
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
     private String Yanzheng = "";//是否验证地理位置
@@ -109,9 +112,11 @@ public class SetSystemActivity extends BaseActivity {
         Preparation_time = Integer.parseInt(list.get(0).getPreparation_time());
         ChongDian_time = Integer.parseInt(list.get(0).getChongdian_time());
         JianCe_time = Integer.parseInt(list.get(0).getJiance_time());
+        GaoYa_time= (int) MmkvUtils.getcode("GaoYa_time",5);
         etSetPreparation.setText(Preparation_time + "");
         etSetChongdiantime.setText(ChongDian_time + "");
         etSetJiancetime.setText(JianCe_time + "");
+        etSetGaotime.setText(GaoYa_time + "");
     }
 
     @OnClick({R.id.set_languages, R.id.set_save, R.id.set_Voltage})
@@ -155,6 +160,10 @@ public class SetSystemActivity extends BaseActivity {
                     message.setJiance_time(etSetJiancetime.getText().toString());
                 } else {
                     flag2 = 1;
+                }
+                if (!TextUtils.isEmpty(etSetGaotime.getText())) {//等待升高压时间
+                    Log.e("等待升高压时间", "etSetGaotime: " + etSetGaotime.getText().toString());
+                    MmkvUtils.savecode("GaoYa_time",Integer.parseInt(etSetGaotime.getText().toString()));
                 }
                 if (!TextUtils.isEmpty(etSetChongdiantime.getText())) {//低压充电时间
                     if (Integer.parseInt(etSetChongdiantime.getText().toString()) >= 8) {

@@ -209,7 +209,10 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean version_0 = true;
     private boolean version_1 = true;
     private boolean version_2 = true;
+    private boolean chongfu13 = true;
     private long time = 0;
+    private int GaoYa_time= (int) MmkvUtils.getcode("GaoYa_time",5);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -519,7 +522,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < JianCe_time * 0.4 && busInfo != null && busInfo.getBusVoltage() < 6.3) {
+            if (stage == 2 &&secondCount < JianCe_time * 0.4 && busInfo != null && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
@@ -537,6 +540,25 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
+
+//            if (stage == 6 &&sixExchangeCount < ChongDian_time-GaoYa_time && busInfo != null && busInfo.getBusVoltage() < 6.3) {
+//                Utils.writeRecord("--起爆测试--:总线短路");
+//                closeThread();
+//                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+//                AlertDialog dialog = new Builder(FiringMainActivity.this)
+//                        .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
+//                        .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+//                        //设置对话框的按钮
+//                        .setNegativeButton("退出", (dialog12, which) -> {
+//                            dialog12.dismiss();
+////                                    closeThread();
+//                            closeForm();
+//                            finish();
+//                        })
+//                        .create();
+//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+//                dialog.show();
+//            }
 
             //检测电流小于参考值的70%提示弹框
 
@@ -570,7 +592,6 @@ public class FiringMainActivity extends SerialPortActivity {
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
-
             }
 
             if (stage == 6 && sixExchangeCount == (ChongDian_time - 15)) {
@@ -1257,11 +1278,15 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
-            increase(1);
-            Log.e("increase", "1");
-            zeroCmdReFlag = 1;
-            byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-            sendCmd(powerCmd);
+            if(chongfu13){
+                increase(1);
+                Log.e("increase", "1");
+                zeroCmdReFlag = 1;
+                byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+                sendCmd(powerCmd);
+                chongfu13=false;
+            }
+
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
             //得到电流电压信息
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
@@ -1864,10 +1889,13 @@ public class FiringMainActivity extends SerialPortActivity {
                         case 6://充电阶段
                             Log.e(TAG, "充电阶段sixExchangeCount: " + sixExchangeCount);
                             if (sixExchangeCount == ChongDian_time) {
+                                sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                            }
+                            if (sixExchangeCount == (ChongDian_time-GaoYa_time+1)) {//56
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
-                            if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
+                            if (sixExchangeCount == (ChongDian_time - GaoYa_time)) {//第8秒时,发送高压充电指令,继电器应该响  //55
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
                             if (sixExchangeCount == (ChongDian_time - 13)) {//第8秒时,发送高压充电指令,继电器应该响
@@ -1895,7 +1923,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
-                            if (sixExchangeCount != (ChongDian_time - 9) && sixExchangeCount != (ChongDian_time - 8) && sixExchangeCount < ChongDian_time - 1) {
+                            if (sixExchangeCount < ChongDian_time - GaoYa_time-1) {
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
