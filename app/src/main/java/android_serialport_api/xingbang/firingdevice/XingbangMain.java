@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -144,6 +145,9 @@ public class XingbangMain extends BaseActivity {
     private String mSaveDirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xb";
     private List<FTPFile> mList_FtpFileName = new ArrayList<>();
     TextView totalbar_title;
+    private int Yanzheng_sq_size = 0;
+    private String Yanzheng_sq = "";//是否验雷管已经授权
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -153,6 +157,7 @@ public class XingbangMain extends BaseActivity {
     protected void onRestart() {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -240,7 +245,18 @@ public class XingbangMain extends BaseActivity {
 //            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
             GetFileName("NM_KT50_Second_Version_17", ".apk");
         }
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
     }
+
+    private void queryBeian() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list_shou= master.queryLeiGuan(format1,mRegion);
+        Yanzheng_sq_size=list_shou.size();
+        Log.e(TAG, "超过授权日期list_shou: "+list_shou.size() );
+    }
+
     /**
      * 初始化FTP
      */
@@ -637,6 +653,12 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+                    createDialog();
+                    return;
+                }
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
                 if (time - endTime < 180000) {//第二次启动时间不重置

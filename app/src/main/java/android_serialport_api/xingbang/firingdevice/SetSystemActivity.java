@@ -32,7 +32,8 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 import androidx.annotation.NonNull;
 
 public class SetSystemActivity extends BaseActivity {
-
+    @BindView(R.id.sw_yanzheng_sq)
+    SwitchButton swYanzheng_sq;
     @BindView(R.id.sw_setsys)
     SwitchButton swSetsys;
     @BindView(R.id.sw_yanzheng)
@@ -60,6 +61,7 @@ public class SetSystemActivity extends BaseActivity {
     private String Yanzheng = "";//是否验证地理位置
     private String Shangchuan = "";//是否上传错误雷管
     private String Qibaotime = "5";//设置起爆等待时间
+    private String Yanzheng_sq = "";//是否验雷管已经授权
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
@@ -76,6 +78,7 @@ public class SetSystemActivity extends BaseActivity {
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "否");
         Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
@@ -84,6 +87,9 @@ public class SetSystemActivity extends BaseActivity {
         }
         if (Yanzheng.equals("验证")) {
             swYanzheng.setChecked(true);
+        }
+        if (Yanzheng_sq.equals("验证")) {
+            swYanzheng_sq.setChecked(true);
         }
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
@@ -138,7 +144,11 @@ public class SetSystemActivity extends BaseActivity {
                 } else {
                     MmkvUtils.savecode("Shangchuan", "否");
                 }
-
+                if (swYanzheng_sq.isChecked()) {
+                    MmkvUtils.savecode("Yanzheng_sq", "验证");
+                } else {
+                    MmkvUtils.savecode("Yanzheng_sq", "不验证");
+                }
                 if (swSetsys.isChecked()) {
                     message.setQiaosi_set("true");
                 } else {

@@ -429,9 +429,9 @@ public class ShouQuanActivity extends BaseActivity {
 
     //注册选中的item
     private void inputLeiGuan() {
-
-        for (int i = mList.size() - 1; i >= 0; i--) {
-
+        Log.e("注册选中的item", "mList.size() : "+mList.size()  );
+        for (int i = mList.size() - 1; i >-1; i--) {
+//            Log.e("注册选中的item", "i"+i+"--序号"+mList.get(i).getId()+"--管壳码 : "+mList.get(i).getShellBlastNo()  );
             if (mList.get(i).isSelect()) {
                 registerDetonator(mList.get(i));
             }
@@ -452,16 +452,20 @@ public class ShouQuanActivity extends BaseActivity {
         Log.e("授权导入注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
+            Log.e("报错", "1" );
             return;
         }
         if (db.getShellBlastNo().length() > 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
+            Log.e("报错", "2" );
             return;
         }
         if (db.getDetonatorId() != null && db.getDetonatorId().length() == 13 && checkRepeatDenatorId(db.getDetonatorId())) {//检查重复数据
+            Log.e("报错", "3" );
             return;
         }
         if (db.getShellBlastNo() != null && db.getShellBlastNo().length() == 13 && checkRepeatShellNo(db.getShellBlastNo())) {//检查重复数据
+            Log.e("报错", "4" );
             return;
         }
 
@@ -490,6 +494,7 @@ public class ShouQuanActivity extends BaseActivity {
                 break;
             case "1":
             default:
+                duan="1";
                 delay = "0";
                 break;
         }

@@ -1666,7 +1666,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-                                if (write.getDenatorId() == null) {
+                                if (write.getDenatorId() == null|| write.getDenatorId().length() < 8) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();

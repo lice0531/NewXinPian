@@ -394,7 +394,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入项目下载页面---");
-//        test();//模拟下载---测试完要记得关闭
+        test();//模拟下载---测试完要记得关闭
         //模拟插入数据
 //        DanLingBean.LgsBean.LgBean lgBean=new DanLingBean.LgsBean.LgBean();
 //        lgBean.setUid("1021019900401");
@@ -410,10 +410,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         //新规则
 //        String res = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70107\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
 
-//        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-05-11 17:36:16\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格聚鑫矿业测\",\"zbqyjd\":\"102.679603\",\"zbqywd\":\"27.319692\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"普格县辉隆聚鑫矿业\",\"zbqyjd\":\"102.678327\",\"zbqywd\":\"27.319431\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620418H70101\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B01\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70102\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B02\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70103\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70104\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620418H70105\",\"yxq\":\"2022-05-14 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
+        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2023-12-15 16:42:24\",\"sbbhs\":[{\"sbbh\":\"F56A6800213\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"普格县辉隆聚鑫矿业01\",\"zbqyjd\":\"102.678632\",\"zbqywd\":\"27.319725\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"3031004206729\",\"yxq\":\"2023-12-20 17:36:16\",\"gzm\":\"FFA7666B01\",\"gzmcwxx\":\"0\"},{\"uid\":\"3031004206923\",\"yxq\":\"2023-12-20 17:36:16\",\"gzm\":\"FFA7666B02\",\"gzmcwxx\":\"0\"},{\"uid\":\"3031004273208\",\"yxq\":\"2023-12-20 17:36:16\",\"gzm\":\"FFA7666B03\",\"gzmcwxx\":\"0\"},{\"uid\":\"3031004293124\",\"yxq\":\"2023-12-20 17:36:16\",\"gzm\":\"FFA7666B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"3031004273226\",\"yxq\":\"2023-12-20 17:36:16\",\"gzm\":\"FFA7666B05\",\"gzmcwxx\":\"0\"}]}}";
         //错误经纬度下载
 //        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2023-02-27 09:29:50\",\"sbbhs\":[{\"sbbh\":\"F56A6800261\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"讲治镇光明隧道出口\",\"zbqyjd\":\"107.94954\",\"zbqywd\":\"31.026169\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道进口\",\"zbqyjd\":\"107.89732\",\"zbqywd\":\"341.0355\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"明月山隧道出口\",\"zbqyjd\":\"107.846616\",\"zbqywd\":\"31.045254\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5621126H81213\",\"yxq\":\"2023-03-02 09:29:50\",\"gzm\":\"939D64B603\",\"gzmcwxx\":\"0\"}]}}";
-        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-12-16 17:45:05\",\"sbbhs\":[{\"sbbh\":\"F5606802310\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"渝兴\",\"zbqyjd\":\"108.425483\",\"zbqywd\":\"29.410818\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"渝兴萤石矿\",\"zbqyjd\":\"29.407371\",\"zbqywd\":\"108.424906\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5621113H32582\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32577\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32587\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32594\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32584\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32583\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32592\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32586\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32599\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32578\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32595\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32588\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32593\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32591\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32597\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32581\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32590\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32589\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32579\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32598\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32576\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32580\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32596\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32585\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"}]}}";
+//        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-12-16 17:45:05\",\"sbbhs\":[{\"sbbh\":\"F5606802310\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"渝兴\",\"zbqyjd\":\"108.425483\",\"zbqywd\":\"29.410818\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null},{\"zbqymc\":\"渝兴萤石矿\",\"zbqyjd\":\"29.407371\",\"zbqywd\":\"108.424906\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5621113H32582\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32577\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32587\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32594\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32584\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32583\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32592\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32586\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32599\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32578\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32595\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32588\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32593\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32591\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32597\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32581\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32590\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32589\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32579\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32598\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32576\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32580\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32596\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"},{\"uid\":\"5621113H32585\",\"yxq\":\"\",\"gzm\":\"\",\"gzmcwxx\":\"2\"}]}}";
 
         //模拟下载150发雷管
 //        String res2 = "{\"cwxx\":\"0\",\"sqrq\":\"2022-08-14 09:29:20\",\"sbbhs\":[{\"sbbh\":\"F560600002\"}],\"zbqys\":{\"zbqy\":[{\"zbqymc\":\"德凤矿业\",\"zbqyjd\":\"104.802639\",\"zbqywd\":\"28.351421\",\"zbqybj\":\"5000\",\"zbqssj\":null,\"zbjzsj\":null}]},\"jbqys\":{\"jbqy\":[]},\"lgs\":{\"lg\":[{\"uid\":\"5620705H84983\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA8BC04104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80098\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA3C1EF003\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84834\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB66FD6B04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84951\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB78772404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84839\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB8E7BA304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84833\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB76FF5404\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80075\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0532474D04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80054\",\"yxq\":\"2022-08-17 09:29:20\"," +
@@ -432,7 +432,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                "{\"uid\":\"5620705H84835\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB62A4ED04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80008\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04BE8B1704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84971\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA9C708604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80016\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBE2B6F203\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80026\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBA4538004\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80062\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"04F48AD503\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80070\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0498A9CA03\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80036\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"054BFA6304\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80025\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBCF0AF203\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84832\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB90393E04\",\"gzmcwxx\":\"0\"}," +
 //                "{\"uid\":\"5620705H84952\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB91728204\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84977\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB55785704\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80067\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBCDB03104\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84979\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA7EEC5604\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80068\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBD74B3F04\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84956\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB5AB23504\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84993\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB57E78904\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80032\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FBB76C1A05\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H80001\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FA4A02B804\",\"gzmcwxx\":\"0\"},{\"uid\":\"5620705H84984\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"FB88F86C04\",\"gzmcwxx\":\"0\"}," +
 //                "{\"uid\":\"5620705H80055\",\"yxq\":\"2022-08-17 09:29:20\",\"gzm\":\"0523C9A804\",\"gzmcwxx\":\"0\"}]}}";
-        final String[] xy = "108.425483,29.410818".replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
+        final String[] xy = "102.678327,27.319431".replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
 
         Gson gson = new Gson();
         DanLingBean danLingBean = gson.fromJson(res2, DanLingBean.class);
@@ -478,6 +478,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                 double juli3 = AMapUtils.calculateLineDistance(start, end);
                                 Log.e("经纬度", "juli3: " + juli3);
                                 if (juli3 < banjing) {
+                                    Log.e("经纬度", "小于范围: " );
                                     insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(), yxq);
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                 }
@@ -1164,19 +1165,21 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     JSONObject object1 = new JSONObject(res);
                     String cwxx = object1.getString("cwxx");
 
-                    String sqrq2 = danLingBean.getSqrq();
-                    long time2 = (long) 3 * 86400000;
-                    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String yxq = "";
-                    try {
-                        Date date3 = sd.parse(sqrq2);//当前日期
-                        yxq = sd.format(date3.getTime() + time2);
-                        Log.e("获取申请日期3天后的日期", "yxq: " + yxq + " sqrq2:" + sqrq2);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+
 
                     if (cwxx.equals("0")) {
+                        String sqrq2 = danLingBean.getSqrq();
+                        long time2 = (long) 3 * 86400000;
+                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String yxq = "";
+                        try {
+                            Date date3 = sd.parse(sqrq2);//当前日期
+                            yxq = sd.format(date3.getTime() + time2);
+                            Log.e("获取申请日期3天后的日期", "yxq: " + yxq + " sqrq2:" + sqrq2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                         int err = 0;
                         for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                             if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
@@ -1867,7 +1870,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.e("点击项目", "position: " + position);
-        Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
+        Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("list_dl", (Serializable) map_dl);
         bundle.putInt("position", position);
@@ -1925,7 +1928,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             values.put("dwdm", at_dwdm.getText().toString().trim());
         }
 
-        Log.e("插入数据", "成功");
+        Log.e("注册数据", "成功");
         db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
