@@ -2,7 +2,6 @@ package android_serialport_api.xingbang.custom;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +36,9 @@ public class ShouQuanAdapter extends BaseAdapter implements OnClickListener{
     }
 
 
+    public void setList(List<Map<String, Object>> list) {
+        this.list = list;
+    }
 
     public interface InnerItemOnclickListener {
         void itemClick(View v);
@@ -125,7 +127,7 @@ public class ShouQuanAdapter extends BaseAdapter implements OnClickListener{
         }
         viewHolder.tv_sq_time.setText(((DanLingBean)list.get(position).get("danLingBean")).getSqrq());//申请时间
         viewHolder.tv_sq_qbzt.setText((list.get(position).get("qbzt"))+"");//起爆状态
-        viewHolder.tv_sq_sum.setText(((DanLingBean)list.get(position).get("danLingBean")).getLgs().getLg().size()+"发");//总数
+        viewHolder.tv_sq_sum.setText((list.get(position).get("total"))+"发");//总数
 
         viewHolder.btn_del_sq.setTag(position);
         viewHolder.ly_sq.setTag(position);

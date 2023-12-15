@@ -74,6 +74,7 @@ public class VerificationAdapter extends BaseAdapter implements OnClickListener 
             viewHolder.tv_sq_end_time = (TextView) convertView.findViewById(R.id.tv_sq_end_time);
             viewHolder.tv_sq_jd = (TextView) convertView.findViewById(R.id.tv_sq_jd);
             viewHolder.tv_sq_sum = (TextView) convertView.findViewById(R.id.tv_sq_sum);
+            viewHolder.tv_err_sum = (TextView) convertView.findViewById(R.id.tv_err_sum);
             viewHolder.tv_sq_qbzt = (TextView) convertView.findViewById(R.id.tv_sq_qbzt);
             viewHolder.tv_sq_wd = (TextView) convertView.findViewById(R.id.tv_sq_wd);
             viewHolder.btn_del_sq = (Button) convertView.findViewById(R.id.btn_del_sq);
@@ -105,6 +106,13 @@ public class VerificationAdapter extends BaseAdapter implements OnClickListener 
         } else {
             viewHolder.tv_sq_qbzt.setTextColor(Color.WHITE);
         }
+        if(list.get(position).get("errNum").toString().length()>0&&!list.get(position).get("errNum").equals("0")){
+            viewHolder.tv_err_sum.setText(list.get(position).get("errNum")+"发");
+            viewHolder.tv_err_sum.setTextColor(Color.RED);
+        }else {
+            viewHolder.tv_err_sum.setTextColor(Color.WHITE);
+            viewHolder.tv_err_sum.setText("0发");
+        }
         viewHolder.tv_sq_sum.setText(((DanLingBean) list.get(position).get("danLingBean")).getLgs().getLg().size() + "发");//总数
         viewHolder.tv_sq_qbzt.setText((list.get(position).get("qbzt")) + "");//起爆状态
         viewHolder.btn_del_sq.setTag(position);
@@ -122,6 +130,7 @@ public class VerificationAdapter extends BaseAdapter implements OnClickListener 
         private TextView tv_sq_wd;
         private TextView tv_sq_qbzt;//起爆状态
         private TextView tv_sq_sum;//雷管总数
+        private TextView tv_err_sum;
         private Button btn_del_sq;
         private LinearLayout ll_btn;
     }

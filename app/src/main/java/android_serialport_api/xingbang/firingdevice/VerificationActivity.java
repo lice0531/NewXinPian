@@ -313,6 +313,8 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
             item.put("errNum", sq.getErrNum());
             item.put("coordxy", sq.getCoordxy());
             item.put("spare1", sq.getSpare1());
+            item.put("spare2", sq.getSpare2());//申请日期
+            item.put("total", sq.getTotal());
             item.put("danLingBean", danLingBean);
             map_dl.add(item);
         }

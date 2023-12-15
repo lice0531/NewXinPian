@@ -117,6 +117,12 @@ public class DownOfflineActivity extends BaseActivity {
     private String TAG = "离线下载";
     private Handler mHandler_1;
     private Handler mHandler_loading = new Handler();//显示进度条
+    private String pro_bprysfz = "";//证件号码
+    private String pro_htid = "";//合同号码
+    private String pro_xmbh = "";//项目编号
+    private String pro_coordxy = "";//经纬度
+    private String pro_dwdm = "";//单位代码
+    private String pro_name = "";//项目名称
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +150,7 @@ public class DownOfflineActivity extends BaseActivity {
         dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
         dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
         dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
+        getUserMessage();//获取用户信息
     }
     private void initHandle() {
         mHandler_loading = new Handler(msg -> {
@@ -231,6 +238,26 @@ public class DownOfflineActivity extends BaseActivity {
             }
             return false;
         });
+    }
+
+    //获取用户信息
+    private void getUserMessage() {
+        String selection = "id = ?"; // 选择条件，给null查询所有
+        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
+            pro_bprysfz = cursor.getString(1);
+            pro_htid = cursor.getString(2);
+            pro_xmbh = cursor.getString(3);
+            pro_coordxy = cursor.getString(5);
+            pro_dwdm = cursor.getString(15);
+            cursor.close();
+        }
+        dfAtBprysfz.setText(pro_bprysfz);
+        dfAtHtid.setText(pro_htid);
+        dfAtXmbh.setText(pro_xmbh);
+        dfAtDwdm.setText(pro_dwdm);
+
     }
 
     private void runPbDialog() {
