@@ -1161,19 +1161,21 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     JSONObject object1 = new JSONObject(res);
                     String cwxx = object1.getString("cwxx");
 
-                    String sqrq2=danLingBean.getSqrq();
-                    long time2 = (long) 3 * 86400000;
-                    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String yxq="";
-                    try {
-                        Date date3 = sd.parse(sqrq2);//当前日期
-                        yxq = sd.format(date3.getTime() + time2);
-                        Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+
 
                     if (cwxx.equals("0")) {
+                        String sqrq2=danLingBean.getSqrq();
+                        long time2 = (long) 3 * 86400000;
+                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String yxq="";
+                        try {
+                            Date date3 = sd.parse(sqrq2);//当前日期
+                            yxq = sd.format(date3.getTime() + time2);
+                            Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                         int err = 0;
                         for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                             if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
