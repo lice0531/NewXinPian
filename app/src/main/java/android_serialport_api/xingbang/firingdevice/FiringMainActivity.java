@@ -1892,7 +1892,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (sixExchangeCount == ChongDian_time) {
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             }
-                            if (sixExchangeCount == (ChongDian_time-GaoYa_time+1)) {//56
+                            if (sixExchangeCount == (ChongDian_time-GaoYa_time+5)) {//56
                                 initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
                                 sendCmd(initBuf);
                             }
