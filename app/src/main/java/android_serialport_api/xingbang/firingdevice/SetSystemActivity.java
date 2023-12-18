@@ -112,7 +112,7 @@ public class SetSystemActivity extends BaseActivity {
         Preparation_time = Integer.parseInt(list.get(0).getPreparation_time());
         ChongDian_time = Integer.parseInt(list.get(0).getChongdian_time());
         JianCe_time = Integer.parseInt(list.get(0).getJiance_time());
-        GaoYa_time= (int) MmkvUtils.getcode("GaoYa_time",5);
+        GaoYa_time= (int) MmkvUtils.getcode("GaoYa_time",15);
         etSetPreparation.setText(Preparation_time + "");
         etSetChongdiantime.setText(ChongDian_time + "");
         etSetJiancetime.setText(JianCe_time + "");
