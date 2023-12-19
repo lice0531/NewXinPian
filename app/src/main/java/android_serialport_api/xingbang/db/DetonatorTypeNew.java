@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.db;
 
+import android.util.Log;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -142,7 +144,6 @@ public class DetonatorTypeNew implements Comparable<DetonatorTypeNew>{
 
         int liushui1 = Integer.parseInt(shellBlastNo.substring(8));
         int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(8));
-
         if (date1.before(date2)) {
             return -1;
         } else if (date1.after(date2)) {

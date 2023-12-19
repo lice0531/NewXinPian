@@ -158,6 +158,7 @@ public class XingbangMain extends BaseActivity {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: "+Yanzheng_sq );
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -246,6 +247,7 @@ public class XingbangMain extends BaseActivity {
             GetFileName("NM_KT50_Second_Version_17", ".apk");
         }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: "+Yanzheng_sq );
     }
 
     private void queryBeian() {

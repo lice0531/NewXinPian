@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -1883,11 +1884,30 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         int position = (int) v.getTag();
         switch (v.getId()) {
             case R.id.btn_del_sq://删除按钮
-                delShouQuan(map_dl.get(position).get("id").toString());//删除方法
-                if (map_dl != null && map_dl.size() > 0) {//移除map中的值
-                    map_dl.remove(position);
-                }
-                mAdapter_sq.notifyDataSetChanged();
+                TextView textview = new TextView(this);
+                textview.setTextSize(25);
+                textview.setTextColor(Color.RED);
+                textview.setText("请确认是否删除所选授权信息,点击确认删除!");
+                textview.setTypeface(null, Typeface.BOLD);
+                AlertDialog dialog2 = new AlertDialog.Builder(this)
+                        .setTitle("删除提示")//设置对话框的标题
+                        .setView(textview)
+                        //设置对话框的按钮
+                        .setPositiveButton("确认", (dialog3, which) -> {
+                            dialog3.dismiss();
+                            delShouQuan(map_dl.get(position).get("id").toString());//删除方法
+                            GreenDaoMaster master = new GreenDaoMaster();
+                            master.deleteTypeLeiGuanFroTime(map_dl.get(position).get("spare2").toString());
+                            if (map_dl != null && map_dl.size() > 0) {//移除map中的值
+                                map_dl.remove(position);
+                            }
+                            mAdapter_sq.notifyDataSetChanged();
+                        })
+                        .setNeutralButton("取消", (dialog3, which) -> {
+                            dialog3.dismiss();
+                        })
+                        .create();
+                dialog2.show();
                 break;
             case R.id.ly_sq://
             case R.id.tv_chakan_sq:

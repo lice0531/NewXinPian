@@ -1325,4 +1325,12 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Regdate.lt(time)).list();
     }
 
+    /**
+     * 删除生产数据中的雷管
+     */
+    public  void deleteTypeLeiGuanFroTime(String time) {
+        Log.e("删除生产数据中的雷管", "time: "+time );
+        QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
+        result.where(DetonatorTypeNewDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
 }

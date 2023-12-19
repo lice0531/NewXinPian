@@ -1618,7 +1618,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setDenatorId(detonatorId);
-            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("FF");

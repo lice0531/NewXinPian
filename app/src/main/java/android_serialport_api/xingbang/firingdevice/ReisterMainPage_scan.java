@@ -1761,7 +1761,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        String denatorId = serchDenatorId(shellNo);
         DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
         //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
-        if (detonatorTypeNew != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
+        if (detonatorTypeNew != null&& detonatorTypeNew.getDetonatorId() != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
@@ -1832,7 +1832,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("FF");
@@ -2005,7 +2005,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("FF");
@@ -2183,7 +2183,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setShellBlastNo(shellNo);
             denatorBaseinfo.setDelay(delay);
-            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("FF");
@@ -2367,6 +2367,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * @return 是否重复
      */
     public boolean checkRepeatdenatorId(String detonatorId) {
+        if (detonatorId.length() == 0) {
+            return false;
+        }
         Log.e("检查重复的数据", "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));

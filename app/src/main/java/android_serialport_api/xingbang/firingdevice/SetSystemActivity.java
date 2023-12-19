@@ -82,6 +82,7 @@ public class SetSystemActivity extends BaseActivity {
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
+        Log.e("设置页面", "Yanzheng_sq: " + Yanzheng_sq);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -146,6 +147,7 @@ public class SetSystemActivity extends BaseActivity {
                 }
                 if (swYanzheng_sq.isChecked()) {
                     MmkvUtils.savecode("Yanzheng_sq", "验证");
+                    Log.e("设置页面", "Yanzheng_sq: " + "验证");
                 } else {
                     MmkvUtils.savecode("Yanzheng_sq", "不验证");
                 }
