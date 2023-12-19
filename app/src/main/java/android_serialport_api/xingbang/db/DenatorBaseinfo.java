@@ -142,8 +142,8 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
             e.printStackTrace();
         }
 
-        int liushui1 = Integer.parseInt(shellBlastNo.substring(9));
-        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(9));
+        int liushui1 = Integer.parseInt(shellBlastNo.substring(8));
+        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(8));
 
         if (date1.before(date2)) {
             return 1;
