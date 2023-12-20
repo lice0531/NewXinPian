@@ -1900,9 +1900,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
 
-        if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null&& !detonatorTypeNew.getDetonatorId().equals("0")) {
             denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+            denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+            denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
         }
 
         //向数据库插入数据
@@ -2016,6 +2018,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setZhu_yscs(yscs);
         denatorBaseinfo.setDuan(a);
         denatorBaseinfo.setDuanNo((duanNo2 + 1));
+        DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null&& !detonatorTypeNew.getDetonatorId().equals("0")) {
+            denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+            denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
+        }
         Log.e("扫码", "flag_t1: " + flag_t1);
         if (!flag_t1) {//同孔
             if (duanNo2 == 0) {
@@ -2250,9 +2257,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 charu = false;
             }
-            if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+            if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null&& !detonatorTypeNew.getDetonatorId().equals("0")) {
                 denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+                denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
             }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);

@@ -1601,10 +1601,13 @@ public class ReisterMainPage_line extends SerialPortActivity {
             if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
                 denatorBaseinfo.setShellBlastNo(detonatorTypeNew.getShellBlastNo());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+                denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
                 Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
             } else {
                 denatorBaseinfo.setShellBlastNo(detonatorId);
                 denatorBaseinfo.setZhu_yscs(zhuce_form.getZhu_yscs());
+                denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
                 Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
             }
 
@@ -1618,7 +1621,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setDenatorId(detonatorId);
-            denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("FF");
