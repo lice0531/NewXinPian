@@ -910,7 +910,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             values.put("sithole", maxNo);
             values.put("shellBlastNo", shellNo);
             values.put("delay", "");
-            values.put("regdate", Utils.getDateFormatLong(new Date()));
+            values.put("regdate", Utils.getDateFormat(new Date()));
             values.put("statusCode", "02");
             values.put("statusName", "已注册");
             values.put("errorCode", "FF");
@@ -927,7 +927,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             values.put("statusName", "已注册");
             values.put("errorCode", "FF");
             values.put("errorName", "");
-            values.put("regdate", Utils.getDateFormatLong(new Date()));
+            values.put("regdate", Utils.getDateFormat(new Date()));
 
             db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
 
@@ -1670,7 +1670,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setShellBlastNo(shellNo);
             denatorBaseinfo.setDelay(delay);
-            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("FF");

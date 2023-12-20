@@ -301,7 +301,7 @@ public class PracticeActivity extends BaseActivity {
                 denator.setDuan(Integer.parseInt(a[3].substring(0,1)));
             }
             denator.setDelay(Integer.parseInt(a[1]));
-            denator.setRegdate(Utils.getDateFormatLong(new Date()));
+            denator.setRegdate(Utils.getDateFormat(new Date()));
             denator.setStatusCode("02");
             denator.setStatusName("已注册");
             denator.setErrorCode("FF");

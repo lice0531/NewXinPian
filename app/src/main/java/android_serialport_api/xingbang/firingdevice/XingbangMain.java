@@ -687,12 +687,12 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-//                for (int i = 0; i < lg2_yanshi.size(); i++) {
-//                    if (lg2_yanshi.get(i).equals("0")) {
-//                        createDialog();
-//                        return;
-//                    }
-//                }
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+                    createDialog();
+                    return;
+                }
                 time = System.currentTimeMillis();
                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
@@ -771,7 +771,7 @@ public class XingbangMain extends BaseActivity {
                     i = 1;
                     continue;
                 }
-                String a[] = line.split(",", -1);
+                String a[] = line.replace("null","").split(",", -1);
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
@@ -912,22 +912,8 @@ public class XingbangMain extends BaseActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提醒");//"说明"
-        builder.setMessage("有未设置延时的雷管,是否继续起爆?");
-        builder.setPositiveButton("继续起爆", (dialog, which) -> {
-            String str5 = "起爆";
-            if (Yanzheng.equals("验证")) {
-                //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
-                intent5.putExtra("dataSend", str5);
-                startActivityForResult(intent5, 1);
-            } else {
-                Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
-                intent5.putExtra("dataSend", str5);
-                startActivityForResult(intent5, 1);
-            }
-            dialog.dismiss();
-        });
+        builder.setTitle("未授权提醒");//"说明"
+        builder.setMessage("有未授权的雷管,请进行授权后再进行起爆!");
         builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
@@ -963,7 +949,7 @@ public class XingbangMain extends BaseActivity {
             baseinfo.setSithole(maxNo + "");
             baseinfo.setShellBlastNo(a[0]);
             baseinfo.setDelay(Integer.parseInt(a[1]));
-            baseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            baseinfo.setRegdate(Utils.getDateFormat(new Date()));
             baseinfo.setStatusCode("02");
             baseinfo.setStatusName("已注册");
             baseinfo.setErrorCode("");
