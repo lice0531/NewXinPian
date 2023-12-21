@@ -223,7 +223,7 @@ public class Utils {
         } else if (year == 3) {
             yearStr = 2;
         } else {
-            yearStr = 4;
+            yearStr = 3;
         }
         char c = (char) te;
         int i = c;
@@ -307,11 +307,11 @@ public class Utils {
     public static int GetSerialNo_new(int te, int month, int day, int serialNo, int year) {//9,7,29,55000,9
 
         int yearStr;
-        if (year == 9) {
+        if (year == 0) {
             yearStr = 0;
-        } else if (year == 0) {
-            yearStr = 1;
         } else if (year == 1) {
+            yearStr = 1;
+        } else if (year == 2) {
             yearStr = 2;
         } else {
             yearStr = 3;
@@ -426,13 +426,13 @@ public class Utils {
         year = year >>> 30;
         String yearStr = String.format("%01d", year);
         if (yearStr.equals("0")) {
-            yearStr = "9";
-        } else if (yearStr.equals("1")) {
             yearStr = "0";
-        } else if (yearStr.equals("2")) {
+        } else if (yearStr.equals("1")) {
             yearStr = "1";
-        } else {
+        } else if (yearStr.equals("2")) {
             yearStr = "2";
+        } else {
+            yearStr = "3";
         }
         String shellNo2 = facode + yearStr + monthStr + dayStr + a + serNoStr;
         Log.e("新的编码规则", "shellNo2: " + shellNo2);
