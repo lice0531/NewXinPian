@@ -217,13 +217,13 @@ public class Utils {
         int yearStr;
 //        Log.e("年", "year: "+year );
         if (year == 1) {
-            yearStr = 2;
+            yearStr = 1;
         } else if (year == 2) {
-            yearStr = 3;
+            yearStr = 2;
         } else if (year == 3) {
-            yearStr = 4;
+            yearStr = 3;
         } else {
-            yearStr = 5;
+            yearStr = 4;
         }
         char c = (char) te;
         int i = c;
