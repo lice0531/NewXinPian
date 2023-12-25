@@ -120,7 +120,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean chongfu = false;//是否已经检测了一次
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int ic_cankao = 19;//雷管参考电流
+    private int ic_cankao = 30;//雷管参考电流
     private boolean send_kg = true;//是否已经发送了40
     private boolean version_1 = true;//是否发送4601
     private boolean version_0 = true;//是否发送4600
@@ -134,7 +134,6 @@ public class TestDenatorActivity extends SerialPortActivity {
         thirdStartTime = 0;
         stage = 0;
         tipInfoFlag = 0;
-
         writeDenator = null;
         busInfo = null;
         thirdWriteErrorDenator = null;
@@ -929,7 +928,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 String denatorId;//新芯片编码
 //                                Log.e("写入延时", "denatorId: " + denatorId);
                                 if (write.getVersion().equals("00")) {//兼容一代
-                                    denatorId = Utils.DetonatorShellToSerialNo_NewDanLing(write.getShellBlastNo());//一代煤许协议
+                                    denatorId = Utils.GkmToUid_NewDanLing(write.getShellBlastNo());//一代煤许协议
                                 } else {
                                     denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
                                 }

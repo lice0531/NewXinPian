@@ -179,7 +179,7 @@ public class Utils {
     }
 
     //新规则得到的管壳码转换雷管序号Id
-    public static String DetonatorShellToSerialNo_NewDanLing(String shellStr) {
+    public static String GkmToUid_NewDanLing(String shellStr) {
         String changjia = shellStr.substring(0, 2);
         String yearStr = shellStr.substring(2, 3);
         String monthStr = shellStr.substring(3, 5);
@@ -215,16 +215,19 @@ public class Utils {
     public static int GetSerialNo_NewDanLing(int te, int month, int day, int serialNo, int year) {//9,7,29,55000,9
 
         int yearStr;
-//        Log.e("年", "year: "+year );
+
         if (year == 1) {
-            yearStr = 1;
+            yearStr = 0;
         } else if (year == 2) {
-            yearStr = 2;
+            yearStr = 1;
         } else if (year == 3) {
-            yearStr = 3;
+            yearStr = 2;
         } else {
-            yearStr = 4;
+            yearStr = 3;
         }
+        Log.e("年", "year: "+year );
+        Log.e("年", "yearStr: "+yearStr );
+
         char c = (char) te;
         int i = c;
         day = day << 19;//29

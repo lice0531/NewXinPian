@@ -205,7 +205,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int ic_cankao = 19;//雷管参考电流
+    private int ic_cankao = 30;//雷管参考电流
 
     private boolean version_0 = true;
     private boolean version_1 = true;
@@ -1638,7 +1638,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 12://混用放电
 //                btn_return8.setVisibility(View.GONE);
-                secondTxt.setText("切换版本中--" + tenCount + "s");
+                secondTxt.setText("2阶段--" + tenCount + "s");
                 break;
             case 99://暂停阶段
                 break;
@@ -1816,7 +1816,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 String denatorId;//新芯片
 
                                 if (tempBaseInfo.getVersion().equals("00")) {//兼容一代
-                                    denatorId = Utils.DetonatorShellToSerialNo_NewDanLing(shellStr);//新协议
+                                    denatorId = Utils.GkmToUid_NewDanLing(shellStr);//新协议
                                 } else {
                                     denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
                                 }
