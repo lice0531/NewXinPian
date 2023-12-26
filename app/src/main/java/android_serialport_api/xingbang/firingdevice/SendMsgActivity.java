@@ -280,7 +280,7 @@ public class SendMsgActivity extends BaseActivity {
 
         String[] lg = leiguan.split(",");
         String shellNo;
-        int maxNo = GreenDaoMaster.getMaxNumberNo();
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         int reCount = 0;
         Log.e("接收注册", "lg.length: " + lg.length);
         for (int i = lg.length; i > 0; i--) {
