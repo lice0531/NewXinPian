@@ -291,7 +291,7 @@ public class SendMsgActivity extends BaseActivity {
         boolean chongfu =false;
         String[] lg = leiguan.split(",");
         String shellNo;
-        int maxNo = getMaxNumberNo();
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         Log.e("接收注册", "lg.length: " + leiguan);
         Log.e("接收注册", "区域mRegion: " + mRegion);
         if(lg[0].length()<13){
