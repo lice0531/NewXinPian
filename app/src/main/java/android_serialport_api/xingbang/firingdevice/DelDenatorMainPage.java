@@ -74,7 +74,6 @@ public class DelDenatorMainPage extends BaseActivity  {
     @BindView(R.id.denator_del_mainpage)
     LinearLayout denatorDelMainpage;
     private DatabaseHelper mMyDatabaseHelper;
-    private List<DenatorBaseinfo> list_lg = new ArrayList<>();
     private SQLiteDatabase db;
     private int totalPage;//总的页数
     private int currentPage = 1;//当前页数
@@ -105,13 +104,8 @@ public class DelDenatorMainPage extends BaseActivity  {
         //db实例化
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
-
-        loadMoreData();//获取数据保存到list
-
         initView();
-
         initHandle();
-
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
     }
 
@@ -183,7 +177,6 @@ public class DelDenatorMainPage extends BaseActivity  {
                 master.deleteLeiGuanFroPiace(mRegion);
 //                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null);
                 db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
-                list_lg.clear();
                 refreshData();
                 dialog.dismiss();
                 Utils.saveFile();//把软存中的数据存入磁盘中
@@ -209,14 +202,8 @@ public class DelDenatorMainPage extends BaseActivity  {
 
                 GreenDaoMaster master = new GreenDaoMaster();
                 master.deleteErrLeiGuan(mRegion);
-                deleteListErrorDel();
-
                 Utils.deleteData(mRegion);//重新排序雷管
-
-                loadMoreData();//获取数据保存到list
-
                 refreshData();
-
                 dialog.dismiss();
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
@@ -226,68 +213,14 @@ public class DelDenatorMainPage extends BaseActivity  {
     }
 
 
-    /**
-     * 读取数据库中的数据
-     */
-    private void loadMoreData() {
-//        list_lg.clear();
-        list_lg = Application.getDaoSession().getDenatorBaseinfoDao().loadAll();
-    }
 
 
     private void refreshData() {
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
     }
 
-    /**
-     * 按序号删除list集合中的管壳码
-     */
-    private void deleteListSerialNoDel(int start, int end) {
-        if (list_lg != null && list_lg.size() > 0) {
-            List<DenatorBaseinfo> newlist = new ArrayList<>();
-            for (DenatorBaseinfo vo : list_lg) {
-                if (vo.getBlastserial() >= start && vo.getBlastserial() <= end) {
-                    newlist.add(vo);
-                }
-            }
-            list_lg.remove(newlist);
-            for (int i = 0; i < newlist.size(); i++) {
-                list_lg.remove(newlist.get(i));
-            }
-        }
-    }
 
-    /**
-     * 按序号删除list集合中的管壳码
-     */
-    private void deleteListSerialNoDel(String serialNo) {
-        if (list_lg != null && list_lg.size() > 0) {
-            List<DenatorBaseinfo> newlist = new ArrayList<>();
-            for (DenatorBaseinfo vo : list_lg) {//遍历集合,得到含有该管壳码的元素集合
-                if (vo.getShellBlastNo().equals(serialNo)) {
-                    newlist.add(vo);
-                }
-            }
-            list_lg.remove(newlist);
-        }
-    }
 
-    /**
-     * 删除列表中的错误雷管
-     */
-    private void deleteListErrorDel() {
-        if (list_lg != null && list_lg.size() > 0) {
-            List<DenatorBaseinfo> newlist = new ArrayList<>();
-            for (DenatorBaseinfo vo : list_lg) {
-                if (!vo.getErrorCode().equals("FF")) {
-                    newlist.add(vo);
-                }
-            }
-            for (int i = 0; i < newlist.size(); i++) {
-                list_lg.remove(newlist.get(i));
-            }
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -419,7 +352,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                                 deleteDenatorforNo(startNoStr, endNoStr);
 
                                 Utils.deleteData(mRegion);//重新排序雷管
-                                loadMoreData();//获取数据保存到list
+//                                loadMoreData();//获取数据保存到list
                                 //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)
 //                                    mAdapter = new LoadAdapter(DelDenatorMainPage.this, list_lg, R.layout.item_deldenator, 0);//(手动输入管壳码之后,错误码为空,会报空指针)
 //                                    denatorDelListview.setAdapter(mAdapter);

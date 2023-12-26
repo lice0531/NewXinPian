@@ -36,6 +36,7 @@ import android_serialport_api.xingbang.custom.LoadListView;
 import android_serialport_api.xingbang.custom.VerificationAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.models.DanLingBean;
@@ -300,7 +301,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 
     private void loadShouQuan() {
         List<ShouQuan> list = GreenDaoMaster.getAllShouQuan();
-//        Log.e("查询", "list : " + list.toString());
+        Log.e("查询", "list : " + list.toString());
         Gson gson = new Gson();
         DanLingBean danLingBean;
         for (ShouQuan sq : list) {
@@ -331,12 +332,12 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        String sqrq = map_dl.get(position).get("spare2").toString();
+        List<DetonatorTypeNew> mListData = new GreenDaoMaster().queryDetonatorShouQuanForSqrq(sqrq);
         ArrayList<String> list_lg_down = new ArrayList<>();
         ArrayList<String> list_lg2 = new ArrayList<>();
-        for (int i = 0; i < ((DanLingBean) map_dl.get(position).get("danLingBean")).getLgs().getLg().size(); i++) {
-            list_lg_down.add(((DanLingBean) map_dl.get(position).get("danLingBean")).getLgs().getLg().get(i).getUid().substring(0, 13));
-
+        for (int i = 0; i < mListData.size(); i++) {
+            list_lg_down.add(mListData.get(i).getShellBlastNo());
         }
         for (int i = 0; i < list_data.size(); i++) {
             list_lg2.add(list_data.get(i).getShellBlastNo());//UID和管壳码一致

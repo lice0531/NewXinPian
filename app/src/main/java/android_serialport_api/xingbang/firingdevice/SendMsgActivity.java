@@ -283,7 +283,7 @@ public class SendMsgActivity extends BaseActivity {
         //第二种 2条
         String[] lg = leiguan.split(",");
         String shellNo;
-        int maxNo = getMaxNumberNo();
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         int reCount = 0;
         for (int i = lg.length; i > 0; i--) {
             shellNo = lg[i - 1];

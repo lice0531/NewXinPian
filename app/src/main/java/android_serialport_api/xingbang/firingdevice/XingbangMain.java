@@ -158,7 +158,7 @@ public class XingbangMain extends BaseActivity {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-        Log.e(TAG, "验证授权Yanzheng_sq: "+Yanzheng_sq );
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -247,16 +247,16 @@ public class XingbangMain extends BaseActivity {
             GetFileName("NM_KT50_Second_Version_17", ".apk");
         }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-        Log.e(TAG, "验证授权Yanzheng_sq: "+Yanzheng_sq );
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
     }
 
     private void queryBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_shou= master.queryLeiGuan(format1,mRegion);
-        Yanzheng_sq_size=list_shou.size();
-        Log.e(TAG, "超过授权日期list_shou: "+list_shou.size() );
+        List<DenatorBaseinfo> list_shou = master.queryLeiGuan(format1, mRegion);
+        Yanzheng_sq_size = list_shou.size();
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
     }
 
     /**
@@ -267,6 +267,7 @@ public class XingbangMain extends BaseActivity {
         StrictMode.setThreadPolicy(policy);
         mFTP = new FTP(mIP, mUserName, mPassWord);
     }
+
     /**
      * 初始化控件
      */
@@ -296,6 +297,7 @@ public class XingbangMain extends BaseActivity {
         setTitleRegion();
 
     }
+
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
@@ -657,7 +659,7 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_test://测试
                 queryBeian();
                 //验证是否授权
-                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
                     createDialog();
                     return;
                 }
@@ -665,8 +667,10 @@ public class XingbangMain extends BaseActivity {
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
-                    return;
+                    if (a < 180000) {
+                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
+                    }
+//                    return;
                 }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
@@ -689,7 +693,7 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_blast://起爆
                 queryBeian();
                 //验证是否授权
-                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
                     createDialog();
                     return;
                 }
@@ -698,8 +702,10 @@ public class XingbangMain extends BaseActivity {
 
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
-                    return;
+                    if (a < 180000) {
+                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
+                    }
+//                    return;
                 }
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
@@ -771,7 +777,7 @@ public class XingbangMain extends BaseActivity {
                     i = 1;
                     continue;
                 }
-                String a[] = line.replace("null","").split(",", -1);
+                String a[] = line.replace("null", "").split(",", -1);
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
@@ -995,13 +1001,17 @@ public class XingbangMain extends BaseActivity {
         StringBuilder a = new StringBuilder();
         if (mRegion1) {
             a.append("1");
-        }if (mRegion2) {
+        }
+        if (mRegion2) {
             a.append(",2");
-        }if (mRegion3) {
+        }
+        if (mRegion3) {
             a.append(",3");
-        }if (mRegion4) {
+        }
+        if (mRegion4) {
             a.append(",4");
-        }if (mRegion5) {
+        }
+        if (mRegion5) {
             a.append(",5");
         }
         String str = "区域" + a;
@@ -1009,7 +1019,7 @@ public class XingbangMain extends BaseActivity {
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数(单选的时候要放开,多选关闭)
 //        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
-        totalbar_title.setText(mOldTitle+"/"+str);
+        totalbar_title.setText(mOldTitle + "/" + str);
     }
 
     /**
@@ -1182,12 +1192,12 @@ public class XingbangMain extends BaseActivity {
                     //fileName =SC_KT50_Second_Version_16_32
                     if (fileName.contains(name)) {
                         Log.e("下载目录1", fileName);//KT50_Second_Version_26.apk
-                        Log.e(TAG, "name: "+name);
+                        Log.e(TAG, "name: " + name);
                         PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-                        Log.e("下载目录2", pi.versionCode+"");//KT50_Second_Version_26.apk
-                        int v= Integer.parseInt(fileName.substring(fileName.length()-6, fileName.indexOf(".apk")));
-                        Log.e("下载目录3",  v+"");
-                        if(v>pi.versionCode){//网络版本大于本机版本就升级
+                        Log.e("下载目录2", pi.versionCode + "");//KT50_Second_Version_26.apk
+                        int v = Integer.parseInt(fileName.substring(fileName.length() - 6, fileName.indexOf(".apk")));
+                        Log.e("下载目录3", v + "");
+                        if (v > pi.versionCode) {//网络版本大于本机版本就升级
                             createDialog_download(name);
                         }
 
