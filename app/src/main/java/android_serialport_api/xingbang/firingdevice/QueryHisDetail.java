@@ -297,7 +297,7 @@ public class QueryHisDetail extends BaseActivity {
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","是");
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
         Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
     }
 
@@ -900,7 +900,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "KT50_PT_V1.3.1C_231226");//软件版本
+            object.put("rj_version", "M900_PT_V1.3.1C_231226");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {

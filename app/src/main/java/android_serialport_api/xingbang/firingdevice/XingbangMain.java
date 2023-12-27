@@ -244,7 +244,7 @@ public class XingbangMain extends BaseActivity {
             //17是电流11000,电压17V
             //15是电流11000,电压16V
 //            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
-            GetFileName("NM_KT50_Second_Version_17", ".apk");
+            GetFileName("NM_M900_Second_Version_17", ".apk");
         }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);

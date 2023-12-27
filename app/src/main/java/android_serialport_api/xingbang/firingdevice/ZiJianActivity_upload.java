@@ -115,7 +115,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         quanxian();//申请权限
         CJ="NM_";//SC-四川 NM-内蒙(不同的版本需要修改)
 //        CJ="XB_";//测试用
-        BinName=CJ+"KT50_V1.3_16V";
+        BinName=CJ+"M900_V1.3_16V";
         if (IntervalUtil.isFastClick_2()) {
             //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
             //UpgradeActivity里面的对应值也要改

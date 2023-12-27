@@ -76,7 +76,7 @@ public class SetSystemActivity extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
-        Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "否");
         Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         getUserMessage();
