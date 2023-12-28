@@ -1324,12 +1324,12 @@ public class FiringMainActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
-            sixCmdSerial = 2;
+            sixCmdSerial = 3;
 
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
-            sixCmdSerial = 3;
+            sixCmdSerial = 2;
 
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
 //            if (qibaoNoFlag < 5) {
@@ -1902,7 +1902,6 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            }
                             if (sixExchangeCount == (ChongDian_time)) {//56
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
-
                             }
                             if (sixExchangeCount == (ChongDian_time - 5)) {//第8秒时,发送高压充电指令,继电器应该响  //55
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00"));//32充电
