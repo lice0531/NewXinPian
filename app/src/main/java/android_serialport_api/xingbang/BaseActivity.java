@@ -181,7 +181,7 @@ public class  BaseActivity extends AppCompatActivity {
 				e.printStackTrace();
 			}
 			Log.e("BaseActivity", "KT50新设备 DeviceControlSpd");
-		}  else {
+		}else {
 			Log.e("BaseActivity", "实例化 空");
 		}
 	}
