@@ -442,7 +442,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + "(电流过大)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc > (cankao_ic * 0.6) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > (cankao_ic * 0.5) && displayIc < (cankao_ic * 0.6) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + "(电流偏低)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
@@ -563,7 +563,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //检测电流小于参考值的70%提示弹框
 
-            if (stage == 6 && sixExchangeCount < (ChongDian_time - 15) && busInfo.getBusCurrentIa() <= cankao_ic * 0.7 && isshow) {
+            if (stage == 6 && sixExchangeCount < (ChongDian_time - 15) && busInfo.getBusCurrentIa() <= cankao_ic * 0.5 && isshow) {
                 isshow = false;
                 firstThread.exit = true;
                 firstThread.interrupt();
@@ -1901,11 +1901,11 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
 //                            }
                             if (sixExchangeCount == (ChongDian_time)) {//56
-                                initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
-                                sendCmd(initBuf);
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
+
                             }
                             if (sixExchangeCount == (ChongDian_time - 5)) {//第8秒时,发送高压充电指令,继电器应该响  //55
-                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00"));//32充电
                             }
                             if (sixExchangeCount == (ChongDian_time - 13)) {//第8秒时,发送高压充电指令,继电器应该响
                                 Log.e(TAG, "第10s电流: " + busInfo.getBusCurrentIa());
