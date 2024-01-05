@@ -1,8 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
-import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -31,7 +29,6 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,7 +64,6 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
-import android_serialport_api.xingbang.utils.CustomDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
@@ -788,22 +784,23 @@ public class FiringMainActivity extends SerialPortActivity {
 
     }
 
-
+    int totalErrNum;
+    private List<DenatorBaseinfo> errlist;
     /***
      * 得到错误雷管数
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+        errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
 
 //        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where  statusCode=? and errorCode<> ? and piece = ?";
 //        Cursor cursor = db.rawQuery(sql, new String[]{"02", "FF", mRegion});
 
 //        cursor.close();
 
-        int totalNum = list.size();//得到数据的总条数
-        ll_firing_errorAmount_4.setText("" + totalNum);
-        if (totalNum != 0) {
+        totalErrNum = errlist.size();//得到数据的总条数
+        ll_firing_errorAmount_4.setText("" + totalErrNum);
+        if (totalErrNum != 0) {
             ll_firing_errorAmount_4.setTextColor(Color.RED);
         } else {
             ll_firing_errorAmount_4.setTextColor(Color.GREEN);
@@ -1447,11 +1444,22 @@ public class FiringMainActivity extends SerialPortActivity {
 //            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+            String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
-            if ("FF".equals(noReisterFlag)) {
-                fourOnlineDenatorFlag = 3;
-//                increase(6);//0635此处功能为直接跳到第六阶段
+//            if ("FF".equals(noReisterFlag)) {
+//                fourOnlineDenatorFlag = 3;
+////                increase(6);//0635此处功能为直接跳到第六阶段
+//            }
+
+            if(!fromCommad.startsWith("00000000", 10)){
+                if(errlist.size()==1){
+                    DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
+                    String a = fromCommad.substring(10,18);
+                    String b = "A6240"+a.substring(6,8)+a.substring(4,6)+a.substring(2,4)+a.substring(0,2);
+                    denator.setDenatorId(b);
+                    denator.setZhu_yscs(fromCommad.substring(18,22));
+                    Application.getDaoSession().update(denator);
+                }
             }
 
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
@@ -1567,6 +1575,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 getErrorBlastCount();
                 fourthDisplay = 1;
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
+                stopXunHuan();
                 //disPlayNoReisterDenator();
 //                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
 //                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于4000u ，全错
@@ -1696,8 +1705,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 10://跳转到查看错误雷管和继续阶段
                 Log.e(TAG, "execStage: 10");
+                stopXunHuan();
                 if (totalerrorNum == 0) {
-                    stopXunHuan();
+//                    stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
@@ -2379,8 +2389,14 @@ public class FiringMainActivity extends SerialPortActivity {
 //        endTest();
         ctlLinePanel(4);//修改页面显示项
         getErrorBlastCount();
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-        sendCmd(initBuf2);
+
+        if(totalErrNum==1){
+            GreenDaoMaster master = new GreenDaoMaster();
+            errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+            sendCmd(ThreeFiringCmd.send_36("00",errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+        }else {
+            sendCmd(ThreeFiringCmd.send_36("00","0000"));//36 在网读ID检测
+        }
     }
 
     private void initDialog(String tip, int daojishi) {

@@ -125,6 +125,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private int ic_cankao = 19;//雷管参考电流
     private boolean send_kg = true;//是否已经发送了40
     private boolean version_1 = true;//是否发送46
+    private List<DenatorBaseinfo> errlist;
 
     //初始化
     private void initParam() {
@@ -672,31 +673,32 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
                     Log.e(TAG, "大于9000u ，全错: ");
-                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+//                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
 //                    if (chongfu) {
                     initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
-                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
+//                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
 //                    if (chongfu) {
-                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
+//                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
-
+                    stopXunHuan();//检测完成
                     Log.e(TAG, "小于9000u ，全错: stage=" + stage);
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
-                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
+//                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
 //                    if (chongfu) {
 //                        initDialog_zanting2("查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!");//弹出框
 //                    } else {
-                    initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后再重新检测。");//弹出框
+//                    initDialog_zanting2("请检查错误的雷管是否存在连接线断开或管壳码输入错误等情况!检查无误后再重新检测。");//弹出框
 //                    }
+                    stopXunHuan();//检测完成
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
-                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
+//                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
                     if (chongfu) {
                         initDialog_zanting2("请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,再重新检测。");//弹出框
                     } else {
@@ -1066,8 +1068,21 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36在网读ID检测
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+            String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e("是否有未注册雷管", "noReisterFlag: " + noReisterFlag);
+//            Log.e("36指令", "fromCommad: " + fromCommad);
+            //C0003607 FF 00000000 0000 DA2D C0
+
+            if(!fromCommad.startsWith("00000000", 10)){
+                if(errlist.size()==1){
+                    DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
+                    String a = fromCommad.substring(10,18);
+                    String b = "A6240"+a.substring(6,8)+a.substring(4,6)+a.substring(2,4)+a.substring(0,2);
+                    denator.setDenatorId(b);
+                    denator.setZhu_yscs(fromCommad.substring(18,22));
+                    Application.getDaoSession().update(denator);
+                }
+            }
             byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
             sendCmd(powerCmd);
             //在测试流程,返回都是FF
@@ -1204,8 +1219,16 @@ public class TestDenatorActivity extends SerialPortActivity {
         ll_1.setVisibility(View.GONE);
         ll_2.setVisibility(View.VISIBLE);
         secondTxt.setText(R.string.text_test_tip4);
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-        sendCmd(initBuf2);
+        Log.e(TAG, "stopXunHuan--totalerrorNum: "+totalerrorNum );
+        Log.e(TAG, "stopXunHuan--ll_firing_errorNum_4: "+Integer.parseInt(ll_firing_errorNum_4.getText().toString() ));
+        int a =Integer.parseInt(ll_firing_errorNum_4.getText().toString());
+        if(a==1){
+            GreenDaoMaster master = new GreenDaoMaster();
+            errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+            sendCmd(ThreeFiringCmd.send_36("00",errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+        }else {
+            sendCmd(ThreeFiringCmd.send_36("00","0000"));//36 在网读ID检测
+        }
     }
 
     private void initDialog(String tip) {

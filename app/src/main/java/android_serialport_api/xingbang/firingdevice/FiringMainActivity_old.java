@@ -1251,7 +1251,7 @@ public class FiringMainActivity_old extends SerialPortActivity {
 //            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+            String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
@@ -2090,8 +2090,7 @@ public class FiringMainActivity_old extends SerialPortActivity {
 //        endTest();
         ctlLinePanel(4);//修改页面显示项
         getErrorBlastCount();
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-        sendCmd(initBuf2);
+        sendCmd(ThreeFiringCmd.send_36("00","0000"));//36 在网读ID检测
     }
 
     private void initDialog(String tip, int daojishi) {
