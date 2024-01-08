@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.coder.vincent.smart_toast.SmartToast;
+import com.kfree.expd.ExpdDevMgr;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
@@ -150,7 +151,7 @@ public class  BaseActivity extends AppCompatActivity {
 	public DeviceControl mDeviceControl;    // 0: Dc上电
 	public DeviceControlSpd mDeviceControlSpd ;    // 2: 团标上电
 	public Gpiot1 mGpiot1;                  // 1:Gpio包上电
-
+	public ExpdDevMgr mExpDevMgr ;
 	/**
 	 * 实例化上电方式
 	 */
@@ -181,7 +182,11 @@ public class  BaseActivity extends AppCompatActivity {
 				e.printStackTrace();
 			}
 			Log.e("BaseActivity", "KT50新设备 DeviceControlSpd");
-		}else {
+		}else if (mPowerOnMode == 4) {
+			mExpDevMgr = new ExpdDevMgr(this);
+//			mExpDevMgr.setExGpio(108,1);//32 17 19   485通信/11 12 13 14   发送/17 19
+			Log.e("BaseActivity", "M900设备");
+		} else {
 			Log.e("BaseActivity", "实例化 空");
 		}
 	}
@@ -225,6 +230,11 @@ public class  BaseActivity extends AppCompatActivity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else if (mPowerOnMode == 4) {// 新款KT50上电
+			Log.e("BaseActivity", "M900 主板上电");
+			mExpDevMgr.exPowerOn();//办卡供电
+			mExpDevMgr.setPsamReaderPw(true);
+//			mExpDevMgr.setExGpio(1,1);//32 17 19   485通信/11 12 13 14   发送/17 19
 		}
 
 	}
@@ -277,7 +287,11 @@ public class  BaseActivity extends AppCompatActivity {
 //            optGpio(PIN_ADSL);
 
 		}
-
+		else if (mPowerOnMode == 4) {// 新款KT50上电
+			Log.e("BaseActivity", "M900 主板下电");
+			mExpDevMgr.exPowerOff();
+			mExpDevMgr.setPsamReaderPw(false);
+		}
 	}
 
 	/**

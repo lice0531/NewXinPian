@@ -52,7 +52,7 @@ public class ThreeFiringCmd {
 		String command;
 //		Log.e("长度", "data: "+data.length() );
 		if(data.length()==16){
-			command = addr + DefCommand.CMD_3_DETONATE_2+"08"+data;
+			command = addr + DefCommand.CMD_3_DETONATE_2+"09"+data;
 		}else {
 			command = addr + DefCommand.CMD_3_DETONATE_2+"0E"+data;
 		}

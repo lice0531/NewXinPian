@@ -397,7 +397,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 ll_firing_IC_4.setTextSize(20);
-                if (displayIc > 11000&&stage!=6) {
+                if (displayIc > 18000&&stage!=6) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView();//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -450,11 +450,11 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //电流大于11000,重启检测阶段
+            //电流大于18000,重启检测阶段
             if (secondCount < JianCe_time * 0.2 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 Log.e(TAG, "secondCount: " + secondCount);
-                if (busInfo.getBusCurrentIa() > 11000) {
+                if (busInfo.getBusCurrentIa() > 18000) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
                     if (chongfu) {//单次的话要取非
@@ -802,6 +802,7 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
             vo.setPiace(d.getPiece());
+            vo.setLgzt(d.getErrorCode());
             allBlastQu.offer(vo);
             list_all_lg.add(vo);
         }
@@ -1354,14 +1355,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
 //                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
-//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 11000) {//大于4000u ，全错
+//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 18000) {//大于4000u ，全错
 //                    Log.e(TAG, "大于4000u ，全错: ");
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
-//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {//小于4000u ，全错
+//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 18000) {//小于4000u ，全错
 //
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
@@ -1470,7 +1471,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e(TAG, "execStage: 10");
                 if (totalerrorNum == 0) {
                     stopXunHuan();
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 11000) {//大于11000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 18000) {//大于18000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
@@ -1480,8 +1481,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
 //                    }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 11000) {
-                    //小于11000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 18000) {
+                    //小于18000u ，全错
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
 //                    if (chongfu) {
@@ -1683,7 +1684,18 @@ public class FiringMainActivity extends SerialPortActivity {
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                String data = denatorId + delayStr + write.getZhu_yscs();
+                                String zhuangtai=write.getLgzt();
+                                if(zhuangtai==null){
+                                    zhuangtai="00";
+                                }
+                                if(denatorCount<200){//雷管数量小于200,全部00
+                                    zhuangtai="00";
+                                }
+                                //电流小于参考值一半,全部00
+                                if(busInfo.getBusCurrentIa()<denatorCount*cankao*0.5){
+                                    zhuangtai="00";
+                                }
+                                String data = denatorId + delayStr + write.getZhu_yscs()+zhuangtai;
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);

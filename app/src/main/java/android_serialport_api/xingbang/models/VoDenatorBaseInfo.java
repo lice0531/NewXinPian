@@ -12,7 +12,15 @@ public class VoDenatorBaseInfo  {
 	private String zhu_yscs;//主芯片延时参数
 	private String cong_yscs;//从芯片延时参数
 	private String piace;//区域
+	private String lgzt;//雷管状态
 
+	public String getLgzt() {
+		return lgzt;
+	}
+
+	public void setLgzt(String lgzt) {
+		this.lgzt = lgzt;
+	}
 	public String getZhu_yscs() {
 		return zhu_yscs;
 	}
