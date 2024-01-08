@@ -500,7 +500,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.setVersion(a.getAuthorization());
             if (a.getAuthorization().equals("02")) {
                 denatorlist2.add(item);
-            }else {
+            } else {
                 denatorlist1.add(item);
             }
         }
@@ -819,9 +819,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01",denatorCount));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 } else {
-                                    sendCmd(FourStatusCmd.send46("00", "02",denatorCount));//20(第二代)
+                                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第二代)
                                 }
                             }
                             Thread.sleep(1000);
@@ -837,7 +837,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-                            if (firstCount < Preparation_time-2 && firstCount > (Preparation_time - 9)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                            if (firstCount < Preparation_time - 2 && firstCount > (Preparation_time - 9)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
                             if (firstCount == Preparation_time - 10) {//Preparation_time-1
@@ -862,7 +862,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
                             if (firstCount == 1) {//Preparation_time-1  // && firstCount < Preparation_time - 1
-                                sendCmd(FourStatusCmd.send46("00", "02",denatorCount));//20(第一代)
+                                sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
                             }
 
                             firstCount--;
@@ -1050,10 +1050,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                 fromData.setShellNo(temp.getShellBlastNo());//设置管壳码
                 fromData.setDenaId(temp.getDenatorId());//设置芯片码
                 updateDenator(fromData, writeDelay);
-                if (!"FF".equals(fromData.getCommicationStatus())&&!"F1".equals(fromData.getCommicationStatus())&&!"F2".equals(fromData.getCommicationStatus())) {
+                if (!"FF".equals(fromData.getCommicationStatus()) && !"F1".equals(fromData.getCommicationStatus()) && !"F2".equals(fromData.getCommicationStatus())) {
                     errHandler.sendMessage(errHandler.obtainMessage());
 
-                }else {
+                } else {
                     tureHandler.sendMessage(tureHandler.obtainMessage());
                 }
                 Utils.writeRecord("--测试结果:" + fromData);
@@ -1073,13 +1073,13 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            Log.e("36指令", "fromCommad: " + fromCommad);
             //C0003607 FF 00000000 0000 DA2D C0
 
-            if(!fromCommad.startsWith("00000000", 10)){
-                if(errlist.size()==1){
+            if (!fromCommad.startsWith("00000000", 10)) {
+                if (errlist != null && errlist.size() == 1) {
                     DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
-                    String a = fromCommad.substring(10,18);
-                    String b = "A6240"+a.substring(6,8)+a.substring(4,6)+a.substring(2,4)+a.substring(0,2);
+                    String a = fromCommad.substring(10, 18);
+                    String b = "A6240" + a.substring(6, 8) + a.substring(4, 6) + a.substring(2, 4) + a.substring(0, 2);
                     denator.setDenatorId(b);
-                    denator.setZhu_yscs(fromCommad.substring(18,22));
+                    denator.setZhu_yscs(fromCommad.substring(18, 22));
                     Application.getDaoSession().update(denator);
                 }
             }
@@ -1219,15 +1219,15 @@ public class TestDenatorActivity extends SerialPortActivity {
         ll_1.setVisibility(View.GONE);
         ll_2.setVisibility(View.VISIBLE);
         secondTxt.setText(R.string.text_test_tip4);
-        Log.e(TAG, "stopXunHuan--totalerrorNum: "+totalerrorNum );
-        Log.e(TAG, "stopXunHuan--ll_firing_errorNum_4: "+Integer.parseInt(ll_firing_errorNum_4.getText().toString() ));
-        int a =Integer.parseInt(ll_firing_errorNum_4.getText().toString());
-        if(a==1){
+        Log.e(TAG, "stopXunHuan--totalerrorNum: " + totalerrorNum);
+        Log.e(TAG, "stopXunHuan--ll_firing_errorNum_4: " + Integer.parseInt(ll_firing_errorNum_4.getText().toString()));
+        int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
+        if (a == 1) {
             GreenDaoMaster master = new GreenDaoMaster();
             errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
-            sendCmd(ThreeFiringCmd.send_36("00",errlist.get(0).getZhu_yscs()));//36 在网读ID检测
-        }else {
-            sendCmd(ThreeFiringCmd.send_36("00","0000"));//36 在网读ID检测
+            sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+        } else {
+            sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
         }
     }
 
