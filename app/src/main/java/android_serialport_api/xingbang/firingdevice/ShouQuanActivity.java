@@ -514,7 +514,7 @@ public class ShouQuanActivity extends BaseActivity {
         }
         denator.setStatusCode("02");
         denator.setStatusName("已注册");
-        denator.setErrorCode("FF");
+        denator.setErrorCode("00");
         denator.setErrorName("");
         denator.setWire("");
         denator.setPiece(mRegion);
