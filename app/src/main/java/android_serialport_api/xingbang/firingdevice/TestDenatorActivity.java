@@ -83,6 +83,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler busHandler_dianliu = null;//电流电压信息
     private Handler errHandler = null;//总线信息
     private Handler tureHandler = null;//总线信息
+    private Handler checkHandler = null;//总线信息
     private Handler Handler_tip = null;//提示信息
     private static volatile int stage;
     private volatile int firstCount = 28;
@@ -260,6 +261,20 @@ public class TestDenatorActivity extends SerialPortActivity {
             ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
             totaltureNum = Integer.parseInt(tureNumStr) + 1;
 //            ll_firing_tureNum.setTextColor(Color.GREEN);
+            return false;
+        });
+        checkHandler = new Handler(msg -> {
+            String errNumStr = ll_firing_errorNum_4.getText().toString();
+            String tureNumStr = ll_firing_tureNum.getText().toString();
+            if (tureNumStr.trim().length() < 1) {
+                tureNumStr = "0";
+            }
+            ll_firing_errorNum_4.setText("" + ((Integer.parseInt(errNumStr) - 1)));
+            totalerrorNum = Integer.parseInt(errNumStr) - 1;
+            ll_firing_errorNum_4.setTextColor(Color.GREEN);
+
+            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            totaltureNum = Integer.parseInt(tureNumStr) + 1;
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -882,9 +897,20 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                    exit = true;//结束线程
 //                                    byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
 //                                    sendCmd(initBuf2);
-                                    stage = 4;
+                                    stage = 7;
+                                    //36指令
+                                    int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
+                                    if (a == 1) {
+                                        GreenDaoMaster master = new GreenDaoMaster();
+                                        errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                        sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+                                    } else {
+                                        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                    }
+
                                     Thread.sleep(500);
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
+
                                     break;
                                 }
                                 if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {
@@ -1080,7 +1106,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                     String b = "A6240" + a.substring(6, 8) + a.substring(4, 6) + a.substring(2, 4) + a.substring(0, 2);
                     denator.setDenatorId(b);
                     denator.setZhu_yscs(fromCommad.substring(18, 22));
+                    denator.setErrorCode("FF");
+                    denator.setErrorName("通信成功");
                     Application.getDaoSession().update(denator);
+                    checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
+
                 }
             }
             byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
@@ -1093,7 +1123,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                 fourOnlineDenatorFlag = 2;
                 noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
             }
-
+            stage = 4;
+            mHandler_1.sendMessage(mHandler_1.obtainMessage());
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             if (busHandler_dianliu == null) return;
@@ -1221,14 +1252,14 @@ public class TestDenatorActivity extends SerialPortActivity {
         secondTxt.setText(R.string.text_test_tip4);
         Log.e(TAG, "stopXunHuan--totalerrorNum: " + totalerrorNum);
         Log.e(TAG, "stopXunHuan--ll_firing_errorNum_4: " + Integer.parseInt(ll_firing_errorNum_4.getText().toString()));
-        int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
-        if (a == 1) {
-            GreenDaoMaster master = new GreenDaoMaster();
-            errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
-            sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
-        } else {
-            sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
-        }
+//        int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
+//        if (a == 1) {
+//            GreenDaoMaster master = new GreenDaoMaster();
+//            errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+//            sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+//        } else {
+//            sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+//        }
     }
 
     private void initDialog(String tip) {

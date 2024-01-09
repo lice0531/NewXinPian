@@ -132,6 +132,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private static Handler mHandler_1 = null;//更新视图
     private static Handler noReisterHandler = null;//没有注册的雷管
     private static Handler tureHandler = null;//没有注册的雷管
+    private Handler checkHandler = null;//总线信息
     private To52Test writeVo;
     private static volatile int stage;//
     private static volatile int startFlag = 0;
@@ -203,6 +204,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private int totaltureNum;//错误雷管数量
+
     private int totalNum;//雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
@@ -390,6 +392,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        version_1 = true;
 //                        customDialog.dismiss();
 //                    }).show();
+            getblastQueue();//更新雷管
+
             String err = ll_firing_errorAmount_4.getText().toString();
             if (err.equals("0")) {
 //                increase(33);//之前是4
@@ -518,6 +522,24 @@ public class FiringMainActivity extends SerialPortActivity {
 //            ll_firing_tureNum.setTextColor(Color.GREEN);
             return false;
         });
+        checkHandler = new Handler(msg -> {
+            String errNumStr = ll_firing_errorAmount_2.getText().toString();
+            String tureNumStr = ll_firing_tureNum.getText().toString();
+            if (tureNumStr.trim().length() < 1) {
+                tureNumStr = "0";
+            }
+            ll_firing_errorAmount_2.setText("" + (Integer.parseInt(errNumStr) - 1));
+            ll_firing_errorAmount_4.setText("" + (Integer.parseInt(errNumStr) - 1));
+            ll_firing_errorAmount_2.setTextColor(Color.GREEN);
+            ll_firing_errorAmount_4.setTextColor(Color.GREEN);
+            totalerrorNum = Integer.parseInt(errNumStr) + 1;
+
+            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            totaltureNum = Integer.parseInt(tureNumStr) + 1;
+            return false;
+        });
+
+
         busHandler = new Handler(msg -> {
             if (busInfo != null && firstWaitCount < 2) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
@@ -1458,7 +1480,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     String b = "A6240"+a.substring(6,8)+a.substring(4,6)+a.substring(2,4)+a.substring(0,2);
                     denator.setDenatorId(b);
                     denator.setZhu_yscs(fromCommad.substring(18,22));
+                    denator.setErrorCode("FF");
+                    denator.setErrorName("通信成功");
                     Application.getDaoSession().update(denator);
+                    checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
+
                 }
             }
 
@@ -1864,7 +1890,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
-                                    getblastQueue();
+//                                    getblastQueue();//放到36更新雷管芯片码之后更新雷管序列
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
