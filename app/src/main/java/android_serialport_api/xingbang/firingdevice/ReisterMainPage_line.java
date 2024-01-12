@@ -297,11 +297,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
         Utils.writeRecord("---进入单发注册页面---");
-        if (version.equals("01")) {
-            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-        } else {
-            sendCmd(FourStatusCmd.send46("00", "01"));//20(第二代)
-        }
+//        if (version.equals("01")) {
+//            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+//        } else {
+            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//        }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
 
