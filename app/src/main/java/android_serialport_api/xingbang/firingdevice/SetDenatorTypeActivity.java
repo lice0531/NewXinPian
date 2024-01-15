@@ -97,9 +97,9 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
             if (checstr == null || checstr.trim().length() < 1) {
                 String facname = denator_type_Name.getText().toString();
                 String faccode = denator_type_second.getText().toString();
-                String facselected = "否";
+                String facselected = getString(R.string.text_setFac_no);
                 if (et_factory_selected.isChecked()) {
-                    facselected = "是";
+                    facselected = getString(R.string.text_setFac_yes);
                 }
                 int reVal = inserDenatorType(facname, faccode, facselected);
                 if (reVal == 0)
@@ -272,7 +272,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
             String selected = cursor.getString(3);
             factoryname.setText(name);
             factorycode.setText(code);
-            if ("是".equals(selected)) {
+            if (getString(R.string.text_setFac_yes).equals(selected)) {
                 factoryselected.setChecked(true);
             }
             // factoryselected.setText(selected);
@@ -283,9 +283,9 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
             public void onClick(DialogInterface dialog, int which) {
                 String a = factoryname.getText().toString().trim();
                 String b = factorycode.getText().toString().trim();
-                String d = "否";
+                String d = getString(R.string.text_setFac_no);
                 if (factoryselected.isChecked()) {
-                    d = "是";
+                    d = getString(R.string.text_setFac_yes);
                 }
 
                 modifyDenatorType(typeId, a, b, d);

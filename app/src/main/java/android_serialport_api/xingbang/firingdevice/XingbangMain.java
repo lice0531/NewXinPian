@@ -337,7 +337,7 @@ public class XingbangMain extends BaseActivity {
         mHandler_updata = new Handler(msg -> {
             Log.e("起爆器编号", "equ_no: " + equ_no);
             if (!equ_no.equals("")) {
-                tvMainNo.setText("设备编号:" + equ_no);
+                tvMainNo.setText(getString(R.string.text_main_sbbh) + equ_no);
 //                CrashReport.setUserId(equ_no);
             }
             return false;
@@ -477,10 +477,10 @@ public class XingbangMain extends BaseActivity {
                 startActivityForResult(intent, 1);
                 dialog.dismiss();
             } else if (!a.equals("xingbang")) {
-                show_Toast("用户名错误");
+                show_Toast(getString(R.string.text_main_yhmcw));
                 dialogOn(dialog);
             } else if (!b.equals("123456")) {
-                show_Toast("密码错误");
+                show_Toast(getString(R.string.text_main_mmcw));
                 dialogOn(dialog);
             } else {
                 show_Toast(getString(R.string.text_error_tip50));
@@ -536,14 +536,14 @@ public class XingbangMain extends BaseActivity {
             GreenDaoMaster master = new GreenDaoMaster();
             List<UserMain> userMainList=master.queryUser(a);
             if(userMainList.size()==0){
-                show_Toast("用户名为空");
+                show_Toast(getString(R.string.text_main_yhmcw));
             }else {
                 if (b.equals(userMainList.get(0).getUpassword())) {
                     toFiring();
                     dialog.dismiss();
                     dialogOFF(dialog);
                 } else {
-                    show_Toast("密码错误");
+                    show_Toast(getString(R.string.text_main_mmcw));
                     dialogOn(dialog);
                 }
             }
@@ -698,7 +698,7 @@ public class XingbangMain extends BaseActivity {
                 Log.e(TAG, "endTime: " + endTime);
                 Log.e(TAG, "daojishi: " + daojishi);
                 if (time > 0 && daojishi < 190 && daojishi > 0) {//第二次启动时间不重置
-                    initDialog_fangdian("当前系统检测到您尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "组网");
+                    initDialog_fangdian(getString(R.string.text_main_tip1), daojishi, "组网");
                     Log.e(TAG, "endTime: " + daojishi);
                     return;
                 }
@@ -733,7 +733,7 @@ public class XingbangMain extends BaseActivity {
                 Log.e(TAG, "endTime: " + endTime);
                 Log.e(TAG, "daojishi: " + daojishi);
                 if (time > 0 && daojishi < 190 && daojishi > 0) {//第二次启动时间不重置
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", daojishi, "起爆");
+                    initDialog_fangdian(getString(R.string.text_main_tip1), daojishi, "起爆");
                     Log.e(TAG, "daojishi: " + daojishi);
                     return;
                 }
@@ -899,8 +899,8 @@ public class XingbangMain extends BaseActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("未授权提醒");//"说明"
-        builder.setMessage("有未授权的雷管,请进行授权后再进行起爆!");
+        builder.setTitle(R.string.text_alert_tip_wsq);//"说明"
+        builder.setMessage(R.string.text_alert_tip_wsqtx);
 //        builder.setPositiveButton("继续起爆", (dialog, which) -> {
 //            String str5 = "起爆";
 //            if (Yanzheng.equals("验证")) {
@@ -915,7 +915,7 @@ public class XingbangMain extends BaseActivity {
 //            }
 //            dialog.dismiss();
 //        });
-        builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(R.string.text_alert_tip_fhck, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -1009,7 +1009,7 @@ public class XingbangMain extends BaseActivity {
 //        if (mRegion5) {
 //            a.append(",5");
 //        }
-        String str = " 区域" + mRegion;
+        String str = getString(R.string.text_main_qu) + mRegion;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数(单选的时候要放开,多选关闭)
@@ -1071,7 +1071,7 @@ public class XingbangMain extends BaseActivity {
                 // 设置标题区域
                 setTitleRegion();
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(R.string.text_send_choice + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -1094,20 +1094,20 @@ public class XingbangMain extends BaseActivity {
         Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n放电倒计时：");
+        mOffTextView.setText(tip + "\n"+R.string.text_fir_dialog1);
         mDialog = new AlertDialog.Builder(this)
-                .setTitle("系统提示")
+                .setTitle(R.string.text_fir_dialog2)
                 .setCancelable(false)
                 .setView(mOffTextView)
 //                .setPositiveButton("确定", (dialog, id) -> {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNeutralButton("退出", (dialog, id) -> {
+                .setNeutralButton(R.string.text_test_exit, (dialog, id) -> {
                     dialog.cancel();
                     mOffTime.cancel();
                 })
-                .setNegativeButton("继续", (dialog2, which) -> {
+                .setNegativeButton(R.string.text_firing_jixu, (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
                     if (str5.equals("组网")) {
@@ -1132,7 +1132,7 @@ public class XingbangMain extends BaseActivity {
         mOffHandler = new Handler(msg -> {
             if (msg.what > 0) {
                 //动态显示倒计时
-                mOffTextView.setText(tip + "\n放电倒计时：" + msg.what);
+                mOffTextView.setText(tip + "\n"+R.string.text_fir_dialog1 + msg.what);
             } else {
                 //倒计时结束自动关闭
                 if (mDialog != null) {
@@ -1172,7 +1172,7 @@ public class XingbangMain extends BaseActivity {
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(R.string.text_dialog_choice);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
@@ -1195,7 +1195,7 @@ public class XingbangMain extends BaseActivity {
                 mRegion4 = cb_mRegion4.isChecked();
                 mRegion5 = cb_mRegion5.isChecked();
                 if (mRegion1) {
-                    a.append("区域1");
+                    a.append(getString(R.string.text_main_quyu));
                 }
                 if (mRegion2) {
                     a.append(",2");
@@ -1219,9 +1219,9 @@ public class XingbangMain extends BaseActivity {
                 //更新标题
                 setTitleRegion();
                 // 显示提示
-                show_Toast("已选择 " + a);
+                show_Toast(getString(R.string.text_show_1) + a);
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast(getString(R.string.text_setDelay_toast1));
             }
 
         });
@@ -1272,9 +1272,9 @@ public class XingbangMain extends BaseActivity {
      */
     public void createDialog_download(String name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("升级提醒");//"说明"
-        builder.setMessage("检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
-        builder.setPositiveButton("进行更新", (dialog, which) -> {
+        builder.setTitle(R.string.text_updata_sys_1);//"说明"
+        builder.setMessage(R.string.text_updata_sys_2);
+        builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, DownLoadActivity.class);
@@ -1287,7 +1287,7 @@ public class XingbangMain extends BaseActivity {
 //            dialog.dismiss();
 //            finish();
 //        });
-        builder.setNegativeButton("不更新", (dialog, which) -> {
+        builder.setNegativeButton(R.string.text_updata_sys_4, (dialog, which) -> {
             dialog.dismiss();
         });
         builder.create().show();

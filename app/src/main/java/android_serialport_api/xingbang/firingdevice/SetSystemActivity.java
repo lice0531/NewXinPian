@@ -100,7 +100,7 @@ public class SetSystemActivity extends BaseActivity {
             } else if (msg.arg1 == 2) {
                 show_Toast(getString(R.string.text_systip_2));
             } else if (msg.arg1 == 3) {
-                show_Toast("充电时间请大于8s");
+                show_Toast(getString(R.string.text_systip_11));
             } else if (msg.arg1 == 4) {
                 show_Toast(getString(R.string.text_systip_1));
             }

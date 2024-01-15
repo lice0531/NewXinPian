@@ -74,6 +74,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.annotation.Nullable;
@@ -516,34 +517,37 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast(getResources().getString(R.string.text_error_tip2));
             } else if (msg.what == 3) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_Toast(getString(R.string.text_reister_tip9) + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+//                show_Toast("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
+
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码超出13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_Toast(getString(R.string.text_error_tip63));
             } else if (msg.what == 7) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
+//                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
             } else if (msg.what == 8) {
                 SoundPlayUtils.play(4);
-                show_Toast("有延时为空,请先设置延时");
+                show_Toast(getString(R.string.text_error_tip64));
             } else if (msg.what == 9) {
                 decodeBar(msg.obj.toString());
             } else if (msg.what == 10) {
-                show_Toast("找不到对应的生产数据,请先导入生产数据");
+                show_Toast(getString(R.string.text_error_tip65));
             } else if (msg.what == 11) {
-                show_Toast("输入的日期格式不对");
+                show_Toast(getString(R.string.text_error_tip66));
             } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
                 SoundPlayUtils.play(4);
             } else {
                 SoundPlayUtils.play(4);
-                show_Toast("注册失败");
+                show_Toast(getString(R.string.text_error_tip68));
             }
             return false;
         });
@@ -582,7 +586,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    etNum.getText().clear();//连续注册个数
             }
             if (tipInfoFlag == 89) {//刷新界面
-                show_Toast("输入的管壳码重复");
+                show_Toast(getResources().getString(R.string.text_line_tip15));
                 showDenatorSum();
             }
             return false;
@@ -911,7 +915,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void getFactoryCode() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<Defactory> list = master.queryDefactoryToIsSelected("是");
+        List<Defactory> list = master.queryDefactoryToIsSelected(getContext().getString(R.string.text_setFac_yes));
         if (list.size() > 0) {
             factoryCode = list.get(0).getDeEntCode();
             factoryFeature = list.get(0).getDeFeatureCode();
@@ -924,7 +928,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     private void getFactoryType() {
         String selection = " isSelected = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        String[] selectionArgs = {getContext().getString(R.string.text_setFac_yes)};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOR_TYPE, null, selection, selectionArgs, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             deTypeName = cursor.getString(1);
@@ -1285,7 +1289,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + "\n"+getString(R.string.text_setDelay_show3));
 
                 Utils.saveFile();
             }
@@ -1297,7 +1301,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void modifyBlastBaseInfo(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ReisterMainPage_scan.this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请修改雷管信息");
+        builder.setTitle(R.string.scan_text_tip3);
         //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
         View view = LayoutInflater.from(ReisterMainPage_scan.this).inflate(R.layout.blastbasedialog, null);
         //    设置我们自己定义的布局文件作为弹出框的Content
@@ -1326,7 +1330,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 String a = username.getText().toString().trim();
                 String b = password.getText().toString().trim();
                 //    将输入的用户名和密码打印出来
-                show_Toast("管壳码: " + a + ", 延时: " + b + "处理");
+//                show_Toast("管壳码: " + a + ", 延时: " + b + "处理");
             }
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
@@ -2192,7 +2196,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    break;
 //                }
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
-                    show_Toast("有延时为空,请先设置延时");
+                    show_Toast(getString(R.string.text_scan_cuowu2));
                     break;
                 }
                 if (deleteList()) return;
@@ -2316,7 +2320,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_inputOk:
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
-                    show_Toast("有延时为空,请先设置延时");
+                    show_Toast(getString(R.string.text_scan_cuowu2));
                     break;
                 }
                 if (deleteList()) return;//判断列表第一发是否在历史记录里
@@ -2337,11 +2341,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                     if (addNum.length() > 0) {
                         if (Integer.parseInt(addNum) > 500) {
-                            show_Toast("单次最大注册不能超过500发");
+                            show_Toast(getString(R.string.text_scan_cuowu7));
                             return;
                         }
                         if (ed_ls.length() > 1) {
-                            show_Toast("终止序号和连续注册个数不能同时输入");
+                            show_Toast(getString(R.string.text_scan_cuowu8));
                             return;
                         }
                         num = Integer.parseInt(addNum);//连续注册个数
@@ -2360,11 +2364,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             return;
                         }
                         if (ed_ls.length() < 3) {
-                            show_Toast("结束序号必须为3位");//  "结束序号不能小于开始序号";
+                            show_Toast(getString(R.string.text_scan_cuowu9));//  "结束序号不能小于开始序号";
                             return;
                         }
                         if (stproDt.length() < 5) {
-                            show_Toast("日期编码必须为5位");//  "结束序号不能小于开始序号";
+                            show_Toast(getString(R.string.text_scan_cuowu10));//  "结束序号不能小于开始序号";
                             return;
                         }
                         if (start_ls < 0 || end > 99999) {
@@ -2404,7 +2408,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_singleReister:
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
-                    show_Toast("有延时为空,请先设置延时");
+                    show_Toast(getString(R.string.text_scan_cuowu2));
                     break;
                 }
                 if (isSingleReisher == 0) {
@@ -3019,7 +3023,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (index < 0) return null;
         String subBarCode = strBarcode.substring(index + 3, index + 16);
         if (subBarCode.trim().length() < 13) {
-            show_Toast("当前二维码不符合规范,请检查后再扫");
+            show_Toast(getString(R.string.text_scan_cuowu11));
             return null;
         }
         return subBarCode;
@@ -3034,7 +3038,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int index = strParamBarcode.indexOf("SC:");
             Log.e("扫码", "index: " + index);
             if (index > 0) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
+                show_Toast(getString(R.string.text_scan_cuowu12));
                 return;
             }
             //二代芯片新管壳码规则只有28位的Y5620528H01709A637FFC9741B05
@@ -3056,7 +3060,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
 
             if (subBarCode.trim().length() < 13) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
+                show_Toast(getString(R.string.text_scan_cuowu13));
                 return;
             }
         } else {
@@ -3179,7 +3183,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_reister_tip4)+ mRegion);
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
@@ -3200,9 +3204,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_dfzc_qy) + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getString(R.string.text_dfzc_qy) + region + getString(R.string.text_dfzc_sl) + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

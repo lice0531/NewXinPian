@@ -249,13 +249,13 @@ public class QueryMainActivity extends BaseActivity {
             }
                 double a = 4.9E-324;
                 if (location.getLatitude() != a) {
-                    tvWD.setText("纬度坐标：" + location.getLatitude());
+                    tvWD.setText(getString(R.string.text_query_wd) + location.getLatitude());
                 }
 
                 sb.append("\nlontitude : ");// 经度
                 sb.append(location.getLongitude());
                 if (location.getLatitude() != a) {
-                    tvJD.setText("经度坐标：" + location.getLongitude());
+                    tvJD.setText(getString(R.string.text_query_jd) + location.getLongitude());
                 }
         }
     };

@@ -380,19 +380,19 @@ public class FiringMainActivity extends SerialPortActivity {
                 TextView view = new TextView(this);
                 view.setTextSize(25);
                 view.setTextColor(Color.RED);
-                view.setText("存在错误雷管，是否强制起爆?");
+                view.setText(R.string.text_fir_czcwlg);
                 view.setTypeface(null, Typeface.BOLD);
-                AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                        .setTitle("系统提示")//设置对话框的标题
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle(R.string.text_fir_dialog2)//设置对话框的标题
                         .setView(view)
                         //设置对话框的按钮
-                        .setPositiveButton("继续起爆", (dialog2, which) -> {
+                        .setPositiveButton(R.string.text_fir_jxqb, (dialog2, which) -> {
                             //检测两次
 //                          increase(33);//之前是4
                             increase(6);//充电阶段
                             version_1 = true;
                         })
-                        .setNeutralButton("退出", (dialog2, which) -> {
+                        .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
                         })
                         .create();
                 dialog.show();
@@ -403,18 +403,18 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private void dialogExit() {
 
-        AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                .setTitle("退出提示")//设置对话框的标题
-                .setMessage("退出后有3分钟放电等待,防止线路中有电,降低起爆效果")//设置对话框的内容
+        AlertDialog dialog = new Builder(FiringMainActivity.this)
+                .setTitle(R.string.text_fir_tcts)//设置对话框的标题
+                .setMessage(R.string.text_fir_fangdian)//设置对话框的内容
                 //设置对话框的按钮
-                .setNegativeButton("退出", (dialog1, which) -> {
+                .setNegativeButton(R.string.text_tc, (dialog1, which) -> {
                     dialog1.dismiss();
                     closeThread();
                     closeForm();
                     finish();
                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                 })
-                .setNeutralButton("取消", (dialog12, which) -> dialog12.dismiss())
+                .setNeutralButton(R.string.text_setDealy_qx, (dialog12, which) -> dialog12.dismiss())
                 .create();
         dialog.show();
     }
@@ -428,10 +428,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
             } else if (msg.what == 2) {
                 AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                        .setTitle("当前雷管信息不完整")//设置对话框的标题
-                        .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                        .setTitle(R.string.text_fir_dialog19)//设置对话框的标题
+                        .setMessage(R.string.text_fir_dialog20)//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
@@ -441,11 +441,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     dialog.show();
                 }
             } else if (msg.what == 3) {
-                AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                        .setTitle("当前雷管未授权")//设置对话框的标题
-                        .setMessage(msg.obj + "雷管未授权,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle(R.string.text_fir_dialog29)//设置对话框的标题
+                        .setMessage(msg.obj + getString(R.string.text_fir_dialog30))//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNegativeButton(R.string.text_tc, (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
@@ -465,7 +465,7 @@ public class FiringMainActivity extends SerialPortActivity {
         mHandler_tip = new Handler(msg -> {
             String time = (String) msg.obj;
             delHisInfo(time);
-            show_Toast("起爆记录条数最大60条,已删除" + time + "记录");
+            show_Toast(getString(R.string.text_fir_show2) + time);
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -503,19 +503,19 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 9000 && stage != 6 && stage != 33) {
-                    displayIcStr = displayIcStr + "(疑似短路)";
+                    displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                 } else if (displayIc > (denatorCount * ic_cankao * 2) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
-                    displayIcStr = displayIcStr + "(电流过大)";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else if (displayIc > (denatorCount * ic_cankao * 3) && displayIc > 10 && stage == 6) {// "电流过大";
-                    displayIcStr = displayIcStr + "(电流过大)";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else if (displayIc > (cankao_ic * 0.6) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
-                    displayIcStr = displayIcStr + "(电流偏低)";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
                 }
@@ -555,10 +555,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
 
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
-                        .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(R.string.text_fir_dialog17)//设置对话框的标题//"成功起爆"
+                        .setMessage(R.string.text_fir_dialog22)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog13, which) -> {
+                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
                             dialog13.dismiss();
                             closeThread();
                             closeForm();
@@ -581,10 +581,10 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    } else {
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                            .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-                            .setMessage("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,再进行检测。")//设置对话框的内容"本次任务成功起爆！"
+                            .setTitle(R.string.text_fir_dialog2)//设置对话框的标题//"成功起爆"
+                            .setMessage(getString(R.string.text_fir_dialog6))//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton("退出", (dialog12, which) -> {
+                            .setNegativeButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
                                 dialog12.cancel();
                                 closeThread();
                                 closeForm();
@@ -600,10 +600,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 closeThread();
                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(R.string.text_fir_dialog7)//设置对话框的标题//"成功起爆"
+                        .setMessage(R.string.text_fir_dialog8)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog12, which) -> {
+                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
                             dialog12.dismiss();
 //                                    closeThread();
                             closeForm();
@@ -1216,14 +1216,14 @@ public class FiringMainActivity extends SerialPortActivity {
         if (!firstThread.isAlive()) {
             if (denatorCount == 0) {
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(R.string.text_fir_dialog23)//设置对话框的标题//"成功起爆"
+                        .setMessage(R.string.text_fir_dialog24)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog13, which) -> {
+                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
                             dialog13.dismiss();
                             finish();
                         })
-                        .setNeutralButton("继续", (dialog2, which) -> {
+                        .setNeutralButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
                             dialog2.dismiss();
                             firstThread.start();
                         })
@@ -1291,7 +1291,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (System.currentTimeMillis() - time > 2000) {
             //获得当前的时间
             time = System.currentTimeMillis();
-            show_Toast("再次点击退出程序");
+            show_Toast(getString(R.string.text_fir_tuichu));
         } else {
             if (stage > 3) {
                 MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
@@ -1579,7 +1579,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 break;
             case 5:
-                secondTxt.setText("测试准备阶段 (" + Wait_Count + "s)");//"充电检测 ("
+                secondTxt.setText(getString(R.string.text_firing_tip7)+ Wait_Count + "s)");//"充电检测 ("
                 if (Wait_Count <= 0) {//等待结束
 //                    byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
 //                    sendCmd(powerCmd);
@@ -1596,10 +1596,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (sixExchangeCount == -1) {
                     Log.e(TAG, "未跳转按1+5阶段sixExchangeCount: " + sixExchangeCount);
                     AlertDialog dialog = new Builder(this)
-                            .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
-                            .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                            .setTitle(R.string.text_fir_dialog17)//设置对话框的标题//"成功起爆"
+                            .setMessage(R.string.text_fir_dialog18)//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton("退出", (dialog1, which) -> {
+                            .setNegativeButton(R.string.text_setDelay_dialog4, (dialog1, which) -> {
                                 dialog1.dismiss();
                                 closeThread();
                                 closeForm();
@@ -1614,8 +1614,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (sevenCount == 300) {
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
                     AlertDialog dialog = new Builder(this)
-                            .setTitle("提示")//设置对话框的标题//"成功起爆"
-                            .setMessage("检测到您长时间处于高压状态,可能会硬件短路,请先退出后再进入起爆")//设置对话框的内容"本次任务成功起爆！"
+                            .setTitle(R.string.text_fir_dialog2)//设置对话框的标题//"成功起爆"
+                            .setMessage(R.string.text_fir_dialog21)//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
                             .setNegativeButton(getString(R.string.text_test_exit), (dialog12, which) -> {
                                 dialog12.dismiss();
@@ -1642,7 +1642,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 break;
             case 9://起爆之后,弹出对话框
-                eightTxt.setText("起爆成功!");//"起爆成功！"
+                eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
 
@@ -1678,14 +1678,14 @@ public class FiringMainActivity extends SerialPortActivity {
                     Log.e(TAG, "大于4000u ，全错: ");
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
-                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再续进行检测。");//弹出框
+                    initDialog_zanting(getString(R.string.text_fir_dialog9));//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
 //                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
-                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
+                    initDialog_zanting(getString(R.string.text_fir_dialog11));//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况", 5);//弹出框
 //                    }
@@ -1694,7 +1694,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
 
 //                    if (chongfu) {
-                    initDialog_zanting2("请查看错误雷管列表,检查错误雷管后,再进行检测。");//弹出框
+                    initDialog_zanting2(getString(R.string.text_fir_dialog25));//弹出框
 //                    } else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
@@ -1702,7 +1702,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * ic_cankao + 100)) {//大于参考值 ，部分错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
-                    initDialog_zanting2("请查错误的雷管,检查无误后,再进行检测。");//弹出框
+                    initDialog_zanting2(getString(R.string.text_fir_dialog26));//弹出框
 //                    } else {
 //                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
 //                    }
@@ -1713,7 +1713,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 break;
             case 11://给范总加的起爆后的放电阶段
                 btn_return8.setVisibility(View.GONE);
-                eightTxt.setText("起爆中,请稍等" + elevenCount + "s");
+                eightTxt.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
                 break;
             case 99://暂停阶段
                 break;
@@ -1740,7 +1740,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 //                }
 
-                sixTxt.setText("第" + thirdWriteCount + "发雷管启动充电");
+                sixTxt.setText(getString(R.string.text_fir_dialog27) + thirdWriteCount + getString(R.string.text_fir_dialog28));
                 //写入通信未返回
 
                 break;
@@ -2465,19 +2465,19 @@ public class FiringMainActivity extends SerialPortActivity {
     private void initDialog_zanting(String tip) {
         chongfu = true;//已经检测了一次
         AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                .setTitle(R.string.text_fir_dialog2)//设置对话框的标题//"成功起爆"
                 .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
 //                .setNeutralButton("重检", (dialog1, which) -> {
 //                    off();//重新检测
 //                    dialog1.dismiss();
 //                })
-                .setNegativeButton("取消", (dialog12, which) -> {
+                .setNegativeButton(R.string.text_setDealy_qx, (dialog12, which) -> {
                     dialog12.cancel();
 //                    closeThread();
 //                    closeForm();
                 })
-                .setPositiveButton("继续", (dialog12, which) -> {
+                .setPositiveButton(R.string.text_setDelay_dialog3, (dialog12, which) -> {
 //                    off();//重新检测
                     increase(2);
                     dialog12.cancel();
@@ -2512,9 +2512,9 @@ public class FiringMainActivity extends SerialPortActivity {
         errlistview.setAdapter(mAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("系统提示");//"错误雷管列表"
+        builder.setTitle(R.string.text_fir_dialog2);//"错误雷管列表"
         builder.setView(getlistview);
-        builder.setPositiveButton("取消", (dialog, which) -> {
+        builder.setPositiveButton(R.string.text_setDealy_qx, (dialog, which) -> {
             dialogOFF(dialog);
 //            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
 //            sendCmd(reCmd);

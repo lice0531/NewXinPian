@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="设备初始化中..."
+            android:text="@string/text_zijian_title"
             android:textColor="@color/white"
             android:textSize="28sp" />
     </LinearLayout>

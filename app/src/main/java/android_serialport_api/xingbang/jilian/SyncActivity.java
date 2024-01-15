@@ -106,9 +106,9 @@ public class SyncActivity extends BaseActivity {
 
         mBuffer = new byte[50];
         delay = MyTools.getADelay();
-        tvDelay.setText("当前延迟(m)：" + delay);
+        tvDelay.setText(getString(R.string.text_sync_dqyc) + delay);
 
-        tvCode.setText(MyTools.getACode().equals("")?"设置编号":MyTools.getACode());
+        tvCode.setText(MyTools.getACode().equals("")?getString(R.string.text_sync_szbh):MyTools.getACode());
         getPropertiesData();
     }
 
@@ -116,8 +116,8 @@ public class SyncActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         delay = MyTools.getADelay();
-        tvDelay.setText("当前延迟(m)：" + delay);
-        tvCode.setText(MyTools.getACode().equals("")?"设置编号":MyTools.getACode());
+        tvDelay.setText(getString(R.string.text_sync_dqyc)  + delay);
+        tvCode.setText(MyTools.getACode().equals("")?getString(R.string.text_sync_szbh):MyTools.getACode());
     }
 
     private void getPropertiesData() {
@@ -151,7 +151,7 @@ public class SyncActivity extends BaseActivity {
                 case 0:
                     String response = (String) msg.obj;
                     if (response == null) {
-                        show_Toast("数据为空");
+                        show_Toast(getString(R.string.text_sync_tip1));
                         break;
                     }
                     if (response.contains("A001" + MyTools.getACode())) {
@@ -159,11 +159,11 @@ public class SyncActivity extends BaseActivity {
                         //收到服务器的同步确认指令
                         isTongBu = true;
                         handler.sendEmptyMessageDelayed(5, 3600);
-                        show_Toast("同步成功");
+                        show_Toast(getString(R.string.text_sync_tip2));
                         btnTest.setEnabled(false);
-                        btnTest.setText("已连接");
+                        btnTest.setText(R.string.text_sync_tip3);
                     } else if (response.contains("A002")) {
-                        show_Toast("收到起爆测试指令");
+                        show_Toast(getString(R.string.text_sync_tip4));
                         String str5 = "级联起爆";
                         if (Yanzheng.equals("验证")) {
                             //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
@@ -176,12 +176,12 @@ public class SyncActivity extends BaseActivity {
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
                     } else if (response.contains("A003")) {
-                        show_Toast("收到准备充电指令");
+                        show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
                     } else if (response.contains("A004")) {
-                        show_Toast("收到起爆指令");
+                        show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        if (response.length() >= 5) {
@@ -205,7 +205,7 @@ public class SyncActivity extends BaseActivity {
 //                    show_Toast("同步指令错误");
                     break;
                 case 2:
-                    show_Toast("数据发送成功");
+                    show_Toast(getString(R.string.text_sync_tip7));
                     break;
                 case 3:
                     //心跳数据
@@ -219,7 +219,7 @@ public class SyncActivity extends BaseActivity {
                     handler.sendEmptyMessageDelayed(5, 3600);*/
                     break;
                 case 6:
-                    btnTest.setText("连接中...");
+                    btnTest.setText(R.string.text_sync_tip8);
                     btnTest.setEnabled(false);
                     final String data2 = "0001" + MyTools.getACode() + "\n";
                     writeData(data2);
@@ -308,7 +308,7 @@ public class SyncActivity extends BaseActivity {
                                 String type = data.getStringExtra("type");
                                 String tip = data.getStringExtra("tip");
 
-                                show_Toast("正在回传数据");
+                                show_Toast(getString(R.string.text_sync_tip10));
                                 String a = "0004" + code + "," + type + "," + tip;
                                 writeData(a);
                             }
@@ -493,10 +493,10 @@ public class SyncActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_test:
                 if (MyTools.getACode().equals("")){
-                    show_Toast("设置编号");
+                    show_Toast(getString(R.string.text_sync_szbh));
                     return;
                 }
-                btnTest.setText("连接中...");
+                btnTest.setText(getString(R.string.text_sync_tip8));
                 btnTest.setEnabled(false);
 
 //                handler.sendEmptyMessageDelayed(16,1000);
@@ -522,11 +522,11 @@ public class SyncActivity extends BaseActivity {
                 if (socket == null) {
                     isConnect = true;
 //                    show_Toast("请重新打开APP，确保服务端已经在运行");
-                    btnTest.setText("连接中...");
+                    btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
                     connect();
                 } else {
-                    btnTest.setText("连接中...");
+                    btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
                     final String data = "0001" + MyTools.getACode() + "\n";
                     writeData(data);
@@ -534,7 +534,7 @@ public class SyncActivity extends BaseActivity {
 
                 break;
             case R.id.btn_test1:
-                show_Toast("已经断开同步");
+                show_Toast(getString(R.string.text_sync_tip11));
                 isTongBu = false;
 //                closeSocket();
                 finish();
@@ -566,7 +566,7 @@ public class SyncActivity extends BaseActivity {
 //            }
         }
 
-        show_Toast("正在回传数据");
+        show_Toast(getString(R.string.text_sync_tip12));
         String a;
         if (check.equals("1")) {
             a = "0001" + code + ",0" + check;

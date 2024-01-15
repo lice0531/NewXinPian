@@ -319,7 +319,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="参考电流:" />
+                android:text="@string/text_fir_ckdl" />
 
             <TextView
                 android:id="@+id/tv__qb_dianliu_2"
@@ -556,7 +556,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="参考电流:" />
+                android:text="@string/text_fir_ckdl" />
 
             <TextView
                 android:id="@+id/tv__qb_dianliu_1"

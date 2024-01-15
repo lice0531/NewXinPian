@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:text="设置编号"
+            android:text="@string/text_sync_szbh"
             android:textColor="@drawable/red"
             android:textSize="80sp" />
 
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:text="当前延迟(m)："
+                android:text="@string/text_sync_dqyc"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -100,7 +100,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="同步"
+                android:text="@string/text_sync_tb"
                 style="@style/allbtntstyle" />
 
             <Button
@@ -108,7 +108,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="退出"
+                android:text="@string/text_sync_tc"
                 style="@style/allbtntstyle" />
 
             <Button
@@ -116,7 +116,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="设置"
+                android:text="@string/text_sync_sz"
                 style="@style/allbtntstyle" />
 
         </LinearLayout>

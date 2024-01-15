@@ -49,7 +49,7 @@
         <activity
             android:name=".firingdevice.SendMsgActivity"
             android:exported="false"
-            android:label="数据互传"
+            android:label="@string/text_activity_sendMsg"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UpgradeActivity"
@@ -59,7 +59,7 @@
         <activity
             android:name=".firingdevice.TestICActivity"
             android:exported="false"
-            android:label="快速测试电流"
+            android:label="@string/text_activity_kscsdl"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.UpdataDelayActivity"
@@ -255,12 +255,12 @@
         <activity
             android:name=".firingdevice.SetVoltageActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="设置电压"
+            android:label="@string/title_activity_setVol"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SaveProjectActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="保存项目数据"
+            android:label="@string/title_activity_setPro"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
@@ -271,17 +271,17 @@
         <activity
             android:name=".firingdevice.SystemVersionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="系统版本号"
+            android:label="@string/title_activity_sys"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SetDelayTime_suidao"
             android:configChanges="orientation|keyboardHidden"
-            android:label="隧道延时"
+            android:label="@string/title_activity_suidao"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.DownOfflineActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="离线下载"
+            android:label="@string/title_activity_lixian"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.DownLoadActivity"
@@ -308,12 +308,12 @@
         <activity
             android:name=".jilian.SyncActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="级联"
+            android:label="@string/text_activity_jilian"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".jilian.SettingActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="级联设置"
+            android:label="@string/text_activity_jiliansz"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- BootReceiver是上面建的广播类 -->
         <activity
             android:name=".zxing.activity.CaptureActivity"

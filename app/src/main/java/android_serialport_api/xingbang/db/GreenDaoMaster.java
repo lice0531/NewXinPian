@@ -1,5 +1,6 @@
 package android_serialport_api.xingbang.db;
 
+import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
@@ -1008,7 +1010,7 @@ public class GreenDaoMaster {
             Denator_type message = new Denator_type();
             message.setDeTypeName("scyb");
             message.setDeTypeSecond("10000");
-            message.setIsSelected("是");
+            message.setIsSelected(getContext().getString(R.string.text_setFac_yes));
             getDaoSession().getDenator_typeDao().insert(message);
         }
 
@@ -1020,7 +1022,7 @@ public class GreenDaoMaster {
             message.setDeName("scyb");
             message.setDeEntCode("56");
             message.setDeFeatureCode("A");
-            message.setIsSelected("是");
+            message.setIsSelected(getContext().getString(R.string.text_setFac_yes));
             getDaoSession().getDefactoryDao().insert(message);
         }
     }

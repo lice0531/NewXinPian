@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="测试当前电流"
+            android:text="@string/text_ceshi_ic"
             android:textSize="25sp" />
     </LinearLayout>
 
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:gravity="end"
-            android:text="当前电流" />
+            android:text="@string/text_reister_ele" />
 
         <TextView
             android:id="@+id/tv_ceshi_dianliu"
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:gravity="end"
-            android:text="当前电压" />
+            android:text="@string/text_reister_vol" />
 
         <TextView
             android:id="@+id/tv_ceshi_dianya"
@@ -105,7 +105,7 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginStart="90dp"
-            android:text="开始测试" />
+            android:text="@string/text_ceshi_kscs" />
 
     </RelativeLayout>
 

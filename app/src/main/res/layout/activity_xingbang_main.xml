@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="设备编号："
+                    android:text="@string/text_main_sbbh"
                     android:textColor="#ffffff"
                     android:textSize="30sp" />
                 <TextView
@@ -96,7 +96,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="1.单发检测"
+                android:text="@string/text_main_dfzc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -106,7 +106,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="2.注册"
+                android:text="@string/text_main_zc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -128,7 +128,7 @@
                 android:background="@drawable/bt_mainpage_style"
                 android:enabled="true"
                 android:gravity="center"
-                android:text="3.项目管理"
+                android:text="@string/text_main_xmgl"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize"
                 android:visibility="visible" />
@@ -139,7 +139,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="4.网络测试"
+                android:text="@string/text_main_wlcs"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -159,10 +159,9 @@
                 android:id="@+id/btn_main_blast"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
-
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="5.起爆"
+                android:text="@string/text_main_qb"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -172,7 +171,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="6.查看"
+                android:text="@string/text_main_ck"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -193,7 +192,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="7.设置"
+                android:text="@string/text_main_sz"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -203,7 +202,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="8.删除"
+                android:text="@string/text_main_sc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -223,7 +222,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="9.辅助功能"
+                android:text="@string/text_main_fzgn"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -234,7 +233,7 @@
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="10.退出"
+                android:text="@string/text_main_tc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 

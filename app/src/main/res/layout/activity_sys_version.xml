@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="起爆程序版本号:"
+            android:text="@string/text_sys_1"
             android:textSize="20sp"
             />
 <!--        同时在xingbangMain中setUserMessage()更新版本号-->
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="控制模块软件版本号"
+            android:text="@string/text_sys_kz"
             android:textSize="20sp"
             />
 
@@ -88,7 +88,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="软件版本号" />
+            android:text="@string/text_sys_soft" />
     </LinearLayout>
 
     <LinearLayout
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="控制模块硬件版本号"
+            android:text="@string/text_sys_yj"
             android:textSize="20sp" />
 
         <TextView
@@ -111,7 +111,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="硬件版本号" />
+            android:text="@string/text_sys_yj_version" />
     </LinearLayout>
 
     <LinearLayout

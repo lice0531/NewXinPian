@@ -437,20 +437,21 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 show_Toast(getResources().getString(R.string.text_error_tip2));
             } else if (msg.what == 3) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_Toast(getString(R.string.text_reister_tip5) + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+//                show_Toast("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_Toast(getString(R.string.text_line_tip7));
             } else if (msg.what == 10) {
-                show_Toast("找不到对应的生产数据,请先导入生产数据");
+                show_Toast(getString(R.string.text_line_tip8));
             } else if (msg.what == 11) {
-                show_Toast("请先进行扫码,再进行单发注册");
+                show_Toast(getString(R.string.text_line_tip18));
             } else if (msg.what == 99) {
                 adapter.notifyDataSetChanged();
             } else if (msg.what == 2001) {
@@ -458,7 +459,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 SoundPlayUtils.play(4);
             } else {
                 SoundPlayUtils.play(4);
-                show_Toast("注册失败");
+                show_Toast(getString(R.string.text_line_tip9));
             }
             return false;
         });
@@ -483,28 +484,28 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 showDenatorSum();//得到数据的总条数
             }
             if (tipInfoFlag == 3) {//未收到关闭电源命令
-                show_Toast("未收到单片机返回命令");
+                show_Toast(getString(R.string.text_line_tip10));
             }
             if (tipInfoFlag == 4) {//未收到打开电源命令
-                show_Toast(getResources().getString(R.string.text_error_tip6));
+                show_Toast(getString(R.string.text_error_tip6));
             }
             if (tipInfoFlag == 5) {//桥丝不正常
-                show_Toast(getResources().getString(R.string.text_error_tip7));
+                show_Toast(getString(R.string.text_error_tip7));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 6) {//桥丝不正常
-                show_Toast("请先设置延时");
+                show_Toast(getString(R.string.text_line_tip11));
             }
             if (tipInfoFlag == 7) {//桥丝不正常
-                show_Toast("当前注册雷管电流过大,请检查雷管");
+                show_Toast(getString(R.string.text_line_tip12));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 8) {//桥丝不正常
-                show_Toast("当前雷管有异常,请检测后重新注册");
+                show_Toast(getString(R.string.text_line_tip13));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 9) {//桥丝不正常
-                show_Toast("当前雷管读码异常,请检查该雷管编码规则");
+                show_Toast(getString(R.string.text_line_tip14));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 88) {//刷新界面
@@ -513,7 +514,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 edit_end_entboxNoAndSerial_ed.getText().clear();//.setText("")
             }
             if (tipInfoFlag == 89) {//刷新界面
-                show_Toast("输入的管壳码重复");
+                show_Toast(getString(R.string.text_line_tip15));
                 showDenatorSum();
                 SoundPlayUtils.play(4);
             }
@@ -966,7 +967,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private void modifyBlastBaseInfo(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请修改雷管信息");
+        builder.setTitle(R.string.text_reister_tip6);
         View view = LayoutInflater.from(this).inflate(R.layout.blastbasedialog, null);
         builder.setView(view);
         final EditText username = (EditText) view.findViewById(R.id.blast_shellBlastNo_field);
@@ -986,7 +987,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             String a = username.getText().toString().trim();
             String b = password.getText().toString().trim();
             //    将输入的用户名和密码打印出来
-            show_Toast("管壳码: " + a + ", 延时: " + b);
+            show_Toast(getString(R.string.text_error_tip3) + a + getString(R.string.text_regist_tip7) + b);
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
@@ -1031,10 +1032,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             String delay1 = et_delay.getText().toString();
 
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getString(R.string.text_reister_tip9)  + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                show_Toast("延时为空或大于最大设定延时，修改失败! ");
+                show_Toast(getString(R.string.text_reister_tip8));
 
             } else {
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
@@ -1044,7 +1045,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -1723,9 +1724,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    if (num > 0) {
 //                        showAlertDialog();
 //                    }
-                    show_Toast("请等待电流电压显示出来后，再连接雷管!");
+                    show_Toast(getString(R.string.text_line_tip1));
                     btnInputOk.setEnabled(false);
-                    btnSingleReister.setText("停止注册");
+                    btnSingleReister.setText(R.string.text_line_stop);
                     isSingleReisher = 1;
                     closeThread();
 //                    closeOpenThread = new CloseOpenPower();
@@ -1734,9 +1735,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
                 } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
                     btnInputOk.setEnabled(true);
-                    btnSingleReister.setText("单发注册");
-                    txt_currentVolt.setText("当前电压:");
-                    txt_currentIC.setText("当前电流:");
+                    btnSingleReister.setText(R.string.text_line_single);
+                    txt_currentVolt.setText(R.string.text_line_IV);
+                    txt_currentIC.setText(R.string.text_line_ic);
                     txt_currentIC.setTextColor(Color.BLACK);
                     isSingleReisher = 0;
                     initCloseCmdReFlag = 0;
@@ -1746,7 +1747,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     // 13 退出注册模式
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
                 } else {
-                    show_Toast("正在与单片机通讯,请稍等一下再退出注册模式!");
+                    show_Toast(getString(R.string.text_line_tip17));
                 }
                 break;
 
@@ -2135,7 +2136,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             int index = strParamBarcode.indexOf("SC:");
             subBarCode = strParamBarcode.substring(index + 3, index + 16);
             if (subBarCode.trim().length() < 13) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
+                show_Toast(getString(R.string.text_reister_tip2));
                 return;
             }
         } else {
@@ -2223,7 +2224,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //判断当点击的是返回键
         if (keyCode == event.KEYCODE_BACK) {
             if (isSingleReisher != 0) {
-                show_Toast("请停止注册后再退出当前页面");
+                show_Toast(getString(R.string.text_reister_tip3));
             } else {
                 finish();
             }
@@ -2288,7 +2289,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_reister_tip4) + mRegion);
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
@@ -2329,12 +2330,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_dfzc_qy) + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getString(R.string.text_dfzc_qy) + region + getString(R.string.text_dfzc_sl) + size + ")";
         }
         // 设置标题
-        getSupportActionBar().setTitle(mOldTitle + str);
+        getSupportActionBar().setTitle(mOldTitle +" "+ str);
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, region);
 

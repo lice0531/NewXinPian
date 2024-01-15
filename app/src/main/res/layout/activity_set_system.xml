@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="是否上传错误雷管"
+                android:text="@string/set_cwlg"
                 android:textSize="20sp" />
 
             <com.suke.widget.SwitchButton
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="是否在线下载"
+                android:text="@string/set_zxxz"
                 android:textSize="20sp" />
 
             <com.suke.widget.SwitchButton
@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="是否验证雷管已经授权"
+                android:text="@string/set_shouquan"
                 android:textSize="20sp" />
 
             <com.suke.widget.SwitchButton
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="设置充电时间/s"
+                android:text="@string/set_cdsj"
                 android:textSize="20sp" />
 
             <EditText
@@ -206,7 +206,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bt_mainpage_style"
-                android:text="设置电压"
+                android:text="@string/set_szdy"
                 android:textColor="@color/bt_fg_base" />
         </LinearLayout>
 

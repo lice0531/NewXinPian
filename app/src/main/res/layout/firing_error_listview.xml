@@ -24,7 +24,7 @@
             android:background="@drawable/textview_border"
             style="@style/alltextstyle"
             android:textSize="18sp"
-            android:text="序号" />
+            android:text="@string/text_dialog_xh" />
         <TextView
             android:id="@+id/X_item_duan"
             android:layout_width="0dp"
@@ -43,7 +43,7 @@
             style="@style/alltextstyle"
             android:background="@drawable/textview_border"
             android:textSize="18sp"
-            android:text="管壳码" />
+            android:text="@string/text_dialog_gkm" />
         <TextView
             android:id="@+id/X_item_delay"
             android:layout_width="0dp"
@@ -53,7 +53,7 @@
             style="@style/alltextstyle"
             android:background="@drawable/textview_border"
             android:textSize="18sp"
-            android:text="延时" />
+            android:text="@string/text_list_delay" />
         <TextView
             android:id="@+id/X_item_errorname"
             android:layout_width="0dp"
@@ -63,7 +63,7 @@
             style="@style/alltextstyle"
             android:background="@drawable/textview_border"
             android:textSize="18sp"
-            android:text="错误" />
+            android:text="@string/text_dialog_err" />
     </LinearLayout>
     <ListView
         android:id="@+id/X_listview"
