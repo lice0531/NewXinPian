@@ -749,4 +749,6 @@
     <string name="set_shouquan">是否验证雷管已经授权</string>
     <string name="set_szdy">设置电压</string>
     <string name="text_line_pd">偏大</string>
+    <string name="text_his_scts">删除提示</string>
+    <string name="text_srmm">请输入密码后,再进行删除历史记录操作</string>
 </resources>

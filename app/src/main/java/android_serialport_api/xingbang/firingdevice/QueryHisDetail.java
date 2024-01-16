@@ -206,7 +206,7 @@ public class QueryHisDetail extends BaseActivity {
                     case R.id.bt_delete:
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
-                        builder.setTitle("删除提示");//"请输入用户名和密码"
+                        builder.setTitle(R.string.text_his_scts);//"请输入用户名和密码"
                         View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
                         builder.setView(view);
                         final EditText password = (EditText) view.findViewById(R.id.password);
@@ -224,7 +224,7 @@ public class QueryHisDetail extends BaseActivity {
                                 }
                                 dialog.dismiss();
                             } else {
-                                show_Toast("密码错误");
+                                show_Toast(getString(R.string.text_main_mmcw));
                             }
                         });
                         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
