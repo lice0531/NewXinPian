@@ -361,13 +361,13 @@
     <string name="text_main_dfzc">1.Single registration</string>
     <string name="text_main_zc">2.Registration</string>
     <string name="text_main_xmgl">3.Project</string>
-    <string name="text_main_wlcs">4.Network testing</string>
-    <string name="text_main_qb">5.Detonation</string>
-    <string name="text_main_ck">6.View</string>
-    <string name="text_main_sz">7.Setup</string>
-    <string name="text_main_sc">8.Delete</string>
-    <string name="text_main_fzgn">9.Auxiliary functions</string>
-    <string name="text_main_tc">10.Exit</string>
+    <string name="text_main_wlcs">3.Network testing</string>
+    <string name="text_main_qb">4.Detonation</string>
+    <string name="text_main_ck">5.View</string>
+    <string name="text_main_sz">6.Setup</string>
+    <string name="text_main_sc">7.Delete</string>
+    <string name="text_main_fzgn">8.Auxiliary functions</string>
+    <string name="text_main_tc">9.Exit</string>
     <string name="text_main_qu"> zone</string>
     <string name="text_dfzc_qy"> zone</string>
     <string name="text_dfzc_sl">(Qty: </string>
@@ -750,5 +750,10 @@
     <string name="set_shouquan">Have you verified that the detonator has been authorized</string>
     <string name="set_szdy">Set voltage</string>
     <string name="text_line_pd">Over sized</string>
+    <string name="text_his_jwdwk">The latitude and longitude are empty and cannot be uploaded</string>
+    <string name="text_his_scwz">The device currently does not have an upload URL set. Please set the upload URL first</string>
+    <string name="text_his_bnsc">No data, unable to perform upload</string>
+    <string name="text_his_scti">Tip</string>
+    <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
 
 </resources>

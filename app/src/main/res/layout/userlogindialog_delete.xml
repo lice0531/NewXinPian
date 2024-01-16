@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="请输入密码后,再进行删除历史记录操作"
+        android:text="@string/text_his_sclsjl"
         android:textSize="25sp"
         android:textStyle="bold"
 

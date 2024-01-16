@@ -172,7 +172,7 @@ public class QueryHisDetail extends BaseActivity {
                         if (blastdate == null || blastdate.trim().length() < 8) {
                             int count = getBlastModelCount();
                             if (count < 1) {
-                                show_Toast("没有数据，不能执行上传");
+                                show_Toast(getString(R.string.text_his_bnsc));
                                 return;
                             }
                             String fireDate =Utils.getDateFormatLong(new Date());
@@ -181,12 +181,12 @@ public class QueryHisDetail extends BaseActivity {
                         }
 //                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
                         if (pro_coordxy.length() < 2 && jd == null) {
-                            show_Toast("经纬度为空，不能执行上传");
+                            show_Toast(getString(R.string.text_his_jwdwk));
                             return;
                         }
 
                         if (server_type2.equals("0") && server_type1.equals("0")) {
-                            show_Toast("设备当前未设置上传网址,请先设置上传网址");
+                            show_Toast(getString(R.string.text_his_scwz));
                         }
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
                         pb_show = 1;
@@ -206,7 +206,7 @@ public class QueryHisDetail extends BaseActivity {
                     case R.id.bt_delete:
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
-                        builder.setTitle("删除提示");//"请输入用户名和密码"
+                        builder.setTitle(R.string.text_his_scti);//"请输入用户名和密码"
                         View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
                         builder.setView(view);
                         final EditText password = (EditText) view.findViewById(R.id.password);
@@ -224,7 +224,7 @@ public class QueryHisDetail extends BaseActivity {
                                 }
                                 dialog.dismiss();
                             } else {
-                                show_Toast("密码错误");
+                                show_Toast(getString(R.string.text_main_mmcw));
                             }
                         });
                         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());

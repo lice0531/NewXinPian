@@ -11,7 +11,7 @@
     <dimen name="childPageLabelFontSize">20sp</dimen>
     <dimen name="fireChildPageLabelFontSize">22sp</dimen>
     <dimen name="item_project_size">18sp</dimen>
-    <dimen name="MainPage_FontSize">25sp</dimen>
+    <dimen name="MainPage_FontSize">20sp</dimen>
 
     <dimen name="childPageEditFontSize">16sp</dimen>
     <dimen name="childPageTipFontSize">12sp</dimen>

@@ -361,13 +361,13 @@
     <string name="text_main_dfzc">1.单发检测</string>
     <string name="text_main_zc">2.注册</string>
     <string name="text_main_xmgl">3.项目管理</string>
-    <string name="text_main_wlcs">4.网络测试</string>
-    <string name="text_main_qb">5.起爆</string>
-    <string name="text_main_ck">6.查看</string>
-    <string name="text_main_sz">7.设置</string>
-    <string name="text_main_sc">8.删除</string>
-    <string name="text_main_fzgn">9.辅助功能</string>
-    <string name="text_main_tc">10.退出</string>
+    <string name="text_main_wlcs">3.网络测试</string>
+    <string name="text_main_qb">4.起爆</string>
+    <string name="text_main_ck">5.查看</string>
+    <string name="text_main_sz">6.设置</string>
+    <string name="text_main_sc">7.删除</string>
+    <string name="text_main_fzgn">8.辅助功能</string>
+    <string name="text_main_tc">9.退出</string>
     <string name="text_main_qu"> /区域</string>
     <string name="text_dfzc_qy">" 区域"</string>
     <string name="text_dfzc_sl">"(数量: "</string>
@@ -749,4 +749,9 @@
     <string name="set_shouquan">是否验证雷管已经授权</string>
     <string name="set_szdy">设置电压</string>
     <string name="text_line_pd">偏大</string>
+    <string name="text_his_jwdwk">经纬度为空，不能执行上传</string>
+    <string name="text_his_scwz">设备当前未设置上传网址,请先设置上传网址</string>
+    <string name="text_his_bnsc">没有数据，不能执行上传</string>
+    <string name="text_his_scti">删除提示</string>
+    <string name="text_his_sclsjl">请输入密码后,再进行删除历史记录操作</string>
 </resources>
