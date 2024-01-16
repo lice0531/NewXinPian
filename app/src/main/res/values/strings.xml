@@ -748,4 +748,5 @@
     <string name="text_send_tip30">当前雷管没有芯片码,传输错误!</string>
     <string name="set_shouquan">是否验证雷管已经授权</string>
     <string name="set_szdy">设置电压</string>
+    <string name="text_line_pd">偏大</string>
 </resources>

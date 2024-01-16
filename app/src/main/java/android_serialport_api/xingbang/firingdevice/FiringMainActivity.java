@@ -272,7 +272,7 @@ public class FiringMainActivity extends SerialPortActivity {
         eightTxt = findViewById(R.id.ll_txt_firing_8);
 
         firstTxt.setText((secondCount + firstWaitCount + Wait_Count) + "s");
-        secondTxt.setText("测试准备阶段 (" + (secondCount + Wait_Count) + "s)");
+        secondTxt.setText(getString(R.string.text_firing_tip7) + (secondCount + Wait_Count) + "s)");
         ll_firing_Volt_2 = findViewById(R.id.ll_firing_Volt_2);
         ll_firing_IC_2 = findViewById(R.id.ll_firing_IC_2);
         ll_firing_Volt_4 = findViewById(R.id.ll_firing_Volt_4);
@@ -2318,7 +2318,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_errorAmount_4.setTextColor(Color.GREEN);
         ll_firing_errorAmount_2.setTextColor(Color.GREEN);
         firstTxt.setText((secondCount + firstWaitCount + Wait_Count) + "s");
-        secondTxt.setText("测试准备阶段 (" + (secondCount + Wait_Count) + "s)");
+        secondTxt.setText(getString(R.string.text_firing_tip7) + (secondCount + Wait_Count) + "s)");
 
     }
 

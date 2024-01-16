@@ -395,12 +395,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 // 电源显示
                 case 1003:
                     if (busInfo != null) {
-                        txt_currentVolt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-                        txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000*2) + "μA");
+                        txt_currentVolt.setText(getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
+                        txt_currentIC.setText(getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa() * 1000*2) + "μA");
                         // 判断当前电流是否偏大
                         if (Math.round(busInfo.getBusCurrentIa() * 1000) > 70) {
                             txt_currentIC.setTextColor(Color.RED);
-                            txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000*2) + "μA偏大");
+                            txt_currentIC.setText(getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa() * 1000*2) + "μA"+getString(R.string.text_line_pd));
                         } else {
                             txt_currentIC.setTextColor(Color.GREEN);
                         }
@@ -470,7 +470,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
                     if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
                         txt_currentIC.setTextColor(Color.RED);
-                        txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA偏大");
+                        txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa()+ "μA"+getString(R.string.text_line_pd));
                     } else {
                         txt_currentIC.setTextColor(Color.GREEN);
                     }
@@ -695,7 +695,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private int showDenatorSum() {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
-        txtReisteramount.setText("已注册:" + list.size());
+        txtReisteramount.setText(getString(R.string.text_reister_tip1) + list.size());
         return list.size();
     }
 

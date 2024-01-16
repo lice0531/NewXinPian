@@ -749,5 +749,6 @@
     <string name="text_send_tip30">The current detonator does not have a UID, transmission error!</string>
     <string name="set_shouquan">Have you verified that the detonator has been authorized</string>
     <string name="set_szdy">Set voltage</string>
+    <string name="text_line_pd">Over sized</string>
 
 </resources>
