@@ -876,7 +876,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int showDenatorSum() {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
-        txtReisteramount.setText("已注册:" + list.size());
+        txtReisteramount.setText(getString(R.string.text_reister_tip1) + list.size());
         return list.size();
     }
 
@@ -887,7 +887,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
 //        View divider = tipDlg.findViewById(divierId);
 //        divider.setBackgroundColor(Color.TRANSPARENT);
-        tipDlg.setMessage("正在操作,请等待...").show();
+        tipDlg.setMessage(getString(R.string.text_loading)).show();
 
         new Thread(() -> {
             mHandler_2.sendMessage(mHandler_2.obtainMessage());
@@ -2284,7 +2284,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.VISIBLE);
                     llNum.setVisibility(View.VISIBLE);
                     btnInputOk.setVisibility(View.VISIBLE);
-                    btnSingle.setText("选择段位");
+                    btnSingle.setText(R.string.text_scan_xzdw);
                 } else {
                     lySetDelay.setVisibility(View.VISIBLE);
                     zcLlTitle.setVisibility(View.VISIBLE);
@@ -2294,7 +2294,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.GONE);
                     llNum.setVisibility(View.GONE);
                     btnInputOk.setVisibility(View.GONE);
-                    btnSingle.setText("手动输入");
+                    btnSingle.setText(R.string.text_scan_sdsr);
                 }
 
                 break;
@@ -2307,7 +2307,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnScanReister.setVisibility(View.GONE);
                     lySetDelay.setVisibility(View.GONE);
 
-                    btnInput.setText("扫码注册");
+                    btnInput.setText(R.string.text_scan_saomazhuce);
                 } else {
                     llEnd.setVisibility(View.GONE);
                     llStart.setVisibility(View.GONE);
@@ -2315,7 +2315,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnInputOk.setVisibility(View.GONE);
                     btnScanReister.setVisibility(View.VISIBLE);
                     lySetDelay.setVisibility(View.VISIBLE);
-                    btnInput.setText("手动输入");
+                    btnInput.setText(R.string.text_scan_sdsr);
                 }
                 break;
             case R.id.btn_inputOk:

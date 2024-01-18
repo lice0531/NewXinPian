@@ -71,6 +71,7 @@
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
+                android:enabled="false"
                 android:text="@string/xingbang_set_page_btn_upload" />
         </LinearLayout>
 

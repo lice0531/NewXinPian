@@ -560,12 +560,12 @@ public class XingbangMain extends BaseActivity {
     private void toFiring() {
         String str5 = "起爆";
         Intent intent5;//金建华
-        if (Yanzheng.equals("验证")) {
-            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-            intent5 = new Intent(this, VerificationActivity.class);
-        } else {
+//        if (Yanzheng.equals("验证")) {
+//            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//            intent5 = new Intent(this, VerificationActivity.class);
+//        } else {
             intent5 = new Intent(this, FiringMainActivity.class);
-        }
+//        }
         intent5.putExtra("dataSend", str5);
         startActivityForResult(intent5, 1);
     }
@@ -1114,11 +1114,11 @@ public class XingbangMain extends BaseActivity {
                         intent5 = new Intent(this, TestDenatorActivity.class);
                     } else {
                         Log.e("验证2", "Yanzheng: " + Yanzheng);
-                        if (Yanzheng.equals("验证")) {
-                            intent5 = new Intent(this, VerificationActivity.class);
-                        } else {
+//                        if (Yanzheng.equals("验证")) {
+//                            intent5 = new Intent(this, VerificationActivity.class);
+//                        } else {
                             intent5 = new Intent(this, FiringMainActivity.class);
-                        }
+//                        }
                     }
 
                     intent5.putExtra("dataSend", str5);

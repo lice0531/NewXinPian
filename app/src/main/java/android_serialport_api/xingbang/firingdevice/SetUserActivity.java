@@ -203,12 +203,12 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 		String stproDt = et_user_pw.getText().toString();
 		
 		
-		if(StringUtils.isNotBlank(st2Bit)==false){
-			tipStr="用户名不能为空";
+		if(!StringUtils.isNotBlank(st2Bit)){
+			tipStr=getString(R.string.text_user_err1);
 			return tipStr;
 		}
-		if(StringUtils.isNotBlank(stproDt)==false){
-			tipStr="密码不能为空";
+		if(!StringUtils.isNotBlank(stproDt)){
+			tipStr=getString(R.string.text_user_err2);
 			return tipStr;
 		}
 		
@@ -318,7 +318,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	}
 	/**
 	 * 检查重复的数据
-	 * @param shellBlastNo
+	 * @param userName
 	 * @return
 	 */
 	public int checkRepeatUserName(String userName){

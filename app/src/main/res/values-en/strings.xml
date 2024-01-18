@@ -755,5 +755,8 @@
     <string name="text_his_bnsc">No data, unable to perform upload</string>
     <string name="text_his_scti">Tip</string>
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
+    <string name="text_his_scsyjl">Delete all uploaded records</string>
+    <string name="text_scan_xzdw">Select segment</string>
+    <string name="text_fir_dlwl">Current is 0, please check whether the circuit is correctly connected</string>
 
 </resources>

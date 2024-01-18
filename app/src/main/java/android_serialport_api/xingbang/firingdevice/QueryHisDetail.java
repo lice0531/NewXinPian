@@ -191,12 +191,13 @@ public class QueryHisDetail extends BaseActivity {
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
                         pb_show = 1;
                         runPbDialog();//loading画面
-                        if (server_type1.equals("1")) {
-                            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
-                        }
-                        if (server_type2.equals("2")) {
-                            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
-                        }
+                        //英文版暂时屏蔽丹灵和中爆上传
+//                        if (server_type1.equals("1")) {
+//                            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+//                        }
+//                        if (server_type2.equals("2")) {
+//                            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
+//                        }
                         Log.e("读取日志1", "blastdate: " + blastdate);
                         Log.e("qbxm_name", "qbxm_name: " + qbxm_name);
                         Log.e("qbxm_name", "qbxm_name: " + qbxm_name.length());

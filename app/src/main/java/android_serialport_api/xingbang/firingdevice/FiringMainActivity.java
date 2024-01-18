@@ -853,7 +853,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             case 10:
                 ll_4.setVisibility(View.VISIBLE);
-                fourTxt.setText("当前电流为0,请检查线路是否正确连接");
+                fourTxt.setText(R.string.text_fir_dlwl);
                 Log.e("流程", "10: ");
                 break;
             case 11:
