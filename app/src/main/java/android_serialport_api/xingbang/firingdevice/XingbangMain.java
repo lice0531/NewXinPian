@@ -670,7 +670,7 @@ public class XingbangMain extends BaseActivity {
                     if (a < 180000) {
                         initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
                     }
-//                    return;
+                    return;
                 }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
@@ -705,7 +705,7 @@ public class XingbangMain extends BaseActivity {
                     if (a < 180000) {
                         initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
                     }
-//                    return;
+                    return;
                 }
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);

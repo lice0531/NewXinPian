@@ -155,6 +155,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         super.onDestroy();
+        closeThread();
+        closeForm();
         fixInputMethodManagerLeak(this);
     }
 
@@ -374,7 +376,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     })
                     .setNeutralButton("确定", (dialog1, which) -> dialog1.dismiss())
                     .create();
-            dialog.show();
+            if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                dialog.show();
+            }
             show_Toast("当前电流过大");
         }
     }
@@ -528,7 +532,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
                     ll_firing_IC_4.setTextSize(20);
-                    if (displayIc <= 4 && firstCount <= Preparation_time * 0.2) {
+                    if (displayIc <= 4 && firstCount <= Preparation_time * 0.2 && denatorCount>=5 ) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast("当前电流为0,请检查线路是否正确连接");
                         stage = 5;
@@ -1242,7 +1246,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 })
                 .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.show();
+        }
     }
 
     private void initDialog_msg(String tip) {
@@ -1270,7 +1276,9 @@ public class TestDenatorActivity extends SerialPortActivity {
 //
 //                })
                 .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting(String tip) {
@@ -1287,7 +1295,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     stopXunHuan();
                 })
                 .create();
-        dialog.show();
+        if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.show();
+        }
     }
 
     private void initDialog_zanting2(String tip) {

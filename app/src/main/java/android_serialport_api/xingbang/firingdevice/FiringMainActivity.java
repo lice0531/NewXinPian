@@ -1695,7 +1695,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if(busInfo.getBusCurrentIa()<denatorCount*cankao*0.5){
                                     zhuangtai="00";
                                 }
-                                String data = denatorId + delayStr + write.getZhu_yscs()+zhuangtai;
+                                String data = denatorId + delayStr + write.getZhu_yscs()+"00";
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
@@ -1990,7 +1990,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "keyCode: "+keyCode );
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")|| !Build.DEVICE.equals("KT50")) {
+        } else if (keyCode == KeyEvent.KEYCODE_3 && (!Build.DEVICE.equals("KT50_B2") && !Build.DEVICE.equals("KT50"))) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
