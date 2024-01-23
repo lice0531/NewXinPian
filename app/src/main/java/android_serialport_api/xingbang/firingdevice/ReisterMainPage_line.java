@@ -960,7 +960,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             default:
                 break;
         }
-        show_Toast(Temp + "处理");
+//        show_Toast(Temp + "处理");
         return super.onContextItemSelected(item);
     }
 
@@ -1011,8 +1011,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton(R.string.text_dialog_qx, (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(R.string.text_dialog_sc, (dialog, which) -> {
             dialog.dismiss();
 
             // TODO 开启进度条
@@ -1028,7 +1028,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             }).start();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(R.string.text_dialog_qd, (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
 
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {

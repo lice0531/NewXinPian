@@ -17,7 +17,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="序号"
+            android:text="@string/text_dialog_xh"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -27,7 +27,7 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="序号"
+            android:hint="@string/text_dialog_xh"
             android:maxLength="20"
             android:numeric="integer"
             android:padding="5dp"
@@ -56,7 +56,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="管壳码"
+            android:text="@string/text_dialog_gkm"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -66,7 +66,7 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="管壳码"
+            android:hint="@string/text_dialog_gkm"
             android:maxLength="13"
             android:numeric="integer"
             android:padding="5dp"

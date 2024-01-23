@@ -35,15 +35,18 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:text="@string/set_cwlg"
                 android:textSize="20sp" />
 
             <com.suke.widget.SwitchButton
                 android:id="@+id/sw_shangchuan"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical" />
         </LinearLayout>
@@ -199,6 +202,7 @@
             <Button
                 android:id="@+id/set_Voltage"
                 style="@style/allbtntstyle"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

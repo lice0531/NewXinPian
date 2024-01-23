@@ -506,7 +506,7 @@ public class XingbangMain extends BaseActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(XingbangMain.this);
         //  builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle("请输入起爆用户名和密码!");//"请输入用户名和密码"
+        builder.setTitle(R.string.text_xingbang_sryhm);//"请输入用户名和密码"
         //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
         View view = LayoutInflater.from(XingbangMain.this).inflate(R.layout.userlogindialog, null);
         //    设置我们自己定义的布局文件作为弹出框的Content

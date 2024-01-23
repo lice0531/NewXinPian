@@ -972,11 +972,11 @@ public class QueryHisDetail extends BaseActivity {
                 break;
             case R.id.btn_del_all:
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("该操作会按清空当前列表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(R.string.text_queryHis_dialog1)//设置对话框的标题//"成功起爆"
+                        .setMessage(R.string.text_queryHis_dialog5)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
-                        .setPositiveButton("确认删除", (dialog12, which) -> {
+                        .setNegativeButton(R.string.text_queryHis_dialog3, (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton(R.string.text_queryHis_dialog4, (dialog12, which) -> {
                             dialog12.dismiss();
                             db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, null, null);
                             //主表
@@ -1021,7 +1021,7 @@ public class QueryHisDetail extends BaseActivity {
 
             case R.id.item_1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
-                builder.setTitle("删除提示");//"请输入用户名和密码"
+                builder.setTitle(R.string.text_his_scti);//"请输入用户名和密码"
                 View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
                 builder.setView(view);
                 final EditText password = view.findViewById(R.id.password);
@@ -1044,9 +1044,9 @@ public class QueryHisDetail extends BaseActivity {
                             }
                         }
 
-                        show_Toast("删除已上传记录");
+                        show_Toast(getString(R.string.text_his_scyscjl));
                     } else {
-                        show_Toast("密码错误");
+                        show_Toast(getString(R.string.text_main_mmcw));
                     }
                     loadMoreData(currentPage);//读取数据
                     showLoadMore();

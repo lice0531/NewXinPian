@@ -757,4 +757,6 @@
     <string name="text_his_scsyjl">删除所有已上传记录</string>
     <string name="text_scan_xzdw">选择段位</string>
     <string name="text_fir_dlwl">当前电流为0,请检查线路是否正确连接</string>
+    <string name="text_xingbang_sryhm">请输入起爆用户名和密码!</string>
+    <string name="text_his_scyscjl">删除已上传记录</string>
 </resources>

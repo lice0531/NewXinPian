@@ -833,7 +833,7 @@ public class SendMsgActivity extends BaseActivity {
             }
 
         }
-        show_Toast("解析成功");
+        show_Toast(getString(R.string.text_send_tip27));
     }
 
     /**

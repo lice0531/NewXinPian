@@ -281,7 +281,7 @@ public class SetEnvMainActivity extends BaseActivity {
                     values.put("equ_no", b);//设备编号
                 } else {
                     values.put("equ_no", "");//设备编号
-                    show_Toast("请注意,您已设置设备编号为空");
+                    show_Toast(getString(R.string.text_set_zhuyi));
                 }
                 db.update(DatabaseHelper.TABLE_NAME_USER_MESSQGE, values, "id=?", new String[]{"1"});
                 dialog.dismiss();

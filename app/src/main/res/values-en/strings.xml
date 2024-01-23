@@ -758,5 +758,7 @@
     <string name="text_his_scsyjl">Delete all uploaded records</string>
     <string name="text_scan_xzdw">Select segment</string>
     <string name="text_fir_dlwl">Current is 0, please check whether the circuit is correctly connected</string>
+    <string name="text_xingbang_sryhm">请输入起爆用户名和密码!</string>
+    <string name="text_his_scyscjl">删除已上传记录</string>
 
 </resources>

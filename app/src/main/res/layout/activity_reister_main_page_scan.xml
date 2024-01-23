@@ -182,7 +182,7 @@
                         android:layout_weight="2"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="2位"
+                        android:hint="@string/text_reister_2b"
                         android:maxLength="2"
                         android:digits="1234567890"
                         android:inputType="number"
@@ -198,7 +198,7 @@
                         android:layout_weight="3"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="3位"
+                        android:hint="@string/text_reister_3b"
                         android:maxLength="3"
                         android:digits="1234567890"
                         android:inputType="number"
@@ -305,7 +305,7 @@
                         android:layout_weight="2"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="2位"
+                        android:hint="@string/text_reister_2b"
                         android:maxLength="2"
                         android:digits="1234567890"
                         android:inputType="number"
@@ -321,7 +321,7 @@
                         android:layout_weight="3"
                         android:background="@drawable/translucent"
                         android:gravity="center"
-                        android:hint="3位"
+                        android:hint="@string/text_reister_3b"
                         android:maxLength="3"
                         android:digits="1234567890"
                         android:inputType="number"
@@ -351,6 +351,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
+                    android:textSize="15sp"
                     android:text="@string/text_scan_lxzcgs" />
 
                 <LinearLayout

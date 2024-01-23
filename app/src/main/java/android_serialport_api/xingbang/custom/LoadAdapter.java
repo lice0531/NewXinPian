@@ -58,7 +58,7 @@ public class LoadAdapter extends BaseAdapter {
         viewHolder.shellBlastNo.setText(list.get(position).getShellBlastNo());//延时
         viewHolder.setdelaytxt.setText(""+list.get(position).getDelay());//管壳码
         viewHolder.txtstatus.setText(list.get(position).getErrorName());//错误状态
-        if(list.get(position).getErrorName()!=null&&!list.get(position).getErrorName().equals("通信成功")){
+        if(list.get(position).getErrorName()!=null&&!list.get(position).getErrorName().equals(mContext.getString(R.string.text_communication_state4))){
             viewHolder.txtstatus.setTextColor(Color.RED);
         }else {
             viewHolder.txtstatus.setTextColor(Color.BLACK);

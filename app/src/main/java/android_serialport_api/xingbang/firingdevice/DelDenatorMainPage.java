@@ -217,7 +217,7 @@ public class DelDenatorMainPage extends BaseActivity  {
     public void Del_Err_Denator() {
         Builder builder = new Builder(DelDenatorMainPage.this);
         builder.setTitle(getString(R.string.text_alert_tip));//"提示"
-        builder.setMessage("是否删除错误雷管");//是否全部删除注册雷管数
+        builder.setMessage(getString(R.string.text_alert_deleteErr));//是否全部删除注册雷管数
         builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -418,11 +418,11 @@ public class DelDenatorMainPage extends BaseActivity  {
             case R.id.btn_serialNo_del://按序号删除
                 hideInputKeyboard();
                 AlertDialog dialog = new Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("该操作会按序号删除表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getString(R.string.text_delete_tip1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getString(R.string.text_delete_tip2))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog12, which) -> dialog12.dismiss())
-                        .setPositiveButton("确认删除", (dialog1, which) -> {
+                        .setNegativeButton(getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
+                        .setPositiveButton(getString(R.string.text_delete_tip4), (dialog1, which) -> {
                             String checstr = checkData();
                             if (checstr == null || checstr.trim().length() < 1) {
                                 //起始序号
@@ -492,7 +492,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_send_choice) + mRegion);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

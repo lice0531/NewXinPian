@@ -314,7 +314,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 // 区域 更新视图
                 mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_send_choice) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -348,7 +348,7 @@ public class QueryCurrentDetail extends BaseActivity {
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(R.string.text_dialog_choice);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
@@ -380,7 +380,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
 
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast(getString(R.string.text_setDelay_toast1));
             }
 
         });
