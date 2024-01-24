@@ -113,12 +113,12 @@ public class SecondNetTestCmd {
 
 				String denatorStatus = dataHex.substring(2,4);//雷管状态
 				vo.setDenatorStatus(denatorStatus);
-				
-				String delayTime = dataHex.substring(4);//延时
-				delayTime = Utils.swop2ByteOrder(delayTime);
-				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
-				int dyt = Utils.byte2ToUnsignedShort(dataBytes, 0);
-				vo.setDelayTime(dyt);
+
+				String yscs = dataHex.substring(4);//延时
+//				delayTime = Utils.swop2ByteOrder(delayTime);
+//				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
+//				int dyt = Utils.byte2ToUnsignedShort(dataBytes, 0);
+				vo.setYscs(yscs);
 				return vo;
 			}
 		}

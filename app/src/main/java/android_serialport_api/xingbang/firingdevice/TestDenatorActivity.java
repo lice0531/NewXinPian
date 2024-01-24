@@ -751,6 +751,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
         denator.setErrorCode(fromData.getCommicationStatus());
         denator.setErrorName(fromData.getCommicationStatusName());
+        if(fromData.getCommicationStatus().equals("FF")&&!fromData.getYscs().equals("0000")){//判断,不能为0000
+            denator.setZhu_yscs(fromData.getYscs());
+        }
         Application.getDaoSession().update(denator);
 
 //        ContentValues values = new ContentValues();

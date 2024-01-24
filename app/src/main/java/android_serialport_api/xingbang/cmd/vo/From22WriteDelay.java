@@ -13,6 +13,15 @@ public class From22WriteDelay {
 	private String commicationStatus;//通信状态 ,00--（与雷管通信失败）01--延期写入不一致	FF--通信成功。AF:未返回命令
 	private String shellNo;//管壳码
     private int  delayTime;//延时
+	private String yscs;
+
+	public String getYscs() {
+		return yscs;
+	}
+
+	public void setYscs(String yscs) {
+		this.yscs = yscs;
+	}
 
 	public String getShellNo() {
 		return shellNo;
