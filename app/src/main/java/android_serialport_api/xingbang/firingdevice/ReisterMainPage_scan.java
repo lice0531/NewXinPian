@@ -415,6 +415,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
 
 
+                } else if (data.length() == 19) {
+                    //A62000085D437 1704 1 0
+                    barCode = data.substring(0, 13);
+                    denatorId = barCode;
+                    String yscs = data.substring(13, 17);
+                    String version = data.substring(17, 18);
+                    duan = data.substring(18, 19);
+                    insertSingleDenator_28(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                 } else if (data.length() == 14) {
                     barCode = data.substring(0, 13);
                     duan = data.substring(13, 14);
