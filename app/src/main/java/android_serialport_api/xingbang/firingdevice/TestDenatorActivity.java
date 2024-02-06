@@ -583,7 +583,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 9000) {
+                    if (displayIc > 13000) {
                         displayIcStr = displayIcStr + "(疑似短路)";
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -608,9 +608,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     ll_firing_IC_4.setText(displayIcStr);
 
 
-                    //电流大于9000
+                    //电流大于13000
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 9000 && firstCount < Preparation_time * 0.2) {
+                    if (displayIc > 13000 && firstCount < Preparation_time * 0.2) {
                         stage = 5;
                         try {
                             Thread.sleep(500);
@@ -686,15 +686,15 @@ public class TestDenatorActivity extends SerialPortActivity {
             case 4:
                 if (totalerrorNum == 0) {
                     stopXunHuan();
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
-                    Log.e(TAG, "大于9000u ，全错: ");
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 13000) {//大于13000u ，全错
+                    Log.e(TAG, "大于13000u ，全错: ");
 //                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
 //                    if (chongfu) {
                     initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 13000) {//小于13000u ，全错
 //                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
 //                    if (chongfu) {
 //                    initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再重新检测。");//弹出框
@@ -702,7 +702,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
                     stopXunHuan();//检测完成
-                    Log.e(TAG, "小于9000u ，全错: stage=" + stage);
+                    Log.e(TAG, "小于13000u ，全错: stage=" + stage);
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * ic_cankao + 100) {//小于参考值 ，部分错
 //                    sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
 //                    if (chongfu) {

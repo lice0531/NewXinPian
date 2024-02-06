@@ -546,7 +546,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 9000 && stage != 6 && stage != 33) {
+                if (displayIc > 13000 && stage != 6 && stage != 33) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -613,10 +613,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //电流大于9000,重启检测阶段
+            //电流大于13000,重启检测阶段
             if (secondCount < JianCe_time * 0.2 && stage == 2 && busInfo != null) {
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 9000) {
+                if (displayIc > 13000) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
 
@@ -1604,14 +1604,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 stopXunHuan();
                 //disPlayNoReisterDenator();
 //                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
-//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于4000u ，全错
+//                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 13000) {//大于4000u ，全错
 //                    Log.e(TAG, "大于4000u ，全错: ");
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
 //                    }
-//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于4000u ，全错
+//                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 13000) {//小于4000u ，全错
 //
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
@@ -1734,7 +1734,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 stopXunHuan();
                 if (totalerrorNum == 0) {
 //                    stopXunHuan();
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 9000) {//大于9000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 13000) {//大于13000u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
@@ -1742,7 +1742,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
 //                    }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 9000) {//小于9000u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 13000) {//小于13000u ，全错
                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
 //                    if (chongfu) {
                     initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后再进行检测。");//弹出框
@@ -2003,7 +2003,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 9000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 13000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
                                     Log.e(TAG, "长时间没有返回spanTime: " + spanTime);
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
