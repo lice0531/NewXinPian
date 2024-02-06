@@ -4,7 +4,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="spacing_medium">20dp</dimen>
-    <dimen name="mainpageFontSize">16sp</dimen>
+    <dimen name="mainpageFontSize">30sp</dimen>
     <dimen name="childPageBtnFontSize">16sp</dimen>
     <dimen name="DownWork_Item_FontSize">20sp</dimen>
     <dimen name="listViewFontSize">14sp</dimen>
