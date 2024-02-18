@@ -1093,8 +1093,8 @@ public class XingbangMain extends BaseActivity {
         String str5 = c;
         Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
-        mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n"+R.string.text_fir_dialog1);
+        mOffTextView.setTextSize(22);
+        mOffTextView.setText(tip + "\n"+getString(R.string.text_fir_dialog1) );
         mDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.text_fir_dialog2)
                 .setCancelable(false)
@@ -1132,7 +1132,7 @@ public class XingbangMain extends BaseActivity {
         mOffHandler = new Handler(msg -> {
             if (msg.what > 0) {
                 //动态显示倒计时
-                mOffTextView.setText(tip + "\n"+R.string.text_fir_dialog1 + msg.what);
+                mOffTextView.setText(tip + "\n"+getString(R.string.text_fir_dialog1) + msg.what);
             } else {
                 //倒计时结束自动关闭
                 if (mDialog != null) {
@@ -1160,7 +1160,6 @@ public class XingbangMain extends BaseActivity {
                 if (countTime > 0) {
                     countTime--;
                 }
-                Log.e(TAG, "countTime: " + countTime);
                 Message msg = new Message();
                 msg.what = countTime;
                 mOffHandler.sendMessage(msg);
