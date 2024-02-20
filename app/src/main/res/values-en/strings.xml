@@ -325,8 +325,8 @@
     <string name="text_btn_add">Add</string>
     <string name="text_user_username">username</string>
     <string name="text_user_password">password</string>
-    <string name="text_alert_nowNum">number</string>
-    <string name="text_alert_newNum">new number</string>
+    <string name="text_alert_nowNum">Id</string>
+    <string name="text_alert_newNum">new Id</string>
     <string name="text_total">total:</string>
     <string name="text_systip_1">Successfully saved</string>
     <string name="text_systip_2">Detection time is greater than 5s</string>

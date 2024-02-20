@@ -74,7 +74,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="@string/text_user_username"
-                android:textSize="@dimen/childReisterPageLabelFontSize" />
+                android:textSize="@dimen/childReisterPageBtnFontSize" />
 
             <EditText
                 android:id="@+id/user_name"
@@ -110,7 +110,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="@string/text_user_password"
-                android:textSize="@dimen/childReisterPageLabelFontSize" />
+                android:textSize="@dimen/childReisterPageBtnFontSize" />
 
             <EditText
                 android:id="@+id/user_pw"
