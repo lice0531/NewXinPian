@@ -1271,10 +1271,11 @@ public class FiringMainActivity extends SerialPortActivity {
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
                 if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                 } else {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                 }
+
             }
             if (FiringMainActivity.stage == 8) {
                 byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
