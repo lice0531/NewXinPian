@@ -852,9 +852,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == Jiance_time - 14) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 } else {
-                                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }
                             }
                             if (firstCount == Jiance_time - 15) {//Preparation_time-1
