@@ -201,6 +201,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         // getDenatorType();
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
+        Utils.writeRecord("stage" + stage);
         Log.e(TAG, "stage: " + stage);
 
         sendOpenThread = new SendOpenPower();
@@ -535,6 +536,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
 
     public void execStage(Message msg) {
+        Utils.writeRecord("stage" + stage);
         switch (stage) {
             case 0:
                 if (tipInfoFlag == 3) {//未收到关闭电源命令
@@ -834,9 +836,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//46 20(第一代)
                                 } else {
-                                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第二代)
+                                    sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//46 20(第二代)
                                 }
                             }
                             Thread.sleep(1000);
