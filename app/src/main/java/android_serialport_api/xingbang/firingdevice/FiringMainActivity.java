@@ -2183,12 +2183,14 @@ public class FiringMainActivity extends SerialPortActivity {
                                     break;
                                 }
                                 if (version_2 && thirdWriteCount == 0 && denatorlist2.size() != 0) {
+                                    Thread.sleep(100);//等待上一条命令返回
                                     version_2 = false;//发一次就不要发了
                                     sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(慢)
-                                    Thread.sleep(500);
+                                    Thread.sleep(500);//等待命令返回
                                     continue;
                                 }
                                 if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
+                                    Thread.sleep(100);
                                     version_1 = false;//发一次就不要发了
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(快)
                                     Thread.sleep(500);
