@@ -96,7 +96,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="130dp"
             android:orientation="vertical">
 
             <TextView
@@ -115,8 +115,8 @@
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:text="级联设置" />
+                android:layout_marginTop="10dp"
+                android:text="有线级联设置" />
 
             <Button
                 android:id="@+id/but_jilian_wifi"
@@ -125,9 +125,9 @@
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:text="WIFI级联设置页面"
-                android:visibility="gone" />
+                android:layout_marginTop="10dp"
+                android:text="热点级联设置"
+                android:visibility="visible" />
         </LinearLayout>
 
         <View

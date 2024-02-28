@@ -1907,11 +1907,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr + write.getZhu_yscs();
-                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
-                                    String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
-                                    denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
-                                    data = denatorId + delayStr + write.getZhu_yscs() + denatorIdSup + write.getCong_yscs();
-                                }
+//                                if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
+//                                    String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
+//                                    denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
+//                                    data = denatorId + delayStr + write.getZhu_yscs() + denatorIdSup + write.getCong_yscs();
+//                                }
                                 //发送31命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
                                 sendCmd(initBuf);

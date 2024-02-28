@@ -2561,7 +2561,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
 //                if (deleteList()) return;
                 container1.requestFocus();//获取焦点,
-                scanDecode.starScan();
+//                scanDecode.starScan();
 
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
@@ -2573,11 +2573,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             e.printStackTrace();
                         }
                     }
+
+                    kaishiScan();
                     //kt50持续扫码线程
                     scanBarThread = new ScanBar();
                     scanBarThread.start();
-                    //st327上电
-                    powerOnScanDevice(PIN_TRACKER_EN);//扫码头上电
 
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scaning));//"正在扫码"
                     btnReisterScanStartEd.setEnabled(false);
@@ -2587,10 +2587,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
                     btnReisterScanStartEd.setEnabled(true);
                     btnReisterScanStartSt.setEnabled(true);
-                    //kt50停止扫码头方法
-                    scanDecode.stopScan();//停止扫描
-                    //st327扫码下电
-                    powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                    tingzhiScan();
+
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
                         try {
@@ -2813,10 +2811,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
+                    kaishiScan();//启动扫描
                 } else {
                     continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
+                    tingzhiScan();//停止扫描
                 }
                 sanButtonFlag = 1;
                 break;
@@ -2824,10 +2822,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
+                    kaishiScan();//启动扫描
                 } else {
                     continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
+                    tingzhiScan();//停止扫描
                 }
                 sanButtonFlag = 2;
                 break;
@@ -2960,6 +2958,45 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reNumF20.setBackgroundResource(R.drawable.textview_border_green);
                 break;
 
+        }
+    }
+
+    private void kaishiScan() {
+        switch (Build.DEVICE) {
+            case "M900": {
+                //M900打开扫码
+                mScaner.startScan();
+                break;
+            }
+            case "ST327":
+            case "S337":  {
+                //st327上电
+                powerOnScanDevice(PIN_TRACKER_EN);//扫码头上电
+                break;
+            }
+            default:{
+                scanDecode.starScan();
+
+            }
+        }
+    }
+    private void tingzhiScan() {
+        switch (Build.DEVICE) {
+            case "M900": {
+                //M900关闭扫码
+                mScaner.stopScan();
+                break;
+            }
+            case "ST327":
+            case "S337":  {
+                //st327扫码下电
+                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                break;
+            }
+            default:{
+                //kt50停止扫码头方法
+                scanDecode.stopScan();//停止扫描
+            }
         }
     }
 
@@ -3103,7 +3140,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             while (!exit) {
                 try {
-                    scanDecode.starScan();
+                    switch (Build.DEVICE) {
+                        case "M900": {
+                            mScaner.startScan();
+                            break;
+                        }
+                        default:{
+                            scanDecode.starScan();
+                        }
+                    }
                     Thread.sleep(1250);
                     //break;
 

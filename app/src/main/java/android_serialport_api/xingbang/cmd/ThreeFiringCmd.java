@@ -288,7 +288,7 @@ public class ThreeFiringCmd {
 		}
 		if(cmd==null||cmd.trim().length()<1)return -1;
 		
-		String command = addr + DefCommand.CMD_3_DETONATE_7+"01";
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"07";
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
 	}
@@ -301,9 +301,9 @@ public class ThreeFiringCmd {
 	public static String  getCheckFromXbCommon_FiringExchange_5523_7_reval(String addr ,String from){
 		
 		int iscorrent =getCheckFromXbCommon_FiringExchange_5523_7(addr,from);
-		if(iscorrent==0){			
+		if(iscorrent==0){
 			String cmd = DefCommand.decodeCommand(from);
-			return cmd.substring(cmd.length()-2);
+			return cmd.substring(6,8);
 		}else{
 			return null;
 		}
