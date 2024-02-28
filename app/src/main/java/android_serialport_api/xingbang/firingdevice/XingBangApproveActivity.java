@@ -13,7 +13,6 @@ import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -622,7 +621,7 @@ public class XingBangApproveActivity extends BaseActivity {
                     initTime();
                 }
                 if (isactive) {
-                    Intent intent = new Intent(XingBangApproveActivity.this, FiringMainActivity.class);
+                    Intent intent = new Intent(XingBangApproveActivity.this, FiringMainActivity_hf.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("qbxm_id", "-1");
                     intent.putExtras(bundle);

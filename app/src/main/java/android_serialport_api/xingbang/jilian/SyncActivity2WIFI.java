@@ -47,7 +47,7 @@ import java.util.concurrent.Executors;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
+import android_serialport_api.xingbang.firingdevice.FiringMainActivity_hf;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
 import android_serialport_api.xingbang.firingdevice.VerificationActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -321,7 +321,7 @@ public class SyncActivity2WIFI extends BaseActivity {
                             intent5.putExtra("dataSend", str5);
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         } else {
-                            Intent intent5 = new Intent(SyncActivity2WIFI.this, FiringMainActivity.class);//金建华
+                            Intent intent5 = new Intent(SyncActivity2WIFI.this, FiringMainActivity_hf.class);//金建华
                             intent5.putExtra("dataSend", str5);
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
@@ -475,7 +475,7 @@ public class SyncActivity2WIFI extends BaseActivity {
 //                            }
                             break;
                         case REQUEST_CODE_QIBAO:
-                            if (resultCode == FiringMainActivity.RESULT_SUCCESS) {
+                            if (resultCode == FiringMainActivity_hf.RESULT_SUCCESS) {
                                 //起爆
                                 String code = MyTools.getACode();
                                 String type = data.getStringExtra("type");
