@@ -407,9 +407,11 @@ public class TestDenatorActivity extends SerialPortActivity {
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
+            item.put("konghao", d.getDuan() +"-"+d.getDuanNo());
             item.put("shellNo", d.getShellBlastNo());
             item.put("errorName", d.getErrorName());
             item.put("delay", d.getDelay());
+            item.put("piece",d.getPiece());
             errDeData.add(item);
         }
 //        Log.e(TAG, "errDeData: " + errDeData.toString());

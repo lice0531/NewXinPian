@@ -45,6 +45,8 @@ public class ErrListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(itemListId, null);
             viewHolder.X_item_no = convertView.findViewById(R.id.X_item_no);
+            viewHolder.X_item_duanNo = convertView.findViewById(R.id.X_item_duanNo);
+            viewHolder.X_item_quyu = convertView.findViewById(R.id.X_item_quyu);
             viewHolder.X_item_shellno = convertView.findViewById(R.id.X_item_shellno);
             viewHolder.X_item_delay = convertView.findViewById(R.id.X_item_delay);
             viewHolder.X_item_errorname = convertView.findViewById(R.id.X_item_errorname);
@@ -55,6 +57,8 @@ public class ErrListAdapter extends BaseAdapter {
         }
 
         viewHolder.X_item_no.setText((position + 1)+"");//雷管uid
+        viewHolder.X_item_duanNo.setText(list.get(position).get("konghao")+"");//雷管uid
+        viewHolder.X_item_quyu.setText(list.get(position).get("piece")+"");//雷管uid
         viewHolder.X_item_shellno.setText((String) list.get(position).get("shellNo"));//管壳码
         viewHolder.X_item_delay.setText(list.get(position).get("delay")+"");//延时
         viewHolder.X_item_errorname.setText((String) list.get(position).get("errorName"));//错误
@@ -64,6 +68,8 @@ public class ErrListAdapter extends BaseAdapter {
 
     public class ViewHolder {
         private TextView X_item_no;
+        private TextView X_item_duanNo;
+        private TextView X_item_quyu;
         private TextView X_item_shellno;
         private TextView X_item_delay;
         private TextView X_item_errorname;
