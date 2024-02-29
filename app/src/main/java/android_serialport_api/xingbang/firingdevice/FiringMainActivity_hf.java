@@ -2418,7 +2418,7 @@ public class FiringMainActivity_hf extends SerialPortActivity {
             closeForm();
             finish();
         } else {
-            show_Toast("命令错误");
+//            show_Toast("命令错误");
         }
     }
 
