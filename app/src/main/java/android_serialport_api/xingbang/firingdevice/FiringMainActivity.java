@@ -1698,7 +1698,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if(busInfo.getBusCurrentIa()<denatorCount*cankaodianliu*0.5){
                                     zhuangtai="00";
                                 }
-                                String data = denatorId + delayStr + write.getZhu_yscs()+zhuangtai;
+                                String data = denatorId + delayStr + write.getZhu_yscs()+"00";
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
