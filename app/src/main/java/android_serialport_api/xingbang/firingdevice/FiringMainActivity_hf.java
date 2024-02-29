@@ -1746,6 +1746,7 @@ public class FiringMainActivity_hf extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
                             Thread.sleep(1000);
+
                             break;
                         case 5://充电检测阶段38指令计时器
                             Wait_Count--;

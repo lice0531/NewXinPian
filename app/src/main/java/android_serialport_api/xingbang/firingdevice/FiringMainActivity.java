@@ -538,7 +538,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void zhanting() {
-        Log.e(TAG, "暂停线程: " );
+        Log.e(TAG, "暂停线程:-------------------- " );
         firstThread.exit = true;
         firstThread.interrupt();
         try {
@@ -549,7 +549,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void jixu(){
-        Log.e(TAG, "继续线程: " );
+        Log.e(TAG, "继续线程:------------------ " );
         firstThread = new ThreadFirst(allBlastQu);
         firstThread.exit = false;
         firstThread.start();
@@ -1749,6 +1749,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
 //                            Thread.sleep(1000);
+                            Log.e("等待充电", "------");
                             break;
                         case 5://充电检测阶段38指令计时器
                             Wait_Count--;
