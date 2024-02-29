@@ -109,7 +109,7 @@ public class SyncActivity extends BaseActivity {
         delay = MyTools.getADelay();
         tvDelay.setText("当前延迟(m)：" + delay);
 
-        tvCode.setText(MyTools.getACode().equals("")?"设置编号":MyTools.getACode());
+        tvCode.setText(MyTools.getACode().equals("")?"设置编号":(String) MmkvUtils.getcode("ACode", ""));
         getPropertiesData();
     }
 
@@ -118,7 +118,7 @@ public class SyncActivity extends BaseActivity {
         super.onResume();
         delay = MyTools.getADelay();
         tvDelay.setText("当前延迟(m)：" + delay);
-        tvCode.setText(MyTools.getACode().equals("")?"设置编号":MyTools.getACode());
+        tvCode.setText(MyTools.getACode().equals("")?"设置编号":(String) MmkvUtils.getcode("ACode", ""));
     }
 
     private void getPropertiesData() {

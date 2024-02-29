@@ -110,7 +110,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private byte[] initBuf;//发送的命令
     private int stage_state = 0;
     private int errtotal = 0;//错误数量
-    private int Jiance_time;//准备时间
+    private int Preparation_time;//准备时间
     private int totalerrorNum;//错误雷管数量
     private String TAG = "组网测试";
     private String version = "02";
@@ -136,7 +136,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         thirdWriteErrorDenator = null;
         errDeData.clear();
         errorList.clear();
-        firstCount = Jiance_time;
+        firstCount = Preparation_time;
         sixCount = 0;
         thirdWriteCount = 0;//雷管发送计数器
         reThirdWriteCount = 0;//检测返回数量
@@ -335,8 +335,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
         if (message.size() > 0) {
-            Jiance_time = Integer.parseInt(message.get(0).getJiance_time());
-//            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());//跟起爆测试一样
+            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());//跟起爆测试一样
             version = message.get(0).getVersion();
             Log.e(TAG, "version: " + version);
         }
@@ -539,7 +538,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
-                    if (displayIc == 0 && denatorCount>5 && firstCount < Jiance_time * 0.2) {
+                    if (displayIc == 0 && denatorCount>5 && firstCount < Preparation_time * 0.2) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast(getString(R.string.text_test_tip12));
                         stage = 5;
@@ -556,7 +555,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                        return;
 //                    }
-                    if (busInfo.getBusVoltage() < 6 && firstCount < Jiance_time * 0.5) {
+                    if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.5) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
                         show_Toast(getString(R.string.text_test_tip13));
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -565,18 +564,18 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 18000 && firstCount < Jiance_time * 0.5) {
+                    if (displayIc > 18000 && firstCount < Preparation_time * 0.5) {
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * 24) && firstCount < Jiance_time * 0.5) {//5
+                    } else if (displayIc > (denatorCount * 24) && firstCount < Preparation_time * 0.5) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * 6 && firstCount < Jiance_time * 0.5) {//5
+                    } else if (displayIc < 4 + denatorCount * 6 && firstCount < Preparation_time * 0.5) {//5
                         displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                         ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
@@ -813,7 +812,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 try {
                     switch (stage) {
                         case 1:
-                            if (firstCount == Jiance_time) {//经过测试初始化命令需要6秒
+                            if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
@@ -822,13 +821,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 }
                             }
                             Thread.sleep(1000);
-                            if (firstCount == Jiance_time) {//经过测试初始化命令需要6秒
+                            if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //进入测试模式
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20
                             }
 
 
-                            if (firstCount > Jiance_time - 9 && firstCount < Jiance_time - 1) {//Preparation_time-1
+                            if (firstCount > Preparation_time - 9 && firstCount < Preparation_time - 1) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 //                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
@@ -840,16 +839,16 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 stage = 3;
                                 break;
                             }
-                            if (firstCount == Jiance_time - 10) {//Preparation_time-1
+                            if (firstCount == Preparation_time - 10) {//Preparation_time-1
 //                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                                 // 13 退出注册模式
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
                             }
-                            if (firstCount == Jiance_time - 13) {//Preparation_time-1
+                            if (firstCount == Preparation_time - 13) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
 
                             }
-                            if (firstCount == Jiance_time - 14) {//经过测试初始化命令需要6秒
+                            if (firstCount == Preparation_time - 14) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
                                 if (version.equals("01")) {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
@@ -857,10 +856,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }
                             }
-                            if (firstCount == Jiance_time - 15) {//Preparation_time-1
+                            if (firstCount == Preparation_time - 15) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
                             }
-                            if (firstCount < (Jiance_time - 16)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                            if (firstCount < (Preparation_time - 16)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 

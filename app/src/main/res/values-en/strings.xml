@@ -87,8 +87,8 @@
 
     <string name="language_select">Current User Selection Language: %s</string>
     <string name="title_activity_set_languages">Language settings</string>
-    <string name="et_hint_ceshi">Default 18s</string>
-    <string name="et_hint_chongdian">Default 5s</string>
+    <string name="et_hint_ceshi">Default 50s</string>
+    <string name="et_hint_chongdian">Default 68s</string>
 
     <string name="text_tip_delete">Delete</string>
     <string name="text_tip_modify">Modify</string>
@@ -339,7 +339,7 @@
     <string name="app_title">XingBang Detonating system</string>
     <string name="text_fac_tip4">added</string>
     <string name="text_communication_state7">Bridge wire abnormality</string>
-    <string name="et_hint_zuwang">Default 40s</string>
+    <string name="et_hint_zuwang">Default 50s</string>
     <string name="add_project_actv_hint">15位数字</string>
     <string name="qb_tip_err">错误:</string>
     <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>

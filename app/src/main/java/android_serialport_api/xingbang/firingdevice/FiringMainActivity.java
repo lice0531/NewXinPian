@@ -181,7 +181,6 @@ public class FiringMainActivity extends SerialPortActivity {
     private String pro_xmbh = "";//项目编号
     private String pro_coordxy = "";//经纬度
     private String pro_dwdm = "";//单位代码
-    private int Preparation_time;//准备时间
     private int ChongDian_time;//充电时间
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
@@ -456,7 +455,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于4000,重启检测阶段
-            if (secondCount < Preparation_time * 0.1 && stage == 2 && busInfo != null) {
+            if (secondCount < JianCe_time * 0.1 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 18000) {
@@ -471,7 +470,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < Preparation_time * 0.4 && busInfo.getBusVoltage() < 6) {
+            if (secondCount < JianCe_time * 0.4 && busInfo.getBusVoltage() < 6) {
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -592,7 +591,7 @@ public class FiringMainActivity extends SerialPortActivity {
         secondCmdFlag = 0;
         zeroCount = 0;
         zeroCmdReFlag = 0;
-        secondCount = Preparation_time;//第二阶段 计时器
+        secondCount = JianCe_time;//第二阶段 计时器
         fourthDisplay = 0;//第4步，是否显示
         thirdWriteCount = 0;//雷管发送计数器
         sevenDisplay = 0;//第7步，是否显示
@@ -611,7 +610,6 @@ public class FiringMainActivity extends SerialPortActivity {
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
         if (message.size() > 0) {
-            Preparation_time = Integer.parseInt(message.get(0).getPreparation_time());//跟起爆测试一样
             pro_bprysfz = message.get(0).getPro_bprysfz();
             pro_htid = message.get(0).getPro_htid();
             pro_xmbh = message.get(0).getPro_xmbh();
@@ -627,7 +625,6 @@ public class FiringMainActivity extends SerialPortActivity {
 
             Log.e(TAG, "version: " + version);
         }
-        Log.e("Preparation_time", Preparation_time + "");
         Log.e("ChongDian_time", ChongDian_time + "");
         Log.e("JianCe_time", JianCe_time + "");
     }

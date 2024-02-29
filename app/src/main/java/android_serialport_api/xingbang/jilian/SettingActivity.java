@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,7 +37,7 @@ public class SettingActivity extends BaseActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("setting", 0);
         final SharedPreferences.Editor editor = sp.edit();
-        delay = sp.getInt("delay", 0);
+        delay = (int) MmkvUtils.getcode("delay",0);
         etDelay.setText(delay + "");
 
         etDelay.addTextChangedListener(new TextWatcher() {
@@ -57,6 +58,7 @@ public class SettingActivity extends BaseActivity {
                 }
                 delay = Integer.parseInt(s.toString());
                 editor.putInt("delay", delay).apply();
+                MmkvUtils.savecode("delay",delay);
             }
         });
 
@@ -80,6 +82,11 @@ public class SettingActivity extends BaseActivity {
                     return;
                 }
                 editor.putString("device", s.toString()).apply();
+                if(s.toString().length()==1){
+                    MmkvUtils.savecode("ACode","0"+s);
+                }else {
+                    MmkvUtils.savecode("ACode",s.toString());
+                }
             }
         });
 
