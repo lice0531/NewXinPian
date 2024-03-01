@@ -3186,6 +3186,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * @return 有效性结果, true 为正确, false 为错误
      */
     public static boolean dateStrIsValid(String oriDateStr, String pattern) {
+        if(oriDateStr.equals("02-29")){
+            return true;
+        }
         Log.e("验证日期", "date: " + oriDateStr);
         if (StringUtils.isBlank(oriDateStr) || StringUtils.isBlank(pattern)) {
             return false;

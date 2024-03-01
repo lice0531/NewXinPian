@@ -585,7 +585,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 13000) {
+                    if (busInfo.getBusVoltage() < 10 &&busInfo.getBusVoltage() > 6 && displayIc > 9000) {
+                        displayIcStr = displayIcStr + "(疑似短路)";
+                        ll_firing_IC_4.setTextColor(Color.RED);
+                        Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+
+                    } else if (displayIc > 13000) {//判断电流过大是用的之前的参数,这个后续会改
                         displayIcStr = displayIcStr + "(疑似短路)";
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");

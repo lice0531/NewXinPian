@@ -546,7 +546,12 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 13000 && stage != 6 && stage != 33) {
+                //判断电流过大是用的之前的参数,这个后续会改
+                if (busInfo.getBusVoltage() < 10 &&busInfo.getBusVoltage() > 6 && displayIc > 9000 && stage != 6 && stage != 33) {
+                    displayIcStr = displayIcStr + "(疑似短路)";
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+                } else if (displayIc > 13000 && stage != 6 && stage != 33) {
                     displayIcStr = displayIcStr + "(疑似短路)";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
