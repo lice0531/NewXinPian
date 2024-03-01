@@ -82,6 +82,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler mHandler_1 = null;//总线稳定
     private Handler busHandler_dianliu = null;//电流电压信息
     private Handler errHandler = null;//总线信息
+    private Handler errHandler_update = null;//总线信息
     private Handler Handler_tip = null;//提示信息
     private static volatile int stage;
     private volatile int firstCount = 28;
@@ -118,7 +119,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否发送41
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int cankaodianliu=15;
+    private final int cankaodianliu=15;
 
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
@@ -245,6 +246,14 @@ public class TestDenatorActivity extends SerialPortActivity {
             ll_firing_errorNum_4.setText("" + (Integer.parseInt(errAmoutStr) + 1));
             totalerrorNum = Integer.parseInt(errAmoutStr) + 1;
             ll_firing_errorNum_4.setTextColor(Color.RED);
+            return false;
+        });
+        errHandler_update = new Handler(msg -> {
+            VoFiringTestError errorDe= (VoFiringTestError) msg.obj;
+            DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errorDe.getShellBlastNo())).unique();
+            denator.setErrorCode("00");
+            denator.setErrorName("命令未返回");
+            Application.getDaoSession().update(denator);
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -927,6 +936,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                Log.e("测试21延时", "data  " + denatorId + "--" + delayStr);
                                 //发送命令21写入延时时间，检测结果看雷管是否正常
                                 initBuf = SecondNetTestCmd.send21("00", data);//
+                                revCmd="";//清空缓存
                                 sendCmd(initBuf);//后面的shellStr没用上
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -936,7 +946,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 3000) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 5000) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //未返回
                                     if (tempBaseInfo != null) {
@@ -947,8 +957,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         errorDe.setError(1);
                                         thirdWriteErrorDenator = errorDe;
                                         errorList.offer(errorDe);
+                                        Message message = new Message();
+                                        message.obj=errorDe;
+                                        errHandler_update.sendMessage(message);
                                     }
                                     tempBaseInfo = null;
+                                    revCmd="";//清空缓存
                                     reThirdWriteCount++;
                                 } else {
                                     Thread.sleep(50);
@@ -990,6 +1004,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
 //        Log.e("返回命令--测试页面", "onDataReceived: "+fromCommad );
+        Utils.writeLog("<-返回命令--测试页面:"+fromCommad);
+        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -998,7 +1014,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
                 return;
             } else {
-                String cmd = DefCommand.getCmd(fromCommad);
+                String cmd = DefCommand.getCmd2(fromCommad);
 //                Log.e("返回命令--测试页面", "cmd: "+cmd );
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;

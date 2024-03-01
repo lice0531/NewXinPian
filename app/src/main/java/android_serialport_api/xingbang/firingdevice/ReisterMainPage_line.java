@@ -1626,7 +1626,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setStatusCode("02");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("00");
-            denatorBaseinfo.setErrorName("正常");
+            denatorBaseinfo.setErrorName("");
             denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
             denatorBaseinfo.setDuan(duan);

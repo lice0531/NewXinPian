@@ -199,7 +199,7 @@ public class FiringMainActivity extends SerialPortActivity {
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
     private boolean dengdai=true;
-    private int cankaodianliu=15;
+    private final int cankaodianliu=15;
     private boolean kaiguan=true;
 
     @Override

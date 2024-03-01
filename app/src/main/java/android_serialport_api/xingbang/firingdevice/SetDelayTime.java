@@ -70,6 +70,12 @@ import butterknife.ButterKnife;
 public class SetDelayTime extends BaseActivity {
     @BindView(R.id.setDelayMainlistView)
     RecyclerView setDelay_listView;
+    @BindView(R.id.re_gkm)
+    LinearLayout regkm;
+    @BindView(R.id.text_gkm1)
+    TextView text_gkm;
+    @BindView(R.id.text_gkm2)
+    TextView text_uid;
     private CustomSimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -96,6 +102,7 @@ public class SetDelayTime extends BaseActivity {
     private Handler mHandler_0 = new Handler();     // UI处理
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
+    private boolean switchUid = true;//切换uid/管壳码
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,6 +272,37 @@ public class SetDelayTime extends BaseActivity {
         holeinDelayTxt.setText("0");
         holeBetweentTxt.setText("10");
 
+        regkm.setOnClickListener(v -> {
+            int a;
+            if (switchUid) {
+                a = 6;
+                switchUid = false;
+                text_uid.setTextColor(Color.GREEN);
+                text_gkm.setTextColor(Color.BLACK);
+            } else {
+                a = 4;
+                switchUid = true;
+                text_uid.setTextColor(Color.BLACK);
+                text_gkm.setTextColor(Color.GREEN);
+            }
+            //切换UID后再设置一下长按方法
+            mAdapter = new DetonatorAdapter_Paper<>(this, a);
+            setDelay_listView.setLayoutManager(linearLayoutManager);
+            setDelay_listView.setAdapter(mAdapter);
+            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+            mAdapter.setOnItemLongClick(position -> {
+                DenatorBaseinfo info = mListData.get(position);
+                int no = info.getBlastserial();
+                int delay = info.getDelay();
+                String shellBlastNo = info.getShellBlastNo();
+                String denatorId = info.getDenatorId();
+                int duan = info.getDuan();
+                int duanNo = info.getDuanNo();
+                // 序号 延时 管壳码
+//                modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo, info);
+                modifyBlastBaseInfo(no, delay, shellBlastNo);
+            });
+        });
 
     }
 
