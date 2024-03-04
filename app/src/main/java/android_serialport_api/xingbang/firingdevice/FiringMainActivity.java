@@ -1140,6 +1140,8 @@ public class FiringMainActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+        Utils.writeLog("<-返回命令--起爆页面:"+fromCommad);
+        Log.e("返回命令--起爆页面", fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -1149,7 +1151,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
                 return;
             } else {
-                String cmd = DefCommand.getCmd(fromCommad);
+                String cmd = DefCommand.getCmd2(fromCommad);
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
@@ -1642,6 +1644,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
+                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
@@ -1710,6 +1713,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 //发送31命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.send31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
+                                revCmd="";//清空缓存
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
@@ -1718,7 +1722,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 4000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 5000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
@@ -1740,6 +1744,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     writeDenator = null;
                                     tempBaseInfo = null;
+                                    revCmd="";//清空缓存
                                     reThirdWriteCount++;
                                 } else {
                                     Thread.sleep(20);
@@ -1751,7 +1756,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
 //                            Thread.sleep(1000);
-                            Log.e("等待充电", "------");
+//                            Log.e("等待充电", "------");
                             break;
                         case 5://充电检测阶段38指令计时器
                             Wait_Count--;

@@ -113,7 +113,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
-        CJ="NM_";//SC-四川 NM-内蒙(不同的版本需要修改)
+        CJ="HF_";//SC-四川 NM-内蒙 HF-华丰(不同的版本需要修改)
 //        CJ="XB_";//测试用
         BinName=CJ+"M900_V1.3_16V";
         if (IntervalUtil.isFastClick_2()) {
