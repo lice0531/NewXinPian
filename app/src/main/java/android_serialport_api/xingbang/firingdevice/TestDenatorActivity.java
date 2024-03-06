@@ -575,7 +575,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 18000 && firstCount < Preparation_time * 0.5) {
+                    if (displayIc > 25000 && firstCount < Preparation_time * 0.5) {
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
@@ -588,7 +588,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < 4 + denatorCount * 6 && firstCount < Preparation_time * 0.5) {//5
                         displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
-                        ll_firing_IC_4.setTextColor(Color.BLACK);// "疑似断路";
+                        ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
@@ -600,7 +600,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于4800
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 18000 && firstCount == 0) {
+                    if (displayIc > 25000 && firstCount == 0) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
 //                        if (!chongfu) {
@@ -669,8 +669,8 @@ public class TestDenatorActivity extends SerialPortActivity {
             case 4:
                 if (totalerrorNum == 0) {
                     stopXunHuan();
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 18000) {//大于4800u ，全错
-                    Log.e(TAG, "大于18000u ，全错: ");
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 25000) {//大于4800u ，全错
+                    Log.e(TAG, "大于25000u ，全错: ");
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
@@ -678,7 +678,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
-                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 18000) {//小于4800u ，全错
+                } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 25000) {//小于4800u ，全错
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
 //                    if (chongfu) {
@@ -687,7 +687,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
 
-                    Log.e(TAG, "小于18000u ，全错: stage=" + stage);
+                    Log.e(TAG, "小于25000u ，全错: stage=" + stage);
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * cankaodianliu + 100) {//小于参考值 ，部分错
                     // (从上面取下来的条件)
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
