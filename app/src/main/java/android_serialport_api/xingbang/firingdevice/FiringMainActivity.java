@@ -756,6 +756,7 @@ public class FiringMainActivity extends SerialPortActivity {
         builder.show();
         if (flag == 1) {
             increase(6);//第六阶段
+            version_1 = true;
         } else {
             fourOnlineDenatorFlag = 3;
         }
@@ -2607,6 +2608,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (msg.equals("jixu")) {
             if (Wait_Count == 1) {
                 increase(6);
+                version_1 = true;
                 Utils.writeRecord("-------------------开始充电-------------------");
             }
 
