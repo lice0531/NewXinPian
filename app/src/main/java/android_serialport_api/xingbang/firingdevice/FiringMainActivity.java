@@ -392,7 +392,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        version_1 = true;
 //                        customDialog.dismiss();
 //                    }).show();
-            getblastQueue();//更新雷管
+//            getblastQueue();//更新雷管
 
             String err = ll_firing_errorAmount_4.getText().toString();
             if (err.equals("0")) {
@@ -1894,6 +1894,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 writeDenator = null;
                                 //检测一次
                                 if (blastQueue == null || blastQueue.size() < 1) {
+                                    getblastQueue();//更新雷管(不更新的话,级联)
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
 //                                    getblastQueue();//放到36更新雷管芯片码之后更新雷管序列
