@@ -37,15 +37,23 @@
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
+            android:name=".firingdevice.ZhuCeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".firingdevice.SouSuoSQActivity"
             android:exported="false"
             android:label="搜索授权信息"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.ShouQuanActivity"
             android:exported="false"
             android:label="授权数据"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SendMsgActivity"
             android:exported="false"

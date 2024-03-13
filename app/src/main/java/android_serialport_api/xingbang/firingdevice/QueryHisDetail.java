@@ -949,6 +949,7 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
+                Utils.writeLog("上传错误-IOException:"+e);
             }
 
             @Override
