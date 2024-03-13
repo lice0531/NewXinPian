@@ -392,7 +392,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        version_1 = true;
 //                        customDialog.dismiss();
 //                    }).show();
-//            getblastQueue();//更新雷管
+            getblastQueue();//更新雷管(38指令用最新的命令发送,因为36指令会更新1发错误时候的芯片码)
 
             String err = ll_firing_errorAmount_4.getText().toString();
             if (err.equals("0")) {
