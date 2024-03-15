@@ -289,7 +289,13 @@ public class SendMsgActivity extends BaseActivity {
             shellNo = lg[i - 1];
             String[] a = shellNo.split("#");
             Log.e("分割", "a.length: " + a.length);
+            Log.e("分割", "a[3]" + a[3]);
             String[] duan = a[3].split("-");
+            int duanNo = 0;
+            if(!a[3].contains("-")){
+                duan[0]="1";
+                duanNo= new GreenDaoMaster().getPieceMaxDuanNo(Integer.parseInt(duan[0]), mRegion);//获取该区域 最大序号的延时;
+            }
             if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
                 continue;
@@ -308,7 +314,12 @@ public class SendMsgActivity extends BaseActivity {
             denator.setDenatorId(a[0]);
             denator.setShellBlastNo(a[2]);
             denator.setDuan(Integer.parseInt(duan[0]));
-            denator.setDuanNo(Integer.parseInt(duan[1]));
+
+            if(!a[3].contains("-")){
+                denator.setDuanNo((duanNo + 1));
+            }else {
+                denator.setDuanNo(Integer.parseInt(duan[1]));
+            }
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormat(new Date()));
             denator.setStatusCode("02");
@@ -317,7 +328,13 @@ public class SendMsgActivity extends BaseActivity {
             denator.setErrorName("");
             denator.setWire("");
             denator.setPiece(mRegion);
-            denator.setZhu_yscs(a[4]);
+            if(a.length==4){
+                denator.setZhu_yscs(a[3]);
+            }else {
+                denator.setZhu_yscs(a[4]);
+            }
+
+
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
             reCount++;
         }
@@ -394,7 +411,7 @@ public class SendMsgActivity extends BaseActivity {
                                 show_Toast("获取数据异常");
                                 return;
                             }
-                            for (int i = 0; i < list_uid.size(); i++) {
+                            for (int i = 0; i < list_uid.size(); i++) {//芯片码#延时#管壳码#段位-段号#延时参数
 //                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
                                 sb.append((list_uid.get(i).getDenatorId() + "").replace("null", "无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" +list_uid.get(i).getDuan()+"-"+ list_uid.get(i).getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs() + "").replace("null", "无") + ",");
 //                    } else {
