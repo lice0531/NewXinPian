@@ -57,6 +57,8 @@ public class ZhuCeActivity extends BaseActivity {
         setContentView(R.layout.activity_zhu_ce);
         ButterKnife.bind(this);
 
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
         mHandler_tip = new Handler(msg -> {
             switch (msg.what){
                 case 1:
