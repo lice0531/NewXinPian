@@ -812,6 +812,7 @@ public class SendMsgActivity extends BaseActivity {
     /**
      * 读取输入注册
      */
+    String xpm;
     private void registerLog(String logstr) {
         String[] log = logstr.split(",");
         String shellNo;
@@ -820,14 +821,22 @@ public class SendMsgActivity extends BaseActivity {
             shellNo = log[i];
             if (shellNo.length() != 5) {
                 String[] ml = shellNo.split(":");
-//                Log.e("分析日志", "ml: " + ml[4]);
+//                Log.e("分析日志", "ml: " + ml[3]);
                 if(shellNo.contains("<-:")){//只分析返回命令
-                    String cmd = DefCommand.getCmd(ml[4]);//得到 返回命令
+                    String cmd = DefCommand.getCmd(ml[3]);//得到 返回命令
                     if (cmd != null) {
-                        int localSize = ml[4].length() / 2;
-                        byte[] localBuf = Utils.hexStringToBytes(ml[4]);//将字符串转化为数组
+                        int localSize = ml[3].length() / 2;
+                        byte[] localBuf = Utils.hexStringToBytes(ml[3]);//将字符串转化为数组
                         doWithReceivData_fenxi(cmd, localBuf, localSize,ml);
                     }
+                }else if(shellNo.contains("->:C0003108")){
+                    //C0003108770D05000000320563D2C0
+                    String cmd31=ml[3];
+                    xpm="A6210"+cmd31.substring(8,16);//A6210E0ED0500
+                }else if(shellNo.contains("->:C0002108")){
+                    //C0003108770D05000000320563D2C0
+                    String cmd31=ml[3];
+                    xpm="A6210"+cmd31.substring(8,16);
                 }
 
             }
@@ -846,20 +855,22 @@ public class SendMsgActivity extends BaseActivity {
         if ("20".equals(cmd)) {//进入测试模式
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e(ml[0]+":"+ml[1]+":"+ml[2],  "电流结果:"+busInfo.toString());
+            Log.e("分析"+ml[0]+":"+ml[1]+":"+ml[2],  "电流结果:"+busInfo.toString());
         } else if ("22".equals(cmd)) { // 关闭测试
         } else if ("13".equals(cmd)) { // 关闭电源
         } else if ("41".equals(cmd)) { // 开启总线电源指令
         }else if ("21".equals(cmd)) {
             From22WriteDelay fromData = SecondNetTestCmd.decodeFromReceiveDataWriteCommand22("00", locatBuf);
-            Log.e(ml[0]+":"+ml[1]+":"+ml[2], "组网检测结果:"+fromData.toString());
+            fromData.setDenaId(xpm);
+            Log.e("分析"+ml[0]+":"+ml[1]+":"+ml[2], "组网检测结果:"+fromData.toString());
         }else if ("31".equals(cmd)) {
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
-            Log.e(ml[0]+":"+ml[1]+":"+ml[2],"起爆检测结果:"+ fromData.toString());
+            fromData.setDenaId(xpm);
+            Log.e("分析"+ml[0]+":"+ml[1]+":"+ml[2],"起爆检测结果:"+ fromData.toString());
         } else if ("34".equals(cmd)) {
-            Log.e(ml[0]+":"+ml[1]+":"+ml[2], "发送起爆指令:"+"起爆成功: " );
+            Log.e("分析"+ml[0]+":"+ml[1]+":"+ml[2], "发送起爆指令:"+"起爆成功: " );
         }else if ("35".equals(cmd)) {
-            Log.e(ml[0]+":"+ml[1]+":"+ml[2], "发送退出指令:"+"退出起爆流程: " );
+            Log.e("分析"+ml[0]+":"+ml[1]+":"+ml[2], "发送退出指令:"+"退出起爆流程: " );
         }
     }
 

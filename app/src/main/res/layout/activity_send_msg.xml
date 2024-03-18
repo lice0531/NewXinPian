@@ -189,7 +189,7 @@
     <Button
         android:id="@+id/btn_read_log"
         style="@style/allbtntstyle"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
