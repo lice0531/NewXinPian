@@ -134,7 +134,7 @@
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_ver" />
+                android:text="单位信息" />
 
             <Button
                 android:id="@+id/btn_set_system"

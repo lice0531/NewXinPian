@@ -330,7 +330,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mListView.setLayoutManager(linearLayoutManager);
         mListView.setAdapter(mAdapter);
 
-        scan();//扫描初始化
+//        scan();//扫描初始化
         initHandle();//handle初始化
         edit_start_entBF2Bit_st.addTextChangedListener(st_1_watcher);
         edit_start_entproduceDate_st.addTextChangedListener(st_2_watcher);
@@ -1456,7 +1456,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         }
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        scanDecode.stopScan();//停止扫描
+        if(scanDecode!=null){
+            scanDecode.stopScan();//停止扫描
+            scanDecode.onDestroy();//回复初始状态
+        }
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {
@@ -1466,7 +1469,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 e.printStackTrace();
             }
         }
-        scanDecode.onDestroy();//回复初始状态
+
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }

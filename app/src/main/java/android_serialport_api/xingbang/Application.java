@@ -19,6 +19,7 @@ import androidx.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
+import com.lljjcoder.style.citylist.utils.CityListLoader;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.Bugly;
@@ -154,6 +155,16 @@ public class Application extends MultiDexApplication {
         // 自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
         // 包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
         SDKInitializer.setCoordType(CoordType.BD09LL);
+
+        /**
+         * 预先加载一级列表所有城市的数据
+         */
+        CityListLoader.getInstance().loadCityData(this);
+
+        /**
+         * 预先加载三级列表显示省市区的数据
+         */
+        CityListLoader.getInstance().loadProData(this);
     }
 
     /**

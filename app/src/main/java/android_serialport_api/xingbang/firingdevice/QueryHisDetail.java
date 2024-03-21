@@ -886,7 +886,8 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
+//        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
+        String url = "http://111.194.155.18:999/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -917,7 +918,10 @@ public class QueryHisDetail extends BaseActivity {
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
-            object.put("xmbh", pro_xmbh);//项目编号
+            object.put("blastunit", "煋邦爆破公司");//项目编号
+            object.put("province", "北京市");//省
+            object.put("market", "朝阳区");//市
+            object.put("county", "望京街道");//县
             object.put("log", log);//日志
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
@@ -931,11 +935,13 @@ public class QueryHisDetail extends BaseActivity {
             }
 
             Log.e("上传信息-项目名称", qbxm_name);
+
         } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
+        Log.e("上传信息-json", json);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = FormBody.create(JSON, "{'param':'" + json + "'}");
         Request request = new Request.Builder()
@@ -949,12 +955,13 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
-                Utils.writeLog("上传错误-IOException:"+e);
+                Utils.writeLog("煋邦网络上传错误-IOException:"+e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e("上传", "返回: " + response.toString());
+                Log.e("上传", "返回: " + response.body().string());
                 pb_show = 0;
             }
         });

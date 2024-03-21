@@ -347,7 +347,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 setEquNoEnv();//设置起爆编号
                 break;
             case R.id.btn_set_ver://查看版本号
-                Intent intent6 = new Intent(SetEnvMainActivity.this, SystemVersionActivity.class);
+                Intent intent6 = new Intent(SetEnvMainActivity.this, ZhuCeActivity.class);
                 startActivityForResult(intent6, 1);
                 break;
             case R.id.btn_set_system:
