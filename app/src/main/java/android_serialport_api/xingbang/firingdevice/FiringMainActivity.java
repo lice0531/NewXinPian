@@ -1219,9 +1219,6 @@ public class FiringMainActivity extends SerialPortActivity {
             denator.setAuthorization("02");
         }
         Application.getDaoSession().update(denator);
-        if("FF".equals(fromData.getCommicationStatus())){
-            tureHandler.sendMessage(tureHandler.obtainMessage());
-        }
 //        Log.e("更新雷管状态","fromData.getCommicationStatus()"+fromData.getCommicationStatus());
         //判断雷管状态是否正价错误数量//|| (writeDelay != fromData.getDelayTime())
         if (!"FF".equals(fromData.getCommicationStatus()) && !"F2".equals(fromData.getCommicationStatus()) && !"F1".equals(fromData.getCommicationStatus())) {
@@ -1229,6 +1226,7 @@ public class FiringMainActivity extends SerialPortActivity {
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
         }else {
+            tureHandler.sendMessage(tureHandler.obtainMessage());
              if ("02".equals(fromData.getCommicationStatus())) {
                 show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
                 Utils.writeRecord("--起爆检测错误:" + fromData.toString());

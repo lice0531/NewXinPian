@@ -1085,7 +1085,6 @@ public class TestDenatorActivity extends SerialPortActivity {
                 updateDenator(fromData, writeDelay);
                 if (!"FF".equals(fromData.getCommicationStatus()) && !"F1".equals(fromData.getCommicationStatus()) && !"F2".equals(fromData.getCommicationStatus())) {
                     errHandler.sendMessage(errHandler.obtainMessage());
-
                 } else {
                     tureHandler.sendMessage(tureHandler.obtainMessage());
                 }
