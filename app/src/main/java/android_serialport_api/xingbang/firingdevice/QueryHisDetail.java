@@ -918,12 +918,16 @@ public class QueryHisDetail extends BaseActivity {
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
-            object.put("blastunit", "煋邦爆破公司");//项目编号
-            object.put("province", "北京市");//省
-            object.put("market", "朝阳区");//市
-            object.put("county", "望京街道");//县
-            object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
+
+            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
+                object.put("blastunit", MmkvUtils.getcode("uCName",""));//爆破单位
+                object.put("province", MmkvUtils.getcode("province",""));//省
+                object.put("market", MmkvUtils.getcode("market",""));//市
+                object.put("county", MmkvUtils.getcode("county",""));//县
+            }
+
+//            object.put("log", log);//日志
+//            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
@@ -935,6 +939,7 @@ public class QueryHisDetail extends BaseActivity {
             }
 
             Log.e("上传信息-项目名称", qbxm_name);
+            Log.e("上传信息-项目名称", object.toString());
 
         } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();

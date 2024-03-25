@@ -48,7 +48,7 @@
         <activity
             android:name=".firingdevice.ZhuCeActivity"
             android:exported="false"
-            android:label="注册"
+            android:label="单位信息"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"

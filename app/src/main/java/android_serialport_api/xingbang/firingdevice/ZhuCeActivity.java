@@ -118,6 +118,14 @@ public class ZhuCeActivity extends BaseActivity {
             }
         });
 
+        etUser.setText((String)MmkvUtils.getcode("uPhone",""));
+        etQbgs.setText((String)MmkvUtils.getcode("uCName",""));
+        etName.setText((String)MmkvUtils.getcode("uFName",""));
+        tv_province.setText((String)MmkvUtils.getcode("province",""));
+        tv_market.setText((String)MmkvUtils.getcode("market",""));
+        tv_county.setText((String)MmkvUtils.getcode("county",""));
+
+
     }
 
     @OnClick({R.id.set_save, R.id.jd_btn})
@@ -135,24 +143,27 @@ public class ZhuCeActivity extends BaseActivity {
                 String uCName = etQbgs.getText().toString();//爆破单位
                 String uFName = etName.getText().toString();//人员姓名
 
-                if(uPhone.length()<1){
-                    show_Toast("请输入手机号");
-                    return;
-                }else if(uCName.length()<1) {
-                    show_Toast("请输入爆破单位名称");
-                    return;
-                }else if(uFName.length()<1) {
-                    show_Toast("请输入人员名称");
-                    return;
-                }else if(uCid.length()<1) {
-                    show_Toast("请输入雷管厂家");
-                    return;
-                }
+//                if(uPhone.length()<1){
+//                    show_Toast("请输入手机号");
+//                    return;
+//                }else if(uCName.length()<1) {
+//                    show_Toast("请输入爆破单位名称");
+//                    return;
+//                }else if(uFName.length()<1) {
+//                    show_Toast("请输入人员名称");
+//                    return;
+//                }else if(tv_province.getText().length()<2) {
+//                    show_Toast("请选择省市县");
+//                    return;
+//                }
 
                 MmkvUtils.savecode("uPhone", uPhone);
                 MmkvUtils.savecode("uCName", uCName);
                 MmkvUtils.savecode("uFName", uFName);
-                MmkvUtils.savecode("uPhone", uPhone);//手机号
+
+                MmkvUtils.savecode("province", tv_province.getText());
+                MmkvUtils.savecode("market", tv_market.getText());
+                MmkvUtils.savecode("county", tv_county.getText());
 
                 show_Toast("保存成功");
 //        upload(uPhone,uPwd,uCid,uCName,uFName);

@@ -39,6 +39,8 @@ public class SetSystemActivity extends BaseActivity {
     SwitchButton swYanzheng;
     @BindView(R.id.sw_yanzheng_sq)
     SwitchButton swYanzheng_sq;
+    @BindView(R.id.sw_yanzheng_dw)
+    SwitchButton swYanzheng_dw;
     @BindView(R.id.sw_shangchuan)
     SwitchButton swShangchuan;
     @BindView(R.id.et_set_Preparation)
@@ -60,6 +62,7 @@ public class SetSystemActivity extends BaseActivity {
     private String qiaosi_set = "";//是否检测桥丝
     private String Yanzheng = "";//是否验证地理位置
     private String Yanzheng_sq = "";//是否验雷管已经授权
+    private String Yanzheng_dw = "";//是否验单位信息
     private String Shangchuan = "";//是否上传错误雷管
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -76,6 +79,7 @@ public class SetSystemActivity extends BaseActivity {
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_dw = (String) MmkvUtils.getcode("Yanzheng_dw", "不验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
@@ -88,6 +92,9 @@ public class SetSystemActivity extends BaseActivity {
         }
         if (Yanzheng_sq.equals("验证")) {
             swYanzheng_sq.setChecked(true);
+        }
+        if (Yanzheng_dw.equals("验证")) {
+            swYanzheng_dw.setChecked(true);
         }
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
@@ -141,6 +148,12 @@ public class SetSystemActivity extends BaseActivity {
                 } else {
                     MmkvUtils.savecode("Yanzheng_sq", "不验证");
                 }
+                if (swYanzheng_dw.isChecked()) {
+                    MmkvUtils.savecode("Yanzheng_dw", "验证");
+                } else {
+                    MmkvUtils.savecode("Yanzheng_dw", "不验证");
+                }
+
                 if (swShangchuan.isChecked()) {
                     MmkvUtils.savecode("Shangchuan", "是");
                 } else {

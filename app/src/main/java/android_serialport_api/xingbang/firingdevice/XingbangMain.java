@@ -169,6 +169,7 @@ public class XingbangMain extends BaseActivity {
     public volatile long mDownLoadFileSize;     // 下载文件大小
     private String version_cloud;
     private String Yanzheng_sq = "";//是否验雷管已经授权
+    private String Yanzheng_dw = "";//是否验雷管已经授权
     private int Yanzheng_sq_size = 0;
     @Override
     protected void onPause() {
@@ -180,6 +181,7 @@ public class XingbangMain extends BaseActivity {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_dw = (String) MmkvUtils.getcode("Yanzheng_dw", "不验证");
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -267,7 +269,12 @@ public class XingbangMain extends BaseActivity {
         }
 
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-
+        Yanzheng_dw = (String) MmkvUtils.getcode("Yanzheng_dw", "不验证");//是否验证单位信息
+        Log.e(TAG, "Yanzheng_dw: "+Yanzheng_dw );
+        Log.e(TAG, "uPhone: "+MmkvUtils.getcode("uPhone","").toString() );
+        if(Yanzheng_dw.equals("验证") && MmkvUtils.getcode("uPhone","").toString().length()<11){
+            createDialog_dw();
+        }
 
     }
     private void queryBeian() {
@@ -1288,6 +1295,28 @@ public class XingbangMain extends BaseActivity {
 //            finish();
 //        });
         builder.setNegativeButton(R.string.text_updata_sys_4, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.create().show();
+    }
+
+    /***
+     * 建立对话框
+     */
+    public void createDialog_dw() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("请输入单位信息");//"说明"
+        builder.setMessage("检测到您还没有输入单位信息,请输入单位信息");
+        builder.setPositiveButton("设置", (dialog, which) -> {
+            Intent intent = new Intent(this, ZhuCeActivity.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+//        builder.setNeutralButton("退出", (dialog, which) -> {
+//            dialog.dismiss();
+////            finish();
+//        });
+        builder.setNegativeButton("不设置", (dialog, which) -> {
             dialog.dismiss();
         });
         builder.create().show();
