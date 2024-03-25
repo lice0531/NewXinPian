@@ -919,12 +919,12 @@ public class QueryHisDetail extends BaseActivity {
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
 
-            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
-                object.put("blastunit", MmkvUtils.getcode("uCName",""));//爆破单位
-                object.put("province", MmkvUtils.getcode("province",""));//省
-                object.put("market", MmkvUtils.getcode("market",""));//市
-                object.put("county", MmkvUtils.getcode("county",""));//县
-            }
+//            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
+//                object.put("blastunit", MmkvUtils.getcode("uCName",""));//爆破单位
+//                object.put("province", MmkvUtils.getcode("province",""));//省
+//                object.put("market", MmkvUtils.getcode("market",""));//市
+//                object.put("county", MmkvUtils.getcode("county",""));//县
+//            }
 
 //            object.put("log", log);//日志
 //            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
@@ -949,6 +949,7 @@ public class QueryHisDetail extends BaseActivity {
         Log.e("上传信息-json", json);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = FormBody.create(JSON, "{'param':'" + json + "'}");
+        Log.e("上传信息-json", requestBody.contentType().toString());
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)

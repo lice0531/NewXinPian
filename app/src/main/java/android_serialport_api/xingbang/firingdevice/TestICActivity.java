@@ -20,6 +20,7 @@ import java.util.List;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
+import android_serialport_api.xingbang.cmd.FiveTestingCmd;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
@@ -124,36 +125,38 @@ public class TestICActivity extends SerialPortActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_pre://进入级联页面
-                if (revOpenCmdTestFlag == 0) {
-                    byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-                    sendCmd(powerCmd);
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    sendPower = new SendPower();//40指令线程
-                    sendPower.exit = false;
-                    sendPower.start();
-                    revOpenCmdTestFlag = 1;
-                    butPre.setText(R.string.text_ceshi_tzcs);
-                } else {
-                    sendPower.exit = true;
-                    sendPower.interrupt();
-                    try {
-                        sendPower.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
-                    sendCmd(powerCmd);
-                    butPre.setText(getString(R.string.text_ceshi_kscs));
-                    tvCeshiDianliu.setText("0.0μA");
-                    tvCeshiDianya.setText("0.0V");
-                    tvCeshiDianliu.setTextColor(Color.BLACK);
-                    tvCeshiDianya.setTextColor(Color.BLACK);
-                    revOpenCmdTestFlag = 0;
-                }
+                byte[] powerCmd = FiveTestingCmd.send70("00","01");//41
+                sendCmd(powerCmd);
+//                if (revOpenCmdTestFlag == 0) {
+//                    byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+//                    sendCmd(powerCmd);
+//                    try {
+//                        Thread.sleep(500);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    sendPower = new SendPower();//40指令线程
+//                    sendPower.exit = false;
+//                    sendPower.start();
+//                    revOpenCmdTestFlag = 1;
+//                    butPre.setText(R.string.text_ceshi_tzcs);
+//                } else {
+//                    sendPower.exit = true;
+//                    sendPower.interrupt();
+//                    try {
+//                        sendPower.join();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
+//                    sendCmd(powerCmd);
+//                    butPre.setText(getString(R.string.text_ceshi_kscs));
+//                    tvCeshiDianliu.setText("0.0μA");
+//                    tvCeshiDianya.setText("0.0V");
+//                    tvCeshiDianliu.setTextColor(Color.BLACK);
+//                    tvCeshiDianya.setTextColor(Color.BLACK);
+//                    revOpenCmdTestFlag = 0;
+//                }
                 break;
         }
     }
@@ -175,7 +178,7 @@ public class TestICActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//将数组转化为16进制字符串
-
+        Log.e("返回的命令", "fromCommad: " + fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) {
