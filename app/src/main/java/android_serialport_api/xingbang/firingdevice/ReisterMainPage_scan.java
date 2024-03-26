@@ -633,15 +633,26 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    barCode = data.substring(1, 14);
 //                    String a = data.substring(13, 22);
 //                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                if (data.charAt(0) == 'Y') {
+                    barCode = data.substring(1, 14);
+                    String a = data.substring(14, 24);
+                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                    String yscs =data.substring(24);
+                    Log.e("扫码", "barCode: " + barCode);
+                    Log.e("扫码", "denatorId: " + denatorId);
+                    Log.e("扫码", "yscs: " +yscs);
+                    insertSingleDenator_2(barCode, denatorId, yscs,"1", "0");//因为四川二维码不带段位和版本号,所以写个固定的
+                }else {//其他规则
+                    //内蒙版
+                    barCode = data.substring(0, 13);
+                    denatorId = "A621" + data.substring(13, 22);
+                    String yscs = data.substring(22, 26);
+                    String version = data.substring(26, 27);
+                    String duan = data.substring(27, 28);
 
-                //内蒙版
-                barCode = data.substring(0, 13);
-                denatorId = "A621" + data.substring(13, 22);
-                String yscs = data.substring(22, 26);
-                String version = data.substring(26, 27);
-                String duan = data.substring(27, 28);
+                    insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
+                }
 
-                insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
             } else if (data.length() == 13) {
                 barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                 insertSingleDenator(barCode);
