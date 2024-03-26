@@ -71,10 +71,10 @@ public abstract class SerialPortActivity extends BaseActivity {
 //                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
                     //Utils.writeLog("Read------22222222");
                     if (size > 0) {
-                        byte[] cmdBuf = new byte[size];
-                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-                        Log.e("收到: ",fromCommad );
+//                        byte[] cmdBuf = new byte[size];
+//                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//                        Log.e("收到: ",fromCommad );
                         onDataReceived(buffer, size);
                     }
 

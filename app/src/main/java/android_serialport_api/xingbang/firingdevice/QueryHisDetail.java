@@ -919,15 +919,15 @@ public class QueryHisDetail extends BaseActivity {
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
 
-//            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
-//                object.put("blastunit", MmkvUtils.getcode("uCName",""));//爆破单位
-//                object.put("province", MmkvUtils.getcode("province",""));//省
-//                object.put("market", MmkvUtils.getcode("market",""));//市
-//                object.put("county", MmkvUtils.getcode("county",""));//县
-//            }
+            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
+                object.put("blastunit", MmkvUtils.getcode("uCName",""));//爆破单位
+                object.put("province", MmkvUtils.getcode("province",""));//省
+                object.put("market", MmkvUtils.getcode("market",""));//市
+                object.put("county", MmkvUtils.getcode("county",""));//县
+            }
 
-//            object.put("log", log);//日志
-//            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
+            object.put("log", log);//日志
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
@@ -947,8 +947,14 @@ public class QueryHisDetail extends BaseActivity {
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         Log.e("上传信息-json", json);
+        JSONObject object2 = new JSONObject();
+        try {
+            object2.put("param",json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON, "{'param':'" + json + "'}");
+        RequestBody requestBody = FormBody.create(JSON, object2.toString());
         Log.e("上传信息-json", requestBody.contentType().toString());
         Request request = new Request.Builder()
                 .url(url)

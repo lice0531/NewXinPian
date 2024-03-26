@@ -125,38 +125,38 @@ public class TestICActivity extends SerialPortActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_pre://进入级联页面
-                byte[] powerCmd = FiveTestingCmd.send70("00","01");//41
-                sendCmd(powerCmd);
-//                if (revOpenCmdTestFlag == 0) {
-//                    byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-//                    sendCmd(powerCmd);
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    sendPower = new SendPower();//40指令线程
-//                    sendPower.exit = false;
-//                    sendPower.start();
-//                    revOpenCmdTestFlag = 1;
-//                    butPre.setText(R.string.text_ceshi_tzcs);
-//                } else {
-//                    sendPower.exit = true;
-//                    sendPower.interrupt();
-//                    try {
-//                        sendPower.join();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
-//                    sendCmd(powerCmd);
-//                    butPre.setText(getString(R.string.text_ceshi_kscs));
-//                    tvCeshiDianliu.setText("0.0μA");
-//                    tvCeshiDianya.setText("0.0V");
-//                    tvCeshiDianliu.setTextColor(Color.BLACK);
-//                    tvCeshiDianya.setTextColor(Color.BLACK);
-//                    revOpenCmdTestFlag = 0;
-//                }
+//                byte[] powerCmd = FiveTestingCmd.send70("00","01");//41
+//                sendCmd(powerCmd);
+                if (revOpenCmdTestFlag == 0) {
+                    byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+                    sendCmd(powerCmd);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    sendPower = new SendPower();//40指令线程
+                    sendPower.exit = false;
+                    sendPower.start();
+                    revOpenCmdTestFlag = 1;
+                    butPre.setText(R.string.text_ceshi_tzcs);
+                } else {
+                    sendPower.exit = true;
+                    sendPower.interrupt();
+                    try {
+                        sendPower.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
+                    sendCmd(powerCmd);
+                    butPre.setText(getString(R.string.text_ceshi_kscs));
+                    tvCeshiDianliu.setText("0.0μA");
+                    tvCeshiDianya.setText("0.0V");
+                    tvCeshiDianliu.setTextColor(Color.BLACK);
+                    tvCeshiDianya.setTextColor(Color.BLACK);
+                    revOpenCmdTestFlag = 0;
+                }
                 break;
         }
     }
