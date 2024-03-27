@@ -1100,12 +1100,15 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36在网读ID检测
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
+            String noReisterFlag="";
+            if(fromCommad.startsWith("C00036")){
+                noReisterFlag = fromCommad.substring(8,10);
+            }
             Log.e("是否有未注册雷管", "noReisterFlag: " + noReisterFlag);
 //            Log.e("36指令", "fromCommad: " + fromCommad);
             //C0003607 FF 00000000 0000 DA2D C0
 
-            if (!fromCommad.startsWith("00000000", 10)) {
+            if (!fromCommad.startsWith("00000000", 10)&& fromCommad.startsWith("07", 6)) {
                 if (errlist != null && errlist.size() == 1) {
                     DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
                     String a = fromCommad.substring(10, 18);

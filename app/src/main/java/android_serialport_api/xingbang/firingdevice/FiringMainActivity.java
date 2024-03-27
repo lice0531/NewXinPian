@@ -1470,7 +1470,10 @@ public class FiringMainActivity extends SerialPortActivity {
 //            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
+            String noReisterFlag="";
+            if(fromCommad.startsWith("C00036")){
+                noReisterFlag = fromCommad.substring(8,10);
+            }
             Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
 //            if ("FF".equals(noReisterFlag)) {
 //                fourOnlineDenatorFlag = 3;
