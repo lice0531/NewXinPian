@@ -929,7 +929,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_16V_V1.3.16C"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_240321_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_240327_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {
@@ -959,7 +959,12 @@ public class QueryHisDetail extends BaseActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                Utils.writeLog("煋邦上传失败"+ response.toString());
                 Log.e("上传", "返回: " + response.toString());
+                Message msg = new Message();
+                msg.what=5;
+                msg.obj="煋邦上传失败";
+                mHandler_tip.sendMessage(msg);
                 pb_show = 0;
             }
         });
