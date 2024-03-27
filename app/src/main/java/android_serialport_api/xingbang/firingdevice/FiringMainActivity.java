@@ -1477,7 +1477,8 @@ public class FiringMainActivity extends SerialPortActivity {
 ////                increase(6);//0635此处功能为直接跳到第六阶段
 //            }
 
-            if(!fromCommad.startsWith("00000000", 10)){
+            if(!fromCommad.startsWith("00000000", 10) && fromCommad.substring(6,8).equals("07")){
+                //C0003601FF04DEC0
                 if(errlist.size()==1){
                     DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
                     String a = fromCommad.substring(10,18);
