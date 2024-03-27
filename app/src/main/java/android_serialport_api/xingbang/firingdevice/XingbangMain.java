@@ -271,8 +271,8 @@ public class XingbangMain extends BaseActivity {
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Yanzheng_dw = (String) MmkvUtils.getcode("Yanzheng_dw", "不验证");//是否验证单位信息
         Log.e(TAG, "Yanzheng_dw: "+Yanzheng_dw );
-        Log.e(TAG, "uPhone: "+MmkvUtils.getcode("uPhone","").toString() );
-        if(Yanzheng_dw.equals("验证") && MmkvUtils.getcode("uPhone","").toString().length()<11){
+        Log.e(TAG, "uPhone: "+MmkvUtils.getcode("uCName","").toString() );
+        if(Yanzheng_dw.equals("验证") && MmkvUtils.getcode("uCName","").toString().length()<1){
             createDialog_dw();
         }
 
