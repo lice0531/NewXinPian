@@ -111,6 +111,8 @@ public class QueryHisDetail extends BaseActivity {
     private Handler mHandler_2 = new Handler();//显示进度条
     private Handler mHandler_tip = new Handler();//显示进度条
     private Handler mHandler_update = new Handler();//更新状态
+    private boolean danling_flag=false;
+    private boolean xingbang_flag=false;
     private LoadingDialog tipDlg = null;
     private int pb_show = 0;
     private ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//错误雷管
@@ -198,8 +200,6 @@ public class QueryHisDetail extends BaseActivity {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
                         Log.e("读取日志1", "blastdate: " + blastdate);
-                        Log.e("qbxm_name", "qbxm_name: " + qbxm_name);
-                        Log.e("qbxm_name", "qbxm_name: " + qbxm_name.length());
                         upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
 
                         break;
@@ -298,14 +298,27 @@ public class QueryHisDetail extends BaseActivity {
         };
         mHandler_update = new Handler(msg -> {
             Object result = msg.obj;
-            updataState(result + "");//更新上传状态
-            updataState_sq_dl(result + "");
-            int pos = msg.arg1;
-            list_savedate.get(pos).setUploadStatus("已上传");
-            hisAdapter.setDataSource(list_savedate);
+            switch (msg.what){
+                case 1:
+                    if(xingbang_flag&&danling_flag){
+
+                        updataState_sq_dl(result + "");
+                        int pos = msg.arg1;
+                        list_savedate.get(pos).setUploadStatus("已上传");
+                        hisAdapter.setDataSource(list_savedate);
 //            showLoadMore();
-            hisAdapter.notifyItemChanged(pos);
+                        hisAdapter.notifyItemChanged(pos);
 //            mAdapter.notifyDataSetChanged();
+                    }
+                    break;
+                case 2:
+                    updataState(result + "");//更新上传状态
+                    break;
+            }
+
+
+
+
             return false;
         });
         hideInputKeyboard();
@@ -383,6 +396,8 @@ public class QueryHisDetail extends BaseActivity {
         values.put("dl_state", "已上传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
+        danling_flag=false;
+        xingbang_flag=false;
     }
 
     /**
@@ -398,6 +413,7 @@ public class QueryHisDetail extends BaseActivity {
         Message message = new Message();
         message.obj = blastdate;
         message.arg1 = pos;
+        message.what=2;
         mHandler_update.sendMessage(message);
     }
 
@@ -592,6 +608,7 @@ public class QueryHisDetail extends BaseActivity {
         values.put("uploadStatus", "已上传");
         db.update(DatabaseHelper.TABLE_NAME_HISMAIN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把闪存中的数据存入磁盘中
+
     }
 
 
@@ -765,6 +782,7 @@ public class QueryHisDetail extends BaseActivity {
     private void upload(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_upload_dl;//丹灵上传
+//        String url = Utils.httpurl_upload_test;//丹灵上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -831,7 +849,7 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("网络请求", "IOException: " + e);
-
+                updatalog(blastdate,"丹灵网络上传错误-返回结果:"+e);
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
 
             }
@@ -850,6 +868,8 @@ public class QueryHisDetail extends BaseActivity {
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
+                        message.what=1;
+                        danling_flag=true;
                         mHandler_update.sendMessage(message);
                         if (!server_type2.equals("2")) {
                             pb_show = 0;
@@ -863,15 +883,16 @@ public class QueryHisDetail extends BaseActivity {
                             msg.what=3;
                             msg.obj=object.getString("cwxxms");
                             mHandler_tip.sendMessage(msg);
-
+                            updatalog(blastdate,"丹灵上传错误-返回结果:"+object.getString("cwxxms"));
                         } else if (cwxx.equals("2")) {
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-
+                            updatalog(blastdate,"丹灵上传错误-返回结果:"+"起爆器未备案或未设置作业任务");
                         } else {
                             Message msg = new Message();
                             msg.what=5;
                             msg.obj=object.getString("cwxxms");
                             mHandler_tip.sendMessage(msg);
+                            updatalog(blastdate,"丹灵上传错误-返回结果:"+object.getString("cwxxms"));
 
                         }
                     }
@@ -886,8 +907,8 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-//        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//新公司服务器上传
-        String url = "http://111.194.155.18:999/XB/DataUpload";//公司服务器上传
+        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//新公司服务器上传
+//        String url = "http://111.194.155.18:999/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -924,6 +945,8 @@ public class QueryHisDetail extends BaseActivity {
                 object.put("province", MmkvUtils.getcode("province",""));//省
                 object.put("market", MmkvUtils.getcode("market",""));//市
                 object.put("county", MmkvUtils.getcode("county",""));//县
+//                object.put("uPhone", MmkvUtils.getcode("uPhone",""));//电话//目前没这个属性
+//                object.put("uFName", MmkvUtils.getcode("uFName",""));//人
             }
 
             object.put("log", log);//日志
@@ -937,16 +960,11 @@ public class QueryHisDetail extends BaseActivity {
             }else {
                 object.put("name", MmkvUtils.getcode("pro_name", ""));//项目名称
             }
-
-            Log.e("上传信息-项目名称", qbxm_name);
-            Log.e("上传信息-项目名称", object.toString());
-
         } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
-        Log.e("上传信息-json", json);
         JSONObject object2 = new JSONObject();
         try {
             object2.put("param",json);
@@ -955,7 +973,6 @@ public class QueryHisDetail extends BaseActivity {
         }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = FormBody.create(JSON, object2.toString());
-        Log.e("上传信息-json", requestBody.contentType().toString());
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)
@@ -968,15 +985,61 @@ public class QueryHisDetail extends BaseActivity {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
                 Utils.writeLog("煋邦网络上传错误-IOException:"+e);
+                updatalog(blastdate,"煋邦网络上传错误-IOException:"+e);
+                Message msg = new Message();
+                msg.what=5;
+                msg.obj="煋邦后台上传失败";
+                mHandler_tip.sendMessage(msg);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.e("上传", "返回: " + response.toString());
-                Log.e("上传", "返回: " + response.body().string());
+                JSONObject object;
+                try {
+                    object = new JSONObject(response.body().string());
+                    Log.e("上传", "煋邦返回: " + object.toString());
+                    if(object.toString().contains("success")){
+                        String success = object.getString("success");
+                        if(success.equals("1")){
+                            Message message = new Message();
+                            message.obj = blastdate;
+                            message.arg1 = pos;
+                            message.what=1;
+                            xingbang_flag=true;
+                            mHandler_update.sendMessage(message);
+                        }else {
+                            Log.e("上传", "更新错误状态: " );
+                            Message msg = new Message();
+                            msg.what=5;
+                            msg.obj="煋邦后台上传失败";
+                            mHandler_tip.sendMessage(msg);
+                            updatalog(blastdate,"煋邦网络上传错误-返回结果:"+object.toString());
+                        }
+                    } else {
+                        Log.e("上传", "更新错误状态: " );
+                        Message msg = new Message();
+                        msg.what=5;
+                        msg.obj="煋邦后台上传失败";
+                        mHandler_tip.sendMessage(msg);
+                        updatalog(blastdate,"煋邦网络上传错误-返回结果:"+object.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
                 pb_show = 0;
             }
         });
+    }
+    /**
+     * 添加错误日志
+     * */
+    private void updatalog(String blastdate,String err) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
+        his_main.setLog(his_main.getLog()+"\n"+err);
+        getDaoSession().getDenatorHis_MainDao().update(his_main);
     }
 
 

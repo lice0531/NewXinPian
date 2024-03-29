@@ -983,6 +983,13 @@ public class GreenDaoMaster {
                 .list();
     }
 
+    public DenatorHis_Main queryDetonatorForMainHis(String time) {
+        return denatorHis_mainDao
+                .queryBuilder()
+                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .unique();
+    }
+
     /**
      * 根据起爆时间删除对应的历史记录
      */
