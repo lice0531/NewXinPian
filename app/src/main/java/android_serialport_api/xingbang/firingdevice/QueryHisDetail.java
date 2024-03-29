@@ -392,14 +392,24 @@ public class QueryHisDetail extends BaseActivity {
      */
     public void updataState_sq_dl(String blastdate) {
         Log.e("更新起爆状态-丹灵", "id: " + blastdate);
-        ContentValues values = new ContentValues();
-        values.put("dl_state", "已上传");
-        db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
+        GreenDaoMaster master = new GreenDaoMaster();
+        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
+        his_main.setUploadStatus("已上传");
+        getDaoSession().getDenatorHis_MainDao().update(his_main);
+
         Utils.saveFile();//把软存中的数据存入磁盘中
         danling_flag=false;
         xingbang_flag=false;
     }
-
+    /**
+     * 添加错误日志
+     * */
+    private void updatalog(String blastdate,String err) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
+        his_main.setLog(his_main.getLog()+"\n"+err);
+        getDaoSession().getDenatorHis_MainDao().update(his_main);
+    }
     /**
      * 更新中爆网上传信息状态
      */
@@ -907,8 +917,9 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//新公司服务器上传
-//        String url = "http://111.194.155.18:999/XB/DataUpload";//公司服务器上传
+//        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//
+        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新
+//        String url = "http://111.194.155.18:999/XB/DataUpload";//测试
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -1032,15 +1043,7 @@ public class QueryHisDetail extends BaseActivity {
             }
         });
     }
-    /**
-     * 添加错误日志
-     * */
-    private void updatalog(String blastdate,String err) {
-        GreenDaoMaster master = new GreenDaoMaster();
-        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
-        his_main.setLog(his_main.getLog()+"\n"+err);
-        getDaoSession().getDenatorHis_MainDao().update(his_main);
-    }
+
 
 
     @OnClick({R.id.btn_del_return, R.id.btn_del_all})
