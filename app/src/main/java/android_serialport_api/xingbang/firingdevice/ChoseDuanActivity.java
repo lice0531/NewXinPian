@@ -1109,6 +1109,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     DaoSession session = getDaoSession();
                     List<DenatorBaseinfo> list_up;//翻转前
                     List<DenatorBaseinfo> list2;//翻转后
+                    List<DenatorBaseinfo> list5;//翻转后
                     String strSql;//除了序号最小的所有重复雷管
                     String strSql2;//序号最小的重复雷管
                     String strSql3;//所有不重复延时
@@ -1118,6 +1119,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     if(fz==0){//翻转
                         list_up = master.queryLeiguanDuan(duan, mRegion);
                         list2 = master.queryLeiguanDuan(duan, mRegion);
+                        list5 = master.queryLeiguanDuanDesc(duan, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
@@ -1126,6 +1128,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     }else {//复位
                         list_up = master.queryLeiguanDuan(duan, mRegion,"0");
                         list2 = master.queryLeiguanDuan(duan, mRegion,"0");
+                        list5 = master.queryLeiguanDuan(duan, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by blastserial asc";
@@ -1244,6 +1247,22 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                         lg.setFanzhuan(fz + "");
 
+                        int delay=0;
+                        if(i>0){
+                            int delau_up=master.querylg(list2.get(i-1).getShellBlastNo()).getDelay();//前一发雷管的延时
+                            int delay_1=list2.get(i-1).getDelay();
+                            int delay_2=list2.get(i).getDelay();
+                            delay= delau_up+(delay_1-delay_2);
+                            Log.e(TAG, "新方法 翻转后,前一发的管壳码: "+list2.get(i-1).getShellBlastNo() +"--delay="+list2.get(i-1).getDelay());
+                            Log.e(TAG, "新方法 翻转后,前一发的延时delau_up: "+delau_up );
+                            Log.e(TAG, "新方法 翻转前,前一发延时delay_1: "+list2.get(i-1).getShellBlastNo()+"-delay="+list2.get(i-1).getDelay() );
+                            Log.e(TAG, "新方法 翻转前,当前延时delay_2: "+list2.get(i).getShellBlastNo()+"-delay="+list2.get(i).getDelay()  );
+                        }else {
+                            delay= list_up.get(list_up.size()-1).getDelay();
+
+                        }
+                        Log.e(TAG, "新方法获取的第"+i+"发"+lg.getShellBlastNo()+"--delay: "+delay );
+                        lg.setDelay(delay);
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
 
                         Log.e(TAG, "结束----------------: ");

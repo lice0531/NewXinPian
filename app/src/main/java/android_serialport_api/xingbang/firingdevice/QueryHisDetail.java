@@ -576,6 +576,15 @@ public class QueryHisDetail extends BaseActivity {
         Utils.saveFile();//把闪存中的数据存入磁盘中
     }
 
+    /**
+     * 添加错误日志
+     * */
+    private void updatalog(String blastdate,String err) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
+        his_main.setLog(his_main.getLog()+"\n"+err);
+        getDaoSession().getDenatorHis_MainDao().update(his_main);
+    }
 
     /***
      * 建立雷管信息表对话框
@@ -900,7 +909,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "M900_PT_HF_V1.3.1C_240220");//软件版本
+            object.put("rj_version", "M900_PT_HF_V1.3.1C_240403");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {
@@ -921,7 +930,12 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
-
+                Utils.writeLog("煋邦网络上传错误-IOException:"+e);
+                updatalog(blastdate,"煋邦网络上传错误-IOException:"+e);
+                Message msg = new Message();
+                msg.what=5;
+                msg.obj="煋邦后台上传失败";
+                mHandler_tip.sendMessage(msg);
             }
 
             @Override

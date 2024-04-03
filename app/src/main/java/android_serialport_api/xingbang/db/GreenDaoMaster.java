@@ -20,6 +20,7 @@ import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
@@ -44,6 +45,7 @@ public class GreenDaoMaster {
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
+    private DenatorHis_MainDao denatorHis_mainDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -53,6 +55,7 @@ public class GreenDaoMaster {
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
+        this.denatorHis_mainDao = Application.getDaoSession().getDenatorHis_MainDao();
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
     }
 
@@ -963,6 +966,13 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
+    public List<DenatorBaseinfo> queryLeiguanDuanDesc(int duan, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
     /***
      * @param duan
      * @return
@@ -1332,5 +1342,12 @@ public class GreenDaoMaster {
         Log.e("删除生产数据中的雷管", "time: "+time );
         QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
         result.where(DetonatorTypeNewDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    public DenatorHis_Main queryDetonatorForMainHis(String time) {
+        return denatorHis_mainDao
+                .queryBuilder()
+                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .unique();
     }
 }

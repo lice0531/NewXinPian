@@ -654,9 +654,15 @@ public class SyncActivityYouxian extends BaseActivity {
      * 发送485命令
      */
     public void send485Cmd(String data ){
+        int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", "")) ;
+        try {
+            Thread.sleep(delay* 2L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         byte[] powerCmd =Utils.hexStringToBytes(data);
         mExpDevMgr.sendBytesRs485(powerCmd);
-        String str = Utils.bytesToHexFun(powerCmd);
+//        String str = Utils.bytesToHexFun(powerCmd);
 //        Log.e("485发送-data", data);
 //        Log.e("485发送-str", str);
     }

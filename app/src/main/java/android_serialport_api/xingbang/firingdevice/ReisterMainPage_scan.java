@@ -1539,24 +1539,24 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 new Thread(() -> {
 
                     int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
-                    if (a == 1) {
-                        if (info.getDuanNo() == 1) {//该段首发雷管,跟后面对比
-                            //查找后一发雷管()
-                            DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo() + 1, info.getDuan(), mRegion);
-                            if (denatorBaseinfo != null) {//
-                                int delay_add = denatorBaseinfo.getDelay() - info.getDelay();
-                                Utils.jianshaoData(mRegion, info, flag_t1, delay_add, duan);//插入雷管的后面所有雷管序号+1
-                            }
-                        } else {
-                            //查找前一发雷管()
-                            DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo() - 1, info.getDuan(), mRegion);
-                            if (denatorBaseinfo != null) {//
-                                int delay_add = info.getDelay() - denatorBaseinfo.getDelay();
-                                Utils.jianshaoData(mRegion, info, flag_t1, delay_add, duan);//插入雷管的后面所有雷管序号+1
-                            }
-                        }
-
-                    }
+//                    if (a == 1) {
+//                        if (info.getDuanNo() == 1) {//该段首发雷管,跟后面对比
+//                            //查找后一发雷管()
+//                            DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo() + 1, info.getDuan(), mRegion);
+//                            if (denatorBaseinfo != null) {//
+//                                int delay_add = denatorBaseinfo.getDelay() - info.getDelay();
+//                                Utils.jianshaoData(mRegion, info, flag_t1, delay_add, duan);//插入雷管的后面所有雷管序号+1
+//                            }
+//                        } else {
+//                            //查找前一发雷管()
+//                            DenatorBaseinfo denatorBaseinfo = new GreenDaoMaster().querylgduanNo(info.getDuanNo() - 1, info.getDuan(), mRegion);
+//                            if (denatorBaseinfo != null) {//
+//                                int delay_add = info.getDelay() - denatorBaseinfo.getDelay();
+//                                Utils.jianshaoData(mRegion, info, flag_t1, delay_add, duan);//插入雷管的后面所有雷管序号+1
+//                            }
+//                        }
+//
+//                    }
 
                     // 删除某一发雷管
                     int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
@@ -1576,6 +1576,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         });
         builder.setPositiveButton("确定", (dialog, which) -> {
+            int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
+            if(a>1){
+                show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
+                return;
+            }
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Log.e("单发修改", "delay1: " + delay1);
