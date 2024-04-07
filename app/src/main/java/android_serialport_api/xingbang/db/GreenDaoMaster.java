@@ -987,6 +987,14 @@ public class GreenDaoMaster {
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
 
+    public List<DenatorBaseinfo> queryLeiguanDuanforDelay(int duan, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
+
     /***
      * @param duanNo
      * @return

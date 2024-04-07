@@ -126,6 +126,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private Handler busHandler = null;//总线信息
     private Handler mHandler_tip = null;//提示
     private Handler Handler_tip = null;//提示
+    private Handler checkHandler = null;//更正错误
     private static Handler mHandler_1 = null;//更新视图
     private static Handler noReisterHandler = null;//没有注册的雷管
     private To52Test writeVo;
@@ -201,6 +202,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean dengdai=true;
     private final int cankaodianliu=15;
     private boolean kaiguan=true;
+    private List<DenatorBaseinfo> errlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -534,6 +536,23 @@ public class FiringMainActivity extends SerialPortActivity {
 //            busInfo = null;
             return false;
         });
+
+        checkHandler = new Handler(msg -> {
+            String errNumStr = ll_firing_errorAmount_2.getText().toString();
+//            String tureNumStr = ll_firing_tureNum.getText().toString();
+//            if (tureNumStr.trim().length() < 1) {
+//                tureNumStr = "0";
+//            }
+            ll_firing_errorAmount_2.setText("" + (Integer.parseInt(errNumStr) - 1));
+            ll_firing_errorAmount_4.setText("" + (Integer.parseInt(errNumStr) - 1));
+            ll_firing_errorAmount_2.setTextColor(Color.GREEN);
+            ll_firing_errorAmount_4.setTextColor(Color.GREEN);
+            totalerrorNum = Integer.parseInt(errNumStr) + 1;
+
+//            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+//            totaltureNum = Integer.parseInt(tureNumStr) + 1;
+            return false;
+        });
     }
 
     private void zhanting() {
@@ -662,14 +681,9 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        errlist = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
 
-//        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where  statusCode=? and errorCode<> ? and piece = ?";
-//        Cursor cursor = db.rawQuery(sql, new String[]{"02", "FF", mRegion});
-
-//        cursor.close();
-
-        int totalNum = list.size();//得到数据的总条数
+        int totalNum = errlist.size();//得到数据的总条数
         ll_firing_errorAmount_4.setText("" + totalNum);
         if (totalNum != 0) {
             ll_firing_errorAmount_4.setTextColor(Color.RED);
@@ -1248,11 +1262,27 @@ public class FiringMainActivity extends SerialPortActivity {
 //            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+//            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+            String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
-            if ("FF".equals(noReisterFlag)) {
-                fourOnlineDenatorFlag = 3;
-//                increase(6);//0635此处功能为直接跳到第六阶段
+//            if ("FF".equals(noReisterFlag)) {
+//                fourOnlineDenatorFlag = 3;
+////                increase(6);//0635此处功能为直接跳到第六阶段
+//            }
+
+            if(!fromCommad.startsWith("00000000", 10)){
+                if(errlist.size()==1){
+                    DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
+                    String a = fromCommad.substring(10,18);
+                    String b = "A6240"+a.substring(6,8)+a.substring(4,6)+a.substring(2,4)+a.substring(0,2);
+                    denator.setDenatorId(b);
+                    denator.setZhu_yscs(fromCommad.substring(18,22));
+                    denator.setErrorCode("FF");
+                    denator.setErrorName("通信成功");
+                    Application.getDaoSession().update(denator);
+                    checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
+
+                }
             }
 
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆

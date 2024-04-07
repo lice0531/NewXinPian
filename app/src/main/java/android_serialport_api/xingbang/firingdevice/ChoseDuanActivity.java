@@ -409,6 +409,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
         setFan();
 
 
+
     }
 
     @Override
@@ -1164,7 +1165,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         }
                         cursor3.close();
                     }
-                    List<Integer> list_duanNo = new ArrayList<>();//所有不重复延时
+                    List<Integer> list_duanNo = new ArrayList<>();//
 
                     Cursor cursor4 = session.getDatabase().rawQuery(strSql4, null);
                     if (cursor4 != null) {
@@ -1173,6 +1174,21 @@ public class ChoseDuanActivity extends AppCompatActivity {
                             list_duanNo.add(duanNo);
                         }
                         cursor4.close();
+                    }
+                    List<Integer> list_alldelay = new ArrayList<>();//
+                    Cursor cursor5 = session.getDatabase().rawQuery(sql, null);
+                    if (cursor5 != null) {
+                        while (cursor5.moveToNext()) {
+                            int delay = cursor5.getInt(0);
+                            list_alldelay.add(delay);
+                        }
+                        cursor5.close();
+                    }
+
+                    Log.e(TAG, "list_alldelay: "+list_alldelay.toString() );
+                    if(isIncreasing(list_alldelay)||isDecreasing(list_alldelay)){
+                        show_Toast("当前延时不是按规律设置,请您手动修改延时");
+                        return;
                     }
 
                     Log.e(TAG, duan + "段 雷管list_up: " + list_up.toString());
@@ -2074,4 +2090,29 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 .apply()
                 .show(text);
     }
+
+    /**
+     * 判断是否递增
+     * */
+    public static boolean isIncreasing(List<Integer> list) {
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i) <= list.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * 判断是否递减
+     * */
+    public static boolean isDecreasing(List<Integer> list) {
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i) >= list.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 }
