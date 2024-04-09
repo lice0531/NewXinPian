@@ -1124,7 +1124,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
-                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion+ " group by delay order by delay desc";//+" order by htbh "
+                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion +" order by blastserial";//+" order by htbh "
                         strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+" group by duanNo order by duanNo desc";//所有不重复孔号
                     }else {//复位
                         list_up = master.queryLeiguanDuan(duan, mRegion,"0");
@@ -1133,7 +1133,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
                         strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by blastserial asc";
-                        sql = "SELECT delay FROM denatorBaseinfo where fanzhuan = 0 group by delay order by delay asc";//
+                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion +" order by blastserial" ;//+" order by htbh "
                         strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+ " and fanzhuan = 0  group by duanNo order by duanNo desc";//所有不重复孔号
                     }
 //                    list_delay.clear();
@@ -1186,7 +1186,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     }
 
                     Log.e(TAG, "list_alldelay: "+list_alldelay.toString() );
-                    if(isIncreasing(list_alldelay)||isDecreasing(list_alldelay)){
+                    if(!isIncreasing(list_alldelay)&&! isDecreasing(list_alldelay)){
                         show_Toast("当前延时不是按规律设置,请您手动修改延时");
                         return;
                     }
@@ -2096,10 +2096,12 @@ public class ChoseDuanActivity extends AppCompatActivity {
      * */
     public static boolean isIncreasing(List<Integer> list) {
         for (int i = 1; i < list.size(); i++) {
-            if (list.get(i) <= list.get(i - 1)) {
+            if (list.get(i) < list.get(i - 1)) {
+                Log.e("递增", "false: " );
                 return false;
             }
         }
+        Log.e("递增", "true: " );
         return true;
     }
     /**
@@ -2107,10 +2109,15 @@ public class ChoseDuanActivity extends AppCompatActivity {
      * */
     public static boolean isDecreasing(List<Integer> list) {
         for (int i = 1; i < list.size(); i++) {
-            if (list.get(i) >= list.get(i - 1)) {
+            Log.e("递减", "list.get(i): " +list.get(i));
+            Log.e("递减", "list.get(i - 1): " +list.get(i - 1));
+            Log.e("递减", "list.get(i) >= list.get(i - 1): " +(list.get(i) >= list.get(i - 1)));
+            if (list.get(i) > list.get(i - 1)) {
+                Log.e("递减", "false: " );
                 return false;
             }
         }
+        Log.e("递减", "true: " );
         return true;
     }
 
