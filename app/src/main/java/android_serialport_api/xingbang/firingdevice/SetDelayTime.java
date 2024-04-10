@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -43,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -171,6 +174,15 @@ public class SetDelayTime extends BaseActivity {
 
 
     }
+    public static boolean hasDuplicates(List<Integer> list) {
+        Set<Integer> set = new HashSet<>();
+        for (Integer ch : list) {
+            if (!set.add(ch)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void initView() {
 
@@ -212,8 +224,24 @@ public class SetDelayTime extends BaseActivity {
                     //设置对话框的按钮
                     .setNegativeButton("继续", (dialog13, which) -> {
                         dialog13.dismiss();
-
                         hideInputKeyboard();
+
+                        //同孔不许改延时
+                        String sql = "SELECT duanNo FROM denatorBaseinfo  where piece = "+mRegion +" order by blastserial";//+" order by htbh "
+                        List<Integer> list_duanNo = new ArrayList<>();//
+                        Cursor cursor5 = getDaoSession().getDatabase().rawQuery(sql, null);
+                        if (cursor5 != null) {
+                            while (cursor5.moveToNext()) {
+                                int delay = cursor5.getInt(0);
+                                list_duanNo.add(delay);
+                            }
+                            cursor5.close();
+                        }
+//                        Log.e("同孔", "list_duanNo: "+list_duanNo);
+                        if(hasDuplicates(list_duanNo)){
+                            show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
+                            return;
+                        }
 
                         String checstr = checkData();
                         if (checstr == null || checstr.trim().length() < 1) {
