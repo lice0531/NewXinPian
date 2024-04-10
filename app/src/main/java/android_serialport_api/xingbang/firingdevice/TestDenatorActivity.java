@@ -695,8 +695,8 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 21000) {//小于4800u ，全错
-                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                    sendCmd(reCmd);
+//                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+//                    sendCmd(reCmd);
 //                    if (chongfu) {
                     initDialog_zanting(getString(R.string.text_test_tip6));//弹出框
 //                    } else {
@@ -1118,8 +1118,8 @@ public class TestDenatorActivity extends SerialPortActivity {
 
 
 
-            byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-            sendCmd(powerCmd);
+//            byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+//            sendCmd(powerCmd);
             //在测试流程,返回都是FF
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
