@@ -353,7 +353,12 @@ public class GreenDaoMaster {
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
         //94242214050
         //F42F1C 2E0A 2 5
+        Log.e("查询数据库中是否有对应的数据", "lgBean.getGzm().length():" + lgBean.getGzm().length());
         if (lgBean.getGzmcwxx().equals("0") && !lgBean.getUid().startsWith("00000")) {
+            if(lgBean.getGzm().length()<10){
+                Log.e("查询数据库中是否有对应的数据", "一代管" );
+                return;
+            }
             String uid = "";
             String yscs = "";
             String duan = "";
