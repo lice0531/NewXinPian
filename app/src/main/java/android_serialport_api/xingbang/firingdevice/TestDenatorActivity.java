@@ -698,7 +698,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
 //                    sendCmd(reCmd);
 //                    if (chongfu) {
-                    initDialog_zanting(getString(R.string.text_test_tip6));//弹出框
+                    initDialog_zanting("请检查错误雷管是否正确连接。");//弹出框
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
@@ -914,8 +914,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     } else {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
-                                    stage = 4;
+
                                     Thread.sleep(500);
+                                    stage = 4;
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
                                 }
