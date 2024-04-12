@@ -873,7 +873,9 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
+//        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
+        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新;//公司服务器上传
+
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -909,7 +911,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "M900_PT_HF_V1.3.1C_240411");//软件版本
+            object.put("rj_version", "M900_PT_HF_V1.3.1C_240412");//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {
@@ -917,8 +919,14 @@ public class QueryHisDetail extends BaseActivity {
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
+        JSONObject object2 = new JSONObject();
+        try {
+            object2.put("param",json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON, "{'param':'" + json + "'}");
+        RequestBody requestBody = FormBody.create(JSON, object2.toString());
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)

@@ -377,23 +377,26 @@ public class GreenDaoMaster {
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean,String yxq) {
         //94242214050
         //F42F1C 2E0A 2 5
+        Log.e("雷管下载", "lgBean.getUid(): "+lgBean.getUid() );
         if ( !lgBean.getUid().startsWith("00000")) {
             String uid = null;
             String yscs = null;
             String duan = null;
             String version = null;
 
-            if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
-                uid = "A62F400" + lgBean.getGzm().substring(0, 6);
-                yscs = lgBean.getGzm().substring(6, 10);
-            }
+
 
 
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
 //                Log.e("查询数据库中是否有对应的数据", "db: " + db);
-                db.setDenatorId(uid);
+                if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                    uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+                    yscs = lgBean.getGzm().substring(6, 10);
+                    db.setDenatorId(uid);
+                }
+
                 if(lgBean.getGzm().length()>=10){
                     db.setZhu_yscs(yscs);//有延时参数就更新延时参数
                 }

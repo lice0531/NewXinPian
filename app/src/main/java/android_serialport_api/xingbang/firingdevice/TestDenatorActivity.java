@@ -915,7 +915,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
 
-                                    Thread.sleep(500);
+                                    Thread.sleep(1000);
+                                    Log.e(TAG, "跳转: " );
                                     stage = 4;
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
@@ -1116,8 +1117,10 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                 }
             }
-
-
+            //C000360700AB4427007A051BE3C0
+            if(noReisterFlag.equals("00")&&!fromCommad.startsWith("00000000", 10)){
+                noReisterFlag="FF";
+            }
 
 //            byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
 //            sendCmd(powerCmd);
