@@ -875,6 +875,7 @@ public class QueryHisDetail extends BaseActivity {
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
 //        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
         String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新;//公司服务器上传
+//        String url = "http://111.194.155.18:999/XB/DataUpload";//测试
 
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
