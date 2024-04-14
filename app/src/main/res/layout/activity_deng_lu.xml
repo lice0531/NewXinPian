@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="用户名"
+            android:text="手机号"
             android:textSize="20sp" />
 
         <EditText
@@ -45,7 +45,10 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="用户名" />
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="11"
+            android:hint="初次登录,请在有网的情况下登录" />
     </LinearLayout>
 
 

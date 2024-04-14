@@ -29,6 +29,10 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         public final static Property Upassword = new Property(2, String.class, "upassword", false, "upassword");
         public final static Property Isface = new Property(3, String.class, "isface", false, "isface");
         public final static Property Facepath = new Property(4, String.class, "facepath", false, "facepath");
+        public final static Property UCid = new Property(5, String.class, "uCid", false, "uCid");
+        public final static Property UCName = new Property(6, String.class, "uCName", false, "uCName");
+        public final static Property UFName = new Property(7, String.class, "uFName", false, "uFName");
+        public final static Property UIDCard = new Property(8, String.class, "uIDCard", false, "uIDCard");
     }
 
 
@@ -48,7 +52,11 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
                 "\"uname\" TEXT," + // 1: uname
                 "\"upassword\" TEXT," + // 2: upassword
                 "\"isface\" TEXT," + // 3: isface
-                "\"facepath\" TEXT);"); // 4: facepath
+                "\"facepath\" TEXT," + // 4: facepath
+                "\"uCid\" TEXT," + // 5: uCid
+                "\"uCName\" TEXT," + // 6: uCName
+                "\"uFName\" TEXT," + // 7: uFName
+                "\"uIDCard\" TEXT);"); // 8: uIDCard
     }
 
     /** Drops the underlying database table. */
@@ -85,6 +93,26 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         if (facepath != null) {
             stmt.bindString(5, facepath);
         }
+ 
+        String uCid = entity.getUCid();
+        if (uCid != null) {
+            stmt.bindString(6, uCid);
+        }
+ 
+        String uCName = entity.getUCName();
+        if (uCName != null) {
+            stmt.bindString(7, uCName);
+        }
+ 
+        String uFName = entity.getUFName();
+        if (uFName != null) {
+            stmt.bindString(8, uFName);
+        }
+ 
+        String uIDCard = entity.getUIDCard();
+        if (uIDCard != null) {
+            stmt.bindString(9, uIDCard);
+        }
     }
 
     @Override
@@ -115,6 +143,26 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         if (facepath != null) {
             stmt.bindString(5, facepath);
         }
+ 
+        String uCid = entity.getUCid();
+        if (uCid != null) {
+            stmt.bindString(6, uCid);
+        }
+ 
+        String uCName = entity.getUCName();
+        if (uCName != null) {
+            stmt.bindString(7, uCName);
+        }
+ 
+        String uFName = entity.getUFName();
+        if (uFName != null) {
+            stmt.bindString(8, uFName);
+        }
+ 
+        String uIDCard = entity.getUIDCard();
+        if (uIDCard != null) {
+            stmt.bindString(9, uIDCard);
+        }
     }
 
     @Override
@@ -129,7 +177,11 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // uname
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // upassword
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // isface
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // facepath
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // facepath
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // uCid
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // uCName
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // uFName
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // uIDCard
         );
         return entity;
     }
@@ -141,6 +193,10 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         entity.setUpassword(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setIsface(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setFacepath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setUCid(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setUCName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setUFName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setUIDCard(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

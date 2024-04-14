@@ -29,6 +29,7 @@ import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
+import android_serialport_api.xingbang.models.LoginBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -1130,5 +1131,59 @@ public class GreenDaoMaster {
             detonatorTypeNewDao.update(entity);
         }
 
+    }
+
+    /**
+     * 修改授权库中雷管状态
+     *
+     * @param lstDTO 管壳号
+     */
+    public void updateUser(LoginBean.LstDTO lstDTO) {
+        if(checkRepeatUser(lstDTO.getUPhone())){
+            UserMain entity = mUserDao
+                    .queryBuilder()
+                    .where(UserMainDao.Properties.Uname.eq(lstDTO.getUPhone()))
+                    .build()
+                    .unique();
+            entity.setUpassword(lstDTO.getUPwd());
+            entity.setUIDCard(lstDTO.getUIDCard());
+            getDaoSession().getUserMainDao().update(entity);
+        }else {
+            UserMain entity2 =new UserMain();
+            entity2.setUname(lstDTO.getUPhone());
+            entity2.setUpassword(lstDTO.getUPwd());
+            entity2.setUCid(lstDTO.getUCid());
+            entity2.setUCName(lstDTO.getUCName());
+            entity2.setUFName(lstDTO.getUFName());
+            entity2.setUIDCard(lstDTO.getUIDCard());
+            getDaoSession().getUserMainDao().insert(entity2);
+        }
+
+    }
+
+
+    /**
+     * 检查重复的数据
+     *
+     * @param username
+     */
+    public static boolean checkRepeatUser(String username) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        UserMain userMain = master.checkRepeat_User(username);
+        if (userMain != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 查询生产列表中的重复雷管
+     */
+    public UserMain checkRepeat_User(String name) {
+        return mUserDao
+                .queryBuilder()
+                .where(UserMainDao.Properties.Uname.eq(name))
+                .unique();
     }
 }

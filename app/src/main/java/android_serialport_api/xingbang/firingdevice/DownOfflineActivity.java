@@ -7,7 +7,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,7 +25,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,10 +52,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
-import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
-import android_serialport_api.xingbang.utils.AMapUtils;
-import android_serialport_api.xingbang.utils.LngLat;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -68,10 +63,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class DownOfflineActivity extends BaseActivity {
@@ -122,6 +115,7 @@ public class DownOfflineActivity extends BaseActivity {
     private String TAG = "离线下载";
     private String equ_no = "";//设备编码
     private String pro_bprysfz = "";//证件号码
+    private String pro_bprysfz_save = "";//证件号码
     private String pro_htid = "";//合同号码
     private String pro_xmbh = "";//项目编号
     private String pro_coordxy = "";//经纬度
@@ -151,6 +145,13 @@ public class DownOfflineActivity extends BaseActivity {
         dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
         dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
         dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
+
+        //登陆功能重新设置身份证
+        pro_bprysfz_save = (String) MmkvUtils.getcode("uIDCard", "");//证件号码
+        if(pro_bprysfz_save.length()>1){
+            dfAtBprysfz.setText(pro_bprysfz_save);
+        }
+
     }
     private void getUserMessage() {
 

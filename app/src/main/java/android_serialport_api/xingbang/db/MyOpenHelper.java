@@ -50,7 +50,7 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
             }
         }, MessageBeanDao.class, DenatorBaseinfoDao.class, ProjectDao.class,
                 DenatorHis_DetailDao.class, ShouQuanDao.class, DenatorHis_MainDao.class,
-                DetonatorTypeNewDao.class);
+                DetonatorTypeNewDao.class,UserMainDao.class);
     }
 
 

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -42,7 +41,6 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -57,7 +55,6 @@ import org.json.JSONObject;
 import org.litepal.LitePal;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,7 +71,6 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.ErrDuanAdapter;
-import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.ShouQuanAdapter;
@@ -212,6 +208,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private ArrayList<String> list_uid = new ArrayList<>();
     private String equ_no = "";//设备编码
     private String pro_bprysfz = "";//证件号码
+    private String pro_bprysfz_save = "";//证件号码
     private String pro_htid = "";//合同号码
     private String pro_xmbh = "";//项目编号
     private String pro_coordxy = "";//经纬度
@@ -267,7 +264,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         getUserMessage();//获取用户信息
 //        getPropertiesData();//第二种获取用户信息
         initUi();
-
+        //登陆功能重新设置身份证
+        pro_bprysfz_save = (String) MmkvUtils.getcode("uIDCard", "");//证件号码
+        if(pro_bprysfz_save.length()>1){
+            at_bprysfz.setText(pro_bprysfz_save);
+        }
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入项目下载页面---");

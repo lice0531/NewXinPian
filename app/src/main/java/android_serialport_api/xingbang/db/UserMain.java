@@ -21,14 +21,29 @@ public class UserMain {
     private String isface;
     @Property(nameInDb = "facepath")
     private String facepath;
-    @Generated(hash = 474102012)
+    @Property(nameInDb = "uCid")
+    private String uCid;
+    @Property(nameInDb = "uCName")
+    private String uCName;
+    @Property(nameInDb = "uFName")
+    private String uFName;
+    @Property(nameInDb = "uIDCard")
+    private String uIDCard;
+
+
+    @Generated(hash = 1555218758)
     public UserMain(Long id, String uname, String upassword, String isface,
-            String facepath) {
+            String facepath, String uCid, String uCName, String uFName,
+            String uIDCard) {
         this.id = id;
         this.uname = uname;
         this.upassword = upassword;
         this.isface = isface;
         this.facepath = facepath;
+        this.uCid = uCid;
+        this.uCName = uCName;
+        this.uFName = uFName;
+        this.uIDCard = uIDCard;
     }
     @Generated(hash = 959343184)
     public UserMain() {
@@ -62,6 +77,30 @@ public class UserMain {
     }
     public void setFacepath(String facepath) {
         this.facepath = facepath;
+    }
+    public String getUCid() {
+        return this.uCid;
+    }
+    public void setUCid(String uCid) {
+        this.uCid = uCid;
+    }
+    public String getUCName() {
+        return this.uCName;
+    }
+    public void setUCName(String uCName) {
+        this.uCName = uCName;
+    }
+    public String getUFName() {
+        return this.uFName;
+    }
+    public void setUFName(String uFName) {
+        this.uFName = uFName;
+    }
+    public String getUIDCard() {
+        return this.uIDCard;
+    }
+    public void setUIDCard(String uIDCard) {
+        this.uIDCard = uIDCard;
     }
 
 

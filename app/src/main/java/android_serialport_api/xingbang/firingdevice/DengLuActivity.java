@@ -1,10 +1,12 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -18,9 +20,11 @@ import java.io.IOException;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.LoginBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -100,7 +104,7 @@ public class DengLuActivity extends BaseActivity {
 
     private void upload(String uPhone, String uPwd) {
 
-        String url = "http://111.194.155.18:999/Handset/Login";//公司服务器上传
+        String url = Utils.httpurl_xb_denglu;//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
 
@@ -134,6 +138,10 @@ public class DengLuActivity extends BaseActivity {
                     String res = response.body().string();
                     Gson gson = new Gson();
                     LoginBean loginBean = gson.fromJson(res, LoginBean.class);
+//                    Log.e("登陆返回", "res: "+res );
+                    Log.e("登陆返回", "loginBean: "+loginBean.toString() );
+                    MmkvUtils.savecode("uIDCard",loginBean.getUIDCard());//登陆本人身份证
+                    upData(loginBean);
                     ////用户 返回参数指令
                     ////1001  用户名 不存在
                     ////1002  密码错误
@@ -158,10 +166,23 @@ public class DengLuActivity extends BaseActivity {
         });
     }
 
+    private void upData(LoginBean loginBean) {
+        if (loginBean.getLst().size() > 0) {
+            GreenDaoMaster master = new GreenDaoMaster();
+            for (int i = 0; i < loginBean.getLst().size(); i++) {
+                master.updateUser(loginBean.getLst().get(i));
+            }
+
+        }
+
+
+    }
+
     @OnClick({R.id.btn_login, R.id.btn_zhuce})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
+                hideInputKeyboard();
                 String uPhone = etUser.getText().toString();
                 String uPwd = etPassward.getText().toString();
                 upload(uPhone, uPwd);
@@ -171,5 +192,15 @@ public class DengLuActivity extends BaseActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+
+    public void hideInputKeyboard() {
+
+        etUser.clearFocus();//取消焦点
+        etPassward.clearFocus();
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
 }
