@@ -1577,6 +1577,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
         builder.setPositiveButton("确定", (dialog, which) -> {
             int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
+//            Log.e(TAG, "a: "+a );
             if(a>1){
                 show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
                 return;

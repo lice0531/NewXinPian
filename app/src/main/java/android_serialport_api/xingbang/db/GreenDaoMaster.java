@@ -103,6 +103,14 @@ public class GreenDaoMaster {
         return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm)).unique();
     }
     /**
+     * 查询所有雷管
+     *
+     * @return
+     */
+    public DenatorBaseinfo querylgForXh(String xuhao) {
+        return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.Blastserial.eq(xuhao)).unique();
+    }
+    /**
      * 查询X区域,X段最大序号雷管
      *
      * @return

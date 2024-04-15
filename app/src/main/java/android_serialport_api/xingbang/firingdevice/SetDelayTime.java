@@ -174,9 +174,9 @@ public class SetDelayTime extends BaseActivity {
 
 
     }
-    public static boolean hasDuplicates(List<Integer> list) {
-        Set<Integer> set = new HashSet<>();
-        for (Integer ch : list) {
+    public static boolean hasDuplicates(List<String> list) {
+        Set<String> set = new HashSet<>();
+        for (String ch : list) {
             if (!set.add(ch)) {
                 return true;
             }
@@ -218,6 +218,14 @@ public class SetDelayTime extends BaseActivity {
         });
         btn_OK = findViewById(R.id.btn_setDelayTime_inputOK);
         btn_OK.setOnClickListener(v -> {
+            if(startNoTxt.getText().length()==0){
+                show_Toast("请输入开始序号");
+                return;
+            }
+            if(endNoTxt.getText().length()==0){
+                show_Toast("请输入结束序号");
+                return;
+            }
             AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
                     .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
                     .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
@@ -227,18 +235,27 @@ public class SetDelayTime extends BaseActivity {
                         hideInputKeyboard();
 
                         //同孔不许改延时
-                        String sql = "SELECT duanNo FROM denatorBaseinfo  where piece = "+mRegion +" order by blastserial";//+" order by htbh "
-                        List<Integer> list_duanNo = new ArrayList<>();//
+                        String sql = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" order by blastserial";//+" order by htbh "
+                        Log.e("语句", "sql: "+sql );
+                        List<String> list_duanNo = new ArrayList<>();//
                         Cursor cursor5 = getDaoSession().getDatabase().rawQuery(sql, null);
                         if (cursor5 != null) {
                             while (cursor5.moveToNext()) {
-                                int delay = cursor5.getInt(0);
-                                list_duanNo.add(delay);
+                                int duanNo = cursor5.getInt(0);
+                                String duan = cursor5.getString(1);
+                                list_duanNo.add(duan+"-"+duanNo);
                             }
                             cursor5.close();
                         }
-//                        Log.e("同孔", "list_duanNo: "+list_duanNo);
-                        if(hasDuplicates(list_duanNo)){
+                        GreenDaoMaster master = new GreenDaoMaster();
+                        DenatorBaseinfo db_start =master.querylgForXh(startNoTxt.getText().toString());
+                        DenatorBaseinfo db_end =master.querylgForXh(endNoTxt.getText().toString());
+                        int a = new GreenDaoMaster().querylgNum(db_start.getDuanNo(), db_start.getDuan(), mRegion);
+                        int b = new GreenDaoMaster().querylgNum(db_end.getDuanNo(), db_end.getDuan(), mRegion);
+                        Log.e("同孔", "a: "+a);
+                        Log.e("同孔", "b: "+b);
+                        Log.e("同孔", "list_duanNo: "+list_duanNo);
+                        if(hasDuplicates(list_duanNo)||(a>1||b>1)){
                             show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
                             return;
                         }
