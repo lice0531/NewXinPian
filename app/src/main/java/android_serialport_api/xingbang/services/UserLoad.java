@@ -47,7 +47,7 @@ public class UserLoad extends AsyncTaskLoader<Cursor> {
         Cursor cursor = null;
        if(querykey!=null&&"1".equals(querykey)){
         
-         cursor = db.rawQuery("SELECT Id AS _id,uname,upassword,isface,facepath FROM UserMain", null);
+         cursor = db.rawQuery("SELECT Id AS _id,uname,upassword,isface,facepath,uCid,uCName,uFName,uIDCard FROM UserMain", null);
        }
             
         return cursor;  

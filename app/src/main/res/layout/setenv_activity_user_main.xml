@@ -39,7 +39,8 @@
             android:divider="@drawable/spacer_medium"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:showDividers="middle">
+            android:showDividers="middle"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/btn_user_main_exit"
@@ -59,13 +60,15 @@
                 android:gravity="center"
                 android:text="@string/text_btn_add"
                 android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/childReisterPageBtnFontSize" />
+                android:textSize="@dimen/childReisterPageBtnFontSize"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/delaytime_pg_left"
@@ -101,7 +104,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="@dimen/delaytime_pg_left"
@@ -168,7 +172,7 @@
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
-                    android:text="@string/text_user_password"
+                    android:text="姓名"
                     android:textSize="@dimen/childPageBtnFontSize" />
             </LinearLayout>
 

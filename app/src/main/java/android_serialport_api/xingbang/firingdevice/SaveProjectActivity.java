@@ -37,6 +37,7 @@ import android_serialport_api.xingbang.custom.SaveProjectAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -96,7 +97,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private List<Map<String, Object>> map_project = new ArrayList<Map<String, Object>>();
-
+    private String pro_bprysfz_save = "";//证件号码
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +124,12 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
+
+        //登陆功能重新设置身份证
+        pro_bprysfz_save = (String) MmkvUtils.getcode("uIDCard", "");//证件号码
+        if(pro_bprysfz_save.length()>1){
+            at_bprysfz.setText(pro_bprysfz_save);
+        }
     }
 
     private void loadMoreData() {

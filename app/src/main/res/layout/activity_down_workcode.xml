@@ -318,11 +318,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="5"
                     android:background="@drawable/translucent"
+                    android:digits="0123456789X"
+                    android:enabled="false"
                     android:gravity="center_vertical"
                     android:hint="爆破人员身份证"
                     android:maxLength="18"
                     android:padding="5dp"
-                    android:digits="0123456789X"
                     android:textSize="18sp" />
 
                 <Button

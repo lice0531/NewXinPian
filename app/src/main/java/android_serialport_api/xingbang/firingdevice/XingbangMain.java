@@ -745,13 +745,13 @@ public class XingbangMain extends BaseActivity {
                     return;
                 }
 
-                GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
-                List<UserMain> userMainList=master.queryAllUser();
-                if(userMainList.size()!=0){
-                    loginToFiring();
-                }else {
+//                GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
+//                List<UserMain> userMainList=master.queryAllUser();
+//                if(userMainList.size()!=0){
+//                    loginToFiring();
+//                }else {
                     toFiring();
-                }
+//                }
 
 
                 break;

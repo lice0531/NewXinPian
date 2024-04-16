@@ -68,6 +68,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="爆破公司"
+            android:textStyle="bold"
+            android:enabled="false"
+            android:textColor="@color/black"
              />
     </LinearLayout>
 
@@ -91,6 +94,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="人员姓名"
+            android:textStyle="bold"
+            android:enabled="false"
+            android:textColor="@color/black"
              />
     </LinearLayout>
     <LinearLayout
@@ -114,12 +120,17 @@
             android:layout_marginRight="20dp"
             android:hint="手机号"
             android:inputType="number"
-            android:maxLength="11"/>
+            android:maxLength="11"
+            android:textStyle="bold"
+            android:enabled="false"
+            android:textColor="@color/black"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
         <Button
             android:id="@+id/jd_btn"
             android:layout_width="match_parent"
@@ -161,6 +172,7 @@
     </LinearLayout>
 
     <Button
+        android:visibility="gone"
         android:id="@+id/set_save"
         style="@style/allbtntstyle"
         android:layout_width="wrap_content"

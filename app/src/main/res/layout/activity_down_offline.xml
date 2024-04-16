@@ -193,7 +193,8 @@
                         android:inputType="textNoSuggestions"
                         android:maxLength="18"
                         android:padding="5dp"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:enabled="false"/>
 
                     <Button
                         android:id="@+id/btn_clear_sfz"

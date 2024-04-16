@@ -86,7 +86,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 		 db = mMyDatabaseHelper.getReadableDatabase();
 		ListView listView = (ListView) this.findViewById(R.id.setenv_user_listview); 
 		adapter = new SimpleCursorAdapter(SetUserActivity.this, R.layout.item_user,
-					null,  new String[]{"uname", "upassword"}, new int[]{R.id.user_name, R.id.user_pw},  
+					null,  new String[]{"uname", "uFName"}, new int[]{R.id.user_name, R.id.user_pw},
 	                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);  
 		  //adapter.
 		listView.setAdapter(adapter);
@@ -98,21 +98,21 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 
             }
         });
-		listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-                ListView lr = (ListView) v;
-                LinearLayout myte = (LinearLayout) lr.getChildAt(0);
-                TextView dd = (TextView) myte.getChildAt(1);
-                menu.setHeaderIcon(R.drawable.icon);
-                menu.setHeaderTitle(dd.getText().toString());
-                menu.add(0, 1, 3, "删除");
-              
-                menu.add(0, 2, 2, "修改");
-                //设置第三个参数反向  所以出现的菜单是反着的
-
-            }
-        });
+//		listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+//            @Override
+//            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+//                ListView lr = (ListView) v;
+//                LinearLayout myte = (LinearLayout) lr.getChildAt(0);
+//                TextView dd = (TextView) myte.getChildAt(1);
+//                menu.setHeaderIcon(R.drawable.icon);
+//                menu.setHeaderTitle(dd.getText().toString());
+//                menu.add(0, 1, 3, "删除");
+//
+//                menu.add(0, 2, 2, "修改");
+//                //设置第三个参数反向  所以出现的菜单是反着的
+//
+//            }
+//        });
        btn_return = (Button) findViewById(R.id.btn_user_main_exit);
        btn_return.setOnClickListener(new View.OnClickListener() {
            @Override

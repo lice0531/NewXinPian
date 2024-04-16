@@ -120,6 +120,11 @@ public class GreenDaoMaster {
         result = result.where(UserMainDao.Properties.Uname.eq(name));
         return result.list();
     }
+    public UserMain queryUsername(String name) {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        UserMain user = result.where(UserMainDao.Properties.Uname.eq(name)).unique();
+        return user;
+    }
 
     public List<UserMain> queryAllUser() {
         QueryBuilder<UserMain> result = mUserDao.queryBuilder();

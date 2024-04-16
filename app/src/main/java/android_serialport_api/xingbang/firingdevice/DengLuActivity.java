@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,10 +22,13 @@ import java.io.IOException;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.LoginBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +58,9 @@ public class DengLuActivity extends BaseActivity {
     Button btnZhuce;
 
     private Handler mHandler_tip = new Handler();//显示进度条
+    private Handler mHandler2;
+    private int pb_show = 0;
+    private LoadingDialog tipDlg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +107,39 @@ public class DengLuActivity extends BaseActivity {
             }
             return false;
         });
+
+        mHandler2 = new Handler(msg -> {
+            //显示或隐藏loding界面
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
+    }
+
+    private void runPbDialog() {
+        pb_show = 1;
+        //  builder = showPbDialog();
+        tipDlg = new LoadingDialog(this);
+        Context context = tipDlg.getContext();
+        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = tipDlg.findViewById(divierId);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
+        //tipDlg.setMessage("正在操作,请等待...").show();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                mHandler2.sendMessage(mHandler2.obtainMessage());
+                try {
+                    while (pb_show == 1) {
+                        Thread.sleep(100);
+                    }
+                    mHandler2.sendMessage(mHandler2.obtainMessage());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 
@@ -128,26 +169,31 @@ public class DengLuActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
+                Utils.writeRecord("上传公司网络请求失败"+"IOException: " + e);
             }
 
             @Override
             public void onResponse(Call call, Response response) {
+
                 try {
                     String res = response.body().string();
                     Gson gson = new Gson();
                     LoginBean loginBean = gson.fromJson(res, LoginBean.class);
 //                    Log.e("登陆返回", "res: "+res );
                     Log.e("登陆返回", "loginBean: "+loginBean.toString() );
-                    MmkvUtils.savecode("uIDCard",loginBean.getUIDCard());//登陆本人身份证
-                    upData(loginBean);
+
                     ////用户 返回参数指令
                     ////1001  用户名 不存在
                     ////1002  密码错误
                     ////1003  无参
                     ////1004  账号未激活
                     if (loginBean.getStatus().equals("200")) {
+                        MmkvUtils.savecode("uIDCard",loginBean.getUIDCard());//登陆本人身份证
+                        MmkvUtils.savecode("uCName",loginBean.getUCName());//登陆本人身份证
+                        MmkvUtils.savecode("uFName",loginBean.getUFName());//登陆本人身份证
+                        upData(loginBean);
                         MmkvUtils.savecode("username", etUser.getText().toString());
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
                     } else if (loginBean.getStatus().equals("1001")) {
@@ -159,6 +205,8 @@ public class DengLuActivity extends BaseActivity {
                     } else if (loginBean.getStatus().equals("1004")) {
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(9));
                     }
+
+                    pb_show = 0;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -166,26 +214,47 @@ public class DengLuActivity extends BaseActivity {
         });
     }
 
+
     private void upData(LoginBean loginBean) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        getDaoSession().getUserMainDao().deleteAll();
         if (loginBean.getLst().size() > 0) {
-            GreenDaoMaster master = new GreenDaoMaster();
             for (int i = 0; i < loginBean.getLst().size(); i++) {
                 master.updateUser(loginBean.getLst().get(i));
             }
-
         }
-
-
     }
 
     @OnClick({R.id.btn_login, R.id.btn_zhuce})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
+                pb_show = 1;
+                runPbDialog();//loading画面
                 hideInputKeyboard();
                 String uPhone = etUser.getText().toString();
                 String uPwd = etPassward.getText().toString();
-                upload(uPhone, uPwd);
+                GreenDaoMaster master = new GreenDaoMaster();
+
+                if (NetUtils.haveNetWork(this)) {
+                    upload(uPhone, uPwd);
+                }else {
+                    UserMain user= master.queryUsername(uPhone);
+                    if(user==null){
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+                        return;
+                    }
+                    if(user.getUpassword().equals(uPwd)){
+                        MmkvUtils.savecode("uIDCard",user.getUIDCard());//登陆本人身份证
+                        MmkvUtils.savecode("uCName",user.getUCName());//登陆本人身份证
+                        MmkvUtils.savecode("uFName",user.getUFName());//登陆本人身份证
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+                    }else {
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));
+                    }
+                    pb_show = 0;
+                }
+
                 break;
             case R.id.btn_zhuce:
                 Intent intent = new Intent(DengLuActivity.this, ZhuCeActivity.class);

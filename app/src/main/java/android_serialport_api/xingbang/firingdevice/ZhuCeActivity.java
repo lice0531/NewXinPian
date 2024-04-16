@@ -118,7 +118,7 @@ public class ZhuCeActivity extends BaseActivity {
             }
         });
 
-        etUser.setText((String)MmkvUtils.getcode("uPhone",""));
+        etUser.setText((String)MmkvUtils.getcode("usernamec",""));
         etQbgs.setText((String)MmkvUtils.getcode("uCName",""));
         etName.setText((String)MmkvUtils.getcode("uFName",""));
         tv_province.setText((String)MmkvUtils.getcode("province",""));
