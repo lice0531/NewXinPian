@@ -827,20 +827,51 @@ public class GreenDaoMaster {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
         }
-//        // 倒叙查询
-//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
-//
-//        // 如果有数据
-//        if (mList.size() > 0) {
-//            // 第一个雷管数据 该区域 最大序号 的延时
-//            int delay = mList.get(0).getDelay();
-//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
-//            return delay;
-//            // 如果没数据
-//        } else {
-//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
-//            return 0;
-//        }
+
+    }
+
+    /**
+     * 获取 该区域 最小序号 的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMinNumDelay(int duan , String piece) {
+        int delay;
+        String sql = "select min(delay) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 0");
+            return 0;
+        }
+
+    }
+
+    /**
+     * 获取 该区域 最小序号 的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxDuan(String piece) {
+        int duan;
+        String sql = "select max(duan) from denatorBaseinfo where piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            duan = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取当前区域最大段号: "+duan);
+            return duan;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 1");
+            return 1;
+        }
+
     }
 
     /**

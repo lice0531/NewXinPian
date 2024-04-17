@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -339,7 +340,34 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         //继续起爆
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
-        btn_continueOk_4.setOnClickListener(v -> increase(6));
+        btn_continueOk_4.setOnClickListener(v -> {
+            String err = ll_firing_errorAmount_4.getText().toString();
+            if (err.equals("0")) {
+//                increase(33);//之前是4
+                increase(6);//充电阶段
+//                version_1 = true;
+            } else {
+                TextView view = new TextView(this);
+                view.setTextSize(25);
+                view.setTextColor(Color.RED);
+                view.setText("存在错误雷管,不能进行起爆");
+                view.setTypeface(null, Typeface.BOLD);
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("提示")//设置对话框的标题
+                        .setView(view)
+                        //设置对话框的按钮
+//                        .setPositiveButton("继续", (dialog2, which) -> {
+//                            //检测两次
+////                          increase(33);//之前是4
+//                            increase(6);//充电阶段
+////                            version_1 = true;
+//                        })
+                        .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
+                        })
+                        .create();
+                dialog.show();
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")

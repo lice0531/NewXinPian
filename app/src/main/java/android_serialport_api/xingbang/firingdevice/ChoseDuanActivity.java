@@ -377,7 +377,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;//0是未翻转，1是已翻转
     private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
-    private String TAG = "单发注册";
+    private String TAG = "选择段位页面";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

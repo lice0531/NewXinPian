@@ -342,7 +342,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:text="F1延时" />
+                                android:text="孔间延时" />
 
                             <EditText
                                 android:id="@+id/re_et_f1"
@@ -352,7 +352,7 @@
                                 android:layout_weight="1.5"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
-                                android:hint="F1延时"
+                                android:hint="孔间延时"
                                 android:maxLength="6"
                                 android:numeric="integer"
                                 android:padding="5dp"
@@ -390,7 +390,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:text="F2延时" />
+                                android:text="排间延时" />
 
                             <EditText
                                 android:id="@+id/re_et_f2"
@@ -400,7 +400,7 @@
                                 android:layout_weight="1.5"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
-                                android:hint="F2延时"
+                                android:hint="排间延时"
                                 android:maxLength="6"
                                 android:numeric="integer"
                                 android:padding="5dp"
