@@ -345,7 +345,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         initAutoComplete("history_htid", at_htid);//输入历史记录
         initAutoComplete("history_xmbh", at_xmbh);
         initAutoComplete("history_dwdm", at_dwdm);
-        initAutoComplete("history_bprysfz", at_bprysfz);
+//        initAutoComplete("history_bprysfz", at_bprysfz);
         initAutoComplete("history_coordxy", at_coordxy);
         initAutoComplete("history_projectName", at_projectName);//项目名称
         getFactoryCode();//获取厂家码
@@ -389,7 +389,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 } else {
                     at_coordxy.setText("");
                 }
-                at_bprysfz.setText(list.get(0).getBprysfz());
+//                at_bprysfz.setText(list.get(0).getBprysfz());
             }
             saveData();
             initView();//把输入框颜色初始化
@@ -398,7 +398,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         at_htid.addTextChangedListener(htbh_watcher);//长度监听
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
-        at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
+//        at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
     }
 
     private void test() {
@@ -1073,7 +1073,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             pro_dwdm = cursor.getString(15);
             cursor.close();
         }
-        at_bprysfz.setText(pro_bprysfz);
+//        at_bprysfz.setText(pro_bprysfz);
         at_htid.setText(pro_htid);
         at_xmbh.setText(pro_xmbh);
         at_dwdm.setText(pro_dwdm);
@@ -1437,7 +1437,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         initAutoComplete("history_htid", at_htid);//输入历史记录
         initAutoComplete("history_xmbh", at_xmbh);
         initAutoComplete("history_dwdm", at_dwdm);
-        initAutoComplete("history_bprysfz", at_bprysfz);
+//        initAutoComplete("history_bprysfz", at_bprysfz);
         initAutoComplete("history_coordxy", at_coordxy);
         initAutoComplete("history_projectName", at_projectName);//项目名称
 
@@ -1598,7 +1598,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         saveHistory("history_xmbh", at_xmbh);//保存输入的项目编号
         saveHistory("history_htid", at_htid);//保存输入的合同编号
-        saveHistory("history_bprysfz", at_bprysfz);//保存输入的身份证号
+//        saveHistory("history_bprysfz", at_bprysfz);//保存输入的身份证号
         saveHistory("history_coordxy", at_coordxy);//保存输入的经纬度
         saveHistory("history_dwdm", at_dwdm);//保存输入的经纬度
 
@@ -2588,7 +2588,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 deleteHistory("history_xmbh", at_xmbh);
                 break;
             case R.id.btn_clear_sfz:
-                deleteHistory("history_bprysfz", at_bprysfz);
+//                deleteHistory("history_bprysfz", at_bprysfz);
                 break;
             case R.id.btn_ReisterScanStart_st:
                 hideInputKeyboard();

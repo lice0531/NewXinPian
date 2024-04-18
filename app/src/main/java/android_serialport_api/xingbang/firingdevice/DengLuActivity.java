@@ -242,6 +242,7 @@ public class DengLuActivity extends BaseActivity {
                     UserMain user= master.queryUsername(uPhone);
                     if(user==null){
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+                        pb_show = 0;
                         return;
                     }
                     if(user.getUpassword().equals(uPwd)){
