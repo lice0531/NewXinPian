@@ -16,7 +16,7 @@
     <dimen name="childPageEditFontSize">16sp</dimen>
     <dimen name="childPageTipFontSize">12sp</dimen>
 
-    <dimen name="childReisterPageLineHeight">60dp</dimen>
+    <dimen name="childReisterPageLineHeight">40dp</dimen>
 
     <dimen name="childReisterPageEditHeight">30dp</dimen>
 

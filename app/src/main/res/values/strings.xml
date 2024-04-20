@@ -717,11 +717,13 @@
     <string name="text_line_db">段别</string>
     <string name="text_line_num">数量</string>
     <string name="text_line_db_delay">段间延时/ms</string>
-    <string name="text_line_duan1">1段</string>
-    <string name="text_line_duan2">2段</string>
-    <string name="text_line_duan3">3段</string>
-    <string name="text_line_duan4">4段</string>
-    <string name="text_line_duan5">5段</string>
+    <string name="text_line_duan1">0段</string>
+    <string name="text_line_duan2">1段</string>
+    <string name="text_line_duan3">2段</string>
+    <string name="text_line_duan4">3段</string>
+    <string name="text_line_duan5">4段</string>
+    <string name="text_line_duan6">5段</string>
+    <string name="text_line_duan7">6段</string>
     <string name="text_list_xpm">/芯片码</string>
     <string name="text_scan_scan">手动输入</string>
     <string name="text_fir_tuichu">再次点击退出程序</string>
@@ -759,4 +761,6 @@
     <string name="text_fir_dlwl">当前电流为0,请检查线路是否正确连接</string>
     <string name="text_xingbang_sryhm">请输入起爆用户名和密码!</string>
     <string name="text_his_scyscjl">删除已上传记录</string>
+    <string name="text_error_tip73">段位信息错误</string>
+
 </resources>

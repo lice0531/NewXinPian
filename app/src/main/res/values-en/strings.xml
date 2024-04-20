@@ -718,11 +718,13 @@
     <string name="text_line_num">Num</string>
     <string name="text_line_db">Section</string>
     <string name="text_line_db_delay">delay/ms</string>
-    <string name="text_line_duan1">1</string>
-    <string name="text_line_duan2">2</string>
-    <string name="text_line_duan3">3</string>
-    <string name="text_line_duan4">4</string>
-    <string name="text_line_duan5">5</string>
+    <string name="text_line_duan1">0</string>
+    <string name="text_line_duan2">1</string>
+    <string name="text_line_duan3">2</string>
+    <string name="text_line_duan4">3</string>
+    <string name="text_line_duan5">4</string>
+    <string name="text_line_duan6">5</string>
+    <string name="text_line_duan7">6</string>
     <string name="text_list_xpm">/UID</string>
     <string name="text_scan_scan">Manual input</string>
     <string name="text_fir_tuichu">Click again to exit the program</string>
@@ -760,5 +762,7 @@
     <string name="text_fir_dlwl">Current is 0, please check whether the circuit is correctly connected</string>
     <string name="text_xingbang_sryhm">Please enter the detonation username and password!</string>
     <string name="text_his_scyscjl">Delete uploaded records</string>
+    <string name="text_error_tip73">Detonator segment information error</string>
+
 
 </resources>

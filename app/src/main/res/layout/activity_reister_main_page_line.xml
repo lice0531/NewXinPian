@@ -363,14 +363,14 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="3dp">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="2dp">
 
                         <Button
                             android:id="@+id/re_btn_f1"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="30dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
                             android:text="@string/text_line_duan1" />
@@ -388,7 +388,7 @@
                             android:id="@+id/re_et_f1"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/translucent"
                             android:focusable="false"
@@ -404,7 +404,7 @@
                             android:id="@+id/re_text_1"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
@@ -414,14 +414,14 @@
 
                     <TableRow
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="8dp">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="3dp">
 
                         <Button
                             android:id="@+id/re_btn_f2"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="30dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
                             android:text="@string/text_line_duan2" />
@@ -439,7 +439,7 @@
                             android:id="@+id/re_et_f2"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/translucent"
                             android:focusable="false"
@@ -455,7 +455,7 @@
                             android:id="@+id/re_text_2"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
@@ -465,14 +465,14 @@
 
                     <TableRow
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="8dp">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="3dp">
 
                         <Button
                             android:id="@+id/re_btn_f3"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
                             android:text="@string/text_line_duan3" />
@@ -507,7 +507,7 @@
                             android:id="@+id/re_text_3"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="30dp"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
@@ -517,14 +517,14 @@
 
                     <TableRow
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="8dp">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="3dp">
 
                         <Button
                             android:id="@+id/re_btn_f4"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="30dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
                             android:text="@string/text_line_duan4" />
@@ -542,7 +542,7 @@
                             android:id="@+id/re_et_f4"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/translucent"
                             android:focusable="false"
@@ -559,7 +559,7 @@
                             android:id="@+id/re_text_4"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
@@ -569,14 +569,14 @@
 
                     <TableRow
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="8dp">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="3dp">
 
                         <Button
                             android:id="@+id/re_btn_f5"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="30dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
                             android:text="@string/text_line_duan5" />
@@ -594,7 +594,7 @@
                             android:id="@+id/re_et_f5"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/translucent"
                             android:focusable="false"
@@ -611,7 +611,7 @@
                             android:id="@+id/re_text_5"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
@@ -621,18 +621,18 @@
 
                     <TableRow
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="8dp"
-                        android:visibility="gone">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="3dp"
+                        android:visibility="visible">
 
                         <Button
                             android:id="@+id/re_btn_f6"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="30dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
-                            android:text="6段" />
+                            android:text="@string/text_line_duan6" />
 
                         <TextView
                             android:id="@+id/re_num_f6"
@@ -664,7 +664,7 @@
                             android:id="@+id/re_text_6"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
@@ -674,9 +674,9 @@
 
                     <TableRow
                         android:layout_width="fill_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="8dp"
-                        android:visibility="gone">
+                        android:layout_height="30dp"
+                        android:layout_marginTop="3dp"
+                        android:visibility="visible">
 
                         <Button
                             android:id="@+id/re_btn_f7"
@@ -685,7 +685,7 @@
                             android:layout_height="35dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
-                            android:text="7段" />
+                            android:text="@string/text_line_duan7" />
 
                         <TextView
                             android:id="@+id/re_num_f7"
@@ -717,11 +717,11 @@
                             android:id="@+id/re_text_7"
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
-                            android:text="130"
+                            android:text="150"
                             android:textColor="@color/rangle_fc_base" />
                     </TableRow>
 
@@ -741,14 +741,15 @@
                     android:id="@+id/btn_singleReister"
                     style="@style/allbtntstyle"
                     android:layout_width="100dp"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/dp40"
+                    android:textSize="15sp"
                     android:background="@drawable/bt_mainpage_style"
                     android:text="@string/text_singleReister" />
                 <Button
                     android:id="@+id/btn_setdelay"
                     style="@style/allbtntstyle"
                     android:layout_width="100dp"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/bt_mainpage_style"
                     android:visibility="gone"
@@ -757,7 +758,7 @@
                     android:id="@+id/btn_inputOk"
                     android:visibility="gone"
                     android:layout_width="100dp"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/bt_mainpage_style"
                     android:gravity="center"
@@ -768,7 +769,7 @@
                     android:id="@+id/btn_LookHistory"
                     style="@style/allbtntstyle"
                     android:layout_width="100dp"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/bt_mainpage_style"
@@ -789,7 +790,7 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="25dp"
+                android:layout_height="20dp"
                 android:layout_marginTop="5dp">
 
                 <TextView

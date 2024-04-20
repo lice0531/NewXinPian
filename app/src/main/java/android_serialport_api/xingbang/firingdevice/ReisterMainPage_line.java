@@ -162,6 +162,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     Button reBtnF4;
     @BindView(R.id.re_btn_f5)
     Button reBtnF5;
+    @BindView(R.id.re_btn_f6)
+    Button reBtnF6;
+    @BindView(R.id.re_btn_f7)
+    Button reBtnF7;
     @BindView(R.id.re_num_f1)
     TextView reNumF1;
     @BindView(R.id.re_num_f2)
@@ -172,6 +176,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     TextView reNumF4;
     @BindView(R.id.re_num_f5)
     TextView reNumF5;
+    @BindView(R.id.re_num_f6)
+    TextView reNumF6;
+    @BindView(R.id.re_num_f7)
+    TextView reNumF7;
     @BindView(R.id.re_text_1)
     TextView reText1;
     @BindView(R.id.re_text_2)
@@ -182,6 +190,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     TextView reText4;
     @BindView(R.id.re_text_5)
     TextView reText5;
+    @BindView(R.id.re_text_6)
+    TextView reText6;
+    @BindView(R.id.re_text_7)
+    TextView reText7;
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -305,7 +317,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         hideInputKeyboard();
 
         showDenatorSum();//显示雷管总数
-        for (int i = 1; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             showDuanSum(i);
         }
         delay_set = "f1";
@@ -1352,37 +1364,47 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         // 获取 该区域 最大序号的延时
         int delay = 0;
         if (delay_set.equals("f1")) {//获取延时和段数
-            duan = "1";
+            duan = "0";
         } else if (delay_set.equals("f2")) {
-            duan = "2";
-        } else if (delay_set.equals("f3")) {
-            duan = "3";
-        } else if (delay_set.equals("f4")) {
-            duan = "4";
-        } else if (delay_set.equals("f5")) {
-            duan = "5";
-        }else {
             duan = "1";
+        } else if (delay_set.equals("f3")) {
+            duan = "2";
+        } else if (delay_set.equals("f4")) {
+            duan = "3";
+        } else if (delay_set.equals("f5")) {
+            duan = "4";
+        } else if (delay_set.equals("f6")) {
+            duan = "5";
+        } else if (delay_set.equals("f7")) {
+            duan = "6";
+        }else {
+            duan = "0";
         }
         if(detonatorTypeNew!=null&&detonatorTypeNew.getCong_yscs()!=null){
             duan = detonatorTypeNew.getCong_yscs();
         }
 
         switch (duan){
-            case "1":
+            case "0":
                 delay = 0;
                 break;
-            case "2":
+            case "1":
                 delay = 25;
                 break;
-            case "3":
+            case "2":
                 delay = 50;
                 break;
-            case "4":
+            case "3":
                 delay = 75;
                 break;
-            case "5":
+            case "4":
                 delay = 100;
+                break;
+            case "5":
+                delay = 125;
+                break;
+            case "6":
+                delay = 150;
                 break;
 
         }
@@ -1632,11 +1654,15 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         reNumF3.setBackgroundResource(R.drawable.translucent);
         reNumF4.setBackgroundResource(R.drawable.translucent);
         reNumF5.setBackgroundResource(R.drawable.translucent);
+        reNumF6.setBackgroundResource(R.drawable.translucent);
+        reNumF7.setBackgroundResource(R.drawable.translucent);
         reText1.setBackgroundResource(R.drawable.translucent);
         reText2.setBackgroundResource(R.drawable.translucent);
         reText3.setBackgroundResource(R.drawable.translucent);
         reText4.setBackgroundResource(R.drawable.translucent);
         reText5.setBackgroundResource(R.drawable.translucent);
+        reText6.setBackgroundResource(R.drawable.translucent);
+        reText7.setBackgroundResource(R.drawable.translucent);
     }
 
     /**
@@ -1665,12 +1691,20 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 reNumF5.setBackgroundResource(R.drawable.textview_border_green);
                 reText5.setBackgroundResource(R.drawable.textview_border_green);
                 break;
+            case "f6":
+                reNumF6.setBackgroundResource(R.drawable.textview_border_green);
+                reText6.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f7":
+                reNumF7.setBackgroundResource(R.drawable.textview_border_green);
+                reText7.setBackgroundResource(R.drawable.textview_border_green);
+                break;
 
         }
     }
 
     @SuppressLint("NonConstantResourceId")
-    @OnClick({R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3, R.id.re_btn_f4, R.id.re_btn_f5,
+    @OnClick({R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3, R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.btn_singleReister, R.id.btn_LookHistory,
             R.id.btn_setdelay, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed,
             R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2,
@@ -1704,6 +1738,16 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 delay_set = "f5";
                 initView_true("f5");
+                break;
+            case R.id.re_btn_f6:
+                hideInputKeyboard();
+                delay_set = "f6";
+                initView_true("f6");
+                break;
+            case R.id.re_btn_f7:
+                hideInputKeyboard();
+                delay_set = "f7";
+                initView_true("f7");
                 break;
 
             case R.id.btn_singleReister:
@@ -2345,20 +2389,26 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private void showDuanSum(int a) {
         int totalNum= new GreenDaoMaster().getDuanNo(mRegion,(a+""));//得到数据的总条数
         switch (a) {
-            case 1:
+            case 0:
                 reNumF1.setText(totalNum + "");
                 break;
-            case 2:
+            case 1:
                 reNumF2.setText(totalNum + "");
                 break;
-            case 3:
+            case 2:
                 reNumF3.setText(totalNum + "");
                 break;
-            case 4:
+            case 3:
                 reNumF4.setText(totalNum + "");
                 break;
-            case 5:
+            case 4:
                 reNumF5.setText(totalNum + "");
+                break;
+            case 5:
+                reNumF6.setText(totalNum + "");
+                break;
+            case 6:
+                reNumF7.setText(totalNum + "");
                 break;
         }
     }
@@ -2389,6 +2439,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             case "f5":
                 reNumF5.setBackgroundResource(R.drawable.textview_border_green);
                 reText5.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f6":
+                reNumF6.setBackgroundResource(R.drawable.textview_border_green);
+                reText6.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case "f7":
+                reNumF7.setBackgroundResource(R.drawable.textview_border_green);
+                reText7.setBackgroundResource(R.drawable.textview_border_green);
                 break;
         }
 
