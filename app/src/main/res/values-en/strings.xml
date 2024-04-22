@@ -457,7 +457,7 @@
     <string name="text_practice_tip1">Do you want to clear program logs and other caches</string>
     <string name="text_practice_tip2">Currently clearing program log cache operation, please confirm whether to clear it!</string>
     <string name="text_qd">Determine</string>
-    <string name="text_tc">Cancel</string>
+    <string name="text_tc">Exit</string>
     <string name="text_practice_tip4">Please select a detonator list file</string>
     <string name="text_practice_tip5">There is no txt file in the current file directory</string>
     <string name="text_practice_tip6">Abnormal data acquisition</string>

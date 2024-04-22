@@ -323,9 +323,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
         showDenatorSum();//显示雷管总数
-        for (int i = 0; i < 7; i++) {
-            showDuanSum(i);
-        }
+        mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());//显示各段位雷管数量
         delay_set = "f1";
         initButton(delay_set);
     }
@@ -487,7 +485,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return false;
         });
         mHandler_showNum_all = new Handler(msg -> {
-            for (int i = 1; i < 6; i++) {
+            for (int i = 0; i < 7; i++) {
                 showDuanSum(i);
             }
             return false;
@@ -514,9 +512,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
-                    for (int i = 1; i < 6; i++) {
-                        showDuanSum(i);
-                    }
+                    mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
 
@@ -1218,10 +1214,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        Log.e("验证日期", "stproDt: " + stproDt);
 //        Log.e("验证日期", "yue: " + yue);
 //        Log.e("验证日期", "ri: " + ri);
-        if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
-            tipStr = "输入日期格式不对";
-            return tipStr;
-        }
+//        if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
+//            tipStr = "输入日期格式不对";
+//            return tipStr;
+//        }
 
         return tipStr;
     }
@@ -1263,10 +1259,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String yue = shellNo.substring(3, 5);
         String ri = shellNo.substring(5, 7);
 
-        if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
-            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(11));
-            return -1;
-        }
+//        if (!dateStrIsValid(yue + "-" + ri, "MM-dd")) {
+//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(11));
+//            return -1;
+//        }
         return 0;
     }
 

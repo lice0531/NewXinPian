@@ -169,7 +169,7 @@
             style="@style/alltextstyle"
             android:id="@+id/txt_fireno"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="60dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/text_query_num"
