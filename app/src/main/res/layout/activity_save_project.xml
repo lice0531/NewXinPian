@@ -282,7 +282,7 @@
                     android:padding="5dp"
                     android:digits="0123456789X"
                     android:textSize="18sp"
-                    android:enabled="false"/>
+                    />
 
                 <Button
                     android:id="@+id/btn_clear_sfz"

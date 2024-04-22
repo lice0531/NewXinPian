@@ -126,10 +126,10 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
 
         //登陆功能重新设置身份证
-        pro_bprysfz_save = (String) MmkvUtils.getcode("uIDCard", "");//证件号码
-        if(pro_bprysfz_save.length()>1){
-            at_bprysfz.setText(pro_bprysfz_save);
-        }
+//        pro_bprysfz_save = (String) MmkvUtils.getcode("uIDCard", "");//证件号码
+//        if(pro_bprysfz_save.length()>1){
+//            at_bprysfz.setText(pro_bprysfz_save);
+//        }
     }
 
     private void loadMoreData() {
