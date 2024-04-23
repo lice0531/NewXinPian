@@ -1,0 +1,988 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/child_pg_bg"
+    android:orientation="vertical">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:titleTextColor="@color/white" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_firing_1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Volt_5"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_ele" />
+
+            <TextView
+                android:id="@+id/ll_firing_IC_5"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:text="0μA" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="180dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/text_firing_tip1"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/ll_waiting_txt_firing_1"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="9"
+                android:textSize="50sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_firing_return_1"
+                style="@style/allbtntstyle"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:text="@string/text_test_exit" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_firing_2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Volt_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_ele" />
+
+            <TextView
+                android:id="@+id/ll_firing_IC_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:text="0μA" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                android:id="@+id/textView6"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_num" />
+
+            <TextView
+                android:id="@+id/ll_firing_deAmount_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_errnum" />
+
+            <TextView
+                android:id="@+id/ll_firing_errorAmount_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_turenum" />
+
+            <TextView
+                android:id="@+id/ll_firing_tureNum_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0"
+                android:textColor="@color/color_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_fir_ckdl" />
+
+            <TextView
+                android:id="@+id/tv__qb_dianliu_2"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0μA" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ll_txt_firing_2"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_firing_tip2"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_firing_return_2"
+                style="@style/allbtntstyle"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="@string/text_test_exit" />
+        </LinearLayout>
+    </LinearLayout>
+    <!-- 第4步 -->
+    <LinearLayout
+        android:id="@+id/ll_firing_4"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Volt_4"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_ele" />
+
+            <TextView
+                android:id="@+id/ll_firing_IC_4"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:text="0μA" />
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_num" />
+
+            <TextView
+                android:id="@+id/ll_firing_deAmount_4"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_errnum" />
+
+            <TextView
+                android:id="@+id/ll_firing_errorAmount_4"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0"
+                android:textColor="@color/color_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_turenum" />
+
+            <TextView
+                android:id="@+id/ll_firing_tureNum"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0"
+                android:textColor="@color/color_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_fir_ckdl" />
+
+            <TextView
+                android:id="@+id/tv__qb_dianliu_1"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0μA" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ll_txt_firing_4"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/text_firing_tip3"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_test_lookError"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_firing_err_lg"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+            <Button
+                android:id="@+id/btn_firing_return_4"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_test_exit"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+            <Button
+                android:id="@+id/btn_firing_continue_4"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_firing_jixu"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+        </LinearLayout>
+    </LinearLayout>
+    <!-- 第6步 -->
+    <LinearLayout
+        android:id="@+id/ll_firing_6"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Volt_6"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_firing_qibao_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Hv_6"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_ele" />
+
+            <TextView
+                android:id="@+id/ll_firing_IC_6"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:text="0μA" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ll_txt_firing_6"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_firing_tip4"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_firing_return_6"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_test_exit"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+        </LinearLayout>
+    </LinearLayout>
+    <!-- 第七步 -->
+    <LinearLayout
+        android:id="@+id/ll_firing_7"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Volt_7"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_test_ele" />
+
+            <TextView
+                android:id="@+id/ll_firing_IC_7"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:text="0μA" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/text_firing_qibao_vol" />
+
+            <TextView
+                android:id="@+id/ll_firing_Hv_7"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/fire_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="0.0V" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="@dimen/childPageLabelFontSize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ll_txt_firing_7"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_firing_tip5"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/btn_fir"
+                style="@style/allbtntstyle"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:text="起爆"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_firing_return_7"
+                style="@style/allbtntstyle"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:text="@string/text_test_exit"
+                android:textSize="@dimen/mainpageFontSize" />
+            <!--  Button
+               android:id="@+id/btn_firing_pressbt_7"
+                android:layout_width="80dp"
+               android:layout_height="50dp"
+               android:gravity="center"
+               android:textColor="@color/bt_fg_base"
+               android:background="@drawable/bt_mainpage_style"
+               android:textSize="@dimen/mainpageFontSize"
+               android:text="起爆"
+                />	      -->
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 第8步 -->
+    <LinearLayout
+        android:id="@+id/ll_firing_8"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="230dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ll_txt_firing_8"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/text_firing_tip6"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_firing_return_8"
+                style="@style/allbtntstyle"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:text="@string/text_test_exit"
+                android:textSize="@dimen/mainpageFontSize" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

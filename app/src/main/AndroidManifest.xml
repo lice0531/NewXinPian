@@ -185,6 +185,11 @@
             android:label="@string/title_activity_firingpage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".firingdevice.FiringMainActivity_485"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_firingpage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".firingdevice.DelDenatorMainPage"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/t_xingbang_main_page_btn_del"
