@@ -21,7 +21,109 @@
                 app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:id="@+id/ll_firing_0"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+
+
+            <TextView
+                android:id="@+id/tv_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text="@string/text_sync_szbh"
+                android:textColor="@drawable/red"
+                android:textSize="80sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_delay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/text_sync_dqyc"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:paddingLeft="6dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/a_et"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:completionHint="填写ip用点隔开"
+                    android:completionThreshold="1"
+                    android:dropDownHorizontalOffset="5dp" />
+
+                <EditText
+                    android:id="@+id/et_ip"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:hint="填写ip用点隔开"
+                    android:maxLength="15"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_connect"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:enabled="false"
+                    android:text="连接"
+                    style="@style/allbtntstyle" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btn_test"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/text_sync_tb"
+                    style="@style/allbtntstyle" />
+
+                <Button
+                    android:id="@+id/btn_tongbu_setting"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/text_sync_sz"
+                    style="@style/allbtntstyle" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_firing_1"
         android:layout_width="fill_parent"

@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -80,6 +81,11 @@ public class SettingActivity extends BaseActivity {
                     return;
                 }
                 editor.putString("device", s.toString()).apply();
+                if(s.toString().length()==1){
+                    MmkvUtils.savecode("ACode","0"+s);
+                }else {
+                    MmkvUtils.savecode("ACode",s.toString());
+                }
             }
         });
 

@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -50,7 +52,9 @@ import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
+import android_serialport_api.xingbang.cmd.FiveTestingCmd;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.cmd.JiLianCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
@@ -66,6 +70,9 @@ import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
+import android_serialport_api.xingbang.jilian.IntentBean;
+import android_serialport_api.xingbang.jilian.MyTools;
+import android_serialport_api.xingbang.jilian.SettingActivity;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
@@ -122,6 +129,10 @@ public class FiringMainActivity_485 extends SerialPortActivity {
     private LinearLayout ll_6;
     private LinearLayout ll_7;
     private LinearLayout ll_8;
+    private LinearLayout ll_0;
+    private Button btnTest;//同步
+    private Button btn_tongbu_setting;//设置
+    private TextView tvCode;
 
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -212,7 +223,14 @@ public class FiringMainActivity_485 extends SerialPortActivity {
     private boolean version_2 = true;
     private long time = 0;
     private String Yanzheng_sq = "";//是否验雷管授权
-    private int duan_total=0;
+    private int duan_total = 0;
+    //级联
+    private boolean kaiguan=true;
+    private boolean isTongBu = false;
+    private int num = 0;
+    private static final int REQUEST_CODE_NET = 101;
+    private static final int REQUEST_CODE_CHONGDIAN = 102;
+    private static final int REQUEST_CODE_QIBAO = 103;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,8 +244,11 @@ public class FiringMainActivity_485 extends SerialPortActivity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        qbxm_id = (String) bundle.get("qbxm_id");
-        qbxm_name = (String) bundle.get("qbxm_name");
+        if(bundle!=null){
+            qbxm_id = (String) bundle.get("qbxm_id");
+            qbxm_name = (String) bundle.get("qbxm_name");
+        }
+
         if (qbxm_id == null) {
             qbxm_id = "-1";
             qbxm_name = " ";
@@ -260,6 +281,28 @@ public class FiringMainActivity_485 extends SerialPortActivity {
         ll_6 = findViewById(R.id.ll_firing_6);
         ll_7 = findViewById(R.id.ll_firing_7);
         ll_8 = findViewById(R.id.ll_firing_8);
+        //级联
+        ll_0 = findViewById(R.id.ll_firing_0);
+        btnTest = findViewById(R.id.btn_test);
+        btn_tongbu_setting = findViewById(R.id.btn_tongbu_setting);
+        tvCode =findViewById(R.id.tv_code);
+        btnTest.setOnClickListener(v -> {
+            if (MmkvUtils.getcode("ACode", "").equals("")) {
+                show_Toast(getString(R.string.text_sync_szbh));
+                return;
+            }
+
+            btnTest.setText(getString(R.string.text_sync_tip8));
+            btnTest.setEnabled(false);
+            final String data ="01"+ MmkvUtils.getcode("ACode", "");
+            Log.e(TAG, "data: "+data );//000101
+            byte[] powerCmd = JiLianCmd.send70("00",data);//41
+            sendCmd(powerCmd);
+        });
+        btn_tongbu_setting.setOnClickListener(v -> {
+            Intent intent = new Intent(FiringMainActivity_485.this, SettingActivity.class);
+            startActivity(intent);
+        });
 
         firstTxt = findViewById(R.id.ll_waiting_txt_firing_1);
         secondTxt = findViewById(R.id.ll_txt_firing_2);
@@ -449,6 +492,56 @@ public class FiringMainActivity_485 extends SerialPortActivity {
                         .create();
                 if (!FiringMainActivity_485.this.isFinishing()) {//xActivity即为本界面的Activity
                     dialog.show();
+                }
+            }else if (msg.what == 4) {
+                show_Toast("同步成功");
+            }else if (msg.what == 5) {
+                ll_0.setVisibility(View.GONE);
+                long time = System.currentTimeMillis();
+                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                Log.e(TAG, "time: " + time);
+                Log.e(TAG, "endTime: " + endTime);
+                //发送初始化命令
+                if (!firstThread.isAlive()) {
+                    if (denatorCount == 0) {
+                        AlertDialog dialog = new Builder(FiringMainActivity_485.this)
+                                .setTitle(R.string.text_fir_dialog23)//设置对话框的标题//"成功起爆"
+                                .setMessage(R.string.text_fir_dialog24)//设置对话框的内容"本次任务成功起爆！"
+                                //设置对话框的按钮
+                                .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
+                                    dialog13.dismiss();
+                                    finish();
+                                })
+                                .setNeutralButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
+                                    dialog2.dismiss();
+                                    firstThread.start();
+                                })
+                                .create();
+                        dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                        dialog.show();
+                    }
+                    else {
+                        firstThread.start();
+                    }
+
+                }
+            }else if (msg.what == 6) {
+                if (Wait_Count == 1) {
+                    increase(6);
+                    Utils.writeRecord("-------------------开始充电-------------------");
+                }
+            }else if (msg.what == 7) {
+                Log.e("起爆页面", "收到级联起爆指令 ");
+                if(kaiguan){
+                    jixu();
+                    kaiguan=false;
+                }
+                Log.e(TAG, "继续3: " );
+                if (sixExchangeCount == 0) {
+                    if (stage == 7) {
+                        keyFireCmd = 1;
+                        Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                    }
                 }
             }
             return false;
@@ -1044,7 +1137,7 @@ public class FiringMainActivity_485 extends SerialPortActivity {
 
         GreenDaoMaster master = new GreenDaoMaster();
         for (DenatorBaseinfo dbf : list) {
-            master.updateDetonatorTypezt(dbf.getShellBlastNo(),"已起爆");//更新授权库中状态
+            master.updateDetonatorTypezt(dbf.getShellBlastNo(), "已起爆");//更新授权库中状态
 
             DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
             denatorHis_detail.setBlastserial(dbf.getBlastserial());
@@ -1176,8 +1269,8 @@ public class FiringMainActivity_485 extends SerialPortActivity {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
-        }else {
-             if ("02".equals(fromData.getCommicationStatus())) {
+        } else {
+            if ("02".equals(fromData.getCommicationStatus())) {
                 show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
                 Utils.writeRecord("--起爆检测错误:" + fromData.toString());
             }
@@ -1200,6 +1293,11 @@ public class FiringMainActivity_485 extends SerialPortActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvCode.setText(MmkvUtils.getcode("ACode", "").equals("")?getString(R.string.text_sync_szbh): (String) MmkvUtils.getcode("ACode", ""));
+    }
 
     @Override
     protected void onStart() {
@@ -1210,49 +1308,29 @@ public class FiringMainActivity_485 extends SerialPortActivity {
         Log.e(TAG, "time: " + time);
         Log.e(TAG, "endTime: " + endTime);
         //发送初始化命令
-        if (!firstThread.isAlive()) {
-            if (denatorCount == 0) {
-                AlertDialog dialog = new Builder(FiringMainActivity_485.this)
-                        .setTitle(R.string.text_fir_dialog23)//设置对话框的标题//"成功起爆"
-                        .setMessage(R.string.text_fir_dialog24)//设置对话框的内容"本次任务成功起爆！"
-                        //设置对话框的按钮
-                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
-                            dialog13.dismiss();
-                            finish();
-                        })
-                        .setNeutralButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
-                            dialog2.dismiss();
-                            firstThread.start();
-                        })
-                        .create();
-                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
-            }
-//            else if(time - endTime < 180000){
-//                int a =(int) (180000-(time - endTime))/1000+5;
-//                AlertDialog dialog = new Builder(FiringMainActivity.this)
-//                        .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-//                        .setMessage("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待"+a+"秒后再进入起爆页面进行检测。")//设置对话框的内容"本次任务成功起爆！"
+//        if (!firstThread.isAlive()) {
+//            if (denatorCount == 0) {
+//                AlertDialog dialog = new Builder(FiringMainActivity_485.this)
+//                        .setTitle(R.string.text_fir_dialog23)//设置对话框的标题//"成功起爆"
+//                        .setMessage(R.string.text_fir_dialog24)//设置对话框的内容"本次任务成功起爆！"
 //                        //设置对话框的按钮
-//                        .setNeutralButton("退出", (dialog13, which) -> {
+//                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
 //                            dialog13.dismiss();
 //                            finish();
 //                        })
-//                        .setNegativeButton("继续", (dialog2, which) -> {
+//                        .setNeutralButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
 //                            dialog2.dismiss();
 //                            firstThread.start();
 //                        })
 //                        .create();
 //                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
 //                dialog.show();
-//
-////                initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行起爆",a);
 //            }
-            else {
-                firstThread.start();
-            }
-
-        }
+//            else {
+//                firstThread.start();
+//            }
+//
+//        }
 
         super.onStart();
     }
@@ -1313,16 +1391,22 @@ public class FiringMainActivity_485 extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+        Log.e(TAG, "收到指令: "+fromCommad );
+        Utils.writeLog("起爆收到指令:" + fromCommad);
+        if(fromCommad.equals("C000")&&fromCommad.length()==4){
+            return;
+        }
         if (completeValidCmd(fromCommad) == 0) {//分析命令是否完整,不完整就把分两次发送的命令拼一起
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
             else this.revCmd = "";
-//            Utils.writeLog("Firing reFrom:" + fromCommad);
+            Log.e(TAG, "拼接后的指令: "+fromCommad );
+//
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
                 return;
             } else {
-                String cmd = DefCommand.getCmd(fromCommad);
+                String cmd = DefCommand.getCmd_qibao(fromCommad);
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
@@ -1470,6 +1554,16 @@ public class FiringMainActivity_485 extends SerialPortActivity {
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
             Log.e("起爆页面", "发送46指令");
+        }else if (DefCommand.CMD_7_70.equals(cmd)) {
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(4));
+        }else if (DefCommand.CMD_7_71.equals(cmd)) {//准备测试
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(5));
+
+        }else if (DefCommand.CMD_7_72.equals(cmd)) {//充电
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(6));
+        }else if (DefCommand.CMD_7_73.equals(cmd)) {//起爆
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(7));
+
         } else {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
@@ -1576,7 +1670,7 @@ public class FiringMainActivity_485 extends SerialPortActivity {
 
                 break;
             case 5:
-                secondTxt.setText(getString(R.string.text_firing_tip7)+ Wait_Count + "s)");//"充电检测 ("
+                secondTxt.setText(getString(R.string.text_firing_tip7) + Wait_Count + "s)");//"充电检测 ("
                 if (Wait_Count <= 0) {//等待结束
 //                    byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
 //                    sendCmd(powerCmd);
@@ -1990,6 +2084,7 @@ public class FiringMainActivity_485 extends SerialPortActivity {
                                     increase(7);
                                     Log.e("第7阶段-increase", "7");
                                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                    zhanting();
                                     break;
                                 }
                             }
@@ -2002,7 +2097,7 @@ public class FiringMainActivity_485 extends SerialPortActivity {
                             Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
-                            if (sixExchangeCount != (ChongDian_time - 3)&& sixExchangeCount != (ChongDian_time - 4) && sixExchangeCount != (ChongDian_time - 10) && sixExchangeCount != (ChongDian_time - 11)  && sixExchangeCount < ChongDian_time - 1) {
+                            if (sixExchangeCount != (ChongDian_time - 3) && sixExchangeCount != (ChongDian_time - 4) && sixExchangeCount != (ChongDian_time - 10) && sixExchangeCount != (ChongDian_time - 11) && sixExchangeCount < ChongDian_time - 1) {
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
@@ -2625,5 +2720,234 @@ public class FiringMainActivity_485 extends SerialPortActivity {
         }
     }
 
+    private Handler handler485 = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            switch (msg.what) {
+                case 0:
+                    String response = (String) msg.obj;
+                    if (response == null) {
+                        show_Toast(getString(R.string.text_sync_tip1));
+                        break;
+                    }
+                    if (response.contains("A001" + MmkvUtils.getcode("ACode", ""))) {
+                        //同步成功
+                        //收到服务器的同步确认指令
+                        isTongBu = true;
+                        handler485.sendEmptyMessageDelayed(5, 1000);
+                        show_Toast(getString(R.string.text_sync_tip2));
+                        btnTest.setEnabled(false);
+                        btnTest.setText(R.string.text_sync_tip3);
+                    } else if (response.contains("A002")) {
+                        show_Toast(getString(R.string.text_sync_tip4));
+                        long time = System.currentTimeMillis();
+                        long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                        Log.e(TAG, "time: " + time);
+                        Log.e(TAG, "endTime: " + endTime);
+                        //发送初始化命令
+                        if (!firstThread.isAlive()) {
+                            if (denatorCount == 0) {
+                                AlertDialog dialog = new Builder(FiringMainActivity_485.this)
+                                        .setTitle(R.string.text_fir_dialog23)//设置对话框的标题//"成功起爆"
+                                        .setMessage(R.string.text_fir_dialog24)//设置对话框的内容"本次任务成功起爆！"
+                                        //设置对话框的按钮
+                                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
+                                            dialog13.dismiss();
+                                            finish();
+                                        })
+                                        .setNeutralButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
+                                            dialog2.dismiss();
+                                            firstThread.start();
+                                        })
+                                        .create();
+                                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                                dialog.show();
+                            }
+                            else {
+                                firstThread.start();
+                            }
 
+                        }
+                    } else if (response.contains("A003")) {
+                        show_Toast(getString(R.string.text_sync_tip5));
+                        if (Wait_Count == 1) {
+                            increase(6);
+                            Utils.writeRecord("-------------------开始充电-------------------");
+                        }
+                    } else if (response.contains("A004")) {
+                        show_Toast(getString(R.string.text_sync_tip6));
+                        Log.e("起爆页面", "收到级联起爆指令 ");
+                        if(kaiguan){
+                            jixu();
+                            kaiguan=false;
+                        }
+                        Log.e(TAG, "继续3: " );
+                        if (sixExchangeCount == 0) {
+                            if (stage == 7) {
+                                keyFireCmd = 1;
+                                Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                            }
+                        }
+                    } else if (response.contains("A005")) {
+                        EventBus.getDefault().post(new FirstEvent("finish"));
+//                        show_Toast("收到退出指令");
+                        finish();
+                    } else if (response.contains("A006")) {
+//                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
+                    } else if (response.contains("A008")) {
+//                        toCheck6();
+                    }
+
+                    break;
+                case 1:
+//                    show_Toast("同步指令错误");
+                    break;
+                case 2:
+                    show_Toast(getString(R.string.text_sync_tip7));
+                    break;
+                case 3:
+                    //心跳数据
+//                    mNumber = 0;
+                    break;
+                case 5:
+                    /*if (mNumber != 0) {
+                        finish();
+                    }
+                    mNumber++;
+                    handler.sendEmptyMessageDelayed(5, 3600);*/
+                    break;
+                case 6:
+                    btnTest.setText(R.string.text_sync_tip8);
+                    btnTest.setEnabled(false);
+                    final String data2 = "0001" + MmkvUtils.getcode("ACode", "") + "\n";
+                    sendCmd(Utils.hexStringToBytes(data2));
+                    break;
+                case 10:
+//                    btnConnect.setText("已连接");
+//                    btnTest.setEnabled(true);
+//                    btnTest1.setEnabled(true);
+                    break;
+                case 16:
+//                    EMgpio.SetGpioDataLow(94);
+                    try {
+                        Thread.sleep(12);
+
+//                        mOutputStream.write(("0001" + MmkvUtils.getcode("ACode","")).getBytes());
+//                        Thread.sleep(12);
+//                        EMgpio.SetGpioDataHigh(94);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    handler485.sendEmptyMessageDelayed(16, 1000);
+                    break;
+                case 20:
+                    if (!isTongBu) {
+                        num++;
+//                        EMgpio.SetGpioDataLow(94);
+                        try {
+                            Thread.sleep(12);
+
+                            String a = myInfo();
+//                            mOutputStream.write(("0001" + MmkvUtils.getcode("ACode","") + ",_*").getBytes());
+//                            mOutputStream.write((a + ",_*").getBytes());
+                            show_Toast(getString(R.string.text_sync_tip9));
+                            Thread.sleep(20);
+//                            EMgpio.SetGpioDataHigh(94);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (num < 2) {
+                            handler485.sendEmptyMessageDelayed(20, 1000);
+                        }
+                    } else {
+                        num = 0;
+                    }
+
+                    break;
+                case 666:
+                    IntentBean item = (IntentBean) msg.obj;
+                    int resultCode = item.getResultCode();
+                    Intent data = item.getData();
+                    switch (item.getRequestCode()) {
+                        case REQUEST_CODE_NET:
+                            if (resultCode == TestDenatorActivity.RESULT_SUCCESS) {
+                                //网络测试回调
+                                String code = (String) MmkvUtils.getcode("ACode", "");
+                                String type = data.getStringExtra("type");
+                                String tNum = data.getStringExtra("tNum");
+                                String faultNum = data.getStringExtra("faultNum");
+                                String tU = data.getStringExtra("tU");
+                                String tI = data.getStringExtra("tI");
+                                String tip = data.getStringExtra("tip");
+
+//                    show_Toast("正在回传数据");
+                                String a = "0002" + code + "," + type + "," + tNum + "," + faultNum + "," + tU + "," + tI + "," + tip;
+                                show_Toast(a);
+                                sendCmd(Utils.hexStringToBytes(a));
+                            }
+                            break;
+                        case REQUEST_CODE_CHONGDIAN:
+
+                            break;
+                        case REQUEST_CODE_QIBAO:
+                            if (resultCode == FiringMainActivity.RESULT_SUCCESS) {
+                                //起爆
+                                String code = (String) MmkvUtils.getcode("ACode", "");
+                                String type = data.getStringExtra("type");
+                                String tip = data.getStringExtra("tip");
+
+                                show_Toast(getString(R.string.text_sync_tip10));
+                                String a = "0004" + code + "," + type + "," + tip;
+                                sendCmd(Utils.hexStringToBytes(a));
+
+                            }
+                            break;
+                    }
+                    break;
+            }
+
+            return false;
+        }
+    });
+
+
+    private void zhanting() {
+        Log.e(TAG, "暂停线程:-------------------- " );
+        firstThread.exit = true;
+        firstThread.interrupt();
+        try {
+            firstThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void jixu(){
+        Log.e(TAG, "继续线程:------------------ " );
+        firstThread = new ThreadFirst(allBlastQu);
+        firstThread.exit = false;
+        firstThread.start();
+    }
+
+
+    private String myInfo() {
+        String code = (String) MmkvUtils.getcode("ACode", "");
+        String check = MmkvUtils.getcode("check", 1) + "";
+        String info = "";
+        if (check.equals("1")) {
+
+        } else {
+
+        }
+
+        show_Toast(getString(R.string.text_sync_tip12));
+        String a;
+        if (check.equals("1")) {
+            a = "0001" + code + ",0" + check;
+        } else {
+            a = "0001" + code + ",0" + check + "," + info;
+        }
+
+        return a;
+    }
 }

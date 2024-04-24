@@ -49,6 +49,11 @@ public class DefCommand {
 	public static String CMD_5_TEST_8="5B";//设置低压
 	public static String CMD_5_TEST_9="5C";//设置高压
 
+	public static String CMD_7_70="70";//同步
+	public static String CMD_7_71="71";//起爆测试
+	public static String CMD_7_72="72";//准备充电
+	public static String CMD_7_73="73";//起爆
+	public static String CMD_7_74="74";//退出
 
 	
 	
@@ -104,6 +109,12 @@ public class DefCommand {
 	public static String getCmd(String cmdInfo){
 		Log.e("返回命令",cmdInfo);
 		Utils.writeLog("<-:"+cmdInfo);
+		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
+		return null;
+	}
+	public static String getCmd_qibao(String cmdInfo){
+		Log.e("返回命令",cmdInfo);
+//		Utils.writeLog("<-:"+cmdInfo);
 		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
 		return null;
 	}

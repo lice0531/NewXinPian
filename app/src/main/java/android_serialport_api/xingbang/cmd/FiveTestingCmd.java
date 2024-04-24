@@ -367,15 +367,6 @@ public class FiveTestingCmd {
 		return "0";
 	}
 
-	/**
-	 * 7.0、级联,发送
-	 * @param addr
-	 * @param data
-	 * @return
-	 */
-	public static byte[] send70(String addr,String data){
-		String command = addr + "70"+"01"+data;
-		return DefCommand.getCommadBytes(command);
-	}
+
 	
 }

@@ -751,4 +751,5 @@
     <string name="text_line_pd">偏大</string>
     <string name="text_his_scts">删除提示</string>
     <string name="text_srmm">请输入密码后,再进行删除历史记录操作</string>
+    <string name="text_fz_kt50jl">kt50级联</string>
 </resources>
