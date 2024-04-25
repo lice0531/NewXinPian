@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.custom;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -27,6 +28,8 @@ public class DataAdapter extends BaseQuickAdapter<ShouQuanData, BaseViewHolder> 
     @Override
     protected void convert(BaseViewHolder helper, ShouQuanData item) {
         int position = helper.getLayoutPosition();
+        Log.e(TAG, "item.getDetonatorIdSup(): "+item.toString() );
+        Log.e(TAG, "item.getDetonatorIdSup(): "+item.getDetonatorIdSup() );
         helper.setText(R.id.tv_lg_id, item.getShellBlastNo() + "");//UID
         if((item.getQibao()+"").equals("雷管正常")||(item.getQibao()+"").equals("已起爆")){
             helper.setText(R.id.tv_lg_uid, item.getTime());// yxq
@@ -35,10 +38,19 @@ public class DataAdapter extends BaseQuickAdapter<ShouQuanData, BaseViewHolder> 
         }
         if((item.getQibao()+"").equals("雷管正常")||(item.getQibao()+"").equals("已起爆")){
             if(item.getDetonatorId()!=null&&item.getDetonatorId().length()==13){
-                helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
-                        item.getZhu_yscs()+
-                        item.getDetonatorIdSup().substring(1)+
-                        item.getCong_yscs());// 工作码
+                if(item.getDetonatorIdSup().length()==2){
+                    helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
+                            item.getZhu_yscs()+
+                            item.getDetonatorIdSup().substring(1)+
+                            item.getCong_yscs());// 煤许工作码
+                }else {
+                    helper.setText(R.id.tv_lg_yxq, item.getDetonatorId().substring(7)+
+                            item.getZhu_yscs()+
+                            "0"+
+                            item.getCong_yscs());// PT工作码ccccccccccc`
+                }
+
+
             }
         } else {
             helper.setText(R.id.tv_lg_yxq,"");

@@ -383,6 +383,7 @@ public class GreenDaoMaster {
 
     //丹灵下载后更新雷管芯片码//在线下载,离线下载
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean,String yxq) {
+
         //94242214050
         //F42F1C 2E0A 2 5
         Log.e("雷管下载", "lgBean.getUid(): "+lgBean.getUid() );
@@ -407,8 +408,9 @@ public class GreenDaoMaster {
 
                 if(lgBean.getGzm().length()>=10){
                     db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                    db.setRegdate(yxq);
                 }
-
+                Log.e("雷管下载", "lgBean.getGzm(): "+lgBean.getGzm() );
                 if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
                     duan = lgBean.getGzm().substring(11,12);
                     version = lgBean.getGzm().substring(10,11);
@@ -434,7 +436,7 @@ public class GreenDaoMaster {
                     }
                     db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
                     db.setAuthorization("0"+version);
-                    db.setRegdate(yxq);
+
                     //小于0x0600的就是快速
                     //0x09C1就是慢速的
                     //0x04C1就是快速的
@@ -1186,6 +1188,8 @@ public class GreenDaoMaster {
 //        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
         // 检查重复数据
 
+        Log.e("typeNew", "yxq: "+yxq  );
+        Log.e("typeNew", "leiguan.getAuthorization(): "+leiguan.getAuthorization()  );
         // 雷管类型_新
         DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
         detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
@@ -1204,7 +1208,11 @@ public class GreenDaoMaster {
 
             try {
                 Date date1 = sd.parse(format1);//当前日期
-                Date date2 = sd.parse(leiguan.getRegdate());//有效期
+
+                Date date2 = sd.parse(yxq);//有效期
+                Log.e("日期", "date1: "+date1 );
+                Log.e("日期", "date2: "+date2 );
+                Log.e("日期", "date1.compareTo(date2): "+date1.compareTo(date2) );
                 if(date1.compareTo(date2)>0){
                     detonatorTypeNew.setQibao("雷管过期");
                     detonatorTypeNew.setDetonatorId(null);

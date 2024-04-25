@@ -40,7 +40,7 @@ public class ShouQuan extends LitePalSupport {
     private String qblgNum;
     @Property(nameInDb = "spare1")
     private String spare1;
-    @Property(nameInDb = "spare2")
+    @Property(nameInDb = "spare2")//申请日期
     private String spare2;
     @Property(nameInDb = "total")
     private int total;
