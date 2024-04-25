@@ -762,5 +762,6 @@
     <string name="text_xingbang_sryhm">请输入起爆用户名和密码!</string>
     <string name="text_his_scyscjl">删除已上传记录</string>
     <string name="text_error_tip73">段位信息错误</string>
+    <string name="text_test_dialog_tip1">请检查雷管总数是否正确,确认无误后可忽略本提示</string>
 
 </resources>

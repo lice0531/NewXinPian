@@ -369,7 +369,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(TestDenatorActivity.this);
         int blastNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
         builder.setTitle(getString(R.string.text_alert_tip));
-        builder.setMessage("请检查雷管总数是否正确,确认无误后可忽略本提示");//"总线上有未处理的雷管，是否继续起爆？"
+        builder.setMessage(R.string.text_test_dialog_tip1);//"总线上有未处理的雷管，是否继续起爆？"
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             if (flag != 1) {
                 fourOnlineDenatorFlag = 3;

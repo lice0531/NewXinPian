@@ -763,6 +763,7 @@
     <string name="text_xingbang_sryhm">Please enter the detonation username and password!</string>
     <string name="text_his_scyscjl">Delete uploaded records</string>
     <string name="text_error_tip73">Detonator segment information error</string>
+    <string name="text_test_dialog_tip1">Please check if the total number of detonators is correct. Once confirmed, this prompt can be ignored</string>
 
 
 </resources>
