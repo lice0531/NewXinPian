@@ -106,6 +106,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private TextView ll_firing_deAmount_2;//雷管数
     private TextView ll_firing_errorAmount_4;//错误数
     private TextView ll_firing_tureNum;
+    private TextView ll_firing_tureNum_2;
     private TextView ll_firing_errorAmount_2;//错误数
     private TextView tv__qb_dianliu_1;//参考电流
     private TextView tv__qb_dianliu_2;//参考电流
@@ -284,6 +285,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_errorAmount_2 = findViewById(R.id.ll_firing_errorAmount_2);//错误数
         ll_firing_errorAmount_4 = findViewById(R.id.ll_firing_errorAmount_4);//错误数
         ll_firing_tureNum = findViewById(R.id.ll_firing_tureNum);
+        ll_firing_tureNum_2 = findViewById(R.id.ll_firing_tureNum_2);
         tv__qb_dianliu_1 = findViewById(R.id.tv__qb_dianliu_1);//错误数
         tv__qb_dianliu_2 = findViewById(R.id.tv__qb_dianliu_2);//错误数
         ll_firing_Volt_6 = findViewById(R.id.ll_firing_Volt_6);
@@ -487,11 +489,13 @@ public class FiringMainActivity extends SerialPortActivity {
             return false;
         });
         tureHandler = new Handler(msg -> {
+            Log.e(TAG, "更新正确数量: " );
             String tureNumStr = ll_firing_tureNum.getText().toString();
             if (tureNumStr.trim().length() < 1) {
                 tureNumStr = "0";
             }
             ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            ll_firing_tureNum_2.setText("" + (Integer.parseInt(tureNumStr) + 1));
             totaltureNum = Integer.parseInt(tureNumStr) + 1;
 //            ll_firing_tureNum.setTextColor(Color.GREEN);
             return false;
@@ -953,11 +957,11 @@ public class FiringMainActivity extends SerialPortActivity {
 
         denatorCount = allBlastQu.size();
 //        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
-        Log.e(TAG, "denatorlist1: " + denatorlist1.size());
+//        Log.e(TAG, "denatorlist1: " + denatorlist1.size());
 //        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
-        Log.e(TAG, "denatorlist2: " + denatorlist2.size());
+//        Log.e(TAG, "denatorlist2: " + denatorlist2.size());
         Log.e(TAG, "denatorCount: " + denatorCount);
-        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
+//        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
