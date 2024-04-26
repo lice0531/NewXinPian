@@ -392,7 +392,10 @@ public class Utils {
         String a=feature.substring(0,1);
         String b=feature.substring(1);
         //从20年开始为2,到30年要改为3
-        return facode + "2"+b+a+denatorId;
+        //facode + "2"+b+a+denatorId;
+        //A62260094D5D7
+        //A62D70094D5D7
+        return "A6337"+denatorId;
     }
 
 
