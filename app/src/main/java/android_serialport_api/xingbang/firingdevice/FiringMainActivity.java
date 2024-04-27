@@ -1884,16 +1884,16 @@ public class FiringMainActivity extends SerialPortActivity {
                                     closeThread();
                                     break;
                                 }
-                                if (Yanzheng_sq.equals("验证")) {
-                                    if (write.getShellBlastNo().startsWith("A6")) {
-                                        Message msg = Handler_tip.obtainMessage();
-                                        msg.what = 3;
-                                        msg.obj = write.getShellBlastNo();
-                                        Handler_tip.sendMessage(msg);
-                                        closeThread();
-                                        break;
-                                    }
-                                }
+//                                if (Yanzheng_sq.equals("验证")) {
+//                                    if (write.getShellBlastNo().startsWith("A6")) {
+//                                        Message msg = Handler_tip.obtainMessage();
+//                                        msg.what = 3;
+//                                        msg.obj = write.getShellBlastNo();
+//                                        Handler_tip.sendMessage(msg);
+//                                        closeThread();
+//                                        break;
+//                                    }
+//                                }
 
 
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议

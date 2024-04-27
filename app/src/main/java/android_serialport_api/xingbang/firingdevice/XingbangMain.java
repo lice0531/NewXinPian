@@ -684,10 +684,10 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_test://测试
                 queryBeian();
                 //验证是否授权
-                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
-                    createDialog();
-                    return;
-                }
+//                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+//                    createDialog();
+//                    return;
+//                }
                 //3分钟验证
                 long time = System.currentTimeMillis();
                 long time2 = System.nanoTime();
@@ -718,12 +718,12 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-                queryBeian();
+//                queryBeian();
                 //验证是否授权
-                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
-                    createDialog();
-                    return;
-                }
+//                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
+//                    createDialog();
+//                    return;
+//                }
 
 
                 time = System.currentTimeMillis();
