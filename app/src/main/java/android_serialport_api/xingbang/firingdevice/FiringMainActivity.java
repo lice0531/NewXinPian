@@ -1036,6 +1036,7 @@ public class FiringMainActivity extends SerialPortActivity {
         his.setPro_xmbh(pro_xmbh);
         his.setPro_dwdm(pro_dwdm);
         his.setSerialNo(Integer.parseInt(qbxm_id));
+        his.setUsername((String)MmkvUtils.getcode("username",""));
         his.setLog(Utils.readLog(Utils.getDate(new Date())));
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);

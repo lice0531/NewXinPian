@@ -51,6 +51,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -135,7 +136,6 @@ public class QueryHisDetail extends BaseActivity {
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
-
         totalNum = getDaoSession().getDenatorHis_DetailDao().loadAll().size();//得到数据的总条数
         totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
         if (1 == currentPage) {
@@ -171,6 +171,9 @@ public class QueryHisDetail extends BaseActivity {
                         String log = list_savedate.get(pos).getLog();//日志
 //                        mAdapter.notifyDataSetChanged();
                         getHisDetailList(blastdate, 0);//获取起爆历史详细信息
+                        GreenDaoMaster master = new GreenDaoMaster();
+                        UserMain user= master.queryUsername(list_savedate.get(pos).getUsername());
+                        pro_bprysfz=user.getUIDCard();//更新身份证号
                         if (blastdate == null || blastdate.trim().length() < 8) {
                             int count = getBlastModelCount();
                             if (count < 1) {
@@ -200,7 +203,7 @@ public class QueryHisDetail extends BaseActivity {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
                         Log.e("读取日志1", "blastdate: " + blastdate);
-                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
+                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log,user);//我们自己的网址
 
                         break;
                     case R.id.bt_delete:
@@ -446,6 +449,7 @@ public class QueryHisDetail extends BaseActivity {
             item.setDwdm(list.get(i).getPro_dwdm());
             item.setXmbh(list.get(i).getPro_xmbh());
             item.setLog(list.get(i).getLog());
+            item.setUsername(list.get(i).getUsername());
             list_savedate.add(item);
         }
     }
@@ -914,12 +918,12 @@ public class QueryHisDetail extends BaseActivity {
         });
     }
 
-    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
+    private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log,UserMain user) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
 //        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//
-        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新
-//        String url = "http://111.194.155.18:999/XB/DataUpload";//测试
+//        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新
+        String url = "http://test.xingbangtech.com:666/XB/DataUpload";//测试
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -951,21 +955,21 @@ public class QueryHisDetail extends BaseActivity {
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
 
-            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
-                object.put("blastunit", MmkvUtils.getcode("uCName",""));//爆破单位
-                object.put("province", MmkvUtils.getcode("province",""));//省
-                object.put("market", MmkvUtils.getcode("market",""));//市
-                object.put("county", MmkvUtils.getcode("county",""));//县
-//                object.put("uPhone", MmkvUtils.getcode("uPhone",""));//电话//目前没这个属性
-//                object.put("uFName", MmkvUtils.getcode("uFName",""));//人
-            }
-
+//            if(MmkvUtils.getcode("Yanzheng_dw", "不验证").equals("验证")){
+                object.put("blastunit", user.getUCName());//爆破单位
+                object.put("province", user.getUProvince());//省
+                object.put("market", user.getUMarket());//市
+                object.put("county", user.getUCounty());//县
+                object.put("uPhone", user.getUname());//电话
+                object.put("uFName", user.getUFName());//爆破员姓名
+//            }
+            Log.e("上传参数", object.toString());
             object.put("log", log);//日志
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_240417_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_240505_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {

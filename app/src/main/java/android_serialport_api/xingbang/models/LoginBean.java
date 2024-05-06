@@ -12,6 +12,9 @@ public class LoginBean implements Serializable {
     private String uCName;
     private String uFName;
     private String uIDCard;
+    private String uProvince;
+    private String uMarket;
+    private String uCounty;
     private List<LstDTO> lst;
     private String status;
     private String msg;
@@ -64,6 +67,30 @@ public class LoginBean implements Serializable {
         this.uIDCard = uIDCard;
     }
 
+    public String getUProvince() {
+        return uProvince;
+    }
+
+    public void setUProvince(String uProvince) {
+        this.uProvince = uProvince;
+    }
+
+    public String getUMarket() {
+        return uMarket;
+    }
+
+    public void setUMarket(String uMarket) {
+        this.uMarket = uMarket;
+    }
+
+    public String getUCounty() {
+        return uCounty;
+    }
+
+    public void setUCounty(String uCounty) {
+        this.uCounty = uCounty;
+    }
+
     public List<LstDTO> getLst() {
         return lst;
     }
@@ -95,6 +122,9 @@ public class LoginBean implements Serializable {
         private String uCName;
         private String uFName;
         private String uIDCard;
+        private String uProvince;
+        private String uMarket;
+        private String uCounty;
 
         public String getUPhone() {
             return uPhone;
@@ -144,6 +174,30 @@ public class LoginBean implements Serializable {
             this.uIDCard = uIDCard;
         }
 
+        public String getUProvince() {
+            return uProvince;
+        }
+
+        public void setUProvince(String uProvince) {
+            this.uProvince = uProvince;
+        }
+
+        public String getUMarket() {
+            return uMarket;
+        }
+
+        public void setUMarket(String uMarket) {
+            this.uMarket = uMarket;
+        }
+
+        public String getUCounty() {
+            return uCounty;
+        }
+
+        public void setUCounty(String uCounty) {
+            this.uCounty = uCounty;
+        }
+
         @Override
         public String toString() {
             return "LstDTO{" +
@@ -153,6 +207,9 @@ public class LoginBean implements Serializable {
                     ", uCName='" + uCName + '\'' +
                     ", uFName='" + uFName + '\'' +
                     ", uIDCard='" + uIDCard + '\'' +
+                    ", uProvince='" + uProvince + '\'' +
+                    ", uMarket='" + uMarket + '\'' +
+                    ", uCounty='" + uCounty + '\'' +
                     '}';
         }
     }
@@ -166,6 +223,9 @@ public class LoginBean implements Serializable {
                 ", uCName='" + uCName + '\'' +
                 ", uFName='" + uFName + '\'' +
                 ", uIDCard='" + uIDCard + '\'' +
+                ", uProvince='" + uProvince + '\'' +
+                ", uMarket='" + uMarket + '\'' +
+                ", uCounty='" + uCounty + '\'' +
                 ", lst=" + lst +
                 ", status='" + status + '\'' +
                 ", msg='" + msg + '\'' +

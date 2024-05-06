@@ -1166,6 +1166,9 @@ public class GreenDaoMaster {
             entity2.setUCName(lstDTO.getUCName());
             entity2.setUFName(lstDTO.getUFName());
             entity2.setUIDCard(lstDTO.getUIDCard());
+            entity2.setUProvince(lstDTO.getUProvince());
+            entity2.setUMarket(lstDTO.getUMarket());
+            entity2.setUCounty(lstDTO.getUCounty());
             getDaoSession().getUserMainDao().insert(entity2);
         }
 

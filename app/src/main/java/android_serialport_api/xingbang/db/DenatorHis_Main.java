@@ -37,11 +37,13 @@ public class DenatorHis_Main {
     private String remark;
     @Property(nameInDb = "log")
     private String log;
-    @Generated(hash = 960757556)
+    @Property(nameInDb = "username")
+    private String username;
+    @Generated(hash = 628633695)
     public DenatorHis_Main(Long id, String blastdate, String uploadStatus,
             String longitude, String latitude, String userid, String equ_no,
             int serialNo, String pro_xmbh, String pro_htid, String pro_dwdm,
-            String remark, String log) {
+            String remark, String log, String username) {
         this.id = id;
         this.blastdate = blastdate;
         this.uploadStatus = uploadStatus;
@@ -55,6 +57,7 @@ public class DenatorHis_Main {
         this.pro_dwdm = pro_dwdm;
         this.remark = remark;
         this.log = log;
+        this.username = username;
     }
     @Generated(hash = 812921624)
     public DenatorHis_Main() {
@@ -137,6 +140,12 @@ public class DenatorHis_Main {
     public void setLog(String log) {
         this.log = log;
     }
+    public String getUsername() {
+        return this.username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @Override
     public String toString() {
@@ -154,6 +163,7 @@ public class DenatorHis_Main {
                 ", pro_dwdm='" + pro_dwdm + '\'' +
                 ", remark='" + remark + '\'' +
                 ", log='" + log + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }

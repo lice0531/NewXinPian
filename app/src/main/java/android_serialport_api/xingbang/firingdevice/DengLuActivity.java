@@ -145,7 +145,8 @@ public class DengLuActivity extends BaseActivity {
 
     private void upload(String uPhone, String uPwd) {
 
-        String url = Utils.httpurl_xb_denglu;//公司服务器上传
+        String url = Utils.httpurl_xb_denglu_ceshi;//公司服务器上传
+//        String url = Utils.httpurl_xb_denglu;//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
 
@@ -181,7 +182,7 @@ public class DengLuActivity extends BaseActivity {
                     String res = response.body().string();
                     Gson gson = new Gson();
                     LoginBean loginBean = gson.fromJson(res, LoginBean.class);
-//                    Log.e("登陆返回", "res: "+res );
+                    Log.e("登陆返回", "res: "+res );
                     Log.e("登陆返回", "loginBean: "+loginBean.toString() );
 
                     ////用户 返回参数指令
@@ -193,6 +194,9 @@ public class DengLuActivity extends BaseActivity {
                         MmkvUtils.savecode("uIDCard",loginBean.getUIDCard());//登陆本人身份证
                         MmkvUtils.savecode("uCName",loginBean.getUCName());//登陆本人身份证
                         MmkvUtils.savecode("uFName",loginBean.getUFName());//登陆本人身份证
+                        MmkvUtils.savecode("uProvince",loginBean.getUProvince());//省
+                        MmkvUtils.savecode("uMarket",loginBean.getUMarket());//市
+                        MmkvUtils.savecode("uCounty",loginBean.getUCounty());//县
                         upData(loginBean);
                         MmkvUtils.savecode("username", etUser.getText().toString());
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
@@ -246,9 +250,13 @@ public class DengLuActivity extends BaseActivity {
                         return;
                     }
                     if(user.getUpassword().equals(uPwd)){
+                        MmkvUtils.savecode("username", etUser.getText().toString());
                         MmkvUtils.savecode("uIDCard",user.getUIDCard());//登陆本人身份证
                         MmkvUtils.savecode("uCName",user.getUCName());//登陆本人身份证
                         MmkvUtils.savecode("uFName",user.getUFName());//登陆本人身份证
+                        MmkvUtils.savecode("uProvince",user.getUProvince());//省
+                        MmkvUtils.savecode("uMarket",user.getUMarket());//市
+                        MmkvUtils.savecode("uCounty",user.getUCounty());//县
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
                     }else {
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));

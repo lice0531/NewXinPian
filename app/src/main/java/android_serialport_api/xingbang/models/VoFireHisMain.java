@@ -17,6 +17,7 @@ public class VoFireHisMain {
 	private String dwdm;//单位代码
 	private String xmbh;//项目编号
 	private String log;//日志
+	private String username;//用户名
 
 	public String getId() {
 		return id;
@@ -99,6 +100,14 @@ public class VoFireHisMain {
 		this.log = log;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	@Override
 	public String toString() {
 		return "VoFireHisMain{" +
@@ -115,6 +124,7 @@ public class VoFireHisMain {
 				", dwdm='" + dwdm + '\'' +
 				", xmbh='" + xmbh + '\'' +
 				", log='" + log + '\'' +
+				", username='" + username + '\'' +
 				'}';
 	}
 }

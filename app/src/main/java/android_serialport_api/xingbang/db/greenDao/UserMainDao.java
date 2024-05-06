@@ -33,6 +33,9 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         public final static Property UCName = new Property(6, String.class, "uCName", false, "uCName");
         public final static Property UFName = new Property(7, String.class, "uFName", false, "uFName");
         public final static Property UIDCard = new Property(8, String.class, "uIDCard", false, "uIDCard");
+        public final static Property UProvince = new Property(9, String.class, "uProvince", false, "uProvince");
+        public final static Property UMarket = new Property(10, String.class, "uMarket", false, "uMarket");
+        public final static Property UCounty = new Property(11, String.class, "uCounty", false, "uCounty");
     }
 
 
@@ -56,7 +59,10 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
                 "\"uCid\" TEXT," + // 5: uCid
                 "\"uCName\" TEXT," + // 6: uCName
                 "\"uFName\" TEXT," + // 7: uFName
-                "\"uIDCard\" TEXT);"); // 8: uIDCard
+                "\"uIDCard\" TEXT," + // 8: uIDCard
+                "\"uProvince\" TEXT," + // 9: uProvince
+                "\"uMarket\" TEXT," + // 10: uMarket
+                "\"uCounty\" TEXT);"); // 11: uCounty
     }
 
     /** Drops the underlying database table. */
@@ -113,6 +119,21 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         if (uIDCard != null) {
             stmt.bindString(9, uIDCard);
         }
+ 
+        String uProvince = entity.getUProvince();
+        if (uProvince != null) {
+            stmt.bindString(10, uProvince);
+        }
+ 
+        String uMarket = entity.getUMarket();
+        if (uMarket != null) {
+            stmt.bindString(11, uMarket);
+        }
+ 
+        String uCounty = entity.getUCounty();
+        if (uCounty != null) {
+            stmt.bindString(12, uCounty);
+        }
     }
 
     @Override
@@ -163,6 +184,21 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         if (uIDCard != null) {
             stmt.bindString(9, uIDCard);
         }
+ 
+        String uProvince = entity.getUProvince();
+        if (uProvince != null) {
+            stmt.bindString(10, uProvince);
+        }
+ 
+        String uMarket = entity.getUMarket();
+        if (uMarket != null) {
+            stmt.bindString(11, uMarket);
+        }
+ 
+        String uCounty = entity.getUCounty();
+        if (uCounty != null) {
+            stmt.bindString(12, uCounty);
+        }
     }
 
     @Override
@@ -181,7 +217,10 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // uCid
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // uCName
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // uFName
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // uIDCard
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // uIDCard
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // uProvince
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // uMarket
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // uCounty
         );
         return entity;
     }
@@ -197,6 +236,9 @@ public class UserMainDao extends AbstractDao<UserMain, Long> {
         entity.setUCName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setUFName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setUIDCard(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setUProvince(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setUMarket(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setUCounty(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     @Override
