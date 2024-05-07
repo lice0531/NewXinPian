@@ -427,8 +427,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int maxDuanNo = 3;
     private Handler mHandler_showNum = new Handler();//显示雷管数量
     private String duan_set = "0";//是duan1还是duan2
-    private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;
-    private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
+    private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;//翻转
+    private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;//翻转
     private String TAG = "扫码注册";
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
     private Boolean charu = false;
@@ -1493,6 +1493,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         tv_duan.setText(duan + "-" + duanNo);
         et_duanNo.setText(duanNo + "");
         int d = getFan(info.getDuan());
+        if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
+            show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+        }
         Log.e(TAG, "是否翻转: " + d);
         builder.setNegativeButton("插入孔", (dialog, which) -> {
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
@@ -2542,6 +2545,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
 
             case R.id.btn_scanReister:
+                int d = getFan(duan_new);
+                if (d == 1) {
+                    show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                    return;
+                }
+                Log.e(TAG, "是否翻转: " + d);
                 if (checkDelay()) return;
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
@@ -4041,7 +4050,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         n39 = (int) MmkvUtils.getcode("n39", 0);
         n40 = (int) MmkvUtils.getcode("n40", 0);
     }
-
+    /**
+     * 获取对应段位翻转值
+     * */
     public int getFan(int duan) {
         setFan();
         switch (duan) {
