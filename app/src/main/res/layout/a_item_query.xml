@@ -26,15 +26,16 @@
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />
     <!-- 管壳号-->
+
+    <!-- 状态-->
     <TextView
         android:id="@+id/tv_shellBlastNo"
+        style="@style/alltextstyle"
         android:layout_width="120dp"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
-        style="@style/alltextstyle"
         android:textSize="18sp" />
 
-    <!-- 状态-->
     <TextView
         android:id="@+id/tv_status"
         android:layout_width="match_parent"

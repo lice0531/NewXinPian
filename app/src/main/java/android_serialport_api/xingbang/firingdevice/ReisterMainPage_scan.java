@@ -1493,9 +1493,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         tv_duan.setText(duan + "-" + duanNo);
         et_duanNo.setText(duanNo + "");
         int d = getFan(info.getDuan());
-        if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-            show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
-        }
         Log.e(TAG, "是否翻转: " + d);
         builder.setNegativeButton("插入孔", (dialog, which) -> {
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
@@ -1849,6 +1846,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 单发注册方法(扫码注册,单发输入会用到)
      */
     private int insertSingleDenator(String shellNo) {
+        int f = getFan(duan_new);
+        if (f == 1) {
+            show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+            return -1;
+        }
         Log.e("扫码", "单发注册方法1: ");
         if (shellNo.length() != 13) {
             return -1;
@@ -2519,6 +2521,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tk:
+                int c = getFan(duan_new);
+                if (c == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    return;
+                }
                 if (etTk.getText().length() == 0) {
                     show_Toast("请输入跳孔个数");
                     return;
@@ -2534,6 +2541,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_tk_F1:
+                int f = getFan(duan_new);
+                if (f == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    return;
+                }
                 btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                 if (flag_t1) {
                     btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
@@ -2547,7 +2559,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_scanReister:
                 int d = getFan(duan_new);
                 if (d == 1) {
-                    show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
                     return;
                 }
                 Log.e(TAG, "是否翻转: " + d);
@@ -2640,12 +2652,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reEtF2.clearFocus();
                 break;
             case R.id.btn_setdelay:
+                int a = getFan(duan_new);
+                if (a == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    return;
+                }
                 String str3 = "设置延时";//"当前雷管信息"
                 Intent intent3 = new Intent(this, SetDelayTime.class);
                 intent3.putExtra("dataSend", str3);
                 startActivityForResult(intent3, 1);
                 break;
             case R.id.btn_single:
+                int b = getFan(duan_new);
+                if (b == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    return;
+                }
                 if (checkDelay()) return;
                 if (llStart.getVisibility() == View.GONE) {
                     lySetDelay.setVisibility(View.GONE);
