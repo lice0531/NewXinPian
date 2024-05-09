@@ -33,6 +33,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
+import android_serialport_api.xingbang.custom.DetonatorAdapter_Query;
 import android_serialport_api.xingbang.custom.LoadAdapter;
 import android_serialport_api.xingbang.custom.LoadListView;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -76,7 +77,7 @@ public class QueryCurrentDetail extends BaseActivity {
     private RecyclerView mListView;
     private Handler mHandler_ui = new Handler();     // UI处理
     private List<DenatorBaseinfo> mListData = new ArrayList<>();//所有雷管列表
-    private DetonatorAdapter_Paper<DenatorBaseinfo> mAdapter;
+    private DetonatorAdapter_Query<DenatorBaseinfo> mAdapter;
     private LinearLayoutManager linearLayoutManager;
     private boolean paixu_flag = true;//排序标志
     private boolean switchUid =true;//切换uid/管壳码
@@ -151,7 +152,7 @@ public class QueryCurrentDetail extends BaseActivity {
 
         linearLayoutManager = new LinearLayoutManager(this);
         mListView.setLayoutManager(linearLayoutManager);
-        mAdapter = new DetonatorAdapter_Paper<>(this, 3);
+        mAdapter = new DetonatorAdapter_Query<>(this, 0);
         mListView.setAdapter(mAdapter);
 
 //        mListData = new GreenDaoMaster().queryDetonatorDesc();
@@ -168,7 +169,7 @@ public class QueryCurrentDetail extends BaseActivity {
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
 //                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
-                    mAdapter.setListData(mListData, 1);
+                    mAdapter.setListData(mListData, 0);
                     txTotal.setText(getString(R.string.text_total) + mListData.size());
                     mAdapter.notifyDataSetChanged();
 
@@ -192,6 +193,7 @@ public class QueryCurrentDetail extends BaseActivity {
                     setTitleRegion(a.toString(), mListData.size());
                     break;
                 case 1005://按管壳码排序
+                    show_Toast("红色背景雷管是与前一发雷管中间可能有漏扫");
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
@@ -219,7 +221,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 text_uid.setTextColor(Color.BLACK);
                 text_gkm.setTextColor(Color.GREEN);
             }
-            mAdapter = new DetonatorAdapter_Paper<>(QueryCurrentDetail.this, a);
+            mAdapter = new DetonatorAdapter_Query<>(QueryCurrentDetail.this, a);
             mListView.setLayoutManager(linearLayoutManager);
             mListView.setAdapter(mAdapter);
             mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));

@@ -599,7 +599,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             msg.obj = data;
             msg.what = 9;
             mHandler_tip.sendMessage(msg);
-            scanDecode.stopScan();
+//            scanDecode.stopScan();
         } else {
             String barCode;
             String denatorId;

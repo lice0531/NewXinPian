@@ -1254,9 +1254,11 @@ public class GreenDaoMaster {
             getDaoSession().getDetonatorTypeNewDao().update(detonatorType2);
 
 //            master.updataShouQuan(time_bf);//更新授权数量(在页面更新了,这里应该不用了)
-//            Log.e("更新生产库中的雷管信息", "detonatorType2: "+detonatorType2);
+            Log.e("更新生产库中的雷管信息",": " );
+//
             return;
         }
+        Log.e("插入新生产库中的雷管信息", ": ");
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
     }
 
