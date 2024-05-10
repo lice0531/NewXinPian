@@ -71,8 +71,8 @@ public class DengLuActivity extends BaseActivity {
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        String username= (String) MmkvUtils.getcode("username", "");
-        if(username.length()>1){
+        String username = (String) MmkvUtils.getcode("username", "");
+        if (username.length() > 1) {
             etUser.setText(username);
         }
         mHandler_tip = new Handler(msg -> {
@@ -172,7 +172,7 @@ public class DengLuActivity extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
-                Utils.writeRecord("上传公司网络请求失败"+"IOException: " + e);
+                Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
             }
 
             @Override
@@ -180,37 +180,39 @@ public class DengLuActivity extends BaseActivity {
 
                 try {
                     String res = response.body().string();
-                    Gson gson = new Gson();
-                    LoginBean loginBean = gson.fromJson(res, LoginBean.class);
-                    Log.e("登陆返回", "res: "+res );
-                    Log.e("登陆返回", "loginBean: "+loginBean.toString() );
+                    if (res != null) {
+                        Gson gson = new Gson();
+                        LoginBean loginBean = gson.fromJson(res, LoginBean.class);
+                        Log.e("登陆返回", "res: " + res);
+                        Log.e("登陆返回", "loginBean: " + loginBean.toString());
 
-                    ////用户 返回参数指令
-                    ////1001  用户名 不存在
-                    ////1002  密码错误
-                    ////1003  无参
-                    ////1004  账号未激活
-                    if (loginBean.getStatus().equals("200")) {
-                        MmkvUtils.savecode("uIDCard",loginBean.getUIDCard());//登陆本人身份证
-                        MmkvUtils.savecode("uCName",loginBean.getUCName());//登陆本人身份证
-                        MmkvUtils.savecode("uFName",loginBean.getUFName());//登陆本人身份证
-                        MmkvUtils.savecode("uProvince",loginBean.getUProvince());//省
-                        MmkvUtils.savecode("uMarket",loginBean.getUMarket());//市
-                        MmkvUtils.savecode("uCounty",loginBean.getUCounty());//县
-                        upData(loginBean);
-                        MmkvUtils.savecode("username", etUser.getText().toString());
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
-                    } else if (loginBean.getStatus().equals("1001")) {
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
-                    } else if (loginBean.getStatus().equals("1002")) {
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));
-                    } else if (loginBean.getStatus().equals("1003")) {
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
-                    } else if (loginBean.getStatus().equals("1004")) {
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(9));
+                        ////用户 返回参数指令
+                        ////1001  用户名 不存在
+                        ////1002  密码错误
+                        ////1003  无参
+                        ////1004  账号未激活
+                        if (loginBean.getStatus().equals("200")) {
+                            MmkvUtils.savecode("uIDCard", loginBean.getUIDCard());//登陆本人身份证
+                            MmkvUtils.savecode("uCName", loginBean.getUCName());//登陆本人公司名
+                            MmkvUtils.savecode("uFName", loginBean.getUFName());//登陆本人姓名
+                            MmkvUtils.savecode("uProvince", loginBean.getUProvince());//省
+                            MmkvUtils.savecode("uMarket", loginBean.getUMarket());//市
+                            MmkvUtils.savecode("uCounty", loginBean.getUCounty());//县
+                            upData(loginBean);
+                            MmkvUtils.savecode("username", etUser.getText().toString());//手机号
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+                        } else if (loginBean.getStatus().equals("1001")) {
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+                        } else if (loginBean.getStatus().equals("1002")) {
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));
+                        } else if (loginBean.getStatus().equals("1003")) {
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+                        } else if (loginBean.getStatus().equals("1004")) {
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(9));
+                        }
+
+                        pb_show = 0;
                     }
-
-                    pb_show = 0;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -242,23 +244,23 @@ public class DengLuActivity extends BaseActivity {
 
                 if (NetUtils.haveNetWork(this)) {
                     upload(uPhone, uPwd);
-                }else {
-                    UserMain user= master.queryUsername(uPhone);
-                    if(user==null){
+                } else {
+                    UserMain user = master.queryUsername(uPhone);
+                    if (user == null) {
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
                         pb_show = 0;
                         return;
                     }
-                    if(user.getUpassword().equals(uPwd)){
+                    if (user.getUpassword().equals(uPwd)) {
                         MmkvUtils.savecode("username", etUser.getText().toString());
-                        MmkvUtils.savecode("uIDCard",user.getUIDCard());//登陆本人身份证
-                        MmkvUtils.savecode("uCName",user.getUCName());//登陆本人身份证
-                        MmkvUtils.savecode("uFName",user.getUFName());//登陆本人身份证
-                        MmkvUtils.savecode("uProvince",user.getUProvince());//省
-                        MmkvUtils.savecode("uMarket",user.getUMarket());//市
-                        MmkvUtils.savecode("uCounty",user.getUCounty());//县
+                        MmkvUtils.savecode("uIDCard", user.getUIDCard());//登陆本人身份证
+                        MmkvUtils.savecode("uCName", user.getUCName());//登陆本人身份证
+                        MmkvUtils.savecode("uFName", user.getUFName());//登陆本人身份证
+                        MmkvUtils.savecode("uProvince", user.getUProvince());//省
+                        MmkvUtils.savecode("uMarket", user.getUMarket());//市
+                        MmkvUtils.savecode("uCounty", user.getUCounty());//县
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
-                    }else {
+                    } else {
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));
                     }
                     pb_show = 0;
