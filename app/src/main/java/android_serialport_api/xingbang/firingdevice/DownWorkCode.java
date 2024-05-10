@@ -615,6 +615,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     break;
                 case 14:
                     show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    break;
                 case 15:
                     show_Toast("网络异常，请确认网络正常后再尝试下载");
                     break;
