@@ -74,6 +74,7 @@ public class Utils {
 //    public static String httpurl_xb_upload = "http://182.92.61.78:83/Data/QueryGK";
     public static String httpurl_xb_upload = "http://apigk.xingbangtech.com:800/Data/QueryGK";
     public static String httpurl_xb_erweima = "http://182.92.61.78:83/APK_Pro/";
+    public static String httpurl_xb_erweima_test = "http://test.xingbangtech.com:666/APK_Pro/";
     public static String httpurl_xb_denglu_ceshi = "http://test.xingbangtech.com:666/Handset/Login";
     private static SQLiteDatabase db;
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',

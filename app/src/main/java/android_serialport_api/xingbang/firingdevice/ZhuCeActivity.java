@@ -48,12 +48,16 @@ public class ZhuCeActivity extends BaseActivity {
 
     @BindView(R.id.et_user)
     EditText etUser;
+    @BindView(R.id.et_userpwd)
+    EditText etUserPwd;
     @BindView(R.id.et_lgc)
     EditText etLgc;
     @BindView(R.id.et_qbgs)
     EditText etQbgs;
     @BindView(R.id.et_name)
     EditText etName;
+    @BindView(R.id.et_sfz)
+    EditText etSfz;
     @BindView(R.id.set_save)
     Button setSave;
     @BindView(R.id.jd_btn)
@@ -108,6 +112,9 @@ public class ZhuCeActivity extends BaseActivity {
         cityPicker.setOnCityItemClickListener(new OnCityItemClickListener() {
             @Override
             public void onSelected(ProvinceBean province, CityBean city, DistrictBean district) {
+                Log.e("选择", "province: "+province.getName() );
+                Log.e("选择", "city: "+city.getName());
+                Log.e("选择", "district: "+district.getName());
                 tv_province.setText(province.getName());
                 tv_market.setText(city.getName());
                 tv_county.setText(district.getName());
@@ -118,13 +125,13 @@ public class ZhuCeActivity extends BaseActivity {
             }
         });
 
-        etUser.setText((String)MmkvUtils.getcode("username",""));//
-        etQbgs.setText((String)MmkvUtils.getcode("uCName",""));
-        etName.setText((String)MmkvUtils.getcode("uFName",""));
-
-        tv_province.setText((String)MmkvUtils.getcode("uProvince",""));
-        tv_market.setText((String)MmkvUtils.getcode("uMarket",""));
-        tv_county.setText((String)MmkvUtils.getcode("uCounty",""));
+//        etUser.setText((String)MmkvUtils.getcode("username",""));//
+//        etQbgs.setText((String)MmkvUtils.getcode("uCName",""));
+//        etName.setText((String)MmkvUtils.getcode("uFName",""));
+//
+//        tv_province.setText((String)MmkvUtils.getcode("uProvince",""));
+//        tv_market.setText((String)MmkvUtils.getcode("uMarket",""));
+//        tv_county.setText((String)MmkvUtils.getcode("uCounty",""));
 
 
     }
@@ -143,31 +150,36 @@ public class ZhuCeActivity extends BaseActivity {
                 String uCid = etLgc.getText().toString();//厂家码
                 String uCName = etQbgs.getText().toString();//爆破单位
                 String uFName = etName.getText().toString();//人员姓名
+                String uIDCard = etSfz.getText().toString();//人员姓名
+                String uPwd = etUserPwd.getText().toString();
 
-//                if(uPhone.length()<1){
-//                    show_Toast("请输入手机号");
-//                    return;
-//                }else if(uCName.length()<1) {
-//                    show_Toast("请输入爆破单位名称");
-//                    return;
-//                }else if(uFName.length()<1) {
-//                    show_Toast("请输入人员名称");
-//                    return;
-//                }else if(tv_province.getText().length()<2) {
-//                    show_Toast("请选择省市县");
-//                    return;
-//                }
+                if(uPhone.length()<1){
+                    show_Toast("请输入手机号");
+                    return;
+                }else if(uCName.length()<1) {
+                    show_Toast("请输入爆破单位名称");
+                    return;
+                }else if(uFName.length()<1) {
+                    show_Toast("请输入人员名称");
+                    return;
+                }else if(uIDCard.length()<1) {
+                    show_Toast("请输入身份证");
+                    return;
+                }else if(tv_province.getText().length()<2) {
+                    show_Toast("请选择省市县");
+                    return;
+                }
 
-                MmkvUtils.savecode("uPhone", uPhone);
-                MmkvUtils.savecode("uCName", uCName);
-                MmkvUtils.savecode("uFName", uFName);
+//                MmkvUtils.savecode("uPhone", uPhone);
+//                MmkvUtils.savecode("uCName", uCName);
+//                MmkvUtils.savecode("uFName", uFName);
+//
+//                MmkvUtils.savecode("province", tv_province.getText());
+//                MmkvUtils.savecode("market", tv_market.getText());
+//                MmkvUtils.savecode("county", tv_county.getText());
 
-                MmkvUtils.savecode("province", tv_province.getText());
-                MmkvUtils.savecode("market", tv_market.getText());
-                MmkvUtils.savecode("county", tv_county.getText());
-
-                show_Toast("保存成功");
-//        upload(uPhone,uPwd,uCid,uCName,uFName);
+//                show_Toast("保存成功");
+                upload(uPhone,uPwd,uIDCard,uCName,uFName);
                 break;
             case R.id.jd_btn://城市
                 showJD();
@@ -180,18 +192,22 @@ public class ZhuCeActivity extends BaseActivity {
         cityPicker.showCityPicker();
     }
 
-    private void upload(String uPhone, String uPwd, String uCid, String uCName, String uFName) {
+    private void upload(String uPhone, String uPwd, String uIDCard, String uCName, String uFName) {
 
-        String url = "http://111.194.155.18:999/Handset/Register";//公司服务器上传
+        String url = "http://test.xingbangtech.com:666/Handset/Register";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
 
         try {
             object.put("uPhone", uPhone);//用户名
             object.put("uPwd", uPwd);//密码
-            object.put("uCid", uCid);//厂家代码
+            object.put("uIDCard", uIDCard);//厂家代码
             object.put("uCName", uCName);//起爆公司
             object.put("uFName", uFName);//人员姓名
+            object.put("uProvince", tv_province.getText());//人员姓名
+            object.put("uMarket", tv_market.getText());//人员姓名
+            object.put("uCounty", tv_county.getText());//人员姓名
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

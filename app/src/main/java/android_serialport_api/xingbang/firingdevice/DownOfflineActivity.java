@@ -770,7 +770,7 @@ public class DownOfflineActivity extends BaseActivity {
 
     private void upload_xingbang(String name) {
         Log.e("loding画面", "画面开始: " );
-        String url = Utils.httpurl_xb_erweima+name+"/ciphertext";//煋邦下载
+        String url = Utils.httpurl_xb_erweima_test+name+"/ciphertext";//煋邦下载
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
