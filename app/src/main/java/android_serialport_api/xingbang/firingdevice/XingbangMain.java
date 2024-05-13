@@ -1282,7 +1282,7 @@ public class XingbangMain extends BaseActivity {
 
         try {
             object.put("sbbh", equ_no);//设备编号
-            object.put("rj_version", "KT50_3.25_MX_240513_14");//软件版本
+            object.put("rj_version", "KT50_3.25_MX_230925_14");//软件版本
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1341,7 +1341,7 @@ public class XingbangMain extends BaseActivity {
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("sbbh", equ_no);//设备编号
             object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
-            object.put("version", "KT50_3.25_MX_240513_14");//版本号版本 v3.22
+            object.put("version", "KT50_3.25_MX_230925_14");//版本号版本 v3.22
 //            object.put("version", "v3.22");//版本号版本 测试数据
             object.put("type", "1");//软件=1 硬件=2
             object.put("is_force", 0);//是否强制升级
@@ -1380,12 +1380,14 @@ public class XingbangMain extends BaseActivity {
                     Log.e(TAG, "onResponse: " + res.toString());
                     Gson gson = new Gson();
                     DownloadVersionBean dv = gson.fromJson(res, DownloadVersionBean.class);
+                    if(dv.getStatus().equals("200")){
+                        Message msg = new Message();
+                        msg.obj = dv;
+                        msg.what = 1;
+                        mHandler_updataVersion.sendMessage(msg);//更新设备编号
+                        pb_show = 0;
+                    }
 
-                    Message msg = new Message();
-                    msg.obj = dv;
-                    msg.what = 1;
-                    mHandler_updataVersion.sendMessage(msg);//更新设备编号
-                    pb_show = 0;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
