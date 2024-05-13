@@ -886,7 +886,7 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
+        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -934,10 +934,17 @@ public class QueryHisDetail extends BaseActivity {
         } catch (JSONException| PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        //3des加密
+//3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
+        JSONObject object2 = new JSONObject();
+        try {
+            object2.put("param",json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON, "{'param':'" + json + "'}");
+        RequestBody requestBody = FormBody.create(JSON, object2.toString());
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)

@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -71,6 +73,14 @@ import android_serialport_api.xingbang.utils.upload.IntervalUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
@@ -79,6 +89,8 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 import androidx.annotation.NonNull;
 
 import org.apache.commons.net.ftp.FTPFile;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class XingbangMain extends BaseActivity {
@@ -268,7 +280,7 @@ public class XingbangMain extends BaseActivity {
 
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
 
-
+        getleveup();
     }
     private void queryBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1292,4 +1304,123 @@ public class XingbangMain extends BaseActivity {
         });
         builder.create().show();
     }
+
+    private void getleveup() {
+        String url = Utils.httpurl_xb_leveup;//公司服务器上传
+        OkHttpClient client = new OkHttpClient();
+        JSONObject object = new JSONObject();
+
+        try {
+            object.put("sbbh", equ_no);//设备编号
+            object.put("rj_version", "KT50_3.25_MX_240511_14");//软件版本
+            object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //3des加密
+        String json = object.toString();
+        MediaType JSON = MediaType.parse("application/json");
+        Log.e("注册请求", "json: " + json);
+        RequestBody requestBody = FormBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                Log.e("上传公司网络请求", "IOException: " + e);
+                Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                try {
+                    String res = response.body().string();
+                    Log.e(TAG, "onResponse: " + res.toString());
+                    Gson gson = new Gson();
+                    IsRenewBean isRenewBean = gson.fromJson(res, IsRenewBean.class);
+                    if (isRenewBean.getIs_rj_version() == 1) {
+                        //需要升级app
+                        getApp();
+                    }
+                    if (isRenewBean.getIs_yj_version() == 1) {
+                        //需要升级bin
+                    }
+                    pb_show = 0;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+
+    private void getApp() {
+        String url = Utils.httpurl_xb_download;//公司服务器上传
+        OkHttpClient client = new OkHttpClient();
+        JSONObject object = new JSONObject();
+
+        try {
+            String uniqueId = UUID.randomUUID().toString();
+            PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
+            object.put("sbbh", equ_no);//设备编号
+            object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
+            object.put("version", "KT50_3.25_MX_240511_14");//版本号版本 v3.22
+//            object.put("version", "v3.22");//版本号版本 测试数据
+            object.put("type", "1");//软件=1 硬件=2
+            object.put("is_force", 0);//是否强制升级
+
+            Log.e(TAG, "pi.versionCode: " + pi.versionCode);
+            Log.e(TAG, "pi.versionName: " + pi.versionName);
+        } catch (JSONException | PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        //3des加密
+        String json = object.toString();
+        MediaType JSON = MediaType.parse("application/json");
+        Log.e("获取下载请求", "json: " + json);
+        RequestBody requestBody = FormBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                Log.e("上传公司网络请求", "IOException: " + e);
+                Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                try {
+
+                    String res = response.body().string();
+
+                    Log.e(TAG, "onResponse: " + res.toString());
+                    Gson gson = new Gson();
+                    DownloadVersionBean dv = gson.fromJson(res, DownloadVersionBean.class);
+
+                    Message msg = new Message();
+                    msg.obj = dv;
+                    msg.what = 1;
+                    mHandler_updataVersion.sendMessage(msg);//更新设备编号
+                    pb_show = 0;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }
