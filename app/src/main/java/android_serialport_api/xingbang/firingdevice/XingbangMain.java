@@ -63,6 +63,8 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.models.DownloadVersionBean;
+import android_serialport_api.xingbang.models.IsRenewBean;
 import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
@@ -152,6 +154,7 @@ public class XingbangMain extends BaseActivity {
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loading = new Handler();//显示进度条
     private Handler mHandler_updata = new Handler();//更新主页面信息
+    private Handler mHandler_updataVersion = new Handler();//更新版本
     private String TAG = "主页";
 
     private String mOldTitle;   // 原标题
@@ -268,15 +271,7 @@ public class XingbangMain extends BaseActivity {
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
 
-        initFTP();              // 初始化FTP
-        if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
-            //16是改变前的
-            //17是电流11000,电压17V
-            //15是电流11000,电压16V
-//            GetFileName("SC_KT50_Second_MX_Version_16", ".apk");//
-            GetFileName("SC_KT50_Second_MX_Version_14", ".apk");//支持14位扫码版本
-//            GetFileName("XB_KT50_Second_MX_Version_14", ".apk");//支持14位扫码版本
-        }
+//        initFTP();              // 初始化FTP
 
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
 
@@ -293,11 +288,11 @@ public class XingbangMain extends BaseActivity {
     /**
      * 初始化FTP
      */
-    private void initFTP() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        mFTP = new FTP(mIP, mUserName, mPassWord);
-    }
+//    private void initFTP() {
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
+//        mFTP = new FTP(mIP, mUserName, mPassWord);
+//    }
 
 
     /**
@@ -352,6 +347,16 @@ public class XingbangMain extends BaseActivity {
                 tvMainNo.setText(getString(R.string.text_main_sbbh) + equ_no);
 //                CrashReport.setUserId(equ_no);
             }
+            return false;
+        });
+
+        mHandler_updataVersion = new Handler(msg -> {
+            if (msg.what == 1) {
+                DownloadVersionBean path = (DownloadVersionBean) msg.obj;
+                createDialog_download(path);
+            }
+
+
             return false;
         });
     }
@@ -1243,46 +1248,11 @@ public class XingbangMain extends BaseActivity {
         builder.show();
     }
 
-    private void GetFileName(String name, String type) {
-        // 网络判断
-        if (!NetUtils.haveNetWork(this)) {
-            return;
-        }
-        try {
-            // 如果登录成功
-            if (mFTP.openConnect()) {
-                // 获取服务器文件列表
-                mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles("/");
-//                Log.e("下载目录", mList_FtpFileName.toString());//所有文件目录
-                // 获取本地APK文件列表
-                for (int i = 0; i < mList_FtpFileName.size(); i++) {
-                    String fileName = mList_FtpFileName.get(i).getName();
-                    //name  ==  SC_KT50_Second_Version_16
-                    //fileName =SC_KT50_Second_Version_16_32
-                    if (fileName.contains(name)) {
-                        Log.e("下载目录1", fileName);//KT50_Second_Version_26.apk
-                        Log.e(TAG, "name: "+name);
-                        PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-                        Log.e("下载目录2", pi.versionCode+"");//KT50_Second_Version_26.apk
-                        int v= Integer.parseInt(fileName.substring(fileName.length()-6, fileName.indexOf(".apk")));
-                        Log.e("下载目录3",  v+"");
-                        if(v>pi.versionCode){//网络版本大于本机版本就升级
-                            createDialog_download(name);
-                        }
-
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /***
      * 建立对话框
      */
-    public void createDialog_download(String name) {
+    public void createDialog_download(DownloadVersionBean name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.text_updata_sys_1);//"说明"
         builder.setMessage(R.string.text_updata_sys_2);
@@ -1290,7 +1260,7 @@ public class XingbangMain extends BaseActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, DownLoadActivity.class);
-            intent.putExtra("dataSend", name);
+            intent.putExtra("dataSend", name.toString());
 //            intent.putExtra("dataSend", "四川更新2");//11000版本升级
             startActivity(intent);
             dialog.dismiss();
@@ -1299,7 +1269,7 @@ public class XingbangMain extends BaseActivity {
 //            dialog.dismiss();
 //            finish();
 //        });
-        builder.setNegativeButton(R.string.text_updata_sys_4, (dialog, which) -> {
+        builder.setNeutralButton(R.string.text_updata_sys_4, (dialog, which) -> {
             dialog.dismiss();
         });
         builder.create().show();
