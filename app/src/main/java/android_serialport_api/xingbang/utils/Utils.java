@@ -72,7 +72,7 @@ public class Utils {
     public static String httpurl_zbw_port = "1088";
     public static String httpurl_face = "http://125.77.73.145:8180/entweb/WSPROXY.do";
 //    public static String httpurl_xb_upload = "http://182.92.61.78:83/Data/QueryGK";
-    public static String httpurl_xb_upload = "http://apigk.xingbangtech.com:800/Data/QueryGK";
+    public static String httpurl_xb_upload = "http://xbmonitor1.xingbangtech.com:800/HandSet/QueryGK";
     public static String httpurl_xb_erweima = "http://182.92.61.78:83/APK_Pro/";
     public static String httpurl_xb_leveup = "http://test.xingbangtech.com:666/HandSet/isRenew ";
     public static String httpurl_xb_download = "http://test.xingbangtech.com:666/HandSet/DownloadVersion";
