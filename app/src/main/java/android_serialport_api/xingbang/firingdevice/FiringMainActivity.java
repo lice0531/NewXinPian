@@ -1303,13 +1303,14 @@ public class FiringMainActivity extends SerialPortActivity {
                     DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
                     String a = fromCommad.substring(10, 18);
                     String b = "A6240" + a.substring(6, 8) + a.substring(4, 6) + a.substring(2, 4) + a.substring(0, 2);
-                    denator.setDenatorId(b);
-                    denator.setZhu_yscs(fromCommad.substring(18, 22));
-                    denator.setErrorCode("FF");
-                    denator.setErrorName("通信成功");
-                    Application.getDaoSession().update(denator);
-                    checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
-
+                    if(Utils.duibi(denator.getDenatorId().substring(5),b.substring(5))==7){//只有一位不一样的时候更新
+                        denator.setDenatorId(b);
+                        denator.setZhu_yscs(fromCommad.substring(18, 22));
+                        denator.setErrorCode("FF");
+                        denator.setErrorName("通信成功");
+                        Application.getDaoSession().update(denator);
+                        checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
+                    }
                 }
             }
 

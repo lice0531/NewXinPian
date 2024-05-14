@@ -940,6 +940,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {//待测雷管数小于1执行方法
+                                    Thread.sleep(1000);
                                     if(denatorCount>=300||totalerrorNum!=0){
                                         Log.e(TAG, "重发错误雷管: ----------" );
                                         getErrblastQueue();//重新给雷管队列赋值
@@ -947,7 +948,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     }else {
                                         //36指令
                                     int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
-                                    if (a == 1) {
+                                    if (a == 1&&errlist!=null) {
                                         GreenDaoMaster master = new GreenDaoMaster();
                                         errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
                                         sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
@@ -955,7 +956,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
 
-                                        Thread.sleep(1000);
+
                                         Log.e(TAG, "跳转: " );
                                         stage = 4;
                                     }
@@ -1060,9 +1061,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {//待测雷管数小于1执行方法
+                                    Thread.sleep(1000);
                                     //36指令
                                     int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
-                                    if (a == 1) {
+                                    if (a == 1&&errlist!=null) {
                                         GreenDaoMaster master = new GreenDaoMaster();
                                         errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
                                         sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
@@ -1070,7 +1072,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
 
-                                    Thread.sleep(1000);
+
                                     Log.e(TAG, "跳转: " );
                                     stage = 4;
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1223,7 +1225,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
             String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e("是否有未注册雷管", "noReisterFlag: " + noReisterFlag);
-//            Log.e("36指令", "fromCommad: " + fromCommad);
+//            Log.e("36指令", "fromCommad: " + fromCommad);//A621F0027F506
             //C0003607 FF 00000000 0000 DA2D C0
 
             if (!fromCommad.startsWith("00000000", 10)) {
@@ -1231,13 +1233,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                     DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
                     String a = fromCommad.substring(10, 18);
                     String b = "A6240" + a.substring(6, 8) + a.substring(4, 6) + a.substring(2, 4) + a.substring(0, 2);
-                    denator.setDenatorId(b);
-                    denator.setZhu_yscs(fromCommad.substring(18, 22));
-                    denator.setErrorCode("FF");
-                    denator.setErrorName("通信成功");
-                    Application.getDaoSession().update(denator);
-                    checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
-
+                    if(Utils.duibi(denator.getDenatorId().substring(5),b.substring(5))==7){//只有一位不一样的时候更新
+                        denator.setDenatorId(b);
+                        denator.setZhu_yscs(fromCommad.substring(18, 22));
+                        denator.setErrorCode("FF");
+                        denator.setErrorName("通信成功");
+                        Application.getDaoSession().update(denator);
+                        checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
+                    }
                 }
             }
             //C000360700AB4427007A051BE3C0
