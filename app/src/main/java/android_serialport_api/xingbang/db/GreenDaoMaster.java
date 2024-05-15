@@ -393,9 +393,7 @@ public class GreenDaoMaster {
             String duan = null;
             String version = null;
 
-
-
-
+            Log.e("第2-1步", "更正注册列表中雷管的芯片码,授权日期,延时参数,延时: --------------" );
             QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
@@ -457,7 +455,7 @@ public class GreenDaoMaster {
 //                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
                 }
                 getDaoSession().getDenatorBaseinfoDao().update(db);
-
+                Log.e("第2-1步", "结束: --------------" );
                 if (lgBean.getGzmcwxx().equals("0")){
                     db.setErrorName("雷管正常");
                 }else if(lgBean.getGzmcwxx().equals("1")){
@@ -467,7 +465,7 @@ public class GreenDaoMaster {
                 }else if(lgBean.getGzmcwxx().equals("3")){
                     db.setErrorName("申请的雷管UID不存在");
                 }
-
+                Log.e("第3步", "把雷管信息更新到生产数据库中: --------------" );
                 registerDetonator_typeNew(db,yxq);//更新到生产数据库中
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
@@ -1260,6 +1258,7 @@ public class GreenDaoMaster {
         }
         Log.e("插入新生产库中的雷管信息", ": ");
         getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
+        Log.e("第3步", "结束: --------------" );
     }
 
 
