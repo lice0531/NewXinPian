@@ -387,7 +387,6 @@ public class DownOfflineActivity extends BaseActivity {
 
         Log.e("插入数据", "成功");
         db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
-        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**

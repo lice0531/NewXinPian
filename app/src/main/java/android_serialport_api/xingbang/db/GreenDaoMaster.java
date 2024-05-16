@@ -463,7 +463,7 @@ public class GreenDaoMaster {
                 }
 
                 registerDetonator_typeNew(db,yxq);//更新到生产数据库中
-                Utils.saveFile();//把软存中的数据存入磁盘中
+//                Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
         }
@@ -576,8 +576,6 @@ public class GreenDaoMaster {
                     e.printStackTrace();
                 }
 
-
-                Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
         }
