@@ -2382,7 +2382,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         pb_show = 0;
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
-        Utils.saveFile();//把软存中的数据存入磁盘中
+//        Utils.saveFile();//把软存中的数据存入磁盘中
         return reCount;
     }
 

@@ -467,7 +467,6 @@ public class GreenDaoMaster {
                 }
                 Log.e("第3步", "把雷管信息更新到生产数据库中: --------------" );
                 registerDetonator_typeNew(db,yxq);//更新到生产数据库中
-                Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
         }
@@ -1170,9 +1169,6 @@ public class GreenDaoMaster {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-
-                Utils.saveFile();//把软存中的数据存入磁盘中
             }
 
         }

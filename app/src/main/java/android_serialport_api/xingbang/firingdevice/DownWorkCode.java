@@ -942,7 +942,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
 
         }
-        Utils.saveFile();//把软存中的数据存入磁盘中
+
 //        Utils.saveFile_Message();//保存用户信息
         return 0;
     }
@@ -1455,7 +1455,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             tipDlg = null;
         }
         if (db != null) db.close();
-
+        Utils.saveFile();//把软存中的数据存入磁盘中
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -1617,7 +1617,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             values.put("pro_coordxy", d);
             db.update(DatabaseHelper.TABLE_NAME_USER_MESSQGE, values, "id = ?", new String[]{"1"});
 
-            Utils.saveFile_Message();//保存用户信息
         } else {
             show_Toast(checstr);
         }
@@ -1684,7 +1683,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
-            Utils.saveFile();//把软存中的数据存入磁盘中
             reCount++;
         }
         pb_show = 0;
@@ -1949,7 +1947,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         Log.e("注册数据", "成功");
         db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
-        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**
@@ -1975,7 +1972,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         Log.e("插入数据", "成功");
         db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
-        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**
@@ -2000,7 +1996,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         }
         sq.save();
         Log.e("插入数据", "成功");
-        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**
