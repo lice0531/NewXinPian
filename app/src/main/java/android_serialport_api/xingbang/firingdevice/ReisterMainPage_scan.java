@@ -2066,7 +2066,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
 
-        Utils.saveFile();//把软存中的数据存入磁盘中
         return reCount;
     }
 
