@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.custom;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,10 +96,17 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
 
                 if(position!=0){
                     DenatorBaseinfo detonatorBaseInfo2 = list_detonatorBaseInfo.get(position-1);
-                    int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(10));//5340821A00001
-                    int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(10));//5340821A00001
-                    if(b-a==2){
-                        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
+                    int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(12));//5340821A00001
+                    int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(12));//5340821A00001
+                    if(b-a!=1){
+                        Log.e("对比", "detonatorBaseInfo.getShellBlastNo(): "+detonatorBaseInfo.getShellBlastNo() );
+                        Log.e("对比", "detonatorBaseInfo2.getShellBlastNo(): "+detonatorBaseInfo2.getShellBlastNo() );
+                        if((a==9&&b==0)){
+                            holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
+                        }else {
+                            holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
+                        }
+
                     }else {
                         holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
                     }

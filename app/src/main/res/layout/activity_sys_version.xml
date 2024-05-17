@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="M900_PT_HF_V1.3.1C_240416"
+            android:text="M900_PT_HF_V1.3.1C_240517"
             android:textSize="20sp"
             />
     </LinearLayout>
