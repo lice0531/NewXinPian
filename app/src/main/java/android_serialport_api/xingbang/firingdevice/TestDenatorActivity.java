@@ -952,9 +952,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     } else {
                                         //36指令
                                         int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
-                                        if (a == 1 && errlist != null) {
-                                            GreenDaoMaster master = new GreenDaoMaster();
-                                            errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                        GreenDaoMaster master = new GreenDaoMaster();
+                                        errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                        if (a == 1 && errlist != null&& errlist.size()>0) {
                                             sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
                                         } else {
                                             sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测

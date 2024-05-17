@@ -177,7 +177,10 @@ public class GreenDaoMaster {
      */
     public List<DenatorBaseinfo> queryErrLeiGuan(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF")).where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
+        result = result.where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
+                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("F1"))
+                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("F2"))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
         return result.list();
     }
     public List<DenatorBaseinfo> queryErrLeiGuan() {
