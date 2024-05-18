@@ -71,11 +71,10 @@ public class Utils {
     public static String httpurl_zbw = "14.23.69.2";
     public static String httpurl_zbw_port = "1088";
     public static String httpurl_face = "http://125.77.73.145:8180/entweb/WSPROXY.do";
-//    public static String httpurl_xb_upload = "http://182.92.61.78:83/Data/QueryGK";
     public static String httpurl_xb_upload = "http://xbmonitor1.xingbangtech.com:800/HandSet/QueryGK";
-    public static String httpurl_xb_erweima = "http://182.92.61.78:83/APK_Pro/";
-    public static String httpurl_xb_leveup = "http://test.xingbangtech.com:666/HandSet/isRenew ";
-    public static String httpurl_xb_download = "http://test.xingbangtech.com:666/HandSet/DownloadVersion";
+    public static String httpurl_xb_erweima = "http://xbmonitor1.xingbangtech.com:800/File/Ciphertext/";
+    public static String httpurl_xb_leveup = "http://xbmonitor1.xingbangtech.com:800/HandSet/isRenew ";
+    public static String httpurl_xb_download = "http://xbmonitor1.xingbangtech.com:800/HandSet/DownloadVersion";
 
     private static SQLiteDatabase db;
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',

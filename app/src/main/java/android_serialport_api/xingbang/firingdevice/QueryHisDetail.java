@@ -559,8 +559,8 @@ public class QueryHisDetail extends BaseActivity {
                 String[] selectionArgs = {blastdate};//选择条件参数,会把选择条件中的？替换成这个数组中的值
                 cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
             } else {
-                String selection = "blastdate = ?and errorCode = ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
-                String[] selectionArgs = {blastdate, "FF"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+                String selection = "blastdate = ?and errorCode like ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
+                String[] selectionArgs = {blastdate, "F%"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
                 cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
             }
         }
@@ -923,7 +923,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version",  "KT50_3.25_MX_240513_14");//软件版本
+            object.put("rj_version",  "KT50_3.25_MX_240518_14");//软件版本
             if(qbxm_name!=null&&qbxm_name.length()>1){
                 object.put("name", qbxm_name);//项目名称
             }else {
