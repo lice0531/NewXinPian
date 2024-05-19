@@ -312,6 +312,24 @@ public class ThreeFiringCmd {
 		else return -1;
 	}
 	/***
+	 * 处理 在网读ID检测
+	 * @param addr
+	 * @param from
+	 * @return
+	 */
+	public static int  getCheckFromXbCommon_36(String addr ,String from){
+
+		String cmd = DefCommand.decodeCommand(from);
+		if("-1".equals(cmd)||"-2".equals(cmd)){
+			return -1;
+		}
+		if(cmd==null||cmd.trim().length()<1)return -1;
+
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"07";
+		if(cmd.indexOf(command)>=0)return 0;
+		else return -1;
+	}
+	/***
 	 * 处理在网读ID检测返回值
 	 * @param addr
 	 * @param from
@@ -370,6 +388,36 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_3_DETONATE_8+"00";
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
+	}
+
+	/***
+	 *在网读ID检测
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] send_36(String addr,String yscs){
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"02"+yscs;//36
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 处理在网读ID检测返回值
+	 * @param addr
+	 * @param from
+	 * @return
+	 */
+	public static String jiexi_36(String addr , String from){
+
+		int iscorrent =getCheckFromXbCommon_36(addr,from);//判断命令是否完整
+		if(iscorrent==0){
+			String cmd = DefCommand.decodeCommand(from);
+			//jiexi_36--cmd: 003607FF000000000000
+			Log.e("解析", "jiexi_36--cmd: "+cmd );
+			return cmd.substring(6,8);
+		}else{
+			return null;
+		}
+
 	}
 	
 }
