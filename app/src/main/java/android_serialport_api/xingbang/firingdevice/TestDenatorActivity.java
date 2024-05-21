@@ -301,16 +301,16 @@ public class TestDenatorActivity extends SerialPortActivity {
         });
         checkHandler = new Handler(msg -> {
             String errNumStr = ll_firing_errorNum_4.getText().toString();
-//            String tureNumStr = ll_firing_tureNum.getText().toString();
-//            if (tureNumStr.trim().length() < 1) {
-//                tureNumStr = "0";
-//            }
+            String tureNumStr = ll_firing_tureNum.getText().toString();
+            if (tureNumStr.trim().length() < 1) {
+                tureNumStr = "0";
+            }
             ll_firing_errorNum_4.setText("" + ((Integer.parseInt(errNumStr) - 1)));
             totalerrorNum = Integer.parseInt(errNumStr) - 1;
             ll_firing_errorNum_4.setTextColor(Color.GREEN);
 
-//            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
-//            totaltureNum = Integer.parseInt(tureNumStr) + 1;
+            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            totaltureNum = Integer.parseInt(tureNumStr) + 1;
             return false;
         });
     }
@@ -903,9 +903,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
 
-                                    Thread.sleep(500);
+                                    Thread.sleep(1000);
                                     stage = 4;
-
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
                                 }

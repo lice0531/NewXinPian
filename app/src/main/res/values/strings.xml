@@ -736,7 +736,7 @@
     <string name="text_fir_dialog30">雷管未授权,请先进行项目下载更新雷管信息后再进行操作</string>
     <string name="text_alert_tip_wsq">未授权提醒</string>
     <string name="text_alert_tip_wsqtx">有未授权的雷管,请进行授权后再进行起爆!</string>
-    <string name="text_alert_tip_fhck">返回查看</string>
+    <string name="text_alert_tip_fhck">返回</string>
     <string name="text_line_tip18">请先进行扫码,再进行单发注册</string>
     <string name="text_fir_czcwlg">存在错误雷管，是否强制起爆?</string>
     <string name="text_fir_jxqb">继续起爆</string>

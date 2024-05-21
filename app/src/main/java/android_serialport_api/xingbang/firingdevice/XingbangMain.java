@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -54,6 +55,8 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.custom.ErrListAdapter;
+import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.UserMain;
@@ -185,6 +188,8 @@ public class XingbangMain extends BaseActivity {
     private String version_cloud;
     private String Yanzheng_sq = "";//是否验雷管已经授权
     private int Yanzheng_sq_size = 0;
+    private List<DenatorBaseinfo> list_shou;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -277,13 +282,14 @@ public class XingbangMain extends BaseActivity {
 
         getleveup();
     }
+
     private void queryBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_shou= master.queryLeiGuan(format1,mRegion);
-        Yanzheng_sq_size=list_shou.size();
-        Log.e(TAG, "超过授权日期list_shou: "+list_shou.size() );
+        list_shou = master.queryLeiGuan(format1, mRegion);
+        Yanzheng_sq_size = list_shou.size();
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
     }
     /**
      * 初始化FTP
@@ -551,10 +557,10 @@ public class XingbangMain extends BaseActivity {
                 return;
             }
             GreenDaoMaster master = new GreenDaoMaster();
-            List<UserMain> userMainList=master.queryUser(a);
-            if(userMainList.size()==0){
+            List<UserMain> userMainList = master.queryUser(a);
+            if (userMainList.size() == 0) {
                 show_Toast(getString(R.string.text_main_yhmcw));
-            }else {
+            } else {
                 if (b.equals(userMainList.get(0).getUpassword())) {
                     toFiring();
                     dialog.dismiss();
@@ -701,8 +707,8 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_test://测试
                 queryBeian();
                 //验证是否授权
-                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
-                    createDialog();
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    initDialog_shouquan();
                     return;
                 }
                 //3分钟验证
@@ -737,8 +743,8 @@ public class XingbangMain extends BaseActivity {
             case R.id.btn_main_blast://起爆
                 queryBeian();
                 //验证是否授权
-                if (Yanzheng_sq.equals("验证")&&Yanzheng_sq_size>0) {
-                    createDialog();
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    initDialog_shouquan();
                     return;
                 }
 
@@ -756,10 +762,10 @@ public class XingbangMain extends BaseActivity {
                 }
 
                 GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
-                List<UserMain> userMainList=master.queryAllUser();
-                if(userMainList.size()!=0){
+                List<UserMain> userMainList = master.queryAllUser();
+                if (userMainList.size() != 0) {
                     loginToFiring();
-                }else {
+                } else {
                     toFiring();
                 }
 
@@ -823,7 +829,7 @@ public class XingbangMain extends BaseActivity {
                     i = 1;
                     continue;
                 }
-                String a[] = line.replace("null","").split(",", -1);
+                String a[] = line.replace("null", "").split(",", -1);
 //          Log.e("写入文件数据",
 //          "序号：" + a[0] + ",孔号：" + a[1] + ",管壳码：" + a[2] + ",延期：" + a[3] + ",状态：" + a[4]
 //          + ",错误：" + a[5] + ",授权期限：" + a[6] + ",序列号：" + a[7] + ",备注：" + a[8]);
@@ -914,27 +920,46 @@ public class XingbangMain extends BaseActivity {
     /***
      * 建立对话框
      */
-    public void createDialog() {
+    private void initDialog_shouquan() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View getlistview = inflater.inflate(R.layout.firing_error_shouquan_listview, null);
+        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+        llview.setVisibility(View.GONE);
+        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+        text_tip.setText(R.string.text_alert_tip_wsqtx);
+        text_tip.setVisibility(View.VISIBLE);
+        // 给ListView绑定内容
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        errlistview.setVisibility(View.GONE);
+        ErrShouQuanListAdapter mAdapter = new ErrShouQuanListAdapter(this, list_shou, R.layout.firing_error_item_shouquan);
+        errlistview.setAdapter(mAdapter);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.text_alert_tip_wsq);//"说明"
-        builder.setMessage(R.string.text_alert_tip_wsqtx);
-//        builder.setPositiveButton("继续起爆", (dialog, which) -> {
-//            String str5 = "起爆";
-//            if (Yanzheng.equals("验证")) {
-//                //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-//                Intent intent5 = new Intent(XingbangMain.this, VerificationActivity.class);//验证爆破范围页面
-//                intent5.putExtra("dataSend", str5);
-//                startActivityForResult(intent5, 1);
-//            } else {
-//                Intent intent5 = new Intent(XingbangMain.this, FiringMainActivity.class);//金建华
-//                intent5.putExtra("dataSend", str5);
-//                startActivityForResult(intent5, 1);
-//            }
-//            dialog.dismiss();
+        builder.setTitle(R.string.text_alert_tip_wsq);//"错误雷管列表"
+        builder.setView(getlistview);
+        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+
+
+        });
+        builder.setNeutralButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+//            stopXunHuan();
+            llview.setVisibility(View.VISIBLE);
+            text_tip.setVisibility(View.GONE);
+            errlistview.setVisibility(View.VISIBLE);
+            dialogOn(dialog);
+        });
+//        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+////            stopXunHuan();
+//            llview.setVisibility(View.VISIBLE);
+//            text_tip.setVisibility(View.GONE);
+//            errlistview.setVisibility(View.VISIBLE);
+//            dialogOn(dialog);
 //        });
-        builder.setNegativeButton(R.string.text_alert_tip_fhck, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
+
 
     private long queryTotal() {
         return getDaoSession().getDenatorBaseinfoDao().count();
@@ -1111,7 +1136,7 @@ public class XingbangMain extends BaseActivity {
         Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n"+getString(R.string.text_fir_dialog1));
+        mOffTextView.setText(tip + "\n" + getString(R.string.text_fir_dialog1));
         mDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.text_fir_dialog2)
                 .setCancelable(false)
@@ -1149,7 +1174,7 @@ public class XingbangMain extends BaseActivity {
         mOffHandler = new Handler(msg -> {
             if (msg.what > 0) {
                 //动态显示倒计时
-                mOffTextView.setText(tip + "\n"+getString(R.string.text_fir_dialog1) + msg.what);
+                mOffTextView.setText(tip + "\n" + getString(R.string.text_fir_dialog1) + msg.what);
             } else {
                 //倒计时结束自动关闭
                 if (mDialog != null) {
@@ -1282,7 +1307,7 @@ public class XingbangMain extends BaseActivity {
 
         try {
             object.put("sbbh", equ_no);//设备编号
-            object.put("rj_version", "KT50_3.25_MX_240518_14");//软件版本
+            object.put("rj_version", "KT50_3.25_MX_240520_14");//软件版本
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1330,7 +1355,6 @@ public class XingbangMain extends BaseActivity {
     }
 
 
-
     private void getApp() {
         String url = Utils.httpurl_xb_download;//公司服务器上传
         OkHttpClient client = new OkHttpClient();
@@ -1341,7 +1365,7 @@ public class XingbangMain extends BaseActivity {
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("sbbh", equ_no);//设备编号
             object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
-            object.put("version", "KT50_3.25_MX_240518_14");//版本号版本 v3.22
+            object.put("version", "KT50_3.25_MX_240520_14");//版本号版本 v3.22
 //            object.put("version", "v3.22");//版本号版本 测试数据
             object.put("type", "1");//软件=1 硬件=2
             object.put("is_force", 0);//是否强制升级
@@ -1380,7 +1404,7 @@ public class XingbangMain extends BaseActivity {
                     Log.e(TAG, "onResponse: " + res.toString());
                     Gson gson = new Gson();
                     DownloadVersionBean dv = gson.fromJson(res, DownloadVersionBean.class);
-                    if(dv.getStatus().equals("200")){
+                    if (dv.getStatus().equals("200")) {
                         Message msg = new Message();
                         msg.obj = dv;
                         msg.what = 1;

@@ -369,7 +369,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("自检发送:" + str);
+                Utils.writeLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

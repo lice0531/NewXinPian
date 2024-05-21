@@ -145,7 +145,7 @@ public class SystemVersionActivity extends SerialPortActivity {
             try {
 //					mOutputStream.write(mBuffer);
                 String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("Reister sendTo:" + str);
+                Utils.writeLog("->:" + str);
                 Log.e("发送命令", "sendCmd: " + str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

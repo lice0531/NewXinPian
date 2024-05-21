@@ -211,6 +211,7 @@ public class FiringMainActivity extends SerialPortActivity {
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
     private int ic_cankao = 19;//雷管参考电流
+    private int ic_cankao_gaoya = 30;//雷管参考电流
 
     private boolean version_1 = true;
     private boolean version_2 = true;
@@ -953,6 +954,12 @@ public class FiringMainActivity extends SerialPortActivity {
         }
 
         denatorCount = allBlastQu.size();
+//        if(denatorlist1.size()!=0&&denatorlist2.size()!=0){//低压是21的1.5倍,高压是( 慢的数量*30 + 快的数量*60  除以总数量)的1.5倍
+//            ic_cankao_gaoya=(denatorlist2.size()*30+denatorlist1.size()*60)/(denatorlist1.size()+denatorlist2.size());
+//        }else {
+//            ic_cankao_gaoya=30;
+//        }
+
 //        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
         Log.e(TAG, "denatorlist1: " + denatorlist1.size());
 //        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
