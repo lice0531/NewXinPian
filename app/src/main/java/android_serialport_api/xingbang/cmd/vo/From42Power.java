@@ -18,10 +18,10 @@ public class From42Power {
 			return "";
 		}
 		if("01".equals(getPowerStatus())){
-			return "5.5V电源异常";
+			return "低压异常";
 		}
 		if("02".equals(getPowerStatus())){
-			return "12V电源异常";
+			return "高压异常";
 		}
 		if("03".equals(getPowerStatus())){
 			return "5.5V，12V电源异常";

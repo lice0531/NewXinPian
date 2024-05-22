@@ -547,6 +547,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
 
+                    if(busInfo.getPowerStatus().equals("01")){
+
+                    }
+
 //                    if (displayIc < denatorCount * 12 * 0.25 && firstCount < Preparation_time * 0.25) {//总线电流小于参考值一半,可能出现断路
 //                        ll_firing_IC_4.setTextColor(Color.RED);
 //                        show_Toast("当前电流过小,请检查线路是否出现断路");
