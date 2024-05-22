@@ -548,7 +548,28 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }
 
                     if(busInfo.getPowerStatus().equals("01")){
-
+                        ll_firing_IC_4.setTextColor(Color.RED);
+                        show_Toast("当前线路低压异常,请检查线路是否正确连接!");
+                        stage = 5;
+                        Utils.writeRecord("电流状态低压异常");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                        return;
+                    }
+                    if(busInfo.getPowerStatus().equals("02")){
+                        ll_firing_IC_4.setTextColor(Color.RED);
+                        show_Toast("当前线路高压异常,请检查线路是否正确连接!");
+                        stage = 5;
+                        Utils.writeRecord("电流状态高压异常");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                        return;
+                    }
+                    if(busInfo.getPowerStatus().equals("04")){
+                        ll_firing_IC_4.setTextColor(Color.RED);
+                        show_Toast("当前线路短路,请检查线路是否正确连接!");
+                        stage = 5;
+                        Utils.writeRecord("电流状态短路");
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                        return;
                     }
 
 //                    if (displayIc < denatorCount * 12 * 0.25 && firstCount < Preparation_time * 0.25) {//总线电流小于参考值一半,可能出现断路
