@@ -248,8 +248,8 @@ public class SetDelayTime extends BaseActivity {
                             cursor5.close();
                         }
                         GreenDaoMaster master = new GreenDaoMaster();
-                        DenatorBaseinfo db_start =master.querylgForXh(startNoTxt.getText().toString());
-                        DenatorBaseinfo db_end =master.querylgForXh(endNoTxt.getText().toString());
+                        DenatorBaseinfo db_start =master.querylgForXh(startNoTxt.getText().toString(),mRegion);
+                        DenatorBaseinfo db_end =master.querylgForXh(endNoTxt.getText().toString(),mRegion);
                         int a = new GreenDaoMaster().querylgNum(db_start.getDuanNo(), db_start.getDuan(), mRegion);
                         int b = new GreenDaoMaster().querylgNum(db_end.getDuanNo(), db_end.getDuan(), mRegion);
                         Log.e("同孔", "a: "+a);
@@ -257,6 +257,23 @@ public class SetDelayTime extends BaseActivity {
                         Log.e("同孔", "list_duanNo: "+list_duanNo);
                         if(hasDuplicates(list_duanNo)||(a>1||b>1)){
                             show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
+                            return;
+                        }
+
+                        //同孔不许改延时
+                        String sql2 = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" order by blastserial";//+" order by htbh "
+                        Log.e("语句", "sql: "+sql );
+                        List<String> list_fanzhuan = new ArrayList<>();//
+                        Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
+                        if (cursor6 != null) {
+                            while (cursor6.moveToNext()) {
+                                String fanzhuan = cursor6.getString(0);
+                                list_fanzhuan.add(fanzhuan);
+                            }
+                            cursor6.close();
+                        }
+                        if(list_fanzhuan.size()>1){
+                            show_Toast("批量修改延时的雷管中有已翻转的雷管,请翻转后再重新修改");
                             return;
                         }
 

@@ -1360,7 +1360,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan1.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n1", n1);
+                MmkvUtils.savecode(mRegion+"n1", n1);
                 break;
             case 2:
                 if (n2 == 1) {
@@ -1368,7 +1368,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n2", n2);
+                MmkvUtils.savecode(mRegion+"n2", n2);
                 break;
             case 3:
                 if (n3 == 1) {
@@ -1376,7 +1376,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan3.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n3", n3);
+                MmkvUtils.savecode(mRegion+"n3", n3);
                 break;
             case 4:
                 if (n4 == 1) {
@@ -1384,7 +1384,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan4.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n4", n4);
+                MmkvUtils.savecode(mRegion+"n4", n4);
                 break;
             case 5:
                 if (n5 == 1) {
@@ -1392,7 +1392,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan5.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n5", n5);
+                MmkvUtils.savecode(mRegion+"n5", n5);
                 break;
             case 6:
                 if (n6 == 1) {
@@ -1400,7 +1400,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan6.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n6", n6);
+                MmkvUtils.savecode(mRegion+"n6", n6);
                 break;
             case 7:
                 if (n7 == 1) {
@@ -1408,7 +1408,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan7.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n7", n7);
+                MmkvUtils.savecode(mRegion+"n7", n7);
                 break;
             case 8:
                 if (n8 == 1) {
@@ -1416,7 +1416,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan8.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n8", n8);
+                MmkvUtils.savecode(mRegion+"n8", n8);
                 break;
             case 9:
                 if (n9 == 1) {
@@ -1424,7 +1424,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan9.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n9", n9);
+                MmkvUtils.savecode(mRegion+"n9", n9);
                 break;
             case 10:
                 if (n10 == 1) {
@@ -1432,7 +1432,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan10.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n10", n10);
+                MmkvUtils.savecode(mRegion+"n10", n10);
                 break;
             case 11:
                 if (n11 == 1) {
@@ -1440,7 +1440,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan11.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n11", n11);
+                MmkvUtils.savecode(mRegion+"n11", n11);
                 break;
             case 12:
                 if (n12 == 1) {
@@ -1448,7 +1448,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan12.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n12", n12);
+                MmkvUtils.savecode(mRegion+"n12", n12);
                 break;
             case 13:
                 if (n13 == 1) {
@@ -1456,7 +1456,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan13.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n13", n13);
+                MmkvUtils.savecode(mRegion+"n13", n13);
                 break;
             case 14:
                 if (n14 == 1) {
@@ -1464,7 +1464,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan14.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n14", n14);
+                MmkvUtils.savecode(mRegion+"n14", n14);
                 break;
             case 15:
                 if (n15 == 1) {
@@ -1472,7 +1472,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan15.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n15", n15);
+                MmkvUtils.savecode(mRegion+"n15", n15);
                 break;
             case 16:
                 if (n16 == 1) {
@@ -1480,7 +1480,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan16.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n16", n16);
+                MmkvUtils.savecode(mRegion+"n16", n16);
                 break;
             case 17:
                 if (n17 == 1) {
@@ -1488,7 +1488,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan17.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n17", n17);
+                MmkvUtils.savecode(mRegion+"n17", n17);
                 break;
             case 18:
                 if (n18 == 1) {
@@ -1496,7 +1496,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan18.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n18", n18);
+                MmkvUtils.savecode(mRegion+"n18", n18);
                 break;
             case 19:
                 if (n19 == 1) {
@@ -1504,7 +1504,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan19.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n19", n19);
+                MmkvUtils.savecode(mRegion+"n19", n19);
                 break;
             case 20:
                 if (n20 == 1) {
@@ -1512,7 +1512,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan20.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n20", n20);
+                MmkvUtils.savecode(mRegion+"n20", n20);
                 break;
             case 21:
                 if (n21 == 1) {
@@ -1520,7 +1520,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan21.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n21", n21);
+                MmkvUtils.savecode(mRegion+"n21", n21);
                 break;
             case 22:
                 if (n22 == 1) {
@@ -1528,7 +1528,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan22.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n22", n22);
+                MmkvUtils.savecode(mRegion+"n22", n22);
                 break;
             case 23:
                 if (n23 == 1) {
@@ -1536,7 +1536,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan23.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n23", n23);
+                MmkvUtils.savecode(mRegion+"n23", n23);
                 break;
             case 24:
                 if (n24 == 1) {
@@ -1544,7 +1544,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan24.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n24", n24);
+                MmkvUtils.savecode(mRegion+"n24", n24);
                 break;
             case 25:
                 if (n25 == 1) {
@@ -1552,7 +1552,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan25.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n25", n25);
+                MmkvUtils.savecode(mRegion+"n25", n25);
                 break;
             case 26:
                 if (n26 == 1) {
@@ -1560,7 +1560,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan26.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n26", n26);
+                MmkvUtils.savecode(mRegion+"n26", n26);
                 break;
             case 27:
                 if (n27 == 1) {
@@ -1568,7 +1568,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan27.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n27", n27);
+                MmkvUtils.savecode(mRegion+"n27", n27);
                 break;
             case 28:
                 if (n28 == 1) {
@@ -1576,7 +1576,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan28.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n28", n28);
+                MmkvUtils.savecode(mRegion+"n28", n28);
                 break;
             case 29:
                 if (n29 == 1) {
@@ -1584,7 +1584,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan29.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n29", n29);
+                MmkvUtils.savecode(mRegion+"n29", n29);
                 break;
             case 30:
                 if (n30 == 1) {
@@ -1592,7 +1592,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan30.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n30", n30);
+                MmkvUtils.savecode(mRegion+"n30", n30);
                 break;
             case 31:
                 if (n31 == 1) {
@@ -1600,7 +1600,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan31.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n31", n31);
+                MmkvUtils.savecode(mRegion+"n31", n31);
                 break;
             case 32:
                 if (n32 == 1) {
@@ -1608,7 +1608,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan32.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n32", n32);
+                MmkvUtils.savecode(mRegion+"n32", n32);
                 break;
             case 33:
                 if (n33 == 1) {
@@ -1616,7 +1616,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan33.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n33", n33);
+                MmkvUtils.savecode(mRegion+"n33", n33);
                 break;
             case 34:
                 if (n34 == 1) {
@@ -1624,7 +1624,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan34.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n34", n34);
+                MmkvUtils.savecode(mRegion+"n34", n34);
                 break;
             case 35:
                 if (n35 == 1) {
@@ -1632,7 +1632,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan35.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n35", n35);
+                MmkvUtils.savecode(mRegion+"n35", n35);
                 break;
             case 36:
                 if (n36 == 1) {
@@ -1640,7 +1640,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan36.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n36", n36);
+                MmkvUtils.savecode(mRegion+"n36", n36);
                 break;
             case 37:
                 if (n37 == 1) {
@@ -1648,7 +1648,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan37.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n37", n37);
+                MmkvUtils.savecode(mRegion+"n37", n37);
                 break;
             case 38:
                 if (n38 == 1) {
@@ -1656,7 +1656,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan38.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n38", n38);
+                MmkvUtils.savecode(mRegion+"n38", n38);
                 break;
             case 39:
                 if (n39 == 1) {
@@ -1664,7 +1664,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan39.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n39", n39);
+                MmkvUtils.savecode(mRegion+"n39", n39);
                 break;
             case 40:
                 if (n40 == 1) {
@@ -1672,52 +1672,52 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan40.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode("n40", n40);
+                MmkvUtils.savecode(mRegion+"n40", n40);
                 break;
         }
     }
 
     private void setFan() {
-        n1 = (int) MmkvUtils.getcode("n1", 0);
-        n2 = (int) MmkvUtils.getcode("n2", 0);
-        n3 = (int) MmkvUtils.getcode("n3", 0);
-        n4 = (int) MmkvUtils.getcode("n4", 0);
-        n5 = (int) MmkvUtils.getcode("n5", 0);
-        n6 = (int) MmkvUtils.getcode("n6", 0);
-        n7 = (int) MmkvUtils.getcode("n7", 0);
-        n8 = (int) MmkvUtils.getcode("n8", 0);
-        n9 = (int) MmkvUtils.getcode("n9", 0);
-        n10 = (int) MmkvUtils.getcode("n10", 0);
-        n11 = (int) MmkvUtils.getcode("n11", 0);
-        n12 = (int) MmkvUtils.getcode("n12", 0);
-        n13 = (int) MmkvUtils.getcode("n13", 0);
-        n14 = (int) MmkvUtils.getcode("n14", 0);
-        n15 = (int) MmkvUtils.getcode("n15", 0);
-        n16 = (int) MmkvUtils.getcode("n16", 0);
-        n17 = (int) MmkvUtils.getcode("n17", 0);
-        n18 = (int) MmkvUtils.getcode("n18", 0);
-        n19 = (int) MmkvUtils.getcode("n19", 0);
-        n20 = (int) MmkvUtils.getcode("n20", 0);
-        n21 = (int) MmkvUtils.getcode("n21", 0);
-        n22 = (int) MmkvUtils.getcode("n22", 0);
-        n23 = (int) MmkvUtils.getcode("n23", 0);
-        n24 = (int) MmkvUtils.getcode("n24", 0);
-        n25 = (int) MmkvUtils.getcode("n25", 0);
-        n26 = (int) MmkvUtils.getcode("n26", 0);
-        n27 = (int) MmkvUtils.getcode("n27", 0);
-        n28 = (int) MmkvUtils.getcode("n28", 0);
-        n29 = (int) MmkvUtils.getcode("n29", 0);
-        n30 = (int) MmkvUtils.getcode("n30", 0);
-        n31 = (int) MmkvUtils.getcode("n31", 0);
-        n32 = (int) MmkvUtils.getcode("n32", 0);
-        n33 = (int) MmkvUtils.getcode("n33", 0);
-        n34 = (int) MmkvUtils.getcode("n34", 0);
-        n35 = (int) MmkvUtils.getcode("n35", 0);
-        n36 = (int) MmkvUtils.getcode("n36", 0);
-        n37 = (int) MmkvUtils.getcode("n37", 0);
-        n38 = (int) MmkvUtils.getcode("n38", 0);
-        n39 = (int) MmkvUtils.getcode("n39", 0);
-        n40 = (int) MmkvUtils.getcode("n40", 0);
+        n1 = (int) MmkvUtils.getcode(mRegion+"n1", 0);
+        n2 = (int) MmkvUtils.getcode(mRegion+"n2", 0);
+        n3 = (int) MmkvUtils.getcode(mRegion+"n3", 0);
+        n4 = (int) MmkvUtils.getcode(mRegion+"n4", 0);
+        n5 = (int) MmkvUtils.getcode(mRegion+"n5", 0);
+        n6 = (int) MmkvUtils.getcode(mRegion+"n6", 0);
+        n7 = (int) MmkvUtils.getcode(mRegion+"n7", 0);
+        n8 = (int) MmkvUtils.getcode(mRegion+"n8", 0);
+        n9 = (int) MmkvUtils.getcode(mRegion+"n9", 0);
+        n10 = (int) MmkvUtils.getcode(mRegion+"n10", 0);
+        n11 = (int) MmkvUtils.getcode(mRegion+"n11", 0);
+        n12 = (int) MmkvUtils.getcode(mRegion+"n12", 0);
+        n13 = (int) MmkvUtils.getcode(mRegion+"n13", 0);
+        n14 = (int) MmkvUtils.getcode(mRegion+"n14", 0);
+        n15 = (int) MmkvUtils.getcode(mRegion+"n15", 0);
+        n16 = (int) MmkvUtils.getcode(mRegion+"n16", 0);
+        n17 = (int) MmkvUtils.getcode(mRegion+"n17", 0);
+        n18 = (int) MmkvUtils.getcode(mRegion+"n18", 0);
+        n19 = (int) MmkvUtils.getcode(mRegion+"n19", 0);
+        n20 = (int) MmkvUtils.getcode(mRegion+"n20", 0);
+        n21 = (int) MmkvUtils.getcode(mRegion+"n21", 0);
+        n22 = (int) MmkvUtils.getcode(mRegion+"n22", 0);
+        n23 = (int) MmkvUtils.getcode(mRegion+"n23", 0);
+        n24 = (int) MmkvUtils.getcode(mRegion+"n24", 0);
+        n25 = (int) MmkvUtils.getcode(mRegion+"n25", 0);
+        n26 = (int) MmkvUtils.getcode(mRegion+"n26", 0);
+        n27 = (int) MmkvUtils.getcode(mRegion+"n27", 0);
+        n28 = (int) MmkvUtils.getcode(mRegion+"n28", 0);
+        n29 = (int) MmkvUtils.getcode(mRegion+"n29", 0);
+        n30 = (int) MmkvUtils.getcode(mRegion+"n30", 0);
+        n31 = (int) MmkvUtils.getcode(mRegion+"n31", 0);
+        n32 = (int) MmkvUtils.getcode(mRegion+"n32", 0);
+        n33 = (int) MmkvUtils.getcode(mRegion+"n33", 0);
+        n34 = (int) MmkvUtils.getcode(mRegion+"n34", 0);
+        n35 = (int) MmkvUtils.getcode(mRegion+"n35", 0);
+        n36 = (int) MmkvUtils.getcode(mRegion+"n36", 0);
+        n37 = (int) MmkvUtils.getcode(mRegion+"n37", 0);
+        n38 = (int) MmkvUtils.getcode(mRegion+"n38", 0);
+        n39 = (int) MmkvUtils.getcode(mRegion+"n39", 0);
+        n40 = (int) MmkvUtils.getcode(mRegion+"n40", 0);
         for (int i = 1; i < 21; i++) {
             setBtnColor(i);
         }

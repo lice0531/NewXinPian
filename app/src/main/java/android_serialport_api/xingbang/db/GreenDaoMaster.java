@@ -107,8 +107,11 @@ public class GreenDaoMaster {
      *
      * @return
      */
-    public DenatorBaseinfo querylgForXh(String xuhao) {
-        return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.Blastserial.eq(xuhao)).unique();
+    public DenatorBaseinfo querylgForXh(String xuhao,String piece) {
+        return mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Blastserial.eq(xuhao))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .unique();
     }
     /**
      * 查询X区域,X段最大序号雷管
