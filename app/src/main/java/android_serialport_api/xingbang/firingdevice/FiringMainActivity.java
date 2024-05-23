@@ -491,8 +491,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("电流状态低压异常");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("总线电流低压异常")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前线路低压异常,,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle("总线低压异常")//设置对话框的标题//
+                        .setMessage("当前线路低压异常,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog12, which) -> {
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
@@ -510,8 +510,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("电流状态高压异常");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("总线电流高压异常")//设置对话框的标题//"成功起爆"
-                        .setMessage("电流状态高压异常,,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle("总线高压异常")//设置对话框的标题//"成功起爆"
+                        .setMessage("电流状态高压异常,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog12, which) -> {
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
@@ -530,7 +530,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线存在短路")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前线路短路,,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setMessage("当前线路短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog12, which) -> {
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
