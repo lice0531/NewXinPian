@@ -261,7 +261,7 @@ public class SetDelayTime extends BaseActivity {
                         }
 
                         //同孔不许改延时
-                        String sql2 = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" order by blastserial";//+" order by htbh "
+                        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
                         Log.e("语句", "sql: "+sql );
                         List<String> list_fanzhuan = new ArrayList<>();//
                         Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
