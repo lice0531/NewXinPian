@@ -210,7 +210,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int ic_cankao = 19;//雷管参考电流
+    private int ic_cankao = 21;//雷管参考电流
     private int ic_cankao_gaoya = 30;//雷管参考电流
 
     private boolean version_1 = true;
@@ -507,11 +507,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * ic_cankao * 2) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
+                } else if (displayIc > (denatorCount * ic_cankao * 1.5) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc > (denatorCount * ic_cankao * 2) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > (ic_cankao_gaoya* 1.5) && displayIc > 10 && stage == 6) {// "高压阶段电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
@@ -954,11 +954,11 @@ public class FiringMainActivity extends SerialPortActivity {
         }
 
         denatorCount = allBlastQu.size();
-//        if(denatorlist1.size()!=0&&denatorlist2.size()!=0){//低压是21的1.5倍,高压是( 慢的数量*30 + 快的数量*60  除以总数量)的1.5倍
-//            ic_cankao_gaoya=(denatorlist2.size()*30+denatorlist1.size()*60)/(denatorlist1.size()+denatorlist2.size());
-//        }else {
-//            ic_cankao_gaoya=30;
-//        }
+        if(denatorlist1.size()!=0&&denatorlist2.size()!=0){//低压是21的1.5倍,高压是( 慢的数量*30 + 快的数量*60  除以总数量)的1.5倍
+            ic_cankao_gaoya=(denatorlist2.size()*30+denatorlist1.size()*60);
+        }else {
+            ic_cankao_gaoya=30*denatorCount;
+        }
 
 //        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
         Log.e(TAG, "denatorlist1: " + denatorlist1.size());
@@ -986,7 +986,7 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     public int updataState(String id) {
         Log.e("更新起爆状态", "id: " + id);
-        int i = getHisDetailList(hisInsertFireDate);
+        int i = getHisDetailList(hisInsertFireDate);//起爆雷管的数量
         ContentValues values = new ContentValues();
         values.put("qbzt", "已起爆");
         values.put("blastdate", hisInsertFireDate);
@@ -1021,7 +1021,7 @@ public class FiringMainActivity extends SerialPortActivity {
         //如果总数大于60,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
-        if (hisTotalNum > 60) {
+        if (hisTotalNum > 100) {
             String time = loadHisMainData();
             Message message = new Message();
             message.obj = time;
@@ -1130,7 +1130,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     /**
-     * 获取起爆历史详细信息
+     * 获取起爆历史详细信息里面该日期的雷管数量
      */
     private int getHisDetailList(String blastdate) {
 //        String selection = "blastdate = ? and errorCode = ?"; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
@@ -1141,6 +1141,17 @@ public class FiringMainActivity extends SerialPortActivity {
         int i = cursor.getCount();
         cursor.close();
         return i;
+    }
+
+    private boolean getHis(String blastdate){
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorHis_Main>  list =master.queryHisMain(blastdate);
+        Log.e(TAG, "获取当前日期是否存在历史记录: "+list.size() );
+        if(list.size()>0){
+            return false;
+        }else {
+            return true;
+        }
     }
 
 
@@ -1406,13 +1417,11 @@ public class FiringMainActivity extends SerialPortActivity {
             //stage=9;
             eightCmdFlag = 2;
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-            hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
-            saveFireResult();
+
+//            saveFireResult();
 //            saveFireResult_All();
 
-            if (!qbxm_id.equals("-1")) {
-                updataState(qbxm_id);
-            }
+
             increase(11);//跳到第9阶段
 
             Log.e("increase", "9");
@@ -1636,18 +1645,12 @@ public class FiringMainActivity extends SerialPortActivity {
             case 8:
                 ctlLinePanel(8);
                 eightTxt.setText(getString(R.string.text_firing_tip13) + eightCount + "s");//"倒计时\n"
-                if (eightCount <= -5) {
-                    /**
-                     Toast.makeText(FiringMainActivity.this, "发出起爆命令未返回",
-                     Toast.LENGTH_LONG).show();
-                     **/
-                }
-                if (eightCount == 0 && eightCmdExchangePower == 0) {
-                    /**
-                     Toast.makeText(FiringMainActivity.this, "起爆前，切换电源未返回命令",
-                     Toast.LENGTH_LONG).show();
-                     **/
-                }
+//                if(getHis(hisInsertFireDate)){
+//                    saveFireResult();
+//                    if (!qbxm_id.equals("-1")) {
+//                        updataState(qbxm_id);
+//                    }
+//                }
                 break;
             case 9://起爆之后,弹出对话框
                 eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
@@ -2041,6 +2044,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                sendCmd(reCmd);
 //                            }
                             if (eightCount >= 1) {
+                                Log.e(TAG, "起爆阶段: --准备保存历史记录" );
+
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;
@@ -2229,6 +2234,7 @@ public class FiringMainActivity extends SerialPortActivity {
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
+                    hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
                     keyFireCmd = 1;
                 }
             }
@@ -2237,6 +2243,7 @@ public class FiringMainActivity extends SerialPortActivity {
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
+                    hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
                     keyFireCmd = 1;
                 }
             }

@@ -123,7 +123,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean chongfu = false;//是否已经检测了一次
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private int ic_cankao = 19;//雷管参考电流
+    private int ic_cankao = 21;//雷管参考电流
     private boolean send_kg = true;//是否已经发送了40
     private boolean version_1 = true;//是否发送46
     private List<DenatorBaseinfo> errlist;
@@ -588,7 +588,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * ic_cankao * 2) && firstCount < Preparation_time * 0.2) {//5
+                    } else if (displayIc > (denatorCount * ic_cankao * 1.5) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";

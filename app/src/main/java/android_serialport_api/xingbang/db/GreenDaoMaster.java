@@ -982,6 +982,16 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 根据时间判断是否存在该历史记录
+     * */
+    public List<DenatorHis_Main> queryHisMain(String time) {
+        return denatorHis_mainDao
+                .queryBuilder()
+                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .list();
+    }
+
+    /**
      * 根据起爆时间删除对应的历史记录
      */
     public void deleteForHis(String time) {

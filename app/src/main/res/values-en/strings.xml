@@ -583,7 +583,7 @@
     <string name="text_fir_dialog15">Please replace the incorrect detonator, check if there are no errors, and click to continue testing。</string>
     <string name="text_fir_dialog16">Please check if the incorrect detonator has water ingress and mud ingress from the wire clamp! After checking without any errors, click OK to retest。</string>
     <string name="text_fir_show1">command error</string>
-    <string name="text_fir_show2">The maximum number of detonation records is 60, and the oldest one has been deleted</string>
+    <string name="text_fir_show2">The maximum number of detonation records is 100, and the oldest one has been deleted</string>
     <string name="text_fir_dialog19">The current detonator information is incomplete</string>
     <string name="text_fir_dialog20">The current detonator information is incomplete. Please download and update the detonator information before proceeding with the operation</string>
     <string name="text_query_wd">Latitude：</string>
