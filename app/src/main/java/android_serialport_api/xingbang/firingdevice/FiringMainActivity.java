@@ -132,6 +132,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private Handler busHandler = null;//总线信息
     private Handler mHandler_tip = null;//提示
     private Handler Handler_tip = null;//提示
+    private Handler Handler_saveFiring = null;//提示
     private static Handler mHandler_1 = null;//更新视图
     private static Handler noReisterHandler = null;//没有注册的雷管
     private static Handler tureHandler = null;//没有注册的雷管
@@ -463,6 +464,13 @@ public class FiringMainActivity extends SerialPortActivity {
             execStage(msg);
             return false;
         });
+        Handler_saveFiring = new Handler(msg -> {
+            saveFireResult();
+            if (!qbxm_id.equals("-1")) {
+                updataState(qbxm_id);
+            }
+            return false;
+        });
         mHandler_tip = new Handler(msg -> {
             String time = (String) msg.obj;
             delHisInfo(time);
@@ -515,7 +523,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc > (cankao_ic * 0.6) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
+                } else if (displayIc > 9000 && stage == 6) {// "高压阶段电流过大";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
+                }else if (displayIc > (cankao_ic * 0.6) && displayIc < (cankao_ic * 0.7) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
@@ -1417,7 +1429,8 @@ public class FiringMainActivity extends SerialPortActivity {
             //stage=9;
             eightCmdFlag = 2;
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-
+            Log.e(TAG, "生成历史记录-eightCount: " );
+            Handler_saveFiring.sendMessage(Handler_saveFiring.obtainMessage());
 //            saveFireResult();
 //            saveFireResult_All();
 
@@ -1645,12 +1658,6 @@ public class FiringMainActivity extends SerialPortActivity {
             case 8:
                 ctlLinePanel(8);
                 eightTxt.setText(getString(R.string.text_firing_tip13) + eightCount + "s");//"倒计时\n"
-//                if(getHis(hisInsertFireDate)){
-//                    saveFireResult();
-//                    if (!qbxm_id.equals("-1")) {
-//                        updataState(qbxm_id);
-//                    }
-//                }
                 break;
             case 9://起爆之后,弹出对话框
                 eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
@@ -2043,6 +2050,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                sendCmd(reCmd);
 //                            }
+
                             if (eightCount >= 1) {
                                 Log.e(TAG, "起爆阶段: --准备保存历史记录" );
 
@@ -2076,6 +2084,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Thread.sleep(1000);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
+
                             break;
                         case 9:
                             if (neightCount == 0) {
