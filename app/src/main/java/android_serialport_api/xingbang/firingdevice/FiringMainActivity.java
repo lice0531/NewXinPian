@@ -1033,7 +1033,7 @@ public class FiringMainActivity extends SerialPortActivity {
         //如果总数大于60,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
-        if (hisTotalNum > 100) {
+        if (hisTotalNum > 80) {
             String time = loadHisMainData();
             Message message = new Message();
             message.obj = time;
@@ -1429,10 +1429,12 @@ public class FiringMainActivity extends SerialPortActivity {
             //stage=9;
             eightCmdFlag = 2;
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-            Log.e(TAG, "生成历史记录-eightCount: " );
-            Handler_saveFiring.sendMessage(Handler_saveFiring.obtainMessage());
-//            saveFireResult();
+            hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
+            saveFireResult();
 //            saveFireResult_All();
+            if (!qbxm_id.equals("-1")) {
+                updataState(qbxm_id);
+            }
 
 
             increase(11);//跳到第9阶段
@@ -2243,7 +2245,6 @@ public class FiringMainActivity extends SerialPortActivity {
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
-                    hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
                     keyFireCmd = 1;
                 }
             }
@@ -2252,7 +2253,6 @@ public class FiringMainActivity extends SerialPortActivity {
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
-                    hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
                     keyFireCmd = 1;
                 }
             }

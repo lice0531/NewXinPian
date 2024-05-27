@@ -583,7 +583,7 @@
     <string name="text_fir_dialog15">请更换错误雷管,检查无误后,点击继续进行检测。</string>
     <string name="text_fir_dialog16">请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。</string>
     <string name="text_fir_show1">命令错误</string>
-    <string name="text_fir_show2">起爆记录条数最大100条,已删除</string>
+    <string name="text_fir_show2">起爆记录条数最大80条,已删除</string>
     <string name="text_fir_dialog19">当前雷管信息不完整</string>
     <string name="text_fir_dialog20">当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作</string>
     <string name="text_query_wd">纬度坐标：</string>
