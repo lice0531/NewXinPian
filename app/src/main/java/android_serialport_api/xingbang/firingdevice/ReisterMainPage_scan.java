@@ -920,7 +920,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
                         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                         //初始化雷管数量
-                        for (int i = 1; i < 21; i++) {
+                        for (int i = 1; i < 41; i++) {
                             showDuanSum(i);
                         }
                         dialog.dismiss();
@@ -3722,7 +3722,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 delay_set = "0";
 
                 //初始化雷管数量
-                for (int i = 1; i < 21; i++) {
+                for (int i = 1; i < 41; i++) {
                     showDuanSum(i);
                 }
                 duan_new = 1;

@@ -402,8 +402,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
             }
         }
         //初始化雷管数量
-        for (int i = 1; i < 21; i++) {
+        for (int i = 1; i < 41; i++) {
             showDuanSum(i);
+            setBtnColor(i);
         }
         //初始化翻转按钮颜色
         setFan();
@@ -1718,7 +1719,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
         n38 = (int) MmkvUtils.getcode(mRegion+"n38", 0);
         n39 = (int) MmkvUtils.getcode(mRegion+"n39", 0);
         n40 = (int) MmkvUtils.getcode(mRegion+"n40", 0);
-        for (int i = 1; i < 21; i++) {
+        for (int i = 1; i < 41; i++) {
             setBtnColor(i);
         }
     }
@@ -1819,6 +1820,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
         int totalNum = list.size();//得到数据的总条数
         Log.e(TAG, "当前区域段数totalNum: " + totalNum);
+
         switch (a) {
             case 1:
                 reNumF1.setText(totalNum + "");
