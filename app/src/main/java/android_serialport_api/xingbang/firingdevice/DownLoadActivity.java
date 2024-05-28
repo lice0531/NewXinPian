@@ -146,7 +146,7 @@ public class DownLoadActivity extends BaseActivity {
         app_name=dv.getNewVersion();
         Log.e("下载地址", "app_name: "+app_name );
         Log.e("下载地址", "shengji: "+shengji );
-
+        mPath_Local=Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name;
         if(shengji.length()>0){
 //            Download_APK(shengji);//ftp下载
             //如果之前存在就删除之前的,重新下载
@@ -335,7 +335,8 @@ public class DownLoadActivity extends BaseActivity {
 
             // 未知安装权限页面
             if (requestCode == 2500) {
-                XbUtils.openAPKFile_8(this, mPath_Local);
+//                XbUtils.openAPKFile_8(this, mPath_Local);
+                XbUtils.openAPK(this, mPath_Local);
             }
 
         } else {
