@@ -202,8 +202,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isshow = true;
     private float cankao_ic = 0;//记录高压20s参考电流
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
-    private List<VoDenatorBaseInfo> denatorlist1 = new ArrayList<>();
-    private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();
+    private List<VoDenatorBaseInfo> denatorlist1 = new ArrayList<>();//快速
+    private List<VoDenatorBaseInfo> denatorlist2 = new ArrayList<>();//慢速
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private int totaltureNum;//错误雷管数量
@@ -967,17 +967,23 @@ public class FiringMainActivity extends SerialPortActivity {
 
         denatorCount = allBlastQu.size();
         if(denatorlist1.size()!=0&&denatorlist2.size()!=0){//低压是21的1.5倍,高压是( 慢的数量*30 + 快的数量*60  除以总数量)的1.5倍
-            ic_cankao_gaoya=(denatorlist2.size()*30+denatorlist1.size()*60);
+            ic_cankao_gaoya= denatorlist2.size()*30+denatorlist1.size()*60;
+        }else if(denatorlist1.size()==0&&denatorlist2.size()!=0){//低压是21的1.5倍,高压是( 慢的数量*30 + 快的数量*60  除以总数量)的1.5倍
+            ic_cankao_gaoya= denatorlist2.size()*30;
+        }else if(denatorlist1.size()!=0){//低压是21的1.5倍,高压是( 慢的数量*30 + 快的数量*60  除以总数量)的1.5倍
+            ic_cankao_gaoya= denatorlist1.size()*60;
         }else {
-            ic_cankao_gaoya=30*denatorCount;
+            ic_cankao_gaoya= denatorlist2.size()*30;
         }
-
-//        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
-        Log.e(TAG, "denatorlist1: " + denatorlist1.size());
-//        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
-        Log.e(TAG, "denatorlist2: " + denatorlist2.size());
+        Log.e(TAG, "高压最大电流: "+ic_cankao_gaoya*1.5);
+        Log.e(TAG, "denatorlist1:高速数量 " + denatorlist1.size());
+        Log.e(TAG, "denatorlist2:低速数量 " + denatorlist2.size());
         Log.e(TAG, "denatorCount: " + denatorCount);
-        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
+//        Log.e(TAG, "denatorlist1: "+denatorlist1.toString() );
+
+//        Log.e(TAG, "denatorlist2: "+denatorlist2.toString() );
+
+//        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * ic_cankao + "μA");
