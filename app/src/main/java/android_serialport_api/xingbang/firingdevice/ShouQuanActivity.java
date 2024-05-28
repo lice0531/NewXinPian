@@ -448,7 +448,7 @@ public class ShouQuanActivity extends BaseActivity {
      */
     private void registerDetonator(ShouQuanData db) {
         boolean chongfu = false;
-        int maxNo = getMaxNumberNo();
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         Log.e("授权导入注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));

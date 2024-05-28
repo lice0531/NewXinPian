@@ -345,7 +345,7 @@ public class SouSuoSQActivity extends BaseActivity {
      */
     private void registerDetonator(ShouQuanData db) {
         boolean chongfu = false;
-        int maxNo = getMaxNumberNo();
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
 

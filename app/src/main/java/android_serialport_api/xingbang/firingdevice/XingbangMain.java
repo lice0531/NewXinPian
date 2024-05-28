@@ -290,6 +290,7 @@ public class XingbangMain extends BaseActivity {
         list_shou = master.queryLeiGuan(format1, mRegion);
         Yanzheng_sq_size = list_shou.size();
         Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.toString());
     }
     /**
      * 初始化FTP
