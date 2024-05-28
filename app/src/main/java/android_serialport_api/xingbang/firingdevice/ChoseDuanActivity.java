@@ -404,13 +404,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
         //初始化雷管数量
         for (int i = 1; i < 41; i++) {
             showDuanSum(i);
-            setBtnColor(i);
         }
         //初始化翻转按钮颜色
         setFan();
-
-
-
     }
 
     @Override
@@ -1820,7 +1816,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
         int totalNum = list.size();//得到数据的总条数
         Log.e(TAG, "当前区域段数totalNum: " + totalNum);
-
+        if(totalNum==0){
+            setBtnColor(a);
+        }
         switch (a) {
             case 1:
                 reNumF1.setText(totalNum + "");

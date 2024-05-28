@@ -1411,4 +1411,20 @@ public class GreenDaoMaster {
                 .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
                 .unique();
     }
+
+    /**
+     * 根据起爆时间删除对应的历史记录
+     */
+    public void deleteForHis(String time) {
+        denatorHis_mainDao
+                .queryBuilder().where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }/**
+     * 根据起爆时间删除历史记录对应的雷管数据
+     */
+    public void deleteForDetail(String time) {
+        denatorHis_detailDao
+                .queryBuilder().where(DenatorHis_DetailDao.Properties.Blastdate.eq(time))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }
 }
