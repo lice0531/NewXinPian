@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -52,6 +55,8 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.models.DownloadVersionBean;
+import android_serialport_api.xingbang.models.IsRenewBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -61,12 +66,22 @@ import android_serialport_api.xingbang.utils.upload.IntervalUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import org.apache.commons.net.ftp.FTPFile;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class XingbangMain extends BaseActivity {
@@ -129,6 +144,7 @@ public class XingbangMain extends BaseActivity {
     private Handler mHandler_loading = new Handler();//显示进度条
     private Handler mHandler_updata = new Handler();//更新主页面信息
     private Handler mHandler_load = new Handler();//查了雷管
+    private Handler mHandler_updataVersion = new Handler();//更新版本
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
     private String TAG = "主页";
@@ -238,16 +254,18 @@ public class XingbangMain extends BaseActivity {
         Utils.writeRecord("---进入主页面---");
 //        Beta.checkUpgrade();
 
-        initFTP();              // 初始化FTP
-        if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
-            //16是改变前的
-            //17是电流11000,电压17V
-            //15是电流11000,电压16V
-//            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
-            GetFileName("NM_M900_Second_Version_17", ".apk");
-        }
+//        initFTP();              // 初始化FTP
+//        if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
+//            //16是改变前的
+//            //17是电流11000,电压17V
+//            //15是电流11000,电压16V
+////            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
+//            GetFileName("NM_M900_Second_Version_17", ".apk");
+//        }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
+
+        getleveup();
     }
 
     private void queryBeian() {
@@ -384,6 +402,16 @@ public class XingbangMain extends BaseActivity {
 
         mHandler_load = new Handler(msg -> {
             loadMoreData_all_lg();//查询雷管延时是否为0
+            return false;
+        });
+
+        mHandler_updataVersion = new Handler(msg -> {
+            if (msg.what == 1) {
+                DownloadVersionBean path = (DownloadVersionBean) msg.obj;
+                createDialog_download(path);
+            }
+
+
             return false;
         });
     }
@@ -1183,46 +1211,46 @@ public class XingbangMain extends BaseActivity {
         mOffTime.schedule(tt, 1000, 1000);
     }
 
-    private void GetFileName(String name, String type) {
-        // 网络判断
-        if (!NetUtils.haveNetWork(this)) {
-            return;
-        }
-        try {
-            // 如果登录成功
-            if (mFTP.openConnect()) {
-                // 获取服务器文件列表
-                mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles("/");
-//                Log.e("下载目录", mList_FtpFileName.toString());//所有文件目录
-                // 获取本地APK文件列表
-                for (int i = 0; i < mList_FtpFileName.size(); i++) {
-                    String fileName = mList_FtpFileName.get(i).getName();
-                    //name  ==  SC_KT50_Second_Version_16
-                    //fileName =SC_KT50_Second_Version_16_32
-                    if (fileName.contains(name)) {
-                        Log.e("下载目录1", fileName);//KT50_Second_Version_26.apk
-                        Log.e(TAG, "name: " + name);
-                        PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-                        Log.e("下载目录2", pi.versionCode + "");//KT50_Second_Version_26.apk
-                        int v = Integer.parseInt(fileName.substring(fileName.length() - 6, fileName.indexOf(".apk")));
-                        Log.e("下载目录3", v + "");
-                        if (v > pi.versionCode) {//网络版本大于本机版本就升级
-                            createDialog_download(name);
-                        }
-
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void GetFileName(String name, String type) {
+//        // 网络判断
+//        if (!NetUtils.haveNetWork(this)) {
+//            return;
+//        }
+//        try {
+//            // 如果登录成功
+//            if (mFTP.openConnect()) {
+//                // 获取服务器文件列表
+//                mList_FtpFileName.clear();
+//                mList_FtpFileName = mFTP.listFiles("/");
+////                Log.e("下载目录", mList_FtpFileName.toString());//所有文件目录
+//                // 获取本地APK文件列表
+//                for (int i = 0; i < mList_FtpFileName.size(); i++) {
+//                    String fileName = mList_FtpFileName.get(i).getName();
+//                    //name  ==  SC_KT50_Second_Version_16
+//                    //fileName =SC_KT50_Second_Version_16_32
+//                    if (fileName.contains(name)) {
+//                        Log.e("下载目录1", fileName);//KT50_Second_Version_26.apk
+//                        Log.e(TAG, "name: " + name);
+//                        PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
+//                        Log.e("下载目录2", pi.versionCode + "");//KT50_Second_Version_26.apk
+//                        int v = Integer.parseInt(fileName.substring(fileName.length() - 6, fileName.indexOf(".apk")));
+//                        Log.e("下载目录3", v + "");
+//                        if (v > pi.versionCode) {//网络版本大于本机版本就升级
+//                            createDialog_download(name);
+//                        }
+//
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /***
      * 建立对话框
      */
-    public void createDialog_download(String name) {
+    public void createDialog_download(DownloadVersionBean name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("升级提醒");//"说明"
         builder.setMessage("检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
@@ -1230,7 +1258,7 @@ public class XingbangMain extends BaseActivity {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, DownLoadActivity.class);
-            intent.putExtra("dataSend", name);
+            intent.putExtra("dataSend", name.toString());
 //            intent.putExtra("dataSend", "四川更新2");//11000版本升级
             startActivity(intent);
             dialog.dismiss();
@@ -1243,5 +1271,124 @@ public class XingbangMain extends BaseActivity {
             dialog.dismiss();
         });
         builder.create().show();
+    }
+
+    private void getleveup() {
+        String url = Utils.httpurl_xb_leveup;//公司服务器上传
+        OkHttpClient client = new OkHttpClient();
+        JSONObject object = new JSONObject();
+
+        try {
+            object.put("sbbh", equ_no);//设备编号
+            object.put("rj_version", "M900_PT_HF_V1.3.1C_240523");//软件版本
+            object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //3des加密
+        String json = object.toString();
+        MediaType JSON = MediaType.parse("application/json");
+        Log.e("注册请求", "json: " + json);
+        RequestBody requestBody = FormBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                Log.e("上传公司网络请求", "IOException: " + e);
+//                Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                try {
+                    String res = response.body().string();
+                    Log.e(TAG, "onResponse: " + res.toString());
+                    Gson gson = new Gson();
+                    IsRenewBean isRenewBean = gson.fromJson(res, IsRenewBean.class);
+                    if (isRenewBean.getIs_rj_version() == 1) {
+                        //需要升级app
+                        getApp();
+                    }
+                    if (isRenewBean.getIs_yj_version() == 1) {
+                        //需要升级bin
+                    }
+                    pb_show = 0;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    private void getApp() {
+        String url = Utils.httpurl_xb_download;//公司服务器上传
+        OkHttpClient client = new OkHttpClient();
+        JSONObject object = new JSONObject();
+
+        try {
+            String uniqueId = UUID.randomUUID().toString();
+            PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
+            object.put("sbbh", equ_no);//设备编号
+            object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
+            object.put("version", "M900_PT_HF_V1.3.1C_240523");//版本号版本 v3.22
+//            object.put("version", "v3.22");//版本号版本 测试数据
+            object.put("type", "1");//软件=1 硬件=2
+            object.put("is_force", 0);//是否强制升级
+
+            Log.e(TAG, "pi.versionCode: " + pi.versionCode);
+            Log.e(TAG, "pi.versionName: " + pi.versionName);
+        } catch (JSONException | PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        //3des加密
+        String json = object.toString();
+        MediaType JSON = MediaType.parse("application/json");
+        Log.e("获取下载请求", "json: " + json);
+        RequestBody requestBody = FormBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                Log.e("上传公司网络请求", "IOException: " + e);
+                Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+
+                try {
+
+                    String res = response.body().string();
+
+                    Log.e(TAG, "onResponse: " + res.toString());
+                    Gson gson = new Gson();
+                    DownloadVersionBean dv = gson.fromJson(res, DownloadVersionBean.class);
+                    if (dv.getStatus().equals("200")) {
+                        Message msg = new Message();
+                        msg.obj = dv;
+                        msg.what = 1;
+                        mHandler_updataVersion.sendMessage(msg);//更新设备编号
+                        pb_show = 0;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

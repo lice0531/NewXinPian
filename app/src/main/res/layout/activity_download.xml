@@ -4,6 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,14 +34,18 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
                     android:text="选择起爆器版本:"
-                    android:textColor="@color/text_title"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
             </RelativeLayout>
@@ -36,7 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="4dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:visibility="gone">
 
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/nice_spinner_version"
@@ -49,11 +68,11 @@
 
             </RelativeLayout>
 
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btn_download_0"
@@ -87,7 +106,7 @@
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="4dp"
                     android:text="下载常用工具:"
-                    android:textColor="@color/text_title"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
             </RelativeLayout>
@@ -141,24 +160,37 @@
         </LinearLayout>
 
         <!--  信息布局  -->
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl_download_center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_download_bottom"
             android:layout_below="@id/ll_download_top"
+            android:orientation="vertical"
             android:padding="10dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
 
+                android:layout_marginTop="@dimen/dp4">
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+
+                    android:id="@+id/pb_update"/>
+            </RelativeLayout>
             <!-- \n\n如需常用工具\n直接点击 底部按钮 开始下载 -->
             <TextView
                 android:id="@+id/tv_download_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="请先选择 起爆器程序版本后\n点击 下载按钮 开始下载"
-                android:textColor="@color/text_title"
+                android:text="下载进度"
+                android:textColor="@color/black"
                 android:textSize="18sp" />
 
-        </RelativeLayout>
+        </LinearLayout>
+
 
 
     </RelativeLayout>

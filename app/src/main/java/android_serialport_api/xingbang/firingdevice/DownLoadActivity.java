@@ -1,20 +1,32 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.mContext;
+
 import android.Manifest;
+import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.StrictMode;
+import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
 
 import org.angmarch.views.NiceSpinner;
 import org.apache.commons.net.ftp.FTPFile;
@@ -23,13 +35,14 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
-import android_serialport_api.xingbang.utils.NetUtils;
+import android_serialport_api.xingbang.models.DownloadVersionBean;
+import android_serialport_api.xingbang.utils.DownloadTest;
 import android_serialport_api.xingbang.utils.upload.FTP;
 import android_serialport_api.xingbang.utils.upload.InitConst;
 import android_serialport_api.xingbang.utils.upload.IntervalUtil;
@@ -40,7 +53,7 @@ import android_serialport_api.xingbang.utils.uploadUtils.ToastUtils;
 /**
  * 下载起爆器程序 Activity
  */
-public class DownLoadActivity extends SerialPortActivity {
+public class DownLoadActivity extends BaseActivity {
 
     private static Handler mHandler = new Handler();
 
@@ -76,6 +89,8 @@ public class DownLoadActivity extends SerialPortActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public volatile Result mResult;             // 下载完成返回结果
+    private DownloadManager manager = null;
+    private String app_name;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -83,7 +98,10 @@ public class DownLoadActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
         mContext = this;
-
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
+        String mOldTitle = getSupportActionBar().getTitle().toString();
+        getSupportActionBar().setTitle(mOldTitle );
         // xb文件夹不存在则创建
         XbUtils.isFileExistence(mSaveDirPath);
 
@@ -91,52 +109,63 @@ public class DownLoadActivity extends SerialPortActivity {
                 Manifest.permission.READ_PHONE_STATE
         };
 
-        initFTP();              // 初始化FTP
-        initData();
+//        initFTP();              // 初始化FTP
+//        initData();
         initView();
         initHandler();          // 初始化Handler
 
+
+
+//        download = findViewById(R.id.down);
+//        progressTxt = findViewById(R.id.progress);
+        pb_update = findViewById(R.id.pb_update);
+//        mCancleBtn = findViewById(R.id.cancle_down);
+
+
+        downloadManager = (DownloadManager)this.getSystemService(Context.DOWNLOAD_SERVICE);
+        query = new DownloadManager.Query();
+        mDownloadTest = new DownloadTest(this);
+
+        //定时器
+        mTimer = new Timer();
+
+        //注册广播，监听下载状态
+        IntentFilter intentfilter = new IntentFilter();
+        intentfilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        intentfilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
+        registerReceiver(receiver, intentfilter);
+
+        //获取传过来的下载地址
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        String shengji = (String) bundle.get("dataSend");
-        Log.e("升级", "传递-dataSend: " + shengji);
-        if(shengji!=null){
-            Download_APK(shengji);
+        String a = (String)bundle.get("dataSend");
+
+        Gson gson = new Gson();
+        DownloadVersionBean dv = gson.fromJson(a, DownloadVersionBean.class);
+        String shengji = dv.getNewVersionPath();
+        app_name=dv.getNewVersion();
+        Log.e("下载地址", "app_name: "+app_name );
+        Log.e("下载地址", "shengji: "+shengji );
+
+        if(shengji.length()>0){
+//            Download_APK(shengji);//ftp下载
+            //如果之前存在就删除之前的,重新下载
+            if(XbUtils.isExists(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name)){
+                XbUtils.delete(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name) ;
+            }
+            // 删除list.csv 防错误
+            String file_path = mSaveDirPath + "/list.csv";
+            // 如果文件存在
+            if (XbUtils.isExists(file_path)) {
+                // 删除list.csv
+                XbUtils.delete(file_path);
+            }
+            mDownloadId =  mDownloadTest.downloadAPK(shengji, downloadManager,app_name);
+            mTimer.schedule(mTimerTask, 0,1000);
+            mBtnVersion.setEnabled(false);
         }
-
     }
 
-    @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-
-    }
-
-    /**
-     * 初始化FTP
-     */
-    private void initFTP() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        mFtp = new FTP(mIP, mUserName, mPassWord);
-    }
-
-    /**
-     * 初始化版本列表
-     */
-    private void initData() {
-        mArr_Version = getResources().getStringArray(R.array.arr_versions);
-        // 列表值(6月2日)
-        mList_version.add("KT50_OldCode_Version");  // KT50_OldCode_Version_23.apk 1
-        mList_version.add("KT50_NewCode_Version");  // KT50_NewCode_Version_22.apk 2
-        mList_version.add("KT50_Permit_Version");   // KT50_Permit_Version_20.apk 3
-        mList_version.add("ST327_OldCode_Version"); // ST327_OldCode_Version_20.apk 4
-        mList_version.add("KT50_NeiMeng_Version");   // KT50_NeiMeng_Version_20.apk 5
-        mList_version.add("KT50_ZheJiang_Version");   // KT50_ZheJiang_Version_20.apk 6
-        mList_version.add("KT50_Second_Version");   // KT50_Permit_Version_20.apk 7
-
-//        mList_version.add("KT50_Test_Version");     // KT50_Test_Version.apk 9
-//        mList_version.add("ST327_Test_Version");    // ST327_Test_Version.apk 10
-    }
 
     /**
      * 初始化控件
@@ -144,27 +173,22 @@ public class DownLoadActivity extends SerialPortActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView() {
         mTvMessage = findViewById(R.id.tv_download_message);
-        mNS_Version = findViewById(R.id.nice_spinner_version);
-        mNS_Version.attachDataSource(new LinkedList<>(Arrays.asList(mArr_Version)));
-        mNS_Version.setOnSpinnerItemSelectedListener((parent, view, position, id) -> {
-            String item = parent.getItemAtPosition(position).toString();
-            ToastUtils.longs("已选择: " + item);
-            mIndex = position;
-            Log.e("liyi", "选择了服务器上文件名为 " + mList_version.get(mIndex) + " 的文件");
-        });
+//        mNS_Version = findViewById(R.id.nice_spinner_version);
+//        mNS_Version.attachDataSource(new LinkedList<>(Arrays.asList(mArr_Version)));
+//        mNS_Version.setOnSpinnerItemSelectedListener((parent, view, position, id) -> {
+//            String item = parent.getItemAtPosition(position).toString();
+//            ToastUtils.longs("已选择: " + item);
+//            mIndex = position;
+//            Log.e("liyi", "选择了服务器上文件名为 " + mList_version.get(mIndex) + " 的文件");
+//        });
 
-        for (int i = 0; i < mArr_Version.length; i++) {
-            // 设置默认版本
-            if (mArr_Version[i].equals(mIndex)) {
-                mNS_Version.setSelectedIndex(i);
-            }
-        }
-        mBtnVersion = findViewById(R.id.btn_download_0);
-        mBtnVersion.setOnClickListener(v -> {
-            if (IntervalUtil.isFastClick_2()) {
-                Download_APK(mList_version.get(mIndex));
-            }
-        });
+//        for (int i = 0; i < mArr_Version.length; i++) {
+//            // 设置默认版本
+//            if (mArr_Version[i].equals(mIndex)) {
+//                mNS_Version.setSelectedIndex(i);
+//            }
+//        }
+
 
         mBtnCommonly_1 = findViewById(R.id.btn_download_1);
         mBtnCommonly_1.setOnLongClickListener(v -> {
@@ -195,213 +219,28 @@ public class DownLoadActivity extends SerialPortActivity {
         });
 
 
-    }
-
-
-    /**
-     * 下载所需文件
-     */
-    private void Download_APK(String name) {
-        Log.e("Download_APK", "需要下载文件: " + name);
-
-        // 删除list.csv 防错误
-        String file_path = mSaveDirPath + "/list.csv";
-        // 如果文件存在
-        if (XbUtils.isExists(file_path)) {
-            // 删除list.csv
-            XbUtils.delete(file_path);
-        }
-
-        // 重置提示
-        mTip = "";
-        mTvMessage.setBackgroundResource(R.color.white);
-
-        if (!NetUtils.haveNetWork(mContext)) {
-            mTip = "访问服务器失败\n(可能是没有连接网络)";
-            mTvMessage.setText(mTip);
-            mTvMessage.setBackgroundResource(R.color.colorRed);
-            if (mDialogPlus != null) {
-                mDialogPlus.dismiss();
-            }
-            return;
-        }
-
-        try {
-            // 服务器 APK名称 APK版本
-            String ftpFileName = null;
-
-            mPath_Local = "";
-
-            // 如果登录成功
-            if (mFtp.openConnect()) {
-                Log.e("Download_APK", "FTP服务器登录成功");
-
-                // 获取服务器文件列表
-                mList_FtpFileName.clear();
-                mList_FtpFileName = mFtp.listFiles("/");
-                for (int i = 0; i < mList_FtpFileName.size(); i++) {
-                    String fileName = mList_FtpFileName.get(i).getName();
-                    long fileSize = mList_FtpFileName.get(i).getSize();
-//                    Log.e("file_ftp", "服务器 文件序号: " + i + " 文件名称: " + fileName + " 文件大小: " + fileSize);
-
-                    if (fileName.contains(name)) {
-                        ftpFileName = fileName;
-                        mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
-                        mDownLoadFileSize = fileSize;
-                        Log.e("file_ftp", "需要下载文件名称: " + ftpFileName + " \n需要下载文件大小: " + mDownLoadFileSize + " \n需要下载文件路径: " + mDownLoadFilePath);
-                    }
-
-                }
-
-                // 如果服务器没有所需文件
-                if (ftpFileName == null) {
-                    mTip = "服务器上没有\n升级程序安装包(请联系管理员上传安装包)";
-                    mTvMessage.setText(mTip);
-                    mTvMessage.setBackgroundResource(R.color.colorRed);
-                    return;
-                }
-
-                // 获取本地APK文件列表
-                List<String> list_localFileName = XbUtils.getFileNameList(mSaveDirPath, ".apk");
-
-                // 本地没有APK文件列表
-                if (list_localFileName == null) {
-                    // 本地已下载安装路径
-                    mPath_Local = "";
-                }
-                // 本地有APK文件列表
-                else {
-                    // 本地已下载安装路径 服务器版本 大于 本地版本 为空
-                    mPath_Local = XbUtils.isHaveApk(ftpFileName, list_localFileName);
-
-                    for (int i = 0; i < list_localFileName.size(); i++) {
-                        Log.e("file_local", "本地 文件序号: " + i + " 文件路径: " + list_localFileName.get(i));
-                    }
-                }
-                Log.e("file_local", "本地已下载安装路径: " + mPath_Local);
-
-
-                // 本地没有文件
-                if (mPath_Local.isEmpty()) {
-                    // FTP服务器 开始下载 所需文件
-                    mHandler.sendMessage(mHandler.obtainMessage(1400, ftpFileName));
-                    mTip = "FTP服务器登录成功" + "\n正在下载程序...\n" + ftpFileName + " 文件\n";
-                    mTvMessage.setText(mTip);
-                    Log.e("Download_APK", "index == -1 " + "开始下载");
-
-                }
-                // 本地有文件
-                else {
-                    // 打开apk
-                    XbUtils.openAPK(this, mPath_Local);
-                }
-
-
-            } else {
-                Log.e("Download_APK", "FTP服务器登录失败");
-                mTip = "FTP服务器登录失败";
-                mTvMessage.setText(mTip);
-                mTvMessage.setBackgroundResource(R.color.colorRed);
-                mDialogPlus.dismiss();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-//    /**
-//     * 下载文件(不对比版本)
-//     */
-//    private void Download_APK_1(String name) {
-//        Log.e("Download_APK_1", "需要下载文件: " + name);
-//
-//        // 重置提示
-//        mTip = "";
-//        mTvMessage.setBackgroundResource(R.color.colorWhite);
-//
-//        if (!NetUtils.haveNetWork(mContext)) {
-//            mTip = "访问服务器失败\n(可能是没有连接网络)";
-//            mTvMessage.setText(mTip);
-//            mTvMessage.setBackgroundResource(R.color.colorRed);
-//            mDialogPlus.dismiss();
-//            return;
-//        }
-//
-//        try {
-//            // 服务器 APK名称
-//            String ftpFileName = null;
-//
-//            // 如果登录成功
-//            if (mFtp.openConnect()) {
-//                Log.e("Download_APK_1", "FTP服务器登录成功");
-//
-//                // 获取服务器文件列表
-//                mList_FtpFileName.clear();
-//                mList_FtpFileName = mFtp.listFiles("/");
-//                for (int i = 0; i < mList_FtpFileName.size(); i++) {
-//                    String fileName = mList_FtpFileName.get(i).getName();
-//                    Log.e("file_1", "服务器 文件序号: " + i + " 文件名称: " + fileName + " 文件大小: " + mList_FtpFileName.get(i).getSize());
-//                    if (fileName.contains(name)) {
-//                        ftpFileName = fileName;
-//                        Log.e("file_1", "需要下载文件名称: " + fileName);
-//                    }
-//                }
-//
-//                if (ftpFileName == null) {
-//                    mTip = "服务器上没有\n升级程序安装包(请联系管理员上传安装包)";
-//                    mTvMessage.setText(mTip);
-//                    mTvMessage.setBackgroundResource(R.color.colorRed);
-//                    return;
-//                }
-//
-//                // 获取本地apk文件路径
-//                List<String> list_localFileName = XbUtils.getFileNameList(mSaveDirPath, ".apk");
-//
-//                for (int i = 0; i < list_localFileName.size(); i++) {
-//                    String fileName = list_localFileName.get(i);
-//                    Log.e("file_1", "本地 文件序号: " + i + " 文件路径: " + fileName);
-//
-//                    // 如果本地有文件
-//                    if (fileName.contains(name)) {
-//                        mPath_Local = fileName;
-//                        Log.e("file_1", "如果本地有文件: " + mPath_Local);
-//                    }
-//
-//                }
-//
-//                // 如果本地有安装包
-//                if (mPath_Local != null) {
-//                    // 打开apk
-//                    XbUtils.openAPK(this, mPath_Local);
-//                }
-//                // 如果本地没有安装包
-//                else {
-//                    // FTP服务器 开始下载 所需文件
-//                    mHandler.sendMessage(mHandler.obtainMessage(1400, ftpFileName));
-//
-//                    mTip = "FTP服务器登录成功" + "\n正在下载程序...\n" + ftpFileName + " 文件\n文件较大请耐心等待...\n\n注意！如果文件解析包安装错误\n请删除 xb文件夹下的.apk文件";
-//                    mTvMessage.setText(mTip);
-//
-//                    Log.e("Download_APK_1", "开始下载");
-//                }
-//
-//            } else {
-//                Log.e("Download_APK_1", "FTP服务器登录失败");
-//                mTip = "FTP服务器登录失败";
-//                mTvMessage.setText(mTip);
-//                mTvMessage.setBackgroundResource(R.color.colorRed);
-//                mDialogPlus.dismiss();
+        mBtnVersion = findViewById(R.id.btn_download_0);
+        mBtnVersion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //            if (IntervalUtil.isFastClick_2()) {//下载项目
+//                Download_APK(mList_version.get(mIndex));
 //            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
+            }
+        });
+
+//        mCancleBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                downloadManager.remove(mDownloadId);
+//                mBtnVersion.setText("立即下载");
+//            }
+//        });
+    }
+
+
+
+
 
     /**
      * 初始化Handler
@@ -474,15 +313,15 @@ public class DownLoadActivity extends SerialPortActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, int[] grantResults) {
-        //权限被拒绝方法
-//        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            // Permission Granted 授予权限
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Permission Granted 授予权限
 //            if (IntervalUtil.isFastClick_2()) {
 //                startActivity(new Intent(mContext, MessageActivity.class));
 //            }
-//        } else {
-//            Log.e("liyi", "Permission Denied 权限被拒绝");
-//        }
+        } else {
+            Log.e("liyi", "Permission Denied 权限被拒绝");
+        }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -577,5 +416,159 @@ public class DownLoadActivity extends SerialPortActivity {
         if (mProgressThread != null) {
             mProgressThread.mExit = true;
         }
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+        }
+        handler.removeCallbacksAndMessages(null);
+        unregisterReceiver(receiver);
+
     }
+
+
+    private DownloadManager downloadManager;
+
+    private DownloadManager.Query query;
+
+    private DownloadTest mDownloadTest;
+
+
+    private Timer mTimer;
+
+    //下载任务的id
+    private long mDownloadId;
+    private TextView download;
+    private TextView progressTxt;
+    private ProgressBar pb_update;
+    private Button mCancleBtn;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                Toast.makeText(DownLoadActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
+                try {
+                    XbUtils.openAPK(DownLoadActivity.this, Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name);    // 升级程序下载成功
+                    //跳转到显示下载内容的activity界面
+//                    Intent dm = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+//                    dm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.startActivity(dm);
+                } catch (ActivityNotFoundException ex){
+                    Log.e("下载",  "no activity for " + ex.getMessage());
+                }
+            } else if (intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
+                Toast.makeText(DownLoadActivity.this, "用户点击了通知栏", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+
+    Handler handler =new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            int pro = bundle.getInt("progressMsg");
+            pb_update.setProgress(pro);
+            mTvMessage.setText("下载进度：" + pro + "%");
+        }
+    };
+
+    private TimerTask mTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            Cursor cursor = downloadManager.query(query.setFilterById(mDownloadId));
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                Log.e("down", "status:" + status);
+                switch (status) {
+                    //下载暂停
+                    case DownloadManager.STATUS_PAUSED:
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mBtnVersion.setText("下载暂停");
+                            }
+                        });
+                        break;
+                    //下载延迟
+                    case DownloadManager.STATUS_PENDING:
+                        Log.e("down", "====下载延迟=====");
+                        break;
+                    //正在下载
+                    case DownloadManager.STATUS_RUNNING:
+                        //Log.e("down", "====正在下载中=====");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mBtnVersion.setText("正在下载中......");
+                            }
+                        });
+                        break;
+                    //下载完成
+                    case DownloadManager.STATUS_SUCCESSFUL:
+                        //下载完成安装APK
+                        //Log.e("down", "====下载完成=====");
+                        mTimerTask.cancel();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                pb_update.setProgress(100);
+                                mBtnVersion.setText("下载完成");
+                            }
+                        });
+                        break;
+                    //下载失败
+                    case DownloadManager.STATUS_FAILED:
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(DownLoadActivity.this, "下载失败", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        break;
+                }
+
+
+                long bytesDownload = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                String descrition = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION));
+                String id = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_ID));
+                String localUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                String mimeType = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE));
+                String title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                long totalSize = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+
+                Log.e("down", "bytesDownload:" + bytesDownload);
+                Log.e("down", "totalSize:" + totalSize);
+
+                int progress = (int)(bytesDownload*100/totalSize) ;
+                Message msg = Message.obtain();
+                Bundle bundle = new Bundle();
+                bundle.putInt("progressMsg", progress);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+            cursor.close();
+        }
+    };
+
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+
+
+
+
+
+
+
 }
