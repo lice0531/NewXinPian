@@ -150,9 +150,9 @@ public class DownLoadActivity extends BaseActivity {
         if(shengji.length()>0){
 //            Download_APK(shengji);//ftp下载
             //如果之前存在就删除之前的,重新下载
-            if(XbUtils.isExists(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name)){
-                XbUtils.delete(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name) ;
-            }
+//            if(XbUtils.isExists(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name)){
+//                XbUtils.delete(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name) ;
+//            }
             // 删除list.csv 防错误
             String file_path = mSaveDirPath + "/list.csv";
             // 如果文件存在
