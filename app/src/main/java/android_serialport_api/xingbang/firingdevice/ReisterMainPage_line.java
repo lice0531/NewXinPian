@@ -1933,6 +1933,11 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 break;
 
             case R.id.btn_singleReister:
+                int d = getFan(duan_new);
+                if (d == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
+                    return;
+                }
                 hideInputKeyboard();
                 if (checkDelay()) return;
 //                if (delay_set.equals("0")) {
@@ -1986,6 +1991,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 break;
 
             case R.id.btn_setdelay:
+                if (getFan(duan_new) == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
+                    return;
+                }
                 Intent intent3 = new Intent(this, SetDelayTime.class);
                 intent3.putExtra("dataSend", "设置延时");
                 startActivity(intent3);

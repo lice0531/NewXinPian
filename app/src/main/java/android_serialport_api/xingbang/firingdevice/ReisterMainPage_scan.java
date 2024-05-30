@@ -2523,7 +2523,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_tk:
                 int c = getFan(duan_new);
                 if (c == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
                     return;
                 }
                 if (etTk.getText().length() == 0) {
@@ -2543,7 +2543,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_tk_F1:
                 int f = getFan(duan_new);
                 if (f == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
                     return;
                 }
                 btnTkF1.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2559,7 +2559,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_scanReister:
                 int d = getFan(duan_new);
                 if (d == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
                     return;
                 }
                 Log.e(TAG, "是否翻转: " + d);
@@ -2654,7 +2654,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_setdelay:
                 int a = getFan(duan_new);
                 if (a == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
                     return;
                 }
                 String str3 = "设置延时";//"当前雷管信息"
@@ -2665,7 +2665,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_single:
                 int b = getFan(duan_new);
                 if (b == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+                    show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
                     return;
                 }
                 if (checkDelay()) return;
