@@ -1745,6 +1745,7 @@ public class Utils {
                 denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
                 denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
                 denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+                denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
                 DenatorBaseinfo lg2;
                 if(i>0){//从第二发开始,跟前一发对比延时
                      lg2 = new GreenDaoMaster().querylg(list_lg.get(i-1).getShellBlastNo());
@@ -1769,6 +1770,8 @@ public class Utils {
     public static void deleteData(String mRegion,int duan_del) {
 
 //        Log.e("排序雷管", "list_lg: " + list_lg.size());
+
+        //重新排段号
         for (int d = 1; d < 41; d++) {
             List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion,d);
             for (int i = 0; i < list_lg.size(); i++) {
@@ -1793,6 +1796,8 @@ public class Utils {
                 denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
                 denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
                 denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+                denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
+                Log.e("翻转", "list_lg.get(i).getFanzhuan(): "+list_lg.get(i).getFanzhuan() );
                 DenatorBaseinfo lg2;
                 if(list_lg.get(i).getDuan()==duan_del){//只重新排序对应段的雷管,其他段不变
                     if(i>0){//从第二发开始,跟前一发对比延时
@@ -1847,6 +1852,8 @@ public class Utils {
                 denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
                 denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
                 denatorBaseinfo.setDuanNo(list_lg.get(i).getDuanNo());
+                denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
+
                 getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
             }
         Utils.saveFile();//把软存中的数据存入磁盘中

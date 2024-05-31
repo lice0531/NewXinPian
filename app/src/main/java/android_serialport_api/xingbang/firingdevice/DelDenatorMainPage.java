@@ -38,6 +38,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
 import butterknife.BindView;
@@ -321,6 +322,7 @@ public class DelDenatorMainPage extends BaseActivity  {
         switch (view.getId()) {
             case R.id.btn_all_del:
                 tipALLDelDenator();
+                chongZhiFan();//重置所有翻转标记
                 break;
             case R.id.btn_error_del://删除错误雷管
                 pb_show = 1;
@@ -436,4 +438,51 @@ public class DelDenatorMainPage extends BaseActivity  {
 
         Log.e("liyi_Region", "已选择" + str);
     }
+
+    /**
+     * 重置所有翻转标记
+     * */
+    private void chongZhiFan() {
+        MmkvUtils.savecode(mRegion+"n1", 0);
+        MmkvUtils.savecode(mRegion+"n2", 0);
+        MmkvUtils.savecode(mRegion+"n3", 0);
+        MmkvUtils.savecode(mRegion+"n4", 0);
+        MmkvUtils.savecode(mRegion+"n5", 0);
+        MmkvUtils.savecode(mRegion+"n6", 0);
+        MmkvUtils.savecode(mRegion+"n7", 0);
+        MmkvUtils.savecode(mRegion+"n8", 0);
+        MmkvUtils.savecode(mRegion+"n9", 0);
+        MmkvUtils.savecode(mRegion+"n10", 0);
+        MmkvUtils.savecode(mRegion+"n11", 0);
+        MmkvUtils.savecode(mRegion+"n12", 0);
+        MmkvUtils.savecode(mRegion+"n13", 0);
+        MmkvUtils.savecode(mRegion+"n14", 0);
+        MmkvUtils.savecode(mRegion+"n15", 0);
+        MmkvUtils.savecode(mRegion+"n16", 0);
+        MmkvUtils.savecode(mRegion+"n17", 0);
+        MmkvUtils.savecode(mRegion+"n18", 0);
+        MmkvUtils.savecode(mRegion+"n19", 0);
+        MmkvUtils.savecode(mRegion+"n20", 0);
+        MmkvUtils.savecode(mRegion+"n21", 0);
+        MmkvUtils.savecode(mRegion+"n22", 0);
+        MmkvUtils.savecode(mRegion+"n23", 0);
+        MmkvUtils.savecode(mRegion+"n24", 0);
+        MmkvUtils.savecode(mRegion+"n25", 0);
+        MmkvUtils.savecode(mRegion+"n26", 0);
+        MmkvUtils.savecode(mRegion+"n27", 0);
+        MmkvUtils.savecode(mRegion+"n28", 0);
+        MmkvUtils.savecode(mRegion+"n29", 0);
+        MmkvUtils.savecode(mRegion+"n30", 0);
+        MmkvUtils.savecode(mRegion+"n31", 0);
+        MmkvUtils.savecode(mRegion+"n32", 0);
+        MmkvUtils.savecode(mRegion+"n33", 0);
+        MmkvUtils.savecode(mRegion+"n34", 0);
+        MmkvUtils.savecode(mRegion+"n35", 0);
+        MmkvUtils.savecode(mRegion+"n36", 0);
+        MmkvUtils.savecode(mRegion+"n37", 0);
+        MmkvUtils.savecode(mRegion+"n38", 0);
+        MmkvUtils.savecode(mRegion+"n39", 0);
+        MmkvUtils.savecode(mRegion+"n40", 0);
+    }
+
 }

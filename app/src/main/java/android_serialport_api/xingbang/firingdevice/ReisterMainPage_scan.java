@@ -2663,10 +2663,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 startActivityForResult(intent3, 1);
                 break;
             case R.id.btn_single:
-                int b = getFan(duan_new);
-                if (b == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
-                    return;
+                if(btnSingle.getText().toString().equals("手动输入")){
+                    int b = getFan(duan_new);
+                    if (b == 1) {
+                        show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
+                        return;
+                    }
                 }
                 if (checkDelay()) return;
                 if (llStart.getVisibility() == View.GONE) {
