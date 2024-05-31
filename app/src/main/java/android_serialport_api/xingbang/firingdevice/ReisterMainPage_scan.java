@@ -1494,6 +1494,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         et_duanNo.setText(duanNo + "");
         int d = getFan(info.getDuan());
         Log.e(TAG, "是否翻转: " + d);
+        Log.e(TAG, "是否翻转: info.getFanzhuan()" + info.getFanzhuan());
         builder.setNegativeButton("插入孔", (dialog, which) -> {
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
                 show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
@@ -1547,6 +1548,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            Log.e(TAG, "a: "+a );
             if (a > 1) {
                 show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
+                return;
+            }
+            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
+                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
                 return;
             }
             String delay1 = et_delay.getText().toString();

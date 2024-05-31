@@ -559,6 +559,10 @@ public class SetDelayTime extends BaseActivity {
                 show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
                 return;
             }
+            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") ) {
+                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                return;
+            }
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
