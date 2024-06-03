@@ -1247,7 +1247,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         builder.setPositiveButton("确定", (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
                 return;
             }
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {

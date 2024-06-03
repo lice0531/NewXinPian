@@ -1551,7 +1551,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 return;
             }
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
                 return;
             }
             String delay1 = et_delay.getText().toString();

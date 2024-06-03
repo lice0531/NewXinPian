@@ -74,6 +74,7 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
             DenatorBaseinfo detonatorBaseInfo = list_detonatorBaseInfo.get(position);
             holder.mTvBlastSerial.setText((list_detonatorBaseInfo.size() - position) + "");                 // 序号
             holder.mTvShellBlastNo.setText(detonatorBaseInfo.getShellBlastNo());   // 管壳号
+            holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
 //            if(mLine == 6){
 //                holder.mTvShellBlastNo.setText(detonatorBaseInfo.getDenatorId());   // 芯片码
 //                holder.mTvSitHole.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());     // 段号
