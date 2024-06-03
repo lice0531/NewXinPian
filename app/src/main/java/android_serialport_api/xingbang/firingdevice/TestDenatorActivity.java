@@ -304,9 +304,12 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            if (tureNumStr.trim().length() < 1) {
 //                tureNumStr = "0";
 //            }
-            ll_firing_errorNum_4.setText("" + ((Integer.parseInt(errNumStr) - 1)));
-            totalerrorNum = Integer.parseInt(errNumStr) - 1;
-            ll_firing_errorNum_4.setTextColor(Color.GREEN);
+            if(Integer.parseInt(errNumStr)>0){//更正错误雷管前有个获取错误总数的方法,可能会导致-1,所以要判断一下
+                ll_firing_errorNum_4.setText("" + ((Integer.parseInt(errNumStr) - 1)));
+                totalerrorNum = Integer.parseInt(errNumStr) - 1;
+                ll_firing_errorNum_4.setTextColor(Color.GREEN);
+            }
+
 
 //            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
 //            totaltureNum = Integer.parseInt(tureNumStr) + 1;
@@ -739,8 +742,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                     Log.e(TAG, "小于21000u ，全错: stage=" + stage);
                 } else if (totalerrorNum > 0 && busInfo.getBusCurrentIa() < denatorCount * cankaodianliu + 100) {//小于参考值 ，部分错
                     // (从上面取下来的条件)
-                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                    sendCmd(reCmd);
+//                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+//                    sendCmd(reCmd);
 //                    if (chongfu) {//李斌要修改之前的
                     initDialog_zanting2(getString(R.string.text_test_tip7));//弹出框
 //                    } else {
@@ -944,7 +947,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {//待测雷管数小于1执行方法
                                     Thread.sleep(1000);
-                                    if (denatorCount >= 300 || totalerrorNum != 0) {
+                                    if (denatorCount >= 300 && totalerrorNum != 0) {
                                         Handler_tip.sendMessage(Handler_tip.obtainMessage(3));
                                         Log.e(TAG, "重发错误雷管: ----------");
                                         getErrblastQueue();//重新给雷管队列赋值
@@ -1068,9 +1071,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     Thread.sleep(1000);
                                     //36指令
                                     int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
+                                    GreenDaoMaster master = new GreenDaoMaster();
+                                    errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                    Log.e(TAG, "a: "+a+"  errlist"+errlist.size() );
                                     if (a == 1 && errlist != null) {
-                                        GreenDaoMaster master = new GreenDaoMaster();
-                                        errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+
                                         sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
                                     } else {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测

@@ -1704,7 +1704,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
 
                                     Log.e("第4阶段-increase", "4-2");
-                                    if(denatorCount>=300||totalerrorNum!=0){
+                                    if(denatorCount>=300&&totalerrorNum!=0){
                                         getErrblastQueue();//重新给雷管队列赋值
                                         increase(44);//之前是4
                                     }else {

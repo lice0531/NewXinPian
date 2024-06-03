@@ -149,7 +149,7 @@ public class DownLoadActivity extends BaseActivity {
         mPath_Local=Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name;
         if(shengji.length()>0){
 //            Download_APK(shengji);//ftp下载
-            //如果之前存在就删除之前的,重新下载
+            //如果之前存在就删除之前的,重新下载(不重新下可能会出现解析错误)
             if(XbUtils.isExists(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name)){
                 XbUtils.delete(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name) ;
             }
