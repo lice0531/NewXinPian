@@ -180,6 +180,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                 db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
                 refreshData();
                 dialog.dismiss();
+                chongZhiFan();//重置所有翻转标记
                 Utils.saveFile();//把软存中的数据存入磁盘中
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
             }
@@ -322,7 +323,7 @@ public class DelDenatorMainPage extends BaseActivity  {
         switch (view.getId()) {
             case R.id.btn_all_del:
                 tipALLDelDenator();
-                chongZhiFan();//重置所有翻转标记
+
                 break;
             case R.id.btn_error_del://删除错误雷管
                 pb_show = 1;
