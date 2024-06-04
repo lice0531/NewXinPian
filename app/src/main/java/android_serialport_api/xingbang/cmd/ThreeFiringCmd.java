@@ -361,7 +361,6 @@ public class ThreeFiringCmd {
 		if(iscorrent==0){
 			String cmd = DefCommand.decodeCommand(from);
 			//jiexi_36--cmd: 003607FF000000000000
-			Log.e("解析", "jiexi_36--cmd: "+cmd );
 			return cmd.substring(6,8);
 		}else{
 			return null;

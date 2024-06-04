@@ -962,13 +962,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         } else {
                                             sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                         }
-
-
+                                        Thread.sleep(500);//等待36返回
                                         Log.e(TAG, "跳转: ");
                                         stage = 4;
                                     }
-
-
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
                                 }
@@ -1075,13 +1072,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
                                     Log.e(TAG, "a: "+a+"  errlist"+errlist.size() );
                                     if (a == 1 && errlist != null) {
-
                                         sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
                                     } else {
                                         sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
-
-
+                                    Thread.sleep(500);//等待36返回
                                     Log.e(TAG, "跳转: ");
                                     stage = 4;
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
