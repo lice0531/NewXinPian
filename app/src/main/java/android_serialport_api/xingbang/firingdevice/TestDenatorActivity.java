@@ -630,6 +630,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (displayIc > 21000 && firstCount < Preparation_time * 0.5) {
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
+                        ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
                     } else if (displayIc > (denatorCount * cankaodianliu * 2) && firstCount < Preparation_time * 0.5) {//5
