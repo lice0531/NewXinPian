@@ -10,9 +10,12 @@ public class FirstEvent {
 
     private String position;
 
-    private int tureNum;
+    private String tureNum;
 
-    private int errNum;
+    private String errNum;
+
+    //电流值
+    private String currentPeak;
 
     public FirstEvent(String msg) {
         mMsg = msg;
@@ -22,18 +25,29 @@ public class FirstEvent {
         this.data = data;
         mMsg = msg;
     }
-
-    public FirstEvent(String msg, String data, String position) {
-        this.position = position;
+    public FirstEvent(String msg, String data,String currentPeak) {
+        this.data = data;
+        mMsg = msg;
+        this.currentPeak = currentPeak;
     }
-    public FirstEvent(String msg, String data, String position,int tureNum,int errNum) {
+//    public FirstEvent(String msg, String data, String position) {
+//        this.position = position;
+//    }
+    public FirstEvent(String msg, String data, String position,String tureNum,String errNum) {
         this.mMsg = msg;
         this.data = data;
         this.position = position;
         this.tureNum = tureNum;
         this.errNum = errNum;
     }
-
+    public FirstEvent(String msg, String data, String position,String tureNum,String errNum,String currentPeak) {
+        this.mMsg = msg;
+        this.data = data;
+        this.position = position;
+        this.tureNum = tureNum;
+        this.errNum = errNum;
+        this.currentPeak = currentPeak;
+    }
     public String getMsg() {
         return mMsg;
     }
@@ -46,19 +60,27 @@ public class FirstEvent {
         return position;
     }
 
-    public int getTureNum() {
+    public String getTureNum() {
         return tureNum;
     }
 
-    public void setTureNum(int tureNum) {
+    public void setTureNum(String tureNum) {
         this.tureNum = tureNum;
     }
 
-    public int getErrNum() {
+    public String getErrNum() {
         return errNum;
     }
 
-    public void setErrNum(int errNum) {
+    public void setErrNum(String errNum) {
         this.errNum = errNum;
+    }
+
+    public String getCurrentPeak() {
+        return currentPeak;
+    }
+
+    public void setCurrentPeak(String currentPeak) {
+        this.currentPeak = currentPeak;
     }
 }

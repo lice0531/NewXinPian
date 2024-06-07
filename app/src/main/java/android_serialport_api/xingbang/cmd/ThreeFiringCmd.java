@@ -274,6 +274,17 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_3_DETONATE_7+"00";//36
 		return DefCommand.getCommadBytes(command);
 	}
+
+	/***
+	 * 发送切换模式指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setToXbCommon_Translate_83(String addr){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_83 + "00";//83
+		return DefCommand.getCommadBytes(command);
+	}
+
 	/***
 	 * 处理 在网读ID检测
 	 * @param addr

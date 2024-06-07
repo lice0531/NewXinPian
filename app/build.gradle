@@ -109,7 +109,7 @@ dependencies {
     compileOnly 'com.google.zxing:core:3.3.0'
 //    异常捕获
 //    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
-    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
+    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:1.1.8"
 
     // Spinner(下拉列表)
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
