@@ -240,18 +240,18 @@ public class SyncActivityYouxian extends BaseActivity {
                             if ("01".equals(response.substring(response.length() - 2))) {
                                 //为防止其他子机收到的消息中有包含当前主机的数据特意加个延时
 
-//                                try {
-//                                    Thread.sleep(1000);
-//                                } catch (InterruptedException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-
-                                int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
                                 try {
-                                    Thread.sleep(delay * 2L);
+                                    Thread.sleep(1000);
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
+
+//                                int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
+//                                try {
+//                                    Thread.sleep(delay * 2L);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
                                 send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
                                 EventBus.getDefault().post(new FirstEvent("sendCmd83"));
                             } else if ("00".equals(response.substring(response.length() - 2))) {
