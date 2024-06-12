@@ -892,8 +892,11 @@ public class SyncActivityYouxian extends BaseActivity {
 //            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
 //            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
 //            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            send485Cmd("B3" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum()
-            + event.getErrNum() + event.getCurrentPeak());
+            String pollData = "B3" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum()
+                    + event.getErrNum() + event.getCurrentPeak();
+            if (pollData.length() == 18) {
+                send485Cmd(pollData);
+            }
         } else if (msg.equals("open485")) {
             switch (Build.DEVICE) {
                 case "M900":
@@ -963,6 +966,12 @@ public class SyncActivityYouxian extends BaseActivity {
         };
         mExpDevMgr.set12VEnable(true);
         mExpDevMgr.openRs485(listener, listener2, 115200);
+        int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         send485Cmd(qbResult);
     }
 
