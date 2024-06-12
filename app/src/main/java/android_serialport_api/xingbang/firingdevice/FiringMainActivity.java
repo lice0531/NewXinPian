@@ -207,9 +207,9 @@ public class FiringMainActivity extends SerialPortActivity {
     private String mRegion;     // 区域
     private int ic_cankao = 30;//雷管参考电流
 
-    private boolean version_0 = true;
-    private boolean version_1 = true;
-    private boolean version_2 = true;
+    private boolean version_0 = true;//是否发送4600  一代芯片
+    private boolean version_1 = true;//是否发送4601  二代芯片快
+    private boolean version_2 = true;//是否发送4602  二代芯片慢
     private boolean chongfu13 = true;
     private long time = 0;
     private int GaoYa_time = (int) MmkvUtils.getcode("GaoYa_time", 15);
@@ -657,6 +657,7 @@ public class FiringMainActivity extends SerialPortActivity {
         totalerrorNum = 0;
         version_0 = true;
         version_1 = true;
+        version_2 = true;
     }
 
     private void getUserMessage() {
@@ -676,7 +677,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 version = message.get(0).getVersion();
             }
 
-            Log.e(TAG, "version: " + version);
+            Log.e(TAG, "获取到的version: " + version);
         }
         Log.e("Preparation_time", Preparation_time + "");
         Log.e("ChongDian_time", ChongDian_time + "");
@@ -881,6 +882,7 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setDenatorIdSup(d.getDenatorIdSup());
             vo.setZhu_yscs(d.getZhu_yscs());
             vo.setCong_yscs(d.getCong_yscs());
+            vo.setDelay((short) d.getDelay());
             vo.setVersion(d.getAuthorization());//芯片版本
             if (d.getAuthorization().equals("02")) {
                 denatorlist2.add(vo);
@@ -908,9 +910,9 @@ public class FiringMainActivity extends SerialPortActivity {
         }
 
         denatorCount = allBlastQu.size();
-        Log.e(TAG, "denatorlist0: " + denatorlist0.size());
-        Log.e(TAG, "denatorlist1: " + denatorlist1.size());
-        Log.e(TAG, "denatorlist2: " + denatorlist2.size());
+        Log.e(TAG, "denatorlist0: " + denatorlist0.size() + denatorlist0.toString());
+        Log.e(TAG, "denatorlist1: " + denatorlist1.size() + denatorlist1.toString());
+        Log.e(TAG, "denatorlist2: " + denatorlist2.size() + denatorlist2.toString());
         Log.e(TAG, "denatorCount: " + denatorCount);
 //        Log.e(TAG, "list_all_lg: " + list_all_lg.toString());
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
@@ -1290,7 +1292,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 sendCmd(powerCmd);
                 chongfu13 = false;
             }
-
+            Log.e(TAG,"接收到芯片13指令了：此时去看case 1处理了什么");
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
             //得到电流电压信息
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
@@ -1302,7 +1304,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            secondCmdFlag = 1;
 //            thirdWriteCount = 0;
 //            increase(3);
-
+            Log.e(TAG,"接收到芯片30指令了：无操作");
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
 //            Log.e("起爆测试结果", "解析31cmd: " + Utils.bytesToHexFun(locatBuf));//测试一条命令分两次发测试用的
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
@@ -1320,17 +1322,17 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
 //            Log.e(TAG, "错误雷管数量--totalerrorNum: " + totalerrorNum);
-
+            Log.e(TAG,"接收到芯片31指令了：此时更新雷管信息");
 
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
             sixCmdSerial = 3;
-
+            Log.e(TAG,"接收到芯片32指令了：发送 高压输出命令");
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 2;
-
+            Log.e(TAG,"接收到芯片33指令了：收到高压输出命令");
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
 //            if (qibaoNoFlag < 5) {
 //                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
@@ -1360,7 +1362,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    e.printStackTrace();
 //                }
 //            }
-
+            Log.e(TAG,"接收到芯片34指令了：去做起爆操作");
         } else if (DefCommand.CMD_3_DETONATE_6.equals(cmd)) {//35 退出起爆模式
             //发出关闭获取得到电压电流
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40
@@ -1373,9 +1375,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 fourOnlineDenatorFlag = 3;
 //                increase(6);//0635此处功能为直接跳到第六阶段
             }
-
+            Log.e(TAG,"接收到芯片35指令了：退出起爆模式");
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
-
+            Log.e(TAG,"接收到芯片37指令了：异常终止起爆，无操作");
         } else if (DefCommand.CMD_3_DETONATE_9.equals(cmd)) {//38 进入充电检测模式
             //处理返回的起爆模式命令
 //            secondCmdFlag = 1;
@@ -1385,20 +1387,27 @@ public class FiringMainActivity extends SerialPortActivity {
 //            firstThread.run();
 //            increase(5);
 //            mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            Log.e("起爆页面", "进入充电检测");
+            Log.e(TAG, "进入充电检测");
+            Log.e(TAG,"接收到芯片38指令：进入充电检测");
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
-
+            Log.e(TAG,"接收到芯片40指令了:去更新页面中电流电压信息");
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
-                if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                if (version.equals("00")) {
+                    //一代
+                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));//20(第一代)
+                } else if (version.equals("01")) {
+                    //二代快
+                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第二代 快)
                 } else {
+                    //二代慢
                     sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第二代)
                 }
+                Log.e(TAG,"接收到芯片41指令了，此时给芯片发送46指令了,version:" + version);
             }
             if (FiringMainActivity.stage == 8) {
                 byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
@@ -1406,9 +1415,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("第一次发送起爆指令--");
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
-            Log.e("起爆页面", "发送46指令");
+//            Log.e(TAG, "发送46指令");
+            Log.e(TAG,"接收到芯片46指令了:无操作");
         } else {
-            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
+            Log.e(TAG, "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
 
     }
@@ -1759,20 +1769,38 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
 //                                Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
 //                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
-                                if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
-                                    version_1 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));
-                                    Thread.sleep(1000);
-                                    continue;
-                                }
-                                if (version_0 && thirdWriteCount == denatorlist2.size() + denatorlist1.size() && denatorlist0.size() != 0) {// 有2代为0的时候
-                                    increase(12);
-                                    version_0 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));
+//                                if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
+//                                    version_1 = false;//发一次就不要发了
+//                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));
 //                                    Thread.sleep(1000);
+//                                    continue;
+//                                }
+//                                if (version_0 && thirdWriteCount == denatorlist2.size() + denatorlist1.size() && denatorlist0.size() != 0) {// 有2代为0的时候
+//                                    increase(12);
+//                                    version_0 = false;//发一次就不要发了
+////                                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));
+////                                    Thread.sleep(1000);
+//                                    continue;
+//                                }
+                                //如果存在一代雷管  那就发46指令
+                                if (version_0 && denatorlist0.size() != 0) {
+                                    version_0 = false;
+                                    sendCmd(FourStatusCmd.send46("00", "00"));//(第一代)
                                     continue;
                                 }
 
+                                //如果存在二代快雷管  那就发46指令
+                                if (version_1 && denatorlist1.size() != 0) {
+                                    version_1 = false;
+                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
+                                    continue;
+                                }
+                                //如果存在二代慢雷管  那就发46指令
+                                if (version_2 && denatorlist2.size() != 0) {
+                                    version_2 = false;
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//(第二代慢)
+                                    continue;
+                                }
                                 //检测两次
 //                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
 //                                    //如果过错误数量不为为0才发第二次
@@ -1795,13 +1823,12 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
-                                Log.e(TAG, "ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion());
-
 
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-                                if (!write.getVersion().equals("00") && write.getDenatorId() == null) {
+                                if (!write.getVersion().equals("00") && (write.getDenatorId() == null || write.getDenatorId().length() < 8)) {
+//                                    if (!write.getVersion().equals("00") && write.getDenatorId() == null) {
                                     Message msg = Handler_tip.obtainMessage();
                                     msg.what = 2;
                                     Bundle b = new Bundle();
@@ -1822,6 +1849,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 short delayTime = write.getDelay();
+                                Log.e(TAG, "case3: ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion() +
+                                        " 转化后的雷管id:" + denatorId + " delaytime:" + delayTime);
+
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr + write.getZhu_yscs();
@@ -1860,6 +1890,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     fromDataErr.setDenaId(tempBaseInfo.getDenatorId());
                                     fromDataErr.setDelayTime(tempBaseInfo.getDelay());
                                     fromDataErr.setCommicationStatus("AF");
+                                    Log.e(TAG, "开始调用updateDenator()了,延时是:" + tempBaseInfo.getDelay());
                                     updateDenator(fromDataErr, tempBaseInfo.getDelay());
                                     //发出错误
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1894,9 +1925,10 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e("第3阶段-increase", "3");
                             }
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            Log.e(TAG,"case5 充电检测倒计时中");
                             break;
                         case 6://充电阶段
-                            Log.e(TAG, "充电阶段sixExchangeCount: " + sixExchangeCount);
+                            Log.e(TAG, "case6充电阶段sixExchangeCount: " + sixExchangeCount);
 //                            if (sixExchangeCount == ChongDian_time) {
 //                                sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
 //                            }
@@ -2050,14 +2082,22 @@ public class FiringMainActivity extends SerialPortActivity {
                                     closeThread();
                                     break;
                                 }
-                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
-//                                Log.e("雷管转化", "denatorId: " + denatorId);
+                                String denatorId;//新芯片编码
+//                                Log.e("写入延时", "denatorId: " + denatorId);
+                                if (write.getVersion().equals("00")) {//兼容一代
+                                    denatorId = Utils.GkmToUid_NewDanLing(write.getShellBlastNo());//一代煤许协议
+                                } else {
+                                    denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片编码
+                                }
+                                denatorId = Utils.getReverseDetonatorNo(denatorId);
+//                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
 //                                if(denatorId.equals("0")){
 //                                    show_Toast_ui("当前版本号只支持0-F,"+shellStr+"雷管超出范围");
 //                                    continue;
 //                                }
-                                denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 short delayTime = write.getDelay();
+                                Log.e(TAG, "case33: ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion()
+                                        +" delayTime: " + delayTime +" denatorId: " + denatorId);
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr + write.getZhu_yscs();

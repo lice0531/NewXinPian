@@ -124,6 +124,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否已经发送了40
     private boolean version_1 = true;//是否发送4601
     private boolean version_0 = true;//是否发送4600
+    private boolean version_2 = true;//是否发送4602
 
     //初始化
     private void initParam() {
@@ -149,6 +150,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         send_kg = true;
         version_0 = true;
         version_1 = true;
+        version_2 = true;
     }
 
     @Override
@@ -882,20 +884,46 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
                                 }
-                                if (version_1 && thirdWriteCount == denatorlist0.size() && denatorlist1.size() != 0) {
-                                    version_1 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-                                    Thread.sleep(1000);
+                                //如果存在一代雷管  那就发46指令
+                                if (version_0 && denatorlist0.size() != 0) {
+                                    version_0 = false;
+                                    sendCmd(FourStatusCmd.send46("00", "00"));//(第一代)
                                     continue;
                                 }
 
-                                if (version_0 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() && denatorlist0.size() != 0) {
-                                    version_0 = false;//发一次就不要发了
-                                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-                                    Thread.sleep(1000);
+                                //如果存在二代快雷管  那就发46指令
+                                if (version_1 && denatorlist1.size() != 0) {
+                                    version_1 = false;
+                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
                                     continue;
                                 }
-
+                                //如果存在二代慢雷管  那就发46指令
+                                if (version_2 && denatorlist2.size() != 0) {
+                                    version_2 = false;
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//(第二代慢)
+                                    continue;
+                                }
+//                                if (version_1 && thirdWriteCount == denatorlist0.size() && denatorlist1.size() != 0) {
+//                                    version_1 = false;//发一次就不要发了
+//                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
+//                                    Thread.sleep(1000);
+//                                    continue;
+//                                }
+//
+//                                if (version_0 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() && denatorlist0.size() != 0) {
+//                                    version_0 = false;//发一次就不要发了
+//                                    sendCmd(FourStatusCmd.send46("00", "00"));//第一代
+//                                    Thread.sleep(1000);
+//                                    continue;
+//                                }
+//
+//                                if (version_2 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() +
+//                                        denatorlist2.size() && denatorlist2.size() != 0) {
+//                                    version_2 = false;//发一次就不要发了
+//                                    sendCmd(FourStatusCmd.send46("00", "02"));//第二代慢
+//                                    Thread.sleep(1000);
+//                                    continue;
+//                                }
 
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
