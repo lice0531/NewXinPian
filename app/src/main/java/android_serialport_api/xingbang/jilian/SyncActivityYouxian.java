@@ -235,33 +235,25 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.contains("A5")) {
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
-                            Log.e("已接收到切换模式指令",response);
+                            //主的子设备
                             show_Toast(getString(R.string.text_sync_tip6));
-                            if ("01".equals(response.substring(response.length() - 2))) {
-                                //为防止其他子机收到的消息中有包含当前主机的数据特意加个延时
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-//                                int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
-//                                try {
-//                                    Thread.sleep(delay * 2L);
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-                                send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
-                                EventBus.getDefault().post(new FirstEvent("sendCmd83"));
-                            } else if ("00".equals(response.substring(response.length() - 2))) {
-                                Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-                                Log.e("现在开始关闭485",response);
-                                closeM900Rs485(response);
+                            Log.e("主的子设备已接收到切换模式指令",response);
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
                             }
-                            //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
-                            EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+                            send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
+                            EventBus.getDefault().post(new FirstEvent("sendCmd83"));
+                        } else {
+                            //其他子设备
+                            show_Toast(getString(R.string.text_sync_tip6));
+                            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                            Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + response);
+                            closeM900Rs485(response);
                         }
+                        //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
+                        EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
 //                    } else if (response.contains("A003")) {
                         //收到主控的充电指令
                     } else if (response.contains("A6")) {
@@ -967,7 +959,7 @@ public class SyncActivityYouxian extends BaseActivity {
         mExpDevMgr.openRs485(listener, listener2, 115200);
         int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
         try {
-            Thread.sleep(delay * 10);
+            Thread.sleep(delay * 50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
