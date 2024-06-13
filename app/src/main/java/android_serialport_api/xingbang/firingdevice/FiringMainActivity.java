@@ -1300,9 +1300,9 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
             deviceStatus = "05";//起爆结束
             isGetQbResult = true;
-            EventBus.getDefault().post(new FirstEvent("open485","B3" + MmkvUtils.getcode("ACode", "") +
+            EventBus.getDefault().post(new FirstEvent("open485","B005" + MmkvUtils.getcode("ACode", "") +
                     deviceStatus + qbResult));
-            Log.e("起爆结束了","去重新打开485接口" + "起爆结果是: " + "B3" + MmkvUtils.getcode("ACode", "") +
+            Log.e("起爆结束了","去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
                     deviceStatus + qbResult);
 //            String text = ll_firing_IC_4.getText().toString();
 //            if (text.contains("疑似") || text.contains("过大")) {

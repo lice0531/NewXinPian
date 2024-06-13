@@ -894,13 +894,12 @@ public class SyncActivityYouxian extends BaseActivity {
 //            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
             String pollData = "B3" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum()
                     + event.getErrNum() + event.getCurrentPeak();
-            if (pollData.length() == 18) {
+            if (pollData.startsWith("B3") && pollData.length() == 18) {
                 send485Cmd(pollData);
             }
         } else if (msg.equals("open485")) {
             switch (Build.DEVICE) {
                 case "M900":
-
                     openM900Rs485(event.getData());
                     break;
                 default:
@@ -968,11 +967,16 @@ public class SyncActivityYouxian extends BaseActivity {
         mExpDevMgr.openRs485(listener, listener2, 115200);
         int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(delay * 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        send485Cmd(qbResult);
+        if (qbResult.startsWith("B005") && qbResult.length() == 20) {
+            Log.e("起爆结束后发送的数据正常",qbResult);
+            send485Cmd(qbResult);
+        } else {
+            Log.e("起爆结束后发送的数据有误",qbResult);
+        }
     }
 
     private void closeM900Rs485(String code) {
