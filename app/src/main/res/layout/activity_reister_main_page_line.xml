@@ -406,7 +406,7 @@
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="@string/text_singleReister" />
+                    android:text="搜索雷管" />
                 <Button
                     android:id="@+id/btn_setdelay"
                     style="@style/allbtntstyle"
@@ -414,6 +414,7 @@
                     android:layout_height="50dp"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/bt_mainpage_style"
+                    android:visibility="gone"
                     android:text="@string/text_single_setDelay" />
                 <Button
                     android:id="@+id/btn_inputOk"
@@ -426,15 +427,14 @@
                     android:text="@string/text_sure"
                     style="@style/allbtntstyle" />
                 <Button
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:id="@+id/btn_LookHistory"
                     style="@style/allbtntstyle"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginLeft="20dp"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="检测历史" />
+                    android:text="清空" />
 
 
             </LinearLayout>
