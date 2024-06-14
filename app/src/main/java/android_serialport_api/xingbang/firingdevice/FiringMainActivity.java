@@ -895,20 +895,21 @@ public class FiringMainActivity extends SerialPortActivity {
 //            list_all_lg.add(vo);
         }
 
-        for (VoDenatorBaseInfo b : denatorlist2) {
-            allBlastQu.offer(b);
-            list_all_lg.add(b);
-        }
-        for (VoDenatorBaseInfo a : denatorlist1) {
-            allBlastQu.offer(a);
-            list_all_lg.add(a);
-        }
 
         for (VoDenatorBaseInfo c : denatorlist0) {
             allBlastQu.offer(c);
             list_all_lg.add(c);
         }
 
+        for (VoDenatorBaseInfo a : denatorlist1) {
+            allBlastQu.offer(a);
+            list_all_lg.add(a);
+        }
+
+        for (VoDenatorBaseInfo b : denatorlist2) {
+            allBlastQu.offer(b);
+            list_all_lg.add(b);
+        }
         denatorCount = allBlastQu.size();
         Log.e(TAG, "denatorlist0: " + denatorlist0.size() + denatorlist0.toString());
         Log.e(TAG, "denatorlist1: " + denatorlist1.size() + denatorlist1.toString());
@@ -1769,38 +1770,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
 //                                Log.e(TAG, "thirdWriteCount: "+thirdWriteCount );
 //                                Log.e(TAG, "denatorlist2.size(): "+denatorlist2.size() );
-//                                if (version_1 && thirdWriteCount == denatorlist2.size() && denatorlist1.size() != 0) {// 有2代为0的时候
-//                                    version_1 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));
-//                                    Thread.sleep(1000);
-//                                    continue;
-//                                }
-//                                if (version_0 && thirdWriteCount == denatorlist2.size() + denatorlist1.size() && denatorlist0.size() != 0) {// 有2代为0的时候
-//                                    increase(12);
-//                                    version_0 = false;//发一次就不要发了
-////                                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));
-////                                    Thread.sleep(1000);
-//                                    continue;
-//                                }
-                                //如果存在一代雷管  那就发46指令
-                                if (version_0 && denatorlist0.size() != 0) {
-                                    version_0 = false;
-                                    sendCmd(FourStatusCmd.send46("00", "00"));//(第一代)
-                                    continue;
-                                }
 
-                                //如果存在二代快雷管  那就发46指令
-                                if (version_1 && denatorlist1.size() != 0) {
-                                    version_1 = false;
-                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
-                                    continue;
-                                }
-                                //如果存在二代慢雷管  那就发46指令
-                                if (version_2 && denatorlist2.size() != 0) {
-                                    version_2 = false;
-                                    sendCmd(FourStatusCmd.send46("00", "02"));//(第二代慢)
-                                    continue;
-                                }
                                 //检测两次
 //                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
 //                                    //如果过错误数量不为为0才发第二次
@@ -1823,7 +1793,31 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
+                                //如果存在一代雷管  那就发46指令
+                                if (version_0 && denatorlist0.size() != 0 && "00".equals(write.getVersion())) {
+                                    version_0 = false;
+                                    Log.e(TAG,"发送4600指令");
+                                    sendCmd(FourStatusCmd.send46("00", "00"));//(第一代)
+                                    Thread.sleep(1000);
+//                                    continue;
+                                }
 
+                                //如果存在二代快雷管  那就发46指令
+                                if (version_1 && denatorlist1.size() != 0 && "01".equals(write.getVersion())) {
+                                    version_1 = false;
+                                    Log.e(TAG,"发送4601指令");
+                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
+                                    Thread.sleep(1000);
+//                                    continue;
+                                }
+                                //如果存在二代慢雷管  那就发46指令
+                                if (version_2 && denatorlist2.size() != 0 && "02".equals(write.getVersion())) {
+                                    version_2 = false;
+                                    Log.e(TAG,"发送4602指令");
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//(第二代慢)
+                                    Thread.sleep(1000);
+//                                    continue;
+                                }
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
@@ -1849,8 +1843,6 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 short delayTime = write.getDelay();
-                                Log.e(TAG, "case3: ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion() +
-                                        " 转化后的雷管id:" + denatorId + " delaytime:" + delayTime);
 
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
@@ -1867,6 +1859,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
+                                Log.e(TAG, "case3: ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion() +
+                                        " 转化后的雷管id:" + denatorId + " delaytime:" + delayTime+ "当前第" + thirdWriteCount + "发雷管");
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
 
                             } else {

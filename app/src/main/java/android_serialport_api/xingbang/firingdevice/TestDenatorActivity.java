@@ -181,6 +181,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         blastQueue = new LinkedList<>();
         errorList = new LinkedList<>();
         getUserMessage();//放在前面
+        Utils.writeLog("网络测试页面");
         initParam();//清空所有数据,要放在读取数据的方法之前
         initView();
         loadMoreData();//读取数据
@@ -511,7 +512,10 @@ public class TestDenatorActivity extends SerialPortActivity {
 
 
         denatorCount = blastQueue.size();
-        Log.e("雷管队列", "denatorCount: " + denatorCount);
+        Log.e(TAG, "denatorlist0: " + denatorlist0.size() + denatorlist0.toString());
+        Log.e(TAG, "denatorlist1: " + denatorlist1.size() + denatorlist1.toString());
+        Log.e(TAG, "denatorlist2: " + denatorlist2.size() + denatorlist2.toString());
+        Log.e(TAG, "denatorCount: " + denatorCount);
         tv_dianliu.setText(denatorCount * ic_cankao + "μA");//参考电流
 
     }
@@ -884,51 +888,31 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     break;
                                 }
-                                //如果存在一代雷管  那就发46指令
-                                if (version_0 && denatorlist0.size() != 0) {
-                                    version_0 = false;
-                                    sendCmd(FourStatusCmd.send46("00", "00"));//(第一代)
-                                    continue;
-                                }
-
-                                //如果存在二代快雷管  那就发46指令
-                                if (version_1 && denatorlist1.size() != 0) {
-                                    version_1 = false;
-                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
-                                    continue;
-                                }
-                                //如果存在二代慢雷管  那就发46指令
-                                if (version_2 && denatorlist2.size() != 0) {
-                                    version_2 = false;
-                                    sendCmd(FourStatusCmd.send46("00", "02"));//(第二代慢)
-                                    continue;
-                                }
-//                                if (version_1 && thirdWriteCount == denatorlist0.size() && denatorlist1.size() != 0) {
-//                                    version_1 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
-//                                    Thread.sleep(1000);
-//                                    continue;
-//                                }
-//
-//                                if (version_0 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() && denatorlist0.size() != 0) {
-//                                    version_0 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "00"));//第一代
-//                                    Thread.sleep(1000);
-//                                    continue;
-//                                }
-//
-//                                if (version_2 && thirdWriteCount == denatorlist0.size() + denatorlist1.size() +
-//                                        denatorlist2.size() && denatorlist2.size() != 0) {
-//                                    version_2 = false;//发一次就不要发了
-//                                    sendCmd(FourStatusCmd.send46("00", "02"));//第二代慢
-//                                    Thread.sleep(1000);
-//                                    continue;
-//                                }
 
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
-                                Log.e(TAG, "ShellBlastNo: " + write.getShellBlastNo() + " version:" + write.getVersion());
+                                //如果存在一代雷管  那就发46指令
+                                if (version_0 && denatorlist0.size() != 0 && "00".equals(write.getVersion())) {
+                                    version_0 = false;
+                                    Log.e(TAG,"发送4600指令");
+                                    sendCmd(FourStatusCmd.send46("00", "00"));//(第一代)
+                                    Thread.sleep(1000);
+                                }
 
+                                //如果存在二代快雷管  那就发46指令
+                                if (version_1 && denatorlist1.size() != 0 && "01".equals(write.getVersion())) {
+                                    version_1 = false;
+                                    Log.e(TAG,"发送4601指令");
+                                    sendCmd(FourStatusCmd.send46("00", "01"));//(第二代快)
+                                    Thread.sleep(1000);
+                                }
+                                //如果存在二代慢雷管  那就发46指令
+                                if (version_2 && denatorlist2.size() != 0 && "02".equals(write.getVersion())) {
+                                    version_2 = false;
+                                    Log.e(TAG,"发送4602指令");
+                                    sendCmd(FourStatusCmd.send46("00", "02"));//(第二代慢)
+                                    Thread.sleep(1000);
+                                }
                                 String data = "";
                                 if (!write.getVersion().equals("00") && (write.getDenatorId() == null || write.getDenatorId().length() < 8)) {
                                     Message msg = Handler_tip.obtainMessage();
@@ -978,6 +962,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
+                                Log.e(TAG, "测试21延时:ShellBlastNo: " + write.getShellBlastNo() + " version:"
+                                        + write.getVersion() + "  21指令data:" + denatorId + "--延时字节:" + delayStr
+                                        + "当前第" + thirdWriteCount + "发雷管");
                                 Thread.sleep(50);//
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             } else {
