@@ -1398,10 +1398,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
-                if (version.equals("00")) {
-                    //一代
-                    sendCmd(FourStatusCmd.send46("00", "00", denatorCount));//20(第一代)
-                } else if (version.equals("01")) {
+                if (version.equals("01")) {
                     //二代快
                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第二代 快)
                 } else {
@@ -1907,10 +1904,10 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             Log.e("充电检测WaitCount", Wait_Count + "");
                             //说明电源打开命令未返回
-                            if (Wait_Count == 3) {
-                                sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
-                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            }
+//                            if (Wait_Count == 3) {
+//                                sendCmd(FourStatusCmd.send46("00", "02", denatorCount));//20(第一代)
+//                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                            }
                             if (Wait_Count == 1) {
 //                              exit = true;
                                 secondCmdFlag = 1;
