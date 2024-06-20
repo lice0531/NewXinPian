@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat;
 
 
 import com.google.gson.Gson;
+import com.orhanobut.dialogplus.DialogPlus;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -55,6 +56,7 @@ import android_serialport_api.xingbang.cmd.Cmd_EX;
 import android_serialport_api.xingbang.cmd.DefCmd;
 import android_serialport_api.xingbang.models.DownloadVersionBean;
 import android_serialport_api.xingbang.utils.DownloadTest;
+import android_serialport_api.xingbang.utils.LoadingUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.FTP;
@@ -121,7 +123,8 @@ public class UpgradeActivity extends SerialPortActivity {
     private DownloadManager.Query query;
     private Timer mTimer;
     String appname;
-
+    // 通用
+    public DialogPlus mDialogPlus;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,7 +151,7 @@ public class UpgradeActivity extends SerialPortActivity {
         initPower();
         // xb文件夹不存在则创建
         XbUtils.isFileExistence(mSaveDirPath);
-
+        setSupportActionBar(findViewById(R.id.toolbar));
 //        mArr_Permissions = new String[]{
 //                Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                Manifest.permission.READ_EXTERNAL_STORAGE
@@ -168,7 +171,11 @@ public class UpgradeActivity extends SerialPortActivity {
 
     }
 
-
+    // 进度条
+    public void showDialog() {
+        mDialogPlus = LoadingUtils.loadDialog(mContext);
+        mDialogPlus.show();
+    }
     /**
      * 实例化上电方式
      */
@@ -229,63 +236,6 @@ public class UpgradeActivity extends SerialPortActivity {
 
     }
 
-    /**
-     * 初始化上电方式
-     */
-//    private void initPowerMode() {
-//        String device = Build.DEVICE;
-//        Log.e("Build.DEVICE", device);
-//
-//        switch (device) {
-//
-//            // KT50 起爆器设备
-//            case "KT50_B2": {
-//                Log.e("liyi_device", "device: KT50_B2");
-//                mSportName = "/dev/ttyMT1";   // 串口号
-//                mPowerOnMode = 0;             // 上电方式
-//                mIsPortrait = true;           // true 竖屏
-//                break;
-//            }
-//            // ST327 起爆器设备
-//            case "ST327": {
-//                Log.e("liyi_device", "device: ST327");
-//                mSportName = "/dev/ttyMSM0";   // 串口号
-//                mPowerOnMode = 1;              // 上电方式(1: Gpio包上电)
-//                mIsPortrait = true;            // true 竖屏
-//                break;
-//            }
-//            // S337 起爆器设备
-//            case "S337": {
-//                Log.e("liyi_device", "device: S337");
-//                mSportName = "/dev/ttyMSM0";   // 串口号
-//                mPowerOnMode = 1;              // 上电方式(1: Gpio包上电)
-//                mIsPortrait = true;            // true 竖屏
-//                break;
-//            }
-//
-//            // 级联设备 平板
-//            case "astar-y3": {
-//                Log.e("liyi_device", "device: astar-y3");
-//                mSportName = "/dev/ttyS3";     // 串口号
-//                mPowerOnMode = 0;              // 上电方式
-//                mIsPortrait = false;           // true 竖屏
-//                break;
-//            }
-//            default:
-//
-//                break;
-//        }
-//    }
-
-    /**
-     * 初始化FTP
-     */
-    private void initFTP() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        mFTP = new FTP(mIP, mUserName, mPassWord);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -297,33 +247,6 @@ public class UpgradeActivity extends SerialPortActivity {
         }
     }
 
-
-    /**
-     * 初始化串口类
-     */
-//    private void initSerialHelper() {
-//        Log.e("liyi_initSerialHelper", "mSportName: " + mSportName);
-//        mSerialHelper = new SerialHelper(mSportName, InitConst.BAUD_RATE) {
-//
-//            @Override
-//            protected void onDataReceived(final ComBean comBean) {
-//                Log.e("UpgradeActivity", "接收指令: " + ByteUtil.ByteArrToHex(comBean.bRec));
-//                mHandler.sendMessage(mHandler.obtainMessage(1100, comBean));
-//
-//                mSerialHelper.mTimeThread.mExit = true;
-//                mSerialHelper.mTimeThread.interrupt();
-//                mSerialHelper.mTimeThread = null;
-//            }
-//
-//            @Override
-//            protected void onDataTimeOut(int maxTime) {
-//                Log.e("UpgradeActivity", "最大超时: " + maxTime);
-//                mHandler.sendMessage(mHandler.obtainMessage(1300, maxTime));
-//            }
-//
-//        };
-//
-//    }
 
     /**
      * 初始化控件
@@ -484,6 +407,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
                 // 下载成功
                 case 1420:
+
                     // storage/emulated/0/xb/currency_20201121.bin
                     String path = (String) msg.obj;
                     //  currency
@@ -516,6 +440,8 @@ public class UpgradeActivity extends SerialPortActivity {
                     break;
 
                 case 1500:
+                    // 等待动画
+                    showDialog();
                     // storage/emulated/0/xb/currency_20201121.bin
                     String path2 = (String) msg.obj;
                     //  currency
@@ -1222,11 +1148,10 @@ public class UpgradeActivity extends SerialPortActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-                Toast.makeText(UpgradeActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
+                show_Toast("bin文件下载完成,正在安装请稍等...");
                 mHandler.sendMessage(mHandler.obtainMessage(1500, mPath_Local));
 
             } else if (intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
-                Toast.makeText(UpgradeActivity.this, "用户点击了通知栏", Toast.LENGTH_SHORT).show();
             }
         }
     };
