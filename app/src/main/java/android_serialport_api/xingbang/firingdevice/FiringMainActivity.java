@@ -1038,9 +1038,9 @@ public class FiringMainActivity extends SerialPortActivity {
      * 保存起爆数据
      */
     public synchronized void saveFireResult() {
-        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
+//        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
 //        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
-        if (totalNum < 1) return;
+        if (denatorCount < 1) return;
         //如果总数大于60,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
