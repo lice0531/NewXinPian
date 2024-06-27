@@ -2654,6 +2654,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 increase(6);
                 Utils.writeRecord("-------------------开始充电-------------------");
             }
+            EventBus.getDefault().post(new FirstEvent("sendA4Data","B4" + MmkvUtils.getcode("ACode", "") +
+                    deviceStatus + qbResult));
         } else if (msg.equals("qibao")) {
             Log.e("起爆页面", "收到级联起爆指令 ");
             if (kaiguan) {

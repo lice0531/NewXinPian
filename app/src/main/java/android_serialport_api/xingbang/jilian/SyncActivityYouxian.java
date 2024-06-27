@@ -228,7 +228,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                             show_Toast(getString(R.string.text_sync_tip5));
                             EventBus.getDefault().post(new FirstEvent("jixu"));
-                            send485Cmd("B4" + MmkvUtils.getcode("ACode", ""));
+//                            send485Cmd("B4" + MmkvUtils.getcode("ACode", ""));
 //                        }
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
@@ -917,6 +917,19 @@ public class SyncActivityYouxian extends BaseActivity {
             //此时关闭485接收  让板子子机去执行起爆命令
             Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
             closeM900Rs485("B5" + MmkvUtils.getcode("ACode", ""));
+        } else if (msg.equals("sendA4Data")) {
+            int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
+            try {
+                Thread.sleep(delay * 50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (event.getData().startsWith("B4") && event.getData().length() == 18) {
+                Log.e("收到充电指令后发送的数据正常",event.getData());
+                send485Cmd(event.getData());
+            } else {
+                Log.e("收到充电指令后发送的数据有误",event.getData());
+            }
         }
     }
 
