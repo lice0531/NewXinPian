@@ -224,15 +224,17 @@ public class SyncActivityYouxian extends BaseActivity {
 //                    } else if (response.contains("A003")) {
                         //收到主控的充电指令
                     } else if (response.contains("A4")) {
-                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
+//                        if (getStringAfterA4(response).equals(MmkvUtils.getcode("ACode", ""))) {
+//                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                             show_Toast(getString(R.string.text_sync_tip5));
                             EventBus.getDefault().post(new FirstEvent("jixu"));
                             send485Cmd("B4" + MmkvUtils.getcode("ACode", ""));
-                        }
+//                        }
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
 //                    } else if (response.contains("A004")) {
                     } else if (response.contains("A5")) {
+                        Log.e("接收到A5指令了",response);
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
                             //主的子设备
@@ -247,6 +249,7 @@ public class SyncActivityYouxian extends BaseActivity {
                             EventBus.getDefault().post(new FirstEvent("sendCmd83"));
                         } else {
                             //其他子设备
+                            Log.e("接收到A5指令了","开始关闭485");
                             show_Toast(getString(R.string.text_sync_tip6));
                             Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
                             Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + response);
@@ -257,11 +260,11 @@ public class SyncActivityYouxian extends BaseActivity {
 //                    } else if (response.contains("A003")) {
                         //收到主控的充电指令
                     } else if (response.contains("A6")) {
-                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
+//                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                             show_Toast(getString(R.string.text_sync_tip6));
                             EventBus.getDefault().post(new FirstEvent("qibao"));
                             send485Cmd("B6" + MmkvUtils.getcode("ACode", ""));
-                        }
+//                        }
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        if (response.length() >= 5) {
 //                            intent.putExtra("itemId", response.substring(4));
@@ -405,7 +408,17 @@ public class SyncActivityYouxian extends BaseActivity {
         }
     });
 
-
+    //因为充电指令收到的消息中有A4数据粘连的情况  所以采取截取string方式处理接收到的485指令
+    public  String getStringAfterA4(String str) {
+        // 找到 "A4" 在 str 中的位置
+        int index = str.indexOf("A4");
+        if (index != -1 && index + 2 < str.length()) {
+            // 截取两个字符，从 "A4" 的末尾开始
+            return str.substring(index + 2, index + 4);
+        }
+        // 如果未找到 "A4"，或者 "A4" 后面不足两个字符，则返回空字符串
+        return "";
+    }
     private void toCheck6() {
         String code = (String) MmkvUtils.getcode("ACode", "");
         String check = MmkvUtils.getcode("delay", 0) + "";
