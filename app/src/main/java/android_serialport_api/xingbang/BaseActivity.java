@@ -4,6 +4,7 @@ import static android_serialport_api.xingbang.Application.mContext;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -337,7 +338,11 @@ public class  BaseActivity extends AppCompatActivity {
 		String text = auto.getText().toString();
 		SharedPreferences sp = getSharedPreferences("network_url", 0);
 		String longhistory = sp.getString(field, "");
-		if (!longhistory.contains(text + "#")) {
+		String[] hisArrays = longhistory.split("#");
+		boolean contains = Arrays.asList(hisArrays).contains(text + "#");
+		Log.e("保存", "longhistory: "+longhistory );
+		Log.e("保存", "longhistory: "+contains );
+		if (!Arrays.asList(hisArrays).contains(text + "#")) {
 			StringBuilder sb = new StringBuilder(longhistory);
 			sb.insert(0, text + "#");
 			sp.edit().putString(field, sb.toString()).commit();
