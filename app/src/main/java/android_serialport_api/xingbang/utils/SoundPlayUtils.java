@@ -29,8 +29,8 @@ public class SoundPlayUtils {
 
         mSoundPlayer.load(mContext, R.raw.beep, 1);// 1
         mSoundPlayer.load(mContext, R.raw.success, 2);// 2成功
-        mSoundPlayer.load(mContext, R.raw.fail, 3);// 3失败
-        mSoundPlayer.load(mContext, R.raw.blippy1, 4);// 4失败
+        mSoundPlayer.load(mContext, R.raw.error, 3);// 3失败
+        mSoundPlayer.load(mContext, R.raw.awo_err, 4);// 4失败
         return soundPlayUtils;
     }
 
