@@ -400,7 +400,9 @@ public class GreenDaoMaster {
             DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
             if (db != null) {
 //                Log.e("查询数据库中是否有对应的数据", "db: " + db);
-                db.setDenatorId(uid);
+                if(uid!=null){
+                    db.setDenatorId(uid);
+                }
                 if(lgBean.getGzm().length()>=10){
                     db.setZhu_yscs(yscs);//有延时参数就更新延时参数
                 }
@@ -533,7 +535,9 @@ public class GreenDaoMaster {
                 Log.e("查询数据库中是否有对应的数据", "db: " + db);
 //                Utils.writeRecord("db: " + db.toString());
 //                Utils.writeRecord("uid: " + uid);
-                db.setDenatorId(uid);
+                if(uid!=null){
+                    db.setDenatorId(uid);
+                }
                 db.setRegdate(lgBean.getYxq());
                 if(lgBean.getGzm().length()>=10){
                     db.setZhu_yscs(yscs);//有延时参数就更新延时参数
