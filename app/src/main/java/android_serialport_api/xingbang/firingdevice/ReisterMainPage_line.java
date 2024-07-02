@@ -144,7 +144,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private String factoryCode = null;//厂家代码
-    private String factoryFeature = null;////厂家特征码
+    private String factoryFeature = null;//厂家特征码
     private String deTypeName = null;//雷管类型名称
     private String deTypeSecond = null;//该类型雷管最大延期值
     //是否单发注册
@@ -630,7 +630,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     @Override
     public void sendInterruptCmd() {
-        byte[] reCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
+        byte[] reCmd = OneReisterCmd.send_13("00");
         try {
             mOutputStream.write(reCmd);
         } catch (IOException e) {
@@ -1007,9 +1007,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: " + qiaosi_set);
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
-                sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
+                sendCmd(OneReisterCmd.send_10("00", "01"));
             } else {
-                sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
+                sendCmd(OneReisterCmd.send_10("00", "00"));
             }
 
 
@@ -1025,13 +1025,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            try {
 //                Thread.sleep(500);//
 //            } catch (InterruptedException e) {
-//                e.printStackTrace();
+ //                e.printStackTrace();
 //            }
             //2  连续发三次询问电流指令
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
             sendCmd(reCmd);
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
-            zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
+            zhuce_form = OneReisterCmd.decode12_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
             if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
                 tipInfoFlag = 5;//提示类型桥丝不正常
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1051,7 +1051,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
             send_40 = 0;
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
+            busInfo = FourStatusCmd.decode_40("00", cmdBuf);//解析 40指令
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
 
@@ -1377,9 +1377,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         }
         return 0;
     }
-
+    /**
+     * 获取空白序号
+     * */
     private int getEmptyDenator(int start) {
-
         String selection = "shellBlastNo = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, selection, selectionArgs, null, null, null);
@@ -1405,7 +1406,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     /**
      * 检查重复的数据
-     *
      * @param detonatorId 管壳码
      * @return 是否重复
      */
@@ -1584,7 +1584,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     revCloseCmdReFlag = 0;
                     revOpenCmdReFlag = 0;
                     // 13 退出注册模式
-                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+                    sendCmd(OneReisterCmd.send_13("00"));
                 } else {
                     show_Toast("正在与单片机通讯,请稍等一下再退出注册模式!");
                 }
@@ -1714,7 +1714,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 try {
                     if (zeroCount == 0) {
                         initCloseCmdReFlag = 1;
-                        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
+                        byte[] powerCmd = OneReisterCmd.send_13("00");//13 退出注册模式
                         sendCmd(powerCmd);
                     }
                     if (revCloseCmdReFlag == 1) {

@@ -1,23 +1,29 @@
 package android_serialport_api.xingbang.db;
 
+import android.annotation.SuppressLint;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 import org.litepal.crud.LitePalSupport;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by xingbang on 2020/6/4.
  */
 @Entity(nameInDb = "denatorBaseinfo")
-public class DenatorBaseinfo extends LitePalSupport {
+public class DenatorBaseinfo extends LitePalSupport implements Comparable<DenatorBaseinfo> {
 
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
     private Long id;
     @Property(nameInDb = "blastserial")
     private int blastserial;
-    @Property(nameInDb = "sithole")
+    @Property(nameInDb = "sithole")//孔号
     private int sithole;
     @Property(nameInDb = "shellBlastNo")
     private String shellBlastNo;
@@ -33,7 +39,7 @@ public class DenatorBaseinfo extends LitePalSupport {
     private String errorName;
     @Property(nameInDb = "errorCode")
     private String errorCode;
-    @Property(nameInDb = "authorization")
+    @Property(nameInDb = "authorization")//授权日期
     private String authorization;
     @Property(nameInDb = "remark")
     private String remark;
@@ -45,12 +51,28 @@ public class DenatorBaseinfo extends LitePalSupport {
     private String name;
     @Property(nameInDb = "denatorIdSup")
     private String denatorIdSup;
-    @Generated(hash = 212817039)
-    public DenatorBaseinfo(Long id, int blastserial, int sithole,
-            String shellBlastNo, String denatorId, int delay, String statusCode,
-            String statusName, String errorName, String errorCode,
-            String authorization, String remark, String regdate, String wire,
-            String name, String denatorIdSup) {
+    @Property(nameInDb = "zhu_yscs")
+    private String zhu_yscs;//
+    @Property(nameInDb = "cong_yscs")
+    private String cong_yscs;//
+    @Property(nameInDb = "pai")//排号
+    private int pai;//
+    @Property(nameInDb = "sitholeNum")//孔中第几个
+    private int sitholeNum;//
+    @Property(nameInDb = "current")//注册时候的电流
+    private String current;//
+    @Property(nameInDb = "voltage")//注册时候的电压
+    private String voltage;//
+    @Property(nameInDb = "downloadStatus")//下载状态
+    private String downloadStatus;
+
+    @Generated(hash = 189234603)
+    public DenatorBaseinfo(Long id, int blastserial, int sithole, String shellBlastNo,
+            String denatorId, int delay, String statusCode, String statusName,
+            String errorName, String errorCode, String authorization, String remark,
+            String regdate, String wire, String name, String denatorIdSup, String zhu_yscs,
+            String cong_yscs, int pai, int sitholeNum, String current, String voltage,
+            String downloadStatus) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -67,6 +89,13 @@ public class DenatorBaseinfo extends LitePalSupport {
         this.wire = wire;
         this.name = name;
         this.denatorIdSup = denatorIdSup;
+        this.zhu_yscs = zhu_yscs;
+        this.cong_yscs = cong_yscs;
+        this.pai = pai;
+        this.sitholeNum = sitholeNum;
+        this.current = current;
+        this.voltage = voltage;
+        this.downloadStatus = downloadStatus;
     }
     @Generated(hash = 1775503899)
     public DenatorBaseinfo() {
@@ -167,6 +196,83 @@ public class DenatorBaseinfo extends LitePalSupport {
     public void setDenatorIdSup(String denatorIdSup) {
         this.denatorIdSup = denatorIdSup;
     }
+    public String getZhu_yscs() {
+        return this.zhu_yscs;
+    }
+    public void setZhu_yscs(String zhu_yscs) {
+        this.zhu_yscs = zhu_yscs;
+    }
+    public String getCong_yscs() {
+        return this.cong_yscs;
+    }
+    public void setCong_yscs(String cong_yscs) {
+        this.cong_yscs = cong_yscs;
+    }
+    public int getPai() {
+        return this.pai;
+    }
+    public void setPai(int pai) {
+        this.pai = pai;
+    }
+    public int getSitholeNum() {
+        return this.sitholeNum;
+    }
+    public void setSitholeNum(int sitholeNum) {
+        this.sitholeNum = sitholeNum;
+    }
+    public String getCurrent() {
+        return this.current;
+    }
+    public void setCurrent(String current) {
+        this.current = current;
+    }
+    public String getVoltage() {
+        return this.voltage;
+    }
+    public void setVoltage(String voltage) {
+        this.voltage = voltage;
+    }
+    public String getDownloadStatus() {
+        return this.downloadStatus;
+    }
+    public void setDownloadStatus(String downloadStatus) {
+        this.downloadStatus = downloadStatus;
+    }
+
+    @Override
+    public int compareTo(DenatorBaseinfo denator) {//53904180500000
+        // 返回值0代表相等，1表示大于，-1表示小于；
+
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat md = new SimpleDateFormat("MMdd");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = md.parse(shellBlastNo.substring(3, 7));
+            date2 = md.parse(denator.getShellBlastNo().substring(3, 7));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int liushui1 = Integer.parseInt(shellBlastNo.substring(9));
+        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(9));
+
+        if (date1.before(date2)) {
+            return 1;
+        } else if (date1.after(date2)) {
+            return -1;
+        } else {
+            if (liushui1 > liushui2) {
+                return -1;
+            } else if (liushui1 < liushui2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+    }
+
 
     @Override
     public String toString() {
@@ -187,6 +293,14 @@ public class DenatorBaseinfo extends LitePalSupport {
                 ", wire='" + wire + '\'' +
                 ", name='" + name + '\'' +
                 ", denatorIdSup='" + denatorIdSup + '\'' +
+                ", zhu_yscs='" + zhu_yscs + '\'' +
+                ", cong_yscs='" + cong_yscs + '\'' +
+                ", pai=" + pai +
+                ", sitholeNum=" + sitholeNum +
+                ", current='" + current + '\'' +
+                ", voltage='" + voltage + '\'' +
+                ", downloadStatus='" + downloadStatus + '\'' +
                 '}';
     }
+
 }

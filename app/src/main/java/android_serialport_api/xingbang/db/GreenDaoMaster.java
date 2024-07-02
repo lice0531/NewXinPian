@@ -11,10 +11,12 @@ import java.util.List;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
+import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 
 /**
  * 管理GreenDao查询语句
@@ -27,7 +29,7 @@ public class GreenDaoMaster {
     private Denator_typeDao mDenatorType;
     private MessageBeanDao messageBeanDao;
     private DetonatorTypeNewDao detonatorTypeNewDao;
-
+    private ShouQuanDao mShouquanDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -35,11 +37,18 @@ public class GreenDaoMaster {
         this.mDeantorBaseDao = Application.getDaoSession().getDenatorBaseinfoDao();
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
+        this.messageBeanDao = Application.getDaoSession().getMessageBeanDao();
+        this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
     }
 
     public List<Defactory> queryDefactoryToIsSelected(String selected) {
         QueryBuilder<Defactory> result = mDefactoryDao.queryBuilder();
         result = result.where(DefactoryDao.Properties.IsSelected.eq(selected));
+        return result.list();
+    }
+    public List<Project> queryProjectIsSelected(String selected) {
+        QueryBuilder<Project> result = mProjectDao.queryBuilder();
+        result = result.where(ProjectDao.Properties.Selected.eq(selected));
         return result.list();
     }
 
@@ -71,6 +80,9 @@ public class GreenDaoMaster {
         QueryBuilder<Project> result = mProjectDao.queryBuilder();
         result = result.where(ProjectDao.Properties.Project_name.eq(project_name));
         return result.list();
+    }
+    public void updateProject(Project project){
+        mProjectDao.update(project);
     }
 
     public List<Denator_type> queryDefactoryTypeToIsSelected(String selected) {
@@ -116,7 +128,7 @@ public class GreenDaoMaster {
     /**
      * 通过管壳码获取芯片码
      * */
-    public String queryShellBlastNoTypeNew(String shellBlastNo) {
+    public String queryShellBlastNoTypeNew2(String shellBlastNo) {
         List<DetonatorTypeNew> dt =detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
         if(dt.size()>=1){
             return dt.get(0).getDetonatorId();
@@ -124,8 +136,34 @@ public class GreenDaoMaster {
             return "0";
         }
     }
+    /**
+     * 通过管壳码获取芯片码
+     */
+    public DetonatorTypeNew queryShellBlastNoTypeNew(String shellBlastNo) {
+        Log.e("通过管壳码获取芯片码", "shellBlastNo: "+shellBlastNo );
+        List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
+        Log.e("通过管壳码获取芯片码", "dt.size(): "+dt.size() );
+        if (dt.size() >= 1) {
+            return dt.get(0);
+        } else {
+            return null;
+        }
+    }
 
-
+    /**
+     * 查询授权信息(倒序)
+     * */
+    public List<ShouQuan> queryShouQuan(){
+        QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
+        return result.orderDesc(ShouQuanDao.Properties.Id).list();
+    }
+    /**
+     * 查询授权信息(倒序)
+     * */
+    public List<Project> queryProject(){
+        QueryBuilder<Project> result = mProjectDao.queryBuilder();
+        return result.orderDesc(ProjectDao.Properties.Id).list();
+    }
 
     /**
      * 通过芯片码获取管壳码
@@ -202,5 +240,78 @@ public class GreenDaoMaster {
             str = str + content;
         }
         return str;
+    }
+
+    /**
+     * 查询雷管 区域倒序(序号)
+     * 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 获取第一发雷管
+     */
+    public static String serchFristLG() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryDenatorBaseinfo();
+        if (list.size() > 0) {
+            return list.get(0).getShellBlastNo();
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * 注册列表的第一发是否在历史列表里
+     */
+    public static int serchFristLGINdenatorHis(String no) {
+        if (no.length() > 12) {
+            return getDaoSession().getDenatorHis_DetailDao().queryBuilder().where(DenatorHis_DetailDao.Properties.ShellBlastNo.eq(no)).list().size();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 查询生产表中对应的管壳码
+     * */
+    public static String serchShellBlastNo(String denatorId) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        return master.queryDetonatorTypeNew(denatorId);
+    }
+
+    public static int showDenatorSum() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryDenatorBaseinfoToStatusCode("02");
+        return list.size();
+    }
+
+    /**
+     * 查询雷管 按排号查询
+     * 排号 1 2 3 4 5
+     */
+    public  List<DenatorBaseinfo> queryDetonatorPai(int pai) {
+        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+        result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .orderDesc(DenatorBaseinfoDao.Properties.Delay);
+        return result.list();
+    }
+    /**
+     * 通过芯片码获取管壳码
+     */
+    public DetonatorTypeNew queryDetonatorForTypeNew(String detonatorId) {
+        Log.e("模糊查询", "detonatorId.substring(5): " + detonatorId.substring(5));//A621400FED518
+        List<DetonatorTypeNew> dt = detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.like("%" + detonatorId.substring(5))).list();
+//        List<DetonatorTypeNew> dt =detonatorTypeNewDao.queryBuilder().where(DetonatorTypeNewDao.Properties.DetonatorId.eq(detonatorId)).list();
+        if (dt.size() >= 1) {
+            return dt.get(0);
+        } else {
+            return null;
+        }
     }
 }

@@ -41,12 +41,23 @@ public class DenatorHis_Detail {
     private String blastdate;
     @Property(nameInDb = "name")
     private String name;
-    @Generated(hash = 727078313)
+    @Property(nameInDb = "denatorIdSup")
+    private String denatorIdSup;
+    @Property(nameInDb = "zhu_yscs")
+    private String zhu_yscs;//
+    @Property(nameInDb = "cong_yscs")
+    private String cong_yscs;//
+    @Property(nameInDb = "pai")//排号
+    private int pai;//
+    @Property(nameInDb = "sitholeNum")//孔中第几个
+    private int sitholeNum;//
+    @Generated(hash = 1572336178)
     public DenatorHis_Detail(Long id, int blastserial, int sithole,
             String shellBlastNo, String denatorId, int delay, String statusCode,
             String statusName, String errorName, String errorCode,
             String authorization, String remark, String regdate, String blastdate,
-            String name) {
+            String name, String denatorIdSup, String zhu_yscs, String cong_yscs,
+            int pai, int sitholeNum) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -62,6 +73,11 @@ public class DenatorHis_Detail {
         this.regdate = regdate;
         this.blastdate = blastdate;
         this.name = name;
+        this.denatorIdSup = denatorIdSup;
+        this.zhu_yscs = zhu_yscs;
+        this.cong_yscs = cong_yscs;
+        this.pai = pai;
+        this.sitholeNum = sitholeNum;
     }
     @Generated(hash = 1925319946)
     public DenatorHis_Detail() {
@@ -156,6 +172,38 @@ public class DenatorHis_Detail {
     public void setName(String name) {
         this.name = name;
     }
+    public String getDenatorIdSup() {
+        return this.denatorIdSup;
+    }
+    public void setDenatorIdSup(String denatorIdSup) {
+        this.denatorIdSup = denatorIdSup;
+    }
+    public String getZhu_yscs() {
+        return this.zhu_yscs;
+    }
+    public void setZhu_yscs(String zhu_yscs) {
+        this.zhu_yscs = zhu_yscs;
+    }
+    public String getCong_yscs() {
+        return this.cong_yscs;
+    }
+    public void setCong_yscs(String cong_yscs) {
+        this.cong_yscs = cong_yscs;
+    }
+    public int getPai() {
+        return this.pai;
+    }
+    public void setPai(int pai) {
+        this.pai = pai;
+    }
+    public int getSitholeNum() {
+        return this.sitholeNum;
+    }
+    public void setSitholeNum(int sitholeNum) {
+        this.sitholeNum = sitholeNum;
+    }
+
+    
 
 
 }

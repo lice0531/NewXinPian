@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
 import android_serialport_api.xingbang.utils.Utils;
@@ -22,7 +24,7 @@ public class ThreeFiringCmd {
 	 * @param
 	 * @return
 	 */
-	public static byte[] setToXbCommon_Firing_Init23_2(String addr){
+	public static byte[] send_30(String addr){
 
 		String command = "00" + DefCommand.CMD_3_DETONATE_1+addr;//00300101
 		return DefCommand.getCommadBytes(command);
@@ -47,14 +49,13 @@ public class ThreeFiringCmd {
 	 * @param data：共6字节，字节1，字节2，字节3，字节4为ID ，字节5，字节6为延期（ms，低字节在前）
 	 * @return
 	 */
-	public static byte[] setToXbCommon_CheckDenator23_2(String addr,String data){
-		//C0 00 31 06 14E0FF000000 D2D4 C0
+	public static byte[] send_31(String addr, String data){
 		String command;
-		Log.e("长度", "data: "+data.length() );
-		if(data.length()==12){
-			command = addr + DefCommand.CMD_3_DETONATE_2+"06"+data;
+		Logger.e("长度-data: "+data.length() );
+		if(data.length()==16){
+			command = addr + DefCommand.CMD_3_DETONATE_2+"08"+data;
 		}else {
-			command = addr + DefCommand.CMD_3_DETONATE_2+"0A"+data;
+			command = addr + DefCommand.CMD_3_DETONATE_2+"0E"+data;
 		}
 		return DefCommand.getCommadBytes(command);
 	}
@@ -70,30 +71,29 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_3_DETONATE_2+"04";
 		//String realyCmd1 =DefCommand.getCommadHex(command);
 		
-		if(from.indexOf(command)>=0)return 0;
+		if(from.contains(command))return 0;
 		else return -1;
 	}
 	/***
 	 * 解码写入雷管延时
 	 * @param addr
-	 * @param fromCommad
 	 * @return
 	 */
-	public static From32DenatorFiring decodeFromReceiveDataWriteDelay23_2(String addr , byte[] cmd){
-		
+	public static From32DenatorFiring decode_31(String addr , byte[] cmd){
+		//C00031 04 FF FF F4 01 0059 C0
 		String fromCommad =  Utils.bytesToHexFun(cmd);
 		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-	
+
 		if("-1".equals(realyCmd1)||"-2".equals(realyCmd1)){
 			return null;
 		}
 		if(isCorrectFromXbCommon_CheckDenator23_2(addr,realyCmd1)==0){
-			if(realyCmd1!=null&&realyCmd1.length()==14){
+			if(realyCmd1.length() == 14){
 				String dataHex =  realyCmd1.substring(6, 14);//取得返回数据
-				
+
 				String commicationStatus = dataHex.substring(0,2);//通信状态
 				String denatorStatus = dataHex.substring(2,4);//雷管状态
-				
+
 				String delayTime = dataHex.substring(4);//延时
 				delayTime = Utils.swop2ByteOrder(delayTime);
 				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
@@ -102,7 +102,7 @@ public class ThreeFiringCmd {
 				vo.setCommicationStatus(commicationStatus);
 				vo.setDenatorStatus(denatorStatus);
 				vo.setDelayTime(ia);
-				
+
 				return vo;
 			}
 		}
@@ -136,7 +136,7 @@ public class ThreeFiringCmd {
 		 dataBy[4] = delayBye[0];
 		 dataBy[5] = delayBye[1];
 		 String data = Utils.bytesToHexFun(dataBy);
-		 byte[] sendCmd = setToXbCommon_CheckDenator23_2(addr,data);
+		 byte[] sendCmd = send_31(addr,data);
 		 vo.setSendCmd(sendCmd);
 		 return vo;
 	}
@@ -146,7 +146,7 @@ public class ThreeFiringCmd {
 	 * @param 
 	 * @return
 	 */
-	public static byte[] setToXbCommon_FiringExchange_5523_3(String addr){
+	public static byte[] send_32(String addr){
 		
 		String command = addr + DefCommand.CMD_3_DETONATE_3+"00";
 		return DefCommand.getCommadBytes(command);
@@ -156,7 +156,7 @@ public class ThreeFiringCmd {
 	 * @param
 	 * @return
 	 */
-	public static byte[] setToXbCommon_FiringExchange(String addr){
+	public static byte[] send_38(String addr){
 
 		String command = addr + DefCommand.CMD_3_DETONATE_9+"00";
 		return DefCommand.getCommadBytes(command);
@@ -184,7 +184,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_FiringExchange_5523_4(String addr){
+	public static byte[] send_33(String addr){
 		
 		String command = addr + DefCommand.CMD_3_DETONATE_4+"00";
 		return DefCommand.getCommadBytes(command);
@@ -214,7 +214,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_FiringExchange_5523_5(String addr){
+	public static byte[] send_34(String addr){
 		
 		String command = addr + DefCommand.CMD_3_DETONATE_5+"00";
 		return DefCommand.getCommadBytes(command);
@@ -243,7 +243,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_FiringExchange_5523_6(String addr){
+	public static byte[] send_35(String addr){
 		
 		String command = addr + DefCommand.CMD_3_DETONATE_6+"00";
 		return DefCommand.getCommadBytes(command);
@@ -272,7 +272,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_FiringExchange_5523_7(String addr){
+	public static byte[] send_36(String addr){
 		
 		String command = addr + DefCommand.CMD_3_DETONATE_7+"00";//36
 		return DefCommand.getCommadBytes(command);
@@ -301,7 +301,7 @@ public class ThreeFiringCmd {
 	 * @param from
 	 * @return
 	 */
-	public static String  getCheckFromXbCommon_FiringExchange_5523_7_reval(String addr ,String from){
+	public static String decode_36(String addr , String from){
 		
 		int iscorrent =getCheckFromXbCommon_FiringExchange_5523_7(addr,from);
 		if(iscorrent==0){			

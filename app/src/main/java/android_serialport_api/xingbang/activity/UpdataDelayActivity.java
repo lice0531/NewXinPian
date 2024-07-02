@@ -1,13 +1,18 @@
 package android_serialport_api.xingbang.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityUpdataDelayBinding;
+import android_serialport_api.xingbang.firingdevice.SetDelayTime;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 
 public class UpdataDelayActivity extends BaseActivity implements View.OnClickListener{
@@ -21,6 +26,14 @@ public class UpdataDelayActivity extends BaseActivity implements View.OnClickLis
         // 新方法
         binding = ActivityUpdataDelayBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        TextView title = findViewById(R.id.title_text);
+        title.setText("延时方案设置");
+        ImageView iv_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setOnClickListener(v -> startActivity(new Intent(UpdataDelayActivity.this, SetDelayTime.class)));
+        iv_back.setOnClickListener(v -> finish());
+
         binding.udEtQsys.setText((String)MmkvUtils.getcode("qsys","0"));//起始延时
         binding.udEtPjys.setText((String)MmkvUtils.getcode("pjys","0"));//排间延时
         binding.udEtKjys.setText((String)MmkvUtils.getcode("kjys","0"));//孔间延时

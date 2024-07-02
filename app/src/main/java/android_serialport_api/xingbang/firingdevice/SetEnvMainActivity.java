@@ -96,21 +96,23 @@ public class SetEnvMainActivity extends BaseActivity {
 
     private void getUserMessage() {
         MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
+        if (bean != null) {
 //            Preparation_time = Integer.parseInt(message.get(0).getJiance_time());
-        Preparation_time = Integer.parseInt(bean.getPreparation_time());//跟起爆测试一样
-        pro_bprysfz = bean.getPro_bprysfz();
-        pro_htid = bean.getPro_htid();
-        pro_xmbh = bean.getPro_xmbh();
-        equ_no = bean.getEqu_no();
-        pro_coordxy = bean.getPro_coordxy();
-        server_addr = bean.getServer_addr();
-        server_port = bean.getServer_port();
-        server_http = bean.getServer_http();
-        server_ip = bean.getServer_ip();
-        qiaosi_set = bean.getQiaosi_set();
-        ChongDian_time = Integer.parseInt(bean.getChongdian_time());
-        server_type1 = bean.getServer_type1();
-        server_type2 = bean.getServer_type2();
+            Preparation_time = Integer.parseInt(bean.getPreparation_time());//跟起爆测试一样
+            pro_bprysfz = bean.getPro_bprysfz();
+            pro_htid = bean.getPro_htid();
+            pro_xmbh = bean.getPro_xmbh();
+            equ_no = bean.getEqu_no();
+            pro_coordxy = bean.getPro_coordxy();
+            server_addr = bean.getServer_addr();
+            server_port = bean.getServer_port();
+            server_http = bean.getServer_http();
+            server_ip = bean.getServer_ip();
+            qiaosi_set = bean.getQiaosi_set();
+            ChongDian_time = Integer.parseInt(bean.getChongdian_time());
+            server_type1 = bean.getServer_type1();
+            server_type2 = bean.getServer_type2();
+        }
     }
 
 

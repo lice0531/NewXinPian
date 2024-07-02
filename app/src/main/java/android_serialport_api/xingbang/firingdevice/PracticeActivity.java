@@ -342,8 +342,12 @@ public class PracticeActivity extends SerialPortActivity {
             DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
             detonatorTypeNew.setShellBlastNo(a[0]);
             detonatorTypeNew.setDetonatorId(a[1]);
-            if(a.length==3){
-                detonatorTypeNew.setDetonatorIdSup(a[2]);
+            if(a.length==3){//兼容旧的注码版本
+                detonatorTypeNew.setZhu_yscs(a[2]);
+            }
+            if(a.length==5){
+                detonatorTypeNew.setDetonatorIdSup(a[3]);
+                detonatorTypeNew.setCong_yscs(a[4]);
             }
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
@@ -455,7 +459,7 @@ public class PracticeActivity extends SerialPortActivity {
 
 
         } else if ("40".equals(cmd)) {
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busInfo = FourStatusCmd.decode_40("00", locatBuf);
             Log.e("命令", "busInfo: "+busInfo.toString() );
             busHandler.sendMessage(busHandler.obtainMessage());
 
@@ -487,7 +491,7 @@ public class PracticeActivity extends SerialPortActivity {
 
         if ("20".equals(cmd)) {//进入测试模式
         } else if ("40".equals(cmd)) {
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busInfo = FourStatusCmd.decode_40("00", locatBuf);
             Log.e("40命令", "busInfo: "+busInfo.toString());
         } else if ("22".equals(cmd)) { // 关闭测试
         } else if ("13".equals(cmd)) { // 关闭电源
@@ -541,7 +545,7 @@ public class PracticeActivity extends SerialPortActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
+                    byte[] powerCmd = OneReisterCmd.send_13("00");//13 退出注册模式
                     sendCmd(powerCmd);
                     butPre.setText("开始测试");
                     tvCeshiDianliu.setText("0.0μA");
@@ -786,7 +790,7 @@ public class PracticeActivity extends SerialPortActivity {
                 try {
                     if (zeroCount == 0) {
                         initCloseCmdReFlag = 1;
-                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+                        sendCmd(OneReisterCmd.send_13("00"));
                     }
                     if (revCloseCmdReFlag == 1) {
                         exit = true;
@@ -1097,7 +1101,7 @@ public class PracticeActivity extends SerialPortActivity {
 
     @Override
     public void sendInterruptCmd() {
-        byte[] reCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
+        byte[] reCmd = OneReisterCmd.send_13("00");
         try {
             mOutputStream.write(reCmd);
         } catch (IOException e) {

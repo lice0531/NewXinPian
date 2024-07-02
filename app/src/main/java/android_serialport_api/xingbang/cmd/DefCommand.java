@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.utils.CRC16;
 import android_serialport_api.xingbang.utils.Utils;
@@ -102,7 +104,7 @@ public class DefCommand {
 	 * @return
 	 */
 	public static String getCmd(String cmdInfo){
-		Log.e("返回命令",cmdInfo);
+		Logger.e("返回命令"+cmdInfo);
 		Utils.writeLog("返回命令:"+cmdInfo);
 		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
 		return null;
@@ -111,8 +113,14 @@ public class DefCommand {
 	 * 返回返回命令解码
 	 * @command
 	 * @return
+	 * C000310835E3FF000000E504510AC0
+	 * C000310835E3FF000000FFFF9DB8C0
+	 * C000310835E3FF000000E504510AC0
+	 *
+	 * C000310859E7FF0000008405A27FC0
 	 */
 	public synchronized  static String decodeCommand(String command){
+		//C000120A FF 00 20E1FF0041A6E3E1C0
 		String cmd = command.toUpperCase();//将字符串转化成大写
 		//命令不正确
 		if(cmd.trim().length() < 6)return "-1";

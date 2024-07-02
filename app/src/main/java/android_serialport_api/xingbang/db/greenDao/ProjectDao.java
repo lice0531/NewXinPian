@@ -31,6 +31,8 @@ public class ProjectDao extends AbstractDao<Project, Long> {
         public final static Property Dwdm = new Property(4, String.class, "dwdm", false, "dwdm");
         public final static Property Bprysfz = new Property(5, String.class, "bprysfz", false, "bprysfz");
         public final static Property Coordxy = new Property(6, String.class, "coordxy", false, "coordxy");
+        public final static Property Selected = new Property(7, String.class, "selected", false, "selected");
+        public final static Property Business = new Property(8, String.class, "business", false, "business");
     }
 
 
@@ -52,7 +54,9 @@ public class ProjectDao extends AbstractDao<Project, Long> {
                 "\"htbh\" TEXT," + // 3: htbh
                 "\"dwdm\" TEXT," + // 4: dwdm
                 "\"bprysfz\" TEXT," + // 5: bprysfz
-                "\"coordxy\" TEXT);"); // 6: coordxy
+                "\"coordxy\" TEXT," + // 6: coordxy
+                "\"selected\" TEXT," + // 7: selected
+                "\"business\" TEXT);"); // 8: business
     }
 
     /** Drops the underlying database table. */
@@ -99,6 +103,16 @@ public class ProjectDao extends AbstractDao<Project, Long> {
         if (coordxy != null) {
             stmt.bindString(7, coordxy);
         }
+ 
+        String selected = entity.getSelected();
+        if (selected != null) {
+            stmt.bindString(8, selected);
+        }
+ 
+        String business = entity.getBusiness();
+        if (business != null) {
+            stmt.bindString(9, business);
+        }
     }
 
     @Override
@@ -139,6 +153,16 @@ public class ProjectDao extends AbstractDao<Project, Long> {
         if (coordxy != null) {
             stmt.bindString(7, coordxy);
         }
+ 
+        String selected = entity.getSelected();
+        if (selected != null) {
+            stmt.bindString(8, selected);
+        }
+ 
+        String business = entity.getBusiness();
+        if (business != null) {
+            stmt.bindString(9, business);
+        }
     }
 
     @Override
@@ -155,7 +179,9 @@ public class ProjectDao extends AbstractDao<Project, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // htbh
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // dwdm
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // bprysfz
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // coordxy
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // coordxy
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // selected
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // business
         );
         return entity;
     }
@@ -169,6 +195,8 @@ public class ProjectDao extends AbstractDao<Project, Long> {
         entity.setDwdm(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setBprysfz(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setCoordxy(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setSelected(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setBusiness(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

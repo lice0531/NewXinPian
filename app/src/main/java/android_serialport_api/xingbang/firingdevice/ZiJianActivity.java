@@ -1,14 +1,10 @@
 package android_serialport_api.xingbang.firingdevice;
 
-import android.DeviceControl;
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -19,9 +15,7 @@ import java.util.List;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
-import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
-import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -319,7 +313,7 @@ public class ZiJianActivity extends SerialPortActivity {
             Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
             dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
             dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
-            byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
+            byte[] powerCmd = OneReisterCmd.send_13("00");//13 退出测试模式
             sendCmd(powerCmd);
         }
     }

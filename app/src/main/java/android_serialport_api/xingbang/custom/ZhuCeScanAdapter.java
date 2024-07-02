@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.custom;
 
+import android.graphics.Color;
+import android.renderscript.ScriptIntrinsicColorMatrix;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +12,27 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.models.ZhuCeListBean;
 
 public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
-    List<String> mGroupList;//一级List
-    List<List<String>> mChildList;//二级List 注意!这里是List里面套了一个List<String>,实际项目你可以写一个pojo类来管理2层数据
-
-    public ZhuCeScanAdapter(List<String> groupList, List<List<String>> childList){
+    List<ZhuCeListBean> mGroupList;//一级List
+    List<List<DenatorBaseinfo>> mChildList;//二级List 注意!这里是List里面套了一个List<String>,实际项目你可以写一个pojo类来管理2层数据
+    int mGroupPosition=-1;
+    int mChildPosition=-1;
+    public ZhuCeScanAdapter(List<ZhuCeListBean> groupList, List<List<DenatorBaseinfo>> childList){
         mGroupList = groupList;
         mChildList = childList;
     }
+
+    public void setSelcetPosition(int mGroupPosition,int mChildPosition){
+        this.mGroupPosition = mGroupPosition;
+        this.mChildPosition = mChildPosition;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getGroupCount() {//返回第一级List长度
         return mGroupList.size();
@@ -67,13 +80,21 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder1.tv1_zc_pai=convertView.findViewById(R.id.item1_pai);
             viewHolder1.tv1_zc_startTime=convertView.findViewById(R.id.item1_startTime);
             viewHolder1.tv1_zc_total=convertView.findViewById(R.id.item1_total);
+            viewHolder1.itme_ll=convertView.findViewById(R.id.item1_ll);
             convertView.setTag(viewHolder1);
         } else {
             viewHolder1 = (ViewHolder1) convertView.getTag();
         }
-        viewHolder1.tv1_zc_pai.setText((groupPosition+1)+"排");
-        viewHolder1.tv1_zc_startTime.setText("起始延时:0ms");
-        viewHolder1.tv1_zc_total.setText("数量:0");
+        viewHolder1.tv1_zc_pai.setText(mGroupList.get(groupPosition).getPai()+"排");
+        viewHolder1.tv1_zc_startTime.setText("起始延时:"+mGroupList.get(groupPosition).getStartDelay()+"ms");
+        viewHolder1.tv1_zc_total.setText("数量:"+mGroupList.get(groupPosition).getTotal());
+        if(mGroupPosition == groupPosition) {
+            viewHolder1.itme_ll.setBackgroundColor(Color.GREEN);
+            //这是关键部分 通过mGroupPosition 和 groupPosition 进行比对，然后再通过 mChildPosition 和 childPosition进行比对，就是你点击的那个Iten     写入你要实现的逻辑
+        }else {
+            viewHolder1.itme_ll.setBackgroundResource(R.color.result_minor_text);
+        }
+
         return convertView;
     }
 
@@ -91,10 +112,13 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder2 = (ViewHolder2) convertView.getTag();
         }
-        viewHolder2.tv2_zc_no.setText((groupPosition+1)+"-1-"+(childPosition+1));
-        viewHolder2.tv2_zc_id.setText("5390418050000");
-        viewHolder2.tv2_zc_delay.setText("0");
-        viewHolder2.tv2_zc_status.setText("正常");
+        viewHolder2.tv2_zc_no.setText(
+                mChildList.get(groupPosition).get(childPosition).getPai()+"-"+
+                        mChildList.get(groupPosition).get(childPosition).getSithole()+"-"+
+                        mChildList.get(groupPosition).get(childPosition).getSitholeNum());
+        viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getShellBlastNo());
+        viewHolder2.tv2_zc_delay.setText(mChildList.get(groupPosition).get(childPosition).getDelay()+"");
+        viewHolder2.tv2_zc_status.setText(mChildList.get(groupPosition).get(childPosition).getStatusName());
         return convertView;
     }
 
@@ -107,6 +131,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         private TextView tv1_zc_pai;
         private TextView tv1_zc_startTime;
         private TextView tv1_zc_total;
+        private LinearLayout itme_ll;
     }
     public class ViewHolder2 {
         private TextView tv2_zc_no;

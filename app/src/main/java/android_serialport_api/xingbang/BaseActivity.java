@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class  BaseActivity extends Activity {
@@ -248,23 +249,6 @@ public class  BaseActivity extends Activity {
 	}
 
 	/**
-	 * 把指定AutoCompleteTextView中内容保存到sharedPreference中指定的字符段
-	 *
-	 * @param field 保存在sharedPreference中的字段名
-	 * @param auto  要操作的AutoCompleteTextView
-	 */
-	public void saveHistory(String field, AutoCompleteTextView auto) {
-		String text = auto.getText().toString();
-		SharedPreferences sp = getSharedPreferences("network_url", 0);
-		String longhistory = sp.getString(field, "");
-		if (!longhistory.contains(text + "#")) {
-			StringBuilder sb = new StringBuilder(longhistory);
-			sb.insert(0, text + "#");
-			sp.edit().putString(field, sb.toString()).commit();
-		}
-	}
-
-	/**
 	 * 初始化AutoCompleteTextView，最多显示5项提示，使
 	 * AutoCompleteTextView在一开始获得焦点时自动提示
 	 *
@@ -272,12 +256,11 @@ public class  BaseActivity extends Activity {
 	 * @param auto  要操作的AutoCompleteTextView
 	 */
 	public void initAutoComplete(String field, AutoCompleteTextView auto) {
-		SharedPreferences sp = getSharedPreferences("network_url", 0);
-		String longhistory = sp.getString(field, "当前无记录");
+		String longhistory =(String) MmkvUtils.getcode(field, "当前无记录");
 		String[] hisArrays = longhistory.split("#");
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
-		//只保留最近的50条的记录
+		//只保留最近的20条的记录
 		if (hisArrays.length > 20) {
 			String[] newArrays = new String[20];
 			System.arraycopy(hisArrays, 0, newArrays, 0, 20);
@@ -288,15 +271,28 @@ public class  BaseActivity extends Activity {
 		auto.setDropDownWidth(450);
 		auto.setThreshold(1);
 		auto.setCompletionHint("最近的20条记录");
-		auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				AutoCompleteTextView view = (AutoCompleteTextView) v;
-				if (hasFocus) {
-					view.showDropDown();
-				}
+		auto.setOnFocusChangeListener((v, hasFocus) -> {
+			AutoCompleteTextView view = (AutoCompleteTextView) v;
+			if (hasFocus) {
+				view.showDropDown();
 			}
 		});
+	}
+
+	/**
+	 * 把指定AutoCompleteTextView中内容保存到sharedPreference中指定的字符段
+	 *
+	 * @param field 保存在sharedPreference中的字段名
+	 * @param auto  要操作的AutoCompleteTextView
+	 */
+	public void saveHistory(String field, AutoCompleteTextView auto) {
+		String text = auto.getText().toString();
+		String longhistory = (String)MmkvUtils.getcode(field, "");
+		if (!longhistory.contains(text + "#")) {
+			StringBuilder sb = new StringBuilder(longhistory);
+			sb.insert(0, text + "#");
+			MmkvUtils.savecode(field, sb.toString());
+		}
 	}
 
 }

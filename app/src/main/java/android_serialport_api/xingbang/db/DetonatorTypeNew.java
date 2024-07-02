@@ -23,13 +23,19 @@ public class DetonatorTypeNew {
     private String detonatorId;    // 芯片码——2
     @Property(nameInDb = "denatorIdSup")
     private String detonatorIdSup;    // 从芯片码——3
-    @Generated(hash = 1466071313)
+    @Property(nameInDb = "zhu_yscs")
+    private String zhu_yscs;//主芯片延时参数
+    @Property(nameInDb = "cong_yscs")
+    private String cong_yscs;//从芯片延时参数
+    @Generated(hash = 2013670884)
     public DetonatorTypeNew(Long Id, String shellBlastNo, String detonatorId,
-            String detonatorIdSup) {
+            String detonatorIdSup, String zhu_yscs, String cong_yscs) {
         this.Id = Id;
         this.shellBlastNo = shellBlastNo;
         this.detonatorId = detonatorId;
         this.detonatorIdSup = detonatorIdSup;
+        this.zhu_yscs = zhu_yscs;
+        this.cong_yscs = cong_yscs;
     }
     @Generated(hash = 1791749386)
     public DetonatorTypeNew() {
@@ -58,8 +64,29 @@ public class DetonatorTypeNew {
     public void setDetonatorIdSup(String detonatorIdSup) {
         this.detonatorIdSup = detonatorIdSup;
     }
+    public String getZhu_yscs() {
+        return this.zhu_yscs;
+    }
+    public void setZhu_yscs(String zhu_yscs) {
+        this.zhu_yscs = zhu_yscs;
+    }
+    public String getCong_yscs() {
+        return this.cong_yscs;
+    }
+    public void setCong_yscs(String cong_yscs) {
+        this.cong_yscs = cong_yscs;
+    }
 
 
- 
-
+    @Override
+    public String toString() {
+        return "DetonatorTypeNew{" +
+                "Id=" + Id +
+                ", shellBlastNo='" + shellBlastNo + '\'' +
+                ", detonatorId='" + detonatorId + '\'' +
+                ", detonatorIdSup='" + detonatorIdSup + '\'' +
+                ", zhu_yscs='" + zhu_yscs + '\'' +
+                ", cong_yscs='" + cong_yscs + '\'' +
+                '}';
+    }
 }

@@ -1634,24 +1634,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     private void loadMoreData() {
         map_dl.clear();
-//        List<ShouQuan> list = LitePal.findAll(ShouQuan.class);//ErrNum总是为空
-//        Log.e("查询", "list getErrNum: "+list.get(0).getErrNum() );
-//        Gson gson = new Gson();
-//        DanLingBean danLingBean;
-//        Log.e("查询", "ErrNum: "+list.get(0).getErrNum() );
-//        for (ShouQuan sq : list) {
-//            danLingBean = gson.fromJson(sq.getJson(), DanLingBean.class);
-//            Map<String, Object> item = new HashMap<String, Object>();
-//            item.put("id", sq.getId());
-//            item.put("htbh", sq.getHtbh());
-//            item.put("xmbh", sq.getXmbh());
-//            item.put("qbzt", sq.getQbzt());
-//            item.put("errNum", sq.getErrNum());
-//            item.put("coordxy", sq.getCoordxy());
-//            item.put("spare1", sq.getSpare1());
-//            item.put("danLingBean", danLingBean);
-//            map_dl.add(item);
-//        }
         String sql = "Select * from " + DatabaseHelper.TABLE_NAME_SHOUQUAN;//+" order by htbh "
         Cursor cursor = db.rawQuery(sql, null);
         //return getCursorTolist(cursor);

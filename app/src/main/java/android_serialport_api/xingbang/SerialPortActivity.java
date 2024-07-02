@@ -54,7 +54,7 @@ public abstract class SerialPortActivity extends BaseActivity {
                 while (!isInterrupted() && !exit) {
                     int size;
 
-                    Thread.sleep(20);
+//                    Thread.sleep(20);
                     if (exit) return;
                     byte[] buffer = new byte[64];
                     if (mInputStream == null) return;
@@ -68,7 +68,7 @@ public abstract class SerialPortActivity extends BaseActivity {
                     }
 
                 }
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException  e) {//| InterruptedException
                 //e.printStackTrace();
                 //return;
             }

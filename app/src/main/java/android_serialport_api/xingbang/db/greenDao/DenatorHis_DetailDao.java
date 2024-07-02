@@ -39,6 +39,11 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         public final static Property Regdate = new Property(12, String.class, "regdate", false, "regdate");
         public final static Property Blastdate = new Property(13, String.class, "blastdate", false, "blastdate");
         public final static Property Name = new Property(14, String.class, "name", false, "name");
+        public final static Property DenatorIdSup = new Property(15, String.class, "denatorIdSup", false, "denatorIdSup");
+        public final static Property Zhu_yscs = new Property(16, String.class, "zhu_yscs", false, "zhu_yscs");
+        public final static Property Cong_yscs = new Property(17, String.class, "cong_yscs", false, "cong_yscs");
+        public final static Property Pai = new Property(18, int.class, "pai", false, "pai");
+        public final static Property SitholeNum = new Property(19, int.class, "sitholeNum", false, "sitholeNum");
     }
 
 
@@ -68,7 +73,12 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
                 "\"remark\" TEXT," + // 11: remark
                 "\"regdate\" TEXT," + // 12: regdate
                 "\"blastdate\" TEXT," + // 13: blastdate
-                "\"name\" TEXT);"); // 14: name
+                "\"name\" TEXT," + // 14: name
+                "\"denatorIdSup\" TEXT," + // 15: denatorIdSup
+                "\"zhu_yscs\" TEXT," + // 16: zhu_yscs
+                "\"cong_yscs\" TEXT," + // 17: cong_yscs
+                "\"pai\" INTEGER NOT NULL ," + // 18: pai
+                "\"sitholeNum\" INTEGER NOT NULL );"); // 19: sitholeNum
     }
 
     /** Drops the underlying database table. */
@@ -143,6 +153,23 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         if (name != null) {
             stmt.bindString(15, name);
         }
+ 
+        String denatorIdSup = entity.getDenatorIdSup();
+        if (denatorIdSup != null) {
+            stmt.bindString(16, denatorIdSup);
+        }
+ 
+        String zhu_yscs = entity.getZhu_yscs();
+        if (zhu_yscs != null) {
+            stmt.bindString(17, zhu_yscs);
+        }
+ 
+        String cong_yscs = entity.getCong_yscs();
+        if (cong_yscs != null) {
+            stmt.bindString(18, cong_yscs);
+        }
+        stmt.bindLong(19, entity.getPai());
+        stmt.bindLong(20, entity.getSitholeNum());
     }
 
     @Override
@@ -211,6 +238,23 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         if (name != null) {
             stmt.bindString(15, name);
         }
+ 
+        String denatorIdSup = entity.getDenatorIdSup();
+        if (denatorIdSup != null) {
+            stmt.bindString(16, denatorIdSup);
+        }
+ 
+        String zhu_yscs = entity.getZhu_yscs();
+        if (zhu_yscs != null) {
+            stmt.bindString(17, zhu_yscs);
+        }
+ 
+        String cong_yscs = entity.getCong_yscs();
+        if (cong_yscs != null) {
+            stmt.bindString(18, cong_yscs);
+        }
+        stmt.bindLong(19, entity.getPai());
+        stmt.bindLong(20, entity.getSitholeNum());
     }
 
     @Override
@@ -235,7 +279,12 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // remark
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // regdate
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // blastdate
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // name
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // name
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // denatorIdSup
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // zhu_yscs
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // cong_yscs
+            cursor.getInt(offset + 18), // pai
+            cursor.getInt(offset + 19) // sitholeNum
         );
         return entity;
     }
@@ -257,6 +306,11 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         entity.setRegdate(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setBlastdate(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setName(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setDenatorIdSup(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setZhu_yscs(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setCong_yscs(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setPai(cursor.getInt(offset + 18));
+        entity.setSitholeNum(cursor.getInt(offset + 19));
      }
     
     @Override

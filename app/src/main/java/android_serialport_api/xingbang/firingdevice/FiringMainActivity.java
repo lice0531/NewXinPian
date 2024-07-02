@@ -384,7 +384,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 15) {
+            if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 14) {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -692,7 +692,6 @@ public class FiringMainActivity extends SerialPortActivity {
             item.put("delay", d.getDelay());
             errDeData.add(item);
         }
-        Log.e(TAG, "errDeData: " + errDeData.toString());
     }
 
     /***
@@ -994,7 +993,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     @Override
     public void sendInterruptCmd() {
-        byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35
+        byte[] reCmd = ThreeFiringCmd.send_35("00");//35
         sendCmd(reCmd);
         super.sendInterruptCmd();
     }
@@ -1048,7 +1047,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            increase(3);
 
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
-            From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
+            From32DenatorFiring fromData = ThreeFiringCmd.decode_31("00", locatBuf);
 //            Log.e("起爆测试结果", "fromData.toString(): "+fromData.toString() );
             if (fromData != null && writeDenator != null) {
                 VoDenatorBaseInfo temp = writeDenator;
@@ -1078,7 +1077,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if (qibaoNoFlag < 5) {
                 Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
 //                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
-                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34起爆
+                byte[] initBuf = ThreeFiringCmd.send_34("00");//34起爆
                 sendCmd(initBuf);
                 qibaoNoFlag++;
             } else {
@@ -1108,7 +1107,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+            String noReisterFlag = ThreeFiringCmd.decode_36("00", fromCommad);
             Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
@@ -1128,7 +1127,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            mHandler_1.sendMessage(mHandler_1.obtainMessage());
             Log.e("起爆页面", "进入充电检测");
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busInfo = FourStatusCmd.decode_40("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
@@ -1142,7 +1141,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
             if (FiringMainActivity.stage == 8) {
-                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
+                byte[] initBuf = ThreeFiringCmd.send_34("00");//34  起爆
                 sendCmd(initBuf);
                 Utils.writeRecord("第一次发送起爆指令--");
             }
@@ -1175,10 +1174,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     //没有桥丝串口返回命令: C000300009C9C0
                     //  有桥丝串口返回命令: C000300009C9C0
                     if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
+                        byte[] initBuf = ThreeFiringCmd.send_30("0101");//30指令进入起爆模式(同时检测桥丝)
                         sendCmd(initBuf);
                     } else {
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
+                        byte[] initBuf = ThreeFiringCmd.send_30("0100");//30指令
                         sendCmd(initBuf);
                     }
                     if (firstCmdReFlag == 1) {
@@ -1253,7 +1252,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 break;
             case 5:
-                secondTxt.setText("测试准备3阶段(" + Wait_Count + "s)");//"充电检测 ("
+                secondTxt.setText("测试准备(" + Wait_Count + "s)");//"充电检测 ("
                 if (Wait_Count <= 0) {//等待结束
 //                    byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
 //                    sendCmd(powerCmd);
@@ -1341,7 +1340,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4500u ，全错
                     Log.e(TAG, "大于4000u ，全错: ");
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
@@ -1349,7 +1348,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
                     }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4500u ，全错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
@@ -1359,7 +1358,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                     Log.e(TAG, "小于4000u ，全错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行检测!");//弹出框
@@ -1368,7 +1367,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行检测。");//弹出框
@@ -1439,7 +1438,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(100);
                             if (zeroCount == 0) {
                                 //关闭电源
-                                byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
+                                byte[] powerCmd = OneReisterCmd.send_13("00");//13
                                 sendCmd(powerCmd);
                             }
                             if (zeroCmdReFlag == 1) {
@@ -1467,7 +1466,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         case 2://
                             //发出进入起爆模式命令  准备测试计时器
                             if (secondCount == 0 && secondCmdFlag == 0) {//
-                                byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
+                                byte[] powerCmd = ThreeFiringCmd.send_38("00");//0038充电
                                 sendCmd(powerCmd);
                                 increase(5);
                                 Log.e("第5阶段-increase", "5");
@@ -1542,7 +1541,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     Utils.writeRecord("--设置雷管延时:" + "主芯片:" + denatorId + "延时:" + delayStr + "从芯片:" + denatorIdSup);
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send_31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -1595,11 +1594,11 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 6://充电阶段
                             if (sixExchangeCount == ChongDian_time) {
-                                initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
+                                initBuf = ThreeFiringCmd.send_32("00");//32充电
                                 sendCmd(initBuf);
                             }
                             if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
-                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
+                                sendCmd(ThreeFiringCmd.send_33("00"));//33高压输出
                             }
                             if (sixExchangeCount == 0) {
                                 if (sixCmdSerial == 3) {
@@ -1656,7 +1655,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                        byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                        sendCmd(reCmd);
                                         //发出34 起爆命令
-                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
+                                        initBuf = ThreeFiringCmd.send_34("00");
                                         sendCmd(initBuf);
                                         Log.e("起爆", "第一次发送起爆指令: ");
                                         eightCmdFlag = 1;
@@ -1678,7 +1677,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 9:
                             if (neightCount == 0) {
-                                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+                                byte[] reCmd = ThreeFiringCmd.send_35("00");//35 退出起爆
                                 sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
@@ -1733,7 +1732,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     data = denatorId + delayStr + denatorIdSup;
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send_31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -1918,7 +1917,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //        endTest();
         ctlLinePanel(4);//修改页面显示项
         getErrorBlastCount();
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+        byte[] initBuf2 = ThreeFiringCmd.send_36("00");//36 在网读ID检测
         sendCmd(initBuf2);
     }
 
@@ -1972,7 +1971,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     countTime--;
                 }
                 if (countTime == 118) {
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                 }
                 Message msg = new Message();

@@ -608,12 +608,8 @@ public class XingbangMain extends BaseActivity {
                 getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 i++;
             }
-        } catch (FileNotFoundException e) {
-            Log.e("读取备份", "readCVS: 1");
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("读取备份", "readCVS: 2");
         } finally {
             try {
                 if (br != null) {
@@ -621,7 +617,6 @@ public class XingbangMain extends BaseActivity {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e("读取备份", "readCVS: 3");
             }
         }
     }

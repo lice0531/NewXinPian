@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-public class CheckPermissionsActivity extends AppCompatActivity {
+import android_serialport_api.xingbang.BaseActivity;
+
+public class CheckPermissionsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

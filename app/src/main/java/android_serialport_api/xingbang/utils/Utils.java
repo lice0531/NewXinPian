@@ -93,6 +93,28 @@ public class Utils {
 
         return new String(buf);
     }
+    /**
+     * int转16进制,可以根据字符表转换
+     * 普通16进制转换可以用 Integer.toHexString(a).toUpperCase(Locale.ROOT);方法
+     */
+    public static String intToHex(int n) {
+        StringBuilder sb = new StringBuilder(8);
+        String a;
+        char[] b = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        while (n != 0) {
+            sb = sb.append(b[n % 16]);
+            n = n / 16;
+        }
+        a = sb.reverse().toString();
+        return a;
+    }
+    public static String addZero(String str, int lenght){
+        String shell=str;
+        for (int i=0;i<(lenght-str.length());i++){
+            shell="0"+shell;
+        }
+        return shell;
+    }
 
     //管壳码转换雷管序号Id
     public static String DetonatorShellToSerialNo(String shellStr) {
@@ -146,10 +168,12 @@ public class Utils {
     public static String DetonatorShellToSerialNo_newXinPian(String shellStr) {
         //A621407FFFDE5
         //StringIndexOutOfBoundsException: length=4; index=5(直接注册会出现这个问题)
-        Log.e("处理雷管id", "shellStr: "+shellStr );
+
         if(shellStr.length()==8){
+            Log.e("处理雷管id", "shellStr: "+shellStr );
             return shellStr;
         }else {
+            Log.e("处理雷管id", "shellStr.substring(5): "+shellStr.substring(5) );
             return shellStr.substring(5);
         }
 

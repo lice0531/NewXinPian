@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.cmd;
 import android.util.Log;
 
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class FourStatusCmd {
@@ -37,7 +38,7 @@ public class FourStatusCmd {
 	 * @param cmd
 	 * @return
 	 */
-	public static From42Power decodeFromReceiveDataPower24_1(String addr , byte[] cmd){
+	public static From42Power decode_40(String addr , byte[] cmd){
 		//C0 00 40 08 00 00 0900 0100 0900 240B C0
 		//C0 00 40 08 00 00 BB00 0000 BB00 1375 C0
 		String fromCommad =  Utils.bytesToHexFun(cmd);
@@ -233,7 +234,18 @@ public class FourStatusCmd {
 	 */
 	public static byte[] send46(String addr,String version){
 
-		String command = addr + DefCommand.CMD_4_XBSTATUS_7+"01"+version;//46
+		GreenDaoMaster master = new GreenDaoMaster();
+		int total = master.queryDenatorBaseinfo().size();
+		int a;
+		if (total == 0) {
+			a = 0;
+		} else {
+			a = (total - 1) / 50;
+		}
+
+		String b = Utils.intToHex(a);
+		String c = Utils.addZero(b, 2);
+		String command = addr + DefCommand.CMD_4_XBSTATUS_7 + "02" + version + c;//46
 		return DefCommand.getCommadBytes(command);
 	}
 	

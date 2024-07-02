@@ -715,7 +715,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     @Override
     public void sendInterruptCmd() {
-        byte[] reCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
+        byte[] reCmd = OneReisterCmd.send_13("00");
         try {
             mOutputStream.write(reCmd);
         } catch (IOException e) {
@@ -1176,10 +1176,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: "+qiaosi_set);
             if (qiaosi_set.equals("true")) {
-                byte[] reCmd = OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01");//进入自动注册模式(00不检测01检测)桥丝
+                byte[] reCmd = OneReisterCmd.send_10("00", "01");//进入自动注册模式(00不检测01检测)桥丝
                 sendCmd(reCmd);
             } else {
-                byte[] reCmd = OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00");//进入自动注册模式(00不检测01检测)桥丝
+                byte[] reCmd = OneReisterCmd.send_10("00", "00");//进入自动注册模式(00不检测01检测)桥丝
                 sendCmd(reCmd);
             }
 
@@ -1203,7 +1203,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 sendCmd(reCmd);
             }
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//总线电流电压
-            From42Power fromData = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);
+            From42Power fromData = FourStatusCmd.decode_40("00", cmdBuf);
             busInfo = fromData;
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1256,7 +1256,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         GreenDaoMaster master = new GreenDaoMaster();
         //        Log.e("查询生产数据库查管壳码", "denatorId: "+denatorId);
 //        Log.e("查询生产数据库查管壳码", "shellBlastNo: "+shellBlastNo);
-        return master.queryShellBlastNoTypeNew(shellBlastNo);
+        return master.queryShellBlastNoTypeNew2(shellBlastNo);
     }
 
     /***
@@ -1905,7 +1905,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     revCloseCmdReFlag = 0;
                     revOpenCmdReFlag = 0;
 
-                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
+                    byte[] powerCmd = OneReisterCmd.send_13("00");
                     sendCmd(powerCmd);
                 }
                 break;
@@ -1992,7 +1992,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     if (zeroCount == 0) {
 
                         initCloseCmdReFlag = 1;
-                        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
+                        byte[] powerCmd = OneReisterCmd.send_13("00");
 
                         sendCmd(powerCmd);
 

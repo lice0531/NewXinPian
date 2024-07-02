@@ -35,10 +35,15 @@ public class Project extends LitePalSupport {
     private String bprysfz;//爆破员身份证
     @Property(nameInDb = "coordxy")
     private String coordxy;//经纬度
+    @Property(nameInDb = "selected")
+    private String selected;
+    @Property(nameInDb = "business")
+    private String business;
 
-    @Generated(hash = 1076235564)
+    @Generated(hash = 1784969971)
     public Project(Long id, String project_name, String xmbh, String htbh,
-            String dwdm, String bprysfz, String coordxy) {
+            String dwdm, String bprysfz, String coordxy, String selected,
+            String business) {
         this.id = id;
         this.project_name = project_name;
         this.xmbh = xmbh;
@@ -46,23 +51,12 @@ public class Project extends LitePalSupport {
         this.dwdm = dwdm;
         this.bprysfz = bprysfz;
         this.coordxy = coordxy;
+        this.selected = selected;
+        this.business = business;
     }
 
     @Generated(hash = 1767516619)
     public Project() {
-    }
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", project_name='" + project_name + '\'' +
-                ", xmbh='" + xmbh + '\'' +
-                ", htbh='" + htbh + '\'' +
-                ", dwdm='" + dwdm + '\'' +
-                ", bprysfz='" + bprysfz + '\'' +
-                ", coordxy='" + coordxy + '\'' +
-                '}';
     }
 
     public Long getId() {
@@ -119,5 +113,36 @@ public class Project extends LitePalSupport {
 
     public void setCoordxy(String coordxy) {
         this.coordxy = coordxy;
+    }
+
+    public String getSelected() {
+        return this.selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
+    }
+
+    public String getBusiness() {
+        return this.business;
+    }
+
+    public void setBusiness(String business) {
+        this.business = business;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", project_name='" + project_name + '\'' +
+                ", xmbh='" + xmbh + '\'' +
+                ", htbh='" + htbh + '\'' +
+                ", dwdm='" + dwdm + '\'' +
+                ", bprysfz='" + bprysfz + '\'' +
+                ", coordxy='" + coordxy + '\'' +
+                ", selected='" + selected + '\'' +
+                ", business='" + business + '\'' +
+                '}';
     }
 }

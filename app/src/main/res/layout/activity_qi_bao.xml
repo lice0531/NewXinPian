@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/cardView_tip"
         style="@style/cardview_style"
         android:layout_width="match_parent"
         android:layout_height="@dimen/menu_item_heigh"
@@ -56,7 +56,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView9"
+        android:id="@+id/cardView_total"
         style="@style/cardview_style"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/cardView_tip"
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
@@ -88,6 +88,7 @@
 
             <TextView
                 android:id="@+id/qb_tv_cuowu"
+                android:onClick="onClick"
                 style="@style/alltextstyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -97,49 +98,149 @@
     </androidx.cardview.widget.CardView>
 
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/qb_icView"
+    <LinearLayout
+        android:id="@+id/linearLayout11"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView9"
-        app:layout_constraintVertical_bias="0.027" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView_total"
+        android:orientation="vertical">
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/qb_dianliu_LC"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qb_totalbar" />
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/qb_icView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView_total"
+            app:layout_constraintVertical_bias="0.195"
+            />
+        <LinearLayout
+            android:id="@+id/qb_ll_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <!-- 序号 -->
+            <TextView
+                android:id="@+id/tv_blastserial"
+                style="@style/alltextstyle"
+                android:layout_width="0dp"
+                android:layout_weight="1.2"
+                android:layout_height="match_parent"
+                android:background="@drawable/a_bg_border_blue_1dp"
+                android:text="序号"
+                />
+            <!-- 管壳号-->
+            <TextView
+                android:id="@+id/tv_shellBlastNo"
+                style="@style/alltextstyle"
+                android:layout_width="0dp"
+                android:layout_weight="3.3"
+                android:layout_height="match_parent"
+                android:background="@drawable/a_bg_border_blue_1dp"
+                android:text="管壳码"
+                />
+            <TextView
+                android:id="@+id/tv_delay"
+                style="@style/alltextstyle"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:layout_height="match_parent"
+                android:background="@drawable/a_bg_border_blue_1dp"
+                android:text="延时"
+                />
+            <TextView
+                android:id="@+id/tv_zhuangtai"
+                style="@style/alltextstyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/a_bg_border_blue_1dp"
+                android:text="状态"
+                />
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/qb_rl_lg"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:listSelector="@drawable/listview_color_selector"
+            android:scrollbarFadeDuration="0"
+            android:scrollbars="none"
+            android:visibility="visible"
+            />
+    </LinearLayout>
 
 
     <Button
         android:id="@+id/qb_bt_jiance"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="48dp"
         android:text="重新检测"
+        android:onClick="onClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.301"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qb_icView" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout11" />
 
     <Button
         android:id="@+id/qb_bt_chongdian"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="48dp"
-        android:text="开始充电"
         android:onClick="onClick"
+        android:text="开始充电"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.786"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qb_icView" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout11" />
 
+    <Button
+        android:id="@+id/qb_bt_qx_chongdian"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:onClick="onClick"
+        android:text="取消充电"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout11" />
+
+    <LinearLayout
+        android:id="@+id/ll_qibao"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/qb_totalbar">
+
+        <ImageView
+            android:layout_marginTop="50dp"
+            android:layout_width="@dimen/dp80"
+            android:layout_height="@dimen/dp80"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/icon_bomb"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="雷管即将起爆,请转移至安全区"
+            style="@style/alltextstyle"/>
+        <TextView
+            android:id="@+id/qb_tv_qb_tip"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="按(1+5)键组合键进行起爆"
+            style="@style/alltextstyle"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

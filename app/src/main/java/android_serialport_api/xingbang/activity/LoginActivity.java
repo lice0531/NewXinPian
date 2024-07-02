@@ -9,10 +9,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
 import com.tencent.mmkv.MMKV;
 
 import java.io.File;
@@ -26,8 +26,6 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.databinding.ActivityLoginBinding;
-import android_serialport_api.xingbang.firingdevice.XingbangMain;
-import android_serialport_api.xingbang.firingdevice.ZiJianActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import me.weyye.hipermission.HiPermission;
@@ -116,7 +114,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
         String add = getFilesDir().getAbsolutePath()+"Xingbang"+ "/mmkv";//android 10版本建议不获取自己包名外的文件夹
         String dir = Environment.getExternalStorageDirectory() +  File.separator +"Xingbang"+ "/mmkv";
         String ren = MMKV.initialize(dir);//替代SharedPreferences
-        Log.e("初始化MMKV", "ren: "+ren );
+        Logger.e("初始化MMKV"+ "ren: "+ren );
         MmkvUtils.getInstance();
 
         ziJianThread.start();
@@ -132,7 +130,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);
+                Logger.e("发送命令"+ str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -169,7 +167,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        Log.e("TAG", "onClick: " );
+        Logger.e("TAG"+ "onClick: " );
         switch (view.getId()){
             case R.id.lg_bt_login:
                 Intent intent = new Intent(this,NewMainActivity.class);
@@ -188,7 +186,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
                 try {
                     busHandler.sendMessage(busHandler.obtainMessage());
 
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     if (firstCount == 1) {
                         test();//检测设备是否正常
                     }
@@ -208,7 +206,7 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
     }
 
     private void test() {
-        Log.e("高压和低压值", "lowVoltage: " + lowVoltage + "  highVoltage: " + highVoltage);
+        Logger.e("高压和低压值"+ "lowVoltage: " + lowVoltage + "  highVoltage: " + highVoltage);
         int a = Double.valueOf(lowVoltage * 10).intValue();
         byte[] delayBye = Utils.shortToByte((short) a);
         String delayStr = Utils.bytesToHexFun(delayBye);
@@ -246,12 +244,12 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
             String c1 = realyCmd1.substring(16);
             double voltLow = (Integer.parseInt(a1, 16) * 256 + Integer.parseInt(a, 16)) / 4.095 * 3.0 * 0.006;
             double voltHeigh = (Integer.parseInt(b1, 16) * 256 + Integer.parseInt(b, 16)) / 4.095 * 3.0 * 0.006;
-//            Log.e("核心板自检", "voltLow: " +voltLow);
-//            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
+//            Logger.e("核心板自检"+ "voltLow: " +voltLow);
+//            Logger.e("核心板自检"+ "voltHeigh: " +voltHeigh);
             Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
             dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
             dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
-            byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
+            byte[] powerCmd = OneReisterCmd.send_13("00");//13 退出测试模式
             sendCmd(powerCmd);
         }
     }

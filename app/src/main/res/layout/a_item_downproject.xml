@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal">
+    
+    <!-- 管壳号-->
+    <TextView
+        android:id="@+id/tv_shellBlastNo"
+        style="@style/alltextstyle"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        android:text="管壳码"
+        />
+
+    <TextView
+        android:id="@+id/tv_youxiaoqi"
+        style="@style/alltextstyle"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        android:text="有效期"
+        />
+
+    <TextView
+        android:id="@+id/tv_zhuangtai"
+        style="@style/alltextstyle"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        android:text="状态"
+        />
+
+</LinearLayout>

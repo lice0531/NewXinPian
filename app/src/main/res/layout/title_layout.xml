@@ -7,7 +7,7 @@
     android:layout_height="56dp"
     android:orientation="vertical"
     android:background="@color/child_pg_bg"
-    tools:showIn="@layout/activity_down_project">
+    >
 
     <ImageView
         android:id="@+id/title_back"

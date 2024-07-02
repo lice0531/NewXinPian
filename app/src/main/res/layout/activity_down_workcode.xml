@@ -169,8 +169,8 @@
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
                     android:hint="15位数字或字母"
-                    android:maxLength="15"
                     android:padding="5dp"
+                    android:maxLength="15"
                     android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
                     android:text=""
                     style="@style/alltextstyle" />

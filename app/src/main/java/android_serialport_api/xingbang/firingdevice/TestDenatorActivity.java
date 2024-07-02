@@ -2,7 +2,6 @@ package android_serialport_api.xingbang.firingdevice;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,7 +13,6 @@ import java.util.TimerTask;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -44,10 +42,7 @@ import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From22WriteDelay;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.greenDao.DaoMaster;
-import android_serialport_api.xingbang.db.greenDao.DaoSession;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.models.VoBlastModel;
@@ -1002,7 +997,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36在网读ID检测
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
+            String noReisterFlag = ThreeFiringCmd.decode_36("00", fromCommad);
             Log.e("是否有未注册雷管", "noReisterFlag: " + noReisterFlag);
             byte[] powerCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
             sendCmd(powerCmd);
@@ -1016,7 +1011,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             }
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busInfo = FourStatusCmd.decode_40("00", locatBuf);
             if (busHandler_dianliu == null) return;
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 
@@ -1080,7 +1075,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 try {
                     if (zeroCount == 0) {
                         initCloseCmdReFlag = 1;
-                        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
+                        byte[] powerCmd = OneReisterCmd.send_13("00");//13 退出注册模式
                         sendCmd(powerCmd);
                     }
                     if (revCloseCmdReFlag == 1) {
@@ -1137,7 +1132,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         ll_1.setVisibility(View.GONE);
         ll_2.setVisibility(View.VISIBLE);
         secondTxt.setText(R.string.text_test_tip4);
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+        byte[] initBuf2 = ThreeFiringCmd.send_36("00");//36 在网读ID检测
         sendCmd(initBuf2);
     }
 

@@ -1,12 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.ZhuCeActivity_line">
     <include layout="@layout/title_layout"
         android:id="@+id/totalbar"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout10"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal"
+       >
+        <!-- 序号 -->
+        <TextView
+            android:id="@+id/tv_blastserial"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/a_bg_border_blue_1dp"
+            android:text="序号"
+            />
+
+
+
+        <!-- 管壳号-->
+        <TextView
+            android:id="@+id/tv_shellBlastNo"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="3.3"
+            android:layout_height="match_parent"
+            android:background="@drawable/a_bg_border_blue_1dp"
+            android:text="管壳码"
+            />
+
+        <TextView
+            android:id="@+id/tv_shuju"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:background="@drawable/a_bg_border_blue_1dp"
+            android:text="数据"
+            />
+
+        <TextView
+            android:id="@+id/tv_zhuangtai"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/a_bg_border_blue_1dp"
+            android:text="状态"
+            />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/zcl_rl_lg_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:listSelector="@drawable/listview_color_selector"
+        android:scrollbarFadeDuration="0"
+        android:scrollbars="none"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/zc_btn_jiance"
+            style="@style/allbtntstyle_tuanbiao"
+            android:onClick="onClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="检测在线雷管"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

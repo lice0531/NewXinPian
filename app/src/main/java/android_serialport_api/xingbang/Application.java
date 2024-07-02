@@ -19,7 +19,9 @@ import androidx.multidex.MultiDexApplication;
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.PrettyFormatStrategy;
 import com.tencent.bugly.Bugly;
 import com.tencent.mmkv.MMKV;
 
@@ -105,8 +107,6 @@ public class Application extends MultiDexApplication {
         super.onCreate();
         mContext = getApplicationContext();
         oList = new ArrayList<>();
-
-        Log.e("application", "设备型号: " + Build.DEVICE);
         //定位初始化
         locationService = new LocationService(getApplicationContext());
         //数据库实例化
@@ -120,9 +120,14 @@ public class Application extends MultiDexApplication {
         MmkvUtils.getInstance();
         initGreenDao();//数据存储工具
         LitePal.initialize(getBaseContext());//数据存储工具
-
-        Logger.t(TAG);
-        Logger.addLogAdapter(new AndroidLogAdapter());//日志工具
+        //日志工具
+        FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
+                .showThreadInfo(false)  // 展示线程信息
+                .methodCount(0)         // 展示调用的方法个数，默认是 2
+                .methodOffset(0)        // 跳过堆栈中的方法个数， 默认是 0
+                .tag(TAG)   //  TAG 内容. 默认是 PRETTY_LOGGER
+                .build();
+        Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
 
         // 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
         // 默认本地个性化地图初始化方法

@@ -3,10 +3,12 @@ package android_serialport_api.xingbang.activity;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 import static android_serialport_api.xingbang.R.id.qb_bt_chongdian;
 import static android_serialport_api.xingbang.R.id.qb_bt_jiance;
+import static android_serialport_api.xingbang.R.id.qb_bt_qx_chongdian;
+import static android_serialport_api.xingbang.R.id.qb_tv_cuowu;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,17 +18,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -37,17 +38,16 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -62,6 +62,7 @@ import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.cmd.vo.To52Test;
+import android_serialport_api.xingbang.custom.RecyclerViewAdapter_Denator;
 import android_serialport_api.xingbang.databinding.ActivityQiBaoBinding;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -71,7 +72,6 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
-import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
 import android_serialport_api.xingbang.firingdevice.QueryHisDetail;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
@@ -163,6 +163,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     private To52Test writeVo;
     private int isshow = 0;
     private static VoDenatorBaseInfo writeDenator;
+    private int leiguan_true=0;//正确雷管数
+    private int leiguan_err=0;//错误雷管数
+    private RecyclerViewAdapter_Denator<DenatorBaseinfo> mAdapter;
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();//所有雷管列表
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +191,23 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             qbxm_name = " ";
         }
 
+        //新的适配方法 适配器
+        linearLayoutManager = new LinearLayoutManager(this);
+        binding.qbRlLg.setLayoutManager(linearLayoutManager);
+        mAdapter = new RecyclerViewAdapter_Denator<>(this, 8);
+        binding.qbRlLg.setAdapter(mAdapter);
+//        mAdapter.setOnItemLongClick(position -> {
+//            DenatorBaseinfo info = mListData.get(position);
+//            Logger.e("长按"+ "position: " + position + "info.getBlastserial()" + info.getBlastserial());
+//            // 序号 延时 管壳码
+////            modifyBlastBaseInfo(no, delay, shellBlastNo);
+//            modifyBlastBaseInfo(info, position);//序号,孔号,延时,管壳码
+//        });
+
+        mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+        mAdapter.setListData(mListData, 8);
+        mAdapter.notifyDataSetChanged();
+
         firstThread = new ThreadFirst(allBlastQu);//全部线程
     }
 
@@ -202,6 +224,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         super.onStart();
     }
 
+
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
         if (message.size() > 0) {
@@ -217,11 +240,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             pro_dwdm = message.get(0).getPro_dwdm();
             JianCe_time = Integer.parseInt(message.get(0).getJiance_time());
             version = message.get(0).getVersion();
-            Log.e(TAG, "version: " + version);
+            Logger.e(TAG+ "version: " + version);
         }
-        Log.e("Preparation_time", Preparation_time + "");
-        Log.e("ChongDian_time", ChongDian_time + "");
-        Log.e("JianCe_time", JianCe_time + "");
+        Logger.e("Preparation_time"+ Preparation_time + "");
+        Logger.e("ChongDian_time"+ ChongDian_time + "");
+        Logger.e("JianCe_time"+ JianCe_time + "");
     }
 
     /**
@@ -254,6 +277,13 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             case 5:
                 break;
             case 6:
+                binding.qbRlLg.setVisibility(View.VISIBLE);//(应该是检测列表和充电列表交换)功能待定
+                binding.cardViewTotal.setVisibility(View.GONE);
+                binding.qbIcView.setVisibility(View.VISIBLE);
+                binding.qbBtJiance.setVisibility(View.GONE);
+                binding.qbBtChongdian.setVisibility(View.GONE);
+                binding.qbBtQxChongdian.setVisibility(View.VISIBLE);
+
                 break;
             case 7:
                 switch (Build.DEVICE) {
@@ -270,6 +300,15 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         binding.qbTvTip.setText(R.string.text_qb_tip5_2);
                         break;
                 }
+                binding.cardViewTip.setVisibility(View.GONE);
+                binding.cardViewTotal.setVisibility(View.GONE);
+                binding.qbRlLg.setVisibility(View.GONE);
+                binding.qbBtChongdian.setVisibility(View.GONE);
+                binding.qbBtJiance.setVisibility(View.GONE);
+                binding.linearLayout11.setVisibility(View.GONE);//雷管列表和图表
+                binding.qbBtQxChongdian.setVisibility(View.GONE);
+                binding.llQibao.setVisibility(View.VISIBLE);
+
                 break;
             case 8:
                 break;
@@ -293,7 +332,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             item.put("delay", d.getDelay());
             errDeData.add(item);
         }
-        Log.e(TAG, "errDeData: " + errDeData.toString());
+        Logger.e(TAG+ "errDeData: " + errDeData.toString());
     }
 
     /***
@@ -331,6 +370,8 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             vo.setShellBlastNo(d.getShellBlastNo());
             vo.setDenatorId(d.getDenatorId());
             vo.setDenatorIdSup(d.getDenatorIdSup());
+            vo.setZhu_yscs(d.getZhu_yscs());
+            vo.setCong_yscs(d.getCong_yscs());
 
             allBlastQu.offer(vo);
             list_all_lg.add(vo);
@@ -340,7 +381,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     }
 
     public synchronized void increase(int val) {
-//        Log.e(TAG, "increase--改变stage: " + val);
+//        Logger.e(TAG, "increase--改变stage: " + val);
         stage = val;
     }
 
@@ -358,16 +399,16 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                     //没有桥丝串口返回命令: C000300009C9C0
                     //  有桥丝串口返回命令: C000300009C9C0
                     if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
+                        byte[] initBuf = ThreeFiringCmd.send_30("0101");//30指令进入起爆模式(同时检测桥丝)
                         sendCmd(initBuf);
                     } else {
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
+                        byte[] initBuf = ThreeFiringCmd.send_30("0100");//30指令
                         sendCmd(initBuf);
                     }
                     if (firstCmdReFlag == 1) {
                         ctlLinePanel(2);
                         increase(2);
-                        Log.e("increase", "2");
+                        Logger.e("increase"+ "2");
                     }
                 }
                 break;
@@ -398,11 +439,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 ctlLinePanel(4);//修改页面显示项
                 getErrorBlastCount();
                 fourthDisplay = 1;
-                Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
+                Logger.e("错误数量"+ "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
-//                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
+//                Logger.e(TAG+ "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
 //                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
-//                    Log.e(TAG, "大于4000u ，全错: ");
+//                    Logger.e(TAG+ "大于4000u ，全错: ");
 //                    if (chongfu) {
 //                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行重新检测。");//弹出框
 //                    } else {
@@ -416,21 +457,21 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况");//弹出框
 //                    }
 //
-//                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
+//                    Logger.e(TAG+ "小于4000u ，全错: stage=" + stage);
 //                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < (denatorCount * 12 + 100)) {//小于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行重新检测!");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
 //                    }
-//                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
+//                    Logger.e(TAG+ "小于参考值 ，部分错: stage=" + stage + "-totalerrorNum:" + totalerrorNum + "-denatorCount:" + denatorCount);
 //                } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
 //                    if (chongfu) {
 //                        initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行重新检测。");//弹出框
 //                    } else {
 //                        initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
 //                    }
-//                    Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
+//                    Logger.e(TAG+ "大于参考值 ，部分错: stage=" + stage);
 //                }
 
                 break;
@@ -442,7 +483,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                     secondCmdFlag = 1;
                     thirdWriteCount = 0;
                     increase(3);
-                    Log.e("increase", "3");
+                    Logger.e("increase"+ "3");
                 }
                 break;
             case 6://
@@ -472,6 +513,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 break;
             case 8:
                 ctlLinePanel(8);
+                binding.qbTvQbTip.setText(getString(R.string.text_firing_tip13) + eightCount + "s");
                 binding.qbTvTip.setText(getString(R.string.text_firing_tip13) + eightCount + "s");//"倒计时\n"
                 break;
             case 9://起爆之后,弹出对话框
@@ -501,12 +543,12 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 }
                 break;
             case 10://跳转到查看错误雷管和继续阶段
-                Log.e(TAG, "execStage: 10");
+                Logger.e(TAG+ "execStage: 10");
                 if (totalerrorNum == 0) {
                     stopXunHuan();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4500u ，全错
-                    Log.e(TAG, "大于4000u ，全错: ");
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    Logger.e(TAG+"大于4000u ，全错: ");
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
@@ -514,38 +556,39 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。");//弹出框
                     }
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() < 4500) {//小于4500u ，全错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况");//弹出框
                     }
-                    Log.e(TAG, "小于4000u ，全错: stage=" + stage);
+                    Logger.e(TAG+"小于4000u ，全错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() < denatorCount * 12 + 100) {//小于参考值 ，部分错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting2("请查看错误雷管列表,更换错误雷管后,点击继续按钮进行检测!");//弹出框
                     } else {
                         initDialog_zanting2("请查错误的雷管是否正确连接!检查无误后,点击继续重新检测。");//弹出框
                     }
-                    Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
+                    Logger.e(TAG+ "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * 12 + 100)) {//大于参考值 ，部分错
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
                         initDialog_zanting2("请更换错误雷管,检查无误后,点击继续进行检测。");//弹出框
                     } else {
                         initDialog_zanting2("请检查错误的雷管是否存在线夹进水进泥等情况!检查无误后点击确定重新检测。");//弹出框
                     }
-                    Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
+                    Logger.e(TAG+ "大于参考值 ，部分错: stage=" + stage);
                 } else {
                     stopXunHuan();//检测完成
                 }
                 break;
             case 11://给范总加的起爆后的放电阶段
                 binding.qbTvTip.setText("正在放电,请稍等" + elevenCount + "s");
+                binding.qbTvQbTip.setText("正在放电,请稍等" + elevenCount + "s");
                 break;
             case 33:
 //                if (thirdWriteCount == 1) {
@@ -602,8 +645,18 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         isshow = 0;//弹窗标志
         reThirdWriteCount = 0;
         totalerrorNum = 0;
+
+        leiguan_true=0;//雷管正确数量计数
+        leiguan_err=0;//雷管错误数量计数
     }
 
+    //退出时发送35指令
+    @Override
+    public void sendInterruptCmd() {
+        byte[] reCmd = ThreeFiringCmd.send_35("00");//35
+        sendCmd(reCmd);
+        super.sendInterruptCmd();
+    }
     /***
      * 关闭表单
      */
@@ -628,18 +681,27 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
             denator.setErrorCode("01");
             denator.setErrorName("延时写入不一致");
-            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
+            Logger.e("延时不一致"+"fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
         }
         Application.getDaoSession().update(denator);
-        //判断雷管状态是否正价错误数量
+        //更新错误状态
         if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
 //            twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
-//            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
+//            Logger.e("更新雷管状态"+ "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
         } else if ("02".equals(fromData.getCommicationStatus())) {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
             Utils.writeRecord("--起爆检测错误:" + fromData.toString());
+            leiguan_err=leiguan_err+1;
         }
+        if("FF".equals(fromData.getCommicationStatus())){
+            leiguan_true=leiguan_true+1;
+        }
+        Message message = new Message();
+        message.what = 3;
+        mHandler_tip.sendMessage(message);
+
+
         Utils.writeLog("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
     }
 
@@ -667,7 +729,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             Thread.sleep(100);
                             if (zeroCount == 0) {
                                 //关闭电源
-                                byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
+                                byte[] powerCmd = OneReisterCmd.send_13("00");//13
                                 sendCmd(powerCmd);
                             }
                             if (zeroCmdReFlag == 1) {
@@ -681,14 +743,14 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             break;
                         case 1://等待总线稳定时间
                             Thread.sleep(1000);
-                            Log.e("充电检测-firstWaitCount", firstWaitCount + "");
+                            Logger.e("充电检测-firstWaitCount"+ firstWaitCount + "");
                             firstWaitCount--;
-
+                            Logger.e("充电检测-firstCmdReFlag"+ firstCmdReFlag + "");
                             //说明电源打开命令未返回
                             if (firstCmdReFlag == 0 && firstWaitCount < 1) {
                                 exit = true;
                             }
-                            if (firstWaitCount > 8) {//新芯片8秒后显示电流
+                            if (firstWaitCount > 3) {//新芯片8秒后显示电流
                                 byte[] Cmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40 获取电源状态指令
                                 sendCmd(Cmd);
                             }
@@ -697,13 +759,13 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         case 2://
                             //发出进入起爆模式命令  准备测试计时器
                             if (secondCount == 0 && secondCmdFlag == 0) {//
-                                byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
+                                byte[] powerCmd = ThreeFiringCmd.send_38("00");//0038充电
                                 sendCmd(powerCmd);
                                 increase(5);
-                                Log.e("第5阶段-increase", "5");
-                                Log.e("充电检测WaitCount", Wait_Count + "");
+                                Logger.e("第5阶段-increase"+ "5");
+                                Logger.e("充电检测WaitCount"+ Wait_Count + "");
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            } else if (secondCount <= Preparation_time * 0.2) {//
+                            } else if (secondCount >= 2) {//
                                 //得到电流电压信息
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
                                 sendCmd(powerCmd);
@@ -714,6 +776,8 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 3://写入延时时间，检测结果看雷管是否正常
+//                            Logger.e("检测计时"+reThirdWriteCount);
+//                            Logger.e("检测数量"+thirdWriteCount);
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
 //                                Thread.sleep(50);
                                 thirdStartTime = 0;
@@ -721,7 +785,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 //检测一次
 //                                if (blastQueue == null || blastQueue.size() < 1) {
 //                                    increase(4);//之前是4
-//                                    Log.e("第4阶段-increase", "4-2");
+//                                    Logger.e("第4阶段-increase"+ "4-2");
 //                                    fourOnlineDenatorFlag = 0;
 //                                    break;
 //                                }
@@ -732,15 +796,17 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
 //                                        //检测一次
 //                                        increase(4);//之前是4
-//                                        Log.e("第4阶段-increase", "4-2");
+//                                        Logger.e("第4阶段-increase"+ "4-2");
 //                                    }else {
-                                    Log.e("雷管队列数量", "blastQueue.size():" + blastQueue.size());
+                                    Logger.e("雷管队列数量"+ "blastQueue.size():" + blastQueue.size());
                                     Utils.writeRecord("--第一轮检测结束-------------");
                                     //检测两次
                                     getblastQueue();
                                     Thread.sleep(1000);//在第二次检测前等待1s
                                     increase(33);//之前是4
                                     totalerrorNum = 0;//重置错误数量
+                                    leiguan_err=0;
+                                    leiguan_true=0;
 //                                  }
 
                                     fourOnlineDenatorFlag = 0;
@@ -755,18 +821,23 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 
 //                                String denatorId = Utils.DetonatorShellToSerialNo_new(shellStr);//新协议
 //                                String denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
-                                String denatorId="";
-                                if(write.getDenatorId()!=null){
+                                String denatorId = "";
+                                if (write.getDenatorId() != null) {
                                     denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
-                                }else {
+                                } else {
                                     denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
                                 }
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
-
+                                String data;
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                String data = denatorId + delayStr;
+                                if(write.getZhu_yscs().length()==4){//判断是否有延时参数
+                                    data= denatorId + delayStr+write.getZhu_yscs();
+                                }else {
+                                    data= denatorId + delayStr;
+                                }
+
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
@@ -774,7 +845,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     Utils.writeRecord("--设置雷管延时:" + "主芯片:" + denatorId + "延时:" + delayStr + "从芯片:" + denatorIdSup);
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
+                                initBuf = ThreeFiringCmd.send_31("00", data);//31写入延时时间
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -784,10 +855,10 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 4000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 8000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
-//                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
+//                                    Logger.e("雷管异常"+ "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
                                     VoFiringTestError errorDe = new VoFiringTestError();
                                     errorDe.setBlastserial(tempBaseInfo.getBlastserial());//
                                     errorDe.setShellBlastNo(tempBaseInfo.getShellBlastNo());
@@ -800,6 +871,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     writeDenator = null;
                                     tempBaseInfo = null;
                                     reThirdWriteCount++;
+                                    Logger.e("检测计时加1--方法1");
                                 } else {
                                     Thread.sleep(20);
                                 }
@@ -814,24 +886,30 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         case 5://充电检测阶段38指令计时器
                             Wait_Count--;
                             Thread.sleep(1000);
-                            Log.e("充电检测WaitCount", Wait_Count + "");
+                            Logger.e("充电检测WaitCount"+ Wait_Count + "");
                             //说明电源打开命令未返回
                             if (Wait_Count == 1) {
 //                                exit = true;
                                 secondCmdFlag = 1;
                                 thirdWriteCount = 0;
                                 increase(3);
-                                Log.e("第3阶段-increase", "3");
+                                Logger.e("第3阶段-increase"+ "3");
                             }
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 6://充电阶段
+                            if (sixExchangeCount == (ChongDian_time - 7)) {
+                                Message msg2 = new Message();
+                                msg2.obj = busInfo;
+                                msg2.what = 1;
+                                mDemoHandler.sendMessage(msg2);
+                            }
                             if (sixExchangeCount == ChongDian_time) {
-                                initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00");//32充电
+                                initBuf = ThreeFiringCmd.send_32("00");//32充电
                                 sendCmd(initBuf);
                             }
                             if (sixExchangeCount == (ChongDian_time - 8)) {//第8秒时,发送高压充电指令,继电器应该响
-                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
+                                sendCmd(ThreeFiringCmd.send_33("00"));//33高压输出
                             }
                             if (sixExchangeCount == 0) {
                                 if (sixCmdSerial == 3) {
@@ -840,7 +918,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     Thread.sleep(1000);
                                     increase(7);
-                                    Log.e("第7阶段-increase", "7");
+                                    Logger.e("第7阶段-increase"+ "7");
                                     break;
                                 }
                             }
@@ -857,6 +935,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101
                                 sendCmd(powerCmd);
                             }
+
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 7:
@@ -866,7 +945,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             if (keyFireCmd == 1) {
 
                                 increase(8);
-                                Log.e("increase", "8");
+                                Logger.e("increase"+ "8");
                                 keyFireCmd = 0;
                                 eightCmdExchangePower = 1;
                             }
@@ -888,9 +967,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                                        byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                        sendCmd(reCmd);
                                         //发出34 起爆命令
-                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
+                                        initBuf = ThreeFiringCmd.send_34("00");
                                         sendCmd(initBuf);
-                                        Log.e("起爆", "第一次发送起爆指令: ");
+                                        Logger.e("起爆"+ "第一次发送起爆指令: ");
                                         eightCmdFlag = 1;
                                     } else {
                                         exit = true;
@@ -910,7 +989,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             break;
                         case 9:
                             if (neightCount == 0) {
-                                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+                                byte[] reCmd = ThreeFiringCmd.send_35("00");//35 退出起爆
                                 sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
@@ -937,7 +1016,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     Utils.writeRecord("--第二轮检测结束-------------");
                                     //检测一次
                                     increase(4);//之前是4
-                                    Log.e("第4阶段-检测阶段-increase", "4-2");
+                                    Logger.e("第4阶段-检测阶段-increase"+ "4-2");
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
@@ -947,31 +1026,35 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 String shellStr = write.getShellBlastNo();
                                 if (shellStr == null || shellStr.length() != 13)
                                     continue;//// 判读是否是十三位
-                                String denatorId="";
-                                if(write.getDenatorId()!=null){
+                                String denatorId = "";
+                                if (write.getDenatorId() != null) {
                                     denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
-                                }else {
+                                } else {
                                     denatorId = Utils.DetonatorShellToSerialNo(shellStr);//旧协议
                                 }
 //                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
-//                                Log.e("雷管转化", "denatorId: " + denatorId);
+//                                Logger.e("雷管转化"+ "denatorId: " + denatorId);
 //                                if(denatorId.equals("0")){
 //                                    show_Toast_ui("当前版本号只支持0-F,"+shellStr+"雷管超出范围");
 //                                    continue;
 //                                }
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
+                                String data;
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                String data = denatorId + delayStr;
+                                if(write.getZhu_yscs().length()==4){//判断是否有延时参数
+                                    data= denatorId + delayStr+write.getZhu_yscs();
+                                }else {
+                                    data= denatorId + delayStr;
+                                }
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 0) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
-                                    data = denatorId + delayStr + denatorIdSup;
+                                    data = denatorId + delayStr + denatorIdSup+write.getCong_yscs();
                                 }
                                 //发送31命令---------------------------------------------
-                                initBuf = ThreeFiringCmd.setToXbCommon_CheckDenator23_2("00", data);//31写入延时时间
-                                sendCmd(initBuf);
+                                sendCmd(ThreeFiringCmd.send_31("00", data));//31写入延时时间
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
@@ -982,7 +1065,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 if (spanTime > 4000 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 单片机未返回
-//                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
+//                                    Logger.e("雷管异常"+"tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
                                     VoFiringTestError errorDe = new VoFiringTestError();
                                     errorDe.setBlastserial(tempBaseInfo2.getBlastserial());//
                                     errorDe.setShellBlastNo(tempBaseInfo2.getShellBlastNo());
@@ -996,6 +1079,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 
                                     tempBaseInfo2 = null;
                                     reThirdWriteCount++;
+                                    Logger.e("检测计时加1--方法2");
                                 } else {
                                     Thread.sleep(20);
                                 }
@@ -1015,7 +1099,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);
+                Logger.e("发送命令"+ str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -1052,7 +1136,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     private void doWithReceivData(String cmd, byte[] locatBuf) {
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
             increase(1);
-            Log.e("increase", "1");
+            Logger.e("increase"+ "1");
             zeroCmdReFlag = 1;
             byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
             sendCmd(powerCmd);
@@ -1069,9 +1153,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //            increase(3);
 
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
-            From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
-//            Log.e("起爆测试结果", "fromData.toString(): "+fromData.toString() );
-            if (fromData != null && writeDenator != null) {
+            From32DenatorFiring fromData = ThreeFiringCmd.decode_31("00", locatBuf);
+            Logger.e("起爆测试结果"+"fromData.toString(): "+fromData.toString() );
+            if (writeDenator != null) {
                 VoDenatorBaseInfo temp = writeDenator;
                 String fromCommad = Utils.bytesToHexFun(locatBuf);
                 short writeDelay = temp.getDelay();
@@ -1081,10 +1165,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
+                Logger.e("检测计时加1--方法3");
             }
-//            Log.e(TAG, "错误雷管数量--totalerrorNum: " + totalerrorNum);
-            assert fromData != null;
-
+//            Logger.e(TAG+ "错误雷管数量--totalerrorNum: " + totalerrorNum);
 
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
@@ -1096,23 +1179,23 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             sixCmdSerial = 3;
 
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
-            if (qibaoNoFlag < 5) {
-                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
-//                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
-                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34起爆
-                sendCmd(initBuf);
-                qibaoNoFlag++;
-            } else {
-                //stage=9;
-                eightCmdFlag = 2;
-                hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
-                saveFireResult();
+//            if (qibaoNoFlag < 5) {
+//                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
+////                Logger.e("起爆"+ "第" + qibaoNoFlag + "次发送起爆指令: ");
+//                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34起爆
+//                sendCmd(initBuf);
+//                qibaoNoFlag++;
+//            } else {
+            //stage=9;
+            eightCmdFlag = 2;
+            hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
+            saveFireResult();
 
-                if (!qbxm_id.equals("-1")) {
-                    updataState(qbxm_id);
-                }
-                increase(11);//跳到第9阶段
-                Log.e("increase", "9");
+            if (!qbxm_id.equals("-1")) {
+                updataState(qbxm_id);
+            }
+            increase(11);//跳到第9阶段
+            Logger.e("increase"+ "9");
 //                try {
 //                    Thread.sleep(50);
 //                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
@@ -1120,7 +1203,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-            }
+//            }
 
         } else if (DefCommand.CMD_3_DETONATE_6.equals(cmd)) {//35 退出起爆模式
             //发出关闭获取得到电压电流
@@ -1128,8 +1211,8 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
-            Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
+            String noReisterFlag = ThreeFiringCmd.decode_36("00", fromCommad);
+            Logger.e("是否有未注册雷管"+ "返回结果: " + noReisterFlag);
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
 //                increase(6);//0635此处功能为直接跳到第六阶段
@@ -1146,9 +1229,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //            firstThread.run();
 //            increase(5);
 //            mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            Log.e("起爆页面", "进入充电检测");
+            Logger.e("起爆页面"+ "进入充电检测");
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busInfo = FourStatusCmd.decode_40("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
@@ -1162,14 +1245,14 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 }
             }
             if (QiBaoActivity.stage == 8) {
-                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
+                byte[] initBuf = ThreeFiringCmd.send_34("00");//34  起爆
                 sendCmd(initBuf);
                 Utils.writeRecord("第一次发送起爆指令--");
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
-            Log.e("起爆页面", "成功切换版本");
+            Logger.e("起爆页面"+ "成功切换版本");
         } else {
-            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
+            Logger.e("起爆页面"+ "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
 
     }
@@ -1178,12 +1261,12 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
      * 保存起爆数据
      */
     public synchronized void saveFireResult() {
-        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
-        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
+        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到雷管的总数
+        Logger.e(TAG+ "saveFireResult-雷管总数totalNum: " + totalNum);
         if (totalNum < 1) return;
         //如果总数大于30,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
-        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
+        Logger.e(TAG+ "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
         if (hisTotalNum > 30) {
             String time = loadHisMainData();
             Message message = new Message();
@@ -1207,6 +1290,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         his.setPro_dwdm(pro_dwdm);
         his.setSerialNo(Integer.parseInt(qbxm_id));
         his.setLog(Utils.readLog(Utils.getDate(new Date())));
+        his.setTotal(totalNum);
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);
@@ -1239,7 +1323,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
      * 更新下载项目中的起爆状态
      */
     public int updataState(String id) {
-        Log.e("更新起爆状态", "id: " + id);
+        Logger.e("更新起爆状态"+ "id: " + id);
         int i = getHisDetailList(hisInsertFireDate);
         ContentValues values = new ContentValues();
         values.put("qbzt", "已起爆");
@@ -1286,7 +1370,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setVisibility(View.GONE);
-        iv_back.setVisibility(View.GONE);
+        iv_back.setVisibility(View.VISIBLE);
         //图表
 //        mCheckBoxList.add(mCheckBox1);
 
@@ -1298,22 +1382,34 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         });
 
         mHandler_tip = new Handler(msg -> {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     String time = (String) msg.obj;
                     show_Toast("起爆记录条数最大30条,已删除" + time + "记录");
                     break;
                 case 2:
-                    int totalNum=(int)msg.obj;
+                    int totalNum = (int) msg.obj;
                     if (totalNum != 0) {
-                        binding.qbTvCuowu.setText(getString(R.string.qb_tip_err)+totalNum);
+                        binding.qbTvCuowu.setText(getString(R.string.qb_tip_err) + totalNum);
                         binding.qbTvCuowu.setTextColor(Color.RED);
                     } else {
-                        binding.qbTvCuowu.setText(getString(R.string.qb_tip_err)+0);
+                        binding.qbTvCuowu.setText(getString(R.string.qb_tip_err) + 0);
                         binding.qbTvCuowu.setTextColor(Color.GREEN);
                     }
                     break;
                 case 3:
+                    if (leiguan_err != 0) {
+                        binding.qbTvCuowu.setText(getString(R.string.qb_tip_err) + leiguan_err);
+                        binding.qbTvCuowu.setTextColor(Color.RED);
+                    } else {
+                        binding.qbTvCuowu.setText(getString(R.string.qb_tip_err) + 0);
+                        binding.qbTvCuowu.setTextColor(Color.GREEN);
+                    }
+                    binding.qbTvZhengque.setText("正确:"+leiguan_true);
+                    //更新ui
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mAdapter.setListData(mListData, 8);
+                    mAdapter.notifyDataSetChanged();
                     break;
                 case 4:
                     break;
@@ -1327,7 +1423,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         noReisterHandler = new Handler(msg -> {
 //            if (fourOnlineDenatorFlag == 2) {
 //                disPlayNoReisterDenator(0);//提示框
-//                Log.e("未注册雷管", "线上有未注册雷管弹出框");
+//                Logger.e("未注册雷管"+ "线上有未注册雷管弹出框");
 //            }
 //            if (twoErrorDenatorFlag == 1) {
 //                twoErrorDenatorFlag = 0;
@@ -1360,6 +1456,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 }
                 binding.qbTvDianliu.setText(String.format("%s", displayIcStr));
                 binding.qbTvDianya.setText(String.format("%sV", busInfo.getBusVoltage()));
+
+            }
+            //高压阶段更新折线图
+            if (stage == 6 && sixExchangeCount % 5 == 0) {
+                Logger.e(TAG+ "更新折线图sixExchangeCount: " + sixExchangeCount);
                 Message msg2 = new Message();
                 msg2.obj = busInfo;
                 msg2.what = 1;
@@ -1368,7 +1469,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 
             if (sixExchangeCount == 10 && busInfo.getBusVoltage() < 15) {
                 Utils.writeRecord("--起爆测试--:高压充电失败");
-                Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
+                Logger.e("总线电压"+ "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
                 AlertDialog dialog = new AlertDialog.Builder(QiBaoActivity.this)
                         .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
                         .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
@@ -1386,7 +1487,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 
             //电流大于4000,重启检测阶段
             if (secondCount < Preparation_time * 0.1 && busInfo != null) {
-                Log.e(TAG, "busInfo: " + busInfo.toString());
+                Logger.e(TAG+ "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 4500) {
                     increase(11);
@@ -1469,9 +1570,27 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     public void onClick(View view) {
         int id = view.getId();
         if (id == qb_bt_jiance) {//重新检测
+            if(stage==4){
+                off();
+                Logger.e("重新检测");
+            }else {
+                show_Toast("还未检测完成,请稍等");
+            }
 
         } else if (id == qb_bt_chongdian) {//开始充电
-            increase(6);
+            if(stage==4){
+                increase(6);
+            }else {
+                show_Toast("还未到准备充电阶段,请稍等");
+            }
+
+        } else if (id == qb_tv_cuowu) {//错误雷管
+            loadErrorBlastModel();
+            createDialog();
+        }else if (id == qb_bt_qx_chongdian) {//取消充电
+            closeThread();
+            closeForm();
+            finish();
         }
     }
 
@@ -1485,11 +1604,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         int totalNum = cursor.getCount();//得到数据的总条数
         cursor.close();
         Message msg = new Message();
-        msg.what=2;
-        msg.obj=totalNum;
+        msg.what = 2;
+        msg.obj = totalNum;
         mHandler_tip.sendMessage(msg);
-
-
     }
 
     //C000310C 3D EA FF 00 0A 00 00 00 00 00 A21E C0
@@ -1509,6 +1626,8 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             vo.setShellBlastNo(shellNo);
             vo.setDenatorId(denatorId);
             vo.setDenatorIdSup(denatorIdSup);
+            vo.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
+            vo.setCong_yscs(denatorBaseinfo.getCong_yscs());
             allBlastQu.offer(vo);
         }
         reThirdWriteCount = 0;
@@ -1538,7 +1657,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         chongfu = true;//已经检测了一次
         loadBlastModel();
         getblastQueue();//重新给雷管队列赋值
-//        increase(1);
+        increase(1);
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
 //        sendCmd(powerCmd);
@@ -1560,7 +1679,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //        endTest();
         ctlLinePanel(4);//修改页面显示项
         getErrorBlastCount();
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+        byte[] initBuf2 = ThreeFiringCmd.send_36("00");//36 在网读ID检测
         sendCmd(initBuf2);
     }
 
@@ -1614,7 +1733,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                     countTime--;
                 }
                 if (countTime == 118) {
-                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                    byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                     sendCmd(reCmd);
                 }
                 Message msg = new Message();
@@ -1721,6 +1840,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     }
 
     //---------------图表方法//
+
     /**
      * 功能：初始化LineChart
      */
@@ -1793,7 +1913,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         mlist.add(75);
         mlist.add(80);
         mlist.add(85);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(){
+        xAxis.setValueFormatter(new IndexAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
                 return mlist.get((int) value) + "s";
@@ -1972,10 +2092,6 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     }
 
 
-
-
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -2004,14 +2120,14 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
-            Log.e("起爆页面", "m0UpTime: " + m0UpTime);
-        } else if (keyCode == KeyEvent.KEYCODE_3&& !Build.DEVICE.equals("KT50_B2")) {
+            Logger.e("起爆页面"+ "m0UpTime: " + m0UpTime);
+        } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")) {
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                    Logger.e("起爆页面"+ "keyFireCmd: " + keyFireCmd);
                 }
             }
         } else if (keyCode == KeyEvent.KEYCODE_5 && Build.DEVICE.equals("KT50_B2")) {
@@ -2020,13 +2136,14 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             if (spanTime < 500) {
                 if (stage == 7) {
                     keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                    Logger.e("起爆页面"+ "keyFireCmd: " + keyFireCmd);
                 }
             }
         }
         Utils.writeRecord("--按组合键起爆--");
         return super.dispatchKeyEvent(event);
     }
+
     /**
      * 功能：自定义Handler，通过弱引用的方式防止内存泄漏
      */
@@ -2043,7 +2160,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             QiBaoActivity lineChartDemo = mReference.get();
-            From42Power busInfo= (From42Power) msg.obj;
+            From42Power busInfo = (From42Power) msg.obj;
             if (lineChartDemo == null) {
                 return;
             }
@@ -2055,4 +2172,6 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             }
         }
     }
+
+
 }

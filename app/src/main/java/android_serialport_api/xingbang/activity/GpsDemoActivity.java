@@ -23,10 +23,15 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
+import com.orhanobut.logger.Logger;
+
+import java.util.List;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityGpsDemoBinding;
 import android_serialport_api.xingbang.databinding.ActivityLoginBinding;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.utils.BaiduUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 
@@ -56,12 +61,19 @@ public class GpsDemoActivity extends CheckPermissionsActivity implements View.On
     ActivityGpsDemoBinding binding;
     String jingdu;
     String weidu;
-
+    private String equ_no = "";//设备编码
+    private String pro_bprysfz = "";//证件号码
+    private String pro_htid = "";//合同号码
+    private String pro_xmbh = "";//项目编号
+    private String pro_coordxy = "";//经纬度
+    private String pro_dwdm = "";//单位代码
+    private String pro_name = "";//项目名称
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gps_demo);
-//        binding = ActivityGpsDemoBinding.inflate(getLayoutInflater());
+        binding = ActivityGpsDemoBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         mOneLocationBt = findViewById(R.id.one_location);
         mOneLocTV = findViewById(R.id.one_loc_tv);
         mContinuoueLocaionBt = findViewById(R.id.continuous_location);
@@ -77,7 +89,19 @@ public class GpsDemoActivity extends CheckPermissionsActivity implements View.On
         mContinuoueLocaionBt.setOnClickListener(this);
         saveGps.setOnClickListener(this);
         startContinuoueLocaton();
+        getUserMessage();
+        initAutoComplete("history_projectName", binding.downAtProjectName);
     }
+    //获取用户信息
+    private void getUserMessage() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<Project> projects = master.queryProjectIsSelected("true");
+        if(projects.size()>0){
+            pro_name=projects.get(0).getProject_name();
+        }
+        binding.downAtProjectName.setText(pro_name);
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -108,8 +132,21 @@ public class GpsDemoActivity extends CheckPermissionsActivity implements View.On
                 stopContinuoueLocaton();
                 MmkvUtils.savecode("jingdu",jingdu);
                 MmkvUtils.savecode("weidu",weidu);
-                Log.e("保存-保存    ", "经度: "+jingdu+"纬度:"+weidu);
-                Log.e("保存", "经度: "+MmkvUtils.getcode("jingdu","0.0")+"纬度:"+MmkvUtils.getcode("weidu","0.0") );
+                if(binding.downAtProjectName.getText().toString().length()>0){
+                    GreenDaoMaster greenDaoMaster = new GreenDaoMaster();
+                    List<Project> list_pro= greenDaoMaster.queryProjectToProject_name(binding.downAtProjectName.getText().toString());
+                    Project project =list_pro.get(0);
+                    project.setCoordxy(jingdu+","+weidu);
+                    greenDaoMaster.updateProject(project);
+                    Logger.e("项目名称"+binding.downAtProjectName.getText().toString());
+                    Logger.e("项目"+list_pro.get(0).toString());
+                    Logger.e("保存-保存    "+ "经度: "+jingdu+"纬度:"+weidu);
+                    Logger.e("保存"+ "经度: "+MmkvUtils.getcode("jingdu","0.0")+"纬度:"+MmkvUtils.getcode("weidu","0.0") );
+                    show_Toast("保存成功");
+                }else {
+                    show_Toast("请先设置项目");
+                }
+
                 break;
             default:
                 break;
