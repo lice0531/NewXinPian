@@ -245,6 +245,7 @@ public class UpgradeActivity extends SerialPortActivity {
             mReadThread_upload.mExit = true;
             mReadThread_upload.interrupt();
         }
+        unregisterReceiver(receiver);
     }
 
 
@@ -426,6 +427,7 @@ public class UpgradeActivity extends SerialPortActivity {
                                 } else if (name.equals("permit")) {
                                     mTip = "煤许版升级文件 下载成功\n\n";
                                 }
+                                Log.e("bin文件升级","1420开始升级");
                                 startUpdate(path);
                             }
 
@@ -473,14 +475,20 @@ public class UpgradeActivity extends SerialPortActivity {
                 Log.e("返回E0", "E0 -> E1");
                 mTip = mTip + "\nE0 强制升级指令完成";
                 mTvCmd.setText(mTip);
+                mTvCmd.setBackgroundResource(R.color.green);
                 mReadThread_upload.mIsReturnCmd = true;
                 E1();
                 break;
 
             case "E1":
                 Log.e("返回E1", "开始升级指令完成");
-                mTip = mTip + "\nE1 开始升级指令完成";
+                if (mReadThread_upload.mIsReturnCmd) {
+                    mTip = "使用 " + mDownLoadFilePath + " 路径下的bin文件\n\n开始升级..." + "\nE0 强制升级指令完成" + "\nE1 开始升级指令完成";
+                } else {
+                    mTip = mTip + "\nE1 开始升级指令完成";
+                }
                 mTvCmd.setText(mTip);
+                mTvCmd.setBackgroundResource(R.color.green);
                 Log.e("E1后续操作", "E1 -> E2");
                 E2();
                 break;
@@ -566,10 +574,16 @@ public class UpgradeActivity extends SerialPortActivity {
     private void dialog() {
         AlertDialog dialog = new AlertDialog.Builder(UpgradeActivity.this)
                 .setTitle("系统程序升级成功")//设置对话框的标题//"成功起爆"
+                .setCancelable(false)
                 .setMessage("系统程序升级成功,请点击确认后,重新进入程序!")//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
                 .setNegativeButton("确认", (dialog13, which) -> {
                     dialog13.dismiss();
+                    if (XbUtils.isExists(mPath_Local)) {
+                        // 删除本次下载的bin文件
+                        Log.e("bin文件升级","升级成功，准备删除dowbload下存储的bin文件");
+                        XbUtils.delete(mPath_Local);
+                    }
                     finish();
                 })
 //                .setNeutralButton("确认", (dialog2, which) -> {
@@ -1118,6 +1132,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 mTip = "";
                 mTvCmd.setBackgroundResource(R.color.white);
                 // 开始升级
+                Log.e("bin文件升级","bin文件下载完成后，onActivityResult进行升级");
                 startUpdate(mDownLoadFilePath);
             }
             // 未知安装权限页面
@@ -1149,6 +1164,7 @@ public class UpgradeActivity extends SerialPortActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
                 show_Toast("bin文件下载完成,正在安装请稍等...");
+                Log.e("bin文件升级","bin下载成功  1500");
                 mHandler.sendMessage(mHandler.obtainMessage(1500, mPath_Local));
 
             } else if (intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
