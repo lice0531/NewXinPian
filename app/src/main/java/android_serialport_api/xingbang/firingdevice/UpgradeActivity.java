@@ -6,14 +6,17 @@ import android.DeviceControl;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.serialport.DeviceControlSpd;
 import android.util.Log;
 import android.widget.Button;
@@ -26,6 +29,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 
+import com.google.gson.Gson;
+import com.orhanobut.dialogplus.DialogPlus;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -35,11 +40,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.Cmd_EX;
 import android_serialport_api.xingbang.cmd.DefCmd;
+import android_serialport_api.xingbang.models.DownloadVersionBean;
+import android_serialport_api.xingbang.utils.DownloadTest;
+import android_serialport_api.xingbang.utils.LoadingUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.FTP;
@@ -99,9 +108,16 @@ public class UpgradeActivity extends SerialPortActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public volatile Result mResult;             // 下载完成返回结果
-    private String shengji = "升级";
-    private String BinPath = "/nm/";
-
+    private String wangzhi = "";
+    private DownloadTest mDownloadTest;
+    private long mDownloadId;
+    private DownloadManager downloadManager;
+    private DownloadManager.Query query;
+    private Timer mTimer;
+    String appname;
+    // 通用
+    public DialogPlus mDialogPlus;
+    @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,64 +126,48 @@ public class UpgradeActivity extends SerialPortActivity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        shengji = (String) bundle.get("dataSend");
-        Log.e(TAG, "传递-dataSend: " + shengji);
+        String shengji = (String) bundle.get("dataSend");
+        Log.e(TAG, "传递-下载网址: " + shengji);
+        Gson gson = new Gson();
+        DownloadVersionBean dv = gson.fromJson(shengji, DownloadVersionBean.class);
+        wangzhi = dv.getNewVersionPath();
+        appname = dv.getNewVersion();
+        Log.e("下载地址", "wangzhi: " + wangzhi);
+        downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+        query = new DownloadManager.Query();
+        mDownloadTest = new DownloadTest(this);
+
+        mDownloadId = mDownloadTest.downloadAPK(wangzhi, downloadManager, appname);
+        mPath_Local = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/" + appname;
+        mDownLoadFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/" + appname;
         mContext = this;
         initPower();
         // xb文件夹不存在则创建
         XbUtils.isFileExistence(mSaveDirPath);
-
-        mArr_Permissions = new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        };
+        setSupportActionBar(findViewById(R.id.toolbar));
+//        mArr_Permissions = new String[]{
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.READ_EXTERNAL_STORAGE
+//        };
 
 //        initPowerMode();        // 初始化上电方式
-        initFTP();              // 初始化FTP
+//        initFTP();              // 初始化FTP
 //        initSerialHelper();     // 初始化串口类
         initHandler();          // 初始化Handler
         initView();             // 初始化控件
-        if (shengji.length()>0) {
-            if (IntervalUtil.isFastClick_2()) {
-                Download_File(shengji,BinPath, ".bin");
-            }
-        }
+
+        //注册广播，监听下载状态
+        IntentFilter intentfilter = new IntentFilter();
+        intentfilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        intentfilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
+        registerReceiver(receiver, intentfilter);
+
     }
 
-
-    /**
-     * 实例化上电方式
-     */
-    public void initPower() {
-        mPowerOnMode = mApplication.getPowerIndex();
-        Log.e("上电", "mPowerOnMode: " + mPowerOnMode);
-        if (mPowerOnMode == 0) {
-            try {
-                mDeviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 94, 93);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.e("BaseActivity", "实例化 DeviceControl");
-        } else if (mPowerOnMode == 1) {
-            mGpiot1 = new Gpiot1();
-            Log.e("BaseActivity", "实例化 Gpiot1");
-        } else if (mPowerOnMode == 2) {
-            try {
-                mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 108);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.e("BaseActivity", "实例化 DeviceControl");
-        } else if (mPowerOnMode == 3) {
-            try {
-                mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156, 170, 7, 9);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.e("BaseActivity", "实例化 DeviceControl");
-        } else {
-            Log.e("BaseActivity", "实例化 空");
-        }
+    // 进度条
+    public void showDialog() {
+        mDialogPlus = LoadingUtils.loadDialog(mContext);
+        mDialogPlus.show();
     }
 
     //发送命令
@@ -244,54 +244,6 @@ public class UpgradeActivity extends SerialPortActivity {
 //    }
 
     /**
-     * 初始化FTP
-     */
-    private void initFTP() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        mFTP = new FTP(mIP, mUserName, mPassWord);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        powerOffDevice(PIN_ADSL);// 下电
-        // 退出 IAP检测线程
-        if (mReadThread_upload != null) {
-            mReadThread_upload.mExit = true;
-            mReadThread_upload.interrupt();
-        }
-    }
-
-
-    /**
-     * 初始化串口类
-     */
-//    private void initSerialHelper() {
-//        Log.e("liyi_initSerialHelper", "mSportName: " + mSportName);
-//        mSerialHelper = new SerialHelper(mSportName, InitConst.BAUD_RATE) {
-//
-//            @Override
-//            protected void onDataReceived(final ComBean comBean) {
-//                Log.e("UpgradeActivity", "接收指令: " + ByteUtil.ByteArrToHex(comBean.bRec));
-//                mHandler.sendMessage(mHandler.obtainMessage(1100, comBean));
-//
-//                mSerialHelper.mTimeThread.mExit = true;
-//                mSerialHelper.mTimeThread.interrupt();
-//                mSerialHelper.mTimeThread = null;
-//            }
-//
-//            @Override
-//            protected void onDataTimeOut(int maxTime) {
-//                Log.e("UpgradeActivity", "最大超时: " + maxTime);
-//                mHandler.sendMessage(mHandler.obtainMessage(1300, maxTime));
-//            }
-//
-//        };
-//
-//    }
-
-    /**
      * 初始化控件
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -328,7 +280,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("currency",BinPath, ".bin");
+                    Download_File("currency", "/", ".bin");
                 }
             }
         });
@@ -342,7 +294,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9002);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("second",BinPath, ".bin");
+                    Download_File("second", "/", ".bin");
                 }
             }
         });
@@ -356,7 +308,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9003);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("permit",BinPath, ".bin");
+                    Download_File("permit", "/", ".bin");
                 }
             }
         });
@@ -376,14 +328,14 @@ public class UpgradeActivity extends SerialPortActivity {
                 ActivityCompat.requestPermissions(this, mArr_Permissions, 9004);
             } else {
                 if (IntervalUtil.isFastClick_2()) {
-                    Download_File("KT50UpgradeProgram",BinPath, ".apk");
+                    Download_File("KT50UpgradeProgram", "/", ".apk");
                 }
             }
             return true;
         });
 
         mTvCmd = findViewById(R.id.tv_cmd);
-        mTvCmd.setText("注意！使用前请关闭起爆器程序");
+//        mTvCmd.setText("注意！使用前请关闭起爆器程序");
     }
 
 
@@ -427,7 +379,7 @@ public class UpgradeActivity extends SerialPortActivity {
                     // 开始下载
                     new Thread(() -> {
                         try {
-                            mResult = mFTP.download(BinPath, fileName, mSaveDirPath);
+                            mResult = mFTP.download("/mx/", fileName, mSaveDirPath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -453,31 +405,22 @@ public class UpgradeActivity extends SerialPortActivity {
                     // storage/emulated/0/xb/currency_20201121.bin
                     String path = (String) msg.obj;
                     //  currency
-                    String name = path.substring(path.indexOf("xb/") + 1, path.indexOf("."));
+                    String name = appname+".bin";
                     //  .bin
                     String type = path.substring(path.lastIndexOf("."));
 
                     if (mResult != null) {
 
                         if (mResult.isSucceed()) {
-
-                            // apk文件
-                            if (type.equals(".apk")) {
-                                mTip = mTip + "\n升级程序下载成功";
-                                mTvCmd.setBackgroundResource(R.color.green);
-                                mDialogPlus.dismiss();
-
-                                // 打开APK
-                                XbUtils.openAPK(this, mResult.getPath());    // 升级程序下载成功
-                            }
                             // bin文件
-                            else if (type.equals(".bin")) {
+                            if (type.equals(".bin")) {
 
                                 if (name.equals("currency")) {
                                     mTip = "通用版升级文件 下载成功\n\n";
                                 } else if (name.equals("permit")) {
                                     mTip = "煤许版升级文件 下载成功\n\n";
                                 }
+                                Log.e("bin文件升级","1420开始升级");
                                 startUpdate(path);
                             }
 
@@ -488,11 +431,19 @@ public class UpgradeActivity extends SerialPortActivity {
                     }
 
                     mTvCmd.setText(mTip);
-                    Log.e("liyi", "响应结果: " + mResult.isSucceed() + " 响应内容: " + mResult.getResponse());
+//                    Log.e("liyi", "响应结果: " + mResult.isSucceed() + " 响应内容: " + mResult.getResponse());
                     break;
 
+                case 1500:
+                    // 等待动画
+                    showDialog();
+                    // storage/emulated/0/xb/currency_20201121.bin
+                    String path2 = (String) msg.obj;
+                    //  currency
+                    startUpdate(path2);
+                    break;
+            } // 下载成功
 
-            }
 
             return false;
         });
@@ -517,14 +468,20 @@ public class UpgradeActivity extends SerialPortActivity {
                 Log.e("返回E0", "E0 -> E1");
                 mTip = mTip + "\nE0 强制升级指令完成";
                 mTvCmd.setText(mTip);
+                mTvCmd.setBackgroundResource(R.color.green);
                 mReadThread_upload.mIsReturnCmd = true;
                 E1();
                 break;
 
             case "E1":
                 Log.e("返回E1", "开始升级指令完成");
-                mTip = mTip + "\nE1 开始升级指令完成";
+                if (mReadThread_upload.mIsReturnCmd) {
+                    mTip = "使用 " + mDownLoadFilePath + " 路径下的bin文件\n\n开始升级..." + "\nE0 强制升级指令完成" + "\nE1 开始升级指令完成";
+                } else {
+                    mTip = mTip + "\nE1 开始升级指令完成";
+                }
                 mTvCmd.setText(mTip);
+                mTvCmd.setBackgroundResource(R.color.green);
                 Log.e("E1后续操作", "E1 -> E2");
                 E2();
                 break;
@@ -593,7 +550,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 mNumber_E2 = 0;
                 mIndex_E2 = 0;
                 mList_Byte.clear();
-                mDialogPlus.dismiss();
+//                mDialogPlus.dismiss();
 
 //                // 下电
 //                powerOffDevice();
@@ -610,10 +567,16 @@ public class UpgradeActivity extends SerialPortActivity {
     private void dialog() {
         AlertDialog dialog = new AlertDialog.Builder(UpgradeActivity.this)
                 .setTitle("系统程序升级成功")//设置对话框的标题//"成功起爆"
+                .setCancelable(false)
                 .setMessage("系统程序升级成功,请点击确认后,重新进入程序!")//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
                 .setNegativeButton("确认", (dialog13, which) -> {
                     dialog13.dismiss();
+                    if (XbUtils.isExists(mPath_Local)) {
+                        // 删除本次下载的bin文件
+                        Log.e("bin文件升级","升级成功，准备删除dowbload下存储的bin文件");
+                        XbUtils.delete(mPath_Local);
+                    }
                     finish();
                 })
 //                .setNeutralButton("确认", (dialog2, which) -> {
@@ -636,7 +599,12 @@ public class UpgradeActivity extends SerialPortActivity {
     }
 
     private void E1() {
-
+        mGetFrom = 3;    // 从xb获得
+        Log.e(TAG, "E1: mContext "+mContext );
+        Log.e(TAG, "E1: mFormat "+mFormat );
+        Log.e(TAG, "E1: mGetFrom "+mGetFrom );
+        Log.e(TAG, "E1: mFileName "+mFileName );
+        Log.e(TAG, "E1: mDownLoadFilePath"+mDownLoadFilePath );
         // 获取 固件分割的块数
         mNumber_E2 = XbUtils.getDivisionNumber(mContext, mFormat, mGetFrom, mFileName, mUri, mDownLoadFilePath);
         // E1 开始升级指令
@@ -787,12 +755,12 @@ public class UpgradeActivity extends SerialPortActivity {
                 // 获取服务器文件列表
                 mList_FtpFileName.clear();
                 mList_FtpFileName = mFTP.listFiles(remotePath);
-                Log.e("下载目录", mList_FtpFileName.toString());
+//                Log.e("下载目录", mList_FtpFileName.toString());
 
                 for (int i = 0; i < mList_FtpFileName.size(); i++) {
                     String fileName = mList_FtpFileName.get(i).getName();
                     long fileSize = mList_FtpFileName.get(i).getSize();
-                    Log.e("Download_File", "服务器 文件序号: " + i + " 文件名称: " + fileName + " 文件大小: " + fileSize);
+//                    Log.e("Download_File", "服务器 文件序号: " + i + " 文件名称: " + fileName + " 文件大小: " + fileSize);
 
                     // 符合所需名称
                     if (fileName.contains(name)) {
@@ -1157,6 +1125,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 mTip = "";
                 mTvCmd.setBackgroundResource(R.color.white);
                 // 开始升级
+                Log.e("bin文件升级","bin文件下载完成后，onActivityResult进行升级");
                 startUpdate(mDownLoadFilePath);
             }
             // 未知安装权限页面
@@ -1183,5 +1152,28 @@ public class UpgradeActivity extends SerialPortActivity {
 
     }
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                show_Toast("bin文件下载完成,正在安装请稍等...");
+                Log.e("bin文件升级","bin下载成功  1500");
+                mHandler.sendMessage(mHandler.obtainMessage(1500, mPath_Local));
 
+            } else if (intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        powerOffDevice(PIN_ADSL);// 下电
+        // 退出 IAP检测线程
+        if (mReadThread_upload != null) {
+            mReadThread_upload.mExit = true;
+            mReadThread_upload.interrupt();
+        }
+        unregisterReceiver(receiver);
+    }
 }

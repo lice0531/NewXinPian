@@ -503,5 +503,12 @@
     <string name="text_down_srxm">输入项目</string>
     <string name="text_down_bc">保存并下载</string>
     <string name="text_ver_tip1">请选择工程</string>
-
+    <string name="text_updata_sys_1">升级提醒</string>
+    <string name="text_updata_sys_2">检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
+    <string name="text_updata_sys_3">进行更新</string>
+    <string name="text_updata_sys_4">不更新</string>
+    <string name="text_updata_sys_5">升级提醒</string>
+    <string name="text_updata_sys_6">检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
+    <string name="text_updata_sys_7">进行更新</string>
+    <string name="text_updata_sys_8">不更新</string>
 </resources>
