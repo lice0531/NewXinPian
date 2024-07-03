@@ -141,6 +141,7 @@ public class UpgradeActivity extends SerialPortActivity {
         mPath_Local = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/" + appname;
         mDownLoadFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/" + appname;
         mContext = this;
+
         initPower();
         // xb文件夹不存在则创建
         XbUtils.isFileExistence(mSaveDirPath);
