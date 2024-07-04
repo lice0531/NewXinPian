@@ -23,6 +23,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FiveTestingCmd;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,11 +98,15 @@ public class SetVoltageActivity extends SerialPortActivity {
         Utils.writeRecord("---进入设置电压页面---");
         Log.e("设置高压", "send_high: " + send_high);
 
+
+
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sp_changjia, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spChangjia.setAdapter(adapter);
-
+        int position_save = (int)MmkvUtils.getcode("sys_ver",0);
+        spChangjia.setSelection(position_save);
         spChangjia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -111,6 +116,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                 Log.e("下拉列表", "selectedItem: "+selectedItem );
                 Log.e("下拉列表", "position: "+position );
                 // 使用选中的值
+                MmkvUtils.savecode("sys_ver",position);
             }
 
             @Override
@@ -118,6 +124,8 @@ public class SetVoltageActivity extends SerialPortActivity {
                 // 无选项被选中时的处理
             }
         });
+
+
     }
 
     @Override
