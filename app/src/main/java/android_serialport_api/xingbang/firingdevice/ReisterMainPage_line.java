@@ -1951,7 +1951,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //                    show_Toast("有延时为空,请先设置延时");
 //                    break;
 //                }
-                if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+                if (isSingleReisher == 0) {
                     //判断第一发是否在历史记录里面
 //                    String shellBlastNo = serchFristLG();
 //                    int num = serchFristLGINdenatorHis(shellBlastNo);
@@ -1969,7 +1969,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //                    closeOpenThread.start();
                     sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
 
-                } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+                } else {
                     btnInputOk.setEnabled(true);
                     btnSingleReister.setText("单发注册");
                     txt_currentVolt.setText("当前电压:");
@@ -1982,8 +1982,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     revOpenCmdReFlag = 0;
                     // 13 退出注册模式
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
-                } else {
-                    show_Toast("正在与单片机通讯,请稍等一下再退出注册模式!");
                 }
                 break;
 
