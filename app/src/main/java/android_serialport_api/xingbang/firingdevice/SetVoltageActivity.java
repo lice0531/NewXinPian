@@ -8,8 +8,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -35,6 +38,10 @@ public class SetVoltageActivity extends SerialPortActivity {
     EditText etSethighVoltage;
     @BindView(R.id.btn_highVoltage)
     Button btnHighVoltage;
+    @BindView(R.id.btn_sys)
+    Button btnSys;
+    @BindView(R.id.sp_changjia)
+    Spinner spChangjia;
 
     SharedPreferences.Editor edit;
     private Handler Handler_tip = null;//提示信息
@@ -89,6 +96,28 @@ public class SetVoltageActivity extends SerialPortActivity {
         });
         Utils.writeRecord("---进入设置电压页面---");
         Log.e("设置高压", "send_high: " + send_high);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sp_changjia, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spChangjia.setAdapter(adapter);
+
+        spChangjia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // 当选择下拉列表中的一个项时，会调用此方法
+                // 可以在这里处理选中事件
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                Log.e("下拉列表", "selectedItem: "+selectedItem );
+                Log.e("下拉列表", "position: "+position );
+                // 使用选中的值
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // 无选项被选中时的处理
+            }
+        });
     }
 
     @Override
@@ -190,7 +219,7 @@ public class SetVoltageActivity extends SerialPortActivity {
 
     }
 
-    @OnClick({R.id.btn_lowVoltage, R.id.btn_highVoltage})
+    @OnClick({R.id.btn_lowVoltage, R.id.btn_highVoltage, R.id.btn_sys})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_lowVoltage://设置低压
@@ -250,6 +279,8 @@ public class SetVoltageActivity extends SerialPortActivity {
                     show_Toast("请等待单片机返回");
                 }
 
+                break;
+            case R.id.btn_sys://保存设置
                 break;
         }
     }

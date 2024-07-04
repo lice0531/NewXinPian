@@ -237,7 +237,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="设置电压"
+                    android:text="程序设置"
                     android:textColor="@color/bt_fg_base" />
             </LinearLayout>
 
