@@ -2594,6 +2594,25 @@ public class Utils {
         if (file.exists()) {
             file.delete();
         }
+
+    }
+    /***
+     * 删除日志
+     */
+    public static void deleteRecord_cmd() {
+        String filePath;
+        boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        //filePath: /storage/emulated/0//XB程序日志/21-03-08程序日志.txt
+        if (hasSDCard) {
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" + Utils.getDate(new Date()) + ".txt";
+        } else {
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" + Utils.getDate(new Date()) + ".txt";
+        }
+
+        File file = new File(filePath);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
 

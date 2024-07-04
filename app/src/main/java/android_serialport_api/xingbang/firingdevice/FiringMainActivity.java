@@ -966,6 +966,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
+        Utils.deleteRecord_cmd();//删除cmd日志
 
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
         GreenDaoMaster master = new GreenDaoMaster();
