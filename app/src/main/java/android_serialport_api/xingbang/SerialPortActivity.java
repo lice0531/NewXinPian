@@ -175,8 +175,8 @@ public abstract class SerialPortActivity extends BaseActivity {
             mReadThread.interrupt();
             sendInterruptCmd();
         }
-        mApplication.closeSerialPort();
-        mSerialPort = null;
+//        mApplication.closeSerialPort();
+//        mSerialPort = null;
         Log.e("父页面-destroy", "mReadThread: "+mReadThread.exit );
         super.onDestroy();
     }

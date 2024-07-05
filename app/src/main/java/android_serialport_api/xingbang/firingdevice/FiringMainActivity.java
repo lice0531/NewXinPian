@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -241,6 +242,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         elevenCount = getMaxDelay() / 1000 + 1;
         Log.e(TAG, "elevenCount: " + elevenCount);
+        Log.e(TAG,"isTestDenator: " + MmkvUtils.getcode("isTestDenator",""));
         //给主机发消息告知已进入起爆页面
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
     }
@@ -351,29 +353,43 @@ public class FiringMainActivity extends SerialPortActivity {
                 increase(6);//充电阶段
 //                version_1 = true;
             } else {
-                TextView view = new TextView(this);
-                view.setTextSize(25);
-                view.setTextColor(Color.RED);
-                view.setText("存在错误雷管,不能进行起爆");
-                view.setTypeface(null, Typeface.BOLD);
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("提示")//设置对话框的标题
-                        .setView(view)
-                        //设置对话框的按钮
+                String isTestDenator = (String)MmkvUtils.getcode("isTestDenator","");
+                if (TextUtils.isEmpty(isTestDenator) || isTestDenator.equals("N")) {
+                    showErrorLgDialog("存在错误雷管,请先检查线路并进行网络检测",1);
+                } else {
+                    showErrorLgDialog("存在错误雷管,不能进行起爆",2);
+                }
+            }
+        });
+    }
+
+    private void showErrorLgDialog(String content,int type){
+        TextView view = new TextView(this);
+        view.setTextSize(25);
+        view.setTextColor(Color.RED);
+        view.setText(content);
+        view.setTypeface(null, Typeface.BOLD);
+        AlertDialog dialog = new Builder(FiringMainActivity.this)
+                .setTitle("提示")//设置对话框的标题
+                .setView(view)
+                //设置对话框的按钮
 //                        .setPositiveButton("继续", (dialog2, which) -> {
 //                            //检测两次
 ////                          increase(33);//之前是4
 //                            increase(6);//充电阶段
 ////                            version_1 = true;
 //                        })
-                        .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
-                        })
-                        .create();
-                dialog.show();
-            }
-        });
+                .setNeutralButton(R.string.text_qd, (dialog2, which) -> {
+                    //这里明确下需求后再确定要不要退出当前页面
+//                    dialog2.dismiss();
+//                    if (type == 1) {
+//                        MmkvUtils.savecode("isTestDenator","N");
+//                        finish();
+//                    }
+                })
+                .create();
+        dialog.show();
     }
-
     @SuppressLint("SetTextI18n")
     private void initHandle() {
         Handler_tip = new Handler(msg -> {
@@ -389,6 +405,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setNegativeButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
+                            MmkvUtils.savecode("isTestDenator","N");
                         })
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
@@ -483,6 +500,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             closeThread();
                             closeForm();
                             finish();
+                            MmkvUtils.savecode("isTestDenator","N");
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
@@ -519,6 +537,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                    closeThread();
                             closeForm();
                             finish();
+                            MmkvUtils.savecode("isTestDenator","N");
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
@@ -738,6 +757,7 @@ public class FiringMainActivity extends SerialPortActivity {
         intentTemp.putExtra("backString", "");
         setResult(1, intentTemp);
         finish();
+        MmkvUtils.savecode("isTestDenator","N");
         //android.os.Process.killProcess((int)Thread.currentThread().getId());
     }
 
@@ -1108,10 +1128,10 @@ public class FiringMainActivity extends SerialPortActivity {
         InputMethodManager imm = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!hasFocus) {
-            //隐藏 软键盘  
+            //隐藏 软键盘
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         } else {
-            //显示 软键盘  
+            //显示 软键盘
             imm.showSoftInput(v, 0);
         }
     }
@@ -1135,6 +1155,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setNegativeButton("退出", (dialog13, which) -> {
                             dialog13.dismiss();
                             finish();
+                            MmkvUtils.savecode("isTestDenator","N");
                         })
                         .setNeutralButton("继续", (dialog2, which) -> {
                             dialog2.dismiss();
@@ -1173,6 +1194,14 @@ public class FiringMainActivity extends SerialPortActivity {
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         closeThread();
         closeForm();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
         super.onDestroy();
         fixInputMethodManagerLeak(this);
         removeActivity();
@@ -1236,10 +1265,11 @@ public class FiringMainActivity extends SerialPortActivity {
         String currentPeak = "";
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
             increase(1);
-            Log.e("increase", "1");
+            Log.e(TAG,"increase: 1");
             zeroCmdReFlag = 1;
             byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
             sendCmd(powerCmd);
+            Log.e(TAG,"收到13指令，开始发送41指令");
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
 //            String text = ll_firing_IC_4.getText().toString();
 //            if (text.contains("疑似") || text.contains("过大")) {
@@ -1261,7 +1291,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            secondCmdFlag = 1;
 //            thirdWriteCount = 0;
 //            increase(3);
-
+            Log.e(TAG,"收到30指令，进入等待检测阶段");
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
             From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
 
@@ -1277,7 +1307,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             Log.e("起爆测试结果", "fromData.toString(): " + fromData.toString());
 //            Log.e(TAG, "错误雷管数量--totalerrorNum: " + totalerrorNum);
-
+            Log.e(TAG,"收到31指令，开始给雷管写入延时");
 
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
@@ -1296,7 +1326,6 @@ public class FiringMainActivity extends SerialPortActivity {
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 3;
-
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
             deviceStatus = "05";//起爆结束
             isGetQbResult = true;
@@ -1345,11 +1374,12 @@ public class FiringMainActivity extends SerialPortActivity {
             //发出关闭获取得到电压电流
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40
 //            sendCmd(powerCmd);
+            Log.e(TAG,"收到35指令，进入退出起爆模式");
         } else if (DefCommand.CMD_3_DETONATE_7.equals(cmd)) {//36 在网读ID检测是否有未注册雷管
             String fromCommad = Utils.bytesToHexFun(locatBuf);
 //            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
             String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
-            Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
+            Log.e(TAG,"是否有未注册雷管,返回结果: " + noReisterFlag);
 //            if ("FF".equals(noReisterFlag)) {
 //                fourOnlineDenatorFlag = 3;
 ////                increase(6);//0635此处功能为直接跳到第六阶段
@@ -1372,7 +1402,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
-
+            Log.e(TAG,"收到37指令，异常终止起爆");
         } else if (DefCommand.CMD_3_DETONATE_9.equals(cmd)) {//38 进入充电检测模式
             //处理返回的起爆模式命令
 //            secondCmdFlag = 1;
@@ -1382,7 +1412,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            firstThread.run();
 //            increase(5);
 //            mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            Log.e("起爆页面", "进入充电检测");
+            Log.e(TAG,"38指令已返回,进入充电检测");
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
@@ -1551,6 +1581,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 closeThread();
                                 closeForm();
                                 finish();
+                                MmkvUtils.savecode("isTestDenator","N");
                             })
                             .create();
                     dialog.show();
@@ -1567,6 +1598,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setNegativeButton(getString(R.string.text_test_exit), (dialog12, which) -> {
                                 dialog12.dismiss();
                                 finish();
+                                MmkvUtils.savecode("isTestDenator","N");
                             })
                             .create();
                     dialog.show();
@@ -1592,6 +1624,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                     finish();
+                                    //本次起爆结束  isTestDenator也置为N
+                                    MmkvUtils.savecode("isTestDenator","N");
                                 }
                             })
                             .setPositiveButton(getString(R.string.text_firing_tip17), new DialogInterface.OnClickListener() {
@@ -1869,7 +1903,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 5000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 3500 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
@@ -2181,7 +2215,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 5000 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 3500 && tempBaseInfo != null) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 未返回
 //                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方

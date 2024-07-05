@@ -1168,6 +1168,15 @@ public class UpgradeActivity extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("UpgradeActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        super.onDestroy();
         super.onDestroy();
         powerOffDevice(PIN_ADSL);// 下电
         // 退出 IAP检测线程

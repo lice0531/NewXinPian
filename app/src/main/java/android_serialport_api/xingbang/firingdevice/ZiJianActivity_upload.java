@@ -485,4 +485,17 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //                Utils.deleteDirWihtFile("/XB程序日志/");
 //        show_Toast("删除成功");
     }
+
+    @Override
+    protected void onDestroy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("ZiJianActivity_upload","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        super.onDestroy();
+    }
 }
