@@ -47,8 +47,13 @@ import java.util.UUID;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
+import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.cmd.DefCommand;
+import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -77,12 +82,14 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.annotation.NonNull;
+
 import org.apache.commons.net.ftp.FTPFile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class XingbangMain extends BaseActivity {
+public class XingbangMain extends SerialPortActivity {
 
     @BindView(R.id.tv_main_no)
     TextView tvMainNo;
@@ -114,6 +121,10 @@ public class XingbangMain extends BaseActivity {
     TextView tvMainVersion;
     @BindView(R.id.btn_main_lianxi)
     Button btnMainLianxi;
+    @BindView(R.id.txt_currentVolt)
+    TextView txt_Volt;
+    @BindView(R.id.txt_currentIC)
+    TextView txt_IC;
     private long time = 0;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
     private SQLiteDatabase db;
@@ -162,6 +173,10 @@ public class XingbangMain extends BaseActivity {
     private int Yanzheng_sq_size = 0;
     private String Yanzheng_sq = "";//是否验雷管已经授权
     private String app_version_name = "";
+    private From42Power busInfo;
+    private Handler busHandler = null;//总线信息
+    private SendPower sendPower;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -208,6 +223,15 @@ public class XingbangMain extends BaseActivity {
     protected void onDestroy() {
         Log.e(TAG, "onDestroy: ");
         SQLiteStudioService.instance().stop();
+        if (sendPower != null) {
+            sendPower.exit = true;  // 终止线程thread
+            try {
+                sendPower.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 //        if (db != null) db.close();
 //        if (tipDlg != null) {
 //            tipDlg.dismiss();
@@ -225,8 +249,6 @@ public class XingbangMain extends BaseActivity {
 
         initPower();                // 初始化上电方式()
         initView();         // 初始化控件
-//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
-//        db = mMyDatabaseHelper.getReadableDatabase();
 
         tipDlg = new LoadingDialog(XingbangMain.this);
         initHandler();//初始化handler
@@ -250,21 +272,22 @@ public class XingbangMain extends BaseActivity {
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
-//        Beta.checkUpgrade();
-
-//        initFTP();              // 初始化FTP
-//        if (IntervalUtil.isFastClick_2()) {//防止连点  SC_KT50_Second_Version_16
-//            //16是改变前的
-//            //17是电流11000,电压17V
-//            //15是电流11000,电压16V
-////            GetFileName("XB_KT50_Second_Version_17", ".apk");//测试用
-//            GetFileName("NM_M900_Second_Version_17", ".apk");
-//        }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         app_version_name = getString(R.string.app_version_name);
         getleveup();
+        busHandler = new Handler(msg -> {
+            txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
+            txt_IC.setText("当前电流:" + busInfo.getBusCurrentIa()+ "μA");
+            return false;
+        });
+
+
+        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+
     }
+
+
 
     private void queryBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -273,15 +296,6 @@ public class XingbangMain extends BaseActivity {
         List<DenatorBaseinfo> list_shou = master.queryLeiGuan(format1, mRegion);
         Yanzheng_sq_size = list_shou.size();
         Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
-    }
-
-    /**
-     * 初始化FTP
-     */
-    private void initFTP() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        mFTP = new FTP(mIP, mUserName, mPassWord);
     }
 
     /**
@@ -616,10 +630,6 @@ public class XingbangMain extends BaseActivity {
     int m0KeyDown_Action, m0KeyUp_Action;
     int keyFlag = 0;
 
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {//
-//        return super.onKeyUp(keyCode, event);
-//    }
 
 
     @Override
@@ -677,7 +687,7 @@ public class XingbangMain extends BaseActivity {
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
-
+        close();//停止访问电流
         switch (view.getId()) {
 
             case R.id.btn_main_reister://注册
@@ -789,9 +799,6 @@ public class XingbangMain extends BaseActivity {
 
             case R.id.btn_main_exit://退出
                 exit();//退出方法
-                //只为了报错用的
-//                Intent intent55 = new Intent(XingbangMain.this, WriteLogActivity.class);
-//                startActivity(intent55);
                 break;
         }
     }
@@ -912,45 +919,6 @@ public class XingbangMain extends BaseActivity {
         }
     }
 
-//    private void loadMoreData_all_lg() {
-//        pb_show = 0;
-//        lg2_yanshi.clear();
-//        list_data.clear();
-//        StringBuffer sb = new StringBuffer();
-//        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, "statusCode=?", new String[]{"02"}, null, null, " blastserial asc");
-//        if (cursor != null) {
-//            while (cursor.moveToNext()) {
-//                int serialNo = cursor.getInt(1); //获取第二列的值 ,序号
-//                int holeNo = cursor.getInt(2);
-//                String shellNo = cursor.getString(3);//管壳号
-//                int delay = cursor.getInt(5);
-//                String stCode = cursor.getString(6);//状态
-//                String stName = cursor.getString(7);//
-//                String errorCode = cursor.getString(9);//状态
-//                String errorName = cursor.getString(8);//
-//
-//                sb.append(shellNo).append("#").append(delay).append(",");
-//
-//                VoBlastModel item = new VoBlastModel();
-//                item.setBlastserial(serialNo);
-//                item.setSithole(holeNo);
-//                item.setDelay((short) delay);
-//                item.setShellBlastNo(shellNo);
-//                item.setErrorCode(errorCode);
-//                item.setErrorName(errorName);
-//                item.setStatusCode(stCode);
-//                item.setStatusName(stName);
-//                list_data.add(item);
-//            }
-//            cursor.close();
-//        }
-//        for (int i = 0; i < list_data.size(); i++) {
-//            lg2_yanshi.add(list_data.get(i).getDelay() + "");
-//        }
-//        Utils.writeLeiGuan(sb.toString());//保存一份txt备份
-//        Log.e("雷管txt备份", "备份成功");
-//        Log.e("起爆延时验证", lg2_yanshi.toString());
-//    }
 
     /***
      * 建立对话框
@@ -971,40 +939,6 @@ public class XingbangMain extends BaseActivity {
         return getDaoSession().getMessageBeanDao().count();
     }
 
-    /***
-     * 手动输入注册
-     */
-    private int insertDenator(String leiguan) {
-        String[] lg = leiguan.split(",");
-        String shellNo;
-        int maxNo = getMaxNumberNo();
-        int reCount = 0;
-        for (int i = lg.length; i > 0; i--) {
-            shellNo = lg[i - 1];
-            Log.e("雷管信息", "shellNo: " + shellNo);
-            String[] a = shellNo.split("#");
-            //检查重复数据
-            if (checkRepeatShellNo(a[0]) == 1) {
-                reCount++;
-                continue;
-            }
-            maxNo++;
-            DenatorBaseinfo baseinfo = new DenatorBaseinfo();
-            baseinfo.setBlastserial(maxNo);
-            baseinfo.setSithole(maxNo + "");
-            baseinfo.setShellBlastNo(a[0]);
-            baseinfo.setDelay(Integer.parseInt(a[1]));
-            baseinfo.setRegdate(Utils.getDateFormat(new Date()));
-            baseinfo.setStatusCode("02");
-            baseinfo.setStatusName("已注册");
-            baseinfo.setErrorCode("");
-            baseinfo.setErrorCode("FF");
-            baseinfo.setWire("");
-            getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
-            reCount++;
-        }
-        return reCount;
-    }
 
 
     /***
@@ -1073,11 +1007,6 @@ public class XingbangMain extends BaseActivity {
         region_4 = g.queryDetonatorRegionDesc("4").size();
         region_5 = g.queryDetonatorRegionDesc("5").size();
 
-//        tv_region_number.setText(
-//                "区域数量: " + region_0 + " = ("
-//                        + region_1 + ")+(" + region_2 + ")+(" + region_3
-//                        + ")+(" + region_4 + ")+(" + region_5 + ")"
-//        );
     }
 
     /**
@@ -1212,41 +1141,6 @@ public class XingbangMain extends BaseActivity {
         mOffTime.schedule(tt, 1000, 1000);
     }
 
-    //    private void GetFileName(String name, String type) {
-//        // 网络判断
-//        if (!NetUtils.haveNetWork(this)) {
-//            return;
-//        }
-//        try {
-//            // 如果登录成功
-//            if (mFTP.openConnect()) {
-//                // 获取服务器文件列表
-//                mList_FtpFileName.clear();
-//                mList_FtpFileName = mFTP.listFiles("/");
-////                Log.e("下载目录", mList_FtpFileName.toString());//所有文件目录
-//                // 获取本地APK文件列表
-//                for (int i = 0; i < mList_FtpFileName.size(); i++) {
-//                    String fileName = mList_FtpFileName.get(i).getName();
-//                    //name  ==  SC_KT50_Second_Version_16
-//                    //fileName =SC_KT50_Second_Version_16_32
-//                    if (fileName.contains(name)) {
-//                        Log.e("下载目录1", fileName);//KT50_Second_Version_26.apk
-//                        Log.e(TAG, "name: " + name);
-//                        PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-//                        Log.e("下载目录2", pi.versionCode + "");//KT50_Second_Version_26.apk
-//                        int v = Integer.parseInt(fileName.substring(fileName.length() - 6, fileName.indexOf(".apk")));
-//                        Log.e("下载目录3", v + "");
-//                        if (v > pi.versionCode) {//网络版本大于本机版本就升级
-//                            createDialog_download(name);
-//                        }
-//
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     /***
      * 建立对话框
@@ -1464,6 +1358,110 @@ public class XingbangMain extends BaseActivity {
                 }
             }
         });
+    }
+
+
+    //发送命令
+    public synchronized void sendCmd(byte[] mBuffer) {
+        if (mSerialPort != null && mOutputStream != null) {
+            try {
+                String str = Utils.bytesToHexFun(mBuffer);
+                Utils.writeLog("->:" + str);
+                Log.e("发送命令", str);
+                mOutputStream.write(mBuffer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            return;
+        }
+    }
+
+    @Override
+    protected void onDataReceived(byte[] buffer, int size) {
+        byte[] cmdBuf = new byte[size];
+        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        Log.e("自检收到", "fromCommad: "+fromCommad );
+        if (completeValidCmd(fromCommad) == 0) {
+            fromCommad = this.revCmd;
+            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+            else this.revCmd = "";
+            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                return;
+            } else {
+                String cmd = DefCommand.getCmd(fromCommad);
+                if (cmd != null) {
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, localBuf);
+                }
+            }
+        }
+    }
+
+    /**
+     * 处理接收到的cmd命令
+     */
+    private void doWithReceivData(String cmd, byte[] locatBuf) {
+        if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
+            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busHandler.sendMessage(busHandler.obtainMessage());
+        }else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
+            open();
+        }
+    }
+
+    /**
+     * 获取电源信息
+     */
+    private class SendPower extends Thread {
+        public volatile boolean exit = true;
+
+        public void run() {
+
+            while (!exit) {
+                try {
+                    //发送获取电源信息
+                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void open() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sendPower = new SendPower();//40指令线程
+        sendPower.exit = false;
+        sendPower.start();
+    }
+
+    private void close() {
+        sendPower.exit = true;
+        sendPower.interrupt();
+        try {
+            sendPower.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("TestICActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
     }
 
 }

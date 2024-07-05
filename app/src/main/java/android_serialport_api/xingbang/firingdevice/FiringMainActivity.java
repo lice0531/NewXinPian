@@ -211,6 +211,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbResult = "";//给主控更新起爆信息
     private boolean isSendWaitQb = false;//是否收到主控切换模式指令
     private boolean isGetQbResult = false;//是否收到起爆结束指令
+    private float befor_dianliu=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1237,7 +1238,7 @@ public class FiringMainActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        Utils.writeLog("<-返回命令--起爆页面:" + fromCommad);
+        Utils.writeLog("<-:" + fromCommad);
 //        Log.e("返回命令--起爆页面", fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -1418,6 +1419,13 @@ public class FiringMainActivity extends SerialPortActivity {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
 
+            if(stage==8){
+                if(busInfo.getBusCurrentIa()-befor_dianliu>100){
+                    show_Toast("电流有波动,是否强制起爆!");
+                }
+                Log.e(TAG, "按1+5后的电流: "+busInfo.getBusCurrentIa());
+            }
+            befor_dianliu=busInfo.getBusCurrentIa();
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
@@ -2014,6 +2022,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                sendCmd(reCmd);
 //                            }
                             if (eightCount >= 1) {
+                                sendCmd( FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;

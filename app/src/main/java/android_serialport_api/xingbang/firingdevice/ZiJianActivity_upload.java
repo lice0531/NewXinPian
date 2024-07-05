@@ -431,6 +431,13 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             msg.what = 2;
             msg.obj = output.toString();
             busHandler.sendMessage(msg);
+
+            Log.e("销毁", "onDestroy: " );
+            new Thread(() -> {
+                mApplication.closeSerialPort();
+                Log.e(getLocalClassName(),"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }).start();
         }
     }
 
@@ -488,14 +495,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("ZiJianActivity_upload","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
+
         super.onDestroy();
     }
 }
