@@ -1286,14 +1286,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 e.printStackTrace();
             }
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
         if (zhuceThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {
@@ -1304,6 +1296,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                zhuceThread.interrupt();
 //            Log.e("关闭线程", "关闭线程: ");
         }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                mApplication.closeSerialPort();
+//                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
@@ -1720,6 +1720,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
         //Utils.writeLog("Firing recTemp:"+fromCommad);
+        sendOpenThread = new SendOpenPower();
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -1827,7 +1828,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (initCloseCmdReFlag == 1) {//打开电源
                 revCloseCmdReFlag = 1;
                 closeOpenThread.exit = true;
-                sendOpenThread = new SendOpenPower();
+//                sendOpenThread = new SendOpenPower();
                 sendOpenThread.start();
             } else {
                 //发送停止获取电源信息

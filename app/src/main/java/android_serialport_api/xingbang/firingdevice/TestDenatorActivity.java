@@ -168,6 +168,14 @@ public class TestDenatorActivity extends SerialPortActivity {
         closeForm();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         Log.e(TAG, "onDestroy: ==========");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }

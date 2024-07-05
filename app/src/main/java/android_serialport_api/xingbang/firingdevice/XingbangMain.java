@@ -176,6 +176,7 @@ public class XingbangMain extends SerialPortActivity {
     private From42Power busInfo;
     private Handler busHandler = null;//总线信息
     private SendPower sendPower;
+    private boolean isReOpenCpeak = false;
 
     @Override
     protected void onPause() {
@@ -201,6 +202,8 @@ public class XingbangMain extends SerialPortActivity {
     }
 
 
+    Handler openHandler = new Handler();
+
     @Override
     protected void onResume() {
         getPropertiesData();//重新读取备份数据会导致已修改的数据重置
@@ -216,9 +219,24 @@ public class XingbangMain extends SerialPortActivity {
         // 获取区域雷管数量
         getRegionNumber();
         super.onResume();
+        // 创建一个 Handler 对象
+
+        // 延时3秒后执行的操作
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               openSerial();
+            }
+        }, 2500);
 
     }
 
+    private void openSerial(){
+        if (isReOpenCpeak) {
+            initSerialPort();
+            sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+        }
+    }
     @Override
     protected void onDestroy() {
         Log.e(TAG, "onDestroy: ");
@@ -238,6 +256,8 @@ public class XingbangMain extends SerialPortActivity {
 //            tipDlg = null;
 //        }
         super.onDestroy();
+        isReOpenCpeak = false;
+        openHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -277,8 +297,8 @@ public class XingbangMain extends SerialPortActivity {
         app_version_name = getString(R.string.app_version_name);
         getleveup();
         busHandler = new Handler(msg -> {
-            txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-            txt_IC.setText("当前电流:" + busInfo.getBusCurrentIa()+ "μA");
+            txt_Volt.setText("当前电压:" + (int)busInfo.getBusVoltage() + "V");
+            txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa()+ "μA");
             return false;
         });
 
@@ -543,7 +563,7 @@ public class XingbangMain extends SerialPortActivity {
         username.setFocusableInTouchMode(true);
         username.requestFocus();
         username.findFocus();
-
+        builder.setCancelable(true);
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String a = username.getText().toString().trim();
             String b = password.getText().toString().trim();
@@ -584,8 +604,12 @@ public class XingbangMain extends SerialPortActivity {
 //                finish();
             dialog.dismiss();
         });
-
-
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                openSerial();
+            }
+        });
         builder.show();
     }
 
@@ -688,6 +712,7 @@ public class XingbangMain extends SerialPortActivity {
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
         close();//停止访问电流
+        isReOpenCpeak = true;
         switch (view.getId()) {
 
             case R.id.btn_main_reister://注册
@@ -1458,7 +1483,7 @@ public class XingbangMain extends SerialPortActivity {
             @Override
             public void run() {
                 mApplication.closeSerialPort();
-                Log.e("TestICActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
                 mSerialPort = null;
             }
         }).start();
