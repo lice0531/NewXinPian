@@ -1150,9 +1150,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             if (QiBaoActivity.stage == 1) {
                 firstCmdReFlag = 1;
                 if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
                 } else {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+                    sendCmd(FourStatusCmd.send46("00", "01"));//20(第二代)
                 }
             }
             if (QiBaoActivity.stage == 8) {

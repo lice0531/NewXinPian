@@ -48,6 +48,8 @@ public class SetVoltageActivity extends SerialPortActivity {
     private Handler Handler_tip = null;//提示信息
     private boolean send_low = true;
     private boolean send_high = true;
+    private String sys_ver_name="";
+    private int position_save=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                 R.array.sp_changjia, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spChangjia.setAdapter(adapter);
-        int position_save = (int)MmkvUtils.getcode("sys_ver",0);
+         position_save = (int)MmkvUtils.getcode("sys_ver_position",0);
         spChangjia.setSelection(position_save);
         spChangjia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -115,8 +117,11 @@ public class SetVoltageActivity extends SerialPortActivity {
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 Log.e("下拉列表", "selectedItem: "+selectedItem );
                 Log.e("下拉列表", "position: "+position );
+                sys_ver_name=selectedItem;
+                position_save=position;
                 // 使用选中的值
-                MmkvUtils.savecode("sys_ver",position);
+
+
             }
 
             @Override
@@ -289,6 +294,9 @@ public class SetVoltageActivity extends SerialPortActivity {
 
                 break;
             case R.id.btn_sys://保存设置
+                MmkvUtils.savecode("sys_ver_name",sys_ver_name);
+                MmkvUtils.savecode("sys_ver_position",position_save);
+                show_Toast("保存成功");
                 break;
         }
     }

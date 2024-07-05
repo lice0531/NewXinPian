@@ -128,6 +128,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private final int cankaodianliu = 15;
     private List<DenatorBaseinfo> errlist;
     private String Yanzheng = "";//是否验证地理位置
+    private String changjia = "通用";
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initParam(boolean all_lg) {
@@ -208,7 +209,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         sendOpenThread = new SendOpenPower();
         sendOpenThread.start();
-
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
     }
 
     private void initHandler() {
@@ -964,8 +965,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                         case 1:
                             if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                if (changjia.equals("重庆")) {
+                                    sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }
@@ -1000,8 +1001,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
                             if (firstCount == Preparation_time - 14) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                if (changjia.equals("重庆")) {
+                                    sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }

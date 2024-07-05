@@ -393,11 +393,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private String version = "";//版本
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private final ArrayList lg2_yanshi = new ArrayList();
-    private int send_13 = 0;
-    private int send_10 = 0;
-    private int send_41 = 0;
-    private int send_40 = 0;
-
     // 雷管列表
     private LinearLayoutManager linearLayoutManager;
     private DetonatorAdapter_Paper<DenatorBaseinfo> mAdapter;
@@ -406,11 +401,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private boolean switchUid = true;//切换uid/管壳码
-
     //段属性
     private int duan_new = 1;//duan
     private int duan_old = 1;//duan
-    private int maxDuanNo = 3;
     private Handler mHandler_showNum = new Handler();//显示雷管数量
     private String duan_set = "0";//是duan1还是duan2
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
@@ -422,7 +415,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private DenatorBaseinfo db_charu;
     private ScanQrControl mScaner = null;
     private ScanBar scanBarThread;
-
+    private String changjia = "通用";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -459,10 +452,11 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //        showDenatorSum();//显示雷管总数
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入单发注册页面---");
-        if (version.equals("01")) {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        if (changjia.equals("重庆")) {
+            sendCmd(FourStatusCmd.send46("00", "03"));//20(第一代)
         } else {
-            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+            sendCmd(FourStatusCmd.send46("00", "01"));//20(第二代)
         }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
@@ -1950,19 +1944,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
                 Log.e("发送命令", str);
-                if (str.contains("C00010")) {
-                    send_10 = 1;
-                } else if (str.contains("C00041")) {
-                    send_41 = 1;
-                } else if (str.contains("C00013")) {
-                    send_13 = 1;
-                } else if (str.contains("C00040")) {
-                    send_40 = 1;
-                }
                 mOutputStream.write(mBuffer);
-                //实验有没有用
-//                mOutputStream.flush();
-//                mSerialPort.tcflush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1990,7 +1972,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
 
         if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
-            send_41 = 0;
 //            sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: " + qiaosi_set);
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
@@ -2001,7 +1982,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
 
         } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
-            send_10 = 0;
             //发送获取电源信息
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40
             sendCmd(reCmd);
@@ -2030,7 +2010,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
             sendCmd(reCmd);
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
-            send_13 = 0;
 //            if (initCloseCmdReFlag == 1) {//打开电源
 //                revCloseCmdReFlag = 1;
 //                closeOpenThread.exit = true;
@@ -2039,7 +2018,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //            }
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
-            send_40 = 0;
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());

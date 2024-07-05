@@ -378,4 +378,23 @@ public class ThreeFiringCmd {
 		}
 
 	}
+
+
+	/***
+	 *3.8、写入延时时间，检测结果看雷管是否正常
+	 * @param addr
+	 * @param data：共6字节，字节1，字节2，字节3，字节4为ID ，字节5，字节6为延期（ms，低字节在前）
+	 * @return
+	 */
+	public static byte[] send38(String addr, String data){
+		//C0 00 38 04 14E0FF00 D2D4 C0
+		String command;
+//		Log.e("长度", "data: "+data.length() );
+		if(data.length()==8){
+			command = addr + DefCommand.CMD_3_DETONATE_9+"04"+data;
+		}else {
+			command = addr + DefCommand.CMD_3_DETONATE_9+"00";
+		}
+		return DefCommand.getCommadBytes(command);
+	}
 }

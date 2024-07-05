@@ -176,6 +176,7 @@ public class XingbangMain extends SerialPortActivity {
     private From42Power busInfo;
     private Handler busHandler = null;//总线信息
     private SendPower sendPower;
+    private String changjia = "";
 
     @Override
     protected void onPause() {
@@ -187,6 +188,7 @@ public class XingbangMain extends SerialPortActivity {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         try {
             Thread.sleep(100);
@@ -278,15 +280,15 @@ public class XingbangMain extends SerialPortActivity {
         getleveup();
         busHandler = new Handler(msg -> {
             txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-            txt_IC.setText("当前电流:" + busInfo.getBusCurrentIa()+ "μA");
+            txt_IC.setText("当前电流:" + busInfo.getBusCurrentIa() + "μA");
             return false;
         });
 
-
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        Log.e(TAG, "changjia: " + changjia);
         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
 
     }
-
 
 
     private void queryBeian() {
@@ -420,11 +422,11 @@ public class XingbangMain extends SerialPortActivity {
         mHandler_updataVersion = new Handler(msg -> {
             if (msg.what == 1) {
                 DownloadVersionBean path = (DownloadVersionBean) msg.obj;
-                createDialog_download(path,getString(R.string.text_updata_sys_2),1);
+                createDialog_download(path, getString(R.string.text_updata_sys_2), 1);
             }
             if (msg.what == 2) {
                 DownloadVersionBean path = (DownloadVersionBean) msg.obj;
-                createDialog_download(path,getString(R.string.text_updata_sys_6),2);
+                createDialog_download(path, getString(R.string.text_updata_sys_6), 2);
             }
 
             return false;
@@ -631,7 +633,6 @@ public class XingbangMain extends SerialPortActivity {
     int keyFlag = 0;
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断当点击的是返回键
@@ -685,6 +686,7 @@ public class XingbangMain extends SerialPortActivity {
     //全局定义
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
+
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
         close();//停止访问电流
@@ -698,7 +700,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME){
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
@@ -736,7 +738,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME){
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
@@ -940,7 +942,6 @@ public class XingbangMain extends SerialPortActivity {
     }
 
 
-
     /***
      * 得到最大序号
      * @return
@@ -989,10 +990,10 @@ public class XingbangMain extends SerialPortActivity {
         }
         String str = "区域" + a;
         // 设置标题
-        getSupportActionBar().setTitle(mOldTitle + str);
+        getSupportActionBar().setTitle(mOldTitle + changjia + str);
         // 保存区域参数(单选的时候要放开,多选关闭)
 //        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
-        totalbar_title.setText(mOldTitle + "/" + str);
+        totalbar_title.setText(mOldTitle + changjia + "/" + str);
     }
 
     /**
@@ -1145,19 +1146,19 @@ public class XingbangMain extends SerialPortActivity {
     /***
      * 建立对话框
      */
-    public void createDialog_download(DownloadVersionBean name,String message,int version) {
+    public void createDialog_download(DownloadVersionBean name, String message, int version) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.text_updata_sys_1);//"说明"
         builder.setMessage(message);
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
-            if(version==1){
+            if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);
                 intent.putExtra("dataSend", name.toString());
 //            intent.putExtra("dataSend", "四川更新2");//11000版本升级
                 startActivity(intent);
-            }else {
+            } else {
 
                 Intent intent = new Intent(this, UpgradeActivity.class);
                 intent.putExtra("dataSend", name.toString());
@@ -1408,7 +1409,7 @@ public class XingbangMain extends SerialPortActivity {
         if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
-        }else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
+        } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
             open();
         }
     }
@@ -1458,7 +1459,7 @@ public class XingbangMain extends SerialPortActivity {
             @Override
             public void run() {
                 mApplication.closeSerialPort();
-                Log.e("TestICActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                Log.e("TestICActivity", "调用mApplication.closeSerialPort()开始关闭串口了。。");
                 mSerialPort = null;
             }
         }).start();

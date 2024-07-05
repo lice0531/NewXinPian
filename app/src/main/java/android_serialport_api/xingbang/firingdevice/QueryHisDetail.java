@@ -129,7 +129,7 @@ public class QueryHisDetail extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
-
+    private String changjia = "通用";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +142,7 @@ public class QueryHisDetail extends BaseActivity {
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
-
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
         totalNum = getDaoSession().getDenatorHis_DetailDao().loadAll().size();//得到数据的总条数
         totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
         if (1 == currentPage) {
@@ -299,7 +299,12 @@ public class QueryHisDetail extends BaseActivity {
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
+//        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
+        if(changjia.equals("华丰")){
+            Shangchuan="否";
+        }else {
+            Shangchuan="是";
+        }
         Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
     }
 
@@ -541,8 +546,8 @@ public class QueryHisDetail extends BaseActivity {
                 String[] selectionArgs = {blastdate};//选择条件参数,会把选择条件中的？替换成这个数组中的值
                 cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "piece asc");
             } else {
-                String selection = "blastdate = ?and errorCode = ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
-                String[] selectionArgs = {blastdate, "FF"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+                String selection = "blastdate = ?and errorCode  like ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
+                String[] selectionArgs = {blastdate, "F%"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
                 cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "piece asc");
             }
         }
