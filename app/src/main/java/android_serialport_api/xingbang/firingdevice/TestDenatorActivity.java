@@ -57,6 +57,7 @@ import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 /**
@@ -76,8 +77,11 @@ public class TestDenatorActivity extends SerialPortActivity {
     private TextView tv_dianliu;//参考电流
     private LinearLayout ll_1;
     private LinearLayout ll_2;
+    private LinearLayout ll_3;
     private static int tipInfoFlag = 0;
     private Button btn_return;
+    private Button btn_ssqb;
+    private Button btn_jixu;
     private Button btn_return_complete;
     private Button btn_firing_lookError_4;//查看错误
     private Handler mHandler_1 = null;//总线稳定
@@ -123,7 +127,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private String mRegion;     // 区域
     private final int cankaodianliu = 15;
     private List<DenatorBaseinfo> errlist;
-
+    private String Yanzheng = "";//是否验证地理位置
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initParam(boolean all_lg) {
@@ -176,6 +180,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         //获取区号
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         blastQueue = new LinkedList<>();
@@ -257,6 +262,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             denator.setErrorCode("00");
             denator.setErrorName("命令未返回");
             Application.getDaoSession().update(denator);
+            errHandler.sendMessage(errHandler.obtainMessage());
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -327,14 +333,49 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         ll_1 = (LinearLayout) findViewById(R.id.ll_test_st_bt);
         ll_2 = (LinearLayout) findViewById(R.id.ll_test_end_bt);
+        ll_3 = (LinearLayout) findViewById(R.id.ll_test_ssqb);
         ll_2.setVisibility(View.GONE);
-
         btn_return = (Button) findViewById(R.id.btn_firing_return_4);
+        btn_ssqb = (Button) findViewById(R.id.btn_firing_ssqb);
         btn_return.setOnClickListener(v -> {
             closeThread();
             closeForm();
         });
-
+        btn_ssqb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeThread();
+                closeForm();
+                mHandler_1.removeMessages(0);
+                busHandler_dianliu.removeMessages(0);
+                errHandler.removeMessages(0);
+                errHandler_update.removeMessages(0);
+                Handler_tip.removeMessages(0);
+                checkHandler.removeMessages(0);
+                if (db != null) db.close();
+                fixInputMethodManagerLeak(TestDenatorActivity.this);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mApplication.closeSerialPort();
+                        Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                        mSerialPort = null;
+                    }
+                }).start();
+                finish();
+                String str5 = "起爆";
+                Log.e("验证2", "Yanzheng: " + Yanzheng);
+                Intent intent;//金建华
+                if (Yanzheng.equals("验证")) {
+                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                    intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
+                } else {
+                    intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
+                }
+                intent.putExtra("dataSend", str5);
+                startActivity(intent);
+            }
+        });
         btn_return_complete = findViewById(R.id.btn_test_return);
 
         btn_return_complete.setOnClickListener(v -> {
@@ -342,6 +383,40 @@ public class TestDenatorActivity extends SerialPortActivity {
             closeForm();
         });
 
+        btn_jixu = (Button) findViewById(R.id.btn_test_jixu);
+        btn_jixu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHandler_1.removeMessages(0);
+                busHandler_dianliu.removeMessages(0);
+                errHandler.removeMessages(0);
+                errHandler_update.removeMessages(0);
+                Handler_tip.removeMessages(0);
+                checkHandler.removeMessages(0);
+                if (db != null) db.close();
+                fixInputMethodManagerLeak(TestDenatorActivity.this);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mApplication.closeSerialPort();
+                        Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                        mSerialPort = null;
+                    }
+                }).start();
+                finish();
+                String str5 = "起爆";
+                Log.e("验证2", "Yanzheng: " + Yanzheng);
+                Intent intent;//金建华
+                if (Yanzheng.equals("验证")) {
+                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                    intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
+                } else {
+                    intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
+                }
+                intent.putExtra("dataSend", str5);
+                startActivity(intent);
+            }
+        });
         btn_firing_lookError_4 = (Button) findViewById(R.id.btn_test_lookError);
         btn_firing_lookError_4.setOnClickListener(v -> {
             loadErrorBlastModel();
@@ -476,6 +551,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void endTest() {
         closeThread();
         initParam(false);
+        //说明网检结束
+        MmkvUtils.savecode("isTestDenator","Y");
     }
 
 
@@ -697,8 +774,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                 secondTxt.setText(getString(R.string.text_test_tip1) + firstCount);//"等待总线稳定:"
                 break;
             case 3:
-
+                if (thirdWriteCount == 1) {
+                    ll_firing_errorNum_4.setText("0");
+                }
                 if (thirdWriteErrorDenator != null) {//写入未返回的错误雷管
+                    show_Toast(thirdWriteErrorDenator.getShellBlastNo() + "芯片写入命令未返回");
                     thirdWriteErrorDenator = null;//设置错误雷管
                 }
 //                if (errorList != null && errorList.size() >= 0) {
@@ -721,7 +801,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                 break;
             case 4:
                 if (totalerrorNum == 0) {
-                    stopXunHuan();
+//                    stopXunHuan();
+                    toFiringPage();
                 } else if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 21000) {//大于4800u ，全错
                     Log.e(TAG, "大于21000u ，全错: ");
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
@@ -1019,7 +1100,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 5000) {//发出本发雷管时，没返回超时了
+                                //原本这里是设的5秒  但时间太长了就先暂时改为3.5秒
+                                if (spanTime > 3500) {//发出本发雷管时，没返回超时了
+                                    Log.e("当前雷管写入延时","超时了，reThirdWriteCount: " + reThirdWriteCount);
                                     thirdStartTime = 0;
                                     //未返回
                                     if (tempBaseInfo != null) {
@@ -1033,6 +1116,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         Message message = new Message();
                                         message.obj = errorDe;
                                         errHandler_update.sendMessage(message);
+                                        Log.e("当前雷管写入延时","超时了，开始errHandler_update");
                                     }
                                     tempBaseInfo = null;
                                     revCmd = "";//清空缓存
@@ -1395,9 +1479,19 @@ public class TestDenatorActivity extends SerialPortActivity {
         endTest();
         ll_1.setVisibility(View.GONE);
         ll_2.setVisibility(View.VISIBLE);
+        btn_jixu.setVisibility(View.VISIBLE);
         secondTxt.setText(R.string.text_test_tip4);
 //        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
 //        sendCmd(initBuf2);
+    }
+
+    private void toFiringPage() {
+        endTest();
+        secondTxt.setText(R.string.text_test_tip4);
+        ll_1.setVisibility(View.GONE);
+        ll_2.setVisibility(View.GONE);
+        ll_3.setVisibility(View.VISIBLE);
+        btn_return.setText(R.string.text_firing_ssqb);
     }
 
     //off()方法 true 获取全部雷管  flase 获取错误雷管
@@ -1502,6 +1596,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             chongfu = true;//已经检测了一次
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    .setCancelable(false)
                     //设置对话框的按钮
                     .setNeutralButton("继续", (dialog1, which) -> {
                         off(true);//重新检测
@@ -1534,6 +1629,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("系统提示");//"错误雷管列表"
             builder.setView(getlistview);
+            builder.setCancelable(false);
             builder.setPositiveButton("继续", (dialog, which) -> {
                 dialogOFF(dialog);
                 off(true);//重新检测

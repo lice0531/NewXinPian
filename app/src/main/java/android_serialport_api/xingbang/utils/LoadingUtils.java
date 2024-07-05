@@ -19,6 +19,7 @@ public class LoadingUtils {
                 .setContentBackgroundResource(R.color.colorTransparent)
                 .setOverlayBackgroundResource(R.color.colorTransparent)
                 .setInAnimation(R.anim.loading_mask_in)
+                .setCancelable(false)
                 .setOutAnimation(R.anim.loading_mask_out)
                 .create();
 

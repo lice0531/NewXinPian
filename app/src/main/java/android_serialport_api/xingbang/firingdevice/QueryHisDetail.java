@@ -888,6 +888,7 @@ public class QueryHisDetail extends BaseActivity {
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);
         String xy[] = pro_coordxy.split(",");//经纬度
+        String app_verson_name = getString(R.string.app_version_name);
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
             if (jd != null) {
@@ -914,7 +915,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "M900_PT_HF_JL_V2.1_240603");//软件版本
+            object.put("rj_version", app_verson_name);//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {

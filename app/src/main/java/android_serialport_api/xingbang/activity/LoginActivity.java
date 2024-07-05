@@ -255,4 +255,18 @@ public class LoginActivity extends SerialPortActivity implements View.OnClickLis
             sendCmd(powerCmd);
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("LoginActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        super.onDestroy();
+    }
 }

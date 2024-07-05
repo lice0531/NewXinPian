@@ -1286,6 +1286,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 e.printStackTrace();
             }
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
         if (zhuceThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {

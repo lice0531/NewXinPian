@@ -404,4 +404,17 @@ public class TestICActivity extends SerialPortActivity {
 
         firstThread = null;
     }
+
+    @Override
+    protected void onDestroy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("TestICActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        super.onDestroy();
+    }
 }

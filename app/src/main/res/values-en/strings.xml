@@ -249,10 +249,12 @@
     <string name="text_del_end">END</string>
     <string name="text_del_ok">Delete successful</string>
 
-    <string name="text_firing_tip1">Waiting Bus Stability</string>
+<!--    <string name="text_firing_tip1">Waiting Bus Stability</string>-->
+    <string name="text_firing_tip1">Waiting Timing and detonation</string>
     <string name="text_firing_num">Detonators number:</string>
     <string name="text_firing_errnum">Error :</string>
-    <string name="text_firing_tip2">Test preparation...</string>
+<!--    <string name="text_firing_tip2">Test preparation...</string>-->
+    <string name="text_firing_tip2">Timing and detonation preparation...</string>
     <string name="text_firing_tip3">Enter the charging process？</string>
     <string name="text_firing_err_lg">Error List</string>
     <string name="text_firing_jixu">Continue</string>
@@ -261,7 +263,8 @@
     <string name="text_firing_tip5">Ready（press 1&amp;3 together to blast）</string>
     <string name="text_firing_tip5_2">Ready（press 1&amp;5 together to blast）</string>
     <string name="text_firing_tip6">Count down</string>
-    <string name="text_firing_tip7">preparing to test(</string>
+<!--    <string name="text_firing_tip7">preparing to test(</string>-->
+    <string name="text_firing_tip7">preparing to timing and detonation(</string>
     <string name="text_firing_tip8">Write not returned:</string>
     <string name="text_firing_tip9">Testing (</string>
     <string name="text_firing_tip10">)detonator</string>
@@ -506,4 +509,6 @@
     <string name="text_updata_sys_6">A new hardware program version has been detected. Please ensure that your current network environment is stable. It is recommended to update it in a WIFI environment or a stable 4G network hotspot. Do you want to proceed with the update?</string>
     <string name="text_updata_sys_7">updates</string>
     <string name="text_updata_sys_8">update</string>
+    <string name="text_firing_ssqb">Timing detonation</string>
+    <string name="app_version_name">M900_PT_HF_JL_V2.1_240603</string>
 </resources>
