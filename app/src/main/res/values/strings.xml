@@ -535,5 +535,9 @@
     <string name="text_down_bc">保存并下载</string>
     <string name="text_ver_tip1">请选择工程</string>
 
-
+    <string-array name="lx_array">
+        <item>普通雷管</item>
+        <item>煤许雷管</item>
+        <item>固铝雷管</item>
+    </string-array>
 </resources>

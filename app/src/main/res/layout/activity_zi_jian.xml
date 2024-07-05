@@ -52,6 +52,31 @@
             android:textColor="@color/white"
             android:textSize="28sp" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/sp_leixing"
+            android:entries="@array/lx_array"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            style="@style/alltextstyle"
+            android:background="@color/color_white"
+            android:textSize="28sp" />
+
+        <Button
+            android:id="@+id/btn_leixing"
+            android:layout_marginTop="@dimen/dp20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/allbtntstyle"
+            android:text="确定"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

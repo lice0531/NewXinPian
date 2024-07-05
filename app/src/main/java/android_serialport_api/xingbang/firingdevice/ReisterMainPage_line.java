@@ -225,7 +225,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private boolean switchUid = true;//切换uid/管壳码
-
+    private SendPower sendPower;
+    String lg_ver="01";//pt=01 mx=02 pd=03
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,20 +264,47 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         showDenatorSum();//显示雷管总数
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-
+        String leixing = (String) MmkvUtils.getcode("leixing","01");
+        Log.e("注册", "leixing: "+leixing );
+        switch (leixing){
+            case "普通雷管":
+                lg_ver="01";
+                break;
+            case "煤许雷管":
+                lg_ver="02";
+                break;
+            case "固铝雷管":
+                lg_ver="03";
+                break;
+        }
         Utils.writeRecord("---进入单发注册页面---");
-//        if (version.equals("01")) {
-//            sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-//        } else {
-//            sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-//        }
 //        send 12("C000120AFF0191A8FF007DA6CB04B2E6C0");//测试命令用
         hideInputKeyboard();
-
-
         show_Toast(getString(R.string.text_line_tip1));
         isSingleReisher = 1;
         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+//        sendCmd(FourStatusCmd.send46("00", lg_ver));//46
+    }
+
+    private void open() {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sendPower = new SendPower();//40指令线程
+        sendPower.exit = false;
+        sendPower.start();
+    }
+
+    private void close() {
+        sendPower.exit = true;
+        sendPower.interrupt();
+        try {
+            sendPower.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
@@ -303,7 +331,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             String shellBlastNo = info.getShellBlastNo();
 
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
+            modifyBlastBaseInfo(no, delay, shellBlastNo, info.getDenatorId());
         });
         this.isSingleReisher = 0;
     }
@@ -345,13 +373,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         Log.e("扫码", "denatorId: " + denatorId);
                         Log.e("扫码", "data.substring(24): " + data.substring(24));
                         insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
-                    }else {
+                    } else {
                         //1530924217014 000FA546C F203 1 0
                         barCode = data.substring(0, 13);
                         String a = data.substring(13, 22);
-                        String yscs=data.substring(22, 26);
-                         version="0"+data.substring(26, 27);
-                        denatorId="A621"+a;
+                        String yscs = data.substring(22, 26);
+                        version = "0" + data.substring(26, 27);
+                        denatorId = "A621" + a;
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
@@ -406,7 +434,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 case 1003:
                     if (busInfo != null) {
                         txt_currentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
-                        txt_currentIC.setText(getResources().getString(R.string.text_reister_ele)+ Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
+                        txt_currentIC.setText(getResources().getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
                         // 判断当前电流是否偏大
                         if (Math.round(busInfo.getBusCurrentIa() * 1000) > 24) {
                             txt_currentIC.setTextColor(Color.RED);
@@ -449,7 +477,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 show_Toast(getString(R.string.text_reister_tip5) + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(2);
-                show_Toast_ture(singleShellNo+"三码绑定内容一致");
+                show_Toast_ture(singleShellNo + "三码绑定内容一致");
 //                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
@@ -457,10 +485,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 5) {
                 SoundPlayUtils.play(4);
                 show_Toast("三码绑定内容不一致");
-            }  else if (msg.what == 6) {
+            } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_line_tip7));
-            }else if (msg.what == 7) {
+            } else if (msg.what == 7) {
                 SoundPlayUtils.play(4);
                 show_Toast("请先扫码注册");
             } else if (msg.what == 10) {
@@ -585,7 +613,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 int delay = info.getDelay();
                 String shellBlastNo = info.getShellBlastNo();
                 // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
+                modifyBlastBaseInfo(no, delay, shellBlastNo, info.getDenatorId());
             });
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
@@ -840,13 +868,17 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     @Override
     protected void onDestroy() {
-                    isSingleReisher = 0;
-                    initCloseCmdReFlag = 0;
-                    initOpenCmdReFlag = 0;
-                    revCloseCmdReFlag = 0;
-                    revOpenCmdReFlag = 0;
-                    // 13 退出注册模式
-                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+        if(sendPower!=null){
+            close();
+        }
+
+        isSingleReisher = 0;
+        initCloseCmdReFlag = 0;
+        initOpenCmdReFlag = 0;
+        revCloseCmdReFlag = 0;
+        revOpenCmdReFlag = 0;
+        // 13 退出注册模式
+        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
 
         if (db != null) db.close();
         scanDecode.stopScan();//停止扫描
@@ -1126,15 +1158,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
                 Log.e("发送命令", str);
-                if (str.contains("C00010")) {
-                    send_10 = 1;
-                } else if (str.contains("C00041")) {
-                    send_41 = 1;
-                } else if (str.contains("C00013")) {
-                    send_13 = 1;
-                } else if (str.contains("C00040")) {
-                    send_40 = 1;
-                }
+
                 mOutputStream.write(mBuffer);
                 //实验有没有用
 //                mOutputStream.flush();
@@ -1177,33 +1201,36 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
 
         } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
-            send_10 = 0;
+//            send_10 = 0;
             //发送获取电源信息
-            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40
-            sendCmd(reCmd);
+            sendCmd(FourStatusCmd.send46("00", lg_ver));//46
 
-        } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 有雷管接入
+        } else if (DefCommand.CMD_1_REISTER_2.equals(cmd)) {//11 有雷管接入
+            close();
+
+        } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 注册雷管
+            open();
             //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
             //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
             //C000120A FF 00 67D0FA00 03 A6 1704 7F24 C0
-            try {
-                Thread.sleep(500);//
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //2  连续发三次询问电流指令
-            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
-            sendCmd(reCmd);
+//            try {
+//                Thread.sleep(500);//
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
             zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
+            String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+
             if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
                 tipInfoFlag = 5;//提示类型桥丝不正常
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
                 Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
             }
-            zhuce_Flag = 1;
-
+            if (zhuce_form != null) {//管厂码,特征码,雷管id
+                // 获取 管壳码
+                insertSingleDenator(detonatorId, zhuce_form);//单发注册
+            }
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
 //            if (initCloseCmdReFlag == 1) {//打开电源
@@ -1228,26 +1255,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     zhuce_Flag = 0;
                     Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                 }
-//                else {
-                if (zhuce_form != null) {//管厂码,特征码,雷管id
-//                        // 获取 管壳码
-//                        String shellNo = new GreenDaoMaster().getShellNo(detonatorId);
-                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
-//                    if(mListData.size()!=0){
-//                        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
-//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-//                        }else {
-//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
-//                        }
-//                    }else {
-//                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(7));
-//                    }
 
-                    zhuce_Flag = 0;
-                }
-
-//                }
             }
+        }else if(DefCommand.CMD_4_XBSTATUS_7.equals(cmd)){//46
+            open();
         }
 
     }
@@ -1403,33 +1414,33 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
      * 扫码注册方法
      */
     private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
-        Log.e("检查管厂码", "factoryCode: "+factoryCode );
-        Log.e("检查管厂码", "shellNo.substring(0,2): "+shellNo.substring(0,2) );
-        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0,2)) ) {
+        Log.e("检查管厂码", "factoryCode: " + factoryCode);
+        Log.e("检查管厂码", "shellNo.substring(0,2): " + shellNo.substring(0, 2));
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0, 2))) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));//  "管厂码与系统中定义的管厂码不一致";
-            return  ;
+            return;
         }
         //雷管信息有误，特征码不正确，请检查 5620819H00001
-        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.equals(shellNo.substring(7,8))) {
+        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.equals(shellNo.substring(7, 8))) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
-            return ;
+            return;
         }
         if (shellNo.length() != 13) {
-            return ;
+            return;
         }
         if (check(shellNo) == -1) {
-            return ;
+            return;
         }
 
         DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
         //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
         if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null && checkRepeatdenatorId(detonatorTypeNew.getDetonatorId())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-            return ;
+            return;
         }
-        if(checkRepeatdenatorId(denatorId)){
+        if (checkRepeatdenatorId(denatorId)) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-            return ;
+            return;
         }
 
 //        int maxNo = getMaxNumberNo();
@@ -1464,14 +1475,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         send16(denatorId, version);
 
-        return ;
+        return;
     }
 
 
     private void send16(String Id, String version) {
         String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(Id);//新芯片编码
         denatorId = Utils.getReverseDetonatorNo(denatorId);
-        Log.e("16指令", "denatorId: "+denatorId+"  version:"+version );
+        Log.e("16指令", "denatorId: " + denatorId + "  version:" + version);
         String data = version + denatorId;
         sendCmd(OneReisterCmd.sendCmd_16("00", data));//16
     }
@@ -1682,7 +1693,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 delay_set = "f1";
                 if (maxSecond != 0) {
                     if (Integer.parseInt(reEtF1.getText().toString()) > maxSecond) {
-                        show_Toast(getString(R.string.text_line_tip3)  + maxSecond + getString(R.string.text_line_tip4));
+                        show_Toast(getString(R.string.text_line_tip3) + maxSecond + getString(R.string.text_line_tip4));
                         return;
                     }
                     if (Integer.parseInt(setDelayTimeStartDelaytime.getText().toString()) > maxSecond) {
@@ -1731,52 +1742,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
                 }
 
-
-//                if (delay_set.equals("0")) {
-//                    show_Toast("请设置延时");
-//                    break;
-//                }
-//                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
-//                    show_Toast("有延时为空,请先设置延时");
-//                    break;
-//                }
-//                if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
-//                    String shellBlastNo = serchFristLG();
-//                    int num = serchFristLGINdenatorHis(shellBlastNo);
-//
-//                    if (num > 0) {
-//                        showAlertDialog();
-//                    }
-//                    show_Toast(getString(R.string.text_line_tip1));
-//                    btnInputOk.setEnabled(false);
-//                    btnSingleReister.setText(R.string.text_line_stop);
-//                    isSingleReisher = 1;
-//                    closeThread();
-////                    closeOpenThread = new CloseOpenPower();
-////                    closeOpenThread.start();
-//                    sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-//
-//                } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
-//                    btnInputOk.setEnabled(true);
-//                    btnSingleReister.setText(R.string.text_line_single);
-//                    txt_currentVolt.setText(R.string.text_line_IV);
-//                    txt_currentIC.setText(R.string.text_line_ic);
-//                    txt_currentIC.setTextColor(Color.BLACK);
-//                    isSingleReisher = 0;
-//                    initCloseCmdReFlag = 0;
-//                    initOpenCmdReFlag = 0;
-//                    revCloseCmdReFlag = 0;
-//                    revOpenCmdReFlag = 0;
-//                    // 13 退出注册模式
-//                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
-//                } else {
-//                    show_Toast(getString(R.string.text_line_tip17));
-//                }
                 break;
 
             case R.id.btn_LookHistory:
                 GreenDaoMaster master = new GreenDaoMaster();
                 master.deleteLeiGuanFroPiace(mRegion);
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 //                Intent intent2 = new Intent(this, QueryCurrentDetail_All.class);
 //                intent2.putExtra("dataSend", "当前雷管信息");
 //                startActivity(intent2);
@@ -2361,5 +2332,26 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         Log.e("liyi_Region", "已选择" + str);
     }
 
+
+    /**
+     * 获取电源信息
+     */
+    private class SendPower extends Thread {
+        public volatile boolean exit = true;
+
+        public void run() {
+
+            while (!exit) {
+                try {
+                    //发送获取电源信息
+                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 }

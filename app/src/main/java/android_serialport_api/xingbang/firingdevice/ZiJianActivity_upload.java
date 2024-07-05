@@ -13,6 +13,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -22,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -39,7 +45,7 @@ import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissonItem;
 
-public class ZiJianActivity_upload extends SerialPortActivity {
+public class ZiJianActivity_upload extends BaseActivity {
 
     @BindView(R.id.tv_zj_num)
     TextView tvZjNum;
@@ -47,6 +53,10 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     TextView tvZjDy;
     @BindView(R.id.tv_zj_gy)
     TextView tvZjGy;
+    @BindView(R.id.btn_leixing)
+    Button btnLx;
+    @BindView(R.id.sp_leixing)
+    Spinner spLx;
     SharedPreferences.Editor edit;
     private float dianya_low = 0;//低压信息
     private float dianya_high = 0;//高压信息
@@ -60,7 +70,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     private Handler busHandler = null;//总线信息
     private int flag = 0;
     private ZiJianThread ziJianThread;
-    private volatile int firstCount = 4;
+    private volatile int firstCount = 3;
 
     // FTP参数
     private FTP mFTP;
@@ -115,6 +125,35 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             GetFileName(CJ+"KT50_V1.3_16V", ".bin");//17V是电流11000,16V是改变前的
         }
         deleteRiZhi();
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.lx_array, R.layout.spinner_item_lx);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spLx.setAdapter(adapter);
+        spLx.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // 当选择下拉列表中的一个项时，会调用此方法
+                // 可以在这里处理选中事件
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                MmkvUtils.savecode("leixing",selectedItem);
+                Log.e("列表", "selectedItem: "+selectedItem );
+                // 使用选中的值
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // 无选项被选中时的处理
+            }
+        });
+        btnLx.setOnClickListener(v -> {
+
+            Intent intent = new Intent(ZiJianActivity_upload.this, ReisterMainPage_line.class);
+            startActivity(intent);
+            finish();//如果不结束当前页面的话,会和后面的页面抢命令
+        });
+
+
     }
 
     /**
@@ -230,14 +269,14 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     busHandler.sendMessage(busHandler.obtainMessage(1));
 
                     Thread.sleep(1000);
-                    if (firstCount == 2) {
-                        test();//检测设备是否正常
-                    }
+//                    if (firstCount == 2) {
+//                        test();//检测设备是否正常
+//                    }
                     if (firstCount == 0) {
+                        busHandler.sendMessage(busHandler.obtainMessage(3));
                         exit = true;
-                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
-                        startActivity(intent);
-                        finish();//如果不结束当前页面的话,会和后面的页面抢命令
+//                        createDialog_cj();
+
                         break;
                     }
                     firstCount--;
@@ -248,25 +287,25 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         }
     }
 
-    private void test() {
-        Log.e("高压和低压值", "lowVoltage: " + lowVoltage + "  highVoltage: " + highVoltage);
-        int a = Double.valueOf(lowVoltage * 10).intValue();
-        byte[] delayBye = Utils.shortToByte((short) a);
-        String delayStr = Utils.bytesToHexFun(delayBye);
-        String b = delayStr.substring(0, 2);
-        String c = delayStr.substring(2);
-
-        int a2 = Double.valueOf(highVoltage * 10).intValue();
-        byte[] delayBye2 = Utils.shortToByte((short) a2);
-        String delayStr1 = Utils.bytesToHexFun(delayBye2);
-        String d = delayStr1.substring(0, 2);
-        String e = delayStr1.substring(2);
-        Log.e("低压", "c+b: " + c + b);
-        Log.e("高压", "e+d: " + e + d);
-        Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
-        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c + b) + (e + d));//14
-        sendCmd(powerCmd);
-    }
+//    private void test() {
+//        Log.e("高压和低压值", "lowVoltage: " + lowVoltage + "  highVoltage: " + highVoltage);
+//        int a = Double.valueOf(lowVoltage * 10).intValue();
+//        byte[] delayBye = Utils.shortToByte((short) a);
+//        String delayStr = Utils.bytesToHexFun(delayBye);
+//        String b = delayStr.substring(0, 2);
+//        String c = delayStr.substring(2);
+//
+//        int a2 = Double.valueOf(highVoltage * 10).intValue();
+//        byte[] delayBye2 = Utils.shortToByte((short) a2);
+//        String delayStr1 = Utils.bytesToHexFun(delayBye2);
+//        String d = delayStr1.substring(0, 2);
+//        String e = delayStr1.substring(2);
+//        Log.e("低压", "c+b: " + c + b);
+//        Log.e("高压", "e+d: " + e + d);
+//        Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
+//        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c + b) + (e + d));//14
+//        sendCmd(powerCmd);
+//    }
 
     @Override
     protected void onStart() {
@@ -275,10 +314,16 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     }
 
     private void initHandler() {
+
+
+
         busHandler = new Handler(message -> {
             switch (message.what) {
                 case 1:
                     tvZjNum.setText(firstCount + "s");
+                    break;
+                    case 3:
+                    tvZjNum.setText("请选择将要抽检的雷管类型");
                     break;
                 case 2:
                     //旧version: KT50_V1.3_16V_V1.3.15D
@@ -299,94 +344,94 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         });
     }
 
-    @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//        Log.e("自检收到", "fromCommad: "+fromCommad );
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd(fromCommad);
-                if (cmd != null) {
-                    int localSize = fromCommad.length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, localBuf, localSize);
-                }
-            }
-        }
-    }
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+////        Log.e("自检收到", "fromCommad: "+fromCommad );
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf, localSize);
+//                }
+//            }
+//        }
+//    }
 
     //发送命令
-    public void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("自检发送:" + str);
-                Log.e("发送命令", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+//    public void sendCmd(byte[] mBuffer) {
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Utils.writeLog("自检发送:" + str);
+//                Log.e("发送命令", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//
+//        } else {
+//            return;
+//        }
+//    }
 
-        } else {
-            return;
-        }
-    }
-
-    /**
-     * 处理接收到的cmd命令
-     */
-    private void doWithReceivData(String cmd, byte[] cmdBuf, int size) {
-        byte[] locatBuf = new byte[size];
-        System.arraycopy(cmdBuf, 0, locatBuf, 0, size);//将cmdBuf数组复制到locatBuf数组
-        if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 关闭电源
-//            busHandler.sendMessage(busHandler.obtainMessage());
-            sendCmd(FourStatusCmd.getSoftVersion("00"));//43
-        } else if (DefCommand.CMD_1_REISTER_5.equals(cmd)) {//14 核心板自检
-
-            String fromCommad = Utils.bytesToHexFun(locatBuf);
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            String a = realyCmd1.substring(6, 8);
-            String a1 = realyCmd1.substring(8, 10);
-            String b = realyCmd1.substring(10, 12);
-            String b1 = realyCmd1.substring(12, 14);
-            String c = realyCmd1.substring(14, 16);//总线电流
-            String c1 = realyCmd1.substring(16);
-            double voltLow = (Integer.parseInt(a1, 16) * 256 + Integer.parseInt(a, 16)) / 4.095 * 3.0 * 0.006;
-            double voltHeigh = (Integer.parseInt(b1, 16) * 256 + Integer.parseInt(b, 16)) / 4.095 * 3.0 * 0.006;
-//            Log.e("核心板自检", "voltLow: " +voltLow);
-//            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
-            Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
-            dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
-            dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
-            byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
-            sendCmd(powerCmd);
-        }
-        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
-            String realyCmd1 = DefCommand.decodeCommand(Utils.bytesToHexFun(locatBuf));
-            String a = realyCmd1.substring(6);//2020031201
-            StringBuilder output = new StringBuilder();
-            for (int i = 0; i < a.length(); i += 2) {
-                String str = a.substring(i, i + 2);
-                output.append((char) Integer.parseInt(str, 16));
-            }
-            Log.e("软件版本返回的命令", "output: " + output);
-            version = CJ+output;
-            MmkvUtils.savecode("yj_version",version);
-            Message msg = new Message();
-            msg.what = 2;
-            msg.obj = output.toString();
-            busHandler.sendMessage(msg);
-        }
-    }
+//    /**
+//     * 处理接收到的cmd命令
+//     */
+//    private void doWithReceivData(String cmd, byte[] cmdBuf, int size) {
+//        byte[] locatBuf = new byte[size];
+//        System.arraycopy(cmdBuf, 0, locatBuf, 0, size);//将cmdBuf数组复制到locatBuf数组
+//        if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 关闭电源
+////            busHandler.sendMessage(busHandler.obtainMessage());
+//            sendCmd(FourStatusCmd.getSoftVersion("00"));//43
+//        } else if (DefCommand.CMD_1_REISTER_5.equals(cmd)) {//14 核心板自检
+//
+//            String fromCommad = Utils.bytesToHexFun(locatBuf);
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            String a = realyCmd1.substring(6, 8);
+//            String a1 = realyCmd1.substring(8, 10);
+//            String b = realyCmd1.substring(10, 12);
+//            String b1 = realyCmd1.substring(12, 14);
+//            String c = realyCmd1.substring(14, 16);//总线电流
+//            String c1 = realyCmd1.substring(16);
+//            double voltLow = (Integer.parseInt(a1, 16) * 256 + Integer.parseInt(a, 16)) / 4.095 * 3.0 * 0.006;
+//            double voltHeigh = (Integer.parseInt(b1, 16) * 256 + Integer.parseInt(b, 16)) / 4.095 * 3.0 * 0.006;
+////            Log.e("核心板自检", "voltLow: " +voltLow);
+////            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
+//            Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
+//            dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
+//            dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
+//            byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
+//            sendCmd(powerCmd);
+//        }
+//        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
+//            String realyCmd1 = DefCommand.decodeCommand(Utils.bytesToHexFun(locatBuf));
+//            String a = realyCmd1.substring(6);//2020031201
+//            StringBuilder output = new StringBuilder();
+//            for (int i = 0; i < a.length(); i += 2) {
+//                String str = a.substring(i, i + 2);
+//                output.append((char) Integer.parseInt(str, 16));
+//            }
+//            Log.e("软件版本返回的命令", "output: " + output);
+//            version = CJ+output;
+//            MmkvUtils.savecode("yj_version",version);
+//            Message msg = new Message();
+//            msg.what = 2;
+//            msg.obj = output.toString();
+//            busHandler.sendMessage(msg);
+//        }
+//    }
 
     /***
      * 建立对话框
@@ -408,6 +453,29 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            dialog.dismiss();
 //            finish();
 //        });
+        builder.setNegativeButton("不更新", (dialog, which) -> {
+            finish();
+            Intent intent = new Intent(this, XingbangMain.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+        builder.create().show();
+    }
+
+    public void createDialog_cj() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("请选择抽检雷管类型");//"说明"
+        builder.setMessage("请在进入抽检页面前先选择雷管类型");
+        builder.setPositiveButton("进行更新", (dialog, which) -> {
+            Intent intent = new Intent(this, UpgradeActivity.class);
+            intent.putExtra("dataSend", version_cloud);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+        builder.setNeutralButton("退出", (dialog, which) -> {
+            dialog.dismiss();
+            finish();
+        });
         builder.setNegativeButton("不更新", (dialog, which) -> {
             finish();
             Intent intent = new Intent(this, XingbangMain.class);
