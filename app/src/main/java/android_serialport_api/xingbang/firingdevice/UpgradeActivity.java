@@ -1177,7 +1177,6 @@ public class UpgradeActivity extends SerialPortActivity {
             }
         }).start();
         super.onDestroy();
-        super.onDestroy();
         powerOffDevice(PIN_ADSL);// 下电
         // 退出 IAP检测线程
         if (mReadThread_upload != null) {
