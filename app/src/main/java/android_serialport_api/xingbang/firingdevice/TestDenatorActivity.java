@@ -128,6 +128,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private final int cankaodianliu = 15;
     private List<DenatorBaseinfo> errlist;
     private String Yanzheng = "";//是否验证地理位置
+    private boolean isSerialPortClosed = false;//是否已关闭串口
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initParam(boolean all_lg) {
@@ -156,29 +157,6 @@ public class TestDenatorActivity extends SerialPortActivity {
         send_kg = true;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (db != null) db.close();
-        closeThread();
-        closeForm();
-//        Utils.saveFile();//把软存中的数据存入磁盘中
-        Log.e(TAG, "onDestroy: ==========");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
-        super.onDestroy();
-        fixInputMethodManagerLeak(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -353,7 +331,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             @Override
             public void onClick(View v) {
                 closeThread();
-                closeForm();
+//                closeForm();
                 mHandler_1.removeMessages(0);
                 busHandler_dianliu.removeMessages(0);
                 errHandler.removeMessages(0);
@@ -368,6 +346,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mApplication.closeSerialPort();
                         Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
                         mSerialPort = null;
+                        isSerialPortClosed = true;
                     }
                 }).start();
                 finish();
@@ -395,6 +374,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_jixu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeThread();
                 mHandler_1.removeMessages(0);
                 busHandler_dianliu.removeMessages(0);
                 errHandler.removeMessages(0);
@@ -409,6 +389,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         mApplication.closeSerialPort();
                         Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
                         mSerialPort = null;
+                        isSerialPortClosed = true;
                     }
                 }).start();
                 finish();
@@ -1211,7 +1192,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             } else {
                                 long thirdEnd = System.currentTimeMillis();
                                 long spanTime = thirdEnd - thirdStartTime;
-                                if (spanTime > 5000) {//发出本发雷管时，没返回超时了
+                                if (spanTime > 3500) {//发出本发雷管时，没返回超时了
                                     thirdStartTime = 0;
                                     //未返回
                                     if (tempBaseInfo != null) {
@@ -1682,5 +1663,26 @@ public class TestDenatorActivity extends SerialPortActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (db != null) db.close();
+        closeThread();
+        closeForm();
+//        Utils.saveFile();//把软存中的数据存入磁盘中
+        Log.e(TAG, "onDestroy: ==========");
+        if (!isSerialPortClosed) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mApplication.closeSerialPort();
+                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                    mSerialPort = null;
+                }
+            }).start();
+        }
+        super.onDestroy();
+        fixInputMethodManagerLeak(this);
     }
 }
