@@ -240,7 +240,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //扫描参数设置
         init();
         //管壳号扫描分码--结束
-        getUserMessage();
+//        getUserMessage();
         getFactoryCode();//获取厂家码
         getFactoryType();//获取延期最大值
 
@@ -1193,17 +1193,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             send_41 = 0;
 //            sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: " + qiaosi_set);
-            if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
-                sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
-            } else {
-                sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
-            }
+            sendCmd(FourStatusCmd.send46("00", lg_ver));//46
+
 
 
         } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
 //            send_10 = 0;
             //发送获取电源信息
-            sendCmd(FourStatusCmd.send46("00", lg_ver));//46
+            open();
 
         } else if (DefCommand.CMD_1_REISTER_2.equals(cmd)) {//11 有雷管接入
             close();
@@ -1258,7 +1255,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
             }
         }else if(DefCommand.CMD_4_XBSTATUS_7.equals(cmd)){//46
-            open();
+            if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
+                sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
+            } else {
+                sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
+            }
+
         }
 
     }

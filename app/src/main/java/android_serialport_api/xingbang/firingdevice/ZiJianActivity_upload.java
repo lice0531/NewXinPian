@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -34,6 +36,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -312,9 +315,39 @@ public class ZiJianActivity_upload extends BaseActivity {
 
         super.onStart();
     }
-
+    private void setUserMessage() {
+        MessageBean message = new MessageBean();
+        message.setId((long) 1);
+        message.setPro_bprysfz("");
+        message.setPro_htid("");
+        message.setPro_xmbh("");
+        message.setEqu_no("");
+        message.setPro_coordxy("");
+        message.setServer_addr("");
+        message.setServer_port("6088");
+        message.setServer_http("http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
+        message.setServer_ip("119.29.111.172");
+        message.setQiaosi_set("false");
+        message.setPreparation_time("28");
+        message.setChongdian_time("68");
+        message.setServer_type1("1");
+        message.setServer_type2("0");
+        message.setPro_dwdm("");
+        message.setJiance_time("50");
+        message.setVersion("02");
+        getDaoSession().getMessageBeanDao().insert(message);
+        Utils.saveFile_Message();//把软存中的数据存入磁盘中
+    }
+    private void getUserMessage() {
+        List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
+//        Log.e(TAG, "message: " + message.toString());
+        if (message.size() > 0) {
+        } else {
+            setUserMessage();//如果为空就新建一个
+        }
+    }
     private void initHandler() {
-
+        getUserMessage();
 
 
         busHandler = new Handler(message -> {
@@ -344,94 +377,6 @@ public class ZiJianActivity_upload extends BaseActivity {
         });
     }
 
-//    @Override
-//    protected void onDataReceived(byte[] buffer, int size) {
-//        byte[] cmdBuf = new byte[size];
-//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-////        Log.e("自检收到", "fromCommad: "+fromCommad );
-//        if (completeValidCmd(fromCommad) == 0) {
-//            fromCommad = this.revCmd;
-//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-//            else this.revCmd = "";
-//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-//                return;
-//            } else {
-//                String cmd = DefCommand.getCmd(fromCommad);
-//                if (cmd != null) {
-//                    int localSize = fromCommad.length() / 2;
-//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-//                    doWithReceivData(cmd, localBuf, localSize);
-//                }
-//            }
-//        }
-//    }
-
-    //发送命令
-//    public void sendCmd(byte[] mBuffer) {
-//        if (mSerialPort != null && mOutputStream != null) {
-//            try {
-//                String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("自检发送:" + str);
-//                Log.e("发送命令", str);
-//                mOutputStream.write(mBuffer);
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//
-//        } else {
-//            return;
-//        }
-//    }
-
-//    /**
-//     * 处理接收到的cmd命令
-//     */
-//    private void doWithReceivData(String cmd, byte[] cmdBuf, int size) {
-//        byte[] locatBuf = new byte[size];
-//        System.arraycopy(cmdBuf, 0, locatBuf, 0, size);//将cmdBuf数组复制到locatBuf数组
-//        if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 关闭电源
-////            busHandler.sendMessage(busHandler.obtainMessage());
-//            sendCmd(FourStatusCmd.getSoftVersion("00"));//43
-//        } else if (DefCommand.CMD_1_REISTER_5.equals(cmd)) {//14 核心板自检
-//
-//            String fromCommad = Utils.bytesToHexFun(locatBuf);
-//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-//            String a = realyCmd1.substring(6, 8);
-//            String a1 = realyCmd1.substring(8, 10);
-//            String b = realyCmd1.substring(10, 12);
-//            String b1 = realyCmd1.substring(12, 14);
-//            String c = realyCmd1.substring(14, 16);//总线电流
-//            String c1 = realyCmd1.substring(16);
-//            double voltLow = (Integer.parseInt(a1, 16) * 256 + Integer.parseInt(a, 16)) / 4.095 * 3.0 * 0.006;
-//            double voltHeigh = (Integer.parseInt(b1, 16) * 256 + Integer.parseInt(b, 16)) / 4.095 * 3.0 * 0.006;
-////            Log.e("核心板自检", "voltLow: " +voltLow);
-////            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
-//            Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
-//            dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
-//            dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);
-//            byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
-//            sendCmd(powerCmd);
-//        }
-//        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
-//            String realyCmd1 = DefCommand.decodeCommand(Utils.bytesToHexFun(locatBuf));
-//            String a = realyCmd1.substring(6);//2020031201
-//            StringBuilder output = new StringBuilder();
-//            for (int i = 0; i < a.length(); i += 2) {
-//                String str = a.substring(i, i + 2);
-//                output.append((char) Integer.parseInt(str, 16));
-//            }
-//            Log.e("软件版本返回的命令", "output: " + output);
-//            version = CJ+output;
-//            MmkvUtils.savecode("yj_version",version);
-//            Message msg = new Message();
-//            msg.what = 2;
-//            msg.obj = output.toString();
-//            busHandler.sendMessage(msg);
-//        }
-//    }
 
     /***
      * 建立对话框
