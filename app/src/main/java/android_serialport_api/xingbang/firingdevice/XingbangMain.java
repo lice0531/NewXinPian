@@ -175,7 +175,11 @@ public class XingbangMain extends SerialPortActivity {
     private String app_version_name = "";
     private From42Power busInfo;
     private Handler busHandler = null;//总线信息
+    Handler openHandler = new Handler();//重新打开串口
     private SendPower sendPower;
+    private OpenPower openPower;
+    private volatile int get41Resp = 0;
+    private boolean isReOpenCpeak = false;
     private String changjia = "";
 
     @Override
@@ -200,46 +204,6 @@ public class XingbangMain extends SerialPortActivity {
         getPropertiesData();
 //        getUserMessage();
         super.onRestart();
-    }
-
-
-    @Override
-    protected void onResume() {
-        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
-        // 获取 区域参数
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
-        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
-        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
-        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
-        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
-        // 设置标题区域
-        setTitleRegion();
-        // 获取区域雷管数量
-        getRegionNumber();
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.e(TAG, "onDestroy: ");
-        SQLiteStudioService.instance().stop();
-        if (sendPower != null) {
-            sendPower.exit = true;  // 终止线程thread
-            try {
-                sendPower.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-//        if (db != null) db.close();
-//        if (tipDlg != null) {
-//            tipDlg.dismiss();
-//            tipDlg = null;
-//        }
-        super.onDestroy();
     }
 
     @Override
@@ -279,17 +243,52 @@ public class XingbangMain extends SerialPortActivity {
         app_version_name = getString(R.string.app_version_name);
         getleveup();
         busHandler = new Handler(msg -> {
-            txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-            txt_IC.setText("当前电流:" + busInfo.getBusCurrentIa() + "μA");
+            txt_Volt.setText("当前电压:" + (int)busInfo.getBusVoltage() + "V");
+            txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa() + "μA");
             return false;
         });
-
+        openPower = new OpenPower();
+        openPower.start();
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
         Log.e(TAG, "changjia: " + changjia);
-        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+//        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+
+    }
+    @Override
+    protected void onResume() {
+        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
+        // 获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+        // 设置标题区域
+        setTitleRegion();
+        // 获取区域雷管数量
+        getRegionNumber();
+        super.onResume();
+        // 创建一个 Handler 对象
+
+        // 延时3秒后执行的操作
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                openSerial();
+            }
+        }, 2500);
 
     }
 
+    private void openSerial(){
+        if (isReOpenCpeak) {
+            initSerialPort();
+            openPower = new OpenPower();
+            openPower.start();
+//            sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+        }
+    }
 
     private void queryBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -545,7 +544,7 @@ public class XingbangMain extends SerialPortActivity {
         username.setFocusableInTouchMode(true);
         username.requestFocus();
         username.findFocus();
-
+        builder.setCancelable(true);
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String a = username.getText().toString().trim();
             String b = password.getText().toString().trim();
@@ -586,8 +585,12 @@ public class XingbangMain extends SerialPortActivity {
 //                finish();
             dialog.dismiss();
         });
-
-
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                openSerial();
+            }
+        });
         builder.show();
     }
 
@@ -690,6 +693,7 @@ public class XingbangMain extends SerialPortActivity {
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
         close();//停止访问电流
+        isReOpenCpeak = true;
         switch (view.getId()) {
 
             case R.id.btn_main_reister://注册
@@ -1410,7 +1414,43 @@ public class XingbangMain extends SerialPortActivity {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
+            Log.e(TAG, "已收到41指令");
+            get41Resp = 1;
             open();
+        }
+    }
+    /**
+     * 打开电源
+     */
+    private class OpenPower extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (zeroCount == 0) {
+                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+                    }
+                    if (get41Resp == 1) {
+                        exit = true;
+                        Log.e(TAG,"已关闭openPower");
+                        break;
+                    }
+                    Thread.sleep(1000);
+                    if (zeroCount > 0 && zeroCount <= 3) {
+                        Log.e(TAG,"41指令未返回，需重新发送");
+                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+                    } else if (zeroCount > 3){
+                        Log.e(TAG,"41指令未返回已发送3次，停止发送41指令");
+                        exit = true;
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -1447,22 +1487,55 @@ public class XingbangMain extends SerialPortActivity {
     }
 
     private void close() {
-        sendPower.exit = true;
-        sendPower.interrupt();
-        try {
-            sendPower.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (sendPower != null) {
+            sendPower.exit = true;  // 终止线程thread
+            try {
+                sendPower.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
+        if (openPower != null) {
+            openPower.exit = true;  // 终止线程thread
+            try {
+                openPower.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
                 mApplication.closeSerialPort();
-                Log.e("TestICActivity", "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
                 mSerialPort = null;
             }
         }).start();
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.e(TAG, "onDestroy: ");
+        SQLiteStudioService.instance().stop();
+        if (sendPower != null) {
+            sendPower.exit = true;  // 终止线程thread
+            try {
+                sendPower.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+//        if (db != null) db.close();
+//        if (tipDlg != null) {
+//            tipDlg.dismiss();
+//            tipDlg = null;
+//        }
+        super.onDestroy();
+        isReOpenCpeak = false;
+        openHandler.removeCallbacksAndMessages(null);
+    }
 }
