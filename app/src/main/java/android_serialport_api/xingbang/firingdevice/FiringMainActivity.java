@@ -210,6 +210,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbResult = "";//给主控更新起爆信息
     private boolean isSendWaitQb = false;//是否收到主控切换模式指令
     private boolean isGetQbResult = false;//是否收到起爆结束指令
+    private boolean isJL = false;//是否收到级联的指令进来的起爆页面
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1300,10 +1301,12 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
             deviceStatus = "05";//起爆结束
             isGetQbResult = true;
-            EventBus.getDefault().post(new FirstEvent("open485","B005" + MmkvUtils.getcode("ACode", "") +
-                    deviceStatus + qbResult));
-            Log.e("起爆结束了","去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
-                    deviceStatus + qbResult);
+            if (isJL) {
+                EventBus.getDefault().post(new FirstEvent("open485","B005" + MmkvUtils.getcode("ACode", "") +
+                        deviceStatus + qbResult));
+                Log.e("起爆结束了","去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                        deviceStatus + qbResult);
+            }
 //            String text = ll_firing_IC_4.getText().toString();
 //            if (text.contains("疑似") || text.contains("过大")) {
 //                currentPeak = "0";
@@ -2679,6 +2682,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if (currentTime - lastProcessedTime > 1000) {
                 //总是出现给主控发多次消息情况  所以检查是否距离上次处理超过 1 秒，优化为：1秒内只发送一次数据给主控
                 //收到主控轮巡的消息了  将实时的电流及设备状态发送给串口进行同步
+                isJL = true;
                 int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                 int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
                 String stureNum = Utils.strPaddingZero(allNum, 3);
