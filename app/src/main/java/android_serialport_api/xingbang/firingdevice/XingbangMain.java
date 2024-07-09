@@ -1463,10 +1463,10 @@ public class XingbangMain extends SerialPortActivity {
                         exit = true;
                         break;
                     }
-                    Thread.sleep(1000);
                     if (zeroCount > 0 && zeroCount <= 3) {
                         Log.e(TAG,"41指令未返回，需重新发送");
                         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+                        Thread.sleep(1000);
                     } else if (zeroCount > 3){
                         Log.e(TAG,"41指令未返回已发送3次，停止发送41指令");
                         exit = true;
