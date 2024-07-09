@@ -193,6 +193,8 @@
     <string name="text_communication_state5">雷管通信异常</string>
     <string name="text_communication_state6">雷管正常</string>
     <string name="text_communication_state7">桥丝异常</string>
+    <string name="text_chongdian_state0">充电异常</string>
+    <string name="text_chongdian_stateFF">充电成功</string>
 
     <string name="text_singleReister_stop">停止注册</string>
     <string name="text_singleReister">单发注册</string>

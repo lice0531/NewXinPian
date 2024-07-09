@@ -91,7 +91,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler Handler_tip = null;//提示信息
     private Handler checkHandler = null;//更正错误
     private static volatile int stage;
-    private volatile int firstCount = 28;
+    private volatile int firstCount = 0;
+    private volatile int firstCount_max = 18;
     private volatile int sixCount = 0;
     private volatile VoDenatorBaseInfo writeDenator;
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
@@ -129,6 +130,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private List<DenatorBaseinfo> errlist;
     private String Yanzheng = "";//是否验证地理位置
     private String changjia = "通用";
+    List< Float> list_dianliu = new ArrayList();
     private boolean isSerialPortClosed = false;//是否已关闭串口
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
@@ -146,7 +148,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         thirdWriteErrorDenator = null;
         errDeData.clear();
         errorList.clear();
-        firstCount = Preparation_time;
+//        firstCount = Preparation_time;
         sixCount = 0;
         thirdWriteCount = 0;//雷管发送计数器
         reThirdWriteCount = 0;//检测返回数量
@@ -952,59 +954,67 @@ public class TestDenatorActivity extends SerialPortActivity {
                 try {
                     switch (stage) {
                         case 1:
-                            if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
+                            //先发46
+                            //再发20
+                            //询问电流 40
+                            //第10秒下电--13
+                            //第13秒上电--41
+                            //第14秒发46
+                            //第15秒发20
+                            if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (changjia.equals("重庆")) {
-                                    sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
+                                if (version.equals("01")) {
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }
                             }
                             Thread.sleep(1000);
-                            if (firstCount == Preparation_time) {//经过测试初始化命令需要6秒
+                            if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //进入测试模式
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20
                             }
 
 
-                            if (firstCount > Preparation_time - 9 && firstCount < Preparation_time - 1) {//Preparation_time-1
+                            if (firstCount > 0 && firstCount < 5) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 //                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
-                            if (firstCount <= 0) {
-                                Log.e(TAG, "firstCount2: " + firstCount);
+                            if (firstCount >= firstCount_max&&list_dianliu.get(list_dianliu.size()-1)-list_dianliu.get(list_dianliu.size()-5)<10) {
+                                Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size());
+                                Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size()-5));
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
                                 Thread.sleep(1000);//为了发40后等待
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 stage = 3;
                                 break;
                             }
-                            if (firstCount == Preparation_time - 10) {//Preparation_time-1
+                            if (firstCount == 6) {//Preparation_time-1
 //                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                                 // 13 退出注册模式
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
                             }
-                            if (firstCount == Preparation_time - 13) {//Preparation_time-1
+                            if (firstCount ==  8) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
 
                             }
-                            if (firstCount == Preparation_time - 14) {//经过测试初始化命令需要6秒
+                            if (firstCount == 9) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (changjia.equals("重庆")) {
-                                    sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
+                                if (version.equals("01")) {
+                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }
                             }
-                            if (firstCount == Preparation_time - 15) {//Preparation_time-1
+                            if (firstCount == 10) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
                             }
-                            if (firstCount < (Preparation_time - 16)) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                            if (firstCount >10) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
-                            firstCount--;
-                            if (firstCount == -10) {
+                            firstCount++;
+                            if (firstCount == -10) {//最大值
                                 Log.e(TAG, "退出流程: ");
                                 exit = true;
                                 break;
@@ -1340,6 +1350,8 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            list_dianliu.add(busInfo.getBusCurrentIa());
+            Log.e(TAG, "list_dianliu: "+list_dianliu );
             if (busHandler_dianliu == null) return;
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 

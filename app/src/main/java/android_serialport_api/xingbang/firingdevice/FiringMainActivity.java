@@ -49,6 +49,7 @@ import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
+import android_serialport_api.xingbang.cmd.vo.From38ChongDian;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.cmd.vo.To52Test;
 import android_serialport_api.xingbang.custom.ErrListAdapter;
@@ -1149,6 +1150,25 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
     }
 
+    /**
+     * 38指令更新状态
+     * */
+    public void updateDenator(From38ChongDian fromData) {
+        if (fromData.getShellNo() == null || fromData.getShellNo().trim().length() < 1) return;
+
+
+        //判断雷管状态是否正价错误数量
+        if (!"FF".equals(fromData.getCommicationStatus()) ) {//只有充电错误更新状态
+            DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
+            denator.setErrorCode(fromData.getCommicationStatus());
+            denator.setErrorName(fromData.getCommicationStatusName());
+            Application.getDaoSession().update(denator);
+            twoErrorDenatorFlag = 1;
+            noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+        }
+        Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus() );
+    }
+
     public void displayInputKeyboard(View v, boolean hasFocus) {
         //获取系统 IMM
         InputMethodManager imm = (InputMethodManager)
@@ -1440,7 +1460,17 @@ public class FiringMainActivity extends SerialPortActivity {
 //            mHandler_1.sendMessage(mHandler_1.obtainMessage());
 
             Log.e(TAG, "38指令已返回,进入充电检测");
+
             if (stage == 33) {
+                From38ChongDian fromData = ThreeFiringCmd.jiexi_38("00", locatBuf);
+                if (fromData != null && writeDenator != null) {
+                    VoDenatorBaseInfo temp = writeDenator;
+                    fromData.setShellNo(temp.getShellBlastNo());
+                    fromData.setDenaId(temp.getDenatorId());//芯片码
+                    Utils.writeRecord("--起爆测试结果:" + fromData);
+                    updateDenator(fromData);//更新雷管状态
+                    writeDenator = null;
+                }
                 reThirdWriteCount++;
             }
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
@@ -1799,6 +1829,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 //写入通信未返回
 
                 break;
+            case 55:
+                ctlLinePanel(6);
+                sixTxt.setText("正在重发第" + thirdWriteCount + "发雷管启动充电");
+                break;
             default:
 
         }
@@ -1889,6 +1923,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                         increase(44);//之前是4
                                     } else {
                                         increase(4);//之前是4
+                                        getblastQueue();//重新获取数据,用来给充电list复制
                                         sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
                                     }
 
@@ -2226,7 +2261,12 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
                                     Utils.writeRecord("--第二轮检测结束-------------");
                                     //检测一次
-                                    increase(6);//之前是4
+                                    if (totalerrorNum != 0) {
+                                        getErrblastQueue();//重新给雷管队列赋值
+                                        increase(55);//之前是4
+                                    } else {
+                                        increase(6);//之前是4
+                                    }
                                     Log.e("第4阶段-检测阶段-increase33", "4-2");
                                     fourOnlineDenatorFlag = 0;
                                     break;
@@ -2371,6 +2411,68 @@ public class FiringMainActivity extends SerialPortActivity {
                                     writeDenator = null;
                                     tempBaseInfo = null;
                                     revCmd = "";//清空缓存
+                                    reThirdWriteCount++;
+                                } else {
+                                    Thread.sleep(20);
+                                }
+                            }
+                            break;
+
+                        case 55://写入延时时间，检测结果看雷管是否正常
+                            if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
+                                thirdStartTime = 0;
+                                writeDenator = null;
+                                if (blastQueue == null || blastQueue.size() < 1) {
+                                    Utils.writeRecord("--第二轮检测结束-------------");
+                                    //检测一次
+                                    increase(6);//之前是4
+                                    Log.e("第4阶段-检测阶段-increase33", "4-2");
+                                    fourOnlineDenatorFlag = 0;
+                                    break;
+                                }
+
+                                VoDenatorBaseInfo write = blastQueue.poll();
+                                tempBaseInfo2 = write;
+
+                                String shellStr = write.getShellBlastNo();
+                                if (shellStr == null || shellStr.length() != 13)
+                                    continue;//// 判读是否是十三位
+                                if (write.getDenatorId() == null) {
+                                    Message msg = Handler_tip.obtainMessage();
+                                    msg.what = 2;
+                                    Bundle b = new Bundle();
+                                    msg.setData(b);
+                                    Handler_tip.sendMessage(msg);
+                                    closeThread();
+                                    break;
+                                }
+                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
+                                denatorId = Utils.getReverseDetonatorNo(denatorId);
+                                //发送38命令---------------------------------------------
+                                initBuf = ThreeFiringCmd.send38("00", denatorId);//38充电
+                                sendCmd(initBuf);
+                                thirdStartTime = System.currentTimeMillis();
+                                writeDenator = write;
+                                thirdWriteCount++;
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            } else {
+                                long thirdEnd = System.currentTimeMillis();
+                                long spanTime = thirdEnd - thirdStartTime;
+                                if (spanTime > 3500 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
+                                    thirdStartTime = 0;
+                                    //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 单片机未返回
+//                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
+                                    VoFiringTestError errorDe = new VoFiringTestError();
+                                    errorDe.setBlastserial(tempBaseInfo2.getBlastserial());//
+                                    errorDe.setShellBlastNo(tempBaseInfo2.getShellBlastNo());
+                                    errorDe.setDelay(tempBaseInfo2.getDelay());
+                                    errorDe.setError(1);
+                                    thirdWriteErrorDenator = errorDe;
+                                    errorList.offer(errorDe);
+                                    //发出错误
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    writeDenator = null;
+                                    tempBaseInfo2 = null;
                                     reThirdWriteCount++;
                                 } else {
                                     Thread.sleep(20);

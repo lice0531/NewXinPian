@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.cmd;
 import android.util.Log;
 
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
+import android_serialport_api.xingbang.cmd.vo.From38ChongDian;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -397,4 +398,45 @@ public class ThreeFiringCmd {
 		}
 		return DefCommand.getCommadBytes(command);
 	}
+
+	/***
+	 * 检验返回检测命令是否正确
+	 * @param addr
+	 * @param from
+	 * @return
+	 */
+	public static int isCorrectFromXbCommon_Check38(String addr, String from) {
+
+		if (from == null) return -1;
+		String command = addr + DefCommand.CMD_3_DETONATE_9 + "01";
+		if (from.contains(command)) return 0;
+		else return -1;
+	}
+
+	/***
+	 * 解码写入雷管延时
+	 * @param addr
+	 * @return
+	 */
+	public static From38ChongDian jiexi_38(String addr, byte[] cmd) {
+		//C00031 04 FF FF F4 01 0059 C0
+		String fromCommad = Utils.bytesToHexFun(cmd);
+		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+
+		if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+			return null;
+		}
+		if (isCorrectFromXbCommon_Check38(addr, realyCmd1) == 0) {
+			//C0003801FF05C5C0
+			String commicationStatus = fromCommad.substring(8, 10);//取得返回数据
+			From38ChongDian vo = new From38ChongDian();
+			vo.setCommicationStatus(commicationStatus);
+			return vo;
+		}
+		return null;
+	}
+
 }
+
+
+

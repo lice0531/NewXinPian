@@ -562,6 +562,7 @@ public class XingbangMain extends SerialPortActivity {
                 String str1 = "设置";
                 Intent intent = new Intent(XingbangMain.this, SetEnvMainActivity.class);
                 intent.putExtra("dataSend", str1);
+                close();//停止访问电流
                 startActivity(intent);
 
                 dialog.dismiss();
@@ -692,11 +693,12 @@ public class XingbangMain extends SerialPortActivity {
 
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
-        close();//停止访问电流
+
         isReOpenCpeak = true;
         switch (view.getId()) {
 
             case R.id.btn_main_reister://注册
+                close();//停止访问电流
                 String str1 = "注册";
                 Intent intent = new Intent(XingbangMain.this, ReisterMainPage_scan.class);//金建华
                 intent.putExtra("dataSend", str1);
@@ -704,6 +706,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                close();//停止访问电流
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
@@ -732,16 +735,19 @@ public class XingbangMain extends SerialPortActivity {
 
             // 单发检测
             case R.id.btn_main_delayTime:
+                close();//停止访问电流
                 Intent intent3 = new Intent(this, ReisterMainPage_line.class);
                 startActivityForResult(intent3, 1);
                 break;
 
             // 删除
             case R.id.btn_main_del:
+                close();//停止访问电流
                 startActivityForResult(new Intent(this, DelDenatorMainPage.class), 1);
                 break;
 
             case R.id.btn_main_blast://起爆
+
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
@@ -771,6 +777,7 @@ public class XingbangMain extends SerialPortActivity {
                 } else {
                     intent5 = new Intent(this, FiringMainActivity.class);
                 }
+                close();//停止访问电流
                 intent5.putExtra("dataSend", str5);
                 startActivityForResult(intent5, 1);
                 break;
@@ -779,6 +786,7 @@ public class XingbangMain extends SerialPortActivity {
                 String str6 = "查看雷管";
                 Intent intent6 = new Intent(XingbangMain.this, QueryMainActivity.class);
                 intent6.putExtra("dataSend", str6);
+                close();//停止访问电流
                 startActivityForResult(intent6, 1);
                 break;
 
@@ -791,6 +799,7 @@ public class XingbangMain extends SerialPortActivity {
                 String str8 = "查看雷管";
                 Intent intent8 = new Intent(this, PracticeActivity.class);
                 intent8.putExtra("dataSend", str8);
+                close();//停止访问电流
                 startActivityForResult(intent8, 1);
                 break;
 
@@ -798,12 +807,14 @@ public class XingbangMain extends SerialPortActivity {
                 String str7 = "下载";
                 Intent intent7 = new Intent(XingbangMain.this, DownWorkCode.class);
                 intent7.putExtra("dataSend", str7);
+                close();//停止访问电流
                 startActivityForResult(intent7, 1);
 //            Intent intent7 = new Intent(XingbangMain.this, SetDelayTime.class);
 //            startActivity(intent7);
                 break;
 
             case R.id.btn_main_exit://退出
+                close();//停止访问电流
                 exit();//退出方法
                 break;
         }
