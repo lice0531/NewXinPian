@@ -965,8 +965,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                             //第15秒发20
                             if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                if (changjia.equals("重庆")) {
+                                    sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }
@@ -1002,8 +1002,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
                             if (firstCount == 9) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (version.equals("01")) {
-                                    sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
+                                if (changjia.equals("重庆")) {
+                                    sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                                 }

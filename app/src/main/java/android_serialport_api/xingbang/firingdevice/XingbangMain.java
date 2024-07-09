@@ -1453,7 +1453,10 @@ public class XingbangMain extends SerialPortActivity {
             int zeroCount = 0;
             while (!exit) {
                 try {
-                    if (zeroCount == 0) {
+                    long time = System.currentTimeMillis();
+                    long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+
+                    if (zeroCount == 0 && time - endTime < 10000) {
                         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
                     }
                     if (get41Resp == 1) {
