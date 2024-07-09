@@ -673,6 +673,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (displayIc == 0 && denatorCount > 5 && firstCount < Preparation_time * 0.2) {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast(getString(R.string.text_test_tip12));
+                        btn_jixu.setVisibility(View.GONE);
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -689,6 +690,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    }
                     if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.5) {
                         ll_firing_Volt_4.setTextColor(Color.RED);
+                        btn_jixu.setVisibility(View.GONE);
                         show_Toast(getString(R.string.text_test_tip13));
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         stage = 5;
