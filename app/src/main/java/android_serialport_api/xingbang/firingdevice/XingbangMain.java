@@ -181,6 +181,7 @@ public class XingbangMain extends SerialPortActivity {
     private volatile int get41Resp = 0;
     private boolean isReOpenCpeak = false;
     private String changjia = "";
+    private boolean isCmdClosed = false;//是否已经关闭串口
 
     @Override
     protected void onPause() {
@@ -1114,6 +1115,18 @@ public class XingbangMain extends SerialPortActivity {
                     mOffTime.cancel();
                 })
                 .create();
+        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                openSerial();
+            }
+        });
+        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                openSerial();
+            }
+        });
         mDialog.show();
         mDialog.setCanceledOnTouchOutside(false);
 
@@ -1445,7 +1458,6 @@ public class XingbangMain extends SerialPortActivity {
                     }
                     if (get41Resp == 1) {
                         exit = true;
-                        Log.e(TAG,"已关闭openPower");
                         break;
                     }
                     Thread.sleep(1000);
@@ -1535,12 +1547,33 @@ public class XingbangMain extends SerialPortActivity {
             sendPower.exit = true;  // 终止线程thread
             try {
                 sendPower.join();
+                Log.e(TAG,"已关闭sendPower");
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-//        if (db != null) db.close();
+
+        if (openPower != null) {
+            openPower.exit = true;  // 终止线程thread
+            try {
+                openPower.join();
+                Log.e(TAG,"已关闭openPower");
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        if (!isCmdClosed) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mApplication.closeSerialPort();
+                    Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                    mSerialPort = null;
+                }
+            }).start();
+        }
 //        if (tipDlg != null) {
 //            tipDlg.dismiss();
 //            tipDlg = null;

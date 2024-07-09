@@ -215,17 +215,13 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isGetQbResult = false;//是否收到起爆结束指令
     private float befor_dianliu = 0;
     private String changjia = "通用";
-    private int five8CurrentIa;//按完组合键后5秒倒计时5秒的总线电流
-    private int four8CurrentIa;//按完组合键后5秒倒计时最后4秒的总线电流
-    private int three8CurrentIa;//按完组合键后5秒倒计时3秒的总线电流
-    private int two8CurrentIa;//按完组合键后5秒倒计时最后2秒的总线电流
-    private int one8CurrentIa;//按完组合键后5秒倒计时1秒的总线电流
-    private int five13CurrentIa;//按完组合键后5秒倒计时5秒的总线电流
-    private int four13CurrentIa;//按完组合键后5秒倒计时最后4秒的总线电流
-    private int three13CurrentIa;//按完组合键后5秒倒计时3秒的总线电流
-    private int two13CurrentIa;//按完组合键后5秒倒计时最后2秒的总线电流
-    private int one13CurrentIa;//按完组合键后5秒倒计时1秒的总线电流
-    private int qbCPeak;
+    private float qbCPeak,qbCVoltage;
+
+    private float beforePeak,beforeVoltage;
+
+    private float curPeek,curVoltage;
+    private boolean isCasePeakWd,isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
+    private boolean isJL = false;//是否是从级联的指令进入的起爆页面
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -470,6 +466,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
                 float displayIc = busInfo.getBusCurrentIa();
                 qbCPeak = (int) busInfo.getBusCurrentIa();
+                qbCVoltage = busInfo.getBusVoltage();
                 if (displayIc > 21000 && stage != 6 && stage != 7) {
                     Log.e(TAG, "疑似短路stage: " + stage);
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
@@ -1375,10 +1372,12 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
             deviceStatus = "05";//起爆结束
             isGetQbResult = true;
-            EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
-                    deviceStatus + qbResult));
-            Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
-                    deviceStatus + qbResult);
+            if (isJL) {
+                EventBus.getDefault().post(new FirstEvent("open485","B005" + MmkvUtils.getcode("ACode", "") +
+                        deviceStatus + qbResult));
+                Log.e("起爆结束了","去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                        deviceStatus + qbResult);
+            }
 //            String text = ll_firing_IC_4.getText().toString();
 //            if (text.contains("疑似") || text.contains("过大")) {
 //                currentPeak = "0";
@@ -1506,10 +1505,14 @@ public class FiringMainActivity extends SerialPortActivity {
 
     }
 
-    public boolean isDifferenceWithin(int int1, int int2,int cha) {
-        int difference = Math.abs(int1 - int2);
-        Log.e(TAG,"组合键倒计时的电流差值： " + difference);
-        return difference <= cha;
+    public boolean isDifferenceWithin(float int1, float int2,int cha,int type) {
+        float difference = Math.abs(int1 - int2);
+        if (type == 1) {
+            Log.e(TAG,"组合键倒计时的电流差值： " + difference);
+        } else {
+            Log.e(TAG,"组合键倒计时的电压差值： " + difference);
+        }
+        return difference > cha;
     }
 
     public synchronized void increase(int val) {
@@ -1783,11 +1786,19 @@ public class FiringMainActivity extends SerialPortActivity {
                 eightTxt.setText(getString(R.string.text_firing_qbz));
                 break;
             case 14:
+                String content;
+                if (isCasePeakWd && isCaseVoltageWd) {
+                    content = "电流和电压都";
+                } else if (isCasePeakWd) {
+                    content = "电流";
+                } else {
+                    content = "电压";
+                }
                 //起爆时电流不稳定，此时dialog提示用户
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("提示")//设置对话框的标题
                         .setCancelable(false)
-                        .setMessage("当前电流不稳定,恐影响起爆结果，是否强制起爆")//设置对话框的内容
+                        .setMessage("当前" + content + "不稳定,恐影响起爆结果，是否强制起爆")//设置对话框的内容
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog1, which) -> {
                             byte[] exCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
@@ -2125,26 +2136,40 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;
-                                if (eightCount == 5) {
-                                    five8CurrentIa = qbCPeak;
-                                } else if (eightCount == 4) {
-                                    four8CurrentIa = qbCPeak;
-                                } else if (eightCount == 3) {
-                                    three8CurrentIa = qbCPeak;
-                                } else if (eightCount == 2) {
-                                    two8CurrentIa = qbCPeak;
-                                } else if (eightCount == 1) {
-                                    one8CurrentIa = qbCPeak;
+//                                if (eightCount == 5) {
+//                                    five8CurrentIa = qbCPeak;
+//                                } else if (eightCount == 4) {
+//                                    four8CurrentIa = qbCPeak;
+//                                } else if (eightCount == 3) {
+//                                    three8CurrentIa = qbCPeak;
+//                                } else if (eightCount == 2) {
+//                                    two8CurrentIa = qbCPeak;
+//                                } else if (eightCount == 1) {
+//                                    one8CurrentIa = qbCPeak;
+//                                }
+                                beforePeak = beforePeak == -1 ? beforePeak : curPeek;
+                                curPeek = qbCPeak;
+                                if (beforePeak != -1 && !isCasePeakWd){
+                                    isCasePeakWd = isDifferenceWithin(beforePeak, curPeek, 20,1);
+                                }
+                                beforeVoltage = beforeVoltage == -1 ? beforeVoltage : curVoltage;
+                                curVoltage = qbCVoltage;
+                                if (beforeVoltage != -1 && !isCaseVoltageWd){
+                                    isCaseVoltageWd = isDifferenceWithin(beforeVoltage, curVoltage, 10,2);
                                 }
                             } else {
                                 if (eightCmdFlag == 0) {
                                     if (eightCmdExchangePower == 1) {//
                                         //在这里判断下倒计时的电流是否稳定，如稳定就直接走起爆流程  如不稳定需要给用户提示
-                                        if (!isDifferenceWithin(five8CurrentIa, four8CurrentIa,20) ||
-                                                !isDifferenceWithin(four8CurrentIa, three8CurrentIa,20) ||
-                                                !isDifferenceWithin(three8CurrentIa, two8CurrentIa,20) ||
-                                                !isDifferenceWithin(two8CurrentIa, one8CurrentIa,20)) {
-                                            Log.e(TAG, "电流不稳定,需延长5秒轮训电流，页面上显示起爆中");
+//                                        if (!isDifferenceWithin(five8CurrentIa, four8CurrentIa,20) ||
+//                                                !isDifferenceWithin(four8CurrentIa, three8CurrentIa,20) ||
+//                                                !isDifferenceWithin(three8CurrentIa, two8CurrentIa,20) ||
+//                                                !isDifferenceWithin(two8CurrentIa, one8CurrentIa,20)) {
+                                        if (isCasePeakWd || isCaseVoltageWd){
+                                            Log.e(TAG, "电流不稳定,需延长5秒轮训电流，页面上显示起爆中,电流是否不稳定：" + isCasePeakWd
+                                                    + "  电压是否不稳定:" + isCaseVoltageWd);
+                                            // 初始化定义的变量 当前电流，上一秒电流，是否稳定变量。
+                                            initPeak();
                                             increase(13);
                                         } else {
                                             //2代芯片不切换低压
@@ -2207,25 +2232,38 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 thirteenCount--;
-                                if (thirteenCount == 5) {
-                                    five13CurrentIa = qbCPeak;
-                                } else if (thirteenCount == 4) {
-                                    four13CurrentIa = qbCPeak;
-                                } else if (thirteenCount == 3) {
-                                    three13CurrentIa = qbCPeak;
-                                } else if (thirteenCount == 2) {
-                                    two13CurrentIa = qbCPeak;
-                                } else if (thirteenCount == 1) {
-                                    one13CurrentIa = qbCPeak;
+                                beforePeak = beforePeak == -1 ? beforePeak : curPeek;
+                                curPeek = qbCPeak;
+                                if (beforePeak != -1 && !isCasePeakWd){
+                                    isCasePeakWd = isDifferenceWithin(beforePeak, curPeek, 20,1);
                                 }
+
+                                beforeVoltage = beforeVoltage == -1 ? beforeVoltage : curVoltage;
+                                curVoltage = qbCVoltage;
+                                if (beforeVoltage != -1 && !isCaseVoltageWd){
+                                    isCaseVoltageWd = isDifferenceWithin(beforeVoltage, curVoltage, 10,2);
+                                }
+//                                if (thirteenCount == 5) {
+//                                    five13CurrentIa = qbCPeak;
+//                                } else if (thirteenCount == 4) {
+//                                    four13CurrentIa = qbCPeak;
+//                                } else if (thirteenCount == 3) {
+//                                    three13CurrentIa = qbCPeak;
+//                                } else if (thirteenCount == 2) {
+//                                    two13CurrentIa = qbCPeak;
+//                                } else if (thirteenCount == 1) {
+//                                    one13CurrentIa = qbCPeak;
+//                                }
                             } else {
                                 if (eightCmdFlag == 0) {
                                     if (eightCmdExchangePower == 1) {//
-                                        if (!isDifferenceWithin(five13CurrentIa, four13CurrentIa,20) ||
-                                                !isDifferenceWithin(four13CurrentIa, three13CurrentIa,20) ||
-                                                !isDifferenceWithin(three13CurrentIa, two13CurrentIa,20) ||
-                                                !isDifferenceWithin(two13CurrentIa, one13CurrentIa,20)) {
-                                            Log.e(TAG, "电流不稳定  需提示用户是否需要强制起爆");
+                                        if (isCasePeakWd || isCaseVoltageWd) {
+//                                        if (!isDifferenceWithin(five13CurrentIa, four13CurrentIa,20) ||
+//                                                !isDifferenceWithin(four13CurrentIa, three13CurrentIa,20) ||
+//                                                !isDifferenceWithin(three13CurrentIa, two13CurrentIa,20) ||
+//                                                !isDifferenceWithin(two13CurrentIa, one13CurrentIa,20)) {
+                                            Log.e(TAG, "电流不稳定  需提示用户是否需要强制起爆，电流是否不稳定：" + isCasePeakWd
+                                                    + "  电压是否不稳定:" + isCaseVoltageWd);
                                             increase(14);
                                         } else {
                                             //2代芯片不切换低压
@@ -2489,6 +2527,15 @@ public class FiringMainActivity extends SerialPortActivity {
             }
         }
 
+    }
+
+    private void initPeak(){
+        isCasePeakWd = false;
+        beforePeak = -1;
+        curPeek = 0;
+        isCaseVoltageWd = false;
+        beforeVoltage = -1;
+        curVoltage = 0;
     }
 
     //C000310C 3D EA FF 00 0A 00 00 00 00 00 A21E C0
@@ -2946,6 +2993,7 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (msg.equals("pollMsg")) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastProcessedTime > 1000) {
+                isJL = true;
                 //总是出现给主控发多次消息情况  所以检查是否距离上次处理超过 1 秒，优化为：1秒内只发送一次数据给主控
                 //收到主控轮巡的消息了  将实时的电流及设备状态发送给串口进行同步
                 int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
