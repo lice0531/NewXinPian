@@ -427,6 +427,43 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 dialog.show();
+            }else if(msg.what == 3){
+                String tip ="";
+                switch (msg.obj.toString()){
+                    case "00":
+                        tip="起爆失败";
+                        break;
+                    case "01":
+                        tip="电压异常";
+                        break;
+                    case "02":
+                        tip="电流异常";
+                        break;
+                }
+
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("起爆异常!")//设置对话框的标题
+                        .setMessage("系统检测到:"+tip+",可能导致起爆失败!")//设置对话框的内容
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            dialog1.dismiss();
+                            finish();
+                        })
+//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                        .create();
+                dialog.show();
+            }else if(msg.what == 4){
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("电流异常!")//设置对话框的标题
+                        .setMessage("系统检测到:当前电流异常,可能导致起爆失败!")//设置对话框的内容
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            dialog1.dismiss();
+                            finish();
+                        })
+                        .setNeutralButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
+                        .create();
+                dialog.show();
             }
             return false;
         });
@@ -1370,6 +1407,14 @@ public class FiringMainActivity extends SerialPortActivity {
             //stage=7;
             sixCmdSerial = 3;
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            String fromCommad = Utils.bytesToHexFun(locatBuf);
+            //C000340100ABCDC0
+            String qbzt =fromCommad.substring(8,10);
+            Message msg = Handler_tip.obtainMessage();
+            msg.what = 3;
+            msg.obj=qbzt;
+            Handler_tip.sendMessage(msg);
+            MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
             deviceStatus = "05";//起爆结束
             isGetQbResult = true;
             if (isJL) {
