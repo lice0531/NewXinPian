@@ -1469,18 +1469,22 @@ public class XingbangMain extends SerialPortActivity {
      */
     private class SendPower extends Thread {
         public volatile boolean exit = true;
-
+        private long lastProcessedTime = 0;
         public void run() {
 
             while (!exit) {
-                try {
+//                try {
                     //发送获取电源信息
-                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastProcessedTime > 1000){
+                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
+                        lastProcessedTime = currentTime;
+                    }
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
             }
         }
     }

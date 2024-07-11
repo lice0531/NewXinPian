@@ -1502,19 +1502,22 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
-            if (stage == 8) {
+            if (stage == 8 && eightCount != 5) {
+                Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu+
+                        "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
                 if (isDifferenceWithin(busInfo.getBusCurrentIa(),befor_dianliu ,20,1) ||
                         isDifferenceWithin(busInfo.getBusVoltage(),befor_dianya,10,2)) {
-                    Log.e(TAG, "case8电流或者电流不稳定,需延长5秒轮训电流，页面上显示起爆中");
+                    Log.e(TAG, "case8电流或者电压不稳定,需延长5秒轮训40指令，页面上显示起爆中");
                     increase(13);
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 } else {
                     Log.e(TAG, "case8电流电压稳定，可以发34指令");
                     eightCmdExchangePower = 1;
                 }
-                Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa());
             }
-            if (stage == 13) {
+            if (stage == 13 && thirteenCount != 5) {
+                Log.e(TAG, "case13thirteenCount：" + thirteenCount + "--起爆中的电流: " + busInfo.getBusCurrentIa()
+                        + "--beforeC:" + befor_dianliu+ "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
                 if(isDifferenceWithin(busInfo.getBusCurrentIa(),befor_dianliu ,20,1) &&
                         isDifferenceWithin(busInfo.getBusVoltage(),befor_dianya,10,2)){
                     isCasePeakWd = true;
@@ -1525,7 +1528,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 } else if (isDifferenceWithin(busInfo.getBusCurrentIa(),befor_dianliu ,20,1)) {
                     isCasePeakWd = true;
                     isCaseVoltageWd = false;
-                    Log.e(TAG, "case13电压不稳定,需展示出强制起爆的dialog");
+                    Log.e(TAG, "case13电流不稳定,需展示出强制起爆的dialog");
                     increase(14);
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 } else if (isDifferenceWithin(busInfo.getBusVoltage(),befor_dianya,10,2)) {
@@ -1540,13 +1543,9 @@ public class FiringMainActivity extends SerialPortActivity {
                     isCaseVoltageWd = false;
                     thirteenCmdExchangePower = 1;
                 }
-                Log.e(TAG, "case13起爆中的电流: " + busInfo.getBusCurrentIa());
             }
             befor_dianliu = busInfo.getBusCurrentIa();
             befor_dianya = busInfo.getBusVoltage();
-//            if (stage == 6) {
-//                Log.e(TAG, "40指令已返回,进入充电检测");
-//            }
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
@@ -1573,9 +1572,9 @@ public class FiringMainActivity extends SerialPortActivity {
     public boolean isDifferenceWithin(float int1, float int2,int cha,int type) {
         float difference = Math.abs(int1 - int2);
         if (type == 1) {
-            Log.e(TAG,"组合键倒计时的电流差值： " + difference);
+            Log.e(TAG,"倒计时的电流差值： " + difference);
         } else {
-            Log.e(TAG,"组合键倒计时的电压差值： " + difference);
+            Log.e(TAG,"倒计时的电压差值： " + difference);
         }
         return difference > cha;
     }
