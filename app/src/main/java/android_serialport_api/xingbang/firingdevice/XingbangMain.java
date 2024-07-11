@@ -179,9 +179,10 @@ public class XingbangMain extends SerialPortActivity {
     private SendPower sendPower;
     private OpenPower openPower;
     private volatile int get41Resp = 0;
-    private boolean isReOpenCpeak = false;
     private String changjia = "";
     private boolean isCmdClosed = false;//是否已经关闭串口
+    private boolean isRestarted = false;
+    private boolean threadStarted = false;
 
     @Override
     protected void onPause() {
@@ -203,6 +204,7 @@ public class XingbangMain extends SerialPortActivity {
         loadMoreData_all_lg();//获取雷管信息
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
         getPropertiesData();
+        isRestarted = true;
 //        getUserMessage();
         super.onRestart();
     }
@@ -244,7 +246,7 @@ public class XingbangMain extends SerialPortActivity {
         app_version_name = getString(R.string.app_version_name);
         getleveup();
         busHandler = new Handler(msg -> {
-            txt_Volt.setText("当前电压:" + (int)busInfo.getBusVoltage() + "V");
+            txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
             txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa() + "μA");
             return false;
         });
@@ -283,11 +285,11 @@ public class XingbangMain extends SerialPortActivity {
     }
 
     private void openSerial(){
-        if (isReOpenCpeak) {
+        if (isRestarted) {
             initSerialPort();
             openPower = new OpenPower();
             openPower.start();
-//            sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+            Log.e(TAG,"重新开启41指令线程");
         }
     }
 
@@ -560,10 +562,10 @@ public class XingbangMain extends SerialPortActivity {
                 return;
             }
             if (a.equals("xingbang") && b.equals("123456")) {
+                close();//停止访问电流
                 String str1 = "设置";
                 Intent intent = new Intent(XingbangMain.this, SetEnvMainActivity.class);
                 intent.putExtra("dataSend", str1);
-                close();//停止访问电流
                 startActivity(intent);
 
                 dialog.dismiss();
@@ -586,12 +588,6 @@ public class XingbangMain extends SerialPortActivity {
             dialogOFF(dialog);
 //                finish();
             dialog.dismiss();
-        });
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                openSerial();
-            }
         });
         builder.show();
     }
@@ -695,7 +691,6 @@ public class XingbangMain extends SerialPortActivity {
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
 
-        isReOpenCpeak = true;
         switch (view.getId()) {
 
             case R.id.btn_main_reister://注册
@@ -785,9 +780,9 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_query://查看
                 String str6 = "查看雷管";
+                close();//停止访问电流
                 Intent intent6 = new Intent(XingbangMain.this, QueryMainActivity.class);
                 intent6.putExtra("dataSend", str6);
-                close();//停止访问电流
                 startActivityForResult(intent6, 1);
                 break;
 
@@ -797,18 +792,18 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_help://辅助功能
 //                createHelpDialog();
+                close();//停止访问电流
                 String str8 = "查看雷管";
                 Intent intent8 = new Intent(this, PracticeActivity.class);
                 intent8.putExtra("dataSend", str8);
-                close();//停止访问电流
                 startActivityForResult(intent8, 1);
                 break;
 
             case R.id.btn_main_downWorkCode://下载
+                close();//停止访问电流
                 String str7 = "下载";
                 Intent intent7 = new Intent(XingbangMain.this, DownWorkCode.class);
                 intent7.putExtra("dataSend", str7);
-                close();//停止访问电流
                 startActivityForResult(intent7, 1);
 //            Intent intent7 = new Intent(XingbangMain.this, SetDelayTime.class);
 //            startActivity(intent7);
@@ -1115,18 +1110,6 @@ public class XingbangMain extends SerialPortActivity {
                     mOffTime.cancel();
                 })
                 .create();
-        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                openSerial();
-            }
-        });
-        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                openSerial();
-            }
-        });
         mDialog.show();
         mDialog.setCanceledOnTouchOutside(false);
 
@@ -1438,8 +1421,8 @@ public class XingbangMain extends SerialPortActivity {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
-            Log.e(TAG, "已收到41指令");
             get41Resp = 1;
+            Log.e(TAG, "已收到41指令");
             open();
         }
     }
@@ -1457,16 +1440,17 @@ public class XingbangMain extends SerialPortActivity {
                     long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
                     if (zeroCount == 0 && time - endTime < 60000) {
+                        Log.e(TAG,"断电后重新发送41指令");
                         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
                     }
                     if (get41Resp == 1) {
                         exit = true;
                         break;
                     }
-                    if (zeroCount > 0 && zeroCount <= 3) {
-                        Log.e(TAG,"41指令未返回，需重新发送");
+                    if (zeroCount > 0 && zeroCount <= 3 && get41Resp == 0) {
+                        Log.e(TAG,"发送41指令");
                         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-                        Thread.sleep(1000);
+                        Thread.sleep(3500);
                     } else if (zeroCount > 3){
                         Log.e(TAG,"41指令未返回已发送3次，停止发送41指令");
                         exit = true;
@@ -1509,10 +1493,20 @@ public class XingbangMain extends SerialPortActivity {
         }
         sendPower = new SendPower();//40指令线程
         sendPower.exit = false;
-        sendPower.start();
+        if (!threadStarted) {
+            sendPower.start();
+            Log.e(TAG,"已开启40线程");
+            threadStarted = true;
+        } else {
+            Log.e(TAG,"40线程已开启过，不再开启");
+        }
     }
 
     private void close() {
+        isCmdClosed = true;
+        isRestarted = false;
+        threadStarted = false;
+        get41Resp = 0;
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread
             try {
@@ -1544,7 +1538,6 @@ public class XingbangMain extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy: ");
         SQLiteStudioService.instance().stop();
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread
@@ -1582,7 +1575,7 @@ public class XingbangMain extends SerialPortActivity {
 //            tipDlg = null;
 //        }
         super.onDestroy();
-        isReOpenCpeak = false;
+        Log.e(TAG, "onDestroy: ");
         openHandler.removeCallbacksAndMessages(null);
     }
 }

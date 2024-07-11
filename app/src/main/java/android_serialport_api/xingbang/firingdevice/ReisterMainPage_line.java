@@ -2041,6 +2041,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
 //                }
             }
+        } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) { //46
+            byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
+            sendCmd(powerCmd);
         }
 
     }

@@ -333,6 +333,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_ssqb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                 closeThread();
 //                closeForm();
                 mHandler_1.removeMessages(0);
@@ -377,6 +378,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_jixu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
                 closeThread();
                 mHandler_1.removeMessages(0);
                 busHandler_dianliu.removeMessages(0);
