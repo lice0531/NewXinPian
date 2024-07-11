@@ -83,7 +83,7 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
         ButterKnife.bind(this);
         //点击其他地方隐藏输入框
         //db实例化
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         int totalNum = (int) Application.getDaoSession().getDenatorBaseinfoDao().count();

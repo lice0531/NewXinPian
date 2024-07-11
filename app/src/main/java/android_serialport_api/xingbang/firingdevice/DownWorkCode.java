@@ -228,7 +228,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_workcode);
         ButterKnife.bind(this);
-        DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         baidudingwei();
         getUserMessage();//获取用户信息

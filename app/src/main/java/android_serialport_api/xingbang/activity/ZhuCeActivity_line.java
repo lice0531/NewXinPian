@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -57,10 +58,6 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
     private List<DenatorBaseinfo> mListData = new ArrayList<>();//所有雷管列表
     private LinearLayoutManager linearLayoutManager;
     private int maxSecond = 20000;//最大延时
-    private int send_13 = 0;
-    private int send_10 = 0;
-    private int send_41 = 0;
-    private int send_40 = 0;
     //是否单发注册
     private int isSingleReisher = 0;
     private Handler mHandler_0 = new Handler();     // UI处理
@@ -99,7 +96,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         iv_add.setOnClickListener(v -> startActivity(new Intent(ZhuCeActivity_line.this, SetDelayTime.class)));
         iv_back.setOnClickListener(v -> finish());
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getFactoryCode();//获取厂家号
         getUserMessage();//获取版本号
@@ -110,7 +107,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         binding.zclRlLgRv.setAdapter(mAdapter);
         mAdapter.setOnItemLongClick(position -> {
             DenatorBaseinfo info = mListData.get(position);
-            Logger.e("长按"+ "position: " + position + "info.getBlastserial()" + info.getBlastserial());
+            Log.e(TAG,"长按"+ "position: " + position + "info.getBlastserial()" + info.getBlastserial());
             // 序号 延时 管壳码
 //            modifyBlastBaseInfo(no, delay, shellBlastNo);
             modifyBlastBaseInfo(info, position);//序号,孔号,延时,管壳码
@@ -138,7 +135,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
 //                    decodeBar(msg.obj.toString());
                     break;
                 case 1005://按管壳码排序
-//                    Logger.e("扫码注册"+ "按管壳码排序flag: " + paixu_flag);
+//                    Log.e(TAG,"扫码注册"+ "按管壳码排序flag: " + paixu_flag);
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
@@ -271,31 +268,32 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         f2ys = (String) MmkvUtils.getcode("f2ys", "0");
 
         Utils.writeRecord("---进入单发注册页面---");
-        if (version.equals("01")) {
-            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
-        } else {
+//        if (version.equals("01")) {
+//            sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
+//        } else {
             sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-        }
+//        }
     }
 
     @Override
     protected void onDataReceived(byte[] buffer, int size) {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
-
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//        Logger.e("注册"+ "fromCommad: "+fromCommad );
+        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
         if (completeValidCmd(fromCommad) == 0) {
-//            fromCommad = this.revCmd;//如果revcmd不清空,会导致收到40,但却变成上次的13,先屏蔽
-//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-//            else this.revCmd = "";
+            fromCommad = this.revCmd;
+            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+            else this.revCmd = "";
+//            Utils.writeLog("Firing reFrom:" + fromCommad);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-
+                return;
             } else {
                 String cmd = DefCommand.getCmd(fromCommad);
                 if (cmd != null) {
-                    doWithReceivData(cmd, cmdBuf);
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
                 }
             }
         }
@@ -307,16 +305,14 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
     private void doWithReceivData(String cmd, byte[] cmdBuf) {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
         if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
-            send_41 = 0;
 //            sendOpenThread.exit = true;
-//            Logger.e("是否检测桥丝"+ "qiaosi_set: " + qiaosi_set);
+//            Log.e(TAG,"是否检测桥丝"+ "qiaosi_set: " + qiaosi_set);
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
                 sendCmd(OneReisterCmd.send_10("00", "01"));
             } else {
                 sendCmd(OneReisterCmd.send_10("00", "00"));
             }
         } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
-            send_10 = 0;
             //发送获取电源信息
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40
             sendCmd(reCmd);
@@ -341,7 +337,6 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
             zhuce_Flag = 1;
 
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
-            send_13 = 0;
 //            if (initCloseCmdReFlag == 1) {//打开电源
 //                revCloseCmdReFlag = 1;
 //                closeOpenThread.exit = true;
@@ -350,7 +345,6 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
 //            }
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
-            send_40 = 0;
             busInfo = FourStatusCmd.decode_40("00", cmdBuf);//解析 40指令
             mHandler_1.sendMessage(mHandler_1.obtainMessage(1));
 
@@ -360,7 +354,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
                     mHandler_1.sendMessage(mHandler_1.obtainMessage(7));//电流过大
                     SoundPlayUtils.play(4);
                     zhuce_Flag = 0;
-                    Logger.e("芯片码:"+detonatorId);
+                    Log.e(TAG,"芯片码:"+detonatorId);
                     Utils.writeRecord("--单发注册--:管壳码:" + GreenDaoMaster.serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                 } else {
                     if (zhuce_form != null) {//管厂码,特征码,雷管id
@@ -384,7 +378,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         String facCode = Utils.getDetonatorShellToFactoryCodeStr(detonatorId);
         // 特征码
         String facFea = Utils.getDetonatorShellToFeatureStr(detonatorId);
-        Logger.e("注册"+ "detonatorId: " + detonatorId);
+        Log.e(TAG,"注册"+ "detonatorId: " + detonatorId);
 //        String shellBlastNo = serchShellBlastNo(detonatorId);
         DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
 //        if (detonatorTypeNew == null) {//考虑到可以直接注册A6
@@ -410,10 +404,10 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
         }
-        Logger.e("查询生产数据库查管壳码"+ "detonatorId: " + detonatorId);
+        Log.e(TAG,"查询生产数据库查管壳码"+ "detonatorId: " + detonatorId);
         int maxNo = getMaxNumberNo();
         int pai = getMaxPai();
-        Logger.e("最大排号"+ "pai: " + pai);
+        Log.e(TAG,"最大排号"+ "pai: " + pai);
         int sitholeNum = getMaxSitholeNum(pai);//目前是单孔单发,考虑一下怎么注册单孔多发
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
@@ -454,7 +448,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
     }
 
     private void modifyBlastBaseInfo(DenatorBaseinfo info, int position) {
-        Logger.e("长按"+ "info: " + info.toString());
+        Log.e(TAG,"长按"+ "info: " + info.toString());
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -506,12 +500,8 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.zc_btn_jiance) {
-            Logger.e("isSingleReisher="+isSingleReisher);
-            Logger.e("send_10="+send_10);
-            Logger.e("send_13="+send_13);
-            Logger.e("send_41="+send_41);
-            Logger.e("send_40="+send_40);
-            if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+            Log.e(TAG,"isSingleReisher="+isSingleReisher);
+            if (isSingleReisher == 0 ) {
                 String shellBlastNo = GreenDaoMaster.serchFristLG();
                 int num = GreenDaoMaster.serchFristLGINdenatorHis(shellBlastNo);
                 if (num > 0) {
@@ -521,14 +511,12 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
                 binding.zcBtnJiance.setText("停止检测");
                 isSingleReisher = 1;
                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-            } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+            } else  {
 //                binding.zcBtnJiance.setEnabled(true);
                 binding.zcBtnJiance.setText("检测在线雷管");
                 isSingleReisher = 0;
                 // 13 退出注册模式
                 sendCmd(OneReisterCmd.send_13("00"));
-            } else {
-                show_Toast("正在与单片机通讯,请稍等一下再退出注册模式!");
             }
         }
     }
@@ -538,17 +526,8 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("Reister sendTo:" + str);
-                Logger.e("发送命令"+ str);
-                if (str.contains("C00010")) {
-                    send_10 = 1;
-                } else if (str.contains("C00041")) {
-                    send_41 = 1;
-                } else if (str.contains("C00013")) {
-                    send_13 = 1;
-                } else if (str.contains("C00040")) {
-                    send_40 = 1;
-                }
+                Utils.writeLog("->:" + str);
+                Log.e("发送命令",str);
                 mOutputStream.write(mBuffer);
                 //实验有没有用
 //                mOutputStream.flush();
@@ -583,11 +562,11 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
      * @return 是否重复
      */
     public boolean checkRepeatdenatorId(String detonatorId) {
-        Logger.e("检查重复的数据"+ "detonatorId: " + detonatorId);
+        Log.e(TAG,"检查重复的数据"+ "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
         if (list_lg.size() > 0) {
-            Logger.e("注册"+ "list_lg: " + list_lg.toString());
+            Log.e(TAG,"注册"+ "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";
             singleShellNo = list_lg.get(0).getShellBlastNo();
             return true;
@@ -642,7 +621,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
             factoryCode = list.get(0).getDeEntCode();
             factoryFeature = list.get(0).getDeFeatureCode();
         }
-        Logger.e("厂家管码"+ "factoryCode: " + factoryCode);
+        Log.e(TAG,"厂家管码"+ "factoryCode: " + factoryCode);
     }
 
     private void getUserMessage() {
@@ -677,7 +656,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
             }
             cursor.close();
         }
-        Logger.e(TAG+ "getEmptyDenator方法返回值serialNo: " + serialNo);
+        Log.e(TAG,TAG+ "getEmptyDenator方法返回值serialNo: " + serialNo);
         return serialNo;
     }
 
@@ -738,11 +717,11 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
      * @return
      */
     public boolean checkRepeatShellNo(String shellNo) {
-        Logger.e("检查重复的数据"+ "shellNo: " + shellNo);
+        Log.e(TAG,"检查重复的数据"+ "shellNo: " + shellNo);
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatShellNo(shellNo);
         if (list_lg.size() > 0) {
-            Logger.e("注册"+ "list_lg: " + list_lg.toString());
+            Log.e(TAG,"注册"+ "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";
             singleShellNo = list_lg.get(0).getShellBlastNo();
             return true;
@@ -775,7 +754,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where pai =? ";
         Cursor cursor = db.rawQuery(sql, new String[]{no + ""});
         if (cursor != null && cursor.moveToNext()) {
-            Logger.e("最大孔内序号"+ "maxSitholeNum: " + cursor.getInt(19));
+            Log.e(TAG,"最大孔内序号"+ "maxSitholeNum: " + cursor.getInt(19));
             int maxSitholeNum = cursor.getInt(19);
             cursor.close();
             return maxSitholeNum;

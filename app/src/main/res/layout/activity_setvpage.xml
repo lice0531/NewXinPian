@@ -49,7 +49,7 @@
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_netmodel" />
+                android:text="@string/t_xingbang_main_page_btn_del" />
 
             <Button
                 android:id="@+id/btn_set_upload"

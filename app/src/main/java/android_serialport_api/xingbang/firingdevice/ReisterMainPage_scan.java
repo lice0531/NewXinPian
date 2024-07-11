@@ -224,7 +224,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         setContentView(R.layout.activity_reister_main_page_scan);
         ButterKnife.bind(this);
         SoundPlayUtils.init(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getUserMessage();
         getFactoryType();//获取延期最大值

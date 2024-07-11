@@ -153,7 +153,7 @@ public class PracticeActivity extends SerialPortActivity {
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText("本机IP地址:" + getlocalip());

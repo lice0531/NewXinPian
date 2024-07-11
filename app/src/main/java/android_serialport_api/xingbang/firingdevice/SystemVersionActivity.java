@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static com.tencent.bugly.beta.Beta.checkUpgrade;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,10 +32,14 @@ public class SystemVersionActivity extends SerialPortActivity {
     TextView btnSoftVersion;
     @BindView(R.id.btn_Hardware_Version)
     TextView btnHardwareVersion;
+    @BindView(R.id.txt_rj_version)
+    TextView rj_version;
     @BindView(R.id.et_Hardware_Version)
     EditText etHardwareVersion;
     @BindView(R.id.set_Hardware_Version)
     Button setHardwareVersion;
+    @BindView(R.id.check_version)
+    Button checkVersion;
     private Handler Handler_tip = null;//提示信息
 
 
@@ -42,7 +48,10 @@ public class SystemVersionActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sys_version);//version
         ButterKnife.bind(this);
-
+        //初始化在主页面,全局搜索默认值
+//        rj_version.setText((String)MmkvUtils.getcode("rj_version","KT50_3.25_PT_221128"));
+// 标题栏
+//        setSupportActionBar(findViewById(R.id.toolbar));
         SharedPreferences sp = getSharedPreferences("config", 0);
         //获取偏好设置的编辑器
         edit = sp.edit();
@@ -94,32 +103,28 @@ public class SystemVersionActivity extends SerialPortActivity {
         System.arraycopy(cmdBuf, 0, locatBuf, 0, size);//将cmdBuf数组复制到locatBuf数组
         String fromCommad =  Utils.bytesToHexFun(locatBuf);
         String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号
-
+        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
+            Log.e("软件版本返回的命令", "realyCmd1: "+realyCmd1 );
             String a =realyCmd1.substring(6);//2020031201
-            String data1=a.substring(0,2);
-            String data2=a.substring(2,4);
-            String data3=a.substring(4,6);
-            String data4=a.substring(6);
-            String data=data4+data3+data2+data1;
-            int c = new BigInteger(data, 16).intValue();
-            MmkvUtils.savecode("yj_version",c);
-//            Log.e("软件版本返回的命令", "a: "+a );
-            Log.e("软件版本返回的命令", "c: "+c );
-            Handler_tip.sendMessage(Handler_tip.obtainMessage(1, c));
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < a.length(); i+=2) {
+                String str = a.substring(i, i+2);
+                output.append((char)Integer.parseInt(str, 16));
+            }
+            Log.e("软件版本返回的命令", "output: "+output);
 
+            MmkvUtils.savecode("yj_version",output);
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(1, output));
             byte[] reCmd2 = FourStatusCmd.getHardVersion("00");//44
             sendCmd(reCmd2);
-        } else if (DefCommand.CMD_4_XBSTATUS_5.equals(cmd)) {//获取硬件版本号
+        } else if (DefCommand.CMD_4_XBSTATUS_5.equals(cmd)) {//获取硬件版本号 44
             String a =realyCmd1.substring(6);//2020031201
-            String data1=a.substring(0,2);
-            String data2=a.substring(2,4);
-            String data3=a.substring(4,6);
-            String data4=a.substring(6);
-            String data=data4+data3+data2+data1;//反转命令
-            int c = new BigInteger(data, 16).intValue();//16进制转10进制
-
-            Handler_tip.sendMessage(Handler_tip.obtainMessage(2, c));
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < a.length(); i+=2) {
+                String str = a.substring(i, i+2);
+                output.append((char)Integer.parseInt(str, 16));
+            }
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(2, output));
         }else if (DefCommand.CMD_4_XBSTATUS_6.equals(cmd)) {//设置单片机版本
             String a =realyCmd1.substring(6);//2020031201
             String data1=a.substring(0,2);
@@ -165,7 +170,7 @@ public class SystemVersionActivity extends SerialPortActivity {
     }
 
 
-    @OnClick({R.id.btn_Soft_Version, R.id.btn_Hardware_Version, R.id.set_Hardware_Version})
+    @OnClick({R.id.btn_Soft_Version, R.id.btn_Hardware_Version, R.id.set_Hardware_Version, R.id.check_version})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.set_Hardware_Version:
@@ -182,11 +187,22 @@ public class SystemVersionActivity extends SerialPortActivity {
                 byte[] reCmd3 = FourStatusCmd.setHardVersion("00", strHex_fan);//
                 sendCmd(reCmd3);
                 break;
+            case R.id.check_version:
+                checkUpgrade();
+                break;
         }
     }
 
     @Override
     protected void onDestroy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("SystemVersionActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
         super.onDestroy();
         finish();
     }

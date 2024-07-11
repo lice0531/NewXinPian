@@ -122,7 +122,7 @@ public class XingbangMain extends BaseActivity {
         SQLiteStudioService.instance().start(this);
 
         initPower();                // 初始化上电方式()
-//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+//        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
 //        db = mMyDatabaseHelper.getReadableDatabase();
 
         tipDlg = new LoadingDialog(XingbangMain.this);

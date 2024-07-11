@@ -37,7 +37,7 @@ public class UploadDataActivity extends AppCompatActivity implements View.OnClic
 
         //标题设置
         TextView title=findViewById(R.id.title_text);
-        title.setText("单发检测雷管");
+        title.setText("上传");
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setVisibility(View.GONE);

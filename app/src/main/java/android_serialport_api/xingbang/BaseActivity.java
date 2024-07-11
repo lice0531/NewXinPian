@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.kfree.expd.ExpdDevMgr;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -108,7 +109,7 @@ public class  BaseActivity extends Activity {
 	public DeviceControl mDeviceControl;    // 0: Dc上电
 	public DeviceControlSpd mDeviceControlSpd ;    // 2: 团标上电
 	public Gpiot1 mGpiot1;                  // 1:Gpio包上电
-
+	public ExpdDevMgr mExpDevMgr ;
 	/**
 	 * 实例化上电方式
 	 */
@@ -132,7 +133,18 @@ public class  BaseActivity extends Activity {
 				e.printStackTrace();
 			}
 			Log.e("BaseActivity", "实例化 DeviceControl");
-		}  else {
+		}else if (mPowerOnMode == 3) {
+			try {
+				mDeviceControlSpd = new DeviceControlSpd("NEW_MAIN_FG", 156,170,7,9);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Log.e("BaseActivity", "KT50新设备 DeviceControlSpd");
+		}else if (mPowerOnMode == 4) {
+			mExpDevMgr = new ExpdDevMgr(this);
+//			mExpDevMgr.setExGpio(108,1);//32 17 19   485通信/11 12 13 14   发送/17 19
+			Log.e("BaseActivity", "M900设备");
+		} else {
 			Log.e("BaseActivity", "实例化 空");
 		}
 	}
@@ -169,6 +181,18 @@ public class  BaseActivity extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else if (mPowerOnMode == 3) {// 新款KT50上电
+			Log.e("BaseActivity", "新款KT50 主板上电");
+			try {
+				mDeviceControlSpd.PowerOnDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else if (mPowerOnMode == 4) {// 新款KT50上电
+			Log.e("BaseActivity", "M900 主板上电");
+			mExpDevMgr.exPowerOn();//办卡供电
+			mExpDevMgr.setPsamReaderPw(true);
+//			mExpDevMgr.setExGpio(1,1);//32 17 19   485通信/11 12 13 14   发送/17 19
 		}
 
 	}
@@ -203,6 +227,14 @@ public class  BaseActivity extends Activity {
 				e.printStackTrace();
 			}
 
+		}if (mPowerOnMode == 3) {
+			Log.e("BaseActivity", "新款KT50 主板下电");
+			try {
+				mDeviceControlSpd.PowerOffDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		}
 		// libgpiotp_6.11.jar 下电
 		else if (mPowerOnMode == 1) {
@@ -213,7 +245,11 @@ public class  BaseActivity extends Activity {
 //            optGpio(PIN_ADSL);
 
 		}
-
+		else if (mPowerOnMode == 4) {// 新款KT50上电
+			Log.e("BaseActivity", "M900 主板下电");
+			mExpDevMgr.exPowerOff();
+			mExpDevMgr.setPsamReaderPw(false);
+		}
 	}
 
 	/**

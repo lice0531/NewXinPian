@@ -23,8 +23,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "regdate text, " //注册日期
             + "wire text, "//桥丝状态
             + "name text, "
-            + "denatorIdSup text "//从芯片码
-            +")";
+            + "denatorIdSup text, "//从芯片码
+            + "zhu_yscs text, "//主芯片参数
+            + "cong_yscs text, "//从芯片参数
+            + "piece text, "//区域
+            + "duan text ,"//段
+            + "duanNo text "//段序号
+            + ")";
     public static final String CREATE_DENATO_ALL = "create table denatorBaseinfo_all ("
             + "id integer primary key autoincrement, "
             + "blastserial integer, "//序号
@@ -42,8 +47,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "wire text, "//桥丝状态
             + "name text, "
             + "denatorIdSup text "//从芯片码
-            +")";
-    
+            + ")";
+
     //用于创建爆炸雷管历史主表
     public static final String CREATE_HIS_MAIN_DENATO = "create table denatorHis_Main ("
             + "id integer primary key autoincrement, "
@@ -85,9 +90,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "statusName text, "
             + "errorName text, "
             + "errorCode text, "
-            + "authorization text, "    
-            + "remark text, " 
-            + "regdate text, " 
+            + "authorization text, "
+            + "remark text, "
+            + "regdate text, "
             + "blastdate text, " //爆炸时间
             + "name text)";
 
@@ -115,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "deEntCode text, "//雷管代号
             + "deFeatureCode text, "//厂家代号
             + "isSelected text)";//是否选择
-  //用于创建雷管类别
+    //用于创建雷管类别
     public static final String CREATE_DENATOR_TYPE = "create table denator_type ("
             + "id integer primary key autoincrement, "
             + "deTypeName text, "//雷管类型名称
@@ -126,10 +131,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "id integer primary key autoincrement, "
             + "uname text, "
             + "upassword text, "
-            + "isface int, "            
+            + "isface int, "
             + "facepath text)";
     //用于创建授权信息表
-    public static final String CREATE_SHOUQUAN= "create table ShouQuan ("
+    public static final String CREATE_SHOUQUAN = "create table ShouQuan ("
             + "id integer primary key autoincrement, "
             + "xmbh text, "//项目编号
             + "htbh text, "//合同编号
@@ -144,10 +149,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "coordxy text,"//经纬度
             + "qblgNum text,"//已起爆雷管数量
             + "spare1 text,"//项目名称
-            + "spare2 text )";//备用2
+            + "spare2 text,"//备用2
+            + "total int )";//总数
 
     //用于创建授权信息表
-    public static final String CREATE_PROJECT= "create table Project ("
+    public static final String CREATE_PROJECT = "create table Project ("
             + "id integer primary key autoincrement, "
             + "project_name text, "//项目名称
             + "xmbh text, "//项目编号
@@ -157,7 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "coordxy text"//经纬度
             + ")";
     //用于创建授权信息表
-    public static final String CREATE_MESSAGE= "create table Message ("
+    public static final String CREATE_MESSAGE = "create table Message ("
             + "id integer primary key autoincrement, "
             + "pro_bprysfz text, "
             + "pro_htid text, "
@@ -174,8 +180,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "server_type1 text, "
             + "server_type2 text, "
             + "pro_dwdm text, "
-            +"jiance_time text"
-            +"version text"
+            + "jiance_time text,"
+            + "version text"
             + ")";
 
     //用于错误日志表
@@ -185,7 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "path text, "
             + "updataState text, "
             + "updataTime text)";
-
+    public static final int TABLE_VERSION = 22;
     public static  final String TABLE_NAME_DENATOBASEINFO="denatorBaseinfo";   //雷管表
     public static  final String TABLE_NAME_DENATOBASEINFO_ALL="denatorBaseinfo_all";   //全部雷管表
     public static  final String TABLE_NAME_HISMAIN="denatorHis_Main";//历史时间表

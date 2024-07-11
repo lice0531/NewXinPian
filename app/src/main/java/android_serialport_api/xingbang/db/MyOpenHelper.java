@@ -9,9 +9,12 @@ import org.greenrobot.greendao.database.Database;
 
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
+import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
-import android_serialport_api.xingbang.db.greenDao.UserMainDao;
+import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 
 /**
  * Created by xingbang on 2021/4/22.
@@ -44,7 +47,13 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
             public void onDropAllTables(Database db, boolean ifExists) {
                 DaoMaster.dropAllTables(db, ifExists);
             }
-        }, MessageBeanDao.class, ProjectDao.class);
+        }, MessageBeanDao.class,
+                DenatorBaseinfoDao.class,
+                ProjectDao.class,
+                ShouQuanDao.class,
+                DenatorHis_MainDao.class,
+                DenatorHis_DetailDao.class,
+                DetonatorTypeNewDao.class);
     }
 
 

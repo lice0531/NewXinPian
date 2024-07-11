@@ -230,7 +230,7 @@ public class SetDelayTime_suidao extends BaseActivity implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_delay_time_suidao);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
         sharedPreferencesHelper = new SharedPreferencesHelper(this, getApplicationContext().getPackageName());

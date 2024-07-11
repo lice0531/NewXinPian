@@ -6,48 +6,70 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="android_serialport_api.xingbang.firingdevice.SetVoltageActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical">
+        android:layout_height="90dp"
+        android:orientation="vertical"
+        android:background="@drawable/textview_border"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="起爆程序版本号:"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:id="@+id/txt_rj_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="M900_PT_V2.1_220210"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        android:background="@drawable/textview_border">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="单片机软件版本号"
+            android:text="控制模块软件版本号"
             android:textSize="20sp"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="普通起爆器版本结尾01" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="普通起爆器版本结尾01" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="煤许起爆器版本结尾02" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="煤许起爆器版本结尾02" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="kt50单通道检测版本结尾03" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="kt50单通道检测版本结尾03" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="电压可调版本结尾04" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="电压可调版本结尾04" />-->
 
         <TextView
             android:id="@+id/btn_Soft_Version"
-            style="@style/allbtntstyle"
-            android:layout_width="200dp"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
@@ -57,19 +79,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/textview_border">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="单片机硬件版本号"
+            android:text="控制模块硬件版本号"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/btn_Hardware_Version"
-            style="@style/allbtntstyle"
-            android:layout_width="200dp"
+            style="@style/alltextstyle"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
@@ -79,7 +102,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@drawable/textview_border">
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,4 +136,13 @@
             android:text="切换单片机版本"
             android:textColor="@color/bt_fg_base" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/check_version"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/allbtntstyle"
+        android:text="检查是否需要更新软件版本"
+        />
 </LinearLayout>

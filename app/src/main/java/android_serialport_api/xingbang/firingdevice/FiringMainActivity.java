@@ -194,7 +194,7 @@ public class FiringMainActivity extends SerialPortActivity {
         setContentView(R.layout.activity_firing_page);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();//获取用户信息
         initParam();

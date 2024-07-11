@@ -97,7 +97,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_up_data);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
 
         if (1 == currentPage) {

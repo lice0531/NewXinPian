@@ -210,7 +210,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         ButterKnife.bind(this);
         SoundPlayUtils.init(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         //扫描参数设置
         init();

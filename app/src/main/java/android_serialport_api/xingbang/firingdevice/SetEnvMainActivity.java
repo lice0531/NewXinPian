@@ -89,7 +89,7 @@ public class SetEnvMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setvpage);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();
     }
@@ -331,7 +331,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 Log.e("版本号", "Bugly.getAppChannel(): " + Bugly.getAppChannel());
                 break;
             case R.id.btn_set_netmodel://网络模式
-                Intent intent5 = new Intent(SetEnvMainActivity.this, WriteLogActivity.class);
+                Intent intent5 = new Intent(SetEnvMainActivity.this, DelDenatorMainPage.class);
                 startActivity(intent5);
                 break;
             case R.id.btn_set_upload://上传数据

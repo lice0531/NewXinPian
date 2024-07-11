@@ -73,7 +73,7 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_delay_time);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
         startNoTxt = (TextView) findViewById(R.id.setDelayTime_FirstNo);

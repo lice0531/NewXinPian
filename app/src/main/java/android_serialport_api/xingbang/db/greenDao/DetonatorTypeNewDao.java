@@ -30,6 +30,8 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         public final static Property DetonatorIdSup = new Property(3, String.class, "detonatorIdSup", false, "denatorIdSup");
         public final static Property Zhu_yscs = new Property(4, String.class, "zhu_yscs", false, "zhu_yscs");
         public final static Property Cong_yscs = new Property(5, String.class, "cong_yscs", false, "cong_yscs");
+        public final static Property Time = new Property(6, String.class, "time", false, "time");
+        public final static Property Qibao = new Property(7, String.class, "qibao", false, "qibao");
     }
 
 
@@ -50,7 +52,9 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
                 "\"denatorId\" TEXT," + // 2: detonatorId
                 "\"denatorIdSup\" TEXT," + // 3: detonatorIdSup
                 "\"zhu_yscs\" TEXT," + // 4: zhu_yscs
-                "\"cong_yscs\" TEXT);"); // 5: cong_yscs
+                "\"cong_yscs\" TEXT," + // 5: cong_yscs
+                "\"time\" TEXT," + // 6: time
+                "\"qibao\" TEXT);"); // 7: qibao
     }
 
     /** Drops the underlying database table. */
@@ -92,6 +96,16 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         if (cong_yscs != null) {
             stmt.bindString(6, cong_yscs);
         }
+ 
+        String time = entity.getTime();
+        if (time != null) {
+            stmt.bindString(7, time);
+        }
+ 
+        String qibao = entity.getQibao();
+        if (qibao != null) {
+            stmt.bindString(8, qibao);
+        }
     }
 
     @Override
@@ -127,6 +141,16 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         if (cong_yscs != null) {
             stmt.bindString(6, cong_yscs);
         }
+ 
+        String time = entity.getTime();
+        if (time != null) {
+            stmt.bindString(7, time);
+        }
+ 
+        String qibao = entity.getQibao();
+        if (qibao != null) {
+            stmt.bindString(8, qibao);
+        }
     }
 
     @Override
@@ -142,7 +166,9 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // detonatorId
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // detonatorIdSup
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // zhu_yscs
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // cong_yscs
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // cong_yscs
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // time
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // qibao
         );
         return entity;
     }
@@ -155,6 +181,8 @@ public class DetonatorTypeNewDao extends AbstractDao<DetonatorTypeNew, Long> {
         entity.setDetonatorIdSup(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setZhu_yscs(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setCong_yscs(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setTime(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setQibao(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

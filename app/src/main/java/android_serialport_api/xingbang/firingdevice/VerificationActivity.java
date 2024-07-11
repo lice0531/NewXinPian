@@ -90,7 +90,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         setContentView(R.layout.activity_verification);
         ButterKnife.bind(this);
 
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, 22);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_SHOUQUAN, null);
         totalNum = cursor.getCount();//得到数据的总条数
