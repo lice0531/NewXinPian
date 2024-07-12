@@ -211,6 +211,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isSendWaitQb = false;//是否收到主控切换模式指令
     private boolean isGetQbResult = false;//是否收到起爆结束指令
     private boolean isJL = false;//是否收到级联的指令进来的起爆页面
+    private OpenPower openPower;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -750,6 +751,10 @@ public class FiringMainActivity extends SerialPortActivity {
             firstThread.exit = true;  // 终止线程thread
             firstThread.interrupt();
         }
+        if (openPower != null) {
+            openPower.exit = true;  // 终止线程thread
+            openPower.interrupt();
+        }
     }
 
     /***
@@ -1239,8 +1244,10 @@ public class FiringMainActivity extends SerialPortActivity {
             increase(1);
             Log.e("increase", "1");
             zeroCmdReFlag = 1;
-            byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-            sendCmd(powerCmd);
+            openPower = new OpenPower();
+            openPower.start();
+//            byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+//            sendCmd(powerCmd);
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
 //            String text = ll_firing_IC_4.getText().toString();
 //            if (text.contains("疑似") || text.contains("过大")) {
@@ -1394,6 +1401,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
+                Log.e(TAG,"收到41指令");
                 if (version.equals("01")) {
                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
                 } else {
@@ -1411,6 +1419,34 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
 
+    }
+
+    private class OpenPower extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (firstCmdReFlag == 1) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount > 0 && zeroCount <= 3 && firstCmdReFlag == 0) {
+                        Log.e(TAG,"发送41指令");
+                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 3){
+                        Log.e(TAG,"41指令未返回已发送3次，停止发送41指令");
+                        exit = true;
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public synchronized void increase(int val) {
