@@ -1454,13 +1454,12 @@ public class XingbangMain extends SerialPortActivity {
             int zeroCount = 0;
             while (!exit) {
                 try {
-                    long time = System.currentTimeMillis();
-                    long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-
-                    if (zeroCount == 0 && time - endTime < 60000) {
-                        Log.e(TAG,"断电后重新发送41指令");
-                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-                    }
+//                    long time = System.currentTimeMillis();
+//                    long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+//                    if (zeroCount == 0 && time - endTime < 60000) {
+//                        Log.e(TAG,"断电后重新发送41指令");
+//                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+//                    }
                     if (get41Resp == 1) {
                         exit = true;
                         break;
@@ -1531,22 +1530,22 @@ public class XingbangMain extends SerialPortActivity {
         get41Resp = 0;
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread
-            try {
-                sendPower.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+//            try {
+                sendPower.interrupt();
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
 
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
-            try {
-                openPower.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+//            try {
+                openPower.interrupt();
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
         new Thread(new Runnable() {
             @Override
@@ -1563,24 +1562,14 @@ public class XingbangMain extends SerialPortActivity {
         SQLiteStudioService.instance().stop();
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread
-            try {
-                sendPower.join();
-                Log.e(TAG,"已关闭sendPower");
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            sendPower.interrupt();
+            Log.e(TAG,"已关闭sendPower");
         }
 
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
-            try {
-                openPower.join();
-                Log.e(TAG,"已关闭openPower");
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            openPower.interrupt();
+            Log.e(TAG,"已关闭openPower");
         }
         if (!isCmdClosed) {
             new Thread(new Runnable() {

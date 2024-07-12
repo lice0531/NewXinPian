@@ -333,38 +333,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_ssqb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                closeThread();
-//                closeForm();
-                mHandler_1.removeMessages(0);
-                busHandler_dianliu.removeMessages(0);
-                errHandler.removeMessages(0);
-                errHandler_update.removeMessages(0);
-                Handler_tip.removeMessages(0);
-                checkHandler.removeMessages(0);
-                if (db != null) db.close();
-                fixInputMethodManagerLeak(TestDenatorActivity.this);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mApplication.closeSerialPort();
-                        Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                        mSerialPort = null;
-                        isSerialPortClosed = true;
-                    }
-                }).start();
-                finish();
-                String str5 = "起爆";
-                Log.e("验证2", "Yanzheng: " + Yanzheng);
-                Intent intent;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
-                } else {
-                    intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
-                }
-                intent.putExtra("dataSend", str5);
-                startActivity(intent);
+                enterFiringPage();
             }
         });
         btn_return_complete = findViewById(R.id.btn_test_return);
@@ -378,37 +347,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_jixu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                closeThread();
-                mHandler_1.removeMessages(0);
-                busHandler_dianliu.removeMessages(0);
-                errHandler.removeMessages(0);
-                errHandler_update.removeMessages(0);
-                Handler_tip.removeMessages(0);
-                checkHandler.removeMessages(0);
-                if (db != null) db.close();
-                fixInputMethodManagerLeak(TestDenatorActivity.this);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mApplication.closeSerialPort();
-                        Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
-                        mSerialPort = null;
-                        isSerialPortClosed = true;
-                    }
-                }).start();
-                finish();
-                String str5 = "起爆";
-                Log.e("验证2", "Yanzheng: " + Yanzheng);
-                Intent intent;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
-                } else {
-                    intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
-                }
-                intent.putExtra("dataSend", str5);
-                startActivity(intent);
+                enterFiringPage();
             }
         });
         btn_firing_lookError_4 = (Button) findViewById(R.id.btn_test_lookError);
@@ -419,6 +358,39 @@ public class TestDenatorActivity extends SerialPortActivity {
         });
     }
 
+    private void enterFiringPage() {
+        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+        closeThread();
+        mHandler_1.removeMessages(0);
+        busHandler_dianliu.removeMessages(0);
+        errHandler.removeMessages(0);
+        errHandler_update.removeMessages(0);
+        Handler_tip.removeMessages(0);
+        checkHandler.removeMessages(0);
+        if (db != null) db.close();
+        fixInputMethodManagerLeak(TestDenatorActivity.this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+                isSerialPortClosed = true;
+            }
+        }).start();
+        finish();
+        String str5 = "起爆";
+        Log.e("验证2", "Yanzheng: " + Yanzheng);
+        Intent intent;//金建华
+        if (Yanzheng.equals("验证")) {
+            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
+        } else {
+            intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
+        }
+        intent.putExtra("dataSend", str5);
+        startActivity(intent);
+    }
     private void getDenatorType() {
         String selection = "isSelected = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
@@ -1690,6 +1662,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         Log.e(TAG, "onDestroy: ==========");
         if (!isSerialPortClosed) {
+            sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
             new Thread(new Runnable() {
                 @Override
                 public void run() {

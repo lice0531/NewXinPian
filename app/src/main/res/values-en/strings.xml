@@ -510,7 +510,7 @@
     <string name="text_updata_sys_7">updates</string>
     <string name="text_updata_sys_8">update</string>
     <string name="text_firing_ssqb">Timing detonation</string>
-    <string name="app_version_name">M900_PT_HF_JL_V2.1_240702</string>
+    <string name="app_version_name">M900_PT_V2.1_240702</string>
     <string name="text_chongdian_state0">充电异常</string>
     <string name="text_chongdian_stateFF">充电成功</string>
 </resources>
