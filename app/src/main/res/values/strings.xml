@@ -517,7 +517,7 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name">M900_PT_HF_JL_V2.1_240702</string>
+    <string name="app_version_name">M900_PT_V2.1_240702</string>
 
     <string-array name="sp_changjia">
         <item>通用</item>

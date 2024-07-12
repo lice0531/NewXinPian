@@ -282,6 +282,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //                        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
                     }
                     if (firstCount == 0) {
+                        new Thread(() -> {
+                            mApplication.closeSerialPort();
+                            Log.e(getLocalClassName(),"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                            mSerialPort = null;
+                        }).start();
                         exit = true;
                         Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
                         startActivity(intent);
@@ -433,11 +438,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             busHandler.sendMessage(msg);
 
             Log.e("销毁", "onDestroy: " );
-            new Thread(() -> {
-                mApplication.closeSerialPort();
-                Log.e(getLocalClassName(),"调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }).start();
+
         }
     }
 

@@ -702,6 +702,10 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                if(mExpDevMgr.isSafeSwitchOpen()){
+                    createDialog_kaiguan();
+                    return;
+                }
                 close();//停止访问电流
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
@@ -743,6 +747,10 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
+                if(mExpDevMgr.isSafeSwitchOpen()){
+                    createDialog_kaiguan();
+                    return;
+                }
 
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
@@ -941,6 +949,16 @@ public class XingbangMain extends SerialPortActivity {
         builder.setTitle("未授权提醒");//"说明"
         builder.setMessage("有未授权的雷管,请进行授权后再进行起爆!");
         builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+    /***
+     * 建立对话框
+     */
+    public void createDialog_kaiguan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("安全提醒");//"说明"
+        builder.setMessage("检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!");
+        builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 

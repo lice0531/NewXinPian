@@ -73,6 +73,8 @@ import butterknife.ButterKnife;
 import static android_serialport_api.xingbang.Application.daoSession;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import com.kfree.expd.ExpdDevMgr;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -356,6 +358,11 @@ public class FiringMainActivity extends SerialPortActivity {
         //继续起爆
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
         btn_continueOk_4.setOnClickListener(v -> {
+            mExpDevMgr = new ExpdDevMgr(this);//被关闭了??
+            if(!mExpDevMgr.isSafeSwitchOpen()){
+                createDialog_kaiguan();
+                return;
+            }
             String err = ll_firing_errorAmount_4.getText().toString();
             if (changjia.equals("华丰")) {
                 if (err.equals("0")) {
@@ -374,6 +381,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 increase(6);//充电阶段
             }
         });
+    }
+
+    public void createDialog_kaiguan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("安全提醒");//"说明"
+        builder.setMessage("检测到您的安全开关处于关闭状态,请先打开掌机右侧的安全开关,再进行充电!");
+        builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 
     private void showErrorLgDialog(String content, int type) {
@@ -1041,7 +1056,7 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
-        Utils.deleteRecord_cmd();//删除cmd日志
+//        Utils.deleteRecord_cmd();//删除cmd日志,删之前要保存到历史记录里面
 
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
         GreenDaoMaster master = new GreenDaoMaster();
