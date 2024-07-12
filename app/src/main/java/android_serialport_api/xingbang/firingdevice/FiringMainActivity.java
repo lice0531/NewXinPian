@@ -204,6 +204,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
+    private int totalerrorCDNum;//充电错误雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
@@ -1204,11 +1205,13 @@ public class FiringMainActivity extends SerialPortActivity {
         //判断雷管状态是否正价错误数量
         if (!"FF".equals(fromData.getCommicationStatus()) ) {//只有充电错误更新状态
             DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
-            denator.setErrorCode(fromData.getCommicationStatus());
+            denator.setStatusCode(fromData.getCommicationStatus());
             denator.setErrorName(fromData.getCommicationStatusName());
             Application.getDaoSession().update(denator);
+            totalerrorCDNum=totalerrorCDNum+1;
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+
         }
         Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus() );
     }
@@ -2319,8 +2322,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
                                     Utils.writeRecord("--第二轮检测结束-------------");
                                     //检测一次
-                                    if (totalerrorNum != 0) {
-                                        getErrblastQueue();//重新给雷管队列赋值
+                                    if (totalerrorCDNum != 0) {
+                                        totalerrorCDNum=0;
+                                        getErrblastQueue_CD();//重新给雷管队列赋值
                                         increase(55);//之前是4
                                     } else {
                                         increase(6);//之前是4
@@ -2603,6 +2607,35 @@ public class FiringMainActivity extends SerialPortActivity {
         reThirdWriteCount = 0;
         thirdWriteCount = 0;
         firstThread.blastQueue = allBlastQu;
+    }
+    private void getErrblastQueue_CD() {
+        allBlastQu = new ConcurrentLinkedQueue<>();
+        errorList = new ConcurrentLinkedQueue<>();
+        Log.e(TAG, "allBlastQu: "+allBlastQu.size() );
+        Log.e(TAG, "errorList: "+errorList.size() );
+//        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan_CD();//带参数是查一个区域,不带参数是查所有
+        for (DenatorBaseinfo denatorBaseinfo : list) {
+            int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
+            String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
+            String denatorId = denatorBaseinfo.getDenatorId();//管壳号
+            String denatorIdSup = denatorBaseinfo.getDenatorIdSup();//管壳号
+            short delay = (short) denatorBaseinfo.getDelay();//获取第三列的值
+            VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
+            vo.setBlastserial(serialNo);
+            vo.setDelay(delay);
+            vo.setShellBlastNo(shellNo);
+            vo.setDenatorId(denatorId);
+            vo.setDenatorIdSup(denatorIdSup);
+            vo.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
+            vo.setCong_yscs(denatorBaseinfo.getCong_yscs());
+            allBlastQu.offer(vo);
+        }
+        reThirdWriteCount = 0;
+        thirdWriteCount = 0;
+        firstThread.blastQueue = allBlastQu;
+        Log.e(TAG, "充电失败雷管--allBlastQu: "+allBlastQu.size() );
     }
 
 

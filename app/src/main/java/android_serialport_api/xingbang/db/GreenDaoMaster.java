@@ -186,6 +186,12 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
         return result.list();
     }
+    public List<DenatorBaseinfo> queryErrLeiGuan_CD(String piece) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        result = result.where(DenatorBaseinfoDao.Properties.StatusCode.notEq("FF"))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece));
+        return result.list();
+    }
     public List<DenatorBaseinfo> queryErrLeiGuan() {
         List<DenatorBaseinfo> mListData = new ArrayList<>();
         boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
@@ -203,6 +209,26 @@ public class GreenDaoMaster {
             mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("4"));
         }if (mRegion5) {
             mListData.addAll(new GreenDaoMaster().queryErrLeiGuan("5"));
+        }
+        return mListData;
+    }
+    public List<DenatorBaseinfo> queryErrLeiGuan_CD() {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+        if (mRegion1) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("1"));
+        }if (mRegion2) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("2"));
+        }if (mRegion3) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("3"));
+        }if (mRegion4) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("4"));
+        }if (mRegion5) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("5"));
         }
         return mListData;
     }

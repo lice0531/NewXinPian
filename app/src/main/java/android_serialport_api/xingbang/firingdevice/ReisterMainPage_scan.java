@@ -1953,7 +1953,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("00");
         denatorBaseinfo.setErrorName("");
@@ -2129,7 +2129,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("00");
         denatorBaseinfo.setErrorName("");
@@ -2313,7 +2313,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setShellBlastNo(shellNo);
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusCode("FF");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("00");
             denatorBaseinfo.setErrorName("");

@@ -726,7 +726,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("00");
         denatorBaseinfo.setErrorName("");
@@ -994,7 +994,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setShellBlastNo(shellNo);
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusCode("FF");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("00");
             denatorBaseinfo.setErrorName("");
@@ -1823,6 +1823,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                             }
                         }
                     }).create();
+            dialog2.show();
 
         });
         builder.setPositiveButton("确定", (dialog, which) -> {
@@ -2144,7 +2145,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         denatorBaseinfo.setShellBlastNo(shellNo);
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
         denatorBaseinfo.setErrorCode("00");
         denatorBaseinfo.setErrorName("");
@@ -2390,7 +2391,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setDelay(delay);
             denatorBaseinfo.setDenatorId(detonatorId);
-            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusCode("FF");
             denatorBaseinfo.setStatusName("已注册");
             denatorBaseinfo.setErrorCode("00");
             denatorBaseinfo.setErrorName("");

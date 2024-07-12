@@ -576,10 +576,10 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.setDenatorIdSup(a.getDenatorIdSup());
             item.setZhu_yscs(a.getZhu_yscs());
             item.setCong_yscs(a.getCong_yscs());
-            if (a.getStatusCode().equals("02")) {
+//            if (a.getStatusCode().equals("02")) {
                 list_lg.add(item);
                 blastQueue.offer(item);
-            }
+//            }
         }
 
         denatorCount = blastQueue.size();
@@ -606,10 +606,10 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.setDenatorIdSup(a.getDenatorIdSup());
             item.setZhu_yscs(a.getZhu_yscs());
             item.setCong_yscs(a.getCong_yscs());
-            if (a.getStatusCode().equals("02")) {
+//            if (a.getStatusCode().equals("02")) {
                 list_lg.add(item);
                 blastQueue.offer(item);
-            }
+//            }
         }
 
 //        denatorCount = blastQueue.size();
