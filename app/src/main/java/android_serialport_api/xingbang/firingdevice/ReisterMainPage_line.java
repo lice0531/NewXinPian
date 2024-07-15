@@ -287,24 +287,34 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void open() {
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(sendPower==null ){
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendPower = new SendPower();//40指令线程
+            sendPower.exit = false;
+            sendPower.start();
+        }else if( sendPower.exit){
+            Log.e("打开send", "open: 1" );
+            sendPower.exit = false;
+            sendPower.start();
         }
-        sendPower = new SendPower();//40指令线程
-        sendPower.exit = false;
-        sendPower.start();
+
     }
 
     private void close() {
-        sendPower.exit = true;
-        sendPower.interrupt();
-        try {
-            sendPower.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(!sendPower.exit ){
+            sendPower.exit = true;
+            sendPower.interrupt();
+            try {
+                sendPower.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     private void initView() {
@@ -351,7 +361,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                Log.e("箱号", "getBarcode: " + data);
 //                addXiangHao(data);
 //            }
-            GreenDaoMaster.delAllLg();//删除全部雷管
+            GreenDaoMaster m = new GreenDaoMaster();
+            m.delAllLg();//删除全部雷管
             Log.e("扫码", "data: " + data);
             if (sanButtonFlag > 0) {
                 scanDecode.stopScan();
@@ -1406,7 +1417,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             //向数据库插入数据
         }
-
+        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         SoundPlayUtils.play(1);
         return 0;
@@ -1475,7 +1486,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
 
-        send16(denatorId, version);
+//        send16(denatorId, version);//
 
         return;
     }
@@ -2347,7 +2358,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 try {
                     //发送获取电源信息
                     sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

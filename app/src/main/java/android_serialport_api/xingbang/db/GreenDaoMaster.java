@@ -431,8 +431,10 @@ public class GreenDaoMaster {
         getDaoSession().getShouQuanDao().deleteAll();
     }
 
-    public static void delAllLg() {
-        getDaoSession().getDenatorBaseinfoDao().deleteAll();
+    public  void delAllLg() {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        result.buildDelete().executeDeleteWithoutDetachingEntities();
+//        getDaoSession().getDenatorBaseinfoDao().deleteAll();
     }
     /**
      * 从数据库表中拿数据
