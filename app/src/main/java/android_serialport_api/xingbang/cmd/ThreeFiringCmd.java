@@ -90,11 +90,11 @@ public class ThreeFiringCmd {
 				
 				String commicationStatus = dataHex.substring(0,2);//通信状态
 				String denatorStatus = dataHex.substring(2,4);//雷管状态
-				
 				String delayTime = dataHex.substring(4);//延时
 				delayTime = Utils.swop2ByteOrder(delayTime);
 				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
 				int ia = Utils.byte2ToUnsignedShort(dataBytes, 0);
+				Log.e("芯片返回的31指令",realyCmd1 + "--延时: " + delayTime + "解析后的延时时间：" + ia);
 				From32DenatorFiring vo = new From32DenatorFiring()	;
 				vo.setCommicationStatus(commicationStatus);
 				vo.setDenatorStatus(denatorStatus);

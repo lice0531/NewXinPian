@@ -688,9 +688,9 @@ public class Utils {
          dataBy[6] = delayTime[0];
          dataBy[7] = delayTime[1];
 
-         String hexString="C0AA5506FE00D88600007E78C0";//"C0AA5111FF270026005215112233444838FF1FD204F310C0";
-
-         byte[] cmdBuf =  Utils.hexStringToBytes(hexString);
+//         String hexString="C0AA5506FE00D88600007E78C0";//"C0AA5111FF270026005215112233444838FF1FD204F310C0";
+//
+//         byte[] cmdBuf =  Utils.hexStringToBytes(hexString);
 
          From52Test fromData = FiveTestingCmd.decodeFromReceiveDataTestingCommand25("AA", cmdBuf);
          String shellNo = "";
@@ -703,7 +703,6 @@ public class Utils {
 
         //System.out.println("000");
         // int y =  byteArrayToInt(by);
-
     }
 
     public static String getDateFormatToFileName() {

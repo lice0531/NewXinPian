@@ -1879,6 +1879,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String zhuangtai = write.getLgzt();
+                                Log.e(TAG,"case3写入延时： " + delayTime + "-delayStr:" + delayStr);
                                 if (zhuangtai == null) {
                                     zhuangtai = "00";
                                 }
@@ -2114,6 +2115,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
+                                Log.e(TAG,"case12写入延时： " + delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
                                 String data = denatorId + delayStr + write.getZhu_yscs();
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
@@ -2190,6 +2192,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
+                                Log.e(TAG,"case14写入延时：" + delayTime);
                                 String zhuangtai = write.getLgzt();
                                 if (zhuangtai == null) {
                                     zhuangtai = "00";

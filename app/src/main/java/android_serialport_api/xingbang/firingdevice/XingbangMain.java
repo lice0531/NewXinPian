@@ -203,7 +203,15 @@ public class XingbangMain extends BaseActivity {
         // 获取区域雷管数量
         getRegionNumber();
         super.onResume();
+        String hexString="B888";//"C0AA5111FF270026005215112233444838FF1FD204F310C0";
+        String delayTime = Utils.swop2ByteOrder(hexString);
+        byte[] dataBytes = Utils.hexStringToBytes(delayTime);
+        int after = Utils.byte2ToUnsignedShort(dataBytes, 0);
 
+        short dt = -30266;
+        byte[] delayBye = Utils.shortToByte(dt);
+        String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
+        Log.e(TAG,"延时：" + hexString + "翻转："+ delayTime + "==接收到的：" + after + "---转之前的延时：" + dt + "--delayStr:" + delayStr);
     }
 
     @Override
