@@ -130,8 +130,9 @@ public class TestDenatorActivity extends SerialPortActivity {
     private List<DenatorBaseinfo> errlist;
     private String Yanzheng = "";//是否验证地理位置
     private String changjia = "通用";
-    List< Float> list_dianliu = new ArrayList();
+    List<Float> list_dianliu = new ArrayList();
     private boolean isSerialPortClosed = false;//是否已关闭串口
+
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initParam(boolean all_lg) {
@@ -287,9 +288,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                 if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
                     dialog.show();
                 }
-            }else if (msg.what == 3) {
+            } else if (msg.what == 3) {
                 ll_firing_errorNum_4.setText("0");
-                totalerrorNum=0;
+                totalerrorNum = 0;
             }
             return false;
         });
@@ -299,7 +300,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            if (tureNumStr.trim().length() < 1) {
 //                tureNumStr = "0";
 //            }
-            if(Integer.parseInt(errNumStr)>0){//更正错误雷管前有个获取错误总数的方法,可能会导致-1,所以要判断一下
+            if (Integer.parseInt(errNumStr) > 0) {//更正错误雷管前有个获取错误总数的方法,可能会导致-1,所以要判断一下
                 ll_firing_errorNum_4.setText("" + ((Integer.parseInt(errNumStr) - 1)));
                 totalerrorNum = Integer.parseInt(errNumStr) - 1;
                 ll_firing_errorNum_4.setTextColor(Color.GREEN);
@@ -373,7 +374,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             @Override
             public void run() {
                 mApplication.closeSerialPort();
-                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
                 mSerialPort = null;
                 isSerialPortClosed = true;
             }
@@ -391,6 +392,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         intent.putExtra("dataSend", str5);
         startActivity(intent);
     }
+
     private void getDenatorType() {
         String selection = "isSelected = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
@@ -518,7 +520,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         closeThread();
         initParam(false);
         //说明网检结束
-        MmkvUtils.savecode("isTestDenator","Y");
+        MmkvUtils.savecode("isTestDenator", "Y");
     }
 
 
@@ -549,8 +551,8 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.setZhu_yscs(a.getZhu_yscs());
             item.setCong_yscs(a.getCong_yscs());
 //            if (a.getStatusCode().equals("02")) {
-                list_lg.add(item);
-                blastQueue.offer(item);
+            list_lg.add(item);
+            blastQueue.offer(item);
 //            }
         }
 
@@ -579,8 +581,8 @@ public class TestDenatorActivity extends SerialPortActivity {
             item.setZhu_yscs(a.getZhu_yscs());
             item.setCong_yscs(a.getCong_yscs());
 //            if (a.getStatusCode().equals("02")) {
-                list_lg.add(item);
-                blastQueue.offer(item);
+            list_lg.add(item);
+            blastQueue.offer(item);
 //            }
         }
 
@@ -955,10 +957,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount > 0 && firstCount < 5) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
-//                            Log.e(TAG, "firstCount1: "+firstCount +"--"+Preparation_time);
-                            if (firstCount >= firstCount_max&&list_dianliu.get(list_dianliu.size()-1)-list_dianliu.get(list_dianliu.size()-5)<10) {
-                                Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size());
-                                Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size()-5));
+                            Log.e(TAG, "firstCount1: " + firstCount + "--" + Preparation_time);
+                            Log.e(TAG, "firstCount: " + firstCount + "--" + "firstCount_max = " + firstCount_max);
+                            if (firstCount >= firstCount_max && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 10 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >0) {
+                                Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size()+"--电流"+list_dianliu.get(list_dianliu.size()-1));
+                                Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size() - 5)+"--电流"+list_dianliu.get(list_dianliu.size()- 5));
+                                Log.e(TAG, "list_dianliu.get(list_dianliu.size()-1)-list_dianliu.get(list_dianliu.size()-5): " + (list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5)));
+
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
                                 Thread.sleep(1000);//为了发40后等待
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -970,7 +975,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 // 13 退出注册模式
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
                             }
-                            if (firstCount ==  8) {//Preparation_time-1
+                            if (firstCount == 8) {//Preparation_time-1
                                 sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启电源指令
 
                             }
@@ -985,7 +990,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             if (firstCount == 10) {//Preparation_time-1
                                 sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Init22_1("00"));//20 //进入测试模式
                             }
-                            if (firstCount >10) {//Preparation_time-1  // && firstCount < Preparation_time - 1
+                            if (firstCount > 10) {//Preparation_time-1  // && firstCount < Preparation_time - 1
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
@@ -1015,7 +1020,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
                                         GreenDaoMaster master = new GreenDaoMaster();
                                         errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
-                                        if (a == 1 && errlist != null&& errlist.size()>0) {
+                                        if (a == 1 && errlist != null && errlist.size() > 0) {
                                             sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
                                         } else {
                                             sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
@@ -1078,7 +1083,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 long spanTime = thirdEnd - thirdStartTime;
                                 //原本这里是设的5秒  但时间太长了就先暂时改为3.5秒
                                 if (spanTime > 3500) {//发出本发雷管时，没返回超时了
-                                    Log.e("当前雷管写入延时","超时了，reThirdWriteCount: " + reThirdWriteCount);
+                                    Log.e("当前雷管写入延时", "超时了，reThirdWriteCount: " + reThirdWriteCount);
                                     thirdStartTime = 0;
                                     //未返回
                                     if (tempBaseInfo != null) {
@@ -1092,7 +1097,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         Message message = new Message();
                                         message.obj = errorDe;
                                         errHandler_update.sendMessage(message);
-                                        Log.e("当前雷管写入延时","超时了，开始errHandler_update");
+                                        Log.e("当前雷管写入延时", "超时了，开始errHandler_update");
                                     }
                                     tempBaseInfo = null;
                                     revCmd = "";//清空缓存
@@ -1131,7 +1136,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                     int a = Integer.parseInt(ll_firing_errorNum_4.getText().toString());
                                     GreenDaoMaster master = new GreenDaoMaster();
                                     errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
-                                    Log.e(TAG, "a: "+a+"  errlist"+errlist.size() );
+                                    Log.e(TAG, "a: " + a + "  errlist" + errlist.size());
                                     if (a == 1 && errlist != null) {
                                         sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
                                     } else {
@@ -1217,7 +1222,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-        Utils.writeLog("<-返回命令--测试页面:" + fromCommad);
+        Utils.writeLog("<-:" + fromCommad);
 //        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -1327,7 +1332,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             list_dianliu.add(busInfo.getBusCurrentIa());
-            Log.e(TAG, "list_dianliu: "+list_dianliu );
+            Log.e(TAG, "list_dianliu: " + list_dianliu);
             if (busHandler_dianliu == null) return;
 //            busHandler_dianliu.sendMessage(busHandler_dianliu.obtainMessage());
 
