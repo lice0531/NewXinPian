@@ -1474,7 +1474,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
         Log.e("扫码", "delay_set: " + delay_set);
 
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+        Utils.writeRecord("扫码注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
 
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
@@ -1760,7 +1760,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 break;
 
             case R.id.btn_singleReister:
-
+                close();
                 if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
                 } else {
