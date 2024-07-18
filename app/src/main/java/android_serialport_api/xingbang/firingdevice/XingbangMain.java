@@ -702,10 +702,10 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
-                if(mExpDevMgr.isSafeSwitchOpen()){
-                    createDialog_kaiguan();
-                    return;
-                }
+//                if(mExpDevMgr.isSafeSwitchOpen()){
+//                    createDialog_kaiguan();
+//                    return;
+//                }
                 close();//停止访问电流
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
@@ -747,10 +747,10 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-                if(mExpDevMgr.isSafeSwitchOpen()){
-                    createDialog_kaiguan();
-                    return;
-                }
+//                if(mExpDevMgr.isSafeSwitchOpen()){
+//                    createDialog_kaiguan();
+//                    return;
+//                }
 
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;

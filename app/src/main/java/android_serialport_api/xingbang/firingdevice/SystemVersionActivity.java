@@ -68,8 +68,12 @@ public class SystemVersionActivity extends SerialPortActivity {
             }
             return false;
         });
-        byte[] reCmd1 = FourStatusCmd.getSoftVersion("00");//43
-        sendCmd(reCmd1);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
     }
 
     @Override

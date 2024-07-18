@@ -365,11 +365,11 @@ public class FiringMainActivity extends SerialPortActivity {
         //继续起爆
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
         btn_continueOk_4.setOnClickListener(v -> {
-            mExpDevMgr = new ExpdDevMgr(this);//被关闭了??
-            if(!mExpDevMgr.isSafeSwitchOpen()){
-                createDialog_kaiguan();
-                return;
-            }
+//            mExpDevMgr = new ExpdDevMgr(this);//被关闭了??
+//            if(!mExpDevMgr.isSafeSwitchOpen()){
+//                createDialog_kaiguan();
+//                return;
+//            }
             String err = ll_firing_errorAmount_4.getText().toString();
             if (changjia.equals("华丰")) {
                 if (err.equals("0")) {
@@ -1935,6 +1935,10 @@ public class FiringMainActivity extends SerialPortActivity {
             case 55:
                 ctlLinePanel(6);
                 sixTxt.setText("正在重发第" + thirdWriteCount + "发雷管启动充电");
+                break;
+            case 66:
+                ctlLinePanel(6);
+                sixTxt.setText("复检第" + thirdWriteCount + "发雷管");
                 break;
             default:
 
