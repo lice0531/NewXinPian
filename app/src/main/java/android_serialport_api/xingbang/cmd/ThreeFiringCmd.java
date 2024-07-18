@@ -398,6 +398,17 @@ public class ThreeFiringCmd {
 		}
 		return DefCommand.getCommadBytes(command);
 	}
+	public static byte[] send39(String addr, String data){
+		//C0 00 38 04 14E0FF00 D2D4 C0
+		String command;
+//		Log.e("长度", "data: "+data.length() );
+		if(data.length()==8){
+			command = addr + DefCommand.CMD_3_DETONATE_10+"04"+data;
+		}else {
+			command = addr + DefCommand.CMD_3_DETONATE_10+"00";
+		}
+		return DefCommand.getCommadBytes(command);
+	}
 
 	/***
 	 * 检验返回检测命令是否正确

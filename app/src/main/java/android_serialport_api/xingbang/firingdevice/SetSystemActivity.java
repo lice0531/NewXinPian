@@ -36,6 +36,8 @@ import androidx.annotation.NonNull;
 public class SetSystemActivity extends BaseActivity {
     @BindView(R.id.sw_yanzheng_sq)
     SwitchButton swYanzheng_sq;
+    @BindView(R.id.sw_fujian)
+    SwitchButton swFujian;
     @BindView(R.id.sw_setsys)
     SwitchButton swSetsys;
     @BindView(R.id.sw_yanzheng)
@@ -64,6 +66,7 @@ public class SetSystemActivity extends BaseActivity {
     private String Shangchuan = "";//是否上传错误雷管
     private String Qibaotime = "5";//设置起爆等待时间
     private String Yanzheng_sq = "";//是否验雷管已经授权
+    private String Fujian = "";//是否复检
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
@@ -81,10 +84,12 @@ public class SetSystemActivity extends BaseActivity {
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "否");
         Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
         Log.e("设置页面", "Yanzheng_sq: " + Yanzheng_sq);
+        Log.e("设置页面", "Fujian: " + Fujian);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -93,6 +98,9 @@ public class SetSystemActivity extends BaseActivity {
         }
         if (Yanzheng_sq.equals("验证")) {
             swYanzheng_sq.setChecked(true);
+        }
+        if (Fujian.equals("复检")) {
+            swFujian.setChecked(true);
         }
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
@@ -175,6 +183,12 @@ public class SetSystemActivity extends BaseActivity {
                     Log.e("设置页面", "Yanzheng_sq: " + "验证");
                 } else {
                     MmkvUtils.savecode("Yanzheng_sq", "不验证");
+                }
+                if (swFujian.isChecked()) {
+                    MmkvUtils.savecode("Fujian", "复检");
+                    Log.e("设置页面", "Fujian: " + "复检");
+                } else {
+                    MmkvUtils.savecode("Fujian", "不复检");
                 }
                 if (swSetsys.isChecked()) {
                     message.setQiaosi_set("true");

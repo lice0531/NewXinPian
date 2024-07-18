@@ -223,6 +223,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private float befor_dianliu = 0;
     private float befor_dianya = 0;
     private String changjia = "通用";
+    private String Fujian = "复检";
     private boolean isCasePeakWd,isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
     List<Float> list_dianliu = new ArrayList();
@@ -261,6 +262,7 @@ public class FiringMainActivity extends SerialPortActivity {
         //给主机发消息告知已进入起爆页面
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
     }
 
     private void initView() {
@@ -2173,8 +2175,13 @@ public class FiringMainActivity extends SerialPortActivity {
                                     sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 }
                             }
+                            if (Fujian.equals("复检")&&twoCount ==  4) {//第3秒时,单发充电
+                                getblastQueue();//重新获取数据,用来给充电list复制
+                                increase(66);
+                            }
 
                             if (twoCount == 5) {//第5秒时,发送高压充电指令,继电器应该响
+
                                 Log.e(TAG,"发送33高压输出指令");
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
@@ -2519,6 +2526,68 @@ public class FiringMainActivity extends SerialPortActivity {
                                 denatorId = Utils.getReverseDetonatorNo(denatorId);
                                 //发送38命令---------------------------------------------
                                 initBuf = ThreeFiringCmd.send38("00", denatorId);//38充电
+                                sendCmd(initBuf);
+                                thirdStartTime = System.currentTimeMillis();
+                                writeDenator = write;
+                                thirdWriteCount++;
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            } else {
+                                long thirdEnd = System.currentTimeMillis();
+                                long spanTime = thirdEnd - thirdStartTime;
+                                if (spanTime > 3500 && tempBaseInfo2 != null) {//发出本发雷管时，没返回超时了
+                                    thirdStartTime = 0;
+                                    //充电检测错误 tempBaseInfo报错 tempBaseInfo为空 单片机未返回
+//                                    Log.e("雷管异常", "tempBaseInfo: "+tempBaseInfo.toString());//雷管超时容易报错,这个就是起爆检测闪退的地方
+                                    VoFiringTestError errorDe = new VoFiringTestError();
+                                    errorDe.setBlastserial(tempBaseInfo2.getBlastserial());//
+                                    errorDe.setShellBlastNo(tempBaseInfo2.getShellBlastNo());
+                                    errorDe.setDelay(tempBaseInfo2.getDelay());
+                                    errorDe.setError(1);
+                                    thirdWriteErrorDenator = errorDe;
+                                    errorList.offer(errorDe);
+                                    //发出错误
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    writeDenator = null;
+                                    tempBaseInfo2 = null;
+                                    reThirdWriteCount++;
+                                } else {
+                                    Thread.sleep(20);
+                                }
+                            }
+                            break;
+
+                        case 66://写入延时时间，检测结果看雷管是否正常
+                            if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
+                                thirdStartTime = 0;
+                                writeDenator = null;
+                                if (blastQueue == null || blastQueue.size() < 1) {
+                                    Utils.writeRecord("--第二轮检测结束-------------");
+                                    //检测一次
+                                    increase(6);//之前是4
+                                    Log.e("第4阶段-检测阶段-increase33", "4-2");
+                                    fourOnlineDenatorFlag = 0;
+                                    break;
+                                }
+
+                                VoDenatorBaseInfo write = blastQueue.poll();
+                                tempBaseInfo2 = write;
+
+                                String shellStr = write.getShellBlastNo();
+                                if (shellStr == null || shellStr.length() != 13)
+                                    continue;//// 判读是否是十三位
+                                if (write.getDenatorId() == null) {
+                                    Message msg = Handler_tip.obtainMessage();
+                                    msg.what = 2;
+                                    Bundle b = new Bundle();
+                                    msg.setData(b);
+                                    Handler_tip.sendMessage(msg);
+                                    closeThread();
+                                    break;
+                                }
+                                String denatorId = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorId());//新芯片
+                                denatorId = Utils.getReverseDetonatorNo(denatorId);
+                                //发送39命令---------------------------------------------
+                                initBuf = ThreeFiringCmd.send39("00", denatorId);//39充电
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
