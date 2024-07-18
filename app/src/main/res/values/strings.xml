@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="app_name">煋邦科技KT50起爆器</string>
     <string name="error_configuration">请先配置你的串口.</string>
@@ -517,7 +517,7 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name">M900_PT_V2.1_240702</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_V2.1_240718</string>
 
     <string-array name="sp_changjia">
         <item>通用</item>

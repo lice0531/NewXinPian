@@ -143,7 +143,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int firstWaitCount = 3;//第一阶段计时
     private int oneCount = 0;
     private int twoCount = 0;
-    private volatile int oneCount_max = 15;
+    private volatile int oneCount_max = 18;
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
@@ -2152,7 +2152,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             Log.e("充电检测oneCount", oneCount + "");
                             //说明电源打开命令未返回
-                            if (oneCount-oneCount_max == 5) {
+                            if (oneCount-oneCount_max >= 5) {
 //                              exit = true;
                                 secondCmdFlag = 1;
                                 thirdWriteCount = 0;
