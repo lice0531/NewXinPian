@@ -225,6 +225,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private boolean switchUid = true;//切换uid/管壳码
+    private boolean openPower = false;//切换uid/管壳码
     private SendPower sendPower;
     String lg_ver="01";//pt=01 mx=02 pd=03
 
@@ -282,12 +283,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         hideInputKeyboard();
         show_Toast(getString(R.string.text_line_tip1));
         isSingleReisher = 1;
-        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+
 //        sendCmd(FourStatusCmd.send46("00", lg_ver));//46
     }
 
     private void open() {
-//        if(sendPower==null ){
+        if(!openPower){
+            openPower=true;
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -296,6 +299,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendPower = new SendPower();//40指令线程
             sendPower.exit = false;
             sendPower.start();
+        }
+//        if(sendPower==null ){
+
 //        }else if( sendPower.exit){
 //            Log.e("打开send", "open: 1" );
 //            sendPower.exit = false;
@@ -307,6 +313,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private void close() {
         Log.e("关闭send", "close: " );
         if(!sendPower.exit ){
+            openPower=false;
             sendPower.exit = true;
             sendPower.interrupt();
             try {
@@ -490,6 +497,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(2);
                 show_Toast_ture(singleShellNo + "三码绑定内容一致");
+                Utils.writeRecord("三码绑定内容一致:--singleShellNo:"+singleShellNo);
 //                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
@@ -497,6 +505,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 5) {
                 SoundPlayUtils.play(4);
                 show_Toast("三码绑定内容不一致");
+                Utils.writeRecord("三码绑定内容一致:--singleShellNo"+singleShellNo);
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_line_tip7));
@@ -1242,19 +1251,21 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             }
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
-//            if (initCloseCmdReFlag == 1) {//打开电源
+            if (initCloseCmdReFlag == 0) {//打开电源
+                initCloseCmdReFlag=1;
 //                revCloseCmdReFlag = 1;
 //                closeOpenThread.exit = true;
 //                sendOpenThread = new SendOpenPower();
 //                sendOpenThread.start();
-//            }
+                sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+            }
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
             send_40 = 0;
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
-
+            Utils.writeRecord("busInfo:"+busInfo.toString());
             if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
                 if (busInfo.getBusCurrentIa() > 40) {//判断当前电流是否偏大
