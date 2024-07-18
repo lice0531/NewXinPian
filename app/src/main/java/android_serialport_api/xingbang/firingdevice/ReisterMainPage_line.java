@@ -287,7 +287,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void open() {
-        if(sendPower==null ){
+//        if(sendPower==null ){
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -296,15 +296,16 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendPower = new SendPower();//40指令线程
             sendPower.exit = false;
             sendPower.start();
-        }else if( sendPower.exit){
-            Log.e("打开send", "open: 1" );
-            sendPower.exit = false;
-            sendPower.start();
-        }
+//        }else if( sendPower.exit){
+//            Log.e("打开send", "open: 1" );
+//            sendPower.exit = false;
+//            sendPower.start();
+//        }
 
     }
 
     private void close() {
+        Log.e("关闭send", "close: " );
         if(!sendPower.exit ){
             sendPower.exit = true;
             sendPower.interrupt();
