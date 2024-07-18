@@ -1268,13 +1268,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             Utils.writeRecord("busInfo:"+busInfo.toString());
             if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                if (busInfo.getBusCurrentIa() > 40) {//判断当前电流是否偏大
-                    tipInfoFlag = 7;
-                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                    SoundPlayUtils.play(4);
-                    zhuce_Flag = 0;
-                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
-                }
+//                if (busInfo.getBusCurrentIa() > 40) {//判断当前电流是否偏大
+//                    tipInfoFlag = 7;
+//                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                    SoundPlayUtils.play(4);
+//                    zhuce_Flag = 0;
+//                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
+//                }
 
             }
         }else if(DefCommand.CMD_4_XBSTATUS_7.equals(cmd)){//46
