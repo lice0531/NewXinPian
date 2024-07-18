@@ -130,8 +130,8 @@ public class SetSystemActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.set_Voltage://设置电压
                 AlertDialog.Builder builder = new AlertDialog.Builder(SetSystemActivity.this);
-                builder.setTitle("提示");//"请输入用户名和密码"
-                View view2 = LayoutInflater.from(SetSystemActivity.this).inflate(R.layout.userlogindialog_delete, null);
+                builder.setTitle("操作提示");//"请输入用户名和密码"
+                View view2 = LayoutInflater.from(SetSystemActivity.this).inflate(R.layout.userlogindialog_set, null);
                 builder.setView(view2);
                 final EditText password = view2.findViewById(R.id.password);
                 builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
