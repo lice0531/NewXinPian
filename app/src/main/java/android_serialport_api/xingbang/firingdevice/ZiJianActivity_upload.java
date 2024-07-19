@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.suke.widget.SwitchButton;
+
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
@@ -36,6 +38,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
@@ -60,6 +63,9 @@ public class ZiJianActivity_upload extends BaseActivity {
     Button btnLx;
     @BindView(R.id.sp_leixing)
     Spinner spLx;
+    @BindView(R.id.sw_setsys)
+    SwitchButton swSetsys;
+
     SharedPreferences.Editor edit;
     private float dianya_low = 0;//低压信息
     private float dianya_high = 0;//高压信息
@@ -96,6 +102,7 @@ public class ZiJianActivity_upload extends BaseActivity {
     public volatile String mDownLoadFilePath;   // 下载文件路径 3
     public volatile long mDownLoadFileSize;     // 下载文件大小
     public String CJ="";
+    private String qiaosi_set = "";//是否检测桥丝
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,8 +156,16 @@ public class ZiJianActivity_upload extends BaseActivity {
                 // 无选项被选中时的处理
             }
         });
-        btnLx.setOnClickListener(v -> {
 
+        btnLx.setOnClickListener(v -> {
+            MessageBean message = GreenDaoMaster.getAllFromInfo_bean();
+            if (swSetsys.isChecked()) {
+                message.setQiaosi_set("true");
+            } else {
+                message.setQiaosi_set("false");
+            }
+            message.setId((long) 1);
+            getDaoSession().getMessageBeanDao().update(message);
             Intent intent = new Intent(ZiJianActivity_upload.this, ReisterMainPage_line.class);
             startActivity(intent);
             finish();//如果不结束当前页面的话,会和后面的页面抢命令
@@ -342,13 +357,16 @@ public class ZiJianActivity_upload extends BaseActivity {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
 //        Log.e(TAG, "message: " + message.toString());
         if (message.size() > 0) {
+            qiaosi_set = message.get(0).getQiaosi_set();
         } else {
             setUserMessage();//如果为空就新建一个
         }
     }
     private void initHandler() {
         getUserMessage();
-
+        if (qiaosi_set.equals("true")) {
+            swSetsys.setChecked(true);
+        }
 
         busHandler = new Handler(message -> {
             switch (message.what) {

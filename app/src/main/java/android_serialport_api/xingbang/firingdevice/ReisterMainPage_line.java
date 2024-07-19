@@ -155,8 +155,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     TextView text_gkm;
     @BindView(R.id.text_gkm2)
     TextView text_uid;
-    @BindView(R.id.sw_setsys)
-    SwitchButton swSetsys;
+
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -246,7 +245,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //扫描参数设置
         init();
         //管壳号扫描分码--结束
-//        getUserMessage();
+        getUserMessage();
         getFactoryCode();//获取厂家码
         getFactoryType();//获取延期最大值
 
@@ -1089,6 +1088,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 scan_date="";
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
+                scan_date="";
                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
@@ -1246,7 +1246,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
             zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
             String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-
+            Log.e("桥丝", "qiaosi_set: "+qiaosi_set );
+            Log.e("桥丝", "zhuce_form.getWire(): "+zhuce_form.getWire() );
             if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
                 tipInfoFlag = 5;//提示类型桥丝不正常
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1714,7 +1715,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     @SuppressLint("NonConstantResourceId")
-    @OnClick({R.id.re_btn_f1, R.id.re_btn_f2, R.id.btn_singleReister, R.id.btn_LookHistory, R.id.btn_setdelay, R.id.sw_setsys, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed, R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2, R.id.setDelayTime_startDelaytime})
+    @OnClick({R.id.re_btn_f1, R.id.re_btn_f2, R.id.btn_singleReister, R.id.btn_LookHistory, R.id.btn_setdelay, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed, R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2, R.id.setDelayTime_startDelaytime})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -1779,14 +1780,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 }
 
                 break;
-            case R.id.sw_setsys:
-                if (swSetsys.isChecked()) {
-                    qiaosi_set="ture";
-                } else {
-                    qiaosi_set="false";
-                }
-                Log.e("切换桥丝开关", "qiaosi_set: "+qiaosi_set );
-                break;
+
 
             case R.id.btn_LookHistory:
                 scan_date="";
