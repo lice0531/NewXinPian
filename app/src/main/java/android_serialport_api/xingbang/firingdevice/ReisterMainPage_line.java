@@ -220,6 +220,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private int send_10 = 0;
     private int send_41 = 0;
     private int send_40 = 0;
+    private String scan_date="";
 
     // 雷管列表
     private LinearLayoutManager linearLayoutManager;
@@ -375,11 +376,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            }
             GreenDaoMaster m = new GreenDaoMaster();
             m.delAllLg();//删除全部雷管
+            scan_date="";
             Log.e("扫码", "data: " + data);
             if (sanButtonFlag > 0) {
                 scanDecode.stopScan();
                 decodeBar(data);
             } else {
+                scan_date=data;
                 String barCode;
                 String denatorId;
                 if (data.length() == 28) {
@@ -1083,6 +1086,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
             new Thread(() -> {
                 // 删除某一发雷管
+                scan_date="";
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
@@ -1318,7 +1322,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         //判断管壳码
         if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+
             return -1;
+        }
+        if(scan_date.length()>0){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
         }
         if (detonatorId.startsWith("00000", 2)) {//判断芯片码开头是否全为0
             tipInfoFlag = 8;
@@ -1432,7 +1440,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
             //向数据库插入数据
         }
-        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
+
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         SoundPlayUtils.play(1);
         return 0;
@@ -1781,6 +1789,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 break;
 
             case R.id.btn_LookHistory:
+                scan_date="";
                 GreenDaoMaster master = new GreenDaoMaster();
                 master.deleteLeiGuanFroPiace(mRegion);
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
