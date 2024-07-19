@@ -48,10 +48,11 @@ public class DefCommand {
 
 	public static String CMD_5_TEST_8="5B";//设置低压
 	public static String CMD_5_TEST_9="5C";//设置高压
+	public static String CMD_5_TRANSLATE_80="80";//无线级联：设备注册
+	public static String CMD_5_TRANSLATE_81="81";//无线级联：子节点与主节点进行数据传输
+	public static String CMD_5_TRANSLATE_82="82";//无线级联：进入检测模式
 	public static String CMD_5_TRANSLATE_83="83";//切换模式
 
-	
-	
 	/***
 	 * 得到发出命令字节
 	 * @param baseBaseCmd

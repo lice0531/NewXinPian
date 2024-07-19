@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="6dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:paddingTop="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_net_test"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/alltextstyle"
+            android:background="@color/green"
+            android:text="起爆测试" />
+
+        <Button
+            android:id="@+id/btn_prepare_charge"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_weight="1"
+            style="@style/alltextstyle"
+            android:background="@color/yellow"
+            android:text="准备充电" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
+
+        <Button
+            android:id="@+id/btn_qibao"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/alltextstyle"
+            android:background="@color/colorRed"
+            android:text="起爆" />
+
+        <Button
+            android:id="@+id/btn_exit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_weight="1"
+            style="@style/alltextstyle"
+            android:text="退出流程" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        style="@style/alltextstyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="3dp"
+        android:paddingLeft="6dp"
+        android:paddingTop="3dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+        </LinearLayout>
+            <TextView
+                android:id="@+id/tv_sync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="同步列表："
+                style="@style/alltextstyle"
+                android:textColor="@color/colorBlue" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/textview_border"
+                    android:text="序号" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/textview_border"
+                    android:text="设备编号"
+                    android:textSize="20sp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/textview_border"
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/textview_border"
+                        android:text="全部数量"
+                        android:textSize="18sp"/>
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/textview_border"
+                        android:text="错误数量"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tvStatus"
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/textview_border"
+                    android:text="状态"
+                    android:textSize="20sp"/>
+                <LinearLayout
+                    android:id="@+id/llCurrentPeak"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/textview_border"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/textview_border"
+                        android:text="状态"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/textview_border"
+                        android:text="电流"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/textview_border"
+                    android:text="状态" />
+            </LinearLayout>
+
+
+            <android_serialport_api.xingbang.custom.ListViewForScrollView
+                android:id="@+id/lv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_net"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="网络测试数据："
+                android:textColor="@color/colorBlue" />
+
+            <LinearLayout
+                android:id="@+id/ll_net"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:text="设备"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="总雷管"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="错误雷管"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="总线电压"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="总线电流"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+            <android_serialport_api.xingbang.custom.ListViewForScrollView
+                android:id="@+id/lv_net"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_charge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="充电："
+                android:textColor="@color/colorBlue" />
+
+            <android_serialport_api.xingbang.custom.ListViewForScrollView
+                android:id="@+id/lv_chongdian"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_qibao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="起爆："
+                android:textColor="@color/colorBlue" />
+
+            <android_serialport_api.xingbang.custom.ListViewForScrollView
+                android:id="@+id/lv_qibao"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

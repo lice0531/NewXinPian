@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:orientation="vertical">
+
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/colorAccent" />-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            android:text="序号" />
+
+        <TextView
+            android:id="@+id/tv_code"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            android:text="设备编号" />
+
+        <LinearLayout
+
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+             >
+            <TextView
+                style="@style/alltextstyle"
+                android:id="@+id/tv_tureNum"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:text="000"
+                />
+            <TextView
+                style="@style/alltextstyle"
+                android:id="@+id/tv_errNum"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:text="000"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_status"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            android:text="状态" />
+        <LinearLayout
+            android:id="@+id/ll_currentPeak"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            android:background="@drawable/textview_border"
+            >
+            <TextView
+                android:id="@+id/tv_state"
+                style="@style/alltextstyle"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:textSize="18sp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="在线" />
+            <TextView
+                android:id="@+id/tv_currentPeak"
+                style="@style/alltextstyle"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:textSize="18sp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="0A" />
+        </LinearLayout>
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_state"-->
+<!--            style="@style/alltextstyle"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@drawable/textview_border"-->
+<!--            android:textSize="18sp"-->
+<!--            android:text="在线" />-->
+    </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <View-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@color/colorAccent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_name"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:paddingBottom="3dp"-->
+<!--                android:paddingTop="3dp"-->
+<!--                android:textSize="19sp" />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="2"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <View-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@color/colorAccent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_code"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:paddingBottom="3dp"-->
+<!--                android:paddingTop="3dp"-->
+<!--                android:textSize="19sp" />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="3"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <View-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@color/colorAccent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_info"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:lineSpacingExtra="2dp"-->
+<!--                android:paddingBottom="3dp"-->
+<!--                android:paddingTop="3dp"-->
+<!--                android:textSize="19sp" />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="2"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <View-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@color/colorAccent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_state"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:paddingBottom="3dp"-->
+<!--                android:paddingTop="3dp"-->
+<!--                android:text="在线"-->
+<!--                android:textColor="@color/green"-->
+<!--                android:textSize="19sp" />-->
+
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+
+</LinearLayout>

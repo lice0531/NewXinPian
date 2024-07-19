@@ -276,6 +276,44 @@ public class ThreeFiringCmd {
 	}
 
 	/***
+	 * 无线级联：发送设备注册指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setToXbCommon_Translate_80(String addr){
+		String command = "00" + DefCommand.CMD_5_TRANSLATE_80 + "01" + addr;//80
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 无线级联：子节点给主控发送设备已注册指令
+	 */
+	public static byte[] setChildToMC_Translate_80(){
+		String command = "00" + DefCommand.CMD_5_TRANSLATE_80 + "00";//80
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 无线级联：子节点与主节点进行数据传输
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setToXbCommon_Translate_81(String addr){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_81;//81
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 无线级联：进入检测模式
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setToXbCommon_Translate_82(String addr){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_82;//82
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
 	 * 发送切换模式指令
 	 * @param addr
 	 * @return
@@ -377,5 +415,16 @@ public class ThreeFiringCmd {
 			return null;
 		}
 
+	}
+
+	/**
+	 * 无线级联指令
+	 * @param cmd:指令
+	 * @param addr:设备地址
+	 * @return
+	 */
+	public static byte[] wxjl_cmd(String cmd,String addr){
+		String command = cmd + addr;
+		return DefCommand.getCommadBytes(command);
 	}
 }

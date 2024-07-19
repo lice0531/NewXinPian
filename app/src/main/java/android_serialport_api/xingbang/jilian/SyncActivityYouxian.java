@@ -106,9 +106,6 @@ public class SyncActivityYouxian extends BaseActivity {
     private String Yanzheng = "";//是否验证地理位置
 
     private boolean A002 = true;
-    private boolean A003 = true;
-    private boolean A004 = true;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,8 +334,6 @@ public class SyncActivityYouxian extends BaseActivity {
                             Thread.sleep(12);
 
                             String a = myInfo();
-//                            mOutputStream.write(("0001" + MmkvUtils.getcode("ACode","") + ",_*").getBytes());
-//                            mOutputStream.write((a + ",_*").getBytes());
                             show_Toast(getString(R.string.text_sync_tip9));
                             Thread.sleep(20);
 //                            EMgpio.SetGpioDataHigh(94);

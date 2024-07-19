@@ -95,6 +95,16 @@
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="1.单发检测"
+                android:visibility="gone"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+            <Button
+                android:id="@+id/btn_sync"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="1.同步"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
@@ -138,9 +148,18 @@
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="4.网络测试"
+                android:visibility="gone"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
-
+            <Button
+                android:id="@+id/btn_mc_high"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="4.高速主控"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
 
         </LinearLayout>
 
@@ -160,9 +179,19 @@
 
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="5.起爆"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
+            <Button
+                android:id="@+id/btn_mc_low"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="5.低速主控"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/btn_main_query"
