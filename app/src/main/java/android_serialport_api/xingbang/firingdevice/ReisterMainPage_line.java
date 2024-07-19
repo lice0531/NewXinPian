@@ -2370,7 +2370,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 try {
                     //发送获取电源信息
                     sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
-                    Thread.sleep(1500);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
