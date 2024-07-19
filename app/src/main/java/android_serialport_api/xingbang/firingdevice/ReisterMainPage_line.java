@@ -288,6 +288,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         show_Toast(getString(R.string.text_line_tip1));
         isSingleReisher = 1;
         sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+        Log.e("检测桥丝", "qiaosi_set: "+qiaosi_set );
 
 //        sendCmd(FourStatusCmd.send46("00", lg_ver));//46
     }

@@ -164,6 +164,7 @@ public class ZiJianActivity_upload extends BaseActivity {
             } else {
                 message.setQiaosi_set("false");
             }
+            Log.e("检测桥丝", "swSetsys.isChecked(): "+swSetsys.isChecked() );
             message.setId((long) 1);
             getDaoSession().getMessageBeanDao().update(message);
             Intent intent = new Intent(ZiJianActivity_upload.this, ReisterMainPage_line.class);
