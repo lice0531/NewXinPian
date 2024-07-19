@@ -277,7 +277,7 @@
         <activity
             android:name=".firingdevice.SetVoltageActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="设置电压"
+            android:label="设置"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SaveProjectActivity"
