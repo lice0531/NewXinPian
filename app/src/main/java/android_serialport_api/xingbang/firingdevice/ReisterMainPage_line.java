@@ -30,10 +30,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
+import com.suke.widget.SwitchButton;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -153,6 +155,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     TextView text_gkm;
     @BindView(R.id.text_gkm2)
     TextView text_uid;
+    @BindView(R.id.sw_setsys)
+    SwitchButton swSetsys;
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -227,7 +231,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private boolean switchUid = true;//切换uid/管壳码
     private boolean openPower = false;//切换uid/管壳码
     private SendPower sendPower;
-    String lg_ver="01";//pt=01 mx=02 pd=03
+    String lg_ver = "01";//pt=01 mx=02 pd=03
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,17 +269,17 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         showDenatorSum();//显示雷管总数
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        String leixing = (String) MmkvUtils.getcode("leixing","01");
-        Log.e("注册", "leixing: "+leixing );
-        switch (leixing){
+        String leixing = (String) MmkvUtils.getcode("leixing", "01");
+        Log.e("注册", "leixing: " + leixing);
+        switch (leixing) {
             case "普通雷管":
-                lg_ver="01";
+                lg_ver = "01";
                 break;
             case "煤许雷管":
-                lg_ver="02";
+                lg_ver = "02";
                 break;
             case "固铝雷管":
-                lg_ver="03";
+                lg_ver = "03";
                 break;
         }
         Utils.writeRecord("---进入单发注册页面---");
@@ -289,8 +293,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void open() {
-        if(!openPower){
-            openPower=true;
+        if (!openPower) {
+            openPower = true;
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -311,9 +315,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void close() {
-        Log.e("关闭send", "close: " );
-        if(!sendPower.exit ){
-            openPower=false;
+        Log.e("关闭send", "close: ");
+        if (!sendPower.exit) {
+            openPower = false;
             sendPower.exit = true;
             sendPower.interrupt();
             try {
@@ -497,7 +501,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(2);
                 show_Toast_ture(singleShellNo + "三码绑定内容一致");
-                Utils.writeRecord("三码绑定内容一致:--singleShellNo:"+singleShellNo);
+                Utils.writeRecord("三码绑定内容一致:--singleShellNo:" + singleShellNo);
 //                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
@@ -505,7 +509,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 5) {
                 SoundPlayUtils.play(4);
                 show_Toast("三码绑定内容不一致");
-                Utils.writeRecord("三码绑定内容一致:--singleShellNo"+singleShellNo);
+                Utils.writeRecord("三码绑定内容一致:--singleShellNo" + singleShellNo);
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_line_tip7));
@@ -889,7 +893,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     @Override
     protected void onDestroy() {
-        if(sendPower!=null){
+        if (sendPower != null) {
             close();
         }
 
@@ -1217,7 +1221,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             sendCmd(FourStatusCmd.send46("00", lg_ver));//46
 
 
-
         } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
 //            send_10 = 0;
             //发送获取电源信息
@@ -1252,7 +1255,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
             if (initCloseCmdReFlag == 0) {//打开电源
-                initCloseCmdReFlag=1;
+                initCloseCmdReFlag = 1;
 //                revCloseCmdReFlag = 1;
 //                closeOpenThread.exit = true;
 //                sendOpenThread = new SendOpenPower();
@@ -1265,7 +1268,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            Utils.writeRecord("busInfo:"+busInfo.toString());
+            Utils.writeRecord("busInfo:" + busInfo.toString());
             if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
 //                if (busInfo.getBusCurrentIa() > 40) {//判断当前电流是否偏大
@@ -1277,7 +1280,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                }
 
             }
-        }else if(DefCommand.CMD_4_XBSTATUS_7.equals(cmd)){//46
+        } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
             } else {
@@ -1703,7 +1706,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     @SuppressLint("NonConstantResourceId")
-    @OnClick({R.id.re_btn_f1, R.id.re_btn_f2, R.id.btn_singleReister, R.id.btn_LookHistory, R.id.btn_setdelay, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed, R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2, R.id.setDelayTime_startDelaytime})
+    @OnClick({R.id.re_btn_f1, R.id.re_btn_f2, R.id.btn_singleReister, R.id.btn_LookHistory, R.id.btn_setdelay, R.id.sw_setsys, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed, R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2, R.id.setDelayTime_startDelaytime})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -1767,6 +1770,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
                 }
 
+                break;
+            case R.id.sw_setsys:
+                if (swSetsys.isChecked()) {
+                    qiaosi_set="ture";
+                } else {
+                    qiaosi_set="false";
+                }
+                Log.e("切换桥丝开关", "qiaosi_set: "+qiaosi_set );
                 break;
 
             case R.id.btn_LookHistory:
