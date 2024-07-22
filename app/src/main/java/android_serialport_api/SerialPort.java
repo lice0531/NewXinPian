@@ -92,6 +92,7 @@ public class SerialPort {
 	private native static FileDescriptor open(String path, int baudrate, int parity, int dataBits, int stopBit);
 	public native void close();
 	public native void tcflush();
+
 	static {
 		try {
 			System.loadLibrary("serial_port");

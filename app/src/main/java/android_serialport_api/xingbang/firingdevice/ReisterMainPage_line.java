@@ -1191,7 +1191,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
                 mOutputStream.write(mBuffer);
                 //实验有没有用
-//                mOutputStream.flush();
+                mOutputStream.flush();
 //                mSerialPort.tcflush();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -68,7 +68,6 @@ public abstract class SerialPortActivity extends BaseActivity {
                     if (mInputStream == null) return;
                     //Utils.writeLog("Read------11111111");
                     size = mInputStream.read(buffer);
-//                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
                     //Utils.writeLog("Read------22222222");
                     if (size > 0) {
 //                        byte[] cmdBuf = new byte[size];
@@ -77,7 +76,7 @@ public abstract class SerialPortActivity extends BaseActivity {
 //                        Log.e("收到: ",fromCommad );
                         onDataReceived(buffer, size);
                     }
-
+                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
                 }
             } catch (IOException | InterruptedException e) {
                 //e.printStackTrace();
