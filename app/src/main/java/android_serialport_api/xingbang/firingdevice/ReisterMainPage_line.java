@@ -1245,19 +1245,24 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                e.printStackTrace();
 //            }
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
+
+
             zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
             String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
             Log.e("桥丝", "qiaosi_set: "+qiaosi_set );
             Log.e("桥丝", "zhuce_form.getWire(): "+zhuce_form.getWire() );
-            if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
-                tipInfoFlag = 5;//提示类型桥丝不正常
-                mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+            if(!zhuce_form.getReadStatus().equals("00")){
+                if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
+                    tipInfoFlag = 5;//提示类型桥丝不正常
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+                }
+                if (zhuce_form != null) {//管厂码,特征码,雷管id
+                    // 获取 管壳码
+                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
+                }
             }
-            if (zhuce_form != null) {//管厂码,特征码,雷管id
-                // 获取 管壳码
-                insertSingleDenator(detonatorId, zhuce_form);//单发注册
-            }
+
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
             if (initCloseCmdReFlag == 0) {//打开电源
