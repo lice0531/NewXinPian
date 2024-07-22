@@ -561,7 +561,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if ((sixExchangeCount-twoCount) == 10 && busInfo.getBusVoltage() < 14) {
+            if ((sixExchangeCount-twoCount) <= 10 && busInfo.getBusVoltage() < 14) {
+                Log.e(TAG, "高压充电失败: 1" );
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
@@ -1736,22 +1737,22 @@ public class FiringMainActivity extends SerialPortActivity {
                 fourthDisplay = 0;
                 ctlLinePanel(6);
                 sixTxt.setText(getString(R.string.text_firing_tip4) + "(" + twoCount + ")");//"正在充电，请稍后 \n"
-                if (twoCount == 100) {
-                    Log.e(TAG, "未跳转按1+5阶段twoCount: " + twoCount);
-                    AlertDialog dialog = new Builder(this)
-                            .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
-                            .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
-                            //设置对话框的按钮
-                            .setNegativeButton("退出", (dialog1, which) -> {
-                                dialog1.dismiss();
-                                closeThread();
-                                closeForm();
-                                finish();
-                                MmkvUtils.savecode("isTestDenator", "N");
-                            })
-                            .create();
-                    dialog.show();
-                }
+//                if (twoCount == 100) {
+//                    Log.e(TAG, "未跳转按1+5阶段twoCount: " + twoCount);
+//                    AlertDialog dialog = new Builder(this)
+//                            .setTitle("高压充电失败")//设置对话框的标题//"成功起爆"
+//                            .setMessage("起爆器高压充电失败,请再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+//                            //设置对话框的按钮
+//                            .setNegativeButton("退出", (dialog1, which) -> {
+//                                dialog1.dismiss();
+//                                closeThread();
+//                                closeForm();
+//                                finish();
+//                                MmkvUtils.savecode("isTestDenator", "N");
+//                            })
+//                            .create();
+//                    dialog.show();
+//                }
                 break;
             case 7:
                 ctlLinePanel(7);
