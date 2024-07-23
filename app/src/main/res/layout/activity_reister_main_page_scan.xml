@@ -992,8 +992,8 @@
                 <Button
                     android:id="@+id/btn_inputOk"
                     style="@style/allbtntstyle"
-                    android:layout_width="80dp"
-                    android:layout_height="50dp"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="4dp"
                     android:background="@drawable/bt_mainpage_style"
                     android:text="@string/text_sure"

@@ -1995,20 +1995,26 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 duan = detonatorTypeNew.getCong_yscs();
             }
             switch (duan) {
-                case "1":
+                case "0":
                     delay = 0;
                     break;
-                case "2":
+                case "1":
                     delay = 25;
                     break;
-                case "3":
+                case "2":
                     delay = 50;
                     break;
-                case "4":
+                case "3":
                     delay = 75;
                     break;
-                case "5":
+                case "4":
                     delay = 100;
+                    break;
+                case "5":
+                    delay = 125;
+                    break;
+                case "6":
+                    delay = 150;
                     break;
             }
             int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
