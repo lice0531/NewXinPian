@@ -1138,24 +1138,51 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-//            Utils.writeLog("Firing reFrom:" + fromCommad);
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd(fromCommad);
-                if (cmd != null) {
-                    int localSize = fromCommad.length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, localBuf);//处理cmd命令
-
-                }
-            }
+        Log.e("注册页面", "fromCommad: "+fromCommad);
+        if(fromCommad.startsWith("C000120A")&&fromCommad.length()=="C000120A0000898BA7007DA6DB09875AC0C00040080100330401007A0CF9F0C0".length()){
+            fromCommad=fromCommad.substring(0,34);
         }
+        String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+
+        String cmd = DefCommand.getCmd(fromCommad);
+        if (cmd != null) {
+            int localSize = fromCommad.length() / 2;
+            byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+            doWithReceivData(cmd, localBuf);//处理cmd命令
+
+        }
+
+//        if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//            return;
+//        } else {
+//            String cmd = DefCommand.getCmd(fromCommad);
+//            if (cmd != null) {
+//                int localSize = fromCommad.length() / 2;
+//                byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                doWithReceivData(cmd, localBuf);//处理cmd命令
+//
+//            }
+//        }
+
+
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+////            Utils.writeLog("Firing reFrom:" + fromCommad);
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf);//处理cmd命令
+//
+//                }
+//            }
+//        }
     }
 
     /**
@@ -1245,23 +1272,32 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                e.printStackTrace();
 //            }
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
-
-
-            zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
-            String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-            Log.e("桥丝", "qiaosi_set: "+qiaosi_set );
-            Log.e("桥丝", "zhuce_form.getWire(): "+zhuce_form.getWire() );
-            if(!zhuce_form.getReadStatus().equals("00")){
-                if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
-                    tipInfoFlag = 5;//提示类型桥丝不正常
-                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+            if(fromCommad.length()=="C000120AF201109CA7007DA6C60AD4A6C0".length()){
+                zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
+                Log.e("12指令", "fromCommad: "+fromCommad);
+                String fromCommad2 = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+                Log.e("12指令", "fromCommad2: "+fromCommad2);
+                Log.e("12指令", "zhuce_form.getDenaId(): "+zhuce_form.getDenaId());
+                Log.e("12指令", "zhuce_form: "+zhuce_form.toString());
+                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+                Log.e("桥丝", "qiaosi_set: "+qiaosi_set );
+                Log.e("桥丝", "zhuce_form.getWire(): "+zhuce_form.getWire() );
+                if(!zhuce_form.getReadStatus().equals("00")){
+                    if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
+                        tipInfoFlag = 5;//提示类型桥丝不正常
+                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                        Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+                    }
+                    if (zhuce_form != null) {//管厂码,特征码,雷管id
+                        // 获取 管壳码
+                        insertSingleDenator(detonatorId, zhuce_form);//单发注册
+                    }
                 }
-                if (zhuce_form != null) {//管厂码,特征码,雷管id
-                    // 获取 管壳码
-                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
-                }
+            }else {
+                Log.e("错误命令", "fromCommad: "+fromCommad );
             }
+
+
 
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
             send_13 = 0;
@@ -1275,13 +1311,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             }
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
-            send_40 = 0;
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
-            tipInfoFlag = 1;
-            mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            Utils.writeRecord("busInfo:" + busInfo.toString());
-            if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
-                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+            if(fromCommad.length()=="C0004008000033040000130C2C70C0".length()){
+                send_40 = 0;
+                busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
+                tipInfoFlag = 1;
+                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                Utils.writeRecord("busInfo:" + busInfo.toString());
+                if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
+                    String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
 //                if (busInfo.getBusCurrentIa() > 40) {//判断当前电流是否偏大
 //                    tipInfoFlag = 7;
 //                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1290,7 +1327,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
 //                }
 
+                }
+            }else {
+                Log.e("错误命令", "fromCommad: "+fromCommad );
             }
+
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));

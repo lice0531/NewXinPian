@@ -77,6 +77,17 @@ public class From12Reister {
 	}
 
 
-    
-
+	@Override
+	public String toString() {
+		return "From12Reister{" +
+				"readStatus='" + readStatus + '\'' +
+				", denaId='" + denaId + '\'' +
+				", facCode='" + facCode + '\'' +
+				", feature='" + feature + '\'' +
+				", wire='" + wire + '\'' +
+				", denaIdSup='" + denaIdSup + '\'' +
+				", zhu_yscs='" + zhu_yscs + '\'' +
+				", cong_yscs='" + cong_yscs + '\'' +
+				'}';
+	}
 }

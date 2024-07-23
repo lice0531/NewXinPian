@@ -182,9 +182,9 @@ public class OneReisterCmd {
         String fromCommad = Utils.bytesToHexFun(cmd);
         String realyCmd1 = DefCommand.decodeCommand(fromCommad);
         Log.e("自动返回雷管id", "realyCmd1: "+realyCmd1 );
-        if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-            return null;
-        }
+//        if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//            return null;
+//        }
         if (contains120A(addr, realyCmd1) == 0) {//单芯片长度
             String dataHex = realyCmd1.substring(6);//取得返回数据
             From12Reister vo = new From12Reister();
