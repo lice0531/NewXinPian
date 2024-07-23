@@ -354,7 +354,8 @@ public class DelDenatorMainPage extends BaseActivity  {
                                 String endNoStr = setDelayTimeEndNo.getText().toString();
                                 deleteDenatorforNo(startNoStr, endNoStr);
 
-//                                Utils.deleteData(mRegion);//重新排序雷管
+                                //(之前是屏蔽的,因为华丰翻转后再按序号删除会报错,所以屏蔽的,但是不排序的话,400发雷管,按序号删除200到300中间部分雷管,这样设置延时会报错)
+                                Utils.deleteData(mRegion);//重新排序雷管
 //                                loadMoreData();//获取数据保存到list
                                 //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)
 //                                    mAdapter = new LoadAdapter(DelDenatorMainPage.this, list_lg, R.layout.item_deldenator, 0);//(手动输入管壳码之后,错误码为空,会报空指针)
