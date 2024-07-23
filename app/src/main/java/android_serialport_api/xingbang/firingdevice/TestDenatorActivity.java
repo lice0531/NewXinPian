@@ -959,7 +959,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
                             Log.e(TAG, "firstCount1: " + firstCount + "--" + Preparation_time);
                             Log.e(TAG, "firstCount: " + firstCount + "--" + "firstCount_max = " + firstCount_max);
-                            if (firstCount >= firstCount_max && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 10 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >0) {
+                            if (firstCount >= firstCount_max && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >-20) {
                                 Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size()+"--电流"+list_dianliu.get(list_dianliu.size()-1));
                                 Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size() - 5)+"--电流"+list_dianliu.get(list_dianliu.size()- 5));
                                 Log.e(TAG, "list_dianliu.get(list_dianliu.size()-1)-list_dianliu.get(list_dianliu.size()-5): " + (list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5)));
@@ -969,6 +969,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 stage = 3;
                                 break;
+                            }
+                            //到达最大时间,直接跳转
+                            if (firstCount >= Preparation_time){
+                                Thread.sleep(1000);//为了发40后等待
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                stage = 3;
                             }
                             if (firstCount == 6) {//Preparation_time-1
 //                                sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22

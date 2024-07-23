@@ -184,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="设置充电时间/s"
+                    android:text="设置充电最大时间/s"
                     android:textSize="20sp" />
 
                 <EditText
@@ -209,7 +209,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="设置1+5组合键后的起爆等待时间/s"
+                    android:text="设置1+3组合键后的起爆等待时间/s"
                     android:textSize="20sp" />
 
                 <EditText

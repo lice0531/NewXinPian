@@ -69,7 +69,7 @@ public class SystemVersionActivity extends SerialPortActivity {
             return false;
         });
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -193,6 +193,9 @@ public class SystemVersionActivity extends SerialPortActivity {
                 break;
             case R.id.check_version:
                 checkUpgrade();
+                break;
+            case R.id.btn_Soft_Version:
+                sendCmd(FourStatusCmd.getSoftVersion("00"));//43
                 break;
         }
     }

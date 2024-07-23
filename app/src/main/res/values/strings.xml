@@ -75,8 +75,8 @@
     <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
     <string name="viewfinderview_status_text2">即可自动扫描</string>
     <string name="set_qiaosi">是否检测桥丝</string>
-    <string name="set_ceshi_time">设置起爆测试准备时间/s</string>
-    <string name="set_chongdian_time">设置网络测试检测时间/s</string>
+    <string name="set_ceshi_time">设置起爆测试准备最大时间/s</string>
+    <string name="set_chongdian_time">设置网络测试检测最大时间/s</string>
     <string name="set_language">设置语言</string>
     <string name="set_save">保存设置</string>
 
@@ -517,7 +517,7 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_V2.1_240718</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_V2.1_240723</string>
 
     <string-array name="sp_changjia">
         <item>通用</item>

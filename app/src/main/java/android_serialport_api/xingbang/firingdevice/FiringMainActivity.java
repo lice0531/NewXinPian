@@ -737,7 +737,7 @@ public class FiringMainActivity extends SerialPortActivity {
         secondCmdFlag = 0;
         zeroCount = 0;
         zeroCmdReFlag = 0;
-        secondCount = JianCe_time;//第二阶段 计时器
+//        secondCount = JianCe_time;//第二阶段 计时器
         fourthDisplay = 0;//第4步，是否显示
         thirdWriteCount = 0;//雷管发送计数器
         sevenDisplay = 0;//第7步，是否显示
@@ -1408,7 +1408,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             Log.e("起爆测试结果", "fromData.toString(): " + fromData.toString());
 //            Log.e(TAG, "错误雷管数量--totalerrorNum: " + totalerrorNum);
-            Log.e(TAG, "收到31指令，开始给雷管写入延时");
+//            Log.e(TAG, "收到31指令，开始给雷管写入延时");
 
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
@@ -1529,7 +1529,11 @@ public class FiringMainActivity extends SerialPortActivity {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             list_dianliu.add(busInfo.getBusCurrentIa());
             Log.e(TAG, "list_dianliu: " + list_dianliu);
-            busHandler.sendMessage(busHandler.obtainMessage());
+            if(busHandler!=null){
+                busHandler.sendMessage(busHandler.obtainMessage());
+            }else {
+                Utils.writeRecord("busHandler为空");
+            }
             if (stage == 8 && eightCount != 5) {
                 Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu+
                         "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
@@ -1592,7 +1596,7 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
             Log.e("起爆页面", "成功切换版本");
         } else {
-            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
+//            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
 
     }
@@ -1993,6 +1997,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             oneCount++;
                             //说明电源打开命令未返回
+                            Log.e(TAG, "1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount );
+                            Utils.writeRecord("1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount);
                             if (firstCmdReFlag == 0 && oneCount > 1) {
                                 exit = true;
                             }
@@ -2004,14 +2010,25 @@ public class FiringMainActivity extends SerialPortActivity {
 
                         case 2://
 
-                            //发出进入起爆模式命令  准备测试计时器
-                            if (oneCount >= oneCount_max && secondCmdFlag == 0 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 10 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >0) {//
-                                byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
-                                sendCmd(powerCmd);
-                                increase(5);
-                                Log.e("第5阶段-increase", "5");
-                                Log.e("充电检测WaitCount", Wait_Count + "");
-                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            //发出进入起爆模式命令  准备测试计时器    报错
+                            if (oneCount >= oneCount_max && secondCmdFlag == 0  ) {//
+                                if(list_dianliu.size()>5&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >-20){
+                                    byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
+                                    sendCmd(powerCmd);
+                                    increase(5);
+                                    Log.e("第5阶段-increase", "5");
+                                    Log.e("充电检测WaitCount", Wait_Count + "");
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                }
+                                //时间到达最大值,就直接跳转
+                                if(oneCount >=JianCe_time){
+                                    byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
+                                    sendCmd(powerCmd);
+                                    increase(5);
+                                    Log.e("第5阶段-increase", "5");
+                                    Log.e("充电检测WaitCount", Wait_Count + "");
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                }
                             } else {//
                                 //得到电流电压信息
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
@@ -2191,8 +2208,21 @@ public class FiringMainActivity extends SerialPortActivity {
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
 
-                            if (twoCount >= sixExchangeCount && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 10 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >0) {//48
+                            if (twoCount >= sixExchangeCount && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >-20) {//48
                                 Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
+                                if (sixCmdSerial == 3) {
+                                    //跳转到1+5倒数计时5分钟阶段
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                                    Thread.sleep(1000);
+                                    increase(7);
+//                                    Log.e("第7阶段-increase", "7");
+                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                    zanting();
+                                    break;
+                                }
+                            }
+                            //到达最大值之后,直接跳转
+                            if(twoCount >= ChongDian_time){
                                 if (sixCmdSerial == 3) {
                                     //跳转到1+5倒数计时5分钟阶段
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -2334,12 +2364,13 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
                             break;
 
-                        case 33://写入延时时间，检测结果看雷管是否正常
+                        case 33://第一次充电
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {
                                     Utils.writeRecord("--第二轮检测结束-------------");
+                                    Utils.writeRecord("blastQueue.size():"+blastQueue.size());
                                     //检测一次
                                     if (totalerrorCDNum != 0) {
                                         totalerrorCDNum=0;
@@ -2411,6 +2442,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 writeDenator = null;
                                 //检测一次
                                 if (blastQueue == null || blastQueue.size() < 1) {
+                                    getblastQueue();//重新获取数据,用来给充电list复制
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
                                     sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
