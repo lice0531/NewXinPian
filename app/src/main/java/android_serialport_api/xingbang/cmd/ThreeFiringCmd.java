@@ -4,6 +4,7 @@ import android.util.Log;
 
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
+import android_serialport_api.xingbang.utils.CRC16;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class ThreeFiringCmd {
@@ -280,16 +281,8 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_Translate_80(String addr){
+	public static byte[] sendWxjl80(String addr){
 		String command = "00" + DefCommand.CMD_5_TRANSLATE_80 + "01" + addr;//80
-		return DefCommand.getCommadBytes(command);
-	}
-
-	/***
-	 * 无线级联：子节点给主控发送设备已注册指令
-	 */
-	public static byte[] setChildToMC_Translate_80(){
-		String command = "00" + DefCommand.CMD_5_TRANSLATE_80 + "00";//80
 		return DefCommand.getCommadBytes(command);
 	}
 
@@ -298,18 +291,17 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_Translate_81(String addr){
-		String command = addr + DefCommand.CMD_5_TRANSLATE_81;//81
+	public static byte[] sendWxjl81(String addr,String dataLength,String serId,String data){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_81 + dataLength + serId + data;//81
 		return DefCommand.getCommadBytes(command);
 	}
-
 	/***
 	 * 无线级联：进入检测模式
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setToXbCommon_Translate_82(String addr){
-		String command = addr + DefCommand.CMD_5_TRANSLATE_82;//82
+	public static byte[] sendWxjl82(String addr,String dataLength,String data){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_82 + dataLength + data;//82
 		return DefCommand.getCommadBytes(command);
 	}
 
@@ -322,7 +314,80 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_5_TRANSLATE_83 + "00";//83
 		return DefCommand.getCommadBytes(command);
 	}
+	/***
+	 * 发送同步A0指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA0(String addr){
+		String command = DefCommand.CMD_MC_SEND_A0 + addr;//A0
+		return CRC16.hexStringToByte(command);
+	}
+	/***
+	 * 发送起爆检测A1指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA1(String addr){
+		String command = DefCommand.CMD_MC_SEND_A1 + addr;//A1
+		return CRC16.hexStringToByte(command);
+	}
+	/***
+	 * 发送充电A2指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA2(String addr){
+		String command = DefCommand.CMD_MC_SEND_A2 + addr;//A2
+		return CRC16.hexStringToByte(command);
+	}
+	/***
+	 * 发送充电升高压A3指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA3(String addr){
+		String command = DefCommand.CMD_MC_SEND_A3 + addr;//A3
+		return CRC16.hexStringToByte(command);
+	}
+	/***
+	 * 发送起爆A4指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA4(String addr){
+		String command = DefCommand.CMD_MC_SEND_A4 + addr;//A4
+		return CRC16.hexStringToByte(command);
+	}
+	/***
+	 * 发送轮询读取电流信息A5指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA5(String addr,String getData){
+		String command = DefCommand.CMD_MC_SEND_A5 + addr + getData;//A5
+		return CRC16.hexStringToByte(command);
+	}
 
+	/**
+	 * 发送切换模式A6指令
+	 * @param addr:子设备编号
+	 * @param type：主子设备为01   其他子设备为00
+	 * @return
+	 */
+	public static byte[] setWxjlA6(String addr,String type){
+		String command = DefCommand.CMD_MC_SEND_A6 + addr + type;//A6
+		return CRC16.hexStringToByte(command);
+	}
+	/***
+	 * 发送退出A7指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setWxjlA7(String addr){
+		String command = DefCommand.CMD_MC_SEND_A7 + addr;//A7
+		return CRC16.hexStringToByte(command);
+	}
 	/***
 	 * 处理 在网读ID检测
 	 * @param addr

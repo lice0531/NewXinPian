@@ -342,18 +342,19 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="扫码"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".firingdevice.MainControlHighActvity"
+        <activity android:name=".firingdevice.WxjlActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".firingdevice.MainControlLowActvity"
+        <activity android:name=".firingdevice.WxjlNearActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".firingdevice.MainActivity_youxian"
+        <activity android:name=".firingdevice.Wxjl485RemoteActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".firingdevice.Cs485ReceiveActivity"
+        <activity android:name=".firingdevice.WxjlRemoteActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

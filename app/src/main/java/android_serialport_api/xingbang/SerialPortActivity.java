@@ -121,7 +121,7 @@ public abstract class SerialPortActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.e("父页面", "onCreate: " );
         try {
-            mSerialPort = mApplication.getSerialPort();
+            mSerialPort = mApplication.getSerialPort(115200);
             mSerialPort.tcflush();
 
             mOutputStream = mSerialPort.getOutputStream();
@@ -144,11 +144,11 @@ public abstract class SerialPortActivity extends BaseActivity {
         mDialogPlus.show();
     }
     // 进度条
-    public void initSerialPort() {
+    public void initSerialPort(int baudrate) {
         Log.e("父页面", "initSerialPort: " );
 //        mReadThread.exit = false;
         try {
-            mSerialPort = mApplication.getSerialPort();
+            mSerialPort = mApplication.getSerialPort(baudrate);
             mSerialPort.tcflush();
 
             mOutputStream = mSerialPort.getOutputStream();

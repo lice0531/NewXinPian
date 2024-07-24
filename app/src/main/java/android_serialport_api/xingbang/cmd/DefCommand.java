@@ -52,7 +52,22 @@ public class DefCommand {
 	public static String CMD_5_TRANSLATE_81="81";//无线级联：子节点与主节点进行数据传输
 	public static String CMD_5_TRANSLATE_82="82";//无线级联：进入检测模式
 	public static String CMD_5_TRANSLATE_83="83";//切换模式
-
+	public static String CMD_MC_SEND_A0="A0";//无线级联：主控发A1同步
+	public static String CMD_MC_SEND_A1="A1";//无线级联：起爆检测
+	public static String CMD_MC_SEND_A2="A2";//充电
+	public static String CMD_MC_SEND_A3="A3";//充电升高压
+	public static String CMD_MC_SEND_A4="A4";//起爆
+	public static String CMD_MC_SEND_A5="A5";//轮训取电流电压数据
+	public static String CMD_MC_SEND_A6="A6";//切换模式
+	public static String CMD_MC_SEND_A7="A7";//退出
+	public static String CMD_MC_SEND_B0="B0";//无线级联：子机响应B1同步
+	public static String CMD_MC_SEND_B1="B1";//无线级联：子机响应B1起爆检测
+	public static String CMD_MC_SEND_B2="B2";//无线级联：子机响应B2充电
+	public static String CMD_MC_SEND_B3="B3";//无线级联：子机响应B3充电升高压
+	public static String CMD_MC_SEND_B4="B4";//无线级联：子机响应B4起爆
+	public static String CMD_MC_SEND_B5="B5";//无线级联：子机响应B5轮训电流电压数据
+	public static String CMD_MC_SEND_B6="B6";//无线级联：子机响应B6切换模式
+	public static String CMD_MC_SEND_B7="B7";//无线级联：子机响应B7退出指令
 	/***
 	 * 得到发出命令字节
 	 * @param baseBaseCmd
@@ -64,6 +79,7 @@ public class DefCommand {
 		mBuffer = CRC16.hexStringToByte(realyCmd1);
 		return mBuffer;
 	}
+
 	
 	/***
 	 * 得到字符串CRC，高字节在前

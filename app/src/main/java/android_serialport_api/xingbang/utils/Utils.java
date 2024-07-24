@@ -540,6 +540,20 @@ public class Utils {
     }
 
     /**
+     * int转换为byte[]
+     *
+     * @param temp
+     * @return byte[]
+     */
+    public static byte[] intToByte(int temp) {
+        byte[] b = new byte[2]; // 将最低位保存在最低位
+        b[0] = (byte) (temp & 0xff);
+        temp = temp >>> 8; // 向右移8位
+        b[1] = (byte) (temp & 0xff);
+        return b;
+    }
+
+    /**
      * byte[]转换数字
      *
      * @param bytes

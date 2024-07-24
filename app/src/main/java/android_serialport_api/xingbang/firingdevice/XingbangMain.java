@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,13 +45,12 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-
 import android_serialport_api.xingbang.Application;
-import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
-import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
@@ -77,16 +77,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
-
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
 import org.apache.commons.net.ftp.FTPFile;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-public class XingbangMain extends SerialPortActivity {
+public class XingbangMain extends BaseActivity {
 
     @BindView(R.id.tv_main_no)
     TextView tvMainNo;
@@ -118,12 +114,8 @@ public class XingbangMain extends SerialPortActivity {
     TextView tvMainVersion;
     @BindView(R.id.btn_main_lianxi)
     Button btnMainLianxi;
-    @BindView(R.id.btn_sync)
-    Button btnSync;
-    @BindView(R.id.btn_mc_high)
-    Button btnMcHigh;
-    @BindView(R.id.btn_mc_low)
-    Button btnMcLow;
+    @BindView(R.id.btn_wxjl)
+    Button btnWxjl;
     private long time = 0;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
     private SQLiteDatabase db;
@@ -171,9 +163,9 @@ public class XingbangMain extends SerialPortActivity {
     TextView totalbar_title;
     private int Yanzheng_sq_size = 0;
     private String Yanzheng_sq = "";//是否验雷管已经授权
-    private From42Power busInfo;
-    private String deviceId = "";
-    private boolean isReceive80 = false;
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();
+    private String app_version_name = "";
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -213,7 +205,6 @@ public class XingbangMain extends SerialPortActivity {
         // 获取区域雷管数量
         getRegionNumber();
         super.onResume();
-        sendCmd(ThreeFiringCmd.setToXbCommon_Translate_80(deviceId));
     }
 
     @Override
@@ -274,54 +265,8 @@ public class XingbangMain extends SerialPortActivity {
 //        }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        getLgTotal();
+        app_version_name = getString(R.string.app_version_name);
         getleveup();
-        deviceId = "08";
-
-    }
-
-    @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        Log.e(TAG,"返回命令是：" + fromCommad);
-//        Utils.writeLog("<-返回命令--首页:" + fromCommad);
-//        Log.e("返回命令--起爆页面", fromCommad);
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-//            Utils.writeLog("Firing reFrom:" + fromCommad);
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd2(fromCommad);
-                if (cmd != null) {
-                    int localSize = fromCommad.length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, localBuf);//处理cmd命令
-                }
-            }
-        }
-    }
-
-    /***
-     * 处理芯片返回命令
-     */
-    private void doWithReceivData(String cmd, byte[] locatBuf) {
-        if (DefCommand.CMD_5_TRANSLATE_80.equals(cmd)) {//80 无线级联：进行设备注册
-            sendCmd(ThreeFiringCmd.setChildToMC_Translate_80());
-            Log.e(TAG,"接收到80设备注册指令,发送80指令给主节点");
-            isReceive80 = true;
-            //此时截取下80指令拿到设备号，然后在同步页面时候使用
-        } else if (DefCommand.CMD_5_TRANSLATE_81.equals(cmd)) {//81 无线级联：子节点与主节点进行数据传输
-
-        } else if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
-        } else {
-            Log.e(TAG, "返回命令没有匹配对应的命令-cmd: " + cmd);
-        }
     }
 
     private void queryBeian() {
@@ -520,6 +465,7 @@ public class XingbangMain extends SerialPortActivity {
             setUserMessage();//如果为空就新建一个
         }
     }
+
 
     private void getPropertiesData() {
         pro_bprysfz = (String) MmkvUtils.getcode("pro_bprysfz", "");
@@ -727,47 +673,24 @@ public class XingbangMain extends SerialPortActivity {
         context.startActivity(intent);
     }
 
-    //发送命令
-    public void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);
-                Utils.writeLog("->:" + str);
-                mOutputStream.write(mBuffer);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
     //全局定义
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del,
             R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help,
-            R.id.btn_main_downWorkCode, R.id.btn_main_exit,R.id.btn_sync,R.id.btn_mc_high,R.id.btn_mc_low})
+            R.id.btn_main_downWorkCode, R.id.btn_main_exit,R.id.btn_wxjl})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
-            case R.id.btn_sync:
-                if (list_lg.size() > 0) {
-//                    if (isReceive80) {
-                        Intent itSync = new Intent(this,Cs485ReceiveActivity.class);
-                        itSync.putExtra("deviceId",deviceId);
-                        startActivity(itSync);
-//                    }
+            case R.id.btn_wxjl:
+                mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                Log.e(TAG,"雷管数量：" + mListData.size());
+                if (mListData.size() > 0) {
+                    Intent itSync = new Intent(this, WxjlActivity.class);
+                    startActivity(itSync);
                 } else {
                     show_Toast(getResources().getString(R.string.text_error_tip30));
                 }
-                break;
-            case R.id.btn_mc_low:
-                startActivity(new Intent(this,MainControlLowActvity.class));
-                break;
-            case R.id.btn_mc_high:
-                startActivity(new Intent(this,MainControlHighActvity.class));
                 break;
             case R.id.btn_main_reister://注册
                 String str1 = "注册";
@@ -883,27 +806,6 @@ public class XingbangMain extends SerialPortActivity {
 //                startActivity(intent55);
                 break;
         }
-    }
-    private List<VoBlastModel> list_lg = new ArrayList<>();
-    //获取雷管总数量
-    private void getLgTotal(){
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
-//        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
-        //int count=0;
-        for (DenatorBaseinfo a : denatorBaseinfos) {
-            VoBlastModel item = new VoBlastModel();
-            item.setBlastserial(a.getBlastserial());
-            item.setDelay((short) a.getDelay());
-            item.setShellBlastNo(a.getShellBlastNo());
-            item.setDenatorId(a.getDenatorId());
-            item.setDenatorIdSup(a.getDenatorIdSup());
-            item.setZhu_yscs(a.getZhu_yscs());
-            item.setCong_yscs(a.getCong_yscs());
-            if (a.getStatusCode().equals("02")) {
-                list_lg.add(item);
-            }
-        }
-        Log.e(TAG,"雷管数量：" + list_lg.size());
     }
     /**
      * 读取备份文件
@@ -1390,7 +1292,7 @@ public class XingbangMain extends SerialPortActivity {
 
         try {
             object.put("sbbh", equ_no);//设备编号
-            object.put("rj_version", "M900_PT_HF_JL_V2.1_240603");//软件版本
+            object.put("rj_version", app_version_name);//软件版本
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1448,7 +1350,7 @@ public class XingbangMain extends SerialPortActivity {
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("sbbh", equ_no);//设备编号
             object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
-            object.put("version", "M900_PT_HF_JL_V2.1_240603");//版本号版本 v3.22
+            object.put("version", app_version_name);//版本号版本 v3.22
 //            object.put("version", "v3.22");//版本号版本 测试数据
             object.put("type", "1");//软件=1 硬件=2
             object.put("is_force", 0);//是否强制升级

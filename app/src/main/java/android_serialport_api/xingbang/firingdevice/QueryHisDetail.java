@@ -881,6 +881,7 @@ public class QueryHisDetail extends BaseActivity {
 
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
+        String app_version_name = getString(R.string.app_version_name);
         ArrayList<String> list_uid = new ArrayList<>();
         for (int i = 1; i < hisListData.size(); i++) {
             list_uid.add(hisListData.get(i).get("shellNo").toString() + "#" + hisListData.get(i).get("delay") + "#" + hisListData.get(i).get("errorName"));
@@ -914,7 +915,7 @@ public class QueryHisDetail extends BaseActivity {
             object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "M900_PT_HF_JL_V2.1_240603");//软件版本
+            object.put("rj_version", app_version_name);//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
         } catch (JSONException| PackageManager.NameNotFoundException e) {

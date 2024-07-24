@@ -1159,6 +1159,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
         Utils.writeLog("<-返回命令--测试页面:" + fromCommad);
 //        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
+        fromCommad = "C00040080000730313001410B9B7C0";
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;

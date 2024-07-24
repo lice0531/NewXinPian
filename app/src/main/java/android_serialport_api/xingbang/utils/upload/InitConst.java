@@ -44,6 +44,16 @@ public class InitConst {
     public static final String ADDRESS_CODE = "00";         // 地址
     // 0 1 2
     public static final int VERSION_INDEX = 0;              // 起爆器版本指数
-
-
+    public static final int QIBAO_CESHI = 4;
+    public static final int CODE_NET = 101;
+    public static final int CODE_QIBAO = 102;
+    public static final int CODE_QIBAO_TAG = 106;
+    public static final int CODE_INFO = 126;
+    public static final int CODE_CHONGDIAN = 103;
+    public static final int CODE_HEART = 105;
+    public static final int CODE_EXIT = 107;
+    public static final int CODE_UPDAE_STATUS = 108;
+    public static final int CODE_TRANSLATE = 109;
+    //M900有线级联页面轮询时间
+    public static final int POLLING_TIME = 15;
 }

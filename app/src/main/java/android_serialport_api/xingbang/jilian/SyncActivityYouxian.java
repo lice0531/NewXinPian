@@ -1017,5 +1017,4 @@ public class SyncActivityYouxian extends BaseActivity {
             EventBus.getDefault().unregister(this);
         }
     }
-
 }

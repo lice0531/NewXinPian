@@ -51,7 +51,7 @@ public class Application extends MultiDexApplication {
     private String mSportName;
     private int mPowerIndex;
 
-    public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
+    public SerialPort getSerialPort(int baudrate) throws SecurityException, IOException, InvalidParameterException {
 //        SerialPortFinder finder= new SerialPortFinder();
 //        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
         if (mSerialPort == null) {
@@ -88,7 +88,7 @@ public class Application extends MultiDexApplication {
                     break;
             }
             Log.e("application", "device: " + Build.DEVICE + "串口号: " + mSportName+" mPowerIndex:"+mPowerIndex);
-            mSerialPort = new SerialPort(new File(mSportName), 115200, 0, 8, 1);
+            mSerialPort = new SerialPort(new File(mSportName), baudrate, 0, 8, 1);
         }
         return mSerialPort;
     }

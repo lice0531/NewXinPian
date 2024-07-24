@@ -1,18 +1,14 @@
 package android_serialport_api.xingbang.firingdevice;
-import android.content.Context;
+
 import android.content.Intent;
-import android.net.DhcpInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -41,15 +37,13 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.jilian.IntentBean;
 import android_serialport_api.xingbang.jilian.Protcol;
-import android_serialport_api.xingbang.jilian.SettingActivity;
-import android_serialport_api.xingbang.jilian.SyncActivityYouxian;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Cs485ReceiveActivity extends BaseActivity {
+public class WxjlActivity extends BaseActivity {
     private Socket socket = null;
     private boolean socketStatus = false;
     private boolean status485 = false;
@@ -80,61 +74,34 @@ public class Cs485ReceiveActivity extends BaseActivity {
     private static final int REQUEST_CODE_NET = 101;
     private static final int REQUEST_CODE_CHONGDIAN = 102;
     private static final int REQUEST_CODE_QIBAO = 103;
-    private String TAG = "Cs485ReceiveActivity";
+    private String TAG = "WxjlRemoteChildActivity";
     private boolean isConnect;
     private boolean isExit = false;
     private String Yanzheng = "";//是否验证地理位置
 
     private boolean A002 = true;
-    private String deviceId = "";
+    private String wxjlDeviceId = "";
     byte[] mBuffer;
-    @BindView(R.id.tv_code)
-    TextView tvCode;
-    @BindView(R.id.btn_test)
-    Button btnTest;
-    @BindView(R.id.btn_test1)
-    Button btnTest1;
+    @BindView(R.id.btn_near)
+    Button btnNear;
+    @BindView(R.id.btn_remote)
+    Button btnRemote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cs_wxjl_devices);
+        setContentView(R.layout.activity_wxjl);
         ButterKnife.bind(this);
         mThreadPool = Executors.newCachedThreadPool();
         mBuffer = new byte[50];
-        tvCode.setText(!TextUtils.isEmpty(getIntent().getStringExtra("deviceId")) ? getIntent().getStringExtra("deviceId") : "");
         getPropertiesData();
-    }
-
-    @OnClick({R.id.btn_test, R.id.btn_test1})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_test:
-                btnTest.setText(getString(R.string.text_sync_tip8));
-                btnTest.setEnabled(false);
-                openM900Rs485(1,"");
-                break;
-            case R.id.btn_test1:
-                show_Toast(
-                        getString(R.string.text_sync_tip11));
-                isTongBu = false;
-                switch (Build.DEVICE) {
-                    case "M900":
-                        send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
-                        break;
-                    default:
-                        closeSocket();
-                        break;
-                }
-                finish();
-                break;
-        }
+        openM900Rs485("");
     }
 
 
     private void getPropertiesData() {
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
-        Log.e("级联", "Yanzheng: " + Yanzheng);
+        Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
 
     @Override
@@ -162,26 +129,26 @@ public class Cs485ReceiveActivity extends BaseActivity {
                         isTongBu = true;
                         handler.sendEmptyMessageDelayed(5, 1000);
                         show_Toast(getString(R.string.text_sync_tip2));
-                        Log.e(TAG,"收到同步A1指令");
+                        Log.e(TAG, "收到同步A1指令");
                     } else if (response.contains("A2")) {
-                        Log.e(TAG,"收到起爆测试A2指令");
+                        Log.e(TAG, "收到起爆测试A2指令");
                     } else if (response.contains("A3")) {
                         //收到主控轮询的命令
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                             EventBus.getDefault().post(new FirstEvent("pollMsg"));
                         }
-                        Log.e(TAG,"收到轮训子设备数据A3指令");
+                        Log.e(TAG, "收到轮训子设备数据A3指令");
                         //收到主控的充电指令
                     } else if (response.contains("A4")) {
                         show_Toast(getString(R.string.text_sync_tip5));
-                        Log.e(TAG,"收到充电A4指令");
+                        Log.e(TAG, "收到充电A4指令");
                     } else if (response.contains("A5")) {
-                        Log.e("接收到A5指令了",response);
+                        Log.e("接收到A5指令了", response);
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
-                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2, 4))) {
                             //主的子设备
                             show_Toast(getString(R.string.text_sync_tip6));
-                            Log.e("主的子设备已接收到切换模式指令",response);
+                            Log.e("主的子设备已接收到切换模式指令", response);
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
@@ -191,31 +158,20 @@ public class Cs485ReceiveActivity extends BaseActivity {
                             EventBus.getDefault().post(new FirstEvent("sendCmd83"));
                         } else {
                             //其他子设备
-                            Log.e("接收到A5指令了","开始关闭485");
+                            Log.e("接收到A5指令了", "开始关闭485");
                             show_Toast(getString(R.string.text_sync_tip6));
                             Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-                            Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + response);
+                            Log.e("其他子设备已接收到切换模式指令", "现在开始关闭485" + response);
                             closeM900Rs485(response);
                         }
                         //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
                         EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
-//                    } else if (response.contains("A003")) {
-                        //收到主控的充电指令
+                        //收到主控的起爆指令
                     } else if (response.contains("A6")) {
-//                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                         show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
                         send485Cmd("B6" + MmkvUtils.getcode("ACode", ""));
-//                        }
-//                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
-//                        if (response.length() >= 5) {
-//                            intent.putExtra("itemId", response.substring(4));
-//                        } else {
-//                            intent.putExtra("itemId", "");
-//                        }
-//                        startActivityForResult(intent, REQUEST_CODE_QIBAO);
                         //收到主控的退出指令
-//                    } else if (response.contains("A005")) {
                     } else if (response.contains("A7")) {
                         EventBus.getDefault().post(new FirstEvent("finish"));
                         send485Cmd("B7" + MmkvUtils.getcode("ACode", ""));
@@ -223,7 +179,6 @@ public class Cs485ReceiveActivity extends BaseActivity {
 //                        show_Toast("收到退出指令");
                         finish();
                     } else if (response.contains("A006")) {
-//                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
                     } else if (response.contains("A008")) {
 //                        toCheck6();
                     }
@@ -253,38 +208,10 @@ public class Cs485ReceiveActivity extends BaseActivity {
 //                    EMgpio.SetGpioDataLow(94);
                     try {
                         Thread.sleep(12);
-
-//                        mOutputStream.write(("0001" + MmkvUtils.getcode("ACode","")).getBytes());
-//                        Thread.sleep(12);
-//                        EMgpio.SetGpioDataHigh(94);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     handler.sendEmptyMessageDelayed(16, 1000);
-                    break;
-                case 20:
-                    if (!isTongBu) {
-                        num++;
-//                        EMgpio.SetGpioDataLow(94);
-                        try {
-                            Thread.sleep(12);
-
-                            String a = myInfo();
-//                            mOutputStream.write(("0001" + MmkvUtils.getcode("ACode","") + ",_*").getBytes());
-//                            mOutputStream.write((a + ",_*").getBytes());
-                            show_Toast(getString(R.string.text_sync_tip9));
-                            Thread.sleep(20);
-//                            EMgpio.SetGpioDataHigh(94);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        if (num < 2) {
-                            handler.sendEmptyMessageDelayed(20, 1000);
-                        }
-                    } else {
-                        num = 0;
-                    }
-
                     break;
                 case 666:
                     IntentBean item = (IntentBean) msg.obj;
@@ -348,6 +275,21 @@ public class Cs485ReceiveActivity extends BaseActivity {
         return a;
     }
 
+    @OnClick({R.id.btn_near, R.id.btn_remote})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_near:
+                startActivity(new Intent(this, WxjlNearActivity.class));
+                break;
+            case R.id.btn_remote:
+                finish();
+                Intent intent = new Intent(this, WxjlRemoteActivity.class);
+                intent.putExtra("wxjlDeviceId",wxjlDeviceId);
+                startActivity(intent);
+                break;
+        }
+    }
+
     /**
      * 发送485命令
      */
@@ -363,6 +305,7 @@ public class Cs485ReceiveActivity extends BaseActivity {
 //        String str = Utils.bytesToHexFun(powerCmd);
         Log.e("子机485发送-data", data);
     }
+
     /**
      * socket发送消息
      */
@@ -389,7 +332,7 @@ public class Cs485ReceiveActivity extends BaseActivity {
                 if (mExpDevMgr != null) {
                     mExpDevMgr.closeRs485();
                     mExpDevMgr.set12VEnable(false);
-                    Log.e("关闭485，设备是",code);
+                    Log.e("关闭485，设备是", code);
                     Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
                 }
                 break;
@@ -429,7 +372,7 @@ public class Cs485ReceiveActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FirstEvent event) {
         String msg = event.getMsg();
-        Log.e("同步页面收到起爆页面485消息了",msg);
+        Log.e("无线级联页面收到起爆页面485消息了", msg);
         if (msg.equals("qibao")) {
             String a = "0006";
             writeData(a);
@@ -456,7 +399,7 @@ public class Cs485ReceiveActivity extends BaseActivity {
             String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
             String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
             Log.e("有线级联页面zzcd返回测试结果", "tureNum: " + tureNum);
-            Log.e("有线级联页面zzcd返回测试结果", "errNum: "+errNum);
+            Log.e("有线级联页面zzcd返回测试结果", "errNum: " + errNum);
             Log.e("有线级联页面zzcd返回测试结果", "currentPeak: " + event.getCurrentPeak());
             send485Cmd("B009" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
 //            send485Cmd("B009"+ MmkvUtils.getcode("ACode", "")+event.getData());
@@ -485,10 +428,10 @@ public class Cs485ReceiveActivity extends BaseActivity {
         } else if (msg.equals("open485")) {
             switch (Build.DEVICE) {
                 case "M900":
-                    openM900Rs485(2,event.getData());
+                    openM900Rs485(event.getData());
                     break;
                 default:
-                    Log.e("执行关闭socket操作","。。。。。");
+                    Log.e("执行关闭socket操作", "。。。。。");
                     closeSocket();
                     break;
             }
@@ -505,21 +448,23 @@ public class Cs485ReceiveActivity extends BaseActivity {
                 e.printStackTrace();
             }
             if (event.getData().startsWith("B4") && event.getData().length() == 18) {
-                Log.e("收到充电指令后发送的数据正常",event.getData());
+                Log.e("收到充电指令后发送的数据正常", event.getData());
                 send485Cmd(event.getData());
             } else {
-                Log.e("收到充电指令后发送的数据有误",event.getData());
+                Log.e("收到充电指令后发送的数据有误", event.getData());
             }
+        } else if (event.getMsg().equals("deviceId")) {
+            wxjlDeviceId = event.getData();
         }
     }
 
-    private void openM900Rs485(int type,String qbResult){
+    private void openM900Rs485(String qbResult) {
         mExpDevMgr = new ExpdDevMgr(this);
         //串口打开监听
         OnOpenSerialPortListener listener = new OnOpenSerialPortListener() {
             @Override
             public void onSuccess(File file) {
-                Log.e("485接口-串口状态监听", "打开成功-file: " + file.toString());
+                Log.e("485接口-串口状态监听", "无线级联页面打开成功-file: " + file.toString());
             }
 
             @Override
@@ -533,9 +478,8 @@ public class Cs485ReceiveActivity extends BaseActivity {
             public void onDataReceived(byte[] bytes) {
                 String fromCommad = Utils.bytesToHexFun(bytes);//将数组转化为16进制字符串
                 Log.e("485接口-接收数据", "onDataReceived: " + fromCommad);
-//                                if (fromCommad.startsWith("A0")) {
                 if (fromCommad.startsWith("A")) {
-                    if(fromCommad.equals("A6")) {
+                    if (fromCommad.equals("A6")) {
                         EventBus.getDefault().post(new FirstEvent("qibao"));
                     } else {
                         Message msg = Message.obtain();
@@ -557,10 +501,7 @@ public class Cs485ReceiveActivity extends BaseActivity {
         };
         mExpDevMgr.set12VEnable(true);
         mExpDevMgr.openRs485(listener, listener2, 115200);
-        if (type == 1) {
-            final String data = "B1" + deviceId;
-            send485Cmd(data);
-        } else {
+        if (!TextUtils.isEmpty(qbResult)) {
             int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
             try {
                 Thread.sleep(delay * 50);
@@ -586,4 +527,5 @@ public class Cs485ReceiveActivity extends BaseActivity {
             EventBus.getDefault().unregister(this);
         }
     }
+
 }

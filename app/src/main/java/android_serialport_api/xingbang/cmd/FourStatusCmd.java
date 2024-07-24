@@ -97,7 +97,6 @@ public class FourStatusCmd {
                 busCurrent = Utils.getFloatToFormat(busCurrent, 0, 4);
                 vo.setBusCurrentIa((int)busCurrent);//设置总线电流
 
-
                 tempData = dataHex.substring(12);//起爆电压
                 strLow = tempData.substring(0, 2);
                 strHigh = tempData.substring(2);

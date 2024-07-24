@@ -30,7 +30,7 @@
             android:layout_marginLeft="40dp"
             android:layout_weight="1"
             style="@style/alltextstyle"
-            android:background="@color/yellow"
+            android:background="@color/result_point_color"
             android:text="准备充电" />
     </LinearLayout>
 
@@ -58,7 +58,15 @@
             style="@style/alltextstyle"
             android:text="退出流程" />
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:paddingBottom="3dp"
+        android:paddingLeft="6dp"
+        android:paddingTop="3dp" />
     <TextView
         android:id="@+id/tv_tip"
         style="@style/alltextstyle"
@@ -149,6 +157,7 @@
                     style="@style/alltextstyle"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:layout_height="match_parent"
                     android:background="@drawable/textview_border"
                     android:text="状态"
@@ -157,7 +166,7 @@
                     android:id="@+id/llCurrentPeak"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_height="match_parent"
                     android:background="@drawable/textview_border"
                     android:orientation="vertical">
