@@ -40,7 +40,7 @@ public class SoundPlayUtils {
      * @param soundID
      */
     public static int play(int soundID) {
-       return mSoundPlayer.play(soundID, 1, 1, 0, 0, 3);
+       return mSoundPlayer.play(soundID, 1, 1, 0, 0, 1);
     }
 
 }
