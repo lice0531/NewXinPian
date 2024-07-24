@@ -1471,6 +1471,9 @@ public class FiringMainActivity extends SerialPortActivity {
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
 //                increase(6);//0635此处功能为直接跳到第六阶段
+            }else {
+                fourOnlineDenatorFlag = 2;
+                noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
             }
 
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
@@ -1862,6 +1865,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
                                     getblastQueue();
+                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }

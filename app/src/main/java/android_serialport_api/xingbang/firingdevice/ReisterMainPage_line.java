@@ -1716,7 +1716,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    show_Toast("有延时为空,请先设置延时");
 //                    break;
 //                }
-                if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+                if (isSingleReisher == 0 ) {//&& send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0
                     //注册列表中的雷管已在起爆历史记录里(取消)
 //                    String shellBlastNo = serchFristLG();
 //                    int num = serchFristLGINdenatorHis(shellBlastNo);
@@ -1733,7 +1733,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    closeOpenThread.start();
                     sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
 
-                } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+                } else {//if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0)
                     btnInputOk.setEnabled(true);
                     btnSingleReister.setText(R.string.text_line_single);
                     txt_currentVolt.setText(R.string.text_line_IV);
@@ -1746,9 +1746,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     revOpenCmdReFlag = 0;
                     // 13 退出注册模式
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
-                } else {
-                    show_Toast(getString(R.string.text_line_tip17));
                 }
+//                else {
+//                    show_Toast(getString(R.string.text_line_tip17));
+//                }
                 break;
 
             case R.id.btn_LookHistory:
