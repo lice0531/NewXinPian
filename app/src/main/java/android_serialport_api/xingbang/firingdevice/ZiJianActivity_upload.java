@@ -31,6 +31,7 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -125,6 +126,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, "1");
         deletaBeian();
+        sendCmd(ThreeFiringCmd.sendWxjl80("01"));
     }
     private void deletaBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

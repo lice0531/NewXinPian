@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -215,7 +216,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.obj = bean;
         } else if (res.contains(DefCommand.CMD_MC_SEND_B1)) {
             // 起爆检测
-            msg.what = InitConst.QIBAO_CESHI;
+            msg.what = 9;
             msg.obj = receiveMsg(res, "在线");
             //开启轮询  10秒轮询一次接收到的消息  来更新当前设备列表信息
             sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
@@ -223,59 +224,87 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     PollingReceiver.class, PollingUtils.ACTION);
         } else if (res.contains(DefCommand.CMD_MC_SEND_B2)) {
             // 充电
-            DeviceBean bean = new DeviceBean();
-            bean.setRes(res);
-            bean.setCurrentPeak("0");
-            bean.setCode(res.substring(res.length() - 2));
-            bean.setInfo("正在充电");
-            msg.what = 8;
-            msg.obj = bean;
+            msg.what = 9;
+            msg.obj = receiveMsg(res, "正在充电");
         } else if (res.contains(DefCommand.CMD_MC_SEND_B3)) {
-            // 充电升到高压
-            DeviceBean bean = new DeviceBean();
-            bean.setRes(res);
-            bean.setCurrentPeak("0");
-            bean.setCode(res.substring(res.length() - 2));
-            bean.setInfo("正在充电");
-            msg.what = 8;
-            msg.obj = bean;
+            // 充电升高压
+            msg.what = 9;
+            msg.obj = receiveMsg(res, "升高压中");
         } else if (res.contains(DefCommand.CMD_MC_SEND_B4)) {
             // 单个设备起爆
-            msg.what = InitConst.CODE_UPDAE_STATUS;
-            msg.obj = receiveMsg(res, "正在起爆");
+            msg.what = 9;
+            msg.obj = receiveMsg(res, "起爆中");
         } else if (res.contains(DefCommand.CMD_MC_SEND_B5)) {
             Log.e(TAG,"得到的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
             bean.setRes(res);
-            bean.setCurrentPeak("0");
             bean.setCode(res.substring(2,4));
             // 1:检测状态   3：电流数据   4：雷管总数   6：错误数量
             int aa = res.length() / 4;
             for (int i = 1; i < aa; i++) {
                 String value = res.substring(4 * i, 4 * (i + 1));
-                Log.e(TAG,"B5消息中拿到的值是：" + value);
                 switch (value.substring(0, 1)){
                     case "1":
                         //根据不同的值展示状态
                         bean.setInfo("检测中");
-                        Log.e(TAG,"得到的B5消息中拿到检测状态了");
+                        Log.e(TAG,"得到的B5消息中拿到检测状态了" + value.substring(0, 1));
+                        /**
+                         * 100：检测中     101：检测结束
+                         * 200：正在充电   201：充电结束    202：充电失败
+                         * 300：升高压中   301：升高压结束  302：升高压失败
+                         * 400：起爆中     401：起爆结束   402：起爆失败
+                         */
+                        switch (value.substring(value.length() - 3)) {
+                            case "100":
+                                bean.setInfo("检测中");
+                                break;
+                            case "101":
+                                bean.setInfo("检测结束");
+                                break;
+                            case "200":
+                                bean.setInfo("正在充电");
+                                break;
+                            case "201":
+                                bean.setInfo("充电结束");
+                                break;
+                            case "202":
+                                bean.setInfo("充电失败");
+                                break;
+                            case "300":
+                                bean.setInfo("升高压中");
+                                break;
+                            case "301":
+                                bean.setInfo("升压结束");
+                                break;
+                            case "302":
+                                bean.setInfo("升压失败");
+                                break;
+                            case "400":
+                                bean.setInfo("起爆中");
+                                break;
+                            case "401":
+                                bean.setInfo("起爆结束");
+                                break;
+                            case "402":
+                                bean.setInfo("起爆失败");
+                                break;
+                        }
                         break;
                     case "3":
-                        //问清楚值的单位后再换算展示电流信息
-//                        bean.setCurrentPeak("0");
-                        Log.e(TAG,"得到的B5消息中拿到电流信息了");
                         String sb = value.substring(value.length() - 3);
                         String cp = Utils.addZero(sb, 4);
-                        Log.e(TAG,"得到的电流是" + sb + "--补零后：" + cp);
-
+                        bean.setCurrentPeak(showCp(cp));
+                        Log.e(TAG,"得到的B5消息中拿到电流信息了:" + sb + "--补零后：" + cp + "--要显示的电流是：" + showCp(cp));
                         break;
                     case "4":
-                        bean.setTrueNum(value.substring(value.length() - 3));
-                        Log.e(TAG,"得到的B5消息中拿到全部数量了" + value.substring(value.length() - 3));
+                        //拿到全部雷管数量后只展示最后三位数即可
+                        bean.setTrueNum(showLgNum(value));
+                        Log.e(TAG,"得到的B5消息中拿到全部雷管数量了:" + showLgNum(value));
                         break;
                     case "6":
-                        bean.setErrNum(value.substring(value.length() - 3));
-                        Log.e(TAG,"得到的B5消息中拿到错误数量了" + value.substring(value.length() - 3));
+                        //拿到错误雷管数量后只展示最后三位数即可
+                        bean.setErrNum(showLgNum(value));
+                        Log.e(TAG,"得到的B5消息中拿到错误数量了:" + showLgNum(value));
                         break;
                 }
             }
@@ -283,8 +312,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.obj = bean;
         } else if (res.contains(DefCommand.CMD_MC_SEND_B6)) {
             // 切换模式起爆
-            msg.what = InitConst.CODE_TRANSLATE;
-            msg.obj = receiveMsg(res, "正在起爆");
+            msg.what = 9;
+            msg.obj = receiveMsg(res, "起爆中");
         } else if (res.contains(DefCommand.CMD_MC_SEND_B7)) {
             // 退出
             msg.what = InitConst.CODE_EXIT;
@@ -293,24 +322,49 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         handler_msg.sendMessage(msg);
     }
 
-
-    public static String formatCurrentPeak(String str) {
-        // Step 1: 截取最后6位字符
-        String lastSixCharacters = str.substring(str.length() - 6);
-        // Step 2: 去除前面零
-        String numericPart = lastSixCharacters.replaceFirst("^0+", "");
-        // Step 3: 如果去除前导零后为空字符串，则返回 "0"
-        if (numericPart.isEmpty()) {
-            return "0";
+    private String showLgNum(String data) {
+        String hexString = data.substring(data.length() - 3);
+        String decimal = String.valueOf(Integer.parseInt(hexString, 16));
+        if (decimal.length() > 2) {
+            Log.e(TAG,"十六进制数: " + hexString + "--十进制数: " + decimal +
+                    "--要展示的：" + decimal);
+            return decimal;
+        } else {
+            Log.e(TAG,"十六进制数: " + hexString + "--十进制数: " + decimal +
+                    "--要展示的：" + Utils.addZero(decimal, 3));
+            return Utils.addZero(decimal, 3);
         }
-        return numericPart;
+    }
+    private String showCp(String tempData) {
+//        String strLow2 = tempData.substring(0, 2);
+//        String strHigh2 = tempData.substring(2);
+        //和40指令的展示电流稍微有些区别：这次是高位在前低位在后  之前是地位在前高位在后 上面注释掉的代码即是40指令展示电流的高低位代码
+        String strHigh2 = tempData.substring(0, 2);
+        String strLow2 = tempData.substring(2);
+        if (strLow2.isEmpty()) {
+            strLow2 = "00";
+        }
+        if (strHigh2.isEmpty()) {
+            strHigh2 = "00";
+        }
+        int ichigh = Integer.parseInt(strHigh2, 16) * 256;
+        int icLowInt = Integer.parseInt(strLow2, 16);
+//				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
+        double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
+        float f1 = (float) (icTotal*1.8*2)-10;//*400//减10是减0带载的电流
+        BigDecimal b = new BigDecimal(f1);
+        float busCurrent = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();//保留两位小数
+        if (busCurrent < 0) {
+            busCurrent = 0;
+        }
+        busCurrent = Utils.getFloatToFormat(busCurrent, 0, 4);
+        return String.valueOf((int)busCurrent);
     }
 
     private DeviceBean receiveMsg(String res, String desc) {
         //接收到485消息后处理
         DeviceBean bean = new DeviceBean();
         bean.setRes(res);
-        bean.setCurrentPeak("0");
         bean.setCode(res.substring(2));
         bean.setInfo(desc);
         return bean;
@@ -335,9 +389,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         public boolean handleMessage(@NonNull Message msg) {
             if (msg.obj != null) {
                 switch (msg.what) {
-//                    case 2000:
-//                        tvMsg.setText("收到的指令是：" + msg.obj);
-//                        break;
                     case 0:
                         DeviceBean bean = (DeviceBean) msg.obj;
                         if (bean.getRes() != null && msg.obj != null) {
@@ -388,13 +439,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     case InitConst.CODE_EXIT:
                         PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
                         Log.e("轮询已关闭", "....");
-                        break;
-                    case InitConst.CODE_TRANSLATE:
-                        //接收到了子机切换模式的消息
-                        DeviceBean dt = (DeviceBean) msg.obj;
-                        if (dt.getRes() != null && msg.obj != null) {
-                            Log.e("接收到了子机切换模式的消息", dt.getRes());
-                        }
                         break;
                     case InitConst.CODE_UPDAE_STATUS:
                         //接收到子机发送的起爆不同状态消息  此时需更新每个设备的轮询状态
@@ -475,15 +519,34 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         if (!isDeviceConnet) {
                             isDeviceConnet = true;
                         }
-                        Log.e(TAG,list_device.toString() + "--res:" + bean4.getRes() +
+                        Log.e(TAG,"B5指令返回数据了：" + list_device.toString() + "--res:" + bean4.getRes() +
                                 "--code:" +bean4.getCode());
                         if (!list_device.contains(bean4)) {
                             for (int a = 0; a < list_device.size(); a++) {
                                 if (list_device.get(a).getCode().equals(bean4.getCode())) {
                                     list_device.get(a).setRes(bean4.getRes());
                                     list_device.get(a).setInfo(bean4.getInfo());
+                                    list_device.get(a).setTrueNum(bean4.getTrueNum());
+                                    list_device.get(a).setErrNum(bean4.getErrNum());
                                     list_device.get(a).setCurrentPeak(bean4.getCurrentPeak());
-                                    Log.e(TAG,"info:" + bean4.getInfo());
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                        break;
+                    case 9:
+                        DeviceBean db = (DeviceBean) msg.obj;
+                        //受控指令
+                        if (!isDeviceConnet) {
+                            isDeviceConnet = true;
+                        }
+                        Log.e(TAG,"充电返回数据了：" + list_device.toString() + "--res:" + db.getRes() +
+                                "--code:" +db.getCode());
+                        if (!list_device.contains(db)) {
+                            for (int a = 0; a < list_device.size(); a++) {
+                                if (list_device.get(a).getCode().equals(db.getCode())) {
+                                    list_device.get(a).setRes(db.getRes());
+                                    list_device.get(a).setInfo(db.getInfo());
                                 }
                             }
                             adapter.notifyDataSetChanged();

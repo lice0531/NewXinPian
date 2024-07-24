@@ -51,6 +51,7 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
@@ -267,6 +268,7 @@ public class XingbangMain extends BaseActivity {
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         app_version_name = getString(R.string.app_version_name);
         getleveup();
+
     }
 
     private void queryBeian() {

@@ -9,18 +9,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.annotation.NonNull;
-
 import com.kfree.expd.ExpdDevMgr;
 import com.kfree.expd.OnOpenSerialPortListener;
 import com.kfree.expd.OnSerialPortDataListener;
 import com.kfree.expd.Status;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -31,7 +27,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.jilian.FirstEvent;
@@ -42,7 +37,6 @@ import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 public class WxjlActivity extends BaseActivity {
     private Socket socket = null;
     private boolean socketStatus = false;
@@ -122,7 +116,6 @@ public class WxjlActivity extends BaseActivity {
                         show_Toast(getString(R.string.text_sync_tip1));
                         break;
                     }
-//                    if (response.contains("A001" + MmkvUtils.getcode("ACode", ""))) {
                     if (response.contains("A1" + MmkvUtils.getcode("ACode", ""))) {
                         //同步成功
                         //收到服务器的同步确认指令
@@ -175,12 +168,8 @@ public class WxjlActivity extends BaseActivity {
                     } else if (response.contains("A7")) {
                         EventBus.getDefault().post(new FirstEvent("finish"));
                         send485Cmd("B7" + MmkvUtils.getcode("ACode", ""));
-
 //                        show_Toast("收到退出指令");
                         finish();
-                    } else if (response.contains("A006")) {
-                    } else if (response.contains("A008")) {
-//                        toCheck6();
                     }
 
                     break;
