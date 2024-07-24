@@ -48,6 +48,7 @@ import java.util.List;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
@@ -541,6 +542,44 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         txt_currentIC.setTextColor(Color.RED);
                     } else {
                         txt_currentIC.setTextColor(Color.GREEN);
+                    }
+                    if ( busInfo.getBusVoltage() < 6.3) {
+                        Utils.writeRecord("--起爆测试--:总线短路");
+                        closeThread();
+                        AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
+                                .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
+                                .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
+                                //设置对话框的按钮
+                                .setNegativeButton("退出", (dialog12, which) -> {
+                                    close();
+                                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                                    dialog12.dismiss();
+                                    finish();
+                                })
+                                .create();
+                        dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                        if (!ReisterMainPage_line.this.isFinishing()) {//xActivity即为本界面的Activity
+                            dialog.show();
+                        }
+                    }
+                    if ( busInfo.getBusCurrentIa() > 5000) {
+                        Utils.writeRecord("--起爆测试--:总线短路");
+                        closeThread();
+                        AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
+                                .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
+                                .setMessage("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
+                                //设置对话框的按钮
+                                .setNegativeButton("退出", (dialog12, which) -> {
+                                    close();
+                                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                                    dialog12.dismiss();
+                                    finish();
+                                })
+                                .create();
+                        dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                        if (!ReisterMainPage_line.this.isFinishing()) {//xActivity即为本界面的Activity
+                            dialog.show();
+                        }
                     }
                 }
             }
@@ -1314,6 +1353,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             if(fromCommad.length()=="C0004008000033040000130C2C70C0".length()){
                 send_40 = 0;
                 busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
+
                 tipInfoFlag = 1;
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 Utils.writeRecord("busInfo:" + busInfo.toString());
