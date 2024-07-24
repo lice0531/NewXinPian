@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -1997,8 +1998,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             oneCount++;
                             //说明电源打开命令未返回
-                            Log.e(TAG, "1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount );
-                            Utils.writeRecord("1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount);
+                            int pid = Process.myPid(); // 获取当前进程的ID
+                            Log.e(TAG, "1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid);
+                            Utils.writeRecord("1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+" ");
                             if (firstCmdReFlag == 0 && oneCount > 1) {
                                 exit = true;
                             }

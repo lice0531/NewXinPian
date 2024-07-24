@@ -334,6 +334,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_ssqb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (needIgnoreClick()) {
+                    return;
+                }
                 enterFiringPage();
             }
         });
@@ -348,6 +351,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_jixu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (needIgnoreClick()) {
+                    return;
+                }
                 enterFiringPage();
             }
         });
@@ -1685,5 +1691,19 @@ public class TestDenatorActivity extends SerialPortActivity {
         }
         super.onDestroy();
         fixInputMethodManagerLeak(this);
+    }
+
+    /**
+     * 防止多次点击方法
+     * */
+    private static final int MIN_CLICK_DELAY_TIME = 1000; // 点击间隔1秒
+    private long mLastClickTime;
+    private boolean needIgnoreClick() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mLastClickTime < MIN_CLICK_DELAY_TIME) {
+            return true;
+        }
+        mLastClickTime = currentTime;
+        return false;
     }
 }

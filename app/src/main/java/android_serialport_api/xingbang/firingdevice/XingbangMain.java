@@ -1181,6 +1181,7 @@ public class XingbangMain extends SerialPortActivity {
         builder.setMessage(message);
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
+            close();//停止访问电流
             finish();
             if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);
