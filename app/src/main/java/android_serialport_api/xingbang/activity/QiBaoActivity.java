@@ -127,7 +127,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     private static volatile int startFlag = 0;
     private volatile int zeroCount = 0;//起始阶段计数器，发出关闭电源指令时间
     private volatile int zeroCmdReFlag = 0;//第0阶段结束标志 为1时0阶段结束
-    private volatile int firstWaitCount = 30;//第一阶段计时
+    private volatile int firstWaitCount = 3;//第一阶段计时
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
@@ -811,35 +811,36 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 //检测一次
-//                                if (blastQueue == null || blastQueue.size() < 1) {
-//                                    increase(4);//之前是4
-//                                    Log.e(TAG,"第4阶段-increase"+ "4-2");
+                                if (blastQueue == null || blastQueue.size() < 1) {
+                                    increase(4);//之前是4
+                                    Log.e(TAG,"第4阶段-increase"+ "4-2");
+                                    fourOnlineDenatorFlag = 0;
+                                    break;
+                                }
+
+                                //检测两次
+//                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
+//                                    //如果过错误数量不为为0才发第二次
+////                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
+////                                        //检测一次
+////                                        increase(4);//之前是4
+////                                        Log.e(TAG,"第4阶段-increase"+ "4-2");
+////                                    }else {
+//                                    Log.e(TAG,"雷管队列数量"+ "blastQueue.size():" + blastQueue.size());
+//                                    Utils.writeRecord("--第一轮检测结束-------------");
+//                                    //检测两次
+//                                    getblastQueue();
+//                                    Thread.sleep(1000);//在第二次检测前等待1s
+//                                    increase(33);//之前是4
+//                                    totalerrorNum = 0;//重置错误数量
+//                                    leiguan_err=0;
+//                                    leiguan_true=0;
+////                                  }
+//
 //                                    fourOnlineDenatorFlag = 0;
 //                                    break;
 //                                }
 
-                                //检测两次
-                                if (blastQueue == null || blastQueue.size() < 1) {//检测结束后的操作
-                                    //如果过错误数量不为为0才发第二次
-//                                    if(!ll_firing_errorAmount_2.getText().equals("0")){
-//                                        //检测一次
-//                                        increase(4);//之前是4
-//                                        Log.e(TAG,"第4阶段-increase"+ "4-2");
-//                                    }else {
-                                    Log.e(TAG,"雷管队列数量"+ "blastQueue.size():" + blastQueue.size());
-                                    Utils.writeRecord("--第一轮检测结束-------------");
-                                    //检测两次
-                                    getblastQueue();
-                                    Thread.sleep(1000);//在第二次检测前等待1s
-                                    increase(33);//之前是4
-                                    totalerrorNum = 0;//重置错误数量
-                                    leiguan_err=0;
-                                    leiguan_true=0;
-//                                  }
-
-                                    fourOnlineDenatorFlag = 0;
-                                    break;
-                                }
                                 VoDenatorBaseInfo write = blastQueue.poll();
                                 tempBaseInfo = write;
 
@@ -1127,7 +1128,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Log.e(TAG,"发送命令"+ str);
+                Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 e.printStackTrace();
