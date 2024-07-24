@@ -16,6 +16,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.text.TextUtils;
@@ -1162,11 +1163,13 @@ public class FiringMainActivity extends SerialPortActivity {
 
     //发送命令
     public void sendCmd(byte[] mBuffer) {
+        int pid = Process.myPid(); // 获取当前进程的ID
+        int tid = Process.myTid(); // 获取当前线程的ID
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Log.e("发送命令", str);
-                Utils.writeLog("->:" + str);
+                Utils.writeLog(pid+"-"+tid+"->:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {
@@ -1338,7 +1341,9 @@ public class FiringMainActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        Utils.writeLog("<-:" + fromCommad);
+        int pid = Process.myPid(); // 获取当前进程的ID
+        int tid = Process.myTid(); // 获取当前线程的ID
+        Utils.writeLog(pid+"-"+tid+"<-:" + fromCommad);//找到问题可以把这个进程id去掉
 //        Log.e("返回命令--起爆页面", fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -1371,6 +1376,11 @@ public class FiringMainActivity extends SerialPortActivity {
             zeroCmdReFlag = 1;
             byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
             sendCmd(powerCmd);
+            int pid = Process.myPid(); // 获取当前进程的ID
+            int Tid = Process.myTid(); // 获取当前线程的ID
+            Log.e(TAG, "收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
+            Utils.writeRecord("收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
+
             Log.e(TAG, "收到13指令，开始发送41指令");
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
 //            String text = ll_firing_IC_4.getText().toString();
@@ -1999,8 +2009,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             oneCount++;
                             //说明电源打开命令未返回
                             int pid = Process.myPid(); // 获取当前进程的ID
-                            Log.e(TAG, "1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid);
-                            Utils.writeRecord("1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+" ");
+                            int Tid = Process.myTid(); // 获取当前线程的ID
+                            Log.e(TAG, "1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
+                            Utils.writeRecord("1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
                             if (firstCmdReFlag == 0 && oneCount > 1) {
                                 exit = true;
                             }
