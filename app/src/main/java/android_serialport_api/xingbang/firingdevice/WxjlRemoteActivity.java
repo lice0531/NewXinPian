@@ -203,7 +203,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private void doWithReceivData(byte[] cmdBuf) {
         String res = Utils.bytesToHexFun(cmdBuf);
         Message msg = new Message();
-        if (res.contains(DefCommand.CMD_MC_SEND_B0)) {
+        if (res.startsWith(DefCommand.CMD_MC_SEND_B0)) {
             //已收到同步B0指令
             firstCmdReFlag = 1;
             if (syncDevices != null) {
@@ -219,7 +219,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             bean.setCode(res.substring(res.length() - 2));
             bean.setInfo("在线");
             msg.obj = bean;
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B1)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B1)) {
             // 起爆检测
             msg.what = 9;
             msg.obj = receiveMsg(res, "在线");
@@ -227,15 +227,15 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B2)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B2)) {
             // 充电
             msg.what = 9;
             msg.obj = receiveMsg(res, "正在充电");
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B3)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B3)) {
             // 充电升高压
             msg.what = 9;
             msg.obj = receiveMsg(res, "升高压中");
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B4)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B4)) {
             // 单个设备起爆
             msg.what = 9;
             msg.obj = receiveMsg(res, "起爆中");
@@ -243,106 +243,20 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             //频率降下来后  芯片返回的命令总是两截的：雷管全部数量和错误数量是单独发一条  所以这么来处理
             Log.e(TAG,"2400频率下得到的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
-            // 1:检测状态   3：电流数据   4：雷管总数   6：错误数量
-            int aa = res.length() / 4;
-            for (int i = 0; i < aa; i++) {
-                String value = res.substring(4 * i, 4 * (i + 1));
-                switch (value.substring(0, 1)){
-                    case "4":
-                        //拿到全部雷管数量后只展示最后三位数即可
-                        bean.setTrueNum(showLgNum(value));
-                        Log.e(TAG,"2400频率下得到的B5消息中拿到全部雷管数量了:" + showLgNum(value));
-                        break;
-                    case "6":
-                        //拿到错误雷管数量后只展示最后三位数即可
-                        bean.setErrNum(showLgNum(value));
-                        Log.e(TAG,"2400频率下得到的B5消息中拿到错误数量了:" + showLgNum(value));
-                        break;
-                }
-            }
+            receB5Data(bean,res,1);
             msg.what = 7;
             msg.obj = bean;
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B5)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B5)) {
             Log.e(TAG,"得到的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
-            bean.setRes(res);
-            bean.setCode(res.substring(2,4));
-            // 1:检测状态   3：电流数据   4：雷管总数   6：错误数量
-            int aa = res.length() / 4;
-            for (int i = 1; i < aa; i++) {
-                String value = res.substring(4 * i, 4 * (i + 1));
-                switch (value.substring(0, 1)){
-                    case "1":
-                        //根据不同的值展示状态
-                        bean.setInfo("检测中");
-                        Log.e(TAG,"得到的B5消息中拿到检测状态了" + value.substring(0, 1));
-                        /**
-                         * 100：检测中     101：检测结束
-                         * 200：正在充电   201：充电结束    202：充电失败
-                         * 300：升高压中   301：升高压结束  302：升高压失败
-                         * 400：起爆中     401：起爆结束   402：起爆失败
-                         */
-                        switch (value.substring(value.length() - 3)) {
-                            case "100":
-                                bean.setInfo("检测中");
-                                break;
-                            case "101":
-                                bean.setInfo("检测结束");
-                                break;
-                            case "200":
-                                bean.setInfo("正在充电");
-                                break;
-                            case "201":
-                                bean.setInfo("充电结束");
-                                break;
-                            case "202":
-                                bean.setInfo("充电失败");
-                                break;
-                            case "300":
-                                bean.setInfo("升高压中");
-                                break;
-                            case "301":
-                                bean.setInfo("升压结束");
-                                break;
-                            case "302":
-                                bean.setInfo("升压失败");
-                                break;
-                            case "400":
-                                bean.setInfo("起爆中");
-                                break;
-                            case "401":
-                                bean.setInfo("起爆结束");
-                                break;
-                            case "402":
-                                bean.setInfo("起爆失败");
-                                break;
-                        }
-                        break;
-                    case "3":
-                        String sb = value.substring(value.length() - 3);
-                        String cp = Utils.addZero(sb, 4);
-                        bean.setCurrentPeak(showCp(cp));
-                        Log.e(TAG,"得到的B5消息中拿到电流信息了:" + sb + "--补零后：" + cp + "--要显示的电流是：" + showCp(cp));
-                        break;
-                    case "4":
-                        //拿到全部雷管数量后只展示最后三位数即可
-                        bean.setTrueNum(showLgNum(value));
-                        Log.e(TAG,"得到的B5消息中拿到全部雷管数量了:" + showLgNum(value));
-                        break;
-                    case "6":
-                        //拿到错误雷管数量后只展示最后三位数即可
-                        bean.setErrNum(showLgNum(value));
-                        Log.e(TAG,"得到的B5消息中拿到错误数量了:" + showLgNum(value));
-                        break;
-                }
-            }
+            receB5Data(bean,res,2);
             msg.what = 8;
             msg.obj = bean;
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B6)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B6)) {
             // 切换模式起爆
             msg.what = 9;
             msg.obj = receiveMsg(res, "起爆中");
-        } else if (res.contains(DefCommand.CMD_MC_SEND_B7)) {
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B7)) {
             // 退出
             msg.what = InitConst.CODE_EXIT;
             msg.obj = receiveMsg(res, "");
@@ -350,6 +264,88 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         handler_msg.sendMessage(msg);
     }
 
+    private void receB5Data(DeviceBean bean,String res,int type) {
+        Log.e(TAG,"处理接收到的B5消息：" + res + "--type : " + type);
+        int index;
+        if (type == 1) {
+            index = 0;
+        } else {
+            bean.setRes(res);
+            bean.setCode(res.substring(2,4));
+            index = 1;
+        }
+        // 1:检测状态   3：电流数据   4：雷管总数   6：错误数量
+        int aa = res.length() / 4;
+        for (int i = index; i < aa; i++) {
+            String value = res.substring(4 * i, 4 * (i + 1));
+            switch (value.substring(0, 1)){
+                case "1":
+                    //根据不同的值展示状态
+                    Log.e(TAG,"得到的B5消息中拿到检测状态了" + value.substring(value.length() - 3));
+                    /**
+                     * 001：同步      100：检测中      101：检测结束
+                     * 200：正在充电   201：充电结束    202：充电失败
+                     * 300：升高压中   301：升高压结束  302：升高压失败
+                     * 400：起爆中     401：起爆结束   402：起爆失败
+                     */
+                    switch (value.substring(value.length() - 3)) {
+                        case "001":
+                            bean.setInfo("同步");
+                            break;
+                        case "100":
+                            bean.setInfo("检测中");
+                            break;
+                        case "101":
+                            bean.setInfo("检测结束");
+                            break;
+                        case "200":
+                            bean.setInfo("正在充电");
+                            break;
+                        case "201":
+                            bean.setInfo("充电结束");
+                            break;
+                        case "202":
+                            bean.setInfo("充电失败");
+                            break;
+                        case "300":
+                            bean.setInfo("升高压中");
+                            break;
+                        case "301":
+                            bean.setInfo("升压结束");
+                            break;
+                        case "302":
+                            bean.setInfo("升压失败");
+                            break;
+                        case "400":
+                            bean.setInfo("起爆中");
+                            break;
+                        case "401":
+                            bean.setInfo("起爆结束");
+                            break;
+                        case "402":
+                            bean.setInfo("起爆失败");
+                            break;
+                    }
+                    break;
+                case "3":
+                    String sb = value.substring(value.length() - 3);
+                    String cp = Utils.addZero(sb, 4);
+                    bean.setCurrentPeak(showCp(cp));
+                    Log.e(TAG,"得到的B5消息中拿到电流信息了:" + sb + "--补零后：" + cp + "--要显示的电流是：" + showCp(cp));
+                    break;
+                case "4":
+                    //拿到全部雷管数量后只展示最后三位数即可
+                    bean.setTrueNum(showLgNum(value));
+                    Log.e(TAG,"得到的B5消息中拿到全部雷管数量了:" + showLgNum(value));
+                    break;
+                case "6":
+                    //拿到错误雷管数量后只展示最后三位数即可
+                    bean.setErrNum(showLgNum(value));
+                    Log.e(TAG,"得到的B5消息中拿到错误数量了:" + showLgNum(value));
+                    break;
+            }
+        }
+    }
     private String showLgNum(String data) {
         String hexString = data.substring(data.length() - 3);
         String decimal = String.valueOf(Integer.parseInt(hexString, 16));

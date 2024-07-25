@@ -126,7 +126,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, "1");
         deletaBeian();
-        sendCmd(ThreeFiringCmd.sendWxjl80("01"));
+        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出测试模式
+        sendCmd(powerCmd);
     }
     private void deletaBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

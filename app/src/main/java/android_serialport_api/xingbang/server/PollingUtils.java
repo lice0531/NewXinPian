@@ -15,9 +15,6 @@ public class PollingUtils {
     //轮询时间
     public final static int seconds = InitConst.POLLING_TIME;
     public static int count = 0;
-    public final static String WXPG_NEWS_COUNT_KEY =  "WXPG_NEWS_COUNT_KEY";
-    public final static String YYWX_NEWS_COUNT_KEY =  "YYWX_NEWS_COUNT_KEY";
-    public final static String POLLING_ISFIRST_KEY =  "POLLING_ISFIRST_KEY";
     public static void startPollingService(Context context, int seconds, Class<?> cls, String action){
         Log.d("轮询PollingUtils", "调用了");
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
