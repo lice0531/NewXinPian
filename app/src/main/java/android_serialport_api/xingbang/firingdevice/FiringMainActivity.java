@@ -584,7 +584,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             //电流大于4000,重启检测阶段
-            if (oneCount > oneCount_max && stage == 2 && busInfo != null) {
+            if (oneCount > 5 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 21000) {
