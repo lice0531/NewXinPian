@@ -206,6 +206,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         if (res.contains(DefCommand.CMD_MC_SEND_B0)) {
             //已收到同步B0指令
             firstCmdReFlag = 1;
+            if (syncDevices != null) {
+                syncDevices.exit = true;  // 终止线程thread
+                syncDevices.interrupt();
+            }
+            Log.e(TAG,"已收到B0指令,不再发送A0指令");
             //同步
             msg.what = 0;
             DeviceBean bean = new DeviceBean();
@@ -234,6 +239,29 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             // 单个设备起爆
             msg.what = 9;
             msg.obj = receiveMsg(res, "起爆中");
+        } else if (res.startsWith("4")) {
+            //频率降下来后  芯片返回的命令总是两截的：雷管全部数量和错误数量是单独发一条  所以这么来处理
+            Log.e(TAG,"2400频率下得到的B5消息是：" + res);
+            DeviceBean bean = new DeviceBean();
+            // 1:检测状态   3：电流数据   4：雷管总数   6：错误数量
+            int aa = res.length() / 4;
+            for (int i = 0; i < aa; i++) {
+                String value = res.substring(4 * i, 4 * (i + 1));
+                switch (value.substring(0, 1)){
+                    case "4":
+                        //拿到全部雷管数量后只展示最后三位数即可
+                        bean.setTrueNum(showLgNum(value));
+                        Log.e(TAG,"2400频率下得到的B5消息中拿到全部雷管数量了:" + showLgNum(value));
+                        break;
+                    case "6":
+                        //拿到错误雷管数量后只展示最后三位数即可
+                        bean.setErrNum(showLgNum(value));
+                        Log.e(TAG,"2400频率下得到的B5消息中拿到错误数量了:" + showLgNum(value));
+                        break;
+                }
+            }
+            msg.what = 7;
+            msg.obj = bean;
         } else if (res.contains(DefCommand.CMD_MC_SEND_B5)) {
             Log.e(TAG,"得到的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
@@ -326,12 +354,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         String hexString = data.substring(data.length() - 3);
         String decimal = String.valueOf(Integer.parseInt(hexString, 16));
         if (decimal.length() > 2) {
-            Log.e(TAG,"十六进制数: " + hexString + "--十进制数: " + decimal +
-                    "--要展示的：" + decimal);
             return decimal;
         } else {
-            Log.e(TAG,"十六进制数: " + hexString + "--十进制数: " + decimal +
-                    "--要展示的：" + Utils.addZero(decimal, 3));
             return Utils.addZero(decimal, 3);
         }
     }
@@ -512,6 +536,20 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 }
                             }
                         }
+                        break;
+                    case 7:
+                        DeviceBean bn = (DeviceBean) msg.obj;
+                        //受控指令
+                        if (!isDeviceConnet) {
+                            isDeviceConnet = true;
+                        }
+                        Log.e(TAG, "2400频率下接收B5指令返回数据了：" + list_device.toString() + "--res:" +
+                                bn.getTrueNum() + bn.getErrNum());
+                        for (int a = 0; a < list_device.size(); a++) {
+                            list_device.get(a).setTrueNum(bn.getTrueNum());
+                            list_device.get(a).setErrNum(bn.getErrNum());
+                        }
+                        adapter.notifyDataSetChanged();
                         break;
                     case 8:
                         DeviceBean bean4 = (DeviceBean) msg.obj;
