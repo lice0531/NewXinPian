@@ -91,7 +91,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private String TAG = "远距离串口无线级联页面";
     private String wxjlDeviceId = "";
     private SyncDevices syncDevices;
-    private int firstCmdReFlag = 0;//发出同步命令是否返回
+    private boolean reciveB0 = false;//发出同步命令是否返回
 
     @Override
     protected void onStart() {
@@ -117,21 +117,21 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     int rate = 2400;
     private void initSerRate() {
         //通讯速率需从115200降到2400
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                mApplication.closeSerialPort();
-//                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                mSerialPort = null;
-//            }
-//        }).start();
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//        initSerialPort(rate);
-//        Log.e(TAG, "3秒后重新打开串口，将波特率降为" + rate);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        initSerialPort(rate);
+        Log.e(TAG, "3秒后重新打开串口，将波特率降为" + rate);
         initData();
     }
 
@@ -162,11 +162,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             int zeroCount = 0;
             while (!exit) {
                 try {
-                    if (firstCmdReFlag == 1) {
+                    if (reciveB0) {
                         exit = true;
                         break;
                     }
-                    if (zeroCount > 0 && zeroCount <= 10 && firstCmdReFlag == 0) {
+                    if (zeroCount > 0 && zeroCount <= 10 && !reciveB0) {
                         Log.e(TAG,"发送A0同步指令");
                         sendCmd(ThreeFiringCmd.setWxjlA0(wxjlDeviceId));
                         Thread.sleep(1500);
@@ -197,6 +197,13 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         doWithReceivData(localBuf);//处理cmd命令
     }
 
+    private void closeThread() {
+        if (syncDevices != null) {
+            syncDevices.exit = true;  // 终止线程thread
+            syncDevices.interrupt();
+        }
+    }
+
     /**
      * 处理芯片返回命令
      */
@@ -205,12 +212,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         Message msg = new Message();
         if (res.startsWith(DefCommand.CMD_MC_SEND_B0)) {
             //已收到同步B0指令
-            firstCmdReFlag = 1;
-            if (syncDevices != null) {
-                syncDevices.exit = true;  // 终止线程thread
-                syncDevices.interrupt();
-            }
+            reciveB0 = true;
             Log.e(TAG,"已收到B0指令,不再发送A0指令");
+            closeThread();
             //同步
             msg.what = 0;
             DeviceBean bean = new DeviceBean();
@@ -241,7 +245,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.obj = receiveMsg(res, "起爆中");
         } else if (res.startsWith("4")) {
             //频率降下来后  芯片返回的命令总是两截的：雷管全部数量和错误数量是单独发一条  所以这么来处理
-            Log.e(TAG,"2400频率下得到的B5消息是：" + res);
+            Log.e(TAG,"收到雷管数据的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
             receB5Data(bean,res,1);
             msg.what = 7;
@@ -433,7 +437,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                     list_device.add(bean);
                                     adapter.notifyDataSetChanged();
                                     //同步成功
-                                    sendCmd(ThreeFiringCmd.setWxjlA0("01"));
+//                                    Log.e(TAG,"case0中发送A0指令");
+//                                    sendCmd(ThreeFiringCmd.setWxjlA0("01"));
                                     //更新设备个数
                                     Message message = handler_msg.obtainMessage();
                                     int collectionSize = list_device.size();
@@ -539,7 +544,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         if (!isDeviceConnet) {
                             isDeviceConnet = true;
                         }
-                        Log.e(TAG, "2400频率下接收B5指令返回数据了：" + list_device.toString() + "--res:" +
+                        Log.e(TAG, "收到不完整的B5消息数据了：" + list_device.toString() + "--res:" +
                                 bn.getTrueNum() + bn.getErrNum());
                         for (int a = 0; a < list_device.size(); a++) {
                             list_device.get(a).setTrueNum(bn.getTrueNum());
@@ -792,13 +797,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (syncDevices != null) {
-            syncDevices.exit = true;  // 终止线程thread
-            syncDevices.interrupt();
-        }
+        closeThread();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
-
 }

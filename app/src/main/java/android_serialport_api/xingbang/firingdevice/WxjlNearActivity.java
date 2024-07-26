@@ -52,6 +52,12 @@ public class WxjlNearActivity extends SerialPortActivity {
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
     private String mRegion = "1";     // 区域
     private Handler handler_msg = new Handler();
+    private RegisterDevices rDevices;
+    private EnterJcms enterJcms;
+    private boolean receive80 = false;//发出80命令是否返回
+    private boolean receive81 = false;//发出81命令是否返回
+    private boolean receive82 = false;//发出82命令是否返回
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,12 +79,112 @@ public class WxjlNearActivity extends SerialPortActivity {
             public boolean handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
                     case 0:
-                        show_Toast("数据传输已结束");
+                        String registResult = (String) msg.obj;
+                        if ("true".equals(registResult)) {
+                            btnRegister.setText("1.设备已注册" );
+                        } else {
+                            btnRegister.setText("1.设备注册");
+                            show_Toast("设备注册失败，请退出APP后再重新注册");
+                        }
+                        closeThread();
+                        break;
+                    case 1:
+                        btnSendData.setText("2.数据传输结束");
+                        receive81 = true;
+                        break;
+                    case 2:
+                        String jcmsResult = (String) msg.obj;
+                        if ("true".equals(jcmsResult)) {
+                            btnEnterJcms.setText("3.数据检测结束" );
+                        } else {
+                            btnEnterJcms.setText("3.进入检测模式");
+                            show_Toast("设数据检测失败，请退出APP后再重新检测");
+                        }
+                        closeThread();
+                        btnEnterJcms.setText("3.数据检测结束");
                         break;
                 }
                 return false;
             }
         });
+    }
+
+    private void closeThread(){
+        if (rDevices != null) {
+            rDevices.exit = true;  // 终止线程thread
+            rDevices.interrupt();
+        }
+        if (enterJcms != null) {
+            enterJcms.exit = true;  // 终止线程thread
+            enterJcms.interrupt();
+        }
+    }
+    private class RegisterDevices extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (receive80) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount > 0 && zeroCount <= 5 && !receive80) {
+                        Log.e(TAG,"发送80注册指令");
+                        sendCmd(ThreeFiringCmd.sendWxjl80(deviceId));
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 5){
+                        Log.e(TAG,"80指令未返回已发送5次，停止发送80指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 0;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class EnterJcms extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (receive82) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount > 0 && zeroCount <= 5 && !receive82) {
+                        String b = Utils.intToHex(1);
+                        dataLength82 = Utils.addZero(b, 2);
+                        data82 = "01";
+                        Log.e(TAG,"82指令--数据体长度：" + dataLength82 + "--数据体：" + data82);
+                        sendCmd(ThreeFiringCmd.sendWxjl82(deviceId, dataLength82, data82));
+                        Log.e(TAG, "发送82进入检测模式指令");
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 5){
+                        Log.e(TAG,"82指令未返回已发送5次，停止发送82指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 2;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     //发送命令
@@ -125,15 +231,26 @@ public class WxjlNearActivity extends SerialPortActivity {
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
         if (DefCommand.CMD_5_TRANSLATE_80.equals(cmd)) {//80 无线级联：进行设备注册
-            Log.e(TAG, "接收到80设备注册指令,发送80指令给主节点");
             //此时拿到设备号，然后在远距离级联页面时候使用
+            Log.e(TAG, "收到80指令了");
             EventBus.getDefault().post(new FirstEvent("deviceId", deviceId));
+            receive80 = true;
+            Message message = new Message();
+            message.what = 0;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_5_TRANSLATE_81.equals(cmd)) {//81 无线级联：子节点与主节点进行数据传输
             Log.e(TAG, "收到81指令了");
             sendNum++;
             send81cmd();
         } else if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
             Log.e(TAG, "收到82指令了");
+            EventBus.getDefault().post(new FirstEvent("deviceId", deviceId));
+            receive82 = true;
+            Message message = new Message();
+            message.what = 2;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
         } else {
             Log.e(TAG, "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
@@ -142,6 +259,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     private void send81cmd() {
         //10条数据发一次   81指令：C0+设备号+81+数据体长度+数据体+后面跟通用的一样
         int dataLength;
+        //limit字段：设置每次81指令发送几条雷管数据
         int limit = 1;
         if (mListData.size() >= limit) {
             dataLength = mListData.size() / limit >= sendNum ? (limit * 9 + 1) : Math.max(mListData.size() % limit, 0) * 9 + 1;
@@ -149,10 +267,9 @@ public class WxjlNearActivity extends SerialPortActivity {
             dataLength = mListData.size() % limit * 9 + 1;
         }
         if (!(dataLength > 1)) {
-            handler_msg.sendMessage(handler_msg.obtainMessage(0));
+            handler_msg.sendMessage(handler_msg.obtainMessage(1));
             return;
         }
-//        dataLength = 10;
         //数据体长度
         String b1 = Utils.intToHex(dataLength);
         dataLength81 = Utils.addZero(b1, 2);
@@ -187,7 +304,6 @@ public class WxjlNearActivity extends SerialPortActivity {
             }
         }
         Log.e("81指令", dataLength81 + serId + data81);
-//        sendCmd(ThreeFiringCmd.sendWxjl81(deviceId,dataLength81,"018527E8005A00FD0400"));
         sendCmd(ThreeFiringCmd.sendWxjl81(deviceId, dataLength81, serId, data81));
     }
 
@@ -195,36 +311,31 @@ public class WxjlNearActivity extends SerialPortActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_register:
-                sendCmd(ThreeFiringCmd.sendWxjl80(deviceId));
+                if (receive80) {
+                    show_Toast("设备已注册，请勿重复注册");
+                } else {
+                    btnRegister.setText("1.设备注册中...");
+                    rDevices = new RegisterDevices();
+                    rDevices.start();
+                }
                 break;
             case R.id.btn_send_data:
-                //雷管数据10条发一次
-                send81cmd();
+                if (receive81) {
+                    show_Toast("数据传输已结束，无需重复传输");
+                } else {
+                    //雷管数据10条发一次  但目前暂定1条发一次
+                    btnSendData.setText("2.数据传输中...");
+                    send81cmd();
+                }
                 break;
             case R.id.btn_enter_jcms:
-                String b = Utils.intToHex(1);
-                dataLength82 = Utils.addZero(b, 2);
-                data82 = "01";
-                Log.e(TAG,"82指令--数据体长度：" + dataLength82 + "--数据体：" + data82);
-                sendCmd(ThreeFiringCmd.sendWxjl82(deviceId, dataLength82, data82));
-                Log.e(TAG, "发送82进入检测模式指令");
-                //通讯速率需从115200降到2400
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mApplication.closeSerialPort();
-//                        Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                        mSerialPort = null;
-//                    }
-//                }).start();
-//                try {
-//                    Thread.sleep(3000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                initSerialPort(2400);
-//                Log.e(TAG, "3秒后重新打开串口，将波特率降为2400");
-                EventBus.getDefault().post(new FirstEvent("deviceId", deviceId));
+                if (receive82) {
+                    show_Toast("数据检测已结束，无需重复检测");
+                } else {
+                    btnEnterJcms.setText("3.数据检测中...");
+                    enterJcms = new EnterJcms();
+                    enterJcms.start();
+                }
                 break;
             case R.id.btn_exit:
                 byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
@@ -232,6 +343,12 @@ public class WxjlNearActivity extends SerialPortActivity {
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        closeThread();
+        super.onDestroy();
     }
 }
 

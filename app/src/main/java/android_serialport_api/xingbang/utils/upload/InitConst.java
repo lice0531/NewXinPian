@@ -55,5 +55,5 @@ public class InitConst {
     public static final int CODE_UPDAE_STATUS = 108;
     public static final int CODE_TRANSLATE = 109;
     //M900有线级联页面轮询时间
-    public static final int POLLING_TIME = 15;
+    public static final int POLLING_TIME = 10;
 }
