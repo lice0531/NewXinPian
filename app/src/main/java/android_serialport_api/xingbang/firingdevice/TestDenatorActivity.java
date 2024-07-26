@@ -145,7 +145,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         tipInfoFlag = 0;
 
         writeDenator = null;
-        busInfo = null;
+//        busInfo = null;
         thirdWriteErrorDenator = null;
         errDeData.clear();
         errorList.clear();

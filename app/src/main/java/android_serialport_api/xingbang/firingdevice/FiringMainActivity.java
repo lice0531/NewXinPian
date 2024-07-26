@@ -598,6 +598,20 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                 }
             }
+            if (twoCount > 10 && stage == 6 && busInfo != null) {
+                Log.e(TAG, "busInfo: " + busInfo.toString());
+                float displayIc = busInfo.getBusCurrentIa();
+                if (displayIc > 30000) {
+                    increase(99);//暂停阶段
+                    mHandler_1.handleMessage(Message.obtain());
+                    if (!chongfu) {
+//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
+//                    } else {
+                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));
+                        initDialog_zanting_stop("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
+                    }
+                }
+            }
 
             if (oneCount > oneCount_max * 0.5 && busInfo.getBusVoltage() < 6) {
                 Log.e(TAG,secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());

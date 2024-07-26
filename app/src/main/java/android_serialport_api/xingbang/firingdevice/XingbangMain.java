@@ -44,6 +44,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -183,6 +186,8 @@ public class XingbangMain extends SerialPortActivity {
     private boolean isCmdClosed = false;//是否已经关闭串口
     private boolean isRestarted = false;
     private boolean threadStarted = false;
+    //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
 
     @Override
     protected void onPause() {
@@ -215,6 +220,8 @@ public class XingbangMain extends SerialPortActivity {
         setContentView(R.layout.activity_xingbang_main);
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
+
+
 
         initPower();                // 初始化上电方式()
         initView();         // 初始化控件
@@ -1516,7 +1523,8 @@ public class XingbangMain extends SerialPortActivity {
         sendPower = new SendPower();//40指令线程
         sendPower.exit = false;
         if (!threadStarted) {
-            sendPower.start();
+            threadPoolExecutor.execute( sendPower);
+
             Log.e(TAG,"已开启40线程");
             threadStarted = true;
         } else {
@@ -1529,15 +1537,12 @@ public class XingbangMain extends SerialPortActivity {
         isRestarted = false;
         threadStarted = false;
         get41Resp = 0;
-        if (sendPower != null) {
-            sendPower.exit = true;  // 终止线程thread
-//            try {
-                sendPower.interrupt();
-//            } catch (InterruptedException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-        }
+        threadPoolExecutor.shutdown();
+        Log.e(TAG, "close: 关闭线程池" );
+//        if (sendPower != null) {
+//            sendPower.exit = true;  // 终止线程thread
+//                sendPower.interrupt();
+//        }
 
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
