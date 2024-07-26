@@ -166,4 +166,8 @@
     <color name="app_bg_color">#020C49</color>
     <color name="gray">#8A96A3</color>
     <color name="yellow">#F39700</color>
+    <color name="blue_light">#1296db</color>
+    <color name="blue_deep">#13227a</color>
+    <color name="blue_text">#1296db</color>
+    <color name="bg_color">#F6FAFE</color>
 </resources>

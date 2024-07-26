@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_practice"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_firing_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:titleTextColor="@color/white" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <RelativeLayout
+            android:id="@+id/but_version"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_width="match_parent"
+            android:padding="20dp"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivJYW"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_version" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivJYW"
+                android:text="版本号"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/but_jilian"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/ivjl"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_jl" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivjl"
+                android:text="级联设置"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/but_pre"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/ivdl"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_dl" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivdl"
+                android:text="快速测试电流"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/but_sendMsg"
+            android:padding="20dp"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/ivhc"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_hc" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivhc"
+                android:text="数据互传"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/but_delete"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:padding="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/ivqchc"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_qchc" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivqchc"
+                android:text="清除缓存"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+<!--    </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="80dp"-->
+<!--            android:orientation="vertical">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_version"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:text="版本号" />-->
+<!--        </LinearLayout>-->
+
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="4dp"-->
+<!--            android:background="@color/label_color" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:background="@drawable/textview_border"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="切换单片机版本"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/et_Hardware_Version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:hint="输入版本号"
+                android:inputType="number|numberDecimal" />
+
+            <Button
+                android:id="@+id/set_Hardware_Version"
+                style="@style/allbtntstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="切换单片机版本"
+                android:textColor="@color/bt_fg_base" />
+        </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="80dp"-->
+<!--            android:orientation="vertical">-->
+
+<!--            <TextView-->
+<!--                style="@style/alltextstyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:text="跳转到级联设置页面"-->
+<!--                android:textSize="25sp"-->
+<!--                android:visibility="gone" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_jilian"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:text="级联设置" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_jilian_wifi"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:text="WIFI级联设置页面"-->
+<!--                android:visibility="gone" />-->
+<!--        </LinearLayout>-->
+
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="4dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/label_color" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="测试当前电流"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/test_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="当前电流" />
+
+            <TextView
+                android:id="@+id/tv_ceshi_dianliu"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/test_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="end"
+                android:text="0.0μA" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/test_pg_Left"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="当前电压" />
+
+            <TextView
+                android:id="@+id/tv_ceshi_dianya"
+                style="@style/alltextstyle"
+                android:layout_width="@dimen/test_pg_middle"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="end"
+                android:text="0.0V" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="80dp">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_pre"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginStart="90dp"-->
+<!--                android:text="快速测试电流" />-->
+
+<!--        </RelativeLayout>-->
+
+        <Button
+            android:id="@+id/but_test"
+            style="@style/allbtntstyle"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="测试页面"
+            android:visibility="gone" />
+
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="4dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/label_color" />-->
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="80dp">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_sendMsg"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginStart="90dp"-->
+<!--                android:text="数据互传" />-->
+
+<!--        </RelativeLayout>-->
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="4dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/label_color" />-->
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="80dp">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_delete"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginStart="90dp"-->
+<!--                android:text="清除缓存" />-->
+
+<!--        </RelativeLayout>-->
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="4dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/label_color" />-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/but_upgrade"
+                style="@style/allbtntstyle"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="90dp"
+                android:text="升级硬件程序" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="数据协同功能"
+                    android:textSize="25sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_android_ip"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="本机ip" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="输入要发送设备的IP地址" />
+
+                    <EditText
+                        android:id="@+id/text_setvice_ip"
+                        style="@style/alltextstyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:hint="IP地址" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/but_receive"
+                        style="@style/allbtntstyle"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:text="接收数据" />
+
+                    <Button
+                        android:id="@+id/but_lianjie"
+                        style="@style/allbtntstyle"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:text="连接"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/but_send"
+                        style="@style/allbtntstyle"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:text="发送数据" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/label_color" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/but_write"
+                    style="@style/allbtntstyle"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="90dp"
+                    android:text="导出雷管到本地" />
+
+            </RelativeLayout>
+
+            <TextView
+                style="@style/alltextstyle"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="选择要读取的文件" />
+
+            <TextView
+                android:id="@+id/text_filePath"
+                style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="文件路径" />
+
+            <Button
+                android:id="@+id/btn_openFile"
+                style="@style/allbtntstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:text="打开文件管理器" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/btn_read"
+                    style="@style/allbtntstyle"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="90dp"
+                    android:text="读取雷管" />
+
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_read_log"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:text="分析日志"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

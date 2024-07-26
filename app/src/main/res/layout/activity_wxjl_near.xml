@@ -90,7 +90,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="1.设备注册中..."
+                android:text="1.设备注册"
                 style="@style/allbtntstyle" />
 
             <Button

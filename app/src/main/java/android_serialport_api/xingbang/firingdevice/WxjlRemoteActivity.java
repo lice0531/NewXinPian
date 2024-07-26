@@ -42,6 +42,7 @@ import android_serialport_api.xingbang.server.MySocketServer;
 import android_serialport_api.xingbang.server.PollingReceiver;
 import android_serialport_api.xingbang.server.PollingUtils;
 import android_serialport_api.xingbang.server.WebConfig;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.InitConst;
 import butterknife.BindView;
@@ -92,6 +93,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private String wxjlDeviceId = "";
     private SyncDevices syncDevices;
     private boolean reciveB0 = false;//发出同步命令是否返回
+    private boolean reciveB5 = false;//发出A5命令是否返回
+    private int zeroCount = 1;//A5指令无返回的次数
+    private boolean isOpenLowRate = false;//是否开启2400低频
+    int rate = 2400;
 
     @Override
     protected void onStart() {
@@ -111,27 +116,30 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //        initSocket();
         initPower();                // 初始化上电方式()
         powerOnDevice(PIN_ADSL);
+        show_Toast("正在同步设备...");
         initSerRate();
     }
 
-    int rate = 2400;
+
     private void initSerRate() {
-        //通讯速率需从115200降到2400
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
+        if (isOpenLowRate) {
+            //通讯速率需从115200降到2400
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mApplication.closeSerialPort();
+                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                    mSerialPort = null;
+                }
+            }).start();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        }).start();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            initSerialPort(rate);
+            Log.e(TAG, "3秒后重新打开串口，将波特率降为" + rate);
         }
-        initSerialPort(rate);
-        Log.e(TAG, "3秒后重新打开串口，将波特率降为" + rate);
         initData();
     }
 
@@ -166,12 +174,16 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         exit = true;
                         break;
                     }
-                    if (zeroCount > 0 && zeroCount <= 10 && !reciveB0) {
+                    if (zeroCount > 0 && zeroCount <= 5 && !reciveB0) {
                         Log.e(TAG,"发送A0同步指令");
                         sendCmd(ThreeFiringCmd.setWxjlA0(wxjlDeviceId));
                         Thread.sleep(1500);
-                    } else if (zeroCount > 10){
-                        Log.e(TAG,"A0指令未返回已发送10次，停止发送A0指令");
+                    } else if (zeroCount > 5){
+                        Log.e(TAG,"A0指令未返回已发送5次，停止发送A0指令");
+                        Message message = new Message();
+                        message.what = 16;
+                        message.obj = "设备同步失败，请退出APP重新同步";
+                        handler_msg.sendMessage(message);
                         exit = true;
                         break;
                     }
@@ -197,11 +209,16 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         doWithReceivData(localBuf);//处理cmd命令
     }
 
-    private void closeThread() {
+    private void closeA0Thread() {
         if (syncDevices != null) {
             syncDevices.exit = true;  // 终止线程thread
             syncDevices.interrupt();
         }
+    }
+
+    private void closeLx(){
+        PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
+        Log.e(TAG, "轮询已关闭");
     }
 
     /**
@@ -214,7 +231,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             //已收到同步B0指令
             reciveB0 = true;
             Log.e(TAG,"已收到B0指令,不再发送A0指令");
-            closeThread();
+            closeA0Thread();
             //同步
             msg.what = 0;
             DeviceBean bean = new DeviceBean();
@@ -229,6 +246,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.obj = receiveMsg(res, "在线");
             //开启轮询  10秒轮询一次接收到的消息  来更新当前设备列表信息
             sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+//            listShow = new ListShow();
+//            listShow.start();
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B2)) {
@@ -251,6 +270,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.what = 7;
             msg.obj = bean;
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B5)) {
+            reciveB5 = true;
+            zeroCount = 0;
             Log.e(TAG,"得到的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
             receB5Data(bean,res,2);
@@ -436,18 +457,14 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 if (chongfu) {
                                     list_device.add(bean);
                                     adapter.notifyDataSetChanged();
-                                    //同步成功
-//                                    Log.e(TAG,"case0中发送A0指令");
-//                                    sendCmd(ThreeFiringCmd.setWxjlA0("01"));
-                                    //更新设备个数
+                                    //同步成功 更新设备个数
                                     Message message = handler_msg.obtainMessage();
                                     int collectionSize = list_device.size();
                                     message.what = 15;
                                     message.arg1 = collectionSize;
                                     handler_msg.sendMessage(message);
-                                } else {
-                                    show_Toast(bean.getCode() + "已注册");
                                 }
+                                show_Toast(bean.getCode() + "设备已注册");
                             } else {
                                 show_Toast("未识别的设备在连接");
                             }
@@ -461,9 +478,17 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             qbFlag = "qh";
                         }
                         break;
+                    case 16:
+                        //根据设备个数  超过1个时，点起爆按钮发送切换模式命令  1个就还是发送起爆命令
+                        String toastMsg = (String) msg.obj;
+                        if (toastMsg.contains("级联")) {
+                            closeLx();
+                        }
+                        Log.e(TAG,"case16吐司：" + toastMsg);
+                        show_Toast_long(toastMsg);
+                        break;
                     case InitConst.CODE_EXIT:
-                        PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
-                        Log.e("轮询已关闭", "....");
+                        closeLx();
                         break;
                     case InitConst.CODE_UPDAE_STATUS:
                         //接收到子机发送的起爆不同状态消息  此时需更新每个设备的轮询状态
@@ -569,6 +594,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                     list_device.get(a).setErrNum(bean4.getErrNum());
                                     list_device.get(a).setCurrentPeak(bean4.getCurrentPeak());
                                 }
+                            }
+                            if ("起爆结束".equals(bean4.getInfo()) || "起爆失败".equals(bean4.getInfo())) {
+                                closeLx();
+                                MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                             }
                             adapter.notifyDataSetChanged();
                         }
@@ -780,8 +809,19 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     iterator.remove();
                 }
             }
+            Log.e(TAG,"A5线程监控次数:" + zeroCount);
             //询问检测状态（15）  电流信息（33） 全部雷管数量（42）   错误雷管数量（60）
             sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+            if (zeroCount > 0 && zeroCount <= 8 && !reciveB5) {
+                Log.e(TAG,"A5线程监控次数,次数：" + zeroCount);
+            } else if (zeroCount > 8){
+                Log.e(TAG,"A5指令未返回已发送8次，停止发送A5指令");
+                Message message = new Message();
+                message.what = 16;
+                message.obj = "芯片无响应，请退出APP重新级联";
+                handler_msg.sendMessage(message);
+            }
+            zeroCount++;
         }
     }
 
@@ -789,7 +829,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     protected void onDestroy() {
         super.onDestroy();
         sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-//        EMgpio.SetGpioDataLow(94);
         try {
             if (server != null) {
                 server.stopServerAsync();
@@ -797,7 +836,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        closeThread();
+        closeA0Thread();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

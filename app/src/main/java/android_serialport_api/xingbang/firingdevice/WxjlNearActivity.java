@@ -82,6 +82,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String registResult = (String) msg.obj;
                         if ("true".equals(registResult)) {
                             btnRegister.setText("1.设备已注册" );
+                            show_Toast("设备已注册");
                         } else {
                             btnRegister.setText("1.设备注册");
                             show_Toast("设备注册失败，请退出APP后再重新注册");
@@ -90,18 +91,19 @@ public class WxjlNearActivity extends SerialPortActivity {
                         break;
                     case 1:
                         btnSendData.setText("2.数据传输结束");
+                        show_Toast("数据传输结束");
                         receive81 = true;
                         break;
                     case 2:
                         String jcmsResult = (String) msg.obj;
                         if ("true".equals(jcmsResult)) {
                             btnEnterJcms.setText("3.数据检测结束" );
+                            show_Toast("数据检测结束");
                         } else {
                             btnEnterJcms.setText("3.进入检测模式");
                             show_Toast("设数据检测失败，请退出APP后再重新检测");
                         }
                         closeThread();
-                        btnEnterJcms.setText("3.数据检测结束");
                         break;
                 }
                 return false;
@@ -111,11 +113,11 @@ public class WxjlNearActivity extends SerialPortActivity {
 
     private void closeThread(){
         if (rDevices != null) {
-            rDevices.exit = true;  // 终止线程thread
+            rDevices.exit = true;
             rDevices.interrupt();
         }
         if (enterJcms != null) {
-            enterJcms.exit = true;  // 终止线程thread
+            enterJcms.exit = true;
             enterJcms.interrupt();
         }
     }
@@ -314,6 +316,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 if (receive80) {
                     show_Toast("设备已注册，请勿重复注册");
                 } else {
+                    show_Toast("设备注册中...");
                     btnRegister.setText("1.设备注册中...");
                     rDevices = new RegisterDevices();
                     rDevices.start();
@@ -324,6 +327,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                     show_Toast("数据传输已结束，无需重复传输");
                 } else {
                     //雷管数据10条发一次  但目前暂定1条发一次
+                    show_Toast("数据传输中...");
                     btnSendData.setText("2.数据传输中...");
                     send81cmd();
                 }
@@ -332,6 +336,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 if (receive82) {
                     show_Toast("数据检测已结束，无需重复检测");
                 } else {
+                    show_Toast("数据检测中...");
                     btnEnterJcms.setText("3.数据检测中...");
                     enterJcms = new EnterJcms();
                     enterJcms.start();
