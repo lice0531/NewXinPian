@@ -240,7 +240,7 @@
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="按(1+5)键组合键进行起爆"
+            android:text="按(1+3)键组合键进行起爆"
             style="@style/alltextstyle"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

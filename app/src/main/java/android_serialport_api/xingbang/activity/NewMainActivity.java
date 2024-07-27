@@ -5,6 +5,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.kfree.expd.ExpdDevMgr;
 
 import org.litepal.LitePal;
 
@@ -33,9 +36,9 @@ import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
-public class NewMainActivity extends AppCompatActivity implements View.OnClickListener{
+public class NewMainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ActivityNewMainBinding binding ;
+    ActivityNewMainBinding binding;
 
     private String equ_no = "";//设备编码
     private String pro_bprysfz = "";//证件号码
@@ -55,8 +58,9 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
     private int ChongDian_time;//准备时间
     private int jiance_time;//检测时间
     private String qiaosi_set = "";//是否检测桥丝
-    private String TAG ="主页";
+    private String TAG = "主页";
     private int pb_show = 0;
+    public ExpdDevMgr mExpDevMgr ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,14 +70,14 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(binding.getRoot());
         SQLiteStudioService.instance().start(this);
         initView();
-
+        mExpDevMgr= new ExpdDevMgr(this);
         new Thread() {
             @Override
             public void run() {
                 if (queryTotal() == 0) {
                     readCVS();//读取雷管列表
                 }
-                Log.e("读取数据", "version: "+version);
+                Log.e("读取数据", "version: " + version);
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
@@ -82,8 +86,9 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
 
 
     }
+
     private void initView() {
-        TextView title=findViewById(R.id.title_text);
+        TextView title = findViewById(R.id.title_text);
         title.setText("通用型起爆器App首页");
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
@@ -132,7 +137,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                 baseinfo.setName(a[14]);
                 if (a.length == 16) {
                     baseinfo.setDenatorIdSup(a[15]);
-                }else if(a.length>16){
+                } else if (a.length > 16) {
                     baseinfo.setZhu_yscs(a[16]);
                     baseinfo.setCong_yscs(a[17]);
                 }
@@ -156,9 +161,10 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
+
     private void readCVS_pro() {
         getPropertiesData();//读取偏好存储
-        Log.e("读取数据", "version: "+version);
+        Log.e("读取数据", "version: " + version);
         String path = Environment.getExternalStorageDirectory() + "/Xingbang/" + "properties.ini";
         File f = new File(path);
         if (!f.exists()) {
@@ -182,7 +188,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         message.setPro_dwdm(pro_dwdm);
         message.setJiance_time(String.valueOf(jiance_time));
         message.setVersion(version);//单片机系统版本/旧01/新02
-        Log.e("读取数据", "version: "+version);
+        Log.e("读取数据", "version: " + version);
         if (queryMessage() == 1) {
             message.setId((long) 1);
             getDaoSession().getMessageBeanDao().update(message);
@@ -191,6 +197,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         }
         Log.e("读取数据", "readCVS_pro: ");
     }
+
     private void getPropertiesData() {
         pro_bprysfz = (String) MmkvUtils.getcode("pro_bprysfz", "");
         pro_htid = (String) MmkvUtils.getcode("pro_htid", "");
@@ -212,6 +219,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
+
     private void getUserMessage() {
         List<MessageBean> message = getDaoSession().getMessageBeanDao().loadAll();
 //        Log.e(TAG, "message: " + message.toString());
@@ -234,6 +242,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
             setUserMessage();//如果为空就新建一个
         }
     }
+
     private void setUserMessage() {
         MessageBean message = new MessageBean();
         message.setId((long) 1);
@@ -257,9 +266,11 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
     }
+
     private long queryTotal() {
         return getDaoSession().getDenatorBaseinfoDao().count();
     }
+
     private long queryMessage() {
         return getDaoSession().getMessageBeanDao().count();
     }
@@ -269,14 +280,14 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         Log.e(TAG, "onClick: ");
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.cardView1://项目管理
-                Intent intent = new Intent(NewMainActivity.this,ProjectManagementActivity.class);
+                Intent intent = new Intent(NewMainActivity.this, ProjectManagementActivity.class);
                 startActivity(intent);
                 break;
             case R.id.cardView2://GPS定位
 //                startActivity(new Intent(NewMainActivity.this,GetGPSActivity.class));
-                startActivity(new Intent(NewMainActivity.this,GpsDemoActivity.class));
+                startActivity(new Intent(NewMainActivity.this, GpsDemoActivity.class));
                 break;
             case R.id.cardView3://单发雷管检测
                 startActivity(new Intent(NewMainActivity.this, ZhuCeActivity_line.class));
@@ -288,6 +299,10 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(NewMainActivity.this, ZhuCeActivity_scan.class));
                 break;
             case R.id.cardView6://充电/起爆
+                if (mExpDevMgr.isSafeSwitchOpen()) {
+                    createDialog_kaiguan();
+                    return;
+                }
                 String str5 = "起爆";
                 Intent intent5;//金建华
 //                if (Yanzheng.equals("验证")) {
@@ -309,5 +324,16 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
 //                startActivity(new Intent(NewMainActivity.this, ReisterMainPage_scan.class));
                 break;
         }
+    }
+
+    /***
+     * 建立对话框
+     */
+    public void createDialog_kaiguan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("安全提醒");//"说明"
+        builder.setMessage("检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!");
+        builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 }

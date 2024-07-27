@@ -314,4 +314,15 @@ public class GreenDaoMaster {
             return null;
         }
     }
+
+    /**
+     * 删除某一发雷管
+     */
+    public void deleteDetonator(String shell) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .unique();
+        mDeantorBaseDao.delete(entity);
+    }
 }

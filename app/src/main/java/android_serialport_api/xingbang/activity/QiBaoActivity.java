@@ -39,6 +39,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.kfree.expd.ExpdDevMgr;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
@@ -1607,6 +1608,12 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             }
 
         } else if (id == qb_bt_chongdian) {//开始充电
+            mExpDevMgr = new ExpdDevMgr(this);//被关闭了??
+            if(!mExpDevMgr.isSafeSwitchOpen()){
+                createDialog_kaiguan();
+                return;
+            }
+
             if(stage==4){
                 increase(6);
             }else {
@@ -2202,5 +2209,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         }
     }
 
-
+    public void createDialog_kaiguan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("安全提醒");//"说明"
+        builder.setMessage("检测到您的安全开关处于关闭状态,请先打开掌机右侧的安全开关,再进行充电!");
+        builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
 }

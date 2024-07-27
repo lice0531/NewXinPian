@@ -484,10 +484,9 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
 //            runPbDialog();
             Utils.writeRecord("-单发删除:" + "-删除管壳码:" + info.getShellBlastNo() + "-延时" + info.getDelay());
             new Thread(() -> {
-                String whereClause = "shellBlastNo = ?";
-                String[] whereArgs = {info.getShellBlastNo()};
-                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
-                Utils.deleteData(ZhuCeActivity_line.this);//重新排序雷管
+
+                new GreenDaoMaster().deleteDetonator(info.getShellBlastNo());
+//                Utils.deleteData(ZhuCeActivity_line.this);//重新排序雷管
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 //                tipDlg.dismiss();
                 Utils.saveFile();//把软存中的数据存入磁盘中
