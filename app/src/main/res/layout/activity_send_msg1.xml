@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_color"
+    tools:context=".firingdevice.SendMsgActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp15"
+        android:background="@drawable/ll_mainlayout"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_sjxt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="@string/text_send_tip1"
+                android:textColor="#333333"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_bg" />
+
+        <TextView
+            android:id="@+id/text_android_ip"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_margin="10dp"
+            android:textColor="@color/result_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_send_tip2" />
+        <TextView
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/result_view"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_send_tip3" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_edit_input"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_setvice_ip_start"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:gravity="end|center"
+                style="@style/alltextstyle"
+                />
+
+
+            <EditText
+                android:id="@+id/text_setvice_ip"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/result_view"
+                android:layout_width="0dp"
+                android:background="@null"
+                android:padding="5dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:hint="@string/text_send_tip4" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/but_receive"
+                style="@style/allbtntstyle"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:stateListAnimator="@null"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textSize="21sp"
+                android:text="@string/text_send_tip5" />
+
+            <Button
+                android:id="@+id/but_lianjie"
+                style="@style/allbtntext_theme"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="连接"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/but_send"
+                style="@style/allbtntstyle"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="@string/text_send_tip6" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginRight="@dimen/dp15"
+        android:layout_marginBottom="@dimen/dp15"
+        android:background="@drawable/ll_mainlayout"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_xzwj" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="@string/text_send_tip7"
+                android:textColor="#333333"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_bg" />
+
+        <TextView
+            android:id="@+id/text_filePath"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_margin="10dp"
+            android:textColor="@color/result_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/text_send_tip8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_openFile"
+                style="@style/allbtntstyle"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:stateListAnimator="@null"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:text="@string/text_send_tip9" />
+
+            <Button
+                android:id="@+id/btn_read"
+                style="@style/allbtntstyle"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:stateListAnimator="@null"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:text="@string/text_send_tip10" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            style="@style/alltextstyle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/text_send_tip1"-->
+<!--            android:textSize="25sp" />-->
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/text_android_ip"-->
+<!--            style="@style/alltextstyle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="@string/text_send_tip2" />-->
+<!--        <TextView-->
+<!--            style="@style/alltextstyle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="@string/text_send_tip3" />-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="80dp"-->
+<!--            android:orientation="horizontal">-->
+<!--            <TextView-->
+<!--                android:id="@+id/text_setvice_ip_start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="end|center"-->
+<!--                style="@style/alltextstyle"-->
+<!--                />-->
+
+
+<!--            <EditText-->
+<!--                android:id="@+id/text_setvice_ip"-->
+<!--                style="@style/alltextstyle"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:inputType="number"-->
+<!--                android:digits="1234567890"-->
+<!--                android:hint="@string/text_send_tip4" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_marginLeft="20dp"-->
+<!--            android:layout_marginRight="20dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_receive"-->
+<!--                style="@style/allbtntext_theme"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:textSize="20sp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/text_send_tip5" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_lianjie"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="连接"-->
+<!--                android:visibility="gone"/>-->
+
+<!--            <Button-->
+<!--                android:id="@+id/but_send"-->
+<!--                style="@style/allbtntext_theme"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:textSize="20sp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/text_send_tip6" />-->
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="4dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:background="@color/label_color" />-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/but_write"
+            style="@style/allbtntstyle"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="90dp"
+            android:text="导出雷管到本地" />
+
+    </RelativeLayout>
+
+<!--    <TextView-->
+<!--        style="@style/alltextstyle"-->
+
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:text="@string/text_send_tip7" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/text_filePath"-->
+<!--        style="@style/alltextstyle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:text="@string/text_send_tip8" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btn_openFile"-->
+<!--        style="@style/allbtntext_theme"-->
+<!--        android:textSize="20sp"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:text="@string/text_send_tip9" />-->
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:visibility="visible">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btn_read"-->
+<!--            style="@style/allbtntext_theme"-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginStart="90dp"-->
+<!--            android:text="@string/text_send_tip10"-->
+<!--            android:textSize="20sp" />-->
+
+
+
+<!--    </RelativeLayout>-->
+    <Button
+        android:id="@+id/btn_read_log"
+        style="@style/allbtntstyle"
+        android:visibility="invisible"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="分析日志" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

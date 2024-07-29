@@ -286,7 +286,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     }
                     if (firstCount == 0) {
                         exit = true;
-                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
+//                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
+                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain1.class);
                         startActivity(intent);
                         finish();//如果不结束当前页面的话,会和后面的页面抢命令
                         break;

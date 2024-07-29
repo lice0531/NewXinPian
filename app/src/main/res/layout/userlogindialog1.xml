@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ll_mainlayout"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_alert_user"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        android:gravity="center"/>
+    <EditText
+        android:layout_margin="20dp"
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="10dp"
+        android:hint="@string/text_user_username"
+        android:background="@drawable/bg_edit_input"
+        android:numeric="integer" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/username"
+        android:hint="@string/text_user_password"
+        android:layout_marginLeft="20dp"
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_edit_input"
+        android:inputType="numberPassword" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_cancle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="44dp"
+            android:text="取消"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:stateListAnimator="@null"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_gray"/>
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:stateListAnimator="@null"
+            android:layout_gravity="center_vertical"
+            android:cursorVisible="true"
+            android:layout_height="44dp"
+            android:text="确定"
+            android:layout_marginLeft="50dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:background="@drawable/bt_mainpage_style1"/>
+    </LinearLayout>
+</LinearLayout>

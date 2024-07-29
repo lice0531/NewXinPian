@@ -356,7 +356,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         Log.e("验证数据", "map_dl.get(position).get(id): " + map_dl.get(position).get("id"));
         qbxm_id = map_dl.get(position).get("id") + "";
         qbxm_name = map_dl.get(position).get("spare1").toString();
-        Intent intent = new Intent(this, FiringMainActivity.class);
+        Intent intent = new Intent(this, WxjlActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("qbxm_id", qbxm_id);
         bundle.putString("qbxm_name", qbxm_name);

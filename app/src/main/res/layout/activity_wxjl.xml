@@ -20,19 +20,96 @@
             app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
-    <Button
+    <RelativeLayout
         android:id="@+id/btn_near"
-        android:layout_width="180dp"
+        android:padding="15dp"
+        android:background="@drawable/ll_mainlayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="1.近距离级联"
-        style="@style/allbtntstyle" />
+        android:layout_marginLeft="@dimen/dp20"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp">
 
-    <Button
+        <ImageView
+            android:id="@+id/ivhc"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_jjl" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/ivhc"
+            android:text="1.近距离级联"
+            android:textColor="#333333"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:rotation="180"
+            android:src="@drawable/iv_back" />
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/btn_remote"
-        android:layout_width="180dp"
+        android:padding="15dp"
+        android:background="@drawable/ll_mainlayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="2.远距离级联"
-        style="@style/allbtntstyle" />
+        android:layout_marginLeft="@dimen/dp20"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:id="@+id/ivrc"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_yjl" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/ivrc"
+            android:text="2.远距离级联"
+            android:textColor="#333333"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:rotation="180"
+            android:src="@drawable/iv_back" />
+    </RelativeLayout>
+
+<!--    <Button-->
+<!--        android:id="@+id/btn_near"-->
+<!--        android:layout_width="180dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="40dp"-->
+<!--        android:text="1.近距离级联"-->
+<!--        android:layout_gravity="center"-->
+<!--        style="@style/allbtntstyle" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btn_remote"-->
+<!--        android:layout_width="180dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:text="2.远距离级联"-->
+<!--        android:layout_gravity="center"-->
+<!--        style="@style/allbtntstyle"/>-->
 </LinearLayout>

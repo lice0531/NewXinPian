@@ -96,7 +96,7 @@ public class QueryMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_query_main);
+        setContentView(R.layout.activity_query_main1);
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));

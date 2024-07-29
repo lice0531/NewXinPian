@@ -2,7 +2,15 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,12 +18,14 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -24,6 +34,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +47,13 @@ import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.DeviceAdapter;
 import android_serialport_api.xingbang.custom.ListViewForScrollView;
+import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DenatorHis_Detail;
+import android_serialport_api.xingbang.db.DenatorHis_Main;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.DeviceBean;
 import android_serialport_api.xingbang.server.MySocketServer;
@@ -86,10 +104,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     public boolean cd = false;
     public boolean qb = false;
     public boolean qh = false;
+    private boolean isStopGetLgNum = false;//充电开始就不需要再或许雷管数量了，在充点前获取下雷管数量并记录下来展示即可
     private ConcurrentHashMap<String, String> lastReceivedMessages = new ConcurrentHashMap<>();
     //起爆按钮点击时，值为qh:发送A6命令（切换模式）   值为qb:发送A4命令（起爆）
     private String qbFlag = "qb";
-    private String TAG = "远距离串口无线级联页面";
+    private String TAG = "远距离无线级联页面";
     private String wxjlDeviceId = "";
     private SyncDevices syncDevices;
     private boolean reciveB0 = false;//发出同步命令是否返回
@@ -97,6 +116,22 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private int zeroCount = 1;//A5指令无返回的次数
     private boolean isOpenLowRate = false;//是否开启2400低频
     int rate = 2400;
+    private String hisInsertFireDate;
+    private String equ_no = "";//设备编码
+    private String pro_bprysfz = "";//证件号码
+    private String pro_htid = "";//合同号码
+    private String pro_xmbh = "";//项目编号
+    private String pro_coordxy = "";//经纬度
+    private String pro_dwdm = "";//单位代码
+    private int ChongDian_time;//充电时间
+    private int JianCe_time;//准备时间
+    private String qiaosi_set = "";//是否检测桥丝
+    private String version = "02";//版本号
+    private String qbxm_id = "-1";
+    private String qbxm_name = "";
+    private SQLiteDatabase db;
+    private DatabaseHelper mMyDatabaseHelper;
+    private Handler mHandler_tip = null;//提示
 
     @Override
     protected void onStart() {
@@ -112,7 +147,26 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         setContentView(R.layout.activity_wxjl_remote);
         ButterKnife.bind(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
+        db = mMyDatabaseHelper.getWritableDatabase();
+        getUserMessage();//获取用户信息
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        qbxm_id = (String) bundle.get("qbxm_id");
+        qbxm_name = (String) bundle.get("qbxm_name");
+        if (qbxm_id == null) {
+            qbxm_id = "-1";
+            qbxm_name = " ";
+        }
+        Utils.writeLog("无线级联页面-qbxm_id:" + qbxm_name);
+        Log.e(TAG,"项目编号：" + qbxm_id + "--项目名称：" + qbxm_name);
         initView();
+        mHandler_tip = new Handler(msg -> {
+            String time = (String) msg.obj;
+            delHisInfo(time);
+            show_Toast("起爆记录条数最大30条,已删除" + time + "记录");
+            return false;
+        });
 //        initSocket();
         initPower();                // 初始化上电方式()
         powerOnDevice(PIN_ADSL);
@@ -245,9 +299,13 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.what = 9;
             msg.obj = receiveMsg(res, "在线");
             //开启轮询  10秒轮询一次接收到的消息  来更新当前设备列表信息
-            sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
-//            listShow = new ListShow();
-//            listShow.start();
+            if (isStopGetLgNum) {
+                //只需要获取状态信息和电流即可
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"1130"));
+            } else {
+                //检测过程中状态充电信息雷管数据都需要获取展示
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+            }
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B2)) {
@@ -371,6 +429,17 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             }
         }
     }
+
+    //得到错误雷管数量
+    public static int getErrorLgNum(String str) {
+        // 如果第一个字符是 '0'，去掉前导零
+        if (str.charAt(0) == '0') {
+            return Integer.parseInt(str.substring(1));
+        } else {
+            return Integer.parseInt(str);
+        }
+    }
+
     private String showLgNum(String data) {
         String hexString = data.substring(data.length() - 3);
         String decimal = String.valueOf(Integer.parseInt(hexString, 16));
@@ -590,14 +659,33 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 if (list_device.get(a).getCode().equals(bean4.getCode())) {
                                     list_device.get(a).setRes(bean4.getRes());
                                     list_device.get(a).setInfo(bean4.getInfo());
-                                    list_device.get(a).setTrueNum(bean4.getTrueNum());
-                                    list_device.get(a).setErrNum(bean4.getErrNum());
                                     list_device.get(a).setCurrentPeak(bean4.getCurrentPeak());
+                                    if (!isStopGetLgNum) {
+                                        list_device.get(a).setTrueNum(bean4.getTrueNum());
+                                        list_device.get(a).setErrNum(bean4.getErrNum());
+                                    }
+                                    if ("检测结束".equals(bean4.getInfo())) {
+                                        //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
+                                        if (getErrorLgNum(bean4.getErrNum()) > 0) {
+                                            showAlertDialog("系统提示","当前有错误雷管，是否继续进行",
+                                                    "查看错误雷管","继续",1);
+                                        }
+                                    }
+                                    if (Float.parseFloat(bean4.getCurrentPeak()) > 21000) {
+                                        showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
+                                    }
                                 }
                             }
                             if ("起爆结束".equals(bean4.getInfo()) || "起爆失败".equals(bean4.getInfo())) {
                                 closeLx();
                                 MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
+                                hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
+                                saveFireResult();
+//                              saveFireResult_All();
+                                if (!qbxm_id.equals("-1")) {
+                                    updataState(qbxm_id);
+                                }
                             }
                             adapter.notifyDataSetChanged();
                         }
@@ -656,6 +744,158 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     });
 
+    private void getUserMessage() {
+        List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
+        if (message.size() > 0) {
+            pro_bprysfz = message.get(0).getPro_bprysfz();
+            pro_htid = message.get(0).getPro_htid();
+            pro_xmbh = message.get(0).getPro_xmbh();
+            equ_no = message.get(0).getEqu_no();
+            pro_coordxy = message.get(0).getPro_coordxy();
+            qiaosi_set = message.get(0).getQiaosi_set();
+            ChongDian_time = Integer.parseInt(message.get(0).getChongdian_time());
+            pro_dwdm = message.get(0).getPro_dwdm();
+            JianCe_time = Integer.parseInt(message.get(0).getJiance_time());
+            if (message.get(0).getVersion() != null) {
+                version = message.get(0).getVersion();
+            }
+
+            Log.e(TAG, "version: " + version);
+        }
+        Log.e("ChongDian_time", ChongDian_time + "");
+        Log.e("JianCe_time", JianCe_time + "");
+    }
+
+    //删除历史记录第一行
+    private void delHisInfo(String blastdate) {
+        if (blastdate == null) return;
+        if (getString(R.string.text_alert_tip3).equals(blastdate)) {//"当前雷管记录"
+            show_Toast(getString(R.string.text_error_tip52));
+            return;
+        }
+        new GreenDaoMaster().deleteType(blastdate);//删除历史数据
+
+        //从表
+        String selection = "blastdate = ?"; // 选择条件，给null查询所有
+        String[] selectionArgs = {blastdate + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, selection, selectionArgs);
+        //主表
+        db.delete(DatabaseHelper.TABLE_NAME_HISMAIN, selection, selectionArgs);
+        Utils.saveFile();//把软存中的数据存入磁盘中
+    }
+
+    /**
+     * 更新下载项目中的起爆状态
+     */
+    public int updataState(String id) {
+        Log.e("更新起爆状态", "id: " + id);
+        int i = getHisDetailList(hisInsertFireDate);
+        ContentValues values = new ContentValues();
+        values.put("qbzt", "已起爆");
+        values.put("blastdate", hisInsertFireDate);
+        values.put("qblgNum", i);
+        db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "id=?", new String[]{"" + id});
+        Utils.saveFile();//把软存中的数据存入磁盘中
+        return 1;
+    }
+
+    /**
+     * 获取起爆历史详细信息
+     */
+    private int getHisDetailList(String blastdate) {
+//        String selection = "blastdate = ? and errorCode = ?"; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
+//        String[] selectionArgs = {blastdate, "FF"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        String selection = "blastdate = ? "; // 选择条件，给null查询所有//+" and errorCode = ?"   new String[]{"FF"}
+        String[] selectionArgs = {blastdate};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_HISDETAIL, null, selection, selectionArgs, null, null, "blastserial asc");
+        int i = cursor.getCount();
+        cursor.close();
+        return i;
+    }
+
+    private int getHisMaxNumberNo() {
+        Cursor cursor = db.rawQuery("select max(serialNo) from " + DatabaseHelper.TABLE_NAME_HISMAIN, null);
+        if (cursor != null && cursor.moveToNext()) {
+            String maxStr = cursor.getString(0);
+            int maxNo = 0;
+            if (maxStr != null && maxStr.trim().length() > 0) {
+                maxNo = Integer.parseInt(maxStr);
+            }
+            cursor.close();
+            return maxNo;
+        }
+        return 1;
+    }
+
+    private String loadHisMainData() {
+        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().loadAll();
+        Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
+        return list.get(0).getBlastdate();
+    }
+
+    /**
+     * 保存起爆数据
+     */
+    public synchronized void saveFireResult() {
+        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
+//        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
+        if (totalNum < 1) return;
+        //如果总数大于30,删除第一个数据
+        int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
+//        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
+        if (hisTotalNum > 30) {
+            String time = loadHisMainData();
+            Message message = new Message();
+            message.obj = time;
+            mHandler_tip.sendMessage(message);
+        }
+        String xy[] = pro_coordxy.split(",");//经纬度
+        int maxNo = getHisMaxNumberNo();
+
+        maxNo++;
+        String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
+        DenatorHis_Main his = new DenatorHis_Main();
+        his.setBlastdate(fireDate);
+        his.setUploadStatus("未上传");
+        his.setRemark("已起爆");
+        his.setEqu_no(equ_no);
+        his.setUserid(qbxm_name);
+        his.setPro_htid(pro_htid);
+        his.setPro_xmbh(pro_xmbh);
+        his.setPro_dwdm(pro_dwdm);
+        his.setSerialNo(Integer.parseInt(qbxm_id));
+        his.setLog(Utils.readLog(Utils.getDate(new Date())));
+        if (pro_coordxy.length() > 4) {
+            his.setLongitude(xy[0]);
+            his.setLatitude(xy[1]);
+        }
+        getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
+        Utils.deleteRecord();//删除日志
+
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
+        GreenDaoMaster master = new GreenDaoMaster();
+        for (DenatorBaseinfo dbf : list) {
+            master.updateDetonatorTypezt(dbf.getShellBlastNo(), "已起爆");//更新授权库中状态
+
+            DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
+            denatorHis_detail.setBlastserial(dbf.getBlastserial());
+            denatorHis_detail.setSithole(dbf.getSithole());
+            denatorHis_detail.setShellBlastNo(dbf.getShellBlastNo());
+            denatorHis_detail.setDenatorId(dbf.getDenatorId());
+            denatorHis_detail.setDelay(dbf.getDelay());
+            denatorHis_detail.setStatusName(dbf.getStatusName());
+            denatorHis_detail.setStatusCode(dbf.getStatusCode());
+            denatorHis_detail.setErrorName(dbf.getErrorName());
+            denatorHis_detail.setErrorCode(dbf.getErrorCode());
+            denatorHis_detail.setAuthorization(dbf.getAuthorization());
+            denatorHis_detail.setRemark(dbf.getRemark());
+            denatorHis_detail.setBlastdate(fireDate);
+            denatorHis_detail.setPiece(dbf.getPiece());
+            getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
+        }
+
+        Utils.saveFile();//把软存中的数据存入磁盘中
+    }
 
     @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_exit})
     public void onViewClicked(View view) {
@@ -663,8 +903,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             case R.id.btn_net_test:
                 if (cs) {
                     //准备测试
-                    Log.e(TAG, "发送起爆测试A2指令");
-                    writeData("A1");//网络测试指令
+                    Log.e(TAG, "发送起爆测试A1指令");
+                    writeData("A1");//起爆测试指令
                 } else {
                     show_Toast("请按顺序进行操作");
                 }
@@ -743,6 +983,71 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                 .show();
     }
 
+    public void showAlertDialog(String title,String content,String cancleText,String sureText,int type) {
+        // 加载自定义布局
+        LayoutInflater iview = getLayoutInflater();
+        View dv = iview.inflate(R.layout.dialog_layout, null);
+        AlertDialog dialog = new AlertDialog.Builder(this,R.style.CustomAlertDialogTheme).setView(dv).create();
+        TextView tvTitle = dv.findViewById(R.id.tv_title);
+        TextView tvContent = dv.findViewById(R.id.tv_content);
+        Button btcancle = dv.findViewById(R.id.btn_cancle);
+        Button btsure = dv.findViewById(R.id.btn_sure);
+        tvTitle.setText(title);
+        tvContent.setText(content);
+        btcancle.setText(!TextUtils.isEmpty(cancleText) ? cancleText : "取消");
+        btsure.setText(!TextUtils.isEmpty(sureText) ? sureText : "确定");
+        btcancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (type == 1) {
+                    exitRemotePage();
+                    dialog.dismiss();
+                    //跳转到近距离页面（如果当前页面低速通道已开启，此时需先将波特率升至115200高速通道再跳转）
+                    Intent intent = new Intent(WxjlRemoteActivity.this,WxjlNearActivity.class);
+                    intent.putExtra("transhighRate","Y");
+                    startActivity(intent);
+                }
+            }
+        });
+        btsure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (type == 1) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Drawable background = ContextCompat.getDrawable(WxjlRemoteActivity.this, R.drawable.ll_mainlayout);
+                getWindow().setBackgroundDrawable(background);
+            }
+        });
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+    }
+
+    private void showErrorDialog(String tip) {
+        if (!WxjlRemoteActivity.this.isFinishing()) {
+            AlertDialog dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
+                    .setTitle("系统提示")//设置对话框的标题//"成功起爆"
+                    .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNegativeButton("退出", (dialog1, which) -> {
+                        exitRemotePage();
+                        dialog1.cancel();
+                    }).create();
+            dialog.show();
+        }
+    }
+
+    private void exitRemotePage(){
+        closeLx();
+        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+    }
+
     private void setTipText(String data) {
         switch (data) {
             case "A1":
@@ -755,6 +1060,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                 tvTip.setText("正在充电...");
                 qb = true;
                 qh = true;
+                isStopGetLgNum = true;
                 sendCmd(ThreeFiringCmd.setWxjlA2("01"));
                 break;
             case "A6":
@@ -811,7 +1117,13 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             }
             Log.e(TAG,"A5线程监控次数:" + zeroCount);
             //询问检测状态（15）  电流信息（33） 全部雷管数量（42）   错误雷管数量（60）
-            sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+            if (isStopGetLgNum) {
+                //只需要获取状态信息和电流即可
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"1130"));
+            } else {
+                //检测过程中状态充电信息雷管数据都需要获取展示
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+            }
             if (zeroCount > 0 && zeroCount <= 8 && !reciveB5) {
                 Log.e(TAG,"A5线程监控次数,次数：" + zeroCount);
             } else if (zeroCount > 8){
@@ -836,6 +1148,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        closeLx();
         closeA0Thread();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);

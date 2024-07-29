@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_practice"
     android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:id="@+id/but_version"
             android:background="@drawable/ll_mainlayout"
             android:layout_width="match_parent"
-            android:padding="20dp"
+            android:padding="15dp"
             android:layout_marginLeft="@dimen/dp20"
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
@@ -78,7 +78,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/ll_mainlayout"
             android:layout_height="wrap_content"
-            android:padding="20dp">
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/ivjl"
@@ -108,6 +108,45 @@
                 android:src="@drawable/iv_back" />
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/but_jilian_wifi"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <ImageView
+                android:id="@+id/ivrdjl"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_jl" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivrdjl"
+                android:text="热点级联设置"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/but_pre"
             android:background="@drawable/ll_mainlayout"
             android:layout_width="match_parent"
@@ -115,7 +154,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
-            android:padding="20dp">
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/ivdl"
@@ -146,13 +185,13 @@
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/but_sendMsg"
-            android:padding="20dp"
+            android:padding="15dp"
             android:background="@drawable/ll_mainlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp20"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="15dp">
 
             <ImageView
                 android:id="@+id/ivhc"
@@ -186,7 +225,8 @@
             android:background="@drawable/ll_mainlayout"
             android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
-            android:padding="20dp"
+            android:padding="15dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp20"
             android:layout_marginRight="20dp"
@@ -656,4 +696,4 @@
                 android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

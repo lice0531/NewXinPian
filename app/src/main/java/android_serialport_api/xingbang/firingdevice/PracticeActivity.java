@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,7 +87,8 @@ public class PracticeActivity extends BaseActivity {
     @BindView(R.id.tv_ceshi_dianya)
     TextView tvCeshiDianya;
     @BindView(R.id.but_pre)
-    Button butPre;
+//    Button butPre;
+    RelativeLayout butPre;
     @BindView(R.id.ll_firing_4)
     LinearLayout llFiring4;
     @BindView(R.id.activity_practice)
@@ -114,9 +116,9 @@ public class PracticeActivity extends BaseActivity {
     @BindView(R.id.but_test)
     Button butTest;
     @BindView(R.id.but_version)
-    Button butVersion;
+    RelativeLayout butVersion;
     @BindView(R.id.but_sendMsg)
-    Button but_sendMsg;
+    RelativeLayout but_sendMsg;
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list_uid = new ArrayList<>();
@@ -151,7 +153,7 @@ public class PracticeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practice);
+        setContentView(R.layout.activity_practice1);
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));

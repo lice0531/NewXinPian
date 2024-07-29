@@ -86,8 +86,10 @@ public class SendMsgActivity extends BaseActivity {
     Button butReceive;
     @BindView(R.id.but_send)
     Button butSend;
-
-
+    @BindView(R.id.btn_openFile)
+    Button butOpenFile;
+    @BindView(R.id.btn_read)
+    Button butRead;
     private Handler handler_zhuce;
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
@@ -110,7 +112,7 @@ public class SendMsgActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_msg);
+        setContentView(R.layout.activity_send_msg1);
         ButterKnife.bind(this);
         initHandle();
         // 标题栏

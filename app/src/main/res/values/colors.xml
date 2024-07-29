@@ -170,4 +170,6 @@
     <color name="blue_deep">#13227a</color>
     <color name="blue_text">#1296db</color>
     <color name="bg_color">#F6FAFE</color>
+    <color name="color_bg">#F3F3F3</color>       // 用于分隔条、全局背景色。
+    <color name="colorNot">#D8D8D8</color>       // 用于按钮，不可点击场景等。
 </resources>

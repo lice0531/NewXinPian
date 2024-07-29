@@ -17,17 +17,23 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -87,34 +93,34 @@ public class XingbangMain1 extends BaseActivity {
     TextView tvMainNo;
     @BindView(R.id.btn_main_reister)//注册
 //    Button btnMainReister;
-    LinearLayout btnMainReister;
+    RelativeLayout btnMainReister;
     @BindView(R.id.btn_main_test)//测试
     LinearLayout btnMainTest;
 //    Button btnMainTest;
     @BindView(R.id.btn_main_delayTime)//延时
 //    Button btnMainDelayTime;
-    LinearLayout btnMainDelayTime;
+    RelativeLayout btnMainDelayTime;
     @BindView(R.id.btn_main_del)//删除
 //    Button btnMainDel;
-    LinearLayout btnMainDel;
+    RelativeLayout btnMainDel;
     @BindView(R.id.btn_main_blast)//起爆
 //    Button btnMainBlast;
     LinearLayout btnMainBlast;
     @BindView(R.id.btn_main_query)//查询
 //    Button btnMainQuery;
-    LinearLayout btnMainQuery;
+    RelativeLayout btnMainQuery;
     @BindView(R.id.btn_main_setevn)//设置
 //    Button btnMainSetevn;
-    LinearLayout btnMainSetevn;
+    RelativeLayout btnMainSetevn;
     @BindView(R.id.btn_main_help)//帮助
 //    Button btnMainHelp;
-    LinearLayout btnMainHelp;
+    RelativeLayout btnMainHelp;
     @BindView(R.id.btn_main_downWorkCode)//项目管理
-    LinearLayout btnMainDownWorkCode;
+    RelativeLayout btnMainDownWorkCode;
 //    Button btnMainDownWorkCode;
     @BindView(R.id.btn_main_exit)//退出
 //    Button btnMainExit;
-    LinearLayout btnMainExit;
+    RelativeLayout btnMainExit;
     @BindView(R.id.btn_main_exit2)
     Button btnMainExit2;
     @BindView(R.id.container)
@@ -125,7 +131,7 @@ public class XingbangMain1 extends BaseActivity {
     Button btnMainLianxi;
     @BindView(R.id.btn_wxjl)
 //    Button btnWxjl;
-    LinearLayout btnWxjl;
+    RelativeLayout btnWxjl;
     private long time = 0;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
     private SQLiteDatabase db;
@@ -526,65 +532,90 @@ public class XingbangMain1 extends BaseActivity {
 
     private void loginToSetEnv() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(XingbangMain1.this);
-        //  builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle(getString(R.string.text_alert_user));//"请输入用户名和密码"
-        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
-        View view = LayoutInflater.from(XingbangMain1.this).inflate(R.layout.userlogindialog, null);
-        //    设置我们自己定义的布局文件作为弹出框的Content
-        builder.setView(view);
-        final EditText username = (EditText) view.findViewById(R.id.username);
-        final EditText password = (EditText) view.findViewById(R.id.password);
+        View v = LayoutInflater.from(this).inflate(R.layout.userlogindialog1, null, true);
+        PopupWindow popupWindow = new PopupWindow(v, dp2Px(300), dp2Px(280));
+        popupWindow.setFocusable(true);//设置pw中的控件能够获取焦点
+        popupWindow.setOutsideTouchable(true); //设置可以通过点击mPopupWindow外部关闭mPopupWindow
+        popupWindow.setClippingEnabled(false);
+        popupWindow.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+        popupWindow.update();//刷新mPopupWindow
+        bgAlpha(0.5f);
+        final EditText username = (EditText) v.findViewById(R.id.username);
+        final EditText password = (EditText) v.findViewById(R.id.password);
+        final Button btn_cancle = v.findViewById(R.id.btn_cancle);
+        final Button btn_sure = v.findViewById(R.id.btn_sure);
         username.setInputType(InputType.TYPE_CLASS_TEXT);
         // username.setText("xingbang");
         username.setFocusable(true);
         username.setFocusableInTouchMode(true);
         username.requestFocus();
         username.findFocus();
-
-        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-            String a = username.getText().toString().trim();
-            String b = password.getText().toString().trim();
-            if (a.trim().length() < 1) {
-                show_Toast(getString(R.string.text_alert_username));
-//                    dialogOn(dialog);//取消按钮不可点击
-                return;
-            }
-            if (b.trim().length() < 1) {
-                show_Toast(getString(R.string.text_alert_password));
-//                    dialogOn(dialog);
-                return;
-            }
-            if (a.equals("xingbang") && b.equals("123456")) {
-                String str1 = "设置";
-                Intent intent = new Intent(XingbangMain1.this, SetEnvMainActivity.class);
-                intent.putExtra("dataSend", str1);
-                startActivity(intent);
-
-                dialog.dismiss();
-            } else if (!a.equals("xingbang")) {
-                show_Toast("用户名错误");
-                dialogOn(dialog);
-            } else if (!b.equals("123456")) {
-                show_Toast("密码错误");
-                dialogOn(dialog);
-            } else {
-                show_Toast(getString(R.string.text_error_tip50));
-                dialogOn(dialog);
-//                    dialog.dismiss();
-            }
-
-            //  builder.
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
-            //builder.
-            dialogOFF(dialog);
+        btn_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                dialogOFF(popupWindow);
 //                finish();
-            dialog.dismiss();
+                popupWindow.dismiss();
+            }
         });
+        btn_sure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String a = username.getText().toString().trim();
+                String b = password.getText().toString().trim();
+                if (a.trim().length() < 1) {
+                    show_Toast(getString(R.string.text_alert_username));
+//                    dialogOn(dialog);//取消按钮不可点击
+                    return;
+                }
+                if (b.trim().length() < 1) {
+                    show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                    return;
+                }
+                if (a.equals("xingbang") && b.equals("123456")) {
+                    String str1 = "设置";
+                    Intent intent = new Intent(XingbangMain1.this, SetEnvMainActivity.class);
+                    intent.putExtra("dataSend", str1);
+                    startActivityForResult(intent, 1);
+                    popupWindow.dismiss();
+                } else if (!a.equals("xingbang")) {
+                    show_Toast("用户名错误");
+//                    dialogOn(popupWindow);
+                } else if (!b.equals("123456")) {
+                    show_Toast("密码错误");
+//                    dialogOn(popupWindow);
+                } else {
+                    show_Toast(getString(R.string.text_error_tip50));
+//                    dialogOn(popupWindow);
+                    popupWindow.dismiss();
+                }
+            }
+        });
+        //PopupWindow关闭监听
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                bgAlpha(1f);
+            }
+        });
+    }
 
+    public static DisplayMetrics getDisplayMetrics() {
+        return Application.getContext().getResources().getDisplayMetrics();
+    }
 
-        builder.show();
+    public void bgAlpha(float alpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = alpha; // 0.0-1.0
+        getWindow().setAttributes(lp);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+    /**
+     * dp转px
+     */
+    public static int dp2Px(float dpValue) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, getDisplayMetrics());
     }
 
     private void dialogOn(DialogInterface dialog) {
@@ -694,14 +725,40 @@ public class XingbangMain1 extends BaseActivity {
 
         switch (view.getId()) {
             case R.id.btn_wxjl:
-                mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
-                Log.e(TAG,"雷管数量：" + mListData.size());
-                if (mListData.size() > 0) {
-                    Intent itSync = new Intent(this, WxjlActivity.class);
-                    startActivity(itSync);
-                } else {
-                    show_Toast(getResources().getString(R.string.text_error_tip30));
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME){
+                    return;
                 }
+                lastClickTime = System.currentTimeMillis();
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    createDialog();
+                    return;
+                }
+                long tt = System.currentTimeMillis();
+                long et = (long) MmkvUtils.getcode("endTime", (long) 0);
+                if (tt - et < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - et)) / 1000 + 5;
+                    if (a < 180000) {
+                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "无线级联");
+                    }
+                    return;
+                }
+                Log.e("验证2", "Yanzheng: " + Yanzheng);
+                Intent itwxjl = null;
+                if (Yanzheng.equals("验证")) {
+                    //Intent intent = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                    itwxjl = new Intent(this, VerificationActivity.class);
+                } else {
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    Log.e(TAG,"雷管数量：" + mListData.size());
+                    if (mListData.size() > 0) {
+                        itwxjl = new Intent(this, WxjlActivity.class);
+                    } else {
+                        show_Toast(getResources().getString(R.string.text_error_tip30));
+                    }
+                }
+                startActivity(itwxjl);
                 break;
             case R.id.btn_main_reister://注册
                 String str1 = "注册";
@@ -1177,6 +1234,13 @@ public class XingbangMain1 extends BaseActivity {
                     Intent intent5;//金建华
                     if (str5.equals("组网")) {
                         intent5 = new Intent(this, TestDenatorActivity.class);
+                    } else if (str5.equals("无线级联")) {
+                        Log.e("验证2", "Yanzheng: " + Yanzheng);
+                        if (Yanzheng.equals("验证")) {
+                            intent5 = new Intent(this, VerificationActivity.class);
+                        } else {
+                            intent5 = new Intent(this, WxjlActivity.class);
+                        }
                     } else {
                         Log.e("验证2", "Yanzheng: " + Yanzheng);
                         if (Yanzheng.equals("验证")) {
@@ -1185,7 +1249,6 @@ public class XingbangMain1 extends BaseActivity {
                             intent5 = new Intent(this, FiringMainActivity.class);
                         }
                     }
-
                     intent5.putExtra("dataSend", str5);
                     startActivityForResult(intent5, 1);
                     mOffTime.cancel();

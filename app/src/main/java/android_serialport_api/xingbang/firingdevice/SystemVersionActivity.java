@@ -5,6 +5,7 @@ import static com.tencent.bugly.beta.Beta.checkUpgrade;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,7 +47,7 @@ public class SystemVersionActivity extends SerialPortActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sys_version);//version
+        setContentView(R.layout.activity_sys_version1);//version
         ButterKnife.bind(this);
         //初始化在主页面,全局搜索默认值
 //        rj_version.setText((String)MmkvUtils.getcode("rj_version","KT50_3.25_PT_221128"));
@@ -114,7 +115,7 @@ public class SystemVersionActivity extends SerialPortActivity {
             Log.e("软件版本返回的命令", "output: "+output);
 
             MmkvUtils.savecode("yj_version",output);
-            Handler_tip.sendMessage(Handler_tip.obtainMessage(1, output));
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(1, !TextUtils.isEmpty(output) ? output : getString(R.string.text_sys_soft)));
             byte[] reCmd2 = FourStatusCmd.getHardVersion("00");//44
             sendCmd(reCmd2);
         } else if (DefCommand.CMD_4_XBSTATUS_5.equals(cmd)) {//获取硬件版本号 44
@@ -124,7 +125,7 @@ public class SystemVersionActivity extends SerialPortActivity {
                 String str = a.substring(i, i+2);
                 output.append((char)Integer.parseInt(str, 16));
             }
-            Handler_tip.sendMessage(Handler_tip.obtainMessage(2, output));
+            Handler_tip.sendMessage(Handler_tip.obtainMessage(2, !TextUtils.isEmpty(output) ? output : getString(R.string.text_sys_yj_version)));
         }else if (DefCommand.CMD_4_XBSTATUS_6.equals(cmd)) {//设置单片机版本
             String a =realyCmd1.substring(6);//2020031201
             String data1=a.substring(0,2);

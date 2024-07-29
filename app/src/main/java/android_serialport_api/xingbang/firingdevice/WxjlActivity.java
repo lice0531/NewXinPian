@@ -10,9 +10,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kfree.expd.ExpdDevMgr;
 import com.kfree.expd.OnOpenSerialPortListener;
 import com.kfree.expd.OnSerialPortDataListener;
@@ -37,8 +40,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.cmd.DefCommand;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.jilian.FirstEvent;
@@ -50,7 +56,7 @@ import android_serialport_api.xingbang.utils.upload.IntervalUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-public class WxjlActivity extends BaseActivity {
+public class WxjlActivity extends SerialPortActivity {
     private Socket socket = null;
     private boolean socketStatus = false;
     private boolean status485 = false;
@@ -88,12 +94,16 @@ public class WxjlActivity extends BaseActivity {
 
     private boolean A002 = true;
     private String wxjlDeviceId = "";
+    private boolean isRemote = false;//是否可以进行远距离无线级联
     byte[] mBuffer;
     @BindView(R.id.btn_near)
-    Button btnNear;
+    RelativeLayout btnNear;
     @BindView(R.id.btn_remote)
-    Button btnRemote;
-
+    RelativeLayout btnRemote;
+    private String dataLength82 = "", data82 = "";
+    private boolean receive82 = false;//发出82命令是否返回
+    private Handler handler_msg = new Handler();
+    private EnterJcms enterJcms;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +116,48 @@ public class WxjlActivity extends BaseActivity {
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         openM900Rs485("");
+        initHandler();
+    }
+
+    @Override
+    protected void onDataReceived(byte[] buffer, int size) {
+        byte[] cmdBuf = new byte[size];
+        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+        Log.e("返回命令", fromCommad);
+        Utils.writeLog("<-:" + fromCommad);
+        if (completeValidCmd(fromCommad) == 0) {
+            fromCommad = this.revCmd;
+            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+            else this.revCmd = "";
+            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                return;
+            } else {
+                String cmd = DefCommand.getCmd2(fromCommad);
+                if (cmd != null) {
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
+                }
+            }
+        }
+    }
+
+    /***
+     * 处理芯片返回命令
+     */
+    private void doWithReceivData(String cmd, byte[] locatBuf) {
+        if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
+            Log.e(TAG, "收到82指令了");
+            receive82 = true;
+            Message message = new Message();
+            message.what = 2;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
+        } else {
+            Log.e(TAG, "返回命令没有匹配对应的命令-cmd: " + cmd);
+        }
     }
 
 
@@ -119,6 +171,42 @@ public class WxjlActivity extends BaseActivity {
         super.onStart();
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
+        }
+    }
+
+    private void initHandler() {
+        handler_msg = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg) {
+                switch (msg.what) {
+                    case 0:
+                        String jcmsResult = (String) msg.obj;
+                        if ("true".equals(jcmsResult)) {
+                            enterRemotePage();
+                        } else {
+                            show_Toast("芯片未返回，请退出APP后再重新级联");
+                        }
+                        closeThread();
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void enterRemotePage() {
+        String str5 = "远距离无线级联";
+        Intent intent = new Intent(WxjlActivity.this, WxjlRemoteActivity.class);
+        intent.putExtra("wxjlDeviceId", wxjlDeviceId);
+        intent.putExtra("dataSend", str5);
+        startActivity(intent);
+        finish();
+    }
+
+    private void closeThread(){
+        if (enterJcms != null) {
+            enterJcms.exit = true;
+            enterJcms.interrupt();
         }
     }
 
@@ -279,43 +367,84 @@ public class WxjlActivity extends BaseActivity {
         }
         return a;
     }
+
+    private class EnterJcms extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (receive82) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount > 0 && zeroCount <= 5 && !receive82) {
+                        String b = Utils.intToHex(1);
+                        dataLength82 = Utils.addZero(b, 2);
+                        data82 = "01";
+                        Log.e(TAG,"82指令--数据体长度：" + dataLength82 + "--数据体：" + data82);
+                        sendCmd(ThreeFiringCmd.sendWxjl82(wxjlDeviceId, dataLength82, data82));
+                        Log.e(TAG, "发送82进入检测模式指令");
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 5){
+                        Log.e(TAG,"82指令未返回已发送5次，停止发送82指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 0;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //发送命令
+    public void sendCmd(byte[] mBuffer) {
+        if (mSerialPort != null && mOutputStream != null) {
+            try {
+                String str = Utils.bytesToHexFun(mBuffer);
+                Log.e("发送命令", str);
+                Utils.writeLog("->:" + str);
+                mOutputStream.write(mBuffer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private long lastClickTime = 0L;
-    private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
+    private static final int FAST_CLICK_DELAY_TIME = 1000; // 快速点击间隔
     private String Yanzheng_sq = "";//是否验雷管已经授权
     @OnClick({R.id.btn_near, R.id.btn_remote})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_near:
-                if (IntervalUtil.isFastClick_2()) {
-                    startActivity(new Intent(this, WxjlNearActivity.class));
-                }  else {
-                    show_Toast("请勿重复点击");
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
                 }
+                startActivity(new Intent(this, WxjlNearActivity.class));
                 break;
             case R.id.btn_remote:
-                    if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME){
-                        return;
-                    }
-                    lastClickTime = System.currentTimeMillis();
-                    queryBeian();
-                    //验证是否授权
-                    if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
-                        createDialog();
-                        return;
-                    }
-                    long time = System.currentTimeMillis();
-                    long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                    if (time - endTime < 180000) {//第二次启动时间不重置
-                        int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                        if (a < 180000) {
-                            initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
-                        }
-                        return;
-                    }
-                    Intent intent = new Intent(this, WxjlRemoteActivity.class);
-                    intent.putExtra("wxjlDeviceId", wxjlDeviceId);
-                    startActivity(intent);
-                    finish();
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
+                if (TextUtils.isEmpty(wxjlDeviceId)) {
+                    show_Toast("请先近距离级联");
+                    return;
+                }
+                if (isRemote) {
+                    enterRemotePage();
+                } else {
+                    enterJcms = new EnterJcms();
+                    enterJcms.start();
+                }
                 break;
         }
     }
@@ -589,6 +718,10 @@ public class WxjlActivity extends BaseActivity {
             }
         } else if (event.getMsg().equals("deviceId")) {
             wxjlDeviceId = event.getData();
+        } else if (event.getMsg().equals("nearIsEnd")) {
+            // 近距离无线级联已结束，第二个字段是设备号，第三个字段表示已结束
+            wxjlDeviceId = event.getData();
+            isRemote = true;
         }
     }
 
@@ -654,9 +787,7 @@ public class WxjlActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        EMgpio.SetGpioDataLow(94);//下电
-//        closeM900Rs485("页面销毁时正常关闭485");
-//        Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "页面退出时开始关闭485指令");
+        closeThread();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
