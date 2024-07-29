@@ -134,6 +134,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         if ("true".equals(jcmsResult)) {
                             tvEnterJcms.setText("3.数据检测结束");
                             show_Toast("数据检测结束");
+
                             EventBus.getDefault().post(new FirstEvent("nearIsEnd",deviceId,"nearEnd"));
                             exitNear();
                             Intent intent = new Intent(WxjlNearActivity.this, WxjlRemoteActivity.class);
