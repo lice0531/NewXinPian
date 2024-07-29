@@ -1464,9 +1464,9 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            blastQueue = allBlastQu;
 //        }
 //        ll_firing_deAmount_4.setText("0");
-        ll_firing_errorNum_4.setText("0");
-        ll_firing_Volt_4.setText("0V");
-        ll_firing_IC_4.setText("0μA");
+//        ll_firing_errorNum_4.setText("0");
+//        ll_firing_Volt_4.setText("0V");
+//        ll_firing_IC_4.setText("0μA");
         ll_firing_errorNum_4.setTextColor(Color.GREEN);
     }
 
