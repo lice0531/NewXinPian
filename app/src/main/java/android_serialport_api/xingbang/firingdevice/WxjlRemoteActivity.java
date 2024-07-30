@@ -1094,6 +1094,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private void exitRemotePage(){
         closeLx();
         sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+        finish();
     }
 
     private void setTipText(String data) {
