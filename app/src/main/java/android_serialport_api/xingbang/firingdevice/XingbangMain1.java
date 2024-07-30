@@ -750,7 +750,7 @@ public class XingbangMain1 extends BaseActivity {
                     //Intent intent = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
                     itwxjl = new Intent(this, VerificationActivity.class);
                 } else {
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
                     Log.e(TAG,"雷管数量：" + mListData.size());
                     if (mListData.size() > 0) {
                         itwxjl = new Intent(this, WxjlActivity.class);

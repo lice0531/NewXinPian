@@ -1239,7 +1239,6 @@ public class FiringMainActivity extends SerialPortActivity {
      * 处理芯片返回命令
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
-        String currentPeak = "";
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
             increase(1);
             Log.e("increase", "1");

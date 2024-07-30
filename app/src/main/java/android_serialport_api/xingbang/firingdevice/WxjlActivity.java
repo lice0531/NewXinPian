@@ -1,6 +1,4 @@
 package android_serialport_api.xingbang.firingdevice;
-
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,13 +7,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.kfree.expd.ExpdDevMgr;
 import com.kfree.expd.OnOpenSerialPortListener;
 import com.kfree.expd.OnSerialPortDataListener;
@@ -31,28 +24,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
-import android_serialport_api.xingbang.a_new.Constants_SP;
-import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
-import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.jilian.IntentBean;
 import android_serialport_api.xingbang.jilian.Protcol;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
-import android_serialport_api.xingbang.utils.upload.IntervalUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -112,7 +94,6 @@ public class WxjlActivity extends SerialPortActivity {
         mThreadPool = Executors.newCachedThreadPool();
         mBuffer = new byte[50];
         getPropertiesData();
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         openM900Rs485("");
@@ -195,10 +176,8 @@ public class WxjlActivity extends SerialPortActivity {
     }
 
     private void enterRemotePage() {
-        String str5 = "远距离无线级联";
         Intent intent = new Intent(WxjlActivity.this, WxjlRemoteActivity.class);
         intent.putExtra("wxjlDeviceId", wxjlDeviceId);
-        intent.putExtra("dataSend", str5);
         startActivity(intent);
         finish();
     }
@@ -435,124 +414,20 @@ public class WxjlActivity extends SerialPortActivity {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
-                if (TextUtils.isEmpty(wxjlDeviceId)) {
-                    show_Toast("请先近距离级联");
-                    return;
-                }
-                if (isRemote) {
+//                if (TextUtils.isEmpty(wxjlDeviceId)) {
+//                    show_Toast("请先近距离级联");
+//                    return;
+//                }
+//                if (isRemote) {
                     enterRemotePage();
-                } else {
-                    enterJcms = new EnterJcms();
-                    enterJcms.start();
-                }
+//                } else {
+//                    enterJcms = new EnterJcms();
+//                    enterJcms.start();
+//                }
                 break;
         }
     }
 
-    private TextView mOffTextView;
-    private Handler mOffHandler;
-    private java.util.Timer mOffTime;
-    private android.app.Dialog mDialog;
-    private void initDialog_fangdian(String tip, int daojishi, String c) {
-        String str5 = c;
-        Log.e(TAG, "倒计时: " + daojishi);
-        mOffTextView = new TextView(this);
-        mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n放电倒计时：");
-        mDialog = new AlertDialog.Builder(this)
-                .setTitle("系统提示")
-                .setCancelable(false)
-                .setView(mOffTextView)
-//                .setPositiveButton("确定", (dialog, id) -> {
-//                    mOffTime.cancel();//清除计时
-//                    stopXunHuan();//关闭后的一些操作
-//                })
-                .setNeutralButton("退出", (dialog, id) -> {
-                    dialog.cancel();
-                    mOffTime.cancel();
-                })
-                .setNegativeButton("继续", (dialog2, which) -> {
-                    dialog2.dismiss();
-                    Intent intent5;//金建华
-                    if (str5.equals("组网")) {
-                        intent5 = new Intent(this, TestDenatorActivity.class);
-                    } else {
-                        Log.e("验证2", "Yanzheng: " + Yanzheng);
-                        if (Yanzheng.equals("验证")) {
-                            intent5 = new Intent(this, VerificationActivity.class);
-                        } else {
-                            intent5 = new Intent(this, FiringMainActivity.class);
-                        }
-                    }
-
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
-                    mOffTime.cancel();
-                })
-                .create();
-        mDialog.show();
-        mDialog.setCanceledOnTouchOutside(false);
-
-        mOffHandler = new Handler(msg -> {
-            if (msg.what > 0) {
-                //动态显示倒计时
-                mOffTextView.setText(tip + "\n放电倒计时：" + msg.what);
-            } else {
-                //倒计时结束自动关闭
-                if (mDialog != null) {
-                    mDialog.dismiss();
-
-                }
-//                off();//关闭后的操作
-                mOffTime.cancel();//终止此计时器，丢弃任何当前计划的任务
-                mOffTime.purge();//从此计时器的任务队列中删除所有取消的任务
-            }
-            return false;
-        });
-
-        //倒计时
-
-        mOffTime = new Timer(true);
-        TimerTask tt = new TimerTask() {
-            private int countTime = daojishi;
-
-            public void run() {
-//                if(countTime==0){
-//                    mOffTime.cancel();
-//                    mOffTime.purge();
-//                }
-                if (countTime > 0) {
-                    countTime--;
-                }
-                Log.e(TAG, "countTime: " + countTime);
-                Message msg = new Message();
-                msg.what = countTime;
-                mOffHandler.sendMessage(msg);
-            }
-        };
-        mOffTime.schedule(tt, 1000, 1000);
-    }
-
-    /***
-     * 建立对话框
-     */
-    public void createDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("未授权提醒");//"说明"
-        builder.setMessage("有未授权的雷管,请进行授权后再进行起爆!");
-        builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
-    }
-    private int Yanzheng_sq_size = 0;
-    private String mRegion;     // 区域
-    private void queryBeian() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_shou = master.queryLeiGuan(format1, mRegion);
-        Yanzheng_sq_size = list_shou.size();
-        Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
-    }
     /**
      * 发送485命令
      */

@@ -314,6 +314,16 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_5_TRANSLATE_83 + "00";//83
 		return DefCommand.getCommadBytes(command);
 	}
+
+	/***
+	 * 发送切换模式指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] sendWxjl84(String addr,String datalength){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_84 + datalength;//84
+		return DefCommand.getCommadBytes(command);
+	}
 	/***
 	 * 发送同步A0指令
 	 * @param addr

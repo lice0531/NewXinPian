@@ -98,7 +98,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private List<DeviceBean> pollingList = new ArrayList<>();
     private DeviceAdapter adapter;
     private boolean isDeviceConnet;
-
     private int qibaoNum = 0;
     public boolean cs = true;
     public boolean cd = false;
@@ -200,6 +199,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private void initData() {
         wxjlDeviceId = !TextUtils.isEmpty(getIntent().getStringExtra("wxjlDeviceId")) ?
                 getIntent().getStringExtra("wxjlDeviceId") : "01";
+        Log.e(TAG,"设备号：" + getIntent().getStringExtra("wxjlDeviceId"));
         syncDevices = new SyncDevices();
         syncDevices.start();
     }
@@ -257,10 +257,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//        byte[] localBuf = Utils.hexStringToBytes(fromCommad);
         Log.e("返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
-        doWithReceivData(localBuf);//处理cmd命令
+//        String res = Utils.bytesToHexFun(localBuf);
+        doWithReceivData(fromCommad);//处理cmd命令
     }
 
     private void closeA0Thread() {
@@ -278,8 +279,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     /**
      * 处理芯片返回命令
      */
-    private void doWithReceivData(byte[] cmdBuf) {
-        String res = Utils.bytesToHexFun(cmdBuf);
+    private void doWithReceivData(String res) {
+//        String res = Utils.bytesToHexFun(cmdBuf);
         Message msg = new Message();
         if (res.startsWith(DefCommand.CMD_MC_SEND_B0)) {
             //已收到同步B0指令
@@ -295,20 +296,24 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             bean.setInfo("在线");
             msg.obj = bean;
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B1)) {
+            cs = false;
+            cd = true;
             // 起爆检测
             msg.what = 9;
             msg.obj = receiveMsg(res, "在线");
             //开启轮询  10秒轮询一次接收到的消息  来更新当前设备列表信息
             if (isStopGetLgNum) {
                 //只需要获取状态信息和电流即可
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"1130"));
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"122130"));
             } else {
                 //检测过程中状态充电信息雷管数据都需要获取展示
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"1423324160"));
             }
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B2)) {
+            qb = true;
+            qh = true;
             // 充电
             msg.what = 9;
             msg.obj = receiveMsg(res, "正在充电");
@@ -317,6 +322,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.what = 9;
             msg.obj = receiveMsg(res, "升高压中");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B4)) {
+            fuwei();
             // 单个设备起爆
             msg.what = 9;
             msg.obj = receiveMsg(res, "起爆中");
@@ -343,6 +349,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             // 退出
             msg.what = InitConst.CODE_EXIT;
             msg.obj = receiveMsg(res, "");
+        } else {
+            Log.e(TAG, "返回命令没有匹配对应的命令-cmd:" + res);
         }
         handler_msg.sendMessage(msg);
     }
@@ -357,7 +365,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             bean.setCode(res.substring(2,4));
             index = 1;
         }
-        // 1:检测状态   3：电流数据   4：雷管总数   6：错误数量
+        // 1:检测状态  2：电压数据   3：电流数据   4：雷管总数   6：错误数量
         int aa = res.length() / 4;
         for (int i = index; i < aa; i++) {
             String value = res.substring(4 * i, 4 * (i + 1));
@@ -410,11 +418,18 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             break;
                     }
                     break;
+                case "2":
+                    //电压数据
+                    String dy = value.substring(value.length() - 3);
+                    String bv = Utils.addZero(dy, 4);
+                    bean.setBusVoltage(calateBv(bv));
+                    Log.e(TAG,"得到的B5消息中拿到电压信息了:" + dy + "--补零后：" + bv + "--要显示的电压是：" + calateBv(bv));
+                    break;
                 case "3":
-                    String sb = value.substring(value.length() - 3);
-                    String cp = Utils.addZero(sb, 4);
+                    String dl = value.substring(value.length() - 3);
+                    String cp = Utils.addZero(dl, 4);
                     bean.setCurrentPeak(showCp(cp));
-                    Log.e(TAG,"得到的B5消息中拿到电流信息了:" + sb + "--补零后：" + cp + "--要显示的电流是：" + showCp(cp));
+                    Log.e(TAG,"得到的B5消息中拿到电流信息了:" + dl + "--补零后：" + cp + "--要显示的电流是：" + showCp(cp));
                     break;
                 case "4":
                     //拿到全部雷管数量后只展示最后三位数即可
@@ -440,6 +455,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
+    //显示雷管数量
     private String showLgNum(String data) {
         String hexString = data.substring(data.length() - 3);
         String decimal = String.valueOf(Integer.parseInt(hexString, 16));
@@ -449,20 +465,41 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             return Utils.addZero(decimal, 3);
         }
     }
-    private String showCp(String tempData) {
-//        String strLow2 = tempData.substring(0, 2);
-//        String strHigh2 = tempData.substring(2);
+
+    //电压
+    private float calateBv(String tempData) {
+//        String strLow = tempData.substring(0, 2);
+//        String strHigh = tempData.substring(2);
         //和40指令的展示电流稍微有些区别：这次是高位在前低位在后  之前是地位在前高位在后 上面注释掉的代码即是40指令展示电流的高低位代码
-        String strHigh2 = tempData.substring(0, 2);
-        String strLow2 = tempData.substring(2);
-        if (strLow2.isEmpty()) {
-            strLow2 = "00";
+        String strHigh = tempData.substring(0, 2);
+        String strLow = tempData.substring(2);
+        int volthigh = Integer.parseInt(strHigh, 16) * 256;
+        int voltLowInt = Integer.parseInt(strLow, 16);
+        //可调电压版本,系数为0.011,不可调为0.006
+//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
+        double voltTotal = (volthigh + voltLowInt) * 3.0 * 11 / 4.096 / 1000;//新芯片
+//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.011;//可调电压
+        float busVoltage = (float) voltTotal;
+        busVoltage = Utils.getFloatToFormat(busVoltage, 2, 4);
+        Log.e(TAG,"得到的电压数据：" + busVoltage);
+        return busVoltage;
+    }
+
+    //显示电流
+    private String showCp(String tempData) {
+//        String strLow = tempData.substring(0, 2);
+//        String strHigh = tempData.substring(2);
+        //和40指令的展示电流稍微有些区别：这次是高位在前低位在后  之前是地位在前高位在后 上面注释掉的代码即是40指令展示电流的高低位代码
+        String strHigh = tempData.substring(0, 2);
+        String strLow = tempData.substring(2);
+        if (strLow.isEmpty()) {
+            strLow = "00";
         }
-        if (strHigh2.isEmpty()) {
-            strHigh2 = "00";
+        if (strHigh.isEmpty()) {
+            strHigh = "00";
         }
-        int ichigh = Integer.parseInt(strHigh2, 16) * 256;
-        int icLowInt = Integer.parseInt(strLow2, 16);
+        int ichigh = Integer.parseInt(strHigh, 16) * 256;
+        int icLowInt = Integer.parseInt(strLow, 16);
 //				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
         double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
         float f1 = (float) (icTotal*1.8*2)-10;//*400//减10是减0带载的电流
@@ -664,19 +701,23 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                         list_device.get(a).setTrueNum(bean4.getTrueNum());
                                         list_device.get(a).setErrNum(bean4.getErrNum());
                                     }
-                                    if ("检测结束".equals(bean4.getInfo())) {
-                                        //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
-                                        if (getErrorLgNum(bean4.getErrNum()) > 0) {
-                                            showAlertDialog("系统提示","当前有错误雷管，是否继续进行",
-                                                    "查看错误雷管","继续",1);
-                                        }
-                                    }
-                                    if (Float.parseFloat(bean4.getCurrentPeak()) > 21000) {
-                                        showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
-                                    }
                                 }
                             }
-                            if ("起爆结束".equals(bean4.getInfo()) || "起爆失败".equals(bean4.getInfo())) {
+                            if (Float.parseFloat(bean4.getCurrentPeak()) > 21000) {
+                                showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
+                            }
+                            if (bean4.getBusVoltage() < 6) {
+                                showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
+                            }
+                            if ("检测结束".equals(bean4.getInfo())) {
+                                //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
+                                if (getErrorLgNum(bean4.getErrNum()) > 0) {
+                                    showAlertDialog("系统提示","当前有错误雷管，是否继续进行",
+                                            "查看错误雷管","继续",1);
+                                }
+                            } else if ("升压失败".equals(bean4.getInfo())) {
+                                showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
+                            } else if ("起爆结束".equals(bean4.getInfo())) {
                                 closeLx();
                                 MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                                 //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
@@ -686,6 +727,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 if (!qbxm_id.equals("-1")) {
                                     updataState(qbxm_id);
                                 }
+                            } else if ("起爆失败".equals(bean4.getInfo())) {
+                                showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
                             }
                             adapter.notifyDataSetChanged();
                         }
@@ -969,7 +1012,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     show_Toast("正在执行" + data);
                     switch (Build.DEVICE) {
                         case "M900":
-                            setTipText(data);
+                            if (reciveB0) {
+                                setTipText(data);
+                            } else {
+                                show_Toast("设备同步失败，请退出APP重新同步");
+                            }
                             break;
                         default:
                             if (server != null) {
@@ -1004,7 +1051,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     dialog.dismiss();
                     //跳转到近距离页面（如果当前页面低速通道已开启，此时需先将波特率升至115200高速通道再跳转）
                     Intent intent = new Intent(WxjlRemoteActivity.this,WxjlNearActivity.class);
-                    intent.putExtra("transhighRate","Y");
+                    //由于现在都是高速波特率  所以暂时先注释此代码
+//                    intent.putExtra("transhighRate","Y");
                     startActivity(intent);
                 }
             }
@@ -1037,7 +1085,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     //设置对话框的按钮
                     .setNegativeButton("退出", (dialog1, which) -> {
                         exitRemotePage();
-                        dialog1.cancel();
+                        dialog1.dismiss();
                     }).create();
             dialog.show();
         }
@@ -1052,25 +1100,20 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         switch (data) {
             case "A1":
                 tvTip.setText("正在起爆测试...");
-                cs = false;
-                cd = true;
                 sendCmd(ThreeFiringCmd.setWxjlA1("01"));
                 break;
             case "A2":
                 tvTip.setText("正在充电...");
-                qb = true;
-                qh = true;
                 isStopGetLgNum = true;
                 sendCmd(ThreeFiringCmd.setWxjlA2("01"));
-                break;
-            case "A6":
-                tvTip.setText("正在执行起爆...");
-                sendCmd(ThreeFiringCmd.setWxjlA6("01", "01"));
-                fuwei();
                 break;
             case "A4":
                 tvTip.setText("正在执行起爆...");
                 sendCmd(ThreeFiringCmd.setWxjlA4("01"));
+                break;
+            case "A6":
+                tvTip.setText("正在执行起爆...");
+                sendCmd(ThreeFiringCmd.setWxjlA6("01", "01"));
                 fuwei();
                 break;
             case "A7":
@@ -1119,10 +1162,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             //询问检测状态（15）  电流信息（33） 全部雷管数量（42）   错误雷管数量（60）
             if (isStopGetLgNum) {
                 //只需要获取状态信息和电流即可
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"1130"));
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"122130"));
             } else {
                 //检测过程中状态充电信息雷管数据都需要获取展示
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"13324160"));
+                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId,"1423324160"));
             }
             if (zeroCount > 0 && zeroCount <= 8 && !reciveB5) {
                 Log.e(TAG,"A5线程监控次数,次数：" + zeroCount);

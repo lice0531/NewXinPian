@@ -52,6 +52,7 @@ public class DefCommand {
 	public static String CMD_5_TRANSLATE_81="81";//无线级联：子节点与主节点进行数据传输
 	public static String CMD_5_TRANSLATE_82="82";//无线级联：进入检测模式
 	public static String CMD_5_TRANSLATE_83="83";//切换模式
+	public static String CMD_5_TRANSLATE_84="84";//无线级联：查询错误雷管
 	public static String CMD_MC_SEND_A0="A0";//无线级联：主控发A1同步
 	public static String CMD_MC_SEND_A1="A1";//无线级联：起爆检测
 	public static String CMD_MC_SEND_A2="A2";//充电
@@ -60,7 +61,7 @@ public class DefCommand {
 	public static String CMD_MC_SEND_A5="A5";//轮训取电流电压数据
 	public static String CMD_MC_SEND_A6="A6";//切换模式
 	public static String CMD_MC_SEND_A7="A7";//退出
-	public static String CMD_MC_SEND_B0="B0";//无线级联：子机响应B1同步
+	public static String CMD_MC_SEND_B0="B0";//无线级联：子机响应B0同步
 	public static String CMD_MC_SEND_B1="B1";//无线级联：子机响应B1起爆检测
 	public static String CMD_MC_SEND_B2="B2";//无线级联：子机响应B2充电
 	public static String CMD_MC_SEND_B3="B3";//无线级联：子机响应B3充电升高压

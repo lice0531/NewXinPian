@@ -18,6 +18,15 @@ public class DeviceBean implements Parcelable {
     private String errNum;
     private String currentPeak;
     private Socket socket;
+    private float busVoltage;
+
+    public float getBusVoltage() {
+        return busVoltage;
+    }
+
+    public void setBusVoltage(float busVoltage) {
+        this.busVoltage = busVoltage;
+    }
 
     public String getIsSend() {
         return isSend;
