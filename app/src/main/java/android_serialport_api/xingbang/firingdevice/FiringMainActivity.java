@@ -1390,10 +1390,10 @@ public class FiringMainActivity extends SerialPortActivity {
             zeroCmdReFlag = 1;
             byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
             sendCmd(powerCmd);
-            int pid = Process.myPid(); // 获取当前进程的ID
-            int Tid = Process.myTid(); // 获取当前线程的ID
-            Log.e(TAG, "收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
-            Utils.writeRecord("收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
+//            int pid = Process.myPid(); // 获取当前进程的ID
+//            int Tid = Process.myTid(); // 获取当前线程的ID
+//            Log.e(TAG, "收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
+//            Utils.writeRecord("收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
 
             Log.e(TAG, "收到13指令，开始发送41指令");
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
@@ -1999,15 +1999,16 @@ public class FiringMainActivity extends SerialPortActivity {
                     switch (stage) {
                         case 0:
                             Thread.sleep(100);
-//                            if (zeroCount == 0) {
-//                                //关闭电源
-//                                byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
-//                                sendCmd(powerCmd);
-//                            }
-                            increase(1);
-                            Log.e(TAG, "increase: 1");
-                            zeroCmdReFlag = 1;
-                            sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41
+                            if (zeroCount == 0) {
+                                //关闭电源
+                                byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
+                                sendCmd(powerCmd);
+                            }
+
+//                            increase(1);
+//                            Log.e(TAG, "increase: 1");
+//                            zeroCmdReFlag = 1;
+//                            sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41
                             Log.e(TAG, "发送41指令");
                             if (zeroCmdReFlag == 1) {
                                 break;

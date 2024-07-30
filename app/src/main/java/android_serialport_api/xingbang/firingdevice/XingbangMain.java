@@ -765,6 +765,7 @@ public class XingbangMain extends SerialPortActivity {
                 lastClickTime = System.currentTimeMillis();
                 queryBeian();
                 //验证是否授权
+                Log.e(TAG, "验证: "+Yanzheng_sq);
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
                     createDialog();
                     return;
@@ -776,9 +777,13 @@ public class XingbangMain extends SerialPortActivity {
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
                     if (a < 180000) {
                         initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
+                        return;
                     }
-                    return;
+//                    Log.e(TAG, "a: "+a);
+//                    Log.e(TAG, "time: "+time);
+//                    Log.e(TAG, "endTime: "+endTime);
                 }
+
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
@@ -786,6 +791,7 @@ public class XingbangMain extends SerialPortActivity {
                     //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
                     intent5 = new Intent(this, VerificationActivity.class);
                 } else {
+                    Log.e(TAG, "验证2: "+Yanzheng_sq);
                     intent5 = new Intent(this, FiringMainActivity.class);
                 }
                 close();//停止访问电流
@@ -1119,6 +1125,7 @@ public class XingbangMain extends SerialPortActivity {
                 .setNegativeButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
+                    close();//停止访问电流
                     if (str5.equals("组网")) {
                         intent5 = new Intent(this, TestDenatorActivity.class);
                     } else {
@@ -1565,6 +1572,7 @@ public class XingbangMain extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
+        close();
         SQLiteStudioService.instance().stop();
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread

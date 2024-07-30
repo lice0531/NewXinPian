@@ -301,7 +301,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 
     private void loadShouQuan() {
         List<ShouQuan> list = GreenDaoMaster.getAllShouQuan();
-        Log.e("查询", "list : " + list.toString());
+//        Log.e("查询", "list : " + list.toString());
         Gson gson = new Gson();
         DanLingBean danLingBean;
         for (ShouQuan sq : list) {
