@@ -40,10 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
-import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.DeviceAdapter;
 import android_serialport_api.xingbang.custom.ListViewForScrollView;
@@ -53,6 +54,7 @@ import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.DeviceBean;
@@ -103,7 +105,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     public boolean cd = false;
     public boolean qb = false;
     public boolean qh = false;
-    private boolean isStopGetLgNum = false;//充电开始就不需要再或许雷管数量了，在充点前获取下雷管数量并记录下来展示即可
+    private boolean isStopGetLgNum = false;//充电开始就不再获取雷管数量了，在充电前获取雷管数量并记录下来展示即可
     private ConcurrentHashMap<String, String> lastReceivedMessages = new ConcurrentHashMap<>();
     //起爆按钮点击时，值为qh:发送A6命令（切换模式）   值为qb:发送A4命令（起爆）
     private String qbFlag = "qb";
@@ -114,7 +116,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private boolean reciveB5 = false;//发出A5命令是否返回
     private int zeroCount = 1;//A5指令无返回的次数
     private boolean isOpenLowRate = false;//是否开启2400低频
-    int rate = 2400;
+    int rate = isOpenLowRate ? 2400 : 115200;
     private String hisInsertFireDate;
     private String equ_no = "";//设备编码
     private String pro_bprysfz = "";//证件号码
@@ -131,6 +133,14 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
     private Handler mHandler_tip = null;//提示
+    Handler openHandler = new Handler();//重新打开串口
+    /**
+     * 默认为0:不显示弹窗
+     * 1:显示电流过大的弹窗  2:显示电压异常的弹窗
+     * 3:显示错误雷管的弹窗  4:显示高压充电失败的弹窗
+     * 5:显示起爆失败的弹窗
+     */
+    private int showDialog = 0;
 
     @Override
     protected void onStart() {
@@ -175,25 +185,36 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 
 
     private void initSerRate() {
-        if (isOpenLowRate) {
-            //通讯速率需从115200降到2400
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mApplication.closeSerialPort();
-                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                    mSerialPort = null;
-                }
-            }).start();
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            initSerialPort(rate);
-            Log.e(TAG, "3秒后重新打开串口，将波特率降为" + rate);
-        }
+//        if (isOpenLowRate) {
+//            //通讯速率需从115200降到2400
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mApplication.closeSerialPort();
+//                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                    mSerialPort = null;
+//                }
+//            }).start();
+//            try {
+//                Thread.sleep(3000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//            initSerialPort(rate);
+//            Log.e(TAG, "3秒后重新打开串口，将波特率降为" + rate);
+//        }
+        openSerial();
         initData();
+    }
+
+    private void openSerial() {
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initSerialPort(rate);
+                Log.e(TAG, "重新打开串口，波特率为" + rate);
+            }
+        }, 2500);
     }
 
     private void initData() {
@@ -257,10 +278,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-//        byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-        Log.e("返回命令", fromCommad);
+        Log.e(TAG + "-返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
-//        String res = Utils.bytesToHexFun(localBuf);
         doWithReceivData(fromCommad);//处理cmd命令
     }
 
@@ -280,7 +299,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
      * 处理芯片返回命令
      */
     private void doWithReceivData(String res) {
-//        String res = Utils.bytesToHexFun(cmdBuf);
         Message msg = new Message();
         if (res.startsWith(DefCommand.CMD_MC_SEND_B0)) {
             //已收到同步B0指令
@@ -350,7 +368,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.what = InitConst.CODE_EXIT;
             msg.obj = receiveMsg(res, "");
         } else {
-            Log.e(TAG, "返回命令没有匹配对应的命令-cmd:" + res);
+            Log.e(TAG, "无线级联远距离页面-没有匹配对应的命令-cmd:" + res);
         }
         handler_msg.sendMessage(msg);
     }
@@ -447,11 +465,15 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 
     //得到错误雷管数量
     public static int getErrorLgNum(String str) {
-        // 如果第一个字符是 '0'，去掉前导零
-        if (str.charAt(0) == '0') {
-            return Integer.parseInt(str.substring(1));
+        if (str != null) {
+            // 如果第一个字符是 '0'，去掉前导零
+            if (str.charAt(0) == '0') {
+                return Integer.parseInt(str.substring(1));
+            } else {
+                return Integer.parseInt(str);
+            }
         } else {
-            return Integer.parseInt(str);
+            return 0;
         }
     }
 
@@ -696,39 +718,47 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 if (list_device.get(a).getCode().equals(bean4.getCode())) {
                                     list_device.get(a).setRes(bean4.getRes());
                                     list_device.get(a).setInfo(bean4.getInfo());
-                                    list_device.get(a).setCurrentPeak(bean4.getCurrentPeak());
+                                    if (bean4.getCurrentPeak() != null) {
+                                        list_device.get(a).setCurrentPeak(bean4.getCurrentPeak());
+                                    }
                                     if (!isStopGetLgNum) {
                                         list_device.get(a).setTrueNum(bean4.getTrueNum());
                                         list_device.get(a).setErrNum(bean4.getErrNum());
                                     }
                                 }
                             }
-                            if (Float.parseFloat(bean4.getCurrentPeak()) > 21000) {
-                                showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
-                            }
-                            if (bean4.getBusVoltage() < 6) {
-                                showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
-                            }
-                            if ("检测结束".equals(bean4.getInfo())) {
-                                //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
-                                if (getErrorLgNum(bean4.getErrNum()) > 0) {
-                                    showAlertDialog("系统提示","当前有错误雷管，是否继续进行",
-                                            "查看错误雷管","继续",1);
+                            if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
+                                if (Float.parseFloat(bean4.getCurrentPeak()) > 21000) {
+//                                    showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
                                 }
-                            } else if ("升压失败".equals(bean4.getInfo())) {
-                                showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
-                            } else if ("起爆结束".equals(bean4.getInfo())) {
-                                closeLx();
-                                MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
-                                //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-                                hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
-                                saveFireResult();
+                            }
+                            if (!"起爆结束".equals(bean4.getInfo()) && !TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage()))) {
+                                if (bean4.getBusVoltage() < 6) {
+//                                    showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
+                                }
+                            }
+                            if (!TextUtils.isEmpty(bean4.getInfo())) {
+                                if ("检测结束".equals(bean4.getInfo())) {
+                                    //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
+                                    if (getErrorLgNum(bean4.getErrNum()) > 0) {
+//                                        showAlertDialog("系统提示", "当前有错误雷管，是否继续进行?",
+//                                                "查看错误雷管", "继续", 1);
+                                    }
+                                } else if ("升压失败".equals(bean4.getInfo())) {
+//                                    showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
+                                } else if ("起爆结束".equals(bean4.getInfo())) {
+                                    closeLx();
+                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                    //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
+                                    hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
+                                    saveFireResult();
 //                              saveFireResult_All();
-                                if (!qbxm_id.equals("-1")) {
-                                    updataState(qbxm_id);
+                                    if (!qbxm_id.equals("-1")) {
+                                        updataState(qbxm_id);
+                                    }
+                                } else if ("起爆失败".equals(bean4.getInfo())) {
+//                                    showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
                                 }
-                            } else if ("起爆失败".equals(bean4.getInfo())) {
-                                showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
                             }
                             adapter.notifyDataSetChanged();
                         }
@@ -934,10 +964,23 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             denatorHis_detail.setRemark(dbf.getRemark());
             denatorHis_detail.setBlastdate(fireDate);
             denatorHis_detail.setPiece(dbf.getPiece());
+            //暂时先都更新为成功，然后在查询到错误雷管后再把错误的更新过来
+            denatorHis_detail.setErrorCode("FF");
+            denatorHis_detail.setErrorCode("通信成功");
             getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
+            updataLgStatus(dbf);
         }
 
         Utils.saveFile();//把软存中的数据存入磁盘中
+    }
+
+    private void updataLgStatus(DenatorBaseinfo dbf) {
+        //暂时先都更新为成功，然后在查询到错误雷管后再把错误的更新过来
+        DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
+        denator.setErrorCode("FF");
+        denator.setErrorName("通信成功");
+        Log.e(TAG,"更新通信状态了。。。" + dbf.getShellBlastNo());
+        Application.getDaoSession().update(denator);
     }
 
     @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_exit})
@@ -1052,7 +1095,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     //跳转到近距离页面（如果当前页面低速通道已开启，此时需先将波特率升至115200高速通道再跳转）
                     Intent intent = new Intent(WxjlRemoteActivity.this,WxjlNearActivity.class);
                     //由于现在都是高速波特率  所以暂时先注释此代码
-//                    intent.putExtra("transhighRate","Y");
+                    intent.putExtra("transhighRate","Y");
                     startActivity(intent);
                 }
             }
@@ -1072,6 +1115,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                 getWindow().setBackgroundDrawable(background);
             }
         });
+        dialog.setCanceledOnTouchOutside(false);//点击外部不消失
         if (dialog != null && !dialog.isShowing()) {
             dialog.show();
         }
@@ -1082,11 +1126,13 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             AlertDialog dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
                     .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    .setCancelable(false)
                     //设置对话框的按钮
                     .setNegativeButton("退出", (dialog1, which) -> {
                         exitRemotePage();
                         dialog1.dismiss();
                     }).create();
+            dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
             dialog.show();
         }
     }
@@ -1185,6 +1231,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     protected void onDestroy() {
         super.onDestroy();
         sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         try {
             if (server != null) {
                 server.stopServerAsync();

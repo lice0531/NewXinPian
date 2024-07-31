@@ -10,18 +10,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
 import org.greenrobot.eventbus.EventBus;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -36,27 +31,24 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class WxjlNearActivity extends SerialPortActivity {
-        @BindView(R.id.tv_register)
+    @BindView(R.id.tv_register)
     TextView tvRegister;
     @BindView(R.id.tv_send_data)
     TextView tvSendData;
     @BindView(R.id.tv_enter_jcms)
     TextView tvEnterJcms;
+    @BindView(R.id.tv_exit)
+    TextView tvExit;
     @BindView(R.id.btn_register)
     RelativeLayout btnRegister;
-//            Button btnRegister;
     @BindView(R.id.btn_exit)
     RelativeLayout btnExit;
-//    Button btnExit;
     @BindView(R.id.btn_send_data)
     RelativeLayout btnSendData;
-//    Button btnSendData;
     @BindView(R.id.btn_enter_jcms)
     RelativeLayout btnEnterJcms;
-//    Button btnEnterJcms;
-        @BindView(R.id.btn_look_error)
+    @BindView(R.id.btn_look_error)
     RelativeLayout btnLookError;
-//            Button btnLookError;
     private int sendNum = 1;
     private String deviceId = "", dataLength81 = "", data81 = "", dataLength82 = "", data82 = "", serId = "";
     private String TAG = "无线级联近距离页面";
@@ -68,10 +60,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     private boolean receive81 = false;//81命令是否结束
     private boolean receive82 = false;//发出82命令是否返回
     private String flag = "";//接收是否需要将波特率升至115200
-    private boolean isQuery = false;//是否可以查询错误雷管
-    //limit字段：设置每次81指令发送几条雷管数据
-//    private int limit = 10;
-
+    Handler openHandler = new Handler();//重新打开串口
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,25 +77,20 @@ public class WxjlNearActivity extends SerialPortActivity {
     private void initLgData() {
         flag = (getIntent().getStringExtra("transhighRate") != null) ?
                 getIntent().getStringExtra("transhighRate") : "";
-//        if (!TextUtils.isEmpty(flag)) {
-//            isQuery = true;
-//            //通讯速率需从2400升至115200
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mApplication.closeSerialPort();
-//                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                    mSerialPort = null;
-//                }
-//            }).start();
-//            try {
-//                Thread.sleep(3000);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//            initSerialPort(115200);
-//            Log.e(TAG, "3秒后重新打开串口，当前波特率为115200");
-//        }
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initSerialPort(115200);
+                Log.e(TAG, "重新打开串口，波特率为115200");
+            }
+        }, 2500);
+        if (!TextUtils.isEmpty(flag)) {
+            btnLookError.setVisibility(View.VISIBLE);
+            tvExit.setText("5.退出");
+        } else {
+            btnLookError.setVisibility(View.GONE);
+            tvExit.setText("4.退出");
+        }
         mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
         handler_msg = new Handler(new Handler.Callback() {
             @Override
@@ -116,18 +100,16 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String registResult = (String) msg.obj;
                         if ("true".equals(registResult)) {
                             tvRegister.setText("1.设备已注册");
-//                            btnRegister.setText("1.设备已注册" );
                             show_Toast("设备已注册");
                         } else {
                             tvRegister.setText("1.设备注册");
-//                            btnRegister.setText("1.设备注册");
+                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             show_Toast("设备注册失败，请退出APP后再重新注册");
                         }
-                        closeThread();
+                        close80Thread();
                         break;
                     case 1:
                         tvSendData.setText("2.数据传输结束");
-//                        btnSendData.setText("2.数据传输结束");
                         show_Toast("数据传输结束");
                         receive81 = true;
                         break;
@@ -136,16 +118,20 @@ public class WxjlNearActivity extends SerialPortActivity {
                         if ("true".equals(jcmsResult)) {
                             sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             tvEnterJcms.setText("3.数据检测结束");
-//                            btnEnterJcms.setText("3.数据检测结束");
                             show_Toast("数据检测结束");
                             EventBus.getDefault().post(new FirstEvent("nearIsEnd", deviceId, "nearEnd"));
+                            closeSerial();
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                             enterRemotePage();
                         } else {
                             tvEnterJcms.setText("3.进入检测模式");
-//                            btnEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
                         }
-                        closeThread();
+                        close82Thread();
                         break;
                 }
                 return false;
@@ -153,23 +139,39 @@ public class WxjlNearActivity extends SerialPortActivity {
         });
     }
 
-    private void enterRemotePage(){
+    private void closeSerial() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+    }
+
+    private void enterRemotePage() {
         finish();
         Intent intent = new Intent(WxjlNearActivity.this, WxjlRemoteActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("wxjlDeviceId", deviceId);
         startActivity(intent);
     }
-    private void closeThread() {
+
+    private void close80Thread() {
         if (rDevices != null) {
             rDevices.exit = true;
             rDevices.interrupt();
         }
+    }
+
+    private void close82Thread() {
         if (enterJcms != null) {
             enterJcms.exit = true;
             enterJcms.interrupt();
         }
     }
+
     private class RegisterDevices extends Thread {
         public volatile boolean exit = false;
 
@@ -217,7 +219,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String b = Utils.intToHex(1);
                         dataLength82 = Utils.addZero(b, 2);
                         data82 = "01";
-//                        Log.e(TAG,"82指令--数据体长度：" + dataLength82 + "--数据体：" + data82);
                         sendCmd(ThreeFiringCmd.sendWxjl82(deviceId, dataLength82, data82));
                         Log.e(TAG, "发送82进入检测模式指令");
                         Thread.sleep(1500);
@@ -257,7 +258,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-        Log.e("返回命令", fromCommad);
+        Log.e(TAG + "-返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -271,8 +272,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-//                    String mCmd = cmd.replaceAll("\\s+", "");
-                    doWithReceivData(cmd);//处理cmd命令
+                    doWithReceivData(cmd,fromCommad);//处理cmd命令
                 }
             }
         }
@@ -281,7 +281,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     /***
      * 处理芯片返回命令
      */
-    private void doWithReceivData(String cmd) {
+    private void doWithReceivData(String cmd, String completeCmd) {
         if (DefCommand.CMD_5_TRANSLATE_80.equals(cmd)) {//80 无线级联：进行设备注册
             //此时拿到设备号，然后在远距离级联页面时候使用
             Log.e(TAG, "收到80命令了");
@@ -303,10 +303,35 @@ public class WxjlNearActivity extends SerialPortActivity {
             message.what = 2;
             message.obj = "true";
             handler_msg.sendMessage(message);
+        } else if (DefCommand.CMD_5_TRANSLATE_84.equals(cmd)) {//84 无线级联：读取错误雷管
+            Log.e(TAG, "收到84命令了--完整的84指令:" + completeCmd);
+            /**
+             * 芯片84指令一次最多给返回46条错误雷管数据，如超过46，则需要再次发送84指令获取剩下的错误雷管
+             * 拿到84指令后，展示错误雷管数据  3发错误雷管：C00184 03 0300 0500 0D00 C6DDC0
+             * 截取出错误雷管的序号，0300 0500 0D00就是发81指令时候的雷管顺序  得通过这个序号找到对应的雷管id给错误雷管更新状态
+             * 同时在当前页面展示出错误雷管列表
+             */
+            String errorLgCmd = completeCmd.substring(8, completeCmd.length() - 6);
+            Log.e(TAG,"错误雷管cmd是:" + errorLgCmd);
+            //取到错误雷管cmd后  4个一组  每个都只取前两位  将其转为十进制就可以知道是错误芯片的81发送顺序  然后再找到对应的雷管id 再改变通信状态
+            int aa = errorLgCmd.length() / 4;
+            for (int i = 0; i < aa; i++) {
+                String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
+                String idCmd = value.substring(0,2);
+                int id = Integer.parseInt(idCmd, 16);
+                for (int j = 0; j < mListData.size(); j++) {
+                    if (id == j + 1) {
+                        //得到当前的错误雷管index
+                        String denatorId = mListData.get(id).getDenatorId();
+                        //denatorId即为错误雷管的芯片ID
+                    }
+                }
+            }
         } else {
-            Log.e(TAG, "返回命令没有匹配对应的命令-cmd:" + cmd);
+            Log.e(TAG, TAG + "-返回命令没有匹配对应的命令-cmd:" + cmd);
         }
     }
+
 
     private void send81cmd() {
         //10条数据发一次   81指令：C0+设备号+81+数据体长度+数据体+后面跟通用的一样
@@ -350,8 +375,8 @@ public class WxjlNearActivity extends SerialPortActivity {
                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
                     data = denatorId + delayStr + write.getZhu_yscs() + denatorIdSup + write.getCong_yscs();
                 }
-//                Log.e(TAG, lid + "--雷管序号:" + serId + "--denatorId:" + denatorId + "--delayTime:" + delayTime + "--delayStr:" + delayStr +
-//                        "--延时参数:" + write.getZhu_yscs() + "--数据体长度:" + dataLength81 + "--data81:" + data);
+                Log.e(TAG, lid + "--雷管序号:" + serId + "--denatorId:" + denatorId + "--delayTime:" + delayTime + "--delayStr:" + delayStr +
+                        "--延时参数:" + write.getZhu_yscs() + "--数据体长度:" + dataLength81 + "--data81:" + data);
                 sBuilder.append(data);
                 data81 = sBuilder.toString();
             }
@@ -360,7 +385,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         sendCmd(ThreeFiringCmd.sendWxjl81(deviceId, dataLength81, serId, data81));
     }
 
-    @OnClick({R.id.btn_register, R.id.btn_exit, R.id.btn_send_data, R.id.btn_enter_jcms,R.id.btn_look_error})
+    @OnClick({R.id.btn_register, R.id.btn_exit, R.id.btn_send_data, R.id.btn_enter_jcms, R.id.btn_look_error})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_register:
@@ -369,7 +394,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                 } else {
                     show_Toast("设备注册中...");
                     tvRegister.setText("1.设备注册中...");
-//                    btnRegister.setText("1.设备注册中...");
                     rDevices = new RegisterDevices();
                     rDevices.start();
                 }
@@ -381,7 +405,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                     //雷管数据10条发一次  但目前暂定1条发一次
                     show_Toast("数据传输中...");
                     tvSendData.setText("2.数据传输中...");
-//                    btnSendData.setText("2.数据传输中...");
                     send81cmd();
                 }
                 break;
@@ -391,25 +414,15 @@ public class WxjlNearActivity extends SerialPortActivity {
                 } else {
                     show_Toast("数据检测中...");
                     tvEnterJcms.setText("3.数据检测中...");
-//                    btnEnterJcms.setText("3.数据检测中...");
                     enterJcms = new EnterJcms();
                     enterJcms.start();
                 }
                 break;
             case R.id.btn_look_error:
-//                if (receive82) {
                 //发送84指令查看错误雷管信息
                 String b = Utils.intToHex(0);
                 String datalenght = Utils.addZero(b, 2);
                 sendCmd(ThreeFiringCmd.sendWxjl84(deviceId, datalenght));
-//                if (isQuery) {
-//                    sendCmd(ThreeFiringCmd.sendWxjl84(deviceId));
-//                } else {
-//                    show_Toast("暂无错误雷管");
-//                }
-//                } else {
-//                    show_Toast("请先完成前三步骤");
-//                }
                 break;
             case R.id.btn_exit:
                 exitNear();
@@ -424,8 +437,8 @@ public class WxjlNearActivity extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
-        closeThread();
-//        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+        close80Thread();
+        close82Thread();
         super.onDestroy();
     }
 }
