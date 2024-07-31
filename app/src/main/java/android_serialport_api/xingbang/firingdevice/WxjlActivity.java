@@ -74,7 +74,7 @@ public class WxjlActivity extends SerialPortActivity {
                 openSerial();
             }
         }, 2500);
-        cale();
+//        cale();
     }
     private void cale() {
         String d1 = "03";

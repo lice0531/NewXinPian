@@ -140,7 +140,12 @@ public class WxjlRemoteActivity extends SerialPortActivity {
      * 3:显示错误雷管的弹窗  4:显示高压充电失败的弹窗
      * 5:显示起爆失败的弹窗
      */
-    private int showDialog = 0;
+    private boolean showDialog1;
+    private boolean showDialog2;
+    private boolean showDialog3;
+    private boolean showDialog4;
+    private boolean showDialog5;
+
 
     @Override
     protected void onStart() {
@@ -727,25 +732,29 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                     }
                                 }
                             }
-                            if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
+                            if (!TextUtils.isEmpty(bean4.getCurrentPeak()) && !showDialog1) {
                                 if (Float.parseFloat(bean4.getCurrentPeak()) > 21000) {
-//                                    showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
+                                    showDialog1 = true;
+                                    showErrorDialog("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行级联");
                                 }
                             }
-                            if (!"起爆结束".equals(bean4.getInfo()) && !TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage()))) {
+                            if (!"起爆结束".equals(bean4.getInfo()) && !TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage())) && !showDialog2) {
                                 if (bean4.getBusVoltage() < 6) {
-//                                    showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
+                                    showDialog2 = true;
+                                    showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
                                 }
                             }
-                            if (!TextUtils.isEmpty(bean4.getInfo())) {
+                            if (!TextUtils.isEmpty(bean4.getInfo()) && !showDialog3) {
                                 if ("检测结束".equals(bean4.getInfo())) {
                                     //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
                                     if (getErrorLgNum(bean4.getErrNum()) > 0) {
-//                                        showAlertDialog("系统提示", "当前有错误雷管，是否继续进行?",
-//                                                "查看错误雷管", "继续", 1);
+                                        showDialog3 = true;
+                                        showAlertDialog("系统提示", "当前有错误雷管，是否继续进行?",
+                                                "查看错误雷管", "继续", 1);
                                     }
-                                } else if ("升压失败".equals(bean4.getInfo())) {
-//                                    showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
+                                } else if ("升压失败".equals(bean4.getInfo()) && !showDialog4) {
+                                    showDialog4 = true;
+                                    showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
                                 } else if ("起爆结束".equals(bean4.getInfo())) {
                                     closeLx();
                                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
@@ -756,8 +765,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                     if (!qbxm_id.equals("-1")) {
                                         updataState(qbxm_id);
                                     }
-                                } else if ("起爆失败".equals(bean4.getInfo())) {
-//                                    showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
+                                } else if ("起爆失败".equals(bean4.getInfo()) && !showDialog5) {
+                                    showDialog5 = true;
+                                    showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
                                 }
                             }
                             adapter.notifyDataSetChanged();
@@ -978,7 +988,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         //暂时先都更新为成功，然后在查询到错误雷管后再把错误的更新过来
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
         denator.setErrorCode("FF");
-        denator.setErrorName("通信成功");
+        denator.setErrorName(getString(R.string.text_communication_state4));
         Log.e(TAG,"更新通信状态了。。。" + dbf.getShellBlastNo());
         Application.getDaoSession().update(denator);
     }
@@ -1116,9 +1126,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             }
         });
         dialog.setCanceledOnTouchOutside(false);//点击外部不消失
-        if (dialog != null && !dialog.isShowing()) {
-            dialog.show();
-        }
+        dialog.show();
     }
 
     private void showErrorDialog(String tip) {

@@ -140,6 +140,7 @@
                     android:src="@drawable/icon_ckcw" />
 
                 <TextView
+                    android:id="@+id/tv_look_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
