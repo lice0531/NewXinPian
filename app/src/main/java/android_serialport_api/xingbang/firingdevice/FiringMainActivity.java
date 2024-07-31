@@ -145,7 +145,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int firstWaitCount = 3;//第一阶段计时
     private int oneCount = 0;
     private int twoCount = 0;
-    private volatile int oneCount_max = 18;
+    private volatile int oneCount_max = 20;
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
@@ -154,7 +154,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int thirdWriteCount;//雷管发送计数器
     private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
-    private volatile int sixExchangeCount = 18;//第6阶段计时
+    private volatile int sixExchangeCount = 20;//第6阶段计时
     private volatile int sevenCount = 0;//第7阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
@@ -387,6 +387,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                 }
             } else {
+                list_dianliu.clear();
                 increase(6);//充电阶段
             }
         });
@@ -598,7 +599,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                 }
             }
-            if (twoCount > 10 && stage == 6 && busInfo != null) {
+            if (twoCount > 17 && stage == 6 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 30000) {
@@ -1553,7 +1554,7 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             list_dianliu.add(busInfo.getBusCurrentIa());
-            Log.e(TAG, "list_dianliu: " + list_dianliu);
+            Log.e(TAG, "list_dianliu: " + list_dianliu.size()+"--"+ list_dianliu);
             if(busHandler!=null){
                 busHandler.sendMessage(busHandler.obtainMessage());
             }else {

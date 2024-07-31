@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.bugly.proguard.X;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,6 +57,7 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
@@ -255,6 +257,42 @@ public class XingbangMain extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
             txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa() + "μA");
+            if (busInfo.getBusVoltage() < 6) {
+                Utils.writeRecord("--主页--:总线短路");
+                close();
+                AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
+                        .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog12, which) -> {
+                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                            dialog12.dismiss();
+                            finish();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
+            }
+            if ((int)busInfo.getBusCurrentIa()>21000) {
+                Utils.writeRecord("--主页--:总线短路");
+                close();
+                AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
+                        .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog12, which) -> {
+                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                            dialog12.dismiss();
+                            finish();
+                        })
+                        .setNeutralButton("继续", (dialog1, which) -> {
+
+                            dialog1.dismiss();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
+            }
             return false;
         });
         openPower = new OpenPower();
@@ -1572,6 +1610,7 @@ public class XingbangMain extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
+        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         close();
         SQLiteStudioService.instance().stop();
         if (sendPower != null) {

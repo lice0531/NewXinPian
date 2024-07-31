@@ -92,7 +92,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler checkHandler = null;//更正错误
     private static volatile int stage;
     private volatile int firstCount = 0;
-    private volatile int firstCount_max = 18;
+    private volatile int firstCount_max = 20;
     private volatile int sixCount = 0;
     private volatile VoDenatorBaseInfo writeDenator;
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
@@ -652,7 +652,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
-                    if (displayIc == 0 && denatorCount > 5 && firstCount < 5) {//Preparation_time * 0.2
+                    if (displayIc == 0 && denatorCount > 5 && firstCount < 5&&firstCount >2) {//Preparation_time * 0.2
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast(getString(R.string.text_test_tip12));
                         btn_jixu.setVisibility(View.GONE);
@@ -1455,7 +1455,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         } else {
             loadMoreData_err();
         }
-
+        firstCount=0;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
         byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
         sendCmd(powerCmd);
@@ -1467,7 +1467,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //        ll_firing_errorNum_4.setText("0");
 //        ll_firing_Volt_4.setText("0V");
 //        ll_firing_IC_4.setText("0μA");
-        ll_firing_errorNum_4.setTextColor(Color.GREEN);
+//        ll_firing_errorNum_4.setTextColor(Color.GREEN);
     }
 
     private void stopXunHuan() {
@@ -1627,7 +1627,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             builder.setCancelable(false);
             builder.setPositiveButton("继续", (dialog, which) -> {
                 dialogOFF(dialog);
-                off(true);//重新检测
+                off(false);//重新检测
                 dialog.dismiss();
 
             });
