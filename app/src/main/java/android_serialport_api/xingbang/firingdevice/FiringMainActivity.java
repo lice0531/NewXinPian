@@ -1504,10 +1504,16 @@ public class FiringMainActivity extends SerialPortActivity {
 //            String noReisterFlag = ThreeFiringCmd.getCheckFromXbCommon_FiringExchange_5523_7_reval("00", fromCommad);
             String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e(TAG, "是否有未注册雷管,返回结果: " + noReisterFlag);
-//            if ("FF".equals(noReisterFlag)) {
-//                fourOnlineDenatorFlag = 3;
-////                increase(6);//0635此处功能为直接跳到第六阶段
-//            }
+            if (noReisterFlag.equals("00") && errlist.size() != 0) {
+                noReisterFlag = "FF";
+            }
+            //在测试流程,返回都是FF
+            if ("FF".equals(noReisterFlag)) {
+                fourOnlineDenatorFlag = 3;
+            } else {
+                fourOnlineDenatorFlag = 2;
+                noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+            }
 
             if (!fromCommad.startsWith("00000000", 10)) {
                 if (errlist.size() == 1) {
@@ -2078,12 +2084,12 @@ public class FiringMainActivity extends SerialPortActivity {
 
                                     Log.e("第4阶段-increase", "4-2");
                                     if (denatorCount >= 300 && totalerrorNum != 0) {
-                                        getErrblastQueue();//重新给雷管队列赋值
+                                        getErrblastQueue();//获取错误列表 重新给雷管队列赋值
                                         increase(44);//之前是4
                                     } else {
                                         increase(4);//之前是4
-                                        getblastQueue();//重新获取数据,用来给充电list复制
-                                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
+                                        getblastQueue();//重新获取数据,用来充电
+                                        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     }
 
 //                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
@@ -2474,7 +2480,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     getblastQueue();//重新获取数据,用来给充电list复制
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
-                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
+                                    sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
@@ -2916,8 +2922,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //        endTest();
         ctlLinePanel(4);//修改页面显示项
         getErrorBlastCount();
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-        sendCmd(initBuf2);
+        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
     }
 
     private void initDialog(String tip, int daojishi) {

@@ -194,7 +194,7 @@
 
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="5.起爆"
+                android:text="5.授时起爆"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 

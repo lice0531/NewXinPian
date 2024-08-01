@@ -1326,7 +1326,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 }
             }
             //C000360700AB4427007A051BE3C0
-            if (noReisterFlag.equals("00") && !fromCommad.startsWith("00000000", 10)) {
+            if (noReisterFlag.equals("00") && errlist.size() != 0) {
                 noReisterFlag = "FF";
             }
 
