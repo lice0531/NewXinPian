@@ -197,6 +197,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String pro_dwdm = "";//单位代码
     private int ChongDian_time;//充电时间
     private int JianCe_time;//准备时间
+    private int Qibaotime;//起爆倒计时时间
     private String qiaosi_set = "";//是否检测桥丝
     private String version = "02";//版本号
     private String hisInsertFireDate;
@@ -265,6 +266,9 @@ public class FiringMainActivity extends SerialPortActivity {
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
+
+        Log.e(TAG, "Qibaotime: " + Qibaotime);
+        Log.e(TAG, "eightCount: " + eightCount);
     }
 
     private void initView() {
@@ -389,6 +393,7 @@ public class FiringMainActivity extends SerialPortActivity {
             } else {
                 list_dianliu.clear();
                 increase(6);//充电阶段
+                Log.e(TAG, "eightCount: " + eightCount);
             }
         });
     }
@@ -746,6 +751,7 @@ public class FiringMainActivity extends SerialPortActivity {
      * 初始化变量
      */
     private void initParam() {
+        Qibaotime = Integer.parseInt((String) MmkvUtils.getcode("Qibaotime", "5"));
         FiringMainActivity.stage = 0;
         writeVo = null;
         firstWaitCount = 3;
@@ -760,7 +766,7 @@ public class FiringMainActivity extends SerialPortActivity {
         sevenDisplay = 0;//第7步，是否显示
 //        sixExchangeCount = ChongDian_time;//第6阶段计时(充电时间)
         sixCmdSerial = 1;//命令倒计时
-        eightCount = Integer.parseInt((String) MmkvUtils.getcode("Qibaotime", "5"));//第8阶段
+        eightCount = Qibaotime;//第8阶段
         neightCount = 0;//
         eightCmdFlag = 0;
         thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
@@ -1566,7 +1572,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }else {
                 Utils.writeRecord("busHandler为空");
             }
-            if (stage == 8 && eightCount != 5) {
+            if (stage == 8 && eightCount != Qibaotime) {
                 Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu+
                         "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
                 if (isDifferenceWithin(busInfo.getBusCurrentIa(),befor_dianliu ,20,1) ||
@@ -2265,7 +2271,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     increase(7);
 //                                    Log.e("第7阶段-increase", "7");
                                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
-                                    zanting();
+                                     zanting();
                                     break;
                                 }
                             }
@@ -2309,6 +2315,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;
+                                Log.e(TAG, "eightCount减1: " );
                             } else {
                                 if (eightCmdFlag == 0) {
                                     if (eightCmdExchangePower == 1) {//
@@ -3157,7 +3164,7 @@ public class FiringMainActivity extends SerialPortActivity {
         String msg = event.getMsg();
         Log.e("起爆页面接收到的消息", "msg: " + msg);
         if (msg.equals("jixu")) {
-            if (Wait_Count == 1) {
+            if (stage == 4) {
                 increase(6);
                 Utils.writeRecord("-------------------开始充电-------------------");
             }
@@ -3165,17 +3172,18 @@ public class FiringMainActivity extends SerialPortActivity {
                     deviceStatus + qbResult));
         } else if (msg.equals("qibao")) {
             Log.e("起爆页面", "收到级联起爆指令 ");
+            Log.e("起爆页面", "收到级联起爆指令时--eightCount "+eightCount);
             if (kaiguan) {
                 jixu();
                 kaiguan = false;
             }
             Log.e(TAG, "继续3: ");
-            if (twoCount==sixExchangeCount) {
+//            if (twoCount==sixExchangeCount) {
                 if (stage == 7) {
                     keyFireCmd = 1;
                     Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
                 }
-            }
+//            }
 
         } else if (msg.equals("finish")) {
             closeThread();
