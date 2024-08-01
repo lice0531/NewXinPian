@@ -126,7 +126,7 @@ public class DefCommand {
 		return null;
 	}
 	public static String getCmd2(String cmdInfo){
-//		Log.e("返回命令",cmdInfo);
+//		Log.e("工具类中返回命令",cmdInfo);
 
 		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
 		return null;

@@ -92,34 +92,24 @@ public class XingbangMain1 extends BaseActivity {
     @BindView(R.id.tv_main_no)
     TextView tvMainNo;
     @BindView(R.id.btn_main_reister)//注册
-//    Button btnMainReister;
     RelativeLayout btnMainReister;
     @BindView(R.id.btn_main_test)//测试
     LinearLayout btnMainTest;
-//    Button btnMainTest;
     @BindView(R.id.btn_main_delayTime)//延时
-//    Button btnMainDelayTime;
     RelativeLayout btnMainDelayTime;
     @BindView(R.id.btn_main_del)//删除
-//    Button btnMainDel;
     RelativeLayout btnMainDel;
     @BindView(R.id.btn_main_blast)//起爆
-//    Button btnMainBlast;
     LinearLayout btnMainBlast;
     @BindView(R.id.btn_main_query)//查询
-//    Button btnMainQuery;
     RelativeLayout btnMainQuery;
     @BindView(R.id.btn_main_setevn)//设置
-//    Button btnMainSetevn;
     RelativeLayout btnMainSetevn;
     @BindView(R.id.btn_main_help)//帮助
-//    Button btnMainHelp;
     RelativeLayout btnMainHelp;
     @BindView(R.id.btn_main_downWorkCode)//项目管理
     RelativeLayout btnMainDownWorkCode;
-//    Button btnMainDownWorkCode;
     @BindView(R.id.btn_main_exit)//退出
-//    Button btnMainExit;
     RelativeLayout btnMainExit;
     @BindView(R.id.btn_main_exit2)
     Button btnMainExit2;
@@ -130,7 +120,6 @@ public class XingbangMain1 extends BaseActivity {
     @BindView(R.id.btn_main_lianxi)
     Button btnMainLianxi;
     @BindView(R.id.btn_wxjl)
-//    Button btnWxjl;
     RelativeLayout btnWxjl;
     private long time = 0;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
@@ -744,21 +733,21 @@ public class XingbangMain1 extends BaseActivity {
                     }
                     return;
                 }
-                Log.e("验证2", "Yanzheng: " + Yanzheng);
-                Intent itwxjl = null;
                 if (Yanzheng.equals("验证")) {
                     //Intent intent = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    itwxjl = new Intent(this, VerificationActivity.class);
+                    Intent iv = new Intent(this, VerificationActivity.class);
+                    startActivity(iv);
                 } else {
                     mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
-                    Log.e(TAG,"雷管数量：" + mListData.size());
+                    Log.e(TAG, "雷管数量：" + mListData.size());
                     if (mListData.size() > 0) {
-                        itwxjl = new Intent(this, WxjlActivity.class);
+                        Intent itwxjl = new Intent(this, WxjlActivity.class);
+                        startActivity(itwxjl);
                     } else {
                         show_Toast(getResources().getString(R.string.text_error_tip30));
                     }
                 }
-                startActivity(itwxjl);
+
                 break;
             case R.id.btn_main_reister://注册
                 String str1 = "注册";

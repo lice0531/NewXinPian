@@ -115,6 +115,7 @@ public class WxjlActivity extends SerialPortActivity {
                 return;
             } else {
                 String cmd = DefCommand.getCmd2(fromCommad);
+                Log.e(TAG,TAG + "--接收到80返回命令" + cmd);
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
@@ -245,19 +246,12 @@ public class WxjlActivity extends SerialPortActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_near:
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
-                    return;
-                }
                 closeSerial();
                 Intent intent = new Intent(WxjlActivity.this, WxjlNearActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
             case R.id.btn_remote:
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
-                    return;
-                }
-                lastClickTime = System.currentTimeMillis();
                 if (TextUtils.isEmpty(wxjlDeviceId)) {
                     show_Toast("请先近距离级联");
                     return;
@@ -276,7 +270,7 @@ public class WxjlActivity extends SerialPortActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FirstEvent event) {
         String msg = event.getMsg();
-        Log.e("无线级联页面收到起爆页面485消息了", msg);
+        Log.e(TAG,"eventBus收到消息了" + msg);
         if (event.getMsg().equals("deviceId")) {
             wxjlDeviceId = event.getData();
         } else if (event.getMsg().equals("nearIsEnd")) {
@@ -290,6 +284,7 @@ public class WxjlActivity extends SerialPortActivity {
     protected void onDestroy() {
         super.onDestroy();
         closeThread();
+        closeSerial();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

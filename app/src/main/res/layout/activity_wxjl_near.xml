@@ -123,7 +123,7 @@
             <RelativeLayout
                 android:id="@+id/btn_look_error"
                 android:padding="15dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:background="@drawable/ll_mainlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/ivt"
-                    android:text="4.退出"
+                    android:text="5.退出"
                     android:textColor="#333333"
                     android:textSize="22sp"
                     android:textStyle="bold" />
