@@ -200,6 +200,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         } else {
                             Intent intent5 = new Intent(SyncActivityYouxian.this, FiringMainActivity.class);//金建华
                             intent5.putExtra("dataSend", str5);
+                            intent5.putExtra("isYxjl","Y");
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
                         A002=false;
