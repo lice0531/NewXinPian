@@ -135,7 +135,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                             sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             tvEnterJcms.setText("3.数据检测结束");
                             show_Toast("数据检测结束");
-                            EventBus.getDefault().post(new FirstEvent("nearIsEnd", deviceId, "nearEnd"));
                             closeSerial();
                             try {
                                 Thread.sleep(2000);
@@ -317,7 +316,7 @@ public class WxjlNearActivity extends SerialPortActivity {
             handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_5_TRANSLATE_81.equals(cmd)) {//81 无线级联：子节点与主节点进行数据传输
             Log.e(TAG, "收到81命令了");
-            EventBus.getDefault().post(new FirstEvent("deviceId", deviceId));
+            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
             sendNum++;
             send81cmd();
         } else if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
@@ -350,7 +349,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
                         String denatorId = mListData.get(j).getDenatorId();
                         Log.e(TAG,"错误雷管id：" + denatorId + "-现在去更新数据库的状态了");
-                        updataLgStatus(mListData.get(j));
+                        updateLgStatus(mListData.get(j));
                     }
                 }
             }
@@ -416,7 +415,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
     }
 
-    private void updataLgStatus(DenatorBaseinfo dbf) {
+    private void updateLgStatus(DenatorBaseinfo dbf) {
         //更新雷管信息的错误雷管状态为00
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
         denator.setErrorCode("00");
@@ -424,11 +423,11 @@ public class WxjlNearActivity extends SerialPortActivity {
         Log.e(TAG,"更新雷管通信状态了。。。" + dbf.getShellBlastNo());
         Application.getDaoSession().update(denator);
         //更新历史记录表的错误雷管状态为00
-//        DenatorHis_Detail his_detail = Application.getDaoSession().getDenatorHis_DetailDao().queryBuilder().where(DenatorHis_DetailDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
-//        his_detail.setErrorCode("00");
-//        his_detail.setErrorName(getString(R.string.text_communication_state1));
-//        Log.e(TAG, "更新雷管通信状态为00了。。。" + his_detail.getShellBlastNo());
-//        Application.getDaoSession().update(his_detail);
+        DenatorHis_Detail his_detail = Application.getDaoSession().getDenatorHis_DetailDao().queryBuilder().where(DenatorHis_DetailDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
+        his_detail.setErrorCode("00");
+        his_detail.setErrorName(getString(R.string.text_communication_state1));
+        Log.e(TAG, "更新雷管通信状态为00了。。。" + his_detail.getShellBlastNo());
+        Application.getDaoSession().update(his_detail);
     }
 
     private void send81cmd() {

@@ -30,7 +30,7 @@ public class WxjlActivity extends SerialPortActivity {
      * 界面
      */
     private String TAG = "无线级联页面";
-    private String wxjlDeviceId = "";
+    private String wxjlDeviceId = "01";//目前只有一台设备  所以设备地址先固定01
     private boolean isRemote = false;//是否可以进行远距离无线级联
     @BindView(R.id.btn_near)
     RelativeLayout btnNear;
@@ -115,7 +115,7 @@ public class WxjlActivity extends SerialPortActivity {
                 return;
             } else {
                 String cmd = DefCommand.getCmd2(fromCommad);
-                Log.e(TAG,TAG + "--接收到80返回命令" + cmd);
+                Log.e(TAG,TAG + "--返回命令" + cmd);
                 if (cmd != null) {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
@@ -155,6 +155,9 @@ public class WxjlActivity extends SerialPortActivity {
                             show_Toast("芯片未返回，请退出APP后再重新级联");
                         }
                         break;
+                    case 2:
+                        enterRemotePage();
+                        break;
                 }
                 return false;
             }
@@ -162,7 +165,7 @@ public class WxjlActivity extends SerialPortActivity {
     }
 
     private void enterRemotePage() {
-//        closeSerial();
+        closeSerial();
         Intent intent = new Intent(WxjlActivity.this, WxjlRemoteActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("wxjlDeviceId", wxjlDeviceId);
@@ -252,16 +255,13 @@ public class WxjlActivity extends SerialPortActivity {
                 startActivity(intent);
                 break;
             case R.id.btn_remote:
-                if (TextUtils.isEmpty(wxjlDeviceId)) {
-                    show_Toast("请先近距离级联");
-                    return;
-                }
                 if (isRemote) {
-                    enterRemotePage();
-                } else {
                     enterJcms = new EnterJcms();
                     enterJcms.start();
                     Log.e(TAG,"开启发送82命令的线程了");
+                } else {
+                    show_Toast("请先近距离级联");
+                    return;
                 }
                 break;
         }
@@ -271,11 +271,8 @@ public class WxjlActivity extends SerialPortActivity {
     public void onEventMainThread(FirstEvent event) {
         String msg = event.getMsg();
         Log.e(TAG,"eventBus收到消息了" + msg);
-        if (event.getMsg().equals("deviceId")) {
-            wxjlDeviceId = event.getData();
-        } else if (event.getMsg().equals("nearIsEnd")) {
-            // 近距离无线级联已结束，第二个字段是设备号，第三个字段表示已结束
-            wxjlDeviceId = event.getData();
+        if (event.getMsg().equals("is81End")) {
+            //说明此时近距离级联81指令已结束  并未执行82指令   此时点击远距离级联需要先发送82指令  等82成功再远距离级联
             isRemote = true;
         }
     }
