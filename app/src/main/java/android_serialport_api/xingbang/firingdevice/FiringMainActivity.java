@@ -1637,8 +1637,6 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 befor_dianliu = busInfo.getBusCurrentIa();
                 befor_dianya = busInfo.getBusVoltage();
-            } else {
-                eightCmdExchangePower = 1;
             }
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
