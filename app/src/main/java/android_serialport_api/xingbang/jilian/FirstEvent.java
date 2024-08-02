@@ -83,4 +83,16 @@ public class FirstEvent {
     public void setCurrentPeak(String currentPeak) {
         this.currentPeak = currentPeak;
     }
+
+    @Override
+    public String toString() {
+        return "FirstEvent{" +
+                "mMsg='" + mMsg + '\'' +
+                ", data='" + data + '\'' +
+                ", position='" + position + '\'' +
+                ", tureNum='" + tureNum + '\'' +
+                ", errNum='" + errNum + '\'' +
+                ", currentPeak='" + currentPeak + '\'' +
+                '}';
+    }
 }

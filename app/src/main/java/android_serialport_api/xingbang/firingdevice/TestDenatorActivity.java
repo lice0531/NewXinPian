@@ -33,6 +33,9 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
@@ -132,6 +135,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private String changjia = "通用";
     List<Float> list_dianliu = new ArrayList();
     private boolean isSerialPortClosed = false;//是否已关闭串口
+    //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
 
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
@@ -870,9 +875,9 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void closeThread() {
         //Thread_stage_1 ttst_1
         if (firstThread != null) {
-            Log.e(TAG, "firstThread.exit: " + firstThread.exit);
+            Log.e(TAG, "终止线程thread--firstThread.exit: " + firstThread.exit);
             firstThread.exit = true;  // 终止线程thread
-            firstThread.interrupt();
+            threadPoolExecutor.shutdown();
             try {
                 firstThread.join();
             } catch (InterruptedException e) {
@@ -1362,7 +1367,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 stage = 1;
                 if (blastQueue.size() > 0 && !chongfu) {//二次检测时不新建线程
                     firstThread = new ThreadFirst();
-                    firstThread.start();
+                    threadPoolExecutor.execute(firstThread);
                 }
                 send_kg = false;
             }

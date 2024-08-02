@@ -267,8 +267,6 @@ public class FiringMainActivity extends SerialPortActivity {
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
 
-        Log.e(TAG, "Qibaotime: " + Qibaotime);
-        Log.e(TAG, "eightCount: " + eightCount);
     }
 
     private void initView() {
@@ -1413,7 +1411,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e("eventBus开始传送ddjc数据", "currentPeak: " + currentPeak);
             deviceStatus = "02";//等待检测
 //            EventBus.getDefault().post(new FirstEvent("ddjc", "01",currentPeak));
-//            EventBus.getDefault().post(new FirstEvent("ddjc", "01"));
+            EventBus.getDefault().post(new FirstEvent("ddjc", "01"));//旧的命令
             //得到电流电压信息
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
 //            sendCmd(powerCmd);
@@ -1446,12 +1444,14 @@ public class FiringMainActivity extends SerialPortActivity {
             //发送 高压输出命令
             sixCmdSerial = 2;
             deviceStatus = "04";//正在充电
+            EventBus.getDefault().post(new FirstEvent("zzcd", "01"));//准备充电//旧的命令
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 3;
             Log.e(TAG,"33指令已返回,充电倒计时值twoCount:" + twoCount);
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            EventBus.getDefault().post(new FirstEvent("qbjg", "01"));//旧的命令
             if (isJL) {
                 EventBus.getDefault().post(new FirstEvent("open485","B005" + MmkvUtils.getcode("ACode", "") +
                         deviceStatus + qbResult));
@@ -1561,6 +1561,18 @@ public class FiringMainActivity extends SerialPortActivity {
                     updateDenator(fromData);//更新雷管状态
                     writeDenator = null;
                 }
+                reThirdWriteCount++;
+            }
+        }else if (DefCommand.CMD_3_DETONATE_10.equals(cmd)) {//39 进入充电复检模式
+
+                From38ChongDian fromData = ThreeFiringCmd.jiexi_39("00", locatBuf);
+                if (fromData != null && writeDenator != null) {
+                    VoDenatorBaseInfo temp = writeDenator;
+                    fromData.setShellNo(temp.getShellBlastNo());
+                    fromData.setDenaId(temp.getDenatorId());//芯片码
+                    Utils.writeRecord("--起爆测试结果:" + fromData);
+                    updateDenator(fromData);//更新雷管状态
+                    writeDenator = null;
                 reThirdWriteCount++;
             }
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
@@ -1721,7 +1733,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 //                    Log.e("eventBus开始传送"+"jcjg数据", "currentPeak: " + currentPeak);
                     deviceStatus = "03";//检测结束
-//                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum, errNum));
+                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum+"", errNum+""));//旧的命令
 //                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum, errNum,currentPeak));
                     ctlLinePanel(4);//修改页面显示项
                     getErrorBlastCount();
@@ -1847,7 +1859,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                     closeForm();
                                 }
                             }).create();
-                    dialog.show();
+                    if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                        dialog.show();
+                    }
                 }
                 break;
             case 10://跳转到查看错误雷管和继续阶段

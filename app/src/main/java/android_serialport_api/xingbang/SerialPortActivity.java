@@ -21,6 +21,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -51,6 +54,9 @@ public abstract class SerialPortActivity extends BaseActivity {
     // 通用
     public DialogPlus mDialogPlus;
     public Context mContext;
+    //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
+
     private class ReadThread extends Thread {
 
         public boolean exit = false;
@@ -129,7 +135,7 @@ public abstract class SerialPortActivity extends BaseActivity {
 
             /* Create a receiving thread */
             mReadThread = new ReadThread();
-            mReadThread.start();
+            threadPoolExecutor.execute(mReadThread);
         } catch (SecurityException e) {
             DisplayError(R.string.error_security);
         } catch (IOException e) {
@@ -156,7 +162,7 @@ public abstract class SerialPortActivity extends BaseActivity {
 
             /* Create a receiving thread */
             mReadThread = new ReadThread();
-            mReadThread.start();
+            threadPoolExecutor.execute(mReadThread);
         } catch (SecurityException e) {
             DisplayError(R.string.error_security);
         } catch (IOException e) {
@@ -172,7 +178,7 @@ public abstract class SerialPortActivity extends BaseActivity {
         if (mReadThread != null) {
 
             mReadThread.exit = true;
-            mReadThread.interrupt();
+            threadPoolExecutor.shutdown();
             sendInterruptCmd();
         }
 //        mApplication.closeSerialPort();
