@@ -251,6 +251,7 @@ public class WxjlActivity extends SerialPortActivity {
             case R.id.btn_near:
                 closeSerial();
                 Intent intent = new Intent(WxjlActivity.this, WxjlNearActivity.class);
+//                Intent intent = new Intent(WxjlActivity.this, NewNearJlActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;

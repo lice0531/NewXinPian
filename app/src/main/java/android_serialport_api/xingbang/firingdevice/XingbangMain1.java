@@ -714,10 +714,6 @@ public class XingbangMain1 extends BaseActivity {
 
         switch (view.getId()) {
             case R.id.btn_wxjl:
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME){
-                    return;
-                }
-                lastClickTime = System.currentTimeMillis();
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -727,7 +723,7 @@ public class XingbangMain1 extends BaseActivity {
                 long tt = System.currentTimeMillis();
                 long et = (long) MmkvUtils.getcode("endTime", (long) 0);
                 if (tt - et < 180000) {//第二次启动时间不重置
-                    int a = (int) (180000 - (time - et)) / 1000 + 5;
+                    int a = (int) (180000 - (tt - et)) / 1000 + 5;
                     if (a < 180000) {
                         initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "无线级联");
                     }
@@ -742,6 +738,7 @@ public class XingbangMain1 extends BaseActivity {
                     Log.e(TAG, "雷管数量：" + mListData.size());
                     if (mListData.size() > 0) {
                         Intent itwxjl = new Intent(this, WxjlActivity.class);
+                        itwxjl.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(itwxjl);
                     } else {
                         show_Toast(getResources().getString(R.string.text_error_tip30));
@@ -753,6 +750,7 @@ public class XingbangMain1 extends BaseActivity {
                 String str1 = "注册";
                 Intent intent = new Intent(XingbangMain1.this, ReisterMainPage_scan.class);//金建华
                 intent.putExtra("dataSend", str1);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, 1);
                 break;
 
@@ -780,6 +778,7 @@ public class XingbangMain1 extends BaseActivity {
                 String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain1.this, TestDenatorActivity.class);
                 intent2.putExtra("dataSend", str2);
+                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent2, 1);
                 break;
 

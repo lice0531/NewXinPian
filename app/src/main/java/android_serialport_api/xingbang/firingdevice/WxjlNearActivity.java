@@ -160,10 +160,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                 return false;
             }
         });
-        if (errorTotalNum == 0) {
-            errorTotalNum = (int) MmkvUtils.getcode("wxjlErrorNumSize",0);//错误雷管数量
-            Log.e(TAG,"起爆结束存储的错误雷管总数：" + errorTotalNum);
-        }
     }
 
     private void closeSerial() {
@@ -321,6 +317,7 @@ public class WxjlNearActivity extends SerialPortActivity {
             send81cmd();
         } else if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
             Log.e(TAG, "收到82命令了");
+            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
             receive82 = true;
             Message message = new Message();
             message.what = 2;
@@ -422,12 +419,6 @@ public class WxjlNearActivity extends SerialPortActivity {
         denator.setErrorName(getString(R.string.text_communication_state1));
         Log.e(TAG,"更新雷管通信状态了。。。" + dbf.getShellBlastNo());
         Application.getDaoSession().update(denator);
-        //更新历史记录表的错误雷管状态为00
-        DenatorHis_Detail his_detail = Application.getDaoSession().getDenatorHis_DetailDao().queryBuilder().where(DenatorHis_DetailDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
-        his_detail.setErrorCode("00");
-        his_detail.setErrorName(getString(R.string.text_communication_state1));
-        Log.e(TAG, "更新雷管通信状态为00了。。。" + his_detail.getShellBlastNo());
-        Application.getDaoSession().update(his_detail);
     }
 
     private void send81cmd() {

@@ -147,7 +147,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private boolean showDialog3;
     private boolean showDialog4;
     private boolean showDialog5;
+    private boolean isGetErrorLg = false;//是否已经发送过获取错误雷管信息的命令
     private int errorNum;//错误雷管数量
+    private int currentCount;//当前84发送的次数
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -426,24 +430,17 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             // 退出
             msg.what = InitConst.CODE_EXIT;
             msg.obj = receiveMsg(res, "");
+        } else if (res.startsWith(DefCommand.CMD_MC_SEND_B8)) {
+            // 获取错误雷管信息
+            Log.e(TAG,"收到B8命令了res:" + res);
+            doWithReceivB8(res);
         } else {
-            if (res.startsWith("C00184") && res.endsWith("C0") && res.length() > 12) {
-                String cmd = DefCommand.getCmd(res);
-                Log.e(TAG,"完整84cmd是" + res + "--命令是：" + cmd);
-                if (cmd != null) {
-                    Log.e(TAG,"进来发doWithReceivData了");
-                    doWithReceiv84(cmd,res);
-                }
-            }
             Log.e(TAG, "无线级联远距离页面-没有匹配对应的命令-cmd:" + res);
         }
         handler_msg.sendMessage(msg);
     }
-    private int currentCount;//当前84发送的次数
-    private List<DenatorBaseinfo> mListData = new ArrayList<>();
-    private boolean receive84 = false;//发出84命令是否返回
-    private void doWithReceiv84(String cmd, String completeCmd) {
-        if (DefCommand.CMD_5_TRANSLATE_84.equals(cmd)) {//84 无线级联：读取错误雷管
+
+    private void doWithReceivB8(String completeCmd) {
             /**
              * 芯片84指令一次最多给返回20条错误雷管数据，如超过20，则需要再次发送84指令获取剩下的错误雷管
              * 拿到84指令后，展示错误雷管数据  3发错误雷管：C00184 03 0300 0500 0D00 C6DDC0
@@ -451,10 +448,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
              * 同时在当前页面展示出错误雷管列表
              */
             currentCount ++;
-            Log.e(TAG, "收到84命令了--完整的84指令:" + completeCmd + "--当前发送84次数：" + currentCount);
-            String errorLgCmd = completeCmd.substring(8, completeCmd.length() - 6);
+            Log.e(TAG, "收到B8命令了--完整的B8指令:" + completeCmd + "--当前发送B8次数：" + currentCount);
+            String errorLgCmd = completeCmd.substring(6);
             Log.e(TAG,"错误雷管cmd是:" + errorLgCmd);
-            //取到错误雷管cmd后  4个一组  每个都只取前两位  将其转为十进制就可以知道是错误芯片的81发送顺序  然后再找到对应的雷管id 再改变通信状态
+            //取到错误雷管cmd后  2个一组  每个都只取前两位  将其转为十进制就可以知道是错误芯片的81发送顺序  然后再找到对应的雷管id 再改变通信状态
             int aa = errorLgCmd.length() / 4;
             for (int i = 0; i < aa; i++) {
                 String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
@@ -466,34 +463,37 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
                         String denatorId = mListData.get(j).getDenatorId();
                         Log.e(TAG,"错误雷管id：" + denatorId + "-现在去更新数据库的状态了");
-                        updataLgErrorStatus(mListData.get(j));
+                        updateLgStatus(mListData.get(j),2);
                     }
+//                    else {
+//                        updateLgStatus(mListData.get(j),1);
+//                    }
                 }
             }
             Log.e(TAG,"错误雷管数量：" + errorNum);
             int maxCount = 20;//芯片一次最多返回20条错误雷管
             int sendCount = (errorNum % maxCount) > 0 ? (errorNum / maxCount) + 1 : errorNum / maxCount;
-            Log.e(TAG,"需要发送84的次数是:" + sendCount);
+            Log.e(TAG,"需要发送B8的次数是:" + sendCount);
             if (currentCount >= sendCount) {
-                receive84 = true;
-                Log.e(TAG,"错误雷管数量小于20，不需要发84命令了");
+                Log.e(TAG,"错误雷管数量小于20，不需要发B8命令了");
                 Message message = new Message();
                 message.what = 3;
                 message.obj = "true";
                 handler_msg.sendMessage(message);
                 return;
             }
-            send84();
-            Log.e(TAG,"错误雷管数量大于20，再次发84命令了");
-        }
+            sendA8();
+            Log.e(TAG,"错误雷管数量大于20，再次发B8命令了");
     }
 
-    private void updataLgErrorStatus(DenatorBaseinfo dbf) {
-        //更新雷管信息的错误雷管状态为00
+    private void updateLgStatus(DenatorBaseinfo dbf,int type) {
+        //更新雷管状态
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
-        denator.setErrorCode("00");
-        denator.setErrorName(getString(R.string.text_communication_state1));
-        Log.e(TAG,"更新雷管通信状态为00了。。。" + dbf.getShellBlastNo());
+        denator.setErrorCode(type == 1 ? "FF" : "00");
+        denator.setErrorName(type == 1 ? getString(R.string.text_communication_state4) :
+                getString(R.string.text_communication_state1));
+        Log.e(TAG,"充电中更新雷管通信状态了。。。" + denator.getShellBlastNo() + "--" + denator.getErrorCode() +
+                "--" + denator.getErrorName());
         Application.getDaoSession().update(denator);
     }
 
@@ -872,29 +872,27 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                         showAlertDialog("系统提示", "当前有错误雷管，是否继续进行?",
                                                 "查看错误雷管", "继续", 1);
                                     }
+                                } else if ("正在充电".equals(bean4.getInfo()) && !isGetErrorLg) {
+                                    sendA8();//发送A8指令去修改通信失败雷管状态
                                 } else if ("升压失败".equals(bean4.getInfo()) && !showDialog4) {
                                     showDialog4 = true;
                                     showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
                                 } else if ("起爆结束".equals(bean4.getInfo())) {
-                                    Log.e(TAG,"起爆结束了.....");
-                                    closeLx();
-                                    if (errorNum > 0) {
-                                        MmkvUtils.savecode("wxjlErrorNumSize", errorNum);//起爆结束记录下错误雷管数量
-//                                        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-//                                        send84();//发送84指令去修改通信失败雷管状态
-                                    } else {
-                                        MmkvUtils.savecode("wxjlErrorNumSize", 0);//起爆结束记录下错误雷管数量
-                                    }
-                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
-                                    //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-                                    hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
-                                    saveFireResult();
-                                    if (!qbxm_id.equals("-1")) {
-                                        updataState(qbxm_id);
-                                        Log.e(TAG,"更新起爆状态");
+                                    if (!TextUtils.isEmpty(bean4.getCurrentPeak()) && bean4.getCurrentPeak().equals("0")) {
+                                        Log.e(TAG, "起爆结束了.....");
+                                        MmkvUtils.savecode("endTime", System.currentTimeMillis());
+                                        closeLx();
+                                        //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
+                                        hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
+                                        saveFireResult();
+                                        if (!qbxm_id.equals("-1")) {
+                                            updataState(qbxm_id);
+                                            Log.e(TAG, "更新起爆状态");
+                                        }
                                     }
                                 } else if ("起爆失败".equals(bean4.getInfo()) && !showDialog5) {
                                     showDialog5 = true;
+                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());
                                     showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
                                 }
                             }
@@ -1100,23 +1098,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             denatorHis_detail.setRemark(dbf.getRemark());
             denatorHis_detail.setBlastdate(fireDate);
             denatorHis_detail.setPiece(dbf.getPiece());
-            //暂时先都更新为成功，然后在查询到错误雷管后再把错误的更新过来
-            denatorHis_detail.setErrorCode("FF");
-            denatorHis_detail.setErrorName("通信成功");
             getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
-            updataLgStatus(dbf);
         }
         Log.e(TAG,"保存起爆历史");
         Utils.saveFile();//把软存中的数据存入磁盘中
-    }
-
-    private void updataLgStatus(DenatorBaseinfo dbf) {
-        //暂时先都更新为成功，然后在查询到错误雷管后再把错误的更新过来
-        DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
-        denator.setErrorCode("FF");
-        denator.setErrorName(getString(R.string.text_communication_state4));
-        Log.e(TAG,"更新雷管通信状态了。。。" + dbf.getShellBlastNo());
-        Application.getDaoSession().update(denator);
     }
 
     @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_exit})
@@ -1343,11 +1328,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
-    private void send84() {
-        //发送84指令查看错误雷管信息
-        String b = Utils.intToHex(0);
-        String datalenght = Utils.addZero(b, 2);
-        sendCmd(ThreeFiringCmd.sendWxjl84(wxjlDeviceId, datalenght));
+    private void sendA8() {
+        //发送A8指令查看错误雷管信息
+        Log.e(TAG,"发送A8命令了");
+        sendCmd(ThreeFiringCmd.setWxjlA8(wxjlDeviceId));
+        isGetErrorLg = true;
     }
 
     @Override

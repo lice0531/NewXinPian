@@ -727,7 +727,7 @@
 <!--                android:layout_marginLeft="30dp"-->
 <!--                android:layout_marginRight="30dp"-->
 <!--                android:layout_marginTop="20dp"-->
-<!--                android:background="@drawable/bt_main_style"-->
+<!--                android:background="@drawable/bt_mainpage_style"-->
 <!--                android:gravity="center"-->
 <!--                android:text="退出"-->
 <!--                android:visibility="gone"-->
@@ -739,7 +739,7 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:background="@drawable/bt_main_style"
+                android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/xingbang_main_page_btn_exit"
                 android:textColor="@color/bt_fg_base"

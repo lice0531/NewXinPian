@@ -352,12 +352,12 @@ public class ThreeFiringCmd {
 		return CRC16.hexStringToByte(command);
 	}
 	/***
-	 * 发送充电升高压A3指令
+	 * 发送获取错误雷管信息A8指令
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA3(String addr){
-		String command = DefCommand.CMD_MC_SEND_A3 + addr;//A3
+	public static byte[] setWxjlA8(String addr){
+		String command = DefCommand.CMD_MC_SEND_A8 + addr;//A8
 		return CRC16.hexStringToByte(command);
 	}
 	/***

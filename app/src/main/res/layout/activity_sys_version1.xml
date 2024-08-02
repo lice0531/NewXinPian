@@ -306,7 +306,7 @@
         android:layout_marginRight="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/allbtn_theme"
+        style="@style/allbtntstyle"
         android:text="检查是否需要更新软件版本"
         android:visibility="gone"
         />

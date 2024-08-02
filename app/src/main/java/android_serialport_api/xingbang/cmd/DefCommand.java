@@ -56,7 +56,7 @@ public class DefCommand {
 	public static String CMD_MC_SEND_A0="A0";//无线级联：主控发A1同步
 	public static String CMD_MC_SEND_A1="A1";//无线级联：起爆检测
 	public static String CMD_MC_SEND_A2="A2";//充电
-	public static String CMD_MC_SEND_A3="A3";//充电升高压
+	public static String CMD_MC_SEND_A8="A8";//远距离级联时获取错误雷管信息
 	public static String CMD_MC_SEND_A4="A4";//起爆
 	public static String CMD_MC_SEND_A5="A5";//轮训取电流电压数据
 	public static String CMD_MC_SEND_A6="A6";//切换模式
@@ -69,6 +69,7 @@ public class DefCommand {
 	public static String CMD_MC_SEND_B5="B5";//无线级联：子机响应B5轮训电流电压数据
 	public static String CMD_MC_SEND_B6="B6";//无线级联：子机响应B6切换模式
 	public static String CMD_MC_SEND_B7="B7";//无线级联：子机响应B7退出指令
+	public static String CMD_MC_SEND_B8="B8";//无线级联：子机响应B8获取错误雷管指令
 	/***
 	 * 得到发出命令字节
 	 * @param baseBaseCmd
