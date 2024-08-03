@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +117,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private boolean reciveB0 = false;//发出同步命令是否返回
     private boolean reciveB1 = false;//发出起爆测试命令是否返回
     private boolean reciveB5 = false;//发出A5命令是否返回
+    private boolean reciveB8 = false;//B8命令是否操作结束
     private int zeroCount = 1;//A5指令无返回的次数
     private boolean isOpenLowRate = false;//是否开启2400低频
     int rate = isOpenLowRate ? 2400 : 115200;
@@ -465,9 +467,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         Log.e(TAG,"错误雷管id：" + denatorId + "-现在去更新数据库的状态了");
                         updateLgStatus(mListData.get(j),2);
                     }
-//                    else {
-//                        updateLgStatus(mListData.get(j),1);
-//                    }
                 }
             }
             Log.e(TAG,"错误雷管数量：" + errorNum);
@@ -476,14 +475,24 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             Log.e(TAG,"需要发送B8的次数是:" + sendCount);
             if (currentCount >= sendCount) {
                 Log.e(TAG,"错误雷管数量小于20，不需要发B8命令了");
-                Message message = new Message();
-                message.what = 3;
-                message.obj = "true";
-                handler_msg.sendMessage(message);
+                reciveB8 = true;
+                updateLgTrue();
                 return;
             }
             sendA8();
             Log.e(TAG,"错误雷管数量大于20，再次发B8命令了");
+    }
+
+    private void updateLgTrue() {
+        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao()
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ErrorName.notEq("雷管通信失败"))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+        Log.e(TAG,"正确雷管数量：" + list.size());
+        for (DenatorBaseinfo baseinfo : list) {
+            updateLgStatus(baseinfo,1);
+        }
     }
 
     private void updateLgStatus(DenatorBaseinfo dbf,int type) {
