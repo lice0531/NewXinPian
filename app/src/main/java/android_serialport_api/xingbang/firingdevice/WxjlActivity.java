@@ -18,6 +18,7 @@ import java.io.IOException;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
+import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -42,6 +43,7 @@ public class WxjlActivity extends SerialPortActivity {
     private EnterJcms enterJcms;
     Handler openHandler = new Handler();//重新打开串口
     private boolean isRestarted = false;
+    private int errorNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class WxjlActivity extends SerialPortActivity {
             public void run() {
                 openSerial();
             }
-        }, 2500);
+        }, 2000);
 //        cale();
     }
     private void cale() {
@@ -250,8 +252,14 @@ public class WxjlActivity extends SerialPortActivity {
         switch (view.getId()) {
             case R.id.btn_near:
                 closeSerial();
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
                 Intent intent = new Intent(WxjlActivity.this, WxjlNearActivity.class);
 //                Intent intent = new Intent(WxjlActivity.this, NewNearJlActivity.class);
+                intent.putExtra("errorNum",errorNum);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
@@ -275,14 +283,18 @@ public class WxjlActivity extends SerialPortActivity {
         if (event.getMsg().equals("is81End")) {
             //说明此时近距离级联81指令已结束  并未执行82指令   此时点击远距离级联需要先发送82指令  等82成功再远距离级联
             isRemote = true;
+        } else if (event.getMsg().equals("errorLgNum")) {
+            errorNum = Integer.parseInt(event.getData());
+            Log.e(TAG,"eventBus收到errorLgNum了:" + errorNum);
         }
     }
 
     @Override
     protected void onDestroy() {
+        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+        closeSerial();
         super.onDestroy();
         closeThread();
-        closeSerial();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

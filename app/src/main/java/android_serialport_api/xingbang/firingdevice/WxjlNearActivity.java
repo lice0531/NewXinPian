@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -81,6 +83,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     private boolean isOpened = false;//串口是否已打开
     private ArrayList<Map<String, Object>> errDeData = new ArrayList<>();//错误雷管
     private int errorTotalNum;//错误雷管总数
+    private int clickType = 1;// 1:80  2:81  3:82  4:84
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +100,9 @@ public class WxjlNearActivity extends SerialPortActivity {
         flag = (getIntent().getStringExtra("transhighRate") != null) ?
                 getIntent().getStringExtra("transhighRate") : "";
         errorTotalNum = getIntent().getIntExtra("errorTotalNum",0);
+        if (TextUtils.isEmpty(flag)) {
+            errorTotalNum = getIntent().getIntExtra("errorNum",0);
+        }
         Log.e(TAG,"intent传值的错误雷管总数：" + errorTotalNum);
         openHandler.postDelayed(new Runnable() {
             @Override
@@ -106,8 +112,9 @@ public class WxjlNearActivity extends SerialPortActivity {
                 isOpened = true;
                 show_Toast("串口已打开");
             }
-        }, 2500);
+        }, 2000);
         mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
+        Log.e(TAG,"雷管总数量：" + mListData.size());
         handler_msg = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(@NonNull Message msg) {
@@ -132,7 +139,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                     case 2:
                         String jcmsResult = (String) msg.obj;
                         if ("true".equals(jcmsResult)) {
-                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+//                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             tvEnterJcms.setText("3.数据检测结束");
                             show_Toast("数据检测结束");
                             closeSerial();
@@ -141,6 +148,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
+                            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
                             enterRemotePage();
                         } else {
                             tvEnterJcms.setText("3.进入检测模式");
@@ -151,7 +159,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                     case 3:
                         tvLookError.setText("4.点击查看错误雷管列表");
                         show_Toast("错误雷管读取已结束");
-                        receive84 = true;
                         break;
                     case 4:
                         show_Toast_long("芯片返回命令不完整");
@@ -296,6 +303,24 @@ public class WxjlNearActivity extends SerialPortActivity {
             handler_msg.sendMessage(handler_msg.obtainMessage(4));
             Log.e(TAG,"返回命令不完整");
         }
+
+
+        if (completeValidCmd(fromCommad) == 0) {
+            fromCommad = this.revCmd;
+            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+            else this.revCmd = "";
+            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                return;
+            } else {
+                String cmd = DefCommand.getCmd(fromCommad);
+                if (cmd != null) {
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf, localSize);
+                }
+            }
+        }
     }
 
     /***
@@ -303,7 +328,6 @@ public class WxjlNearActivity extends SerialPortActivity {
      */
     private void doWithReceivData(String cmd, String completeCmd) {
         if (DefCommand.CMD_5_TRANSLATE_80.equals(cmd)) {//80 无线级联：进行设备注册
-            //此时拿到设备号，然后在远距离级联页面时候使用
             Log.e(TAG, "收到80命令了");
             receive80 = true;
             Message message = new Message();
@@ -346,7 +370,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
                         String denatorId = mListData.get(j).getDenatorId();
                         Log.e(TAG,"错误雷管id：" + denatorId + "-现在去更新数据库的状态了");
-                        updateLgStatus(mListData.get(j));
+                        updateLgStatus(mListData.get(j),2);
                     }
                 }
             }
@@ -359,14 +383,26 @@ public class WxjlNearActivity extends SerialPortActivity {
                 Log.e(TAG,"错误雷管数量小于20，不需要发84命令了");
                 Message message = new Message();
                 message.what = 3;
-                message.obj = "true";
                 handler_msg.sendMessage(message);
+                updateLgTrue();
                 return;
             }
             send84();
             Log.e(TAG,"错误雷管数量大于20，再次发84命令了");
         } else {
             Log.e(TAG, TAG + "-返回命令没有匹配对应的命令-cmd:" + cmd);
+        }
+    }
+
+    private void updateLgTrue() {
+        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao()
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ErrorName.notEq("雷管通信失败"))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+        Log.e(TAG,"正确雷管数量：" + list.size());
+        for (DenatorBaseinfo baseinfo : list) {
+            updateLgStatus(baseinfo,1);
         }
     }
 
@@ -412,12 +448,14 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
     }
 
-    private void updateLgStatus(DenatorBaseinfo dbf) {
-        //更新雷管信息的错误雷管状态为00
+    private void updateLgStatus(DenatorBaseinfo dbf,int type) {
+        //更新雷管状态
         DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(dbf.getShellBlastNo())).unique();
-        denator.setErrorCode("00");
-        denator.setErrorName(getString(R.string.text_communication_state1));
-        Log.e(TAG,"更新雷管通信状态了。。。" + dbf.getShellBlastNo());
+        denator.setErrorCode(type == 1 ? "FF" : "00");
+        denator.setErrorName(type == 1 ? getString(R.string.text_communication_state4) :
+                getString(R.string.text_communication_state1));
+        Log.e(TAG,"84命令更新雷管通信状态了。。。" + denator.getShellBlastNo() + "--" + denator.getErrorCode() +
+                "--" + denator.getErrorName());
         Application.getDaoSession().update(denator);
     }
 
@@ -473,6 +511,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         sendCmd(ThreeFiringCmd.sendWxjl81(deviceId, dataLength81, serId, data81));
     }
 
+    private boolean isSend84 = false;//防止用户多次点击频发84
     @OnClick({R.id.btn_register, R.id.btn_exit, R.id.btn_send_data, R.id.btn_enter_jcms, R.id.btn_look_error})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -532,7 +571,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                     return;
                 }
                 if (TextUtils.isEmpty(flag) && errorTotalNum <= 0) {
-                    show_Toast("请远距离级联后再查看错误雷管");
+                    show_Toast("当前无错误雷管");
                     return;
                 }
                 //发送84指令查看错误雷管信息
@@ -541,7 +580,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                     showErrorLgList();
                 } else {
                     tvLookError.setText("4.读取错误雷管中...");
-                    send84();
+                        send84();
                 }
                 break;
             case R.id.btn_exit:
@@ -565,6 +604,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     protected void onDestroy() {
         close80Thread();
         close82Thread();
+        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         super.onDestroy();
     }
 }

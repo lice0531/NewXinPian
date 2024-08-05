@@ -20,7 +20,6 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -70,7 +69,7 @@ public class SystemVersionActivity extends SerialPortActivity {
             }
             return false;
         });
-        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+//        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         byte[] reCmd1 = FourStatusCmd.getSoftVersion("00");//43
         sendCmd(reCmd1);
     }

@@ -70,7 +70,11 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
+    <!-- styles.xml -->
+    <style name="SplashTheme" parent="@style/AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/bg</item> <!-- 这里是你的启动图片 -->
+<!--        <item name="android:windowNoTitle">true</item>-->
+    </style>
     <!-- toolbar风格 -->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <!-- menu风格 -->
