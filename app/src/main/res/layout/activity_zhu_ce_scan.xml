@@ -51,7 +51,7 @@
             style="@style/alltextstyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="共:2排4孔"
+            android:text="共:2排4发"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

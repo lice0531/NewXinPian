@@ -154,7 +154,7 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
         }else if (mIndex == 8) {
             List<DenatorBaseinfo> list_lg = (List<DenatorBaseinfo>) mListData;
             DenatorBaseinfo dbInfo = list_lg.get(position);
-            holder.mTvBlastSerial.setText(dbInfo.getPai()+"-"+dbInfo.getSithole()+"-"+dbInfo.getSitholeNum());//序号
+            holder.mTvBlastSerial.setText(dbInfo.getPai()+"-"+dbInfo.getSithole()+"-");//+dbInfo.getSitholeNum() 序号
             holder.mTvShellBlastNo.setText(dbInfo.getShellBlastNo());   // 管壳号
             holder.mTvZhuangTai.setText(dbInfo.getErrorName() + "");//状态
             holder.mTvDelay.setText(dbInfo.getDelay()+"");//有效期

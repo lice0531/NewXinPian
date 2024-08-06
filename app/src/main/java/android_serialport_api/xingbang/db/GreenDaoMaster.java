@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.db;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Message;
 import android.util.Log;
 
@@ -324,5 +325,26 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
                 .unique();
         mDeantorBaseDao.delete(entity);
+    }
+
+    /**
+     * 获取 该区域 最小序号 的延时
+     *
+     */
+    public int getPieceMaxPai() {
+        int pai;
+        String sql = "select max(pai) from denatorBaseinfo  ";
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            pai = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取当前区域最大段号: "+pai);
+            return pai;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 1");
+            return 1;
+        }
+
     }
 }

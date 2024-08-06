@@ -175,8 +175,7 @@
             android:listSelector="@drawable/listview_color_selector"
             android:scrollbarFadeDuration="0"
             android:scrollbars="none"
-            android:visibility="visible"
-            />
+            android:visibility="visible" />
     </LinearLayout>
 
 

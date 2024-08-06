@@ -112,8 +112,8 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         iv_back.setOnClickListener(v -> finish());
 
 
-        mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
-        binding.zcTxtTotal.setText("共:" + mListData.size() + "发雷管");
+
+        showDenatorSum();
         groupList = new ArrayList<>();
         childList = new ArrayList<>();
         paiMax = LitePal.max(DenatorBaseinfo.class, "pai", int.class);
@@ -178,7 +178,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
             } else if (isCorrectReisterFea == 4) {
                 SoundPlayUtils.play(4);
                 show_Toast("与第" + lg_No + "发" + singleShellNo + "重复");
-                int total = showDenatorSum();
+//                int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
             } else if (isCorrectReisterFea == 6) {
                 SoundPlayUtils.play(4);
@@ -947,11 +947,14 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         Log.e("厂家管码", "factoryCode: " + factoryCode);
     }
 
-    private int showDenatorSum() {
+    private void showDenatorSum() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryDenatorBaseinfoToStatusCode("02");
-        binding.zcTxtTotal.setText("共:" + list.size()+"发");
-        return list.size();
+        mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+        int total=mListData.size();
+        binding.zcTxtTotal.setText("共:" + total+"发");
+        int maxPai = master.getPieceMaxPai();
+        binding.zcTxtTotalPai.setText("共:" +maxPai+"排"+ total+"发");
+
     }
     private DetonatorTypeNew serchDenatorId(String shellBlastNo) {
         GreenDaoMaster master = new GreenDaoMaster();
