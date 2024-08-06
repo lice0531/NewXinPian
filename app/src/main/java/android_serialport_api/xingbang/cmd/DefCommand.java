@@ -121,8 +121,8 @@ public class DefCommand {
 	 * @return
 	 */
 	public static String getCmd(String cmdInfo){
-		Log.e("返回命令",cmdInfo);
-		Utils.writeLog("<-:"+cmdInfo);
+//		Log.e("工具类返回命令",cmdInfo);
+//		Utils.writeLog("<-:"+cmdInfo);
 		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
 		return null;
 	}

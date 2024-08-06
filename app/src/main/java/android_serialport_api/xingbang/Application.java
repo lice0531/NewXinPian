@@ -87,7 +87,7 @@ public class Application extends MultiDexApplication {
                     Log.e("上电", "当前机型为: " + Build.DEVICE + " 该机型没有被适配");
                     break;
             }
-            Log.e("application", "device: " + Build.DEVICE + "串口号: " + mSportName+" mPowerIndex:"+mPowerIndex);
+            Log.e("application", "通讯速率:" + baudrate + "--device: " + Build.DEVICE + "串口号: " + mSportName+" mPowerIndex:"+mPowerIndex);
             mSerialPort = new SerialPort(new File(mSportName), baudrate, 0, 8, 1);
         }
         return mSerialPort;

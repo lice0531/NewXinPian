@@ -21,8 +21,8 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.jilian.FirstEvent;
-import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.utils.upload.InitConst;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -97,8 +97,8 @@ public class WxjlActivity extends SerialPortActivity {
     }
     private void openSerial(){
         if (isRestarted) {
-            initSerialPort(115200);
-            Log.e(TAG,"重新开启打开串口");
+            initSerialPort(InitConst.TX_RATE);
+            Log.e(TAG,"重新开启打开串口" + InitConst.TX_RATE);
         }
     }
     @Override
@@ -172,7 +172,6 @@ public class WxjlActivity extends SerialPortActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("wxjlDeviceId", wxjlDeviceId);
         startActivity(intent);
-        finish();
     }
 
     private void closeThread(){

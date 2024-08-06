@@ -34,13 +34,11 @@ import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
-import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
-import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.utils.upload.InitConst;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -107,8 +105,8 @@ public class WxjlNearActivity extends SerialPortActivity {
         openHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                initSerialPort(115200);
-                Log.e(TAG, "重新打开串口，波特率为115200");
+                initSerialPort(InitConst.TX_RATE);
+                Log.e(TAG, "重新打开串口，波特率为" + InitConst.TX_RATE);
                 isOpened = true;
                 show_Toast("串口已打开");
             }
@@ -159,9 +157,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                     case 3:
                         tvLookError.setText("4.点击查看错误雷管列表");
                         show_Toast("错误雷管读取已结束");
-                        break;
-                    case 4:
-                        show_Toast_long("芯片返回命令不完整");
                         break;
                 }
                 return false;
@@ -283,43 +278,31 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
     }
 
+    private String mAfter = "";
     @Override
     protected void onDataReceived(byte[] buffer, int size) {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+        if ((!fromCommad.startsWith("C0") || !fromCommad.endsWith("C0")) && TextUtils.isEmpty(mAfter)) {
+            Log.e(TAG, "AA拼接前：" + mAfter + "--mAfter为空拼接后:" + fromCommad);
+            mAfter = fromCommad;
+        } else if (!fromCommad.startsWith("C0") || !fromCommad.endsWith("C0")) {
+            fromCommad = mAfter + fromCommad;
+            Log.e(TAG, "BB拼接前：" + mAfter + "--mAfter不为空拼接后:" + fromCommad);
+            mAfter = "";
+        }
         Log.e(TAG + "-返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
         if (fromCommad.startsWith("C0") && fromCommad.endsWith("C0") && fromCommad.length() > 12) {
             String cmd = DefCommand.getCmd(fromCommad);
-            Log.e(TAG,"完整cmd是" + fromCommad + "--命令是：" + cmd);
             if (cmd != null) {
-                Log.e(TAG,"进来发doWithReceivData了");
                 int localSize = fromCommad.length() / 2;
                 byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                doWithReceivData(cmd,fromCommad);
+                doWithReceivData(cmd, fromCommad);
             }
         } else {
-            handler_msg.sendMessage(handler_msg.obtainMessage(4));
-            Log.e(TAG,"返回命令不完整");
-        }
-
-
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd(fromCommad);
-                if (cmd != null) {
-                    int localSize = fromCommad.length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-//                    doWithReceivData(cmd, localBuf, localSize);
-                }
-            }
+            Log.e(TAG, "-返回命令不完整" + fromCommad);
         }
     }
 
@@ -336,7 +319,6 @@ public class WxjlNearActivity extends SerialPortActivity {
             handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_5_TRANSLATE_81.equals(cmd)) {//81 无线级联：子节点与主节点进行数据传输
             Log.e(TAG, "收到81命令了");
-            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
             sendNum++;
             send81cmd();
         } else if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
@@ -348,59 +330,62 @@ public class WxjlNearActivity extends SerialPortActivity {
             message.obj = "true";
             handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_5_TRANSLATE_84.equals(cmd)) {//84 无线级联：读取错误雷管
-            /**
-             * 芯片84指令一次最多给返回20条错误雷管数据，如超过20，则需要再次发送84指令获取剩下的错误雷管
-             * 拿到84指令后，展示错误雷管数据  3发错误雷管：C00184 03 0300 0500 0D00 C6DDC0
-             * 截取出错误雷管的序号，0300 0500 0D00就是发81指令时候的雷管顺序  得通过这个序号找到对应的雷管id给错误雷管更新状态
-             * 同时在当前页面展示出错误雷管列表
-             */
-            currentCount ++;
-            Log.e(TAG, "收到84命令了--完整的84指令:" + completeCmd + "--当前发送84次数：" + currentCount);
-            String errorLgCmd = completeCmd.substring(8, completeCmd.length() - 6);
-            Log.e(TAG,"错误雷管cmd是:" + errorLgCmd);
-            //取到错误雷管cmd后  4个一组  每个都只取前两位  将其转为十进制就可以知道是错误芯片的81发送顺序  然后再找到对应的雷管id 再改变通信状态
-            int aa = errorLgCmd.length() / 4;
-            for (int i = 0; i < aa; i++) {
-                String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
-                String idCmd = value.substring(0,2);
-                int id = Integer.parseInt(idCmd, 16);
-                Log.e(TAG,"cmd错误编号：" + idCmd + "--完整的cmd错误编号：" + value + "--十进制错误编号：" + id);
-                for (int j = 0; j < mListData.size(); j++) {
-                    if (id == j + 1) {
-                        //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
-                        String denatorId = mListData.get(j).getDenatorId();
-                        Log.e(TAG,"错误雷管id：" + denatorId + "-现在去更新数据库的状态了");
-                        updateLgStatus(mListData.get(j),2);
-                    }
-                }
-            }
-            Log.e(TAG,"错误雷管数量：" + errorTotalNum);
-            int maxCount = 20;//芯片一次最多返回20条错误雷管
-            int sendCount = (errorTotalNum % maxCount) > 0 ? (errorTotalNum / maxCount) + 1 : errorTotalNum / maxCount;
-            Log.e(TAG,"需要发送84的次数是:" + sendCount);
-            if (currentCount >= sendCount) {
-                receive84 = true;
-                Log.e(TAG,"错误雷管数量小于20，不需要发84命令了");
-                Message message = new Message();
-                message.what = 3;
-                handler_msg.sendMessage(message);
-                updateLgTrue();
-                return;
-            }
-            send84();
-            Log.e(TAG,"错误雷管数量大于20，再次发84命令了");
+            doWith84(completeCmd);
         } else {
             Log.e(TAG, TAG + "-返回命令没有匹配对应的命令-cmd:" + cmd);
         }
     }
 
-    private void updateLgTrue() {
+    private void doWith84(String completeCmd) {
+        /**
+         * 芯片84指令一次最多给返回20条错误雷管数据，如超过20，则需要再次发送84指令获取剩下的错误雷管
+         * 拿到84指令后，展示错误雷管数据  3发错误雷管：C00184 03 0300 0500 0D00 C6DDC0
+         * 截取出错误雷管的序号，0300 0500 0D00就是发81指令时候的雷管顺序  得通过这个序号找到对应的雷管id给错误雷管更新状态
+         * 同时在当前页面展示出错误雷管列表
+         */
+        currentCount ++;
+        Log.e(TAG, "收到84命令了--完整的84指令:" + completeCmd + "--当前发送84次数：" + currentCount);
+        String errorLgCmd = completeCmd.substring(8, completeCmd.length() - 6);
+//        Log.e(TAG,"错误雷管cmd是:" + errorLgCmd);
+        //取到错误雷管cmd后  4个一组  每个都只取前两位  将其转为十进制就可以知道是错误芯片的81发送顺序  然后再找到对应的雷管id 再改变通信状态
+        int aa = errorLgCmd.length() / 4;
+        for (int i = 0; i < aa; i++) {
+            String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
+            String idCmd = value.substring(0,2);
+            int id = Integer.parseInt(idCmd, 16);
+//            Log.e(TAG,"cmd错误编号：" + idCmd + "--完整的cmd错误编号：" + value + "--十进制错误编号：" + id);
+            for (int j = 0; j < mListData.size(); j++) {
+                if (id == j + 1) {
+                    //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
+                    String blastNo = mListData.get(j).getShellBlastNo();
+                    Log.e(TAG,"错误雷管id：" + blastNo + "-现在去更新数据库的状态了");
+                    updateLgStatus(mListData.get(j),2);
+                }
+            }
+        }
+        Log.e(TAG,"错误雷管数量：" + errorTotalNum);
+        int maxCount = 20;//芯片一次最多返回20条错误雷管
+        int sendCount = (errorTotalNum % maxCount) > 0 ? (errorTotalNum / maxCount) + 1 : errorTotalNum / maxCount;
+        Log.e(TAG,"需要发送84的次数是:" + sendCount);
+        if (currentCount >= sendCount) {
+            receive84 = true;
+            Log.e(TAG,"错误雷管数量小于20，不需要发84命令了");
+            Message message = new Message();
+            message.what = 3;
+            handler_msg.sendMessage(message);
+            return;
+        }
+        send84();
+        Log.e(TAG,"错误雷管数量大于20，再次发84命令了");
+    }
+
+    private void updateLgErrorStatus() {
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao()
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.ErrorName.notEq("雷管通信失败"))
+                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
-        Log.e(TAG,"正确雷管数量：" + list.size());
+//        Log.e(TAG,"错误雷管数量：" + list.size());
         for (DenatorBaseinfo baseinfo : list) {
             updateLgStatus(baseinfo,1);
         }
@@ -454,8 +439,8 @@ public class WxjlNearActivity extends SerialPortActivity {
         denator.setErrorCode(type == 1 ? "FF" : "00");
         denator.setErrorName(type == 1 ? getString(R.string.text_communication_state4) :
                 getString(R.string.text_communication_state1));
-        Log.e(TAG,"84命令更新雷管通信状态了。。。" + denator.getShellBlastNo() + "--" + denator.getErrorCode() +
-                "--" + denator.getErrorName());
+//        Log.e(TAG,"84命令更新雷管通信状态了。。。" + denator.getShellBlastNo() + "--" + denator.getErrorCode() +
+//                "--" + denator.getErrorName());
         Application.getDaoSession().update(denator);
     }
 
@@ -471,6 +456,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
         if (!(dataLength > 1)) {
             handler_msg.sendMessage(handler_msg.obtainMessage(1));
+            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
             Log.e(TAG, "81已结束");
             return;
         }
@@ -580,7 +566,8 @@ public class WxjlNearActivity extends SerialPortActivity {
                     showErrorLgList();
                 } else {
                     tvLookError.setText("4.读取错误雷管中...");
-                        send84();
+                    updateLgErrorStatus();
+                    send84();
                 }
                 break;
             case R.id.btn_exit:

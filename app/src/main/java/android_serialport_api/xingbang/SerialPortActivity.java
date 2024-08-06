@@ -34,9 +34,9 @@ import android.util.Log;
 import com.orhanobut.dialogplus.DialogPlus;
 
 import android_serialport_api.SerialPort;
-import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.utils.LoadingUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.utils.upload.InitConst;
 
 public abstract class SerialPortActivity extends BaseActivity {
 
@@ -121,7 +121,7 @@ public abstract class SerialPortActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.e("父页面", "onCreate: " );
         try {
-            mSerialPort = mApplication.getSerialPort(115200);
+            mSerialPort = mApplication.getSerialPort(InitConst.TX_RATE);
             mSerialPort.tcflush();
 
             mOutputStream = mSerialPort.getOutputStream();

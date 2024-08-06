@@ -43,6 +43,7 @@ import android_serialport_api.xingbang.cmd.DefCmd;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.FTP;
+import android_serialport_api.xingbang.utils.upload.InitConst;
 import android_serialport_api.xingbang.utils.upload.IntervalUtil;
 import android_serialport_api.xingbang.utils.upload.Result;
 import android_serialport_api.xingbang.utils.upload.XbUtils;
@@ -947,7 +948,7 @@ public class UpgradeActivity extends SerialPortActivity {
      */
     private void startUpdate(String path) {
         Log.e("开始升级-startUpdate", "path: " + path);
-        initSerialPort(115200);
+        initSerialPort(InitConst.TX_RATE);
         // 如果是bin文件
         if (path.substring(path.length() - 3).equals("bin")) {
 //            OpenSerialHelper();  // 打开串口

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/child_pg_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:id="@+id/ll_firing_4"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_tip1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_test_hint"
+                android:textStyle="bold"
+                android:textColor="@color/label_color"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/tv_tip2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="@color/label_color"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_test_end_bt"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btnLookError"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_alert_tablename1"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/MainPage_FontSize" />
+            <Button
+                android:id="@+id/btnExit"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_test_exit"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/MainPage_FontSize" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
