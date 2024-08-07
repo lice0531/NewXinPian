@@ -1,20 +1,22 @@
 package android_serialport_api.xingbang.firingdevice;
+
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
+
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -26,11 +28,12 @@ import android_serialport_api.xingbang.utils.upload.InitConst;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-public class WxjlActivity extends SerialPortActivity {
+
+public class WxjlSettingActivity extends SerialPortActivity {
     /**
      * 界面
      */
-    private String TAG = "无线级联页面";
+    private String TAG = "无线级联配置页面";
     private String wxjlDeviceId = "01";//目前只有一台设备  所以设备地址先固定01
     private boolean isRemote = false;//是否可以进行远距离无线级联
     @BindView(R.id.btn_near)
@@ -77,13 +80,27 @@ public class WxjlActivity extends SerialPortActivity {
             }
         }, 2000);
     }
-
     private void openSerial(){
         if (isRestarted) {
             initSerialPort(InitConst.TX_RATE);
             Log.e(TAG,"重新开启打开串口" + InitConst.TX_RATE);
         }
     }
+
+    public void showAlertDialog(String content) {
+        if (!WxjlSettingActivity.this.isFinishing()) {
+            AlertDialog dialog = new AlertDialog.Builder(WxjlSettingActivity.this)
+                    .setTitle("无线起爆器配置")
+                    .setMessage(content)
+                    .setCancelable(false)
+                    .setPositiveButton("确定",(dialog1, which) -> {
+                        dialog1.dismiss();
+                    }).create();
+            dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
+            dialog.show();
+        }
+    }
+
     @Override
     protected void onDataReceived(byte[] buffer, int size) {
         byte[] cmdBuf = new byte[size];
@@ -151,7 +168,7 @@ public class WxjlActivity extends SerialPortActivity {
 
     private void enterRemotePage() {
         closeSerial();
-        Intent intent = new Intent(WxjlActivity.this, WxjlRemoteActivity.class);
+        Intent intent = new Intent(WxjlSettingActivity.this, WxjlRemoteActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("wxjlDeviceId", wxjlDeviceId);
         startActivity(intent);
@@ -229,7 +246,6 @@ public class WxjlActivity extends SerialPortActivity {
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 1000; // 快速点击间隔
     private String Yanzheng_sq = "";//是否验雷管已经授权
-    private boolean isSend82 = true;
     @OnClick({R.id.btn_near, R.id.btn_remote})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -240,7 +256,7 @@ public class WxjlActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    throw new RuntimeException(e);
 //                }
-                Intent intent = new Intent(WxjlActivity.this, WxjlNearActivity.class);
+                Intent intent = new Intent(WxjlSettingActivity.this, WxjlNearActivity.class);
 //                Intent intent = new Intent(WxjlActivity.this, NewNearJlActivity.class);
                 intent.putExtra("errorNum",errorNum);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -248,22 +264,9 @@ public class WxjlActivity extends SerialPortActivity {
                 break;
             case R.id.btn_remote:
                 if (isRemote) {
-                    if (isSend82) {
-                        isSend82 = false;
-                        enterJcms = new EnterJcms();
-                        enterJcms.start();
-                        Log.e(TAG,"开启发送82命令的线程了");
-                    } else {
-                        Log.e(TAG,"82线程已开启，不重复开启...");
-                        if (receive82) {
-                            enterRemotePage();
-                        } else {
-                            Message message = new Message();
-                            message.what = 0;
-                            message.obj = "error";
-                            handler_msg.sendMessage(message);
-                        }
-                    }
+                    enterJcms = new EnterJcms();
+                    enterJcms.start();
+                    Log.e(TAG,"开启发送82命令的线程了");
                 } else {
                     show_Toast("请先近距离级联");
                     return;

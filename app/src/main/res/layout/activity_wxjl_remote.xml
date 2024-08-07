@@ -56,7 +56,7 @@
             android:layout_marginLeft="40dp"
             android:layout_weight="1"
             style="@style/alltextstyle"
-            android:text="退出流程" />
+            android:text="退出级联" />
     </LinearLayout>
     <TextView
         android:id="@+id/tv_msg"

@@ -20,19 +20,23 @@
             app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
-    <RelativeLayout
-        android:id="@+id/btn_setting"
-        android:padding="15dp"
+
+    <LinearLayout
+        android:id="@+id/btn_qbq_setting"
+        android:orientation="vertical"
         android:background="@drawable/ll_mainlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp20"
-        android:visibility="gone"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp">
+        <RelativeLayout
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/ivset"
+            android:id="@+id/ivqbq"
             android:layout_width="23dp"
             android:layout_height="23dp"
             android:visibility="gone"
@@ -45,8 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/ivset"
-            android:text="1.无线配置"
+            android:layout_toRightOf="@+id/ivqbq"
+            android:text="1.起爆器配置"
             android:textColor="#333333"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -58,7 +62,51 @@
             android:layout_centerVertical="true"
             android:rotation="180"
             android:src="@drawable/iv_back" />
-    </RelativeLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_xindao"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_xindao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="信道: "
+                android:maxLines="2"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="信道: "
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"                    android:textColor="#333333"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/add_gsxz"
+                    android:layout_gravity="center_vertical"
+                    android:spinnerMode="dropdown"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/btn_near"
@@ -71,10 +119,10 @@
         android:layout_marginTop="20dp">
 
         <ImageView
-            android:id="@+id/ivhc"
+            android:id="@+id/ivzjq"
             android:layout_width="23dp"
             android:layout_height="23dp"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@drawable/icon_jjl" />
@@ -84,8 +132,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/ivhc"
-            android:text="1.近距离级联"
+            android:layout_toRightOf="@+id/ivzjq"
+            android:text="2.中继器搜索"
             android:textColor="#333333"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -98,60 +146,4 @@
             android:rotation="180"
             android:src="@drawable/iv_back" />
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/btn_remote"
-        android:padding="15dp"
-        android:background="@drawable/ll_mainlayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp20"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="15dp">
-
-        <ImageView
-            android:id="@+id/ivrc"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:visibility="visible"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon_yjl" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/ivrc"
-            android:text="2.远距离级联"
-            android:textColor="#333333"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:rotation="180"
-            android:src="@drawable/iv_back" />
-    </RelativeLayout>
-
-<!--    <Button-->
-<!--        android:id="@+id/btn_near"-->
-<!--        android:layout_width="180dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="40dp"-->
-<!--        android:text="1.近距离级联"-->
-<!--        android:layout_gravity="center"-->
-<!--        style="@style/allbtntstyle" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/btn_remote"-->
-<!--        android:layout_width="180dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:text="2.远距离级联"-->
-<!--        android:layout_gravity="center"-->
-<!--        style="@style/allbtntstyle"/>-->
 </LinearLayout>

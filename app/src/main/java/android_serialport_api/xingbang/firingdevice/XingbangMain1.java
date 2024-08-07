@@ -737,7 +737,8 @@ public class XingbangMain1 extends BaseActivity {
                     mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
                     Log.e(TAG, "雷管数量：" + mListData.size());
                     if (mListData.size() > 0) {
-                        Intent itwxjl = new Intent(this, WxjlActivity.class);
+//                        Intent itwxjl = new Intent(this, WxjlActivity.class);
+                        Intent itwxjl = new Intent(this, WxjlNearActivity.class);
                         itwxjl.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(itwxjl);
                     } else {
@@ -1227,7 +1228,8 @@ public class XingbangMain1 extends BaseActivity {
                         if (Yanzheng.equals("验证")) {
                             intent5 = new Intent(this, VerificationActivity.class);
                         } else {
-                            intent5 = new Intent(this, WxjlActivity.class);
+//                            intent5 = new Intent(this, WxjlActivity.class);
+                            intent5 = new Intent(this, WxjlNearActivity.class);
                         }
                     } else {
                         Log.e("验证2", "Yanzheng: " + Yanzheng);
