@@ -316,12 +316,12 @@ public class ThreeFiringCmd {
 	}
 
 	/***
-	 * 发送切换模式指令
+	 * 发送近距离读取错误雷管指令
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] sendWxjl84(String addr,String datalength){
-		String command = addr + DefCommand.CMD_5_TRANSLATE_84 + datalength;//84
+	public static byte[] sendWxjl84(String addr,String serId){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_84 + "01" + serId;//84
 		return DefCommand.getCommadBytes(command);
 	}
 	/***
@@ -352,12 +352,12 @@ public class ThreeFiringCmd {
 		return CRC16.hexStringToByte(command);
 	}
 	/***
-	 * 发送获取错误雷管信息A8指令
+	 * 发送远距离读取错误雷管信息A8指令
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA8(String addr){
-		String command = DefCommand.CMD_MC_SEND_A8 + addr;//A8
+	public static byte[] setWxjlA8(String addr,String serId){
+		String command = DefCommand.CMD_MC_SEND_A8 + addr + serId;//A8
 		return CRC16.hexStringToByte(command);
 	}
 	/***
