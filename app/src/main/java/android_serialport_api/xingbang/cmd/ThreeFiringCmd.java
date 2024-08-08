@@ -288,7 +288,7 @@ public class ThreeFiringCmd {
 		}
 		if(cmd==null||cmd.trim().length()<1)return -1;
 		
-		String command = addr + DefCommand.CMD_3_DETONATE_7+"01";
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"07";
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
 	}
@@ -337,5 +337,33 @@ public class ThreeFiringCmd {
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
 	}
-	
+
+	/***
+	 *在网读ID检测
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] send_36(String addr,String yscs){
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"02"+yscs;//36
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 处理在网读ID检测返回值
+	 * @param addr
+	 * @param from
+	 * @return
+	 */
+	public static String jiexi_36(String addr , String from){
+
+		int iscorrent =getCheckFromXbCommon_FiringExchange_5523_7(addr,from);//判断命令是否完整
+		if(iscorrent==0){
+			String cmd = DefCommand.decodeCommand(from);
+			//jiexi_36--cmd: 003607FF000000000000
+			return cmd.substring(6,8);
+		}else{
+			return null;
+		}
+
+	}
 }

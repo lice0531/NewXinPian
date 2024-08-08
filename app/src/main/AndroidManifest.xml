@@ -220,11 +220,6 @@
             android:label="@string/title_activity_set_languages"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".firingdevice.XingBangApproveActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/title_activity_shibie"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".firingdevice.PracticeActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_practice"
@@ -238,11 +233,6 @@
             android:name=".firingdevice.VerificationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_yanzheng"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".firingdevice.UploadFaceDataActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="信息采集"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UploadMessageActivity"

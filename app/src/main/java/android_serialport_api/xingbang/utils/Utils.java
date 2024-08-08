@@ -72,6 +72,12 @@ public class Utils {
     public static String httpurl_zbw_port = "1088";
     public static String httpurl_face = "http://125.77.73.145:8180/entweb/WSPROXY.do";
     private static SQLiteDatabase db;
+
+    public static String httpurl_xb_upload = "http://xbmonitor1.xingbangtech.com:800/HandSet/QueryGK";
+    public static String httpurl_xb_erweima = "http://xbmonitor1.xingbangtech.com:800/File/Ciphertext/";
+    public static String httpurl_xb_leveup = "http://xbmonitor1.xingbangtech.com:800/HandSet/isRenew ";
+    public static String httpurl_xb_download = "http://xbmonitor1.xingbangtech.com:800/HandSet/DownloadVersion";
+
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -2406,5 +2412,21 @@ public class Utils {
         }
         lastClickTime = time;
         return false;
+    }
+
+    public static int duibi(String str1, String str2) {
+        int a =0;
+
+        // 比较两个字符串的长度
+        if (str1.length() == str2.length()) {
+            // 比较每一位字符
+            for (int i = 0; i < str1.length(); i++) {
+                if (str1.charAt(i) == str2.charAt(i)) {
+                    a++;
+                }
+            }
+        }
+        Log.e("对比UID", "相同字符个数: "+a );
+        return a;
     }
 }

@@ -1,6 +1,8 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -13,8 +15,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.kfree.comm.system.ScanQrControl;
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
 
@@ -225,7 +230,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private boolean switchUid = true;//切换uid/管壳码
-
+    private ScanQrControl mScaner = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,7 +253,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         btn_onClick();//button的onClick
 
         handler();//所有的handler
-//        scan();//扫描初始化
+        scan();//扫描初始化
 
         if (factoryFeature != null && factoryFeature.trim().length() == 1) {
             edit_end_entAT1Bit_ed.setText(factoryFeature);
@@ -311,35 +316,120 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
+        switch (Build.DEVICE) {
+            // KT50 起爆器设备
+            case "M900": {
+                // 创建扫描头操作对象，并注册回调
+                mScaner = new ScanQrControl(this);
+                mScaner.registerScanCb(new ScanQrControl.IScan() {
+                    @Override
+                    public void onScanStart(int timeoutSec) {
+                    }
 
-        scanDecode.getBarCode(data -> {
-//            if (data.length() == 19) {
-//                Log.e("箱号", "getBarcode: " + data);
-//                addXiangHao(data);
-//            }
-            if (sanButtonFlag > 0) {
-                scanDecode.stopScan();
-                decodeBar(data);
-            } else {
-//                if (continueScanFlag == 1) {
-//                    String barCode = getContinueScanBlastNo(data);
-//                    if (barCode == null) return;
-//
-//                    if (checkRepeatShellNo(barCode)) {
-//                        show_Toast(getResources().getString(R.string.text_error_tip9));
-//                        SoundPlayUtils.play(3);
-//                        return;
-//                    } else {
-//                        show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
-//                    }
-//                    SoundPlayUtils.play(1);//1,2,3,4
-//                    insertSingleDenator(barCode);
-//                }
+                    @Override
+                    public void onScanResult(boolean isSuccess, String scanResultStr) {
+                        Log.e( "扫码结果: ", "ScanResult:" + isSuccess + "|" + scanResultStr);
+                        saoma(scanResultStr);
+                    }
+                });
+                break;
             }
-        });
+            default:{
+                scanDecode = new ScanDecode(this);
+                scanDecode.initService("true");//初始化扫描服务
+
+                scanDecode.getBarCode(data -> {
+                    saoma(data);
+                });
+            }
+        }
     }
+
+    private void saoma(String data) {
+        Log.e("扫码", "data: " + data);
+        Log.e("扫码", "data.length(): " + data.length());
+//        if (deleteList()) return;
+        hideInputKeyboard();//隐藏光标
+        //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
+
+        if (data.length() == 19) {//扫描箱号
+            addXiangHao(data);
+        } else {
+            if (sanButtonFlag > 0) {//扫码结果设置到输入框里
+                Log.e("扫码注册", "data: " + data);
+                decodeBar(data);
+                Message msg = new Message();
+                msg.obj = data;
+                msg.what = 9;
+                mHandler_tip.sendMessage(msg);
+                tingzhiScan();
+//                scanDecode.stopScan();
+            } else {
+                String barCode;
+                String denatorId;
+                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+                    barCode = data.substring(0, 13);
+                    denatorId = data.substring(13, 26);
+                    insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
+                } else if (data.length() == 28) {
+                    Log.e("扫码", "data: " + data);
+                    //5620302H00001A62F400FFF20AB603
+                    //5420302H00001A6F4FFF20AB603
+                    //Y5620413H00009A630FD74D87604
+                    //M5621132A9999900F491EF8B0922
+                    if (data.charAt(0) == 'Y') {
+                        barCode = data.substring(1, 14);
+                        String a = data.substring(14, 24);
+                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        Log.e("扫码", "barCode: " + barCode);
+                        Log.e("扫码", "denatorId: " + denatorId);
+                        Log.e("扫码", "data.substring(24): " + data.substring(24));
+                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                    }else {//其他规则
+                        barCode = data.substring(0, 13);
+                        denatorId = "A621" + data.substring(13, 22);
+                        String yscs = data.substring(22, 26);
+                        Log.e("扫码", "barCode: " + barCode);
+                        Log.e("扫码", "denatorId: " + denatorId);
+                        Log.e("扫码", "data.substring(24): " + data.substring(24));
+                        insertSingleDenator_2(barCode, denatorId, yscs);//同时注册管壳码和芯片码
+                    }
+
+                }
+//                    else if{
+//                        barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
+//                        insertSingleDenator(barCode);
+//                    }
+                hideInputKeyboard();//隐藏光标
+            }
+        }
+    }
+
+    private void addXiangHao(String data) {
+        char[] xh = data.toCharArray();
+        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
+        final String strNo = "00";
+        String a = xh[5] + "" + xh[6];
+        String endNo = Utils.XiangHao(a);
+        final String prex = String.valueOf(strNo1);
+        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
+        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+//        new Thread(() -> {
+//            insertDenator(prex, finalStrNo, finalEndNo);//添加
+//        }).start();
+
+//        pb_show = 1;
+//        runPbDialog();
+        new Thread(() -> {
+            insertDenator(prex, finalStrNo, finalEndNo);
+            Log.e("手动输入", "厂号日期: " + prex);
+//            Log.e("手动输入", "start: " + start);
+//            pb_show = 0;
+        }).start();
+    }
+
+
+
 
     private void handler() {
         mHandler_0 = new Handler(msg -> {
@@ -1574,7 +1664,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    show_Toast("有延时为空,请先设置延时");
 //                    break;
 //                }
-                if (isSingleReisher == 0 && send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+                if (isSingleReisher == 0) {
                     String shellBlastNo = serchFristLG();
                     int num = serchFristLGINdenatorHis(shellBlastNo);
 
@@ -1590,7 +1680,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //                    closeOpenThread.start();
                     sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
 
-                } else if (send_10 == 0 && send_13 == 0 && send_41 == 0 && send_40 == 0) {
+                } else {
                     btnInputOk.setEnabled(true);
                     btnSingleReister.setText(R.string.text_line_single);
                     txt_currentVolt.setText(R.string.text_line_IV);
@@ -1603,8 +1693,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     revOpenCmdReFlag = 0;
                     // 13 退出注册模式
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
-                } else {
-                    show_Toast(getString(R.string.text_line_tip17));
                 }
                 break;
 
@@ -2194,4 +2282,203 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
 
+    /***
+     * 手动输入注册(通过开始管壳码和截止管壳码计算出所有管壳码)
+     */
+    private int insertDenator(String prex, int start, int end) {
+
+        if (end < start) return -1;
+        if (start < 0 || end > 99999) return -1;
+        String shellNo = "";
+        int flag = 0;
+        int start_delay = 0;//开始延时
+        int f1 = 0;//f1延时
+        int f2 = 0;//f2延时
+//        int maxNo = getMaxNumberNo();
+//        int delay = getMaxDelay(maxNo);//获取最大延时
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+        if (delay_set.equals("f1")) {
+            if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                return -1;
+            }
+        } else if (delay_set.equals("f2")) {
+            if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                return -1;
+            }
+        }
+        if (maxSecond != 0 && f1 > maxSecond) {//
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+            return -1;
+        }
+        if (maxSecond != 0 && f2 > maxSecond) {//
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+            return -1;
+        }
+        int reCount = 0;//统计注册了多少发雷管
+        Utils.writeRecord("--手动输入注册--前8位:" + prex + "--开始后5位:" + start +
+                "--结束后5位:" + end + "--开始延时:" + start_delay);
+        for (int i = start; i <= end; i++) {
+            shellNo = prex + String.format("%05d", i);
+            if (checkRepeatShellNo(shellNo)) {
+                singleShellNo = shellNo;
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                break;
+            }
+            DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
+//            if (detonatorTypeNew == null) {
+//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
+//                pb_show = 0;
+//                return -1;
+//            }8
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    delay = delay + f1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    delay = delay + f2;
+                }
+            }
+            if (maxSecond != 0 && delay > maxSecond) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                break;
+            }
+            maxNo++;
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+            denatorBaseinfo.setBlastserial(maxNo);
+            denatorBaseinfo.setSithole(maxNo + "");
+            denatorBaseinfo.setShellBlastNo(shellNo);
+            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusName("已注册");
+            denatorBaseinfo.setErrorCode("FF");
+            denatorBaseinfo.setErrorName("");
+            denatorBaseinfo.setWire("");//桥丝状态
+            denatorBaseinfo.setPiece(mRegion);
+            if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+                denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
+                denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+            }
+            //向数据库插入数据
+            getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+            reCount++;
+        }
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
+        pb_show = 0;
+        tipInfoFlag = 88;
+        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+        Utils.saveFile();//把软存中的数据存入磁盘中
+        return reCount;
+    }
+
+
+    /***
+     * 扫码注册方法
+     */
+    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+        Log.e("检查管厂码", "factoryCode: "+factoryCode );
+        Log.e("检查管厂码", "shellNo.substring(0,2): "+shellNo.substring(0,2) );
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0,2)) ) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));//  "管厂码与系统中定义的管厂码不一致";
+            return  ;
+        }
+        //雷管信息有误，特征码不正确，请检查 5620819H00001
+        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.equals(shellNo.substring(7,8))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+            return ;
+        }
+        if (shellNo.length() != 13) {
+            return ;
+        }
+//        if (check(shellNo) == -1) {
+//            return ;
+//        }
+//        int maxNo = getMaxNumberNo();
+        int start_delay = 0;//开始延时
+        int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
+        int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
+//        int delay = getMaxDelay(maxNo);//获取最大延时
+
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+        Log.e("扫码", "delay_set: " + delay_set);
+        if (delay_set.equals("f1")) {
+            if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                return ;
+            }
+        } else if (delay_set.equals("f2")) {
+            if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                return ;
+            }
+        }
+        if (delay_set.equals("f1")) {//获取最大延时有问题
+            if (maxNo == 0) {
+                delay = delay + start_delay;
+            } else {
+                delay = delay + f1;
+            }
+        } else if (delay_set.equals("f2")) {
+            if (maxNo == 0) {
+                delay = delay + start_delay;
+            } else {
+                delay = delay + f2;
+            }
+        }
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+
+        maxNo++;
+        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+        denatorBaseinfo.setBlastserial(maxNo);
+        denatorBaseinfo.setSithole(maxNo + "");
+        denatorBaseinfo.setShellBlastNo(shellNo);
+        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
+        denatorBaseinfo.setStatusCode("02");
+        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setErrorCode("FF");
+        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setWire("");//桥丝状态
+        denatorBaseinfo.setPiece(mRegion);
+        denatorBaseinfo.setDenatorId(denatorId);
+        denatorBaseinfo.setZhu_yscs(yscs);
+        //向数据库插入数据
+        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
+        Utils.saveFile();//把闪存中的数据存入磁盘中
+        SoundPlayUtils.play(1);
+        return ;
+    }
+
+
+    private void tingzhiScan() {
+        switch (Build.DEVICE) {
+            case "M900": {
+                //M900关闭扫码
+                mScaner.stopScan();
+                break;
+            }
+            case "ST327":
+            case "S337":  {
+                //st327扫码下电
+                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                break;
+            }
+            default:{
+                //kt50停止扫码头方法
+                scanDecode.stopScan();//停止扫描
+            }
+        }
+    }
 }
