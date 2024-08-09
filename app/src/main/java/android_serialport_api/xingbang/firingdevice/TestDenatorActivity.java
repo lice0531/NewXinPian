@@ -1411,8 +1411,8 @@ public class TestDenatorActivity extends SerialPortActivity {
         ll_1.setVisibility(View.GONE);
         ll_2.setVisibility(View.VISIBLE);
         secondTxt.setText(R.string.text_test_tip4);
-        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
-        sendCmd(initBuf2);
+//        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
+//        sendCmd(initBuf2);
     }
 
     //off()方法 true 获取全部雷管  flase 获取错误雷管

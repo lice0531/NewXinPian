@@ -385,7 +385,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }else if(msg.what == 4){
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("电流异常!")//设置对话框的标题
@@ -397,7 +399,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .setNeutralButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
                         .create();
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }else if (msg.what == 5) {
                 ll_firing_errorAmount_2.setText("0");
                 ll_firing_errorAmount_4.setText("0");
@@ -534,7 +538,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }
             if(busInfo.getPowerStatus().equals("01")){
                 Utils.writeRecord("电流状态低压异常");
@@ -553,7 +559,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }
             if(busInfo.getPowerStatus().equals("02")){
                 Utils.writeRecord("电流状态高压异常");
@@ -572,7 +580,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }
             if(busInfo.getPowerStatus().equals("04")){
                 Utils.writeRecord("电流状态短路");
@@ -591,7 +601,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }
 
 
@@ -629,7 +641,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
 
             }
 
@@ -1334,7 +1348,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //C000340100ABCDC0
             String qbzt =fromCommad.substring(8,10);
             MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
-            if (!"FF".equals(qbzt)) {
+            if (!"FF".equals(qbzt)&&fromCommad.length()==16) {
                 Message msg = Handler_tip.obtainMessage();
                 msg.what = 3;
                 msg.obj = qbzt;
@@ -1567,7 +1581,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 finish();
                             })
                             .create();
-                    dialog.show();
+                    if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                        dialog.show();
+                    }
                 }
                 break;
             case 7:
@@ -1583,7 +1599,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 finish();
                             })
                             .create();
-                    dialog.show();
+                    if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                        dialog.show();
+                    }
                 }
                 break;
             case 8:
@@ -1971,8 +1989,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 7://1+5 等待阶段
-//                            Thread.sleep(1000);
-//                            sevenCount++;
+                            Thread.sleep(1000);
+                            sevenCount++;
                             Log.e(TAG, "1+5 等待阶段sevenCount: " + sevenCount);
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
