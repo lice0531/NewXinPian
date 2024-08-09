@@ -965,7 +965,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {//待测雷管数小于1执行方法
 
                                     Thread.sleep(1000);
-                                    if (denatorCount >= 5 && totalerrorNum != 0) {
+                                    if (denatorCount >= 200 && totalerrorNum != 0) {
                                         Handler_tip.sendMessage(Handler_tip.obtainMessage(3));
                                         Log.e(TAG, "重发错误雷管: ----------");
                                         getErrblastQueue();//重新给雷管队列赋值
@@ -1046,6 +1046,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         errorDe.setError(1);
                                         thirdWriteErrorDenator = errorDe;
                                         errorList.offer(errorDe);
+
                                         Message message = new Message();
                                         message.obj = errorDe;
                                         errHandler_update.sendMessage(message);

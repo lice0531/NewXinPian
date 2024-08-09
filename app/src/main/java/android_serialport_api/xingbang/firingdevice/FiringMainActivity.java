@@ -127,6 +127,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private Handler mHandler_tip = null;//提示
     private Handler Handler_tip = null;//提示
     private static Handler mHandler_1 = null;//更新视图
+    private Handler errHandler_update = null;//总线信息
     private static Handler noReisterHandler = null;//没有注册的雷管
     private Handler checkHandler = null;//更正错误
     private To52Test writeVo;
@@ -397,6 +398,10 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setNeutralButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 dialog.show();
+            }else if (msg.what == 5) {
+                ll_firing_errorAmount_2.setText("0");
+                ll_firing_errorAmount_4.setText("0");
+                totalerrorNum = 0;
             }
             return false;
         });
@@ -426,6 +431,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_errorAmount_2.setTextColor(Color.RED);
                 ll_firing_errorAmount_4.setTextColor(Color.RED);
                 totalerrorNum = Integer.parseInt(err) + 1;
+                Log.e(TAG, "totalerrorNum: "+totalerrorNum );
             }
             return false;
         });
@@ -645,6 +651,15 @@ public class FiringMainActivity extends SerialPortActivity {
             totalerrorNum = Integer.parseInt(errNumStr) + 1;
 
 
+            return false;
+        });
+
+        errHandler_update = new Handler(msg -> {
+            VoFiringTestError errorDe = (VoFiringTestError) msg.obj;
+            DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errorDe.getShellBlastNo())).unique();
+            denator.setErrorCode("00");
+            denator.setErrorName("命令未返回");
+            Application.getDaoSession().update(denator);
             return false;
         });
     }
@@ -1681,6 +1696,23 @@ public class FiringMainActivity extends SerialPortActivity {
                 //写入通信未返回
 
                 break;
+            case 44:
+//                if (thirdWriteCount == 1) {
+//                    ll_firing_errorAmount_2.setText("0");
+//                }
+                if (thirdWriteErrorDenator2 != null) {//写入未返回的错误雷管
+                    show_Toast(thirdWriteErrorDenator2.getShellBlastNo() + "芯片写入命令未返回");
+                    thirdWriteErrorDenator2 = null;//设置错误雷管
+                }
+
+                secondTxt.setText("正在重发第" + thirdWriteCount + "错误雷管");
+                //写入通信未返回
+
+                break;
+            case 55:
+                ctlLinePanel(6);
+                sixTxt.setText("正在重发第" + thirdWriteCount + "发雷管启动充电");
+                break;
             default:
 
         }
@@ -1767,6 +1799,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (blastQueue == null || blastQueue.size() < 1) {
 
                                     if (denatorCount >= 200 && totalerrorNum != 0) {
+                                        Handler_tip.sendMessage(Handler_tip.obtainMessage(5));//重置错误数量
+                                        Log.e(TAG, "重发错误雷管: ----------");
                                         getErrblastQueue();//重新给雷管队列赋值
                                         increase(44);//之前是4
                                     } else {
@@ -1868,6 +1902,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                     updateDenator(fromDataErr, tempBaseInfo.getDelay());
                                     //发出错误
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    Message message = new Message();
+                                    message.obj = errorDe;
+                                    errHandler_update.sendMessage(message);
                                     writeDenator = null;
                                     tempBaseInfo = null;
                                     reThirdWriteCount++;
@@ -2070,7 +2107,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     errorDe.setShellBlastNo(tempBaseInfo2.getShellBlastNo());
                                     errorDe.setDelay(tempBaseInfo2.getDelay());
                                     errorDe.setError(1);
-                                    thirdWriteErrorDenator = errorDe;
+                                    thirdWriteErrorDenator2 = errorDe;
                                     errorList.offer(errorDe);
                                     //发出错误
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -2092,10 +2129,20 @@ public class FiringMainActivity extends SerialPortActivity {
                                 writeDenator = null;
                                 //检测一次
                                 if (blastQueue == null || blastQueue.size() < 1) {
-                                    getblastQueue();//重新获取数据,用来给充电list复制
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
-                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
+
+                                    getblastQueue();//重新获取数据,用来给充电list复制
+                                    //36指令
+                                    int a = totalerrorNum;
+                                    GreenDaoMaster master = new GreenDaoMaster();
+                                    errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                    if (a == 1 && errlist != null && errlist.size() > 0) {
+                                        sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+                                    } else {
+                                        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                    }
+
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
@@ -2122,7 +2169,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
 
-                                String data = denatorId + delayStr + write.getZhu_yscs() + "00";
+                                String data = denatorId + delayStr + write.getZhu_yscs();
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
                                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
@@ -2150,7 +2197,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     errorDe.setShellBlastNo(tempBaseInfo.getShellBlastNo());
                                     errorDe.setDelay(tempBaseInfo.getDelay());
                                     errorDe.setError(1);
-                                    thirdWriteErrorDenator = errorDe;//(应该只发个管壳码就可以)
+                                    thirdWriteErrorDenator2 = errorDe;//(应该只发个管壳码就可以)
 //                                    errorList.offer(errorDe);
                                     //尝试修改当单片机未返回时的更新错误状态方法,因为有可能会导致错误更新
                                     From32DenatorFiring fromDataErr = new From32DenatorFiring();
@@ -2159,6 +2206,10 @@ public class FiringMainActivity extends SerialPortActivity {
                                     fromDataErr.setDelayTime(tempBaseInfo.getDelay());
                                     fromDataErr.setCommicationStatus("AF");
                                     updateDenator(fromDataErr, tempBaseInfo.getDelay());
+                                    //命令未返回
+                                    Message message = new Message();
+                                    message.obj = errorDe;
+                                    errHandler_update.sendMessage(message);
                                     //发出错误
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                     writeDenator = null;

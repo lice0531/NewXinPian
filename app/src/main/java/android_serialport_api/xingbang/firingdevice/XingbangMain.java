@@ -158,7 +158,7 @@ public class XingbangMain extends BaseActivity {
     private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
     TextView totalbar_title;
     private Handler mHandler_updataVersion = new Handler();//更新版本
-
+    private String app_version_name = "";
 
 
     @Override
@@ -247,7 +247,7 @@ public class XingbangMain extends BaseActivity {
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
-
+        app_version_name = getString(R.string.app_version_name);
         getleveup();
     }
 
@@ -1223,7 +1223,7 @@ public class XingbangMain extends BaseActivity {
 
         try {
             object.put("sbbh", equ_no);//设备编号
-            object.put("rj_version", "KT50_3.25_MX_240724_14");//软件版本
+            object.put("rj_version", app_version_name);//软件版本
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1282,7 +1282,7 @@ public class XingbangMain extends BaseActivity {
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("sbbh", equ_no);//设备编号
             object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
-            object.put("version", "KT50_3.25_MX_240724_14");//版本号版本 v3.22
+            object.put("version", app_version_name);//版本号版本 v3.22
 //            object.put("version", "v3.22");//版本号版本 测试数据
             object.put("type", "1");//软件=1 硬件=2
             object.put("is_force", 0);//是否强制升级
