@@ -37,6 +37,8 @@ public class WxjlActivity extends SerialPortActivity {
     RelativeLayout btnNear;
     @BindView(R.id.btn_remote)
     RelativeLayout btnRemote;
+    @BindView(R.id.btn_wxsetting)
+    RelativeLayout btnWxSetting;
     private String dataLength82 = "", data82 = "";
     private boolean receive82 = false;//发出82命令是否返回
     private Handler handler_msg = new Handler();
@@ -230,9 +232,14 @@ public class WxjlActivity extends SerialPortActivity {
     private static final int FAST_CLICK_DELAY_TIME = 1000; // 快速点击间隔
     private String Yanzheng_sq = "";//是否验雷管已经授权
     private boolean isSend82 = true;
-    @OnClick({R.id.btn_near, R.id.btn_remote})
+    @OnClick({R.id.btn_near, R.id.btn_remote,R.id.btn_wxsetting})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btn_wxsetting:
+                Intent is = new Intent(WxjlActivity.this, WxjlSettingActivity.class);
+                is.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(is);
+                break;
             case R.id.btn_near:
                 closeSerial();
 //                try {

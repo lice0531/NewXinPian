@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:focusable="true"
+    android:background="@color/bg_color"
     android:focusableInTouchMode="true"
     android:layout_height="match_parent">
     <com.google.android.material.appbar.AppBarLayout
@@ -71,18 +72,36 @@
             android:layout_marginRight="15dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/tv_xindao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:text="信道: "
-                android:maxLines="2"
-                android:textColor="#333333"
-                android:textSize="22sp"
-                android:textStyle="bold" />
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="信道: "
+                    android:maxLines="2"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#333333"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_xindao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text=""
+                    android:layout_gravity="center_vertical"
+                    android:maxLines="2"
+                    android:textColor="#333333"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_xd"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -96,20 +115,22 @@
                     android:layout_marginLeft="20dp"                    android:textColor="#333333"
                     android:textSize="22sp"
                     android:textStyle="bold" />
-                <Spinner
+                <org.angmarch.views.NiceSpinner
+                    android:id="@+id/ns_xd"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/add_gsxz"
-                    android:layout_gravity="center_vertical"
-                    android:spinnerMode="dropdown"
-                    />
+                    android:layout_height="40dp"
+                    android:textSize="16sp"
+                    app:backgroundSelector="@color/text_hint"
+                    app:popupTextAlignment="start"
+                    app:textTint="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/btn_near"
+        android:id="@+id/rl_search"
         android:padding="15dp"
         android:background="@drawable/ll_mainlayout"
         android:layout_width="match_parent"
@@ -146,4 +167,10 @@
             android:rotation="180"
             android:src="@drawable/iv_back" />
     </RelativeLayout>
+    <ListView
+        android:id="@+id/lv_devices"
+        android:layout_margin="20dp"
+        android:background="@drawable/ll_mainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

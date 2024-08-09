@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:focusable="true"
+    android:background="@color/bg_color"
     android:focusableInTouchMode="true"
     android:layout_height="match_parent">
     <com.google.android.material.appbar.AppBarLayout
@@ -21,13 +22,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
     <RelativeLayout
-        android:id="@+id/btn_setting"
+        android:id="@+id/btn_wxsetting"
         android:padding="15dp"
         android:background="@drawable/ll_mainlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp20"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp">
 
@@ -35,7 +36,7 @@
             android:id="@+id/ivset"
             android:layout_width="23dp"
             android:layout_height="23dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@drawable/icon_jjl" />
@@ -46,7 +47,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/ivset"
-            android:text="1.无线配置"
+            android:text="1.级联配置"
             android:textColor="#333333"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -77,7 +78,7 @@
             android:visibility="visible"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/icon_jjl" />
+            android:src="@drawable/icon_yjl" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -85,7 +86,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/ivhc"
-            android:text="1.近距离级联"
+            android:text="2.无线级联"
             android:textColor="#333333"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -105,6 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp20"
+        android:visibility="gone"
         android:layout_marginRight="20dp"
         android:layout_marginTop="15dp">
 

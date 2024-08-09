@@ -41,6 +41,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
@@ -142,6 +145,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private Handler mHandler_tip = null;//提示
     Handler openHandler = new Handler();
+    private boolean isShowError;
     private boolean showDialog1;
     private boolean showDialog2;
     private boolean showDialog3;
@@ -155,7 +159,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private int errorNum;//错误雷管数量
     private int currentCount;//当前A8发送的次数
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
-
+    //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
     @Override
     protected void onStart() {
         super.onStart();
@@ -290,7 +295,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         break;
                     }
                     if (zeroCount > 0 && zeroCount <= 5 && !reciveB1) {
-                        Log.e(TAG,"发送A1同步指令");
+                        Log.e(TAG,"发送A0同步指令");
                         sendCmd(ThreeFiringCmd.setWxjlA1(wxjlDeviceId));
                         Thread.sleep(1500);
                     } else if (zeroCount > 5){
@@ -466,7 +471,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
+    private boolean isCloseLx;
     private void closeLx(){
+        isCloseLx = true;
         PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
         Log.e(TAG, "轮询已关闭");
     }
@@ -485,7 +492,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             msg.what = 0;
             DeviceBean bean = new DeviceBean();
             bean.setRes(res);
-            bean.setCurrentPeak("0");
+            bean.setCurrentPeak("0μA");
             bean.setCode(res.substring(res.length() - 2));
             bean.setInfo("在线");
             msg.obj = bean;
@@ -522,7 +529,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             // 单个设备起爆
             msg.what = 9;
             msg.obj = receiveMsg(res, "起爆中");
-        } else if (res.startsWith("4")) {
+        } else if (res.startsWith("3") || res.startsWith("4")) {
             //频率降下来后  芯片返回的命令总是两截的：雷管全部数量和错误数量是单独发一条  所以这么来处理
             Log.e(TAG,"收到雷管数据的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
@@ -532,7 +539,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B5)) {
             reciveB5 = true;
             zeroCount = 0;
-//            Log.e(TAG,"得到的B5消息是：" + res);
             DeviceBean bean = new DeviceBean();
             receB5Data(bean,res,2);
             msg.what = 8;
@@ -546,19 +552,22 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             Log.e(TAG,"已收到B7指令,不再发送A7指令");
             reciveB7 = true;
             closeA7Thread();
-//            msg.what = InitConst.CODE_EXIT;
-//            msg.obj = receiveMsg(res, "");
+            msg.what = InitConst.CODE_EXIT;
+            msg.obj = receiveMsg(res, "");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B8) && res.endsWith(DefCommand.CMD_MC_SEND_B8)) {
             // 获取错误雷管信息
             Log.e(TAG,"收到B8命令了res:" + res);
             if (currentCount == 0) {
+                updateLgStatus();
                 reciveB8 = true;
                 Message message = new Message();
                 message.what = 17;
                 message.obj = "true";
                 handler_msg.sendMessage(message);
             }
-            doWithReceivB8(res);
+            if (isCanSendA8) {
+                doWithReceivB8(res);
+            }
         } else {
             Log.e(TAG, "无线级联远距离页面-没有匹配对应的命令-cmd:" + res);
         }
@@ -697,7 +706,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     String dy = value.substring(value.length() - 3);
                     String bv = Utils.addZero(dy, 4);
                     bean.setBusVoltage(calateBv(bv));
-//                    Log.e(TAG,"B5消息中电压信息:" + calateBv(bv));
+                    Log.e(TAG,"B5消息中电压信息:" + calateBv(bv));
                     break;
                 case "3":
                     String dl = value.substring(value.length() - 3);
@@ -875,7 +884,36 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         Log.e(TAG,"case17返回信息：" + (data.equals("true") ? "A8第一次指令已收到" : "A8无返回"));
                         break;
                     case InitConst.CODE_EXIT:
-
+                        if (isA7) {
+                            cmdDialog.dismiss();
+                            list_device.clear();
+                            lastReceivedMessages.clear();
+                            adapter.notifyDataSetChanged();
+                            cs = true;
+                            cd = false;
+                            qb = false;
+                            qh = false;
+                            closeLx();
+                            closeSerial();
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("errorTotalNum",errorNum);
+                            resultIntent.putExtra("finishRemote", "Y");
+                            setResult(Activity.RESULT_OK, resultIntent);
+                            Log.e(TAG,"finish远距离页面了errorNum:" + errorNum);
+                            finish();
+                        } else {
+                            if (!isShowError) {
+                                closeLx();
+                                closeSerial();
+                                //跳转到近距离页面
+                                Intent intent = new Intent();
+                                intent.putExtra("finishRemote", "Y");
+                                intent.putExtra("errorTotalNum",errorNum);
+                                intent.putExtra("transhighRate","Y");
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
+                            }
+                        }
                         break;
                     case InitConst.CODE_UPDAE_STATUS:
                         //接收到子机发送的起爆不同状态消息  此时需更新每个设备的轮询状态
@@ -976,19 +1014,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 Log.e(TAG,"错误雷管个数:" + errorNum);
                             }
                             if (!TextUtils.isEmpty(bean4.getInfo())) {
-                                if (!"起爆结束".equals(bean4.getInfo()) && !TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage())) && !showDialog1) {
-                                    openHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (bean4.getBusVoltage() < 6) {
-                                                closeLx();
-                                                sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-                                                showDialog1 = true;
-                                                showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
-                                            }
-                                        }
-                                    }, 8000);
-                                }
                               if ("检测结束".equals(bean4.getInfo())) {
                                     //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
                                     if (getErrorLgNum(bean4.getErrNum()) > 0  && !showDialog2) {
@@ -1000,86 +1025,112 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 }
                                 if ("检测中".equals(bean4.getInfo()) || "正在充电".equals(bean4.getInfo()) ||
                                         "升高压中".equals(bean4.getInfo()) || "升压结束".equals(bean4.getInfo())) {
-                                    int time = "检测中".equals(bean4.getInfo()) ? 10000 : 500;
+                                    int time = 10000;
                                     if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
-                                            openHandler.postDelayed(new Runnable() {
+                                        Log.e(TAG,"倒计时前:" + bean4.getCurrentPeak());
+                                        openHandler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     if (Float.parseFloat(bean4.getCurrentPeak()) < 8 && !showDialog3) {
+                                                        Log.e(TAG, "断路开启A7线程--倒计时后:" + bean4.getCurrentPeak() + "");
+                                                        exitRemotePage();
                                                         closeLx();
-                                                        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+                                                        isShowError = true;
                                                         showDialog3 = true;
                                                         showErrorDialog("当前电流疑似断路，请退出当前页面,重新进行级联");
-                                                    }
-                                                    if (Float.parseFloat(bean4.getCurrentPeak()) < (mListData.size() * 15 * 0.7) && !showDialog6
+                                                    } else if (Float.parseFloat(bean4.getCurrentPeak()) < (mListData.size() * 15 * 0.7) && !showDialog6
                                                             && Float.parseFloat(bean4.getCurrentPeak()) > 8) {
+                                                        Log.e(TAG, "电流过小开启A7线程--倒计时后:" + bean4.getCurrentPeak() + "");
+                                                        exitRemotePage();
                                                         closeLx();
-                                                        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+                                                        isShowError = true;
                                                         showDialog6 = true;
                                                         showErrorDialog("当前电流过小,请排查线路后,重新进行级联");
                                                     }
-                                                    if (Float.parseFloat(bean4.getCurrentPeak()) > 21000 && !showDialog4) {
-                                                        closeLx();
-                                                        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-                                                        showDialog4 = true;
-                                                        showErrorDialog("当前电流疑似短路,请退出当前页面,重新进行级联");
-                                                    }  else {
-                                                        if (Float.parseFloat(bean4.getCurrentPeak()) > (mListData.size() * 15 * 2) && !showDialog5) {
+                                                    if ("升高压中".equals(bean4.getInfo())) {
+                                                        if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
+                                                            if (Float.parseFloat(bean4.getCurrentPeak()) > 30000 && !showDialog7) {
+                                                                Log.e(TAG, "升高压短路开启A7线程--倒计时后:" + bean4.getCurrentPeak() + "");
+                                                                closeLx();
+                                                                sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+                                                                showDialog7 = true;
+                                                                showErrorDialog("当前电流疑似短路,请退出当前页面,重新进行级联");
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if (Float.parseFloat(bean4.getCurrentPeak()) > 21000 && !showDialog4) {
+                                                            Log.e(TAG, "开启A7线程--倒计时后:短路--" + bean4.getCurrentPeak() + "");
+                                                            Log.e(TAG, "短路开启A7线程");
+                                                            exitRemotePage();
                                                             closeLx();
-                                                            sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-                                                            showDialog5 = true;
-                                                            showErrorDialog("当前电流过大,请排查线路后,重新进行级联");
+                                                            isShowError = true;
+                                                            showDialog4 = true;
+                                                            showErrorDialog("当前电流疑似短路,请退出当前页面,重新进行级联");
                                                         }
                                                     }
+
+//                                                    else {
+//                                                        if (Float.parseFloat(bean4.getCurrentPeak()) > (mListData.size() * 15 * 2) && !showDialog5) {
+//                                                            exitRemotePage();
+//                                                            closeLx();
+//                                                            isShowError = true;
+//                                                            showDialog5 = true;
+//                                                            showErrorDialog("当前电流过大,请排查线路后,重新进行级联");
+//                                                        }
+//                                                    }
                                                 }
                                             }, time);
                                     }
                                 }
-                              if ("正在充电".equals(bean4.getInfo())) {
-                                    if (!isGetErrorLg && errorNum > 0) {
-
-                                        updateLgStatus();
-                                        if (!reciveB8 && isCanSendA8) {
-                                            queryError = new QueryError();
-                                            queryError.start();
-                                        } else {
-                                            //发送A8指令去修改通信失败雷管状态
-                                            Log.e(TAG,"发送A8指令线程已开启");
+                                if (!"起爆结束".equals(bean4.getInfo())) {
+                                    int time = 10000;
+                                    Log.e(TAG,"倒计时前:" + bean4.getBusVoltage());
+                                    openHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage()))) {
+                                                if (bean4.getBusVoltage() < 6 && !showDialog1 && !showDialog3) {
+                                                    Log.e(TAG,"电压异常开启A7线程--倒计时后:" + bean4.getBusVoltage());
+                                                    exitRemotePage();
+                                                    closeLx();
+                                                    isShowError = true;
+                                                    showDialog1 = true;
+                                                    showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
+                                                }
+                                            }
                                         }
+                                    }, time);
+                                }
+                                if ("正在充电".equals(bean4.getInfo())) {
+                                    if (errorNum > 0 && !reciveB8) {
+                                        queryError = new QueryError();
+                                        queryError.start();
+                                    } else {
+                                        //发送A8指令去修改通信失败雷管状态
+                                        Log.e(TAG, "发送A8指令线程已开启");
                                     }
-                                } else if ("升高压中".equals(bean4.getInfo()) && !showDialog7) {
-                                  openHandler.postDelayed(new Runnable() {
-                                      @Override
-                                      public void run() {
-                                          if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
-                                              if (Float.parseFloat(bean4.getCurrentPeak()) > 30000) {
-                                                  closeLx();
-                                                  sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-                                                  showDialog7 = true;
-                                                  showErrorDialog("当前电流疑似短路,请退出当前页面,重新进行级联");
-                                              }
-                                          }
-                                      }
-                                  }, 5000);
                                 } else if ("升压失败".equals(bean4.getInfo()) && !showDialog8) {
                                     showDialog8 = true;
                                     showErrorDialog("起爆器高压充电失败,请退出当前页面,重新进行级联");
                                 } else if ("起爆结束".equals(bean4.getInfo())) {
-                                    if (!TextUtils.isEmpty(bean4.getCurrentPeak()) && bean4.getCurrentPeak().equals("0")) {
-                                        Log.e(TAG, "起爆结束了.....");
-                                        MmkvUtils.savecode("endTime", System.currentTimeMillis());
-                                        closeLx();
-                                        //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-                                        hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
-                                        saveFireResult();
-                                        if (!qbxm_id.equals("-1")) {
-                                            updataState(qbxm_id);
-                                            Log.e(TAG, "更新起爆状态");
-                                        }
-                                    }
-                                } else if ("起爆失败".equals(bean4.getInfo()) && !showDialog9) {
+                                  openHandler.postDelayed(new Runnable() {
+                                      @Override
+                                      public void run() {
+                                          Log.e(TAG, "起爆结束了.....");
+                                          MmkvUtils.savecode("endTime", System.currentTimeMillis());
+                                          closeLx();
+                                          //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
+                                          hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
+                                          saveFireResult();
+                                          if (!qbxm_id.equals("-1")) {
+                                              updataState(qbxm_id);
+                                              Log.e(TAG, "更新起爆状态");
+                                          }
+                                      }
+                                  }, 1000);
+                              } else if ("起爆失败".equals(bean4.getInfo()) && !showDialog9) {
                                   closeLx();
-                                  sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+                                  exitRemotePage();
                                   showDialog9 = true;
                                   MmkvUtils.savecode("endTime", System.currentTimeMillis());
                                   showErrorDialog("起爆失败,请退出当前页面,重新进行级联");
@@ -1089,8 +1140,12 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 if (list_device.get(a).getCode().equals(bean4.getCode())) {
                                     list_device.get(a).setRes(bean4.getRes());
                                     list_device.get(a).setInfo(bean4.getInfo());
-                                    if (bean4.getCurrentPeak() != null) {
-                                        list_device.get(a).setCurrentPeak(bean4.getCurrentPeak());
+                                    if ("起爆结束".equals(bean4.getInfo())) {
+                                        list_device.get(a).setCurrentPeak("");
+                                    } else {
+                                        if (!isShowError && bean4.getCurrentPeak() != null) {
+                                            list_device.get(a).setCurrentPeak(bean4.getCurrentPeak() + "μA");
+                                        }
                                     }
                                     if (!isStopGetLgNum) {
                                         list_device.get(a).setTrueNum(bean4.getTrueNum());
@@ -1352,6 +1407,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
+    AlertDialog cmdDialog;
     private void writeData(final String data) {
         String tip = "";
         switch (data) {
@@ -1372,31 +1428,33 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                 break;
         }
         String content = tip.equals("A7") ? "确定要" + tip : "确定进行" + tip;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示")
-                .setMessage(content + "吗？")
-                .setPositiveButton("确定", (dialog, which) -> {
-                    if (!"A7".equals(data)) {
-                        show_Toast("正在执行" + data);
-                    }
-                    switch (Build.DEVICE) {
-                        case "M900":
-                            if (reciveB0) {
-                                setTipText(data);
-                            } else {
-                                show_Toast("设备同步失败，请退出APP重新同步");
-                            }
-                            break;
-                        default:
-                            if (server != null) {
-                                server.writeData(data, list_device);
-                            }
-                            break;
-                    }
-
-                })
-                .setNeutralButton("取消", null)
-                .show();
+        if (!WxjlRemoteActivity.this.isFinishing()) {
+            cmdDialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
+                  .setTitle("提示")
+                    .setMessage(content + "吗？")
+                    .setPositiveButton("确定", (dialog1, which) -> {
+                        if (!"A7".equals(data)) {
+                            show_Toast("正在执行" + data);
+                            dialog1.dismiss();
+                        }
+                        switch (Build.DEVICE) {
+                            case "M900":
+                                if (reciveB0) {
+                                    setTipText(data);
+                                } else {
+                                    show_Toast("设备同步失败，请退出APP重新同步");
+                                }
+                                break;
+                            default:
+                                if (server != null) {
+                                    server.writeData(data, list_device);
+                                }
+                                break;
+                        }
+                    }).setNeutralButton("取消", null)
+                    .create();
+            cmdDialog.show();
+        }
     }
 
     public void showAlertDialog(String title,String content,String cancleText,String sureText,int type) {
@@ -1412,18 +1470,12 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     .setNeutralButton(cancleText, (dialog1, which) -> {
                         dialog1.dismiss();
                         exitRemotePage();
-                        //跳转到近距离页面（如果当前页面低速通道已开启，此时需先将波特率升至115200高速通道再跳转）
-                        Intent intent = new Intent();
-                        intent.putExtra("finishRemote", "Y");
-                        intent.putExtra("errorTotalNum",errorNum);
-                        intent.putExtra("transhighRate","Y");
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
                     }).create();
             dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
             dialog.show();
         }
     }
+
 
     private void showErrorDialog(String tip) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
@@ -1445,13 +1497,21 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             dialog.show();
         }
     }
+    private boolean threadStarted = false;
 
     private void exitRemotePage(){
-        closeLx();
+//        if (!threadStarted) {
+//            exitJl = new ExitJl();
+//            exitJl.start();
+//            Log.e(TAG,"已开启A7线程");
+//            threadStarted = true;
+//        } else {
+//            Log.e(TAG,"A7线程已开启，不再重复开启");
+//        }
         sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-        closeSerial();
     }
 
+    private boolean isA7 = false;
     private void setTipText(String data) {
         switch (data) {
             case "A1":
@@ -1475,23 +1535,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                 fuwei();
                 break;
             case "A7":
+                isA7 = true;
                 tvTip.setText("执行退出指令...");
-                sendCmd(ThreeFiringCmd.setWxjlA7("01"));
-                list_device.clear();
-                lastReceivedMessages.clear();
-                adapter.notifyDataSetChanged();
-                cs = true;
-                cd = false;
-                qb = false;
-                qh = false;
-                closeLx();
-                closeSerial();
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("errorTotalNum",errorNum);
-                resultIntent.putExtra("finishRemote", "Y");
-                setResult(Activity.RESULT_OK, resultIntent);
-                Log.e(TAG,"finish远距离页面了errorNum:" + errorNum);
-                finish();
+                exitRemotePage();
+//                sendCmd(ThreeFiringCmd.setWxjlA7("01"));
                 break;
         }
     }
@@ -1536,10 +1583,12 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //                Log.e(TAG,"A5线程监控次数,次数：" + zeroCount);
             } else if (zeroCount > 8){
                 Log.e(TAG,"A5指令未返回已发送8次，停止发送A5指令");
-                Message message = new Message();
-                message.what = 16;
-                message.obj = "芯片无响应，请退出APP重新级联";
-                handler_msg.sendMessage(message);
+                if (!isCloseLx) {
+                    Message message = new Message();
+                    message.what = 16;
+                    message.obj = "芯片无响应，请退出APP重新级联";
+                    handler_msg.sendMessage(message);
+                }
             }
             zeroCount++;
         }
@@ -1571,6 +1620,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         closeA1Thread();
         closeA7Thread();
         closeA8Thread();
+        openHandler.removeCallbacksAndMessages(null);
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

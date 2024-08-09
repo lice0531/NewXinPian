@@ -1,28 +1,32 @@
 package android_serialport_api.xingbang.firingdevice;
-
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
-
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 
+import com.tencent.bugly.proguard.D;
+
+import org.angmarch.views.NiceSpinner;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.List;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.custom.WxSearchDevicesAdapter;
 import android_serialport_api.xingbang.jilian.FirstEvent;
+import android_serialport_api.xingbang.models.DeviceBean;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.InitConst;
 import butterknife.BindView;
@@ -36,10 +40,14 @@ public class WxjlSettingActivity extends SerialPortActivity {
     private String TAG = "无线级联配置页面";
     private String wxjlDeviceId = "01";//目前只有一台设备  所以设备地址先固定01
     private boolean isRemote = false;//是否可以进行远距离无线级联
-    @BindView(R.id.btn_near)
-    RelativeLayout btnNear;
-    @BindView(R.id.btn_remote)
-    RelativeLayout btnRemote;
+    @BindView(R.id.tv_xindao)
+    TextView tvXinDao;
+    @BindView(R.id.ns_xd)
+    NiceSpinner nsXd;
+    @BindView(R.id.rl_search)
+    RelativeLayout rlSearch;
+    @BindView(R.id.lv_devices)
+    ListView lvDevices;
     private String dataLength82 = "", data82 = "";
     private boolean receive82 = false;//发出82命令是否返回
     private Handler handler_msg = new Handler();
@@ -47,12 +55,16 @@ public class WxjlSettingActivity extends SerialPortActivity {
     Handler openHandler = new Handler();//重新打开串口
     private boolean isRestarted = false;
     private int errorNum;
+    private List<String> xdlist = new ArrayList<>();
+    private List<DeviceBean> deviceslist = new ArrayList<>();
+    private WxSearchDevicesAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wxjl);
+        setContentView(R.layout.activity_wxjl_setting);
         ButterKnife.bind(this);
+        initData();
         initHandler();
     }
 
@@ -70,6 +82,77 @@ public class WxjlSettingActivity extends SerialPortActivity {
         super.onRestart();
     }
 
+    private void initData(){
+        xdlist.add("CHO - 19.2kbps - 0FEC");
+        xdlist.add("CH1 - 19.2kbps - 1FEC");
+        xdlist.add("CH2 - 19.2kbps - 2FEC");
+        xdlist.add("CH3 - 19.2kbps - 3FEC");
+        xdlist.add("CH4 - 19.2kbps - 4FEC");
+        xdlist.add("CH5 - 9.6kbps  - 0FEC");
+        xdlist.add("CH6 - 9.6kbps  - 1FEC");
+        xdlist.add("CH7 - 9.6kbps  - 2FEC");
+        xdlist.add("CH8 - 9.6kbps  - 3FEC");
+        xdlist.add("CH9 - 9.6kbps  - 4FEC");
+        xdlist.add("CH1O - 4.8kbps - 0FEC");
+        xdlist.add("CH11 - 4.8kbps  - 1FEC");
+        xdlist.add("CH12 - 4.8kbps  - 2FEC");
+        xdlist.add("CH13 - 4.8kbps  - 3FEC");
+        xdlist.add("CH14 - 4.8kbps  - 4FEC");
+        xdlist.add("CH15 - 2.4kbps  - 0FEC");
+        xdlist.add("CH16 - 2.4kbps  - 1FEC");
+        xdlist.add("CH17 - 2.4kbps  - 2FEC");
+        xdlist.add("CH18 - 2.4kbps  - 3FEC");
+        xdlist.add("CH19 - 2.4kbps  - 4FEC");
+        xdlist.add("CH2O - 19.2kbps - 0");
+        xdlist.add("CH21 - 19.2kbps - 1");
+        xdlist.add("CH22 - 19.2kbps - 2");
+        xdlist.add("CH23 - 19.2kbps - 3");
+        xdlist.add("CH24 - 19.2kbps - 4");
+        xdlist.add("CH25 - 9.6kbps  - 0");
+        xdlist.add("CH26 - 9.6kbps  - 1");
+        xdlist.add("CH27 - 9.6kbps  - 2");
+        xdlist.add("CH28 - 9.6kbps  - 3");
+        xdlist.add("CH29 - 9.6kbps  - 4");
+        xdlist.add("CH30 - 4.8kbps  - 0");
+        xdlist.add("CH31 - 4.8kbps  - 1");
+        xdlist.add("CH32 - 4.8kbps  - 2");
+        xdlist.add("CH33 - 4.8kbps  - 3");
+        xdlist.add("CH34 - 4.8kbps  - 4");
+        xdlist.add("CH35 - 2.4kbps  - 0");
+        xdlist.add("CH36 - 2.4kbps  - 1");
+        xdlist.add("CH37 - 2.4kbps  - 2");
+        xdlist.add("CH38 - 2.4kbps  - 3");
+        xdlist.add("CH39 - 2.4kbps  - 4");
+        tvXinDao.setText(xdlist.get(36));
+        nsXd.attachDataSource(xdlist);
+        deviceslist.add(new DeviceBean("KKF23WS00000001","CH1 无线<->有线 2023-07-06 V2.7"));
+        mAdapter = new WxSearchDevicesAdapter(this,R.layout.item_wx_device);
+        lvDevices.setAdapter(mAdapter);
+    }
+
+    private void initHandler() {
+        handler_msg = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg) {
+                switch (msg.what) {
+                    case 0:
+                        String jcmsResult = (String) msg.obj;
+                        closeThread();
+                        if ("true".equals(jcmsResult)) {
+                            enterRemotePage();
+                        } else {
+                            show_Toast("芯片未返回，请退出APP后再重新级联");
+                        }
+                        break;
+                    case 2:
+                        enterRemotePage();
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -80,6 +163,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
             }
         }, 2000);
     }
+
     private void openSerial(){
         if (isRestarted) {
             initSerialPort(InitConst.TX_RATE);
@@ -87,19 +171,6 @@ public class WxjlSettingActivity extends SerialPortActivity {
         }
     }
 
-    public void showAlertDialog(String content) {
-        if (!WxjlSettingActivity.this.isFinishing()) {
-            AlertDialog dialog = new AlertDialog.Builder(WxjlSettingActivity.this)
-                    .setTitle("无线起爆器配置")
-                    .setMessage(content)
-                    .setCancelable(false)
-                    .setPositiveButton("确定",(dialog1, which) -> {
-                        dialog1.dismiss();
-                    }).create();
-            dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
-            dialog.show();
-        }
-    }
 
     @Override
     protected void onDataReceived(byte[] buffer, int size) {
@@ -141,29 +212,6 @@ public class WxjlSettingActivity extends SerialPortActivity {
         } else {
             Log.e(TAG, TAG + "-返回命令没有匹配对应的命令-cmd: " + cmd);
         }
-    }
-
-    private void initHandler() {
-        handler_msg = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(@NonNull Message msg) {
-                switch (msg.what) {
-                    case 0:
-                        String jcmsResult = (String) msg.obj;
-                        closeThread();
-                        if ("true".equals(jcmsResult)) {
-                            enterRemotePage();
-                        } else {
-                            show_Toast("芯片未返回，请退出APP后再重新级联");
-                        }
-                        break;
-                    case 2:
-                        enterRemotePage();
-                        break;
-                }
-                return false;
-            }
-        });
     }
 
     private void enterRemotePage() {
@@ -246,31 +294,14 @@ public class WxjlSettingActivity extends SerialPortActivity {
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 1000; // 快速点击间隔
     private String Yanzheng_sq = "";//是否验雷管已经授权
-    @OnClick({R.id.btn_near, R.id.btn_remote})
+    @OnClick({R.id.rl_search})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_near:
-                closeSerial();
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-                Intent intent = new Intent(WxjlSettingActivity.this, WxjlNearActivity.class);
-//                Intent intent = new Intent(WxjlActivity.this, NewNearJlActivity.class);
-                intent.putExtra("errorNum",errorNum);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
-            case R.id.btn_remote:
-                if (isRemote) {
-                    enterJcms = new EnterJcms();
-                    enterJcms.start();
-                    Log.e(TAG,"开启发送82命令的线程了");
-                } else {
-                    show_Toast("请先近距离级联");
-                    return;
-                }
+                //开始发指令搜索附近无线设备  现在先写点假数据
+                deviceslist.add(new DeviceBean("KKF23WS00000001","CH1 无线<->有线 2023-07-06 V2.7"));
+                mAdapter.setListData(deviceslist);
+                mAdapter.notifyDataSetChanged();
                 break;
         }
     }

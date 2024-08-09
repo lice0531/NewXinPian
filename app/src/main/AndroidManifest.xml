@@ -352,6 +352,9 @@
         <activity android:name=".firingdevice.WxjlActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".firingdevice.WxjlSettingActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".firingdevice.WxjlNearActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />

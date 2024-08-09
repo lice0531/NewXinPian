@@ -98,6 +98,11 @@ public class DeviceBean implements Parcelable {
         this.info = info;
     }
 
+    public DeviceBean(String name, String info) {
+        this.name = name;
+        this.info = info;
+    }
+
     public Socket getSocket() {
         return socket;
     }

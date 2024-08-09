@@ -173,6 +173,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                                 throw new RuntimeException(e);
                             }
 //                            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
+                            currentCount = 0;
                             enterRemotePage();
                         } else {
                             tvEnterJcms.setText("3.进入检测模式");
@@ -466,13 +467,16 @@ public class WxjlNearActivity extends SerialPortActivity {
             handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_5_TRANSLATE_84.equals(cmd)) {//84 无线级联：读取错误雷管
             if (currentCount == 0) {
+                updateLgErrorStatus();
                 receive84 = true;
                 Message message = new Message();
                 message.what = 5;
                 message.obj = "true";
                 handler_msg.sendMessage(message);
             }
-            doWith84(completeCmd);
+            if (isCanSend84) {
+                doWith84(completeCmd);
+            }
         } else {
             Log.e(TAG, TAG + "-返回命令没有匹配对应的命令-cmd:" + cmd);
         }
@@ -636,7 +640,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 data81 = sBuilder.toString();
             }
         }
-        Log.e("81指令", "十进制datalength：" + dataLength + dataLength81 + serId + data81);
+//        Log.e("81指令", "十进制datalength：" + dataLength + dataLength81 + serId + data81);
         sendCmd(ThreeFiringCmd.sendWxjl81(deviceId, dataLength81, serId, data81));
     }
 
@@ -749,8 +753,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 } else {
                     tvLookError.setText("4.读取错误雷管中...");
                     show_Toast("读取错误雷管中，请勿重复点击...");
-                    updateLgErrorStatus();
-                    if (isSend84 && isCanSend84) {
+                    if (isSend84) {
                         isSend84 = false;
                         queryError = new QueryError();
                         queryError.start();
@@ -794,6 +797,10 @@ public class WxjlNearActivity extends SerialPortActivity {
                     receive81 = true;
                     receive82 = false;
                     isSend82 = true;
+                    receive84 = false;
+                    end84 = false;
+                    isSend84 = true;
+                    tvLookError.setText("4.查看错误雷管列表");
                 }
             }
         }
