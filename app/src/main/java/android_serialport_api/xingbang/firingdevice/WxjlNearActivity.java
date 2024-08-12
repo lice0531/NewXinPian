@@ -413,10 +413,10 @@ public class WxjlNearActivity extends SerialPortActivity {
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
 //        Log.e(TAG + "处理前--返回命令", fromCommad + "--mAfter:"  + mAfter);
-        if (!fromCommad.endsWith("C0") && TextUtils.isEmpty(mAfter)) {
+        if ((!fromCommad.endsWith("C0") || !fromCommad.startsWith("C0")) && TextUtils.isEmpty(mAfter)) {
             Log.e(TAG, "mAfter为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
             mAfter = fromCommad;
-        } else if (!fromCommad.startsWith("C0")) {
+        } else if (!fromCommad.startsWith("C0") || !fromCommad.endsWith("C0")) {
             fromCommad = mAfter + fromCommad;
             Log.e(TAG, "mAfter不为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
             mAfter = "";
@@ -424,11 +424,17 @@ public class WxjlNearActivity extends SerialPortActivity {
         Log.e(TAG + "处理后--返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
         if (fromCommad.startsWith("C0") && fromCommad.endsWith("C0") && fromCommad.length() > 12) {
-            String cmd = DefCommand.getCmd(fromCommad);
-            if (cmd != null) {
-                int localSize = fromCommad.length() / 2;
-                byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                doWithReceivData(cmd, fromCommad);
+            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                Log.e(TAG,"CRC校验出错");
+                return;
+            } else {
+                String cmd = DefCommand.getCmd(fromCommad);
+                if (cmd != null) {
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, fromCommad);
+                }
             }
         } else {
             Log.e(TAG, "-返回命令不完整" + fromCommad);
@@ -507,7 +513,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 }
             }
         }
-        int maxCount = 20;//芯片一次最多返回20条错误雷管
+        int maxCount = 10;//芯片一次最多返回20条错误雷管
         int sendCount = (errorTotalNum % maxCount) > 0 ? (errorTotalNum / maxCount) + 1 : errorTotalNum / maxCount;
         if (currentCount >= sendCount) {
             end84 = true;
