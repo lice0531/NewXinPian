@@ -194,6 +194,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_id = "-1";
     private String qbxm_name = "";
     private int isshow = 0;
+    private final int cankaodianliu = 12;
     private float cankao_ic = 0;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
@@ -449,12 +450,12 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * 24) && displayIc > 10 && stage != 6) {// "电流过大";
-                    displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
+                } else if (displayIc > (denatorCount * cankaodianliu*2) && displayIc > 10 && stage != 6) {// "电流过大";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (4 + denatorCount * 6) && stage != 6) {
-                    displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
+                } else if (displayIc < (4 + denatorCount * cankaodianliu*0.5) && stage != 6) {
+                    displayIcStr = displayIcStr + getString(R.string.text_text_dl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.BLACK);//设置颜色
                 } else if (displayIc > (cankao_ic * 0.8) && displayIc < (cankao_ic * 0.9) && displayIc > 10 && stage == 6) {// "电流过大";
@@ -646,10 +647,12 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
 
             }
-
-            if (stage == 6 && sixExchangeCount == (ChongDian_time - 25)) {
+            int a= (int) (ChongDian_time* 0.4);
+            Log.e(TAG, "ChongDian_time* 0.4: " + a);
+            if (stage == 6 && sixExchangeCount == (a)) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录高压25s参考电流
                 Log.e(TAG, "记录参考电流: " + cankao_ic);
+                Log.e(TAG, "ChongDian_time* 0.4: " + ChongDian_time* 0.4);
             }
 //            busInfo = null;
             return false;
@@ -969,8 +972,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
         ll_firing_deAmount_4.setText("" + allBlastQu.size());
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
-        tv__qb_dianliu_1.setText(denatorCount * 12 + "μA");
-        tv__qb_dianliu_2.setText(denatorCount * 12 + "μA");
+        tv__qb_dianliu_1.setText(denatorCount * cankaodianliu + "μA");
+        tv__qb_dianliu_2.setText(denatorCount * cankaodianliu + "μA");
     }
 
 
@@ -1348,15 +1351,11 @@ public class FiringMainActivity extends SerialPortActivity {
             //C000340100ABCDC0
             String qbzt =fromCommad.substring(8,10);
             MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
-            if (!"FF".equals(qbzt)&&fromCommad.length()==16) {
-                Message msg = Handler_tip.obtainMessage();
-                msg.what = 3;
-                msg.obj = qbzt;
-                Handler_tip.sendMessage(msg);
-            } else {
-                increase(11);//跳到第9阶段
-                Log.e("increase", "9");
-            }
+
+//            else {//如果起爆失败
+//                increase(11);//跳到第9阶段
+//                Log.e("increase", "9");
+//            }
 
             eightCmdFlag = 2;
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
@@ -1368,6 +1367,13 @@ public class FiringMainActivity extends SerialPortActivity {
                 updataState(qbxm_id);
             }
             increase(11);//跳到第9阶段
+
+            if (!"FF".equals(qbzt)&&fromCommad.length()==16) {
+                Message msg = Handler_tip.obtainMessage();
+                msg.what = 3;
+                msg.obj = qbzt;
+                Handler_tip.sendMessage(msg);
+            }
 
             Log.e("increase", "9");
 //                try {
@@ -1517,7 +1523,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     dengdai=false;
                 }
 
-                Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
+//                Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
 //                Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
 //                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4800) {//大于4000u ，全错
@@ -2002,7 +2008,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 keyFireCmd = 0;
                                 eightCmdExchangePower = 1;
                             }
-//                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://5s倒计时后,发送起爆指令,起爆阶段
 //                            if (eightCount == 1) {
@@ -2057,7 +2063,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(1000);
                             elevenCount--;
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            if (elevenCount == 0) {
+                            if (elevenCount <= 0) {
                                 increase(9);
                             }
                             break;
