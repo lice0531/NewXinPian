@@ -506,6 +506,10 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        .setNeutralButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
 //                        .create();
 //                dialog.show();
+            }else if (msg.what == 6) {
+                ll_firing_errorAmount_2.setText("0");
+                ll_firing_errorAmount_4.setText("0");
+                totalerrorNum = 0;
             }
             return false;
         });
@@ -2135,6 +2139,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                                     Log.e("第4阶段-increase", "4-2");
                                     if (denatorCount >= 300 && totalerrorNum != 0) {
+                                        Handler_tip.sendMessage(Handler_tip.obtainMessage(6));//重置错误数量
                                         getErrblastQueue();//获取错误列表 重新给雷管队列赋值
                                         increase(44);//之前是4
                                     } else {
