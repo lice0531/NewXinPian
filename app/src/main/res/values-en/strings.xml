@@ -326,8 +326,8 @@
     <string name="text_alert_newNum">new number</string>
     <string name="text_total">total:</string>
     <string name="text_systip_1">Successfully saved</string>
-    <string name="text_systip_2">Detection time is greater than 5s</string>
-    <string name="text_systip_3">Preparation time is greater than 18s</string>
+    <string name="text_systip_2">Detection time is greater than 28s</string>
+    <string name="text_systip_3">Preparation time is greater than 28s</string>
     <string name="text_systip_4">Manufacturer name</string>
     <string name="text_systip_5">Manufacturer code</string>
     <string name="text_systip_6">Signature</string>

@@ -334,6 +334,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 scanDecode.initService("true");//初始化扫描服务
 
                 scanDecode.getBarCode(data -> {
+                    Log.e( "扫码结果: ", "data:" + data );
                     saoma(data);
                 });
             }

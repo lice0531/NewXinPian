@@ -196,6 +196,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private int isshow = 0;
     private final int cankaodianliu = 12;
     private float cankao_ic = 0;
+    private float cankao_IV = 0;
+    private float duibi_IV = 0;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
@@ -647,14 +649,17 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
 
             }
-            int a= (int) (ChongDian_time* 0.4);
-            Log.e(TAG, "ChongDian_time* 0.4: " + a);
-            if (stage == 6 && sixExchangeCount == (a)) {
+
+            if (stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.4&&busInfo.getBusVoltage()-cankao_IV>-0.4) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录高压25s参考电流
                 Log.e(TAG, "记录参考电流: " + cankao_ic);
-                Log.e(TAG, "ChongDian_time* 0.4: " + ChongDian_time* 0.4);
+                Log.e(TAG, "电压差: " + (busInfo.getBusVoltage()-cankao_IV));
+                Log.e(TAG, "busInfo.getBusVoltage(): " + busInfo.getBusVoltage());
+                Log.e(TAG, "cankao_IV: " + cankao_IV);
             }
 //            busInfo = null;
+            cankao_IV= busInfo.getBusVoltage();
+            Log.e(TAG, "sixExchangeCount--cankao_IV: " +sixExchangeCount+"--"+ cankao_IV);
             return false;
         });
 
@@ -1413,7 +1418,16 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                 }
             }
-
+            if (noReisterFlag.equals("00") && !fromCommad.startsWith("00000000", 10)) {
+                noReisterFlag = "FF";
+            }
+            if ("FF".equals(noReisterFlag)) {
+                fourOnlineDenatorFlag = 3;
+//                increase(6);//0635此处功能为直接跳到第六阶段
+            } else {
+                fourOnlineDenatorFlag = 2;
+                noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+            }
         } else if (DefCommand.CMD_3_DETONATE_8.equals(cmd)) {//37 异常终止起爆
 
         } else if (DefCommand.CMD_3_DETONATE_9.equals(cmd)) {//38 进入充电检测模式

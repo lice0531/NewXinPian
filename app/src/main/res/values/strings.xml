@@ -330,8 +330,8 @@
     <string name="text_alert_newNum">新编号</string>
     <string name="text_total">总数:</string>
     <string name="text_systip_1">保存成功</string>
-    <string name="text_systip_2">检测时间请大于5s</string>
-    <string name="text_systip_3">准备时间请大于10s</string>
+    <string name="text_systip_2">检测时间请大于28s</string>
+    <string name="text_systip_3">准备时间请大于28s</string>
     <string name="text_systip_4">厂家名</string>
     <string name="text_systip_5">厂家码</string>
     <string name="text_systip_6">特征码</string>

@@ -339,6 +339,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 scanDecode.initService("true");//初始化扫描服务
 
                 scanDecode.getBarCode(data -> {
+                    Log.e("触发扫码", "scan: " );
                     saoma(data);
                 });
             }
@@ -904,8 +905,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        loadMoreData_all_lg();//
 
         if (db != null) db.close();
-//        scanDecode.stopScan();//停止扫描
-//        scanDecode.onDestroy();//回复初始状态
+        if(mScaner!=null){
+            mScaner.unregisterScanCb();
+        }
+        if(scanDecode!=null){
+            scanDecode.stopScan();//停止扫描
+            scanDecode.onDestroy();//回复初始状态
+        }
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -2399,9 +2405,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         if (shellNo.length() != 13) {
             return ;
         }
-//        if (check(shellNo) == -1) {
-//            return ;
-//        }
+        if (check(shellNo) == -1) {
+            return ;
+        }
 //        int maxNo = getMaxNumberNo();
         int start_delay = 0;//开始延时
         int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
@@ -2480,5 +2486,38 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 scanDecode.stopScan();//停止扫描
             }
         }
+    }
+
+    private int check(String shellNo) {
+        //管厂码
+        String facCode = Utils.getDetonatorShellToFactoryCodeStr(shellNo);
+        //特征码
+        String facFea = Utils.getDetonatorShellToFeatureStr(shellNo);
+        //雷管信息有误，管厂码不正确，请检查
+        if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.indexOf(facCode) < 0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return -1;
+        }
+        if (shellNo.length() > 13) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+            return -1;
+        }
+        //雷管信息有误，特征码不正确，请检查
+        if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.indexOf(facFea) < 0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+            return -1;
+        }
+        //检查重复数据
+        if (checkRepeatShellNo(shellNo)) {
+            Log.e("检测重复", "check: " );
+            singleShellNo = shellNo;
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
+        String yue = shellNo.substring(3, 5);
+        String ri = shellNo.substring(5, 7);
+
+
+        return 0;
     }
 }
