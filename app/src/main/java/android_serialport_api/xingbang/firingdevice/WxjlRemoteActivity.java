@@ -1006,6 +1006,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             list_device.get(a).setTrueNum(bn.getTrueNum());
                             list_device.get(a).setErrNum(bn.getErrNum());
                         }
+                        errorNum = getErrorLgNum(bn.getErrNum());
+                        Log.e(TAG, "case7中错误雷管个数:" + errorNum);
                         adapter.notifyDataSetChanged();
                         break;
                     case 8:
@@ -1035,7 +1037,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         if (!TextUtils.isEmpty(bean4.getInfo())) {
                             if ("检测结束".equals(bean4.getInfo()) || "检测中".equals(bean4.getInfo())) {
                                 errorNum = getErrorLgNum(bean4.getErrNum());
-                                Log.e(TAG, "错误雷管个数:" + errorNum);
+                                Log.e(TAG, "case8中错误雷管个数:" + errorNum);
                             }
                             if ("检测结束".equals(bean4.getInfo())) {
                                 //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
