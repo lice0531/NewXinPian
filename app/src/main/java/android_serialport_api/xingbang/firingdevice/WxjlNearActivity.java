@@ -397,7 +397,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);
+                Log.e(TAG + "--发送命令", str);
                 Utils.writeLog("->:" + str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

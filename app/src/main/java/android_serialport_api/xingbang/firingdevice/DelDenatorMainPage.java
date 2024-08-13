@@ -256,10 +256,33 @@ public class DelDenatorMainPage extends BaseActivity  {
 
     /**
      * 按序号删除雷管号
+     * 之前是根据用户输入的开始结束序号匹配数据库中的序号进行删除，现改为先根据用户输入的开始结束序号匹配列表中的开始结束下标，
+     * 拿到下标后匹配数据库中对应的开始结束序号再删除雷管数据
+     */
+    public void deleteDenatorforNo2(String startNoStr,String endNoStr) {
+        int si = Integer.parseInt(startNoStr);
+        int ei = Integer.parseInt(endNoStr);
+        // 计算实际的开始下标和结束下标
+        int startIndex = mListData.size() - si;
+        int endIndex = mListData.size() - ei;
+        int start = mListData.get(startIndex).getBlastserial();
+        int end = mListData.get(endIndex).getBlastserial();
+        Log.e(TAG,"List的startIndex:" + startIndex + "--endIndex:" + endIndex + "--数据库中的start序号:"
+                + start + "--end序号:" + end);
+        String whereClause = "blastserial>=? and blastserial<=?  and piece =?";
+        String[] whereArgs = {start + "", end + "", mRegion};
+        db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);//删除数据
+//        deleteListSerialNoDel(start, end);
+        Utils.saveFile();//把软存中的数据存入磁盘中
+    }
+
+    /**
+     * 按序号删除雷管号
      */
     private void deleteDenatorforNo(String startNoStr, String endNoStr) {
         int start = Integer.parseInt(startNoStr);
         int end = Integer.parseInt(endNoStr);
+
         String whereClause = "blastserial>=? and blastserial<=?  and piece =?";
         String[] whereArgs = {start + "", end + "", mRegion};
         db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);//删除数据
@@ -290,7 +313,8 @@ public class DelDenatorMainPage extends BaseActivity  {
             tipStr = getString(R.string.text_error_tip27);//"结束序号不能小于开始序号";
             return tipStr;
         }
-        if (start < 0 || end > 10000) {
+        if (start <= 0 || end <= 0 || start > 10000 || end > 10000 || start > mListData.size() ||
+                end > mListData.size()) {
             tipStr = getString(R.string.text_error_tip40);//"起始/结束序号不符合要求";
         }
         return tipStr;
@@ -352,8 +376,8 @@ public class DelDenatorMainPage extends BaseActivity  {
                                 String startNoStr = setDelayTimeFirstNo.getText().toString();
                                 //终点序号
                                 String endNoStr = setDelayTimeEndNo.getText().toString();
-                                deleteDenatorforNo(startNoStr, endNoStr);
-
+//                                deleteDenatorforNo(startNoStr, endNoStr);
+                                deleteDenatorforNo2(startNoStr,endNoStr);
 //                                Utils.deleteData(mRegion);//重新排序雷管
 //                                loadMoreData();//获取数据保存到list
                                 //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)
