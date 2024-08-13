@@ -207,6 +207,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_name = "";
     private int isshow = 0;
     private float cankao_ic = 0;
+    private float cankao_IV = 0;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
@@ -561,6 +562,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.RED);//设置颜色
+                }else if (displayIc > ( cankao_ic - 50) && displayIc < (cankao_ic - 30) && displayIc > 10 && stage == 6) {// "电流过大";
+                    displayIcStr = displayIcStr + "电流偏低";
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
                 } else {
                     ll_firing_IC_2.setTextColor(Color.GREEN);
                     ll_firing_IC_4.setTextColor(Color.GREEN);
@@ -662,45 +667,46 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //检测电流小于参考值的80%提示弹框
 
-//            if (stage == 6 && busInfo.getBusCurrentIa()  <= cankao_ic * 0.8 && isshow == 0) {
-//                isshow = 1;
-//                firstThread.exit = true;
-//                firstThread.interrupt();
-//                try {
-//                    firstThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                AlertDialog dialog = new Builder(FiringMainActivity.this)
-//                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
-//                        .setMessage("当前起爆器电流异常,可能是总线短路导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
-//                        //设置对话框的按钮
-//                        .setNegativeButton("退出", (dialog1, which) -> {
-//                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-//                            sendCmd(reCmd);
-//                            dialog1.dismiss();
-//                            closeThread();
-//                            closeForm();
-//                            finish();
-//                        })
-//                        .setNeutralButton("确定", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int i) {
-//                                firstThread = new ThreadFirst(allBlastQu);
-//                                firstThread.exit = false;
-//                                firstThread.start();
-//                                dialog.dismiss();
-//                            }
-//                        })
-//                        .create();
-//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-//                dialog.show();
-//
-//            }
+            if (stage == 6 && busInfo.getBusCurrentIa()  <= cankao_ic - 50 && isshow == 0) {
+                isshow = 1;
+                firstThread.exit = true;
+                firstThread.interrupt();
+                try {
+                    firstThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前起爆器电流异常,可能是总线线路异常导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                            sendCmd(reCmd);
+                            dialog1.dismiss();
+                            closeThread();
+                            closeForm();
+                            finish();
+                        })
+                        .setNeutralButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                firstThread = new ThreadFirst(allBlastQu);
+                                firstThread.exit = false;
+                                firstThread.start();
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
 
-//            if (stage == 2) {
-//                cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
-//            }
+            }
+
+            if (stage == 6&& busInfo.getBusVoltage()-cankao_IV<0.4&&busInfo.getBusVoltage()-cankao_IV>-0.4) {
+                cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
+            }
+            cankao_IV=busInfo.getBusCurrentIa();//记录参考电压
 //            busInfo = null;
             return false;
         });
