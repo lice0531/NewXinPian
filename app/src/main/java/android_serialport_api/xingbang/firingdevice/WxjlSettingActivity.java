@@ -125,7 +125,6 @@ public class WxjlSettingActivity extends SerialPortActivity {
         xdlist.add("CH39 - 2.4kbps  - 4");
         tvXinDao.setText(xdlist.get(36));
         nsXd.attachDataSource(xdlist);
-        deviceslist.add(new DeviceBean("KKF23WS00000001","CH1 无线<->有线 2023-07-06 V2.7"));
         mAdapter = new WxSearchDevicesAdapter(this,R.layout.item_wx_device);
         lvDevices.setAdapter(mAdapter);
     }
@@ -291,13 +290,10 @@ public class WxjlSettingActivity extends SerialPortActivity {
         }).start();
     }
 
-    private long lastClickTime = 0L;
-    private static final int FAST_CLICK_DELAY_TIME = 1000; // 快速点击间隔
-    private String Yanzheng_sq = "";//是否验雷管已经授权
     @OnClick({R.id.rl_search})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_near:
+            case R.id.rl_search:
                 //开始发指令搜索附近无线设备  现在先写点假数据
                 deviceslist.add(new DeviceBean("KKF23WS00000001","CH1 无线<->有线 2023-07-06 V2.7"));
                 mAdapter.setListData(deviceslist);
