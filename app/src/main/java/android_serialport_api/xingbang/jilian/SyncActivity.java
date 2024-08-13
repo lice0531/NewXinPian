@@ -680,9 +680,9 @@ public class SyncActivity extends BaseActivity {
     byte[] mBuffer;
 
     private void closeSocket() {
-        writeData("0005");//退出
+//        writeData("0005");//退出(退到主页会报错)
         int len = (Protcol.QuitFunc(mBuffer)) & 0xff;
-        SendData(mBuffer, len);
+//        SendData(mBuffer, len);
         isExit = true;
         handler.removeMessages(3);
         handler.removeMessages(5);
