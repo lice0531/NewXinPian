@@ -208,6 +208,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private int isshow = 0;
     private float cankao_ic = 0;
     private float cankao_IV = 0;
+    private boolean save_ic=true;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
@@ -562,7 +563,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.RED);//设置颜色
-                }else if (displayIc > ( cankao_ic - 50) && displayIc < (cankao_ic - 30) && displayIc > 10 && stage == 6) {// "电流过大";
+                }else if (displayIc > ( cankao_ic *0.8) && displayIc < (cankao_ic *0.9) && displayIc > 10 && stage == 6) {// "电流过大";
                     displayIcStr = displayIcStr + "电流偏低";
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
@@ -667,7 +668,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //检测电流小于参考值的80%提示弹框
 
-            if (stage == 6 && busInfo.getBusCurrentIa()  <= cankao_ic - 50 && isshow == 0) {
+            if (stage == 6 && busInfo.getBusCurrentIa()  <= cankao_ic *0.8 && isshow == 0) {
                 isshow = 1;
                 firstThread.exit = true;
                 firstThread.interrupt();
@@ -703,10 +704,18 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if (stage == 6&& busInfo.getBusVoltage()-cankao_IV<0.4&&busInfo.getBusVoltage()-cankao_IV>-0.4) {
+            if (save_ic&&stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.4&&busInfo.getBusVoltage()-cankao_IV>-0.4) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
+                Log.e(TAG, "参考电流: "+cankao_ic );
+                save_ic=false;
             }
-            cankao_IV=busInfo.getBusCurrentIa();//记录参考电压
+            if(busInfo.getBusVoltage()>16 && twoCount>10 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) < 100&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) > -100){
+                cankao_IV=busInfo.getBusVoltage();//记录参考电压
+                Log.e(TAG, "参考电压: "+cankao_IV );
+                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 1): "+list_dianliu.get(list_dianliu.size() - 1) );
+                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 3): "+list_dianliu.get(list_dianliu.size() - 3) );
+            }
+
 //            busInfo = null;
             return false;
         });
