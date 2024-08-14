@@ -1117,6 +1117,23 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                                     showErrorDialog("当前电流疑似短路,请退出当前页面,重新进行级联");
                                                 }
                                             }
+                                        } else {
+                                            if (Float.parseFloat(bean4.getCurrentPeak()) > (mListData.size() * 15 * 2)) {
+                                                long currentTime = System.currentTimeMillis();
+                                                if (!lastCheckTimes.containsKey("isDlgd")) {
+                                                    lastCheckTimes.put("isDlgd", currentTime);
+                                                } else {
+                                                    long firstTime = lastCheckTimes.get("isDlgd");
+                                                    if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog5) {
+                                                        Log.e(TAG, "检测或充电电流过大开启A7线程--倒计时后:" + bean4.getCurrentPeak());
+                                                        isShowError = true;
+                                                        closeLx();
+                                                        exitRemotePage();
+                                                        showDialog5 = true;
+                                                        showErrorDialog("当前电流过大,请排查线路后,重新进行级联");
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -1337,8 +1354,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
         if (totalNum < 1) return;
         //如果总数大于30,删除第一个数据
-        int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
-//        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
+        int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到起爆历史记录数据的总条数
+        Log.e(TAG, "起爆历史记录总条目数: " + hisTotalNum);
         if (hisTotalNum > 30) {
             String time = loadHisMainData();
             Message message = new Message();
