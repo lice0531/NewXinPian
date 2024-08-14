@@ -2160,7 +2160,14 @@ public class FiringMainActivity extends SerialPortActivity {
                                     } else {
                                         increase(4);//之前是4
                                         getblastQueue();//重新获取数据,用来充电
-                                        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                        int a = Integer.parseInt(ll_firing_errorAmount_2.getText().toString());
+                                        GreenDaoMaster master = new GreenDaoMaster();
+                                        errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                        if (a == 1 && errlist != null && errlist.size() > 0) {
+                                            sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+                                        } else {
+                                            sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                        }
                                     }
 
 //                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
@@ -2554,7 +2561,14 @@ public class FiringMainActivity extends SerialPortActivity {
                                     getblastQueue();//重新获取数据,用来给充电list复制
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
-                                    sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                    int a = Integer.parseInt(ll_firing_errorAmount_2.getText().toString());
+                                    GreenDaoMaster master = new GreenDaoMaster();
+                                    errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                    if (a == 1 && errlist != null && errlist.size() > 0) {
+                                        sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+                                    } else {
+                                        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                    }
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
