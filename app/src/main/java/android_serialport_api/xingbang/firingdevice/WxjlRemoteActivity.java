@@ -1042,9 +1042,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             if ("检测结束".equals(bean4.getInfo())) {
                                 //检测结束  得到错误雷管数量  此时显示出弹窗，询问用户是否需要查看错误雷管
                                 if (errorNum > 0 && !showDialog2) {
+                                    Log.e(TAG, "检测结束有错误雷管显示dialog--错误雷管个数:" + errorNum);
                                     showDialog2 = true;
-                                    showAlertDialog("系统提示", "当前有错误雷管，是否继续进行?",
-                                            "查看错误雷管", "继续", 1);
+                                    showAlertDialog("当前有错误雷管，是否继续进行?",
+                                            "查看错误雷管", "继续");
                                 }
                             }
                             if ("检测中".equals(bean4.getInfo()) || "正在充电".equals(bean4.getInfo()) ||
@@ -1125,12 +1126,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                                 } else {
                                                     long firstTime = lastCheckTimes.get("isDlgd");
                                                     if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog5) {
-                                                        Log.e(TAG, "检测或充电电流过大开启A7线程--倒计时后:" + bean4.getCurrentPeak());
-                                                        isShowError = true;
-                                                        closeLx();
-                                                        exitRemotePage();
+                                                        Log.e(TAG, "检测或充电电流过大显示dialog--倒计时后:" + bean4.getCurrentPeak());
                                                         showDialog5 = true;
-                                                        showErrorDialog("当前电流过大,请排查线路后,重新进行级联");
+                                                        showAlertDialog("当前电流过大,建议先排查线路,是否继续进行?",
+                                                                "退出", "继续");
                                                     }
                                                 }
                                             }
@@ -1146,7 +1145,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                             lastCheckTimes.put("isDyyc", currentTime);
                                         } else {
                                             long firstTime = lastCheckTimes.get("isDyyc");
-                                            if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog1 && !showDialog3) {
+                                            if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog1 && !showDialog3 && !showDialog4) {
                                                 Log.e(TAG, "电压异常开启A7线程--倒计时后:" + bean4.getBusVoltage());
                                                 isShowError = true;
                                                 exitRemotePage();
@@ -1505,7 +1504,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
-    public void showAlertDialog(String title, String content, String cancleText, String sureText, int type) {
+    public void showAlertDialog(String content, String cancleText, String sureText) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
             AlertDialog dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
                     .setTitle("系统提示")
@@ -1546,8 +1545,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             dialog.show();
         }
     }
-
-    private boolean threadStarted = false;
 
     private void exitRemotePage() {
 //        if (!threadStarted) {

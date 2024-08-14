@@ -188,7 +188,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String dataSend = (String) msg.obj;
                         close81Thread();
                         if ("true".equals(dataSend)) {
-                            tvSendData.setText("2.数据传输中...");
+                            tvSendData.setText("2.数据传输中请稍等...");
                         } else {
                             tvSendData.setText("2.数据传输失败");
                             show_Toast("数据传输失败，请退出APP后再重新注册");
@@ -198,7 +198,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String queryError = (String) msg.obj;
                         close84Thread();
                         if ("true".equals(queryError)) {
-                            tvLookError.setText("4.读取错误雷管中...");
+                            tvLookError.setText("4.读取错误雷管中请稍等...");
                         } else {
                             tvLookError.setText("4.错误雷管读取失败");
                             show_Toast("错误雷管读取失败，请退出APP后再重新操作");
@@ -665,8 +665,8 @@ public class WxjlNearActivity extends SerialPortActivity {
                 if (receive80) {
                     show_Toast("设备已注册，请勿重复注册!");
                 } else {
-                    tvRegister.setText("1.设备注册中...");
-                    show_Toast("设备注册中...");
+                    tvRegister.setText("1.设备注册中请稍等...");
+                    show_Toast("设备注册中请稍等...");
                     if (isSend80) {
                         isSend80 = false;
                         rDevices = new RegisterDevices();
@@ -691,7 +691,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 } else {
                     //雷管数据10条发一次  但目前暂定1条发一次
                     show_Toast("数据传输中，请勿重复点击...");
-                    tvSendData.setText("2.数据传输中...");
+                    tvSendData.setText("2.数据传输中请稍等...");
                     if (isSend81) {
                         isSend81 = false;
                         sendData = new SendData();
@@ -719,7 +719,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                     show_Toast("数据检测已结束，无需重复检测!");
                 } else {
                     show_Toast("数据检测中，请勿重复点击...");
-                    tvEnterJcms.setText("3.数据检测中...");
+                    tvEnterJcms.setText("3.数据检测中请稍等...");
                     if (isSend82) {
                         isSend82 = false;
                         enterJcms = new EnterJcms();
@@ -757,7 +757,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         show_Toast("暂无错误雷管");
                     }
                 } else {
-                    tvLookError.setText("4.读取错误雷管中...");
+                    tvLookError.setText("4.读取错误雷管中请稍等...");
                     show_Toast("读取错误雷管中，请勿重复点击...");
                     if (isSend84) {
                         isSend84 = false;
