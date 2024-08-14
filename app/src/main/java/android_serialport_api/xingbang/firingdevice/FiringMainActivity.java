@@ -704,7 +704,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if (save_ic&&stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.4&&busInfo.getBusVoltage()-cankao_IV>-0.4) {
+            if (save_ic&&stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.2&&busInfo.getBusVoltage()-cankao_IV>-0.2) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
                 Log.e(TAG, "参考电流: "+cankao_ic );
                 save_ic=false;
