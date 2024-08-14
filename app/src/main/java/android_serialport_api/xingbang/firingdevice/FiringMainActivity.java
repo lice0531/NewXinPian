@@ -198,6 +198,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private float cankao_ic = 0;
     private float cankao_IV = 0;
     private float duibi_IV = 0;
+    ArrayList<Float> list_dianya = new ArrayList();
+    private boolean save_ic=true;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
@@ -342,7 +344,10 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         //继续起爆
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
-        btn_continueOk_4.setOnClickListener(v -> increase(6));
+        btn_continueOk_4.setOnClickListener(v ->{
+            increase(6);
+            list_dianya.clear();
+        } );
     }
 
     @SuppressLint("SetTextI18n")
@@ -649,17 +654,22 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
 
             }
-
-            if (stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.4&&busInfo.getBusVoltage()-cankao_IV>-0.4) {
+            int a = (int) (ChongDian_time*0.4);
+            //sixExchangeCount<a &&
+            if (save_ic && sixExchangeCount< a  && stage == 6 && list_dianya.get(list_dianya.size() - 1) - list_dianya.get(list_dianya.size() - 6) < 0.3) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录高压25s参考电流
                 Log.e(TAG, "记录参考电流: " + cankao_ic);
-                Log.e(TAG, "电压差: " + (busInfo.getBusVoltage()-cankao_IV));
-                Log.e(TAG, "busInfo.getBusVoltage(): " + busInfo.getBusVoltage());
-                Log.e(TAG, "cankao_IV: " + cankao_IV);
+                save_ic=false;
+//                Log.e(TAG, "电压差: " + (busInfo.getBusVoltage()-cankao_IV));
+//                Log.e(TAG, "list_dianya.get(list_dianya.size() - 1): " + list_dianya.get(list_dianya.size() - 1));
+//                Log.e(TAG, "list_dianya.get(list_dianya.size() - 6): " + list_dianya.get(list_dianya.size() - 6));
+//                Log.e(TAG, "list_dianya: " + list_dianya.toString());
+//                Log.e(TAG, "a: " + a );
             }
+
+            Log.e(TAG, "cankao_IV: " + cankao_IV);
 //            busInfo = null;
             cankao_IV= busInfo.getBusVoltage();
-            Log.e(TAG, "sixExchangeCount--cankao_IV: " +sixExchangeCount+"--"+ cankao_IV);
             return false;
         });
 
@@ -1294,7 +1304,6 @@ public class FiringMainActivity extends SerialPortActivity {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
                     doWithReceivData(cmd, localBuf);//处理cmd命令
-
                 }
             }
         }
@@ -1443,6 +1452,9 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             busHandler.sendMessage(busHandler.obtainMessage());
+            if(stage==6){
+                list_dianya.add(busInfo.getBusVoltage());
+            }
 
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
@@ -1829,7 +1841,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         case 3://写入延时时间，检测结果看雷管是否正常
 
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
-                                Log.e("第4阶段-increase", "thirdWriteCount:" + thirdWriteCount);
+//                                Log.e("第4阶段-increase", "thirdWriteCount:" + thirdWriteCount);
 //                                Thread.sleep(50);
                                 thirdStartTime = 0;
                                 writeDenator = null;

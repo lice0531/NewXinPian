@@ -717,6 +717,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             case 3:
 
                 if (thirdWriteErrorDenator != null) {//写入未返回的错误雷管
+                    show_Toast(thirdWriteErrorDenator.getShellBlastNo() + "芯片写入命令未返回");
                     thirdWriteErrorDenator = null;//设置错误雷管
                 }
 //                if (errorList != null && errorList.size() >= 0) {

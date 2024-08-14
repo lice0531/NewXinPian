@@ -101,19 +101,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         lowTiaoZheng = sp.getString("lowTiaoZheng", "0");
         highTiaoZheng = sp.getString("highTiaoZheng", "0");
         initHandler();
-        initFTP();              // 初始化FTP
+//        initFTP();              // 初始化FTP
         ziJianThread = new ZiJianThread();
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
         quanxian();//申请权限
-
-        CJ="SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
-//        CJ="XB_";//实验用
-        if (IntervalUtil.isFastClick_2()) {
-            //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
-            //UpgradeActivity里面的对应值也要改
-            GetFileName(CJ+"KT50_V1.3_16V", ".bin");//17V是电流11000,16V是改变前的
-        }
         deleteRiZhi();
     }
 
