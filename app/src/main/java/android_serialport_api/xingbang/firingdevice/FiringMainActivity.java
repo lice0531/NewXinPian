@@ -154,7 +154,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int thirdWriteCount;//雷管发送计数器
     private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
-    private volatile int sixExchangeCount = 20;//第6阶段计时
+    private volatile int sixExchangeCount = 25;//第6阶段计时
     private volatile int sevenCount = 0;//第7阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
@@ -668,7 +668,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             //检测电流小于参考值的80%提示弹框
 
-            if (stage == 6 && busInfo.getBusCurrentIa()  <= cankao_ic *0.8 && isshow == 0) {
+            if (denatorCount>5 && stage == 6 && twoCount>15 && busInfo.getBusCurrentIa()  < cankao_ic *0.8 && isshow == 0) {
                 isshow = 1;
                 firstThread.exit = true;
                 firstThread.interrupt();
@@ -704,12 +704,12 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if (save_ic&&stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.2&&busInfo.getBusVoltage()-cankao_IV>-0.2) {
+            if (save_ic && stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.2&&busInfo.getBusVoltage()-cankao_IV>-0.2) {
                 cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
                 Log.e(TAG, "参考电流: "+cankao_ic );
                 save_ic=false;
             }
-            if(busInfo.getBusVoltage()>16 && twoCount>10 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) < 100&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) > -100){
+            if(busInfo.getBusVoltage()>16 && twoCount>15 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) < 100&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) > -100){
                 cankao_IV=busInfo.getBusVoltage();//记录参考电压
                 Log.e(TAG, "参考电压: "+cankao_IV );
                 Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 1): "+list_dianliu.get(list_dianliu.size() - 1) );
@@ -1223,8 +1223,8 @@ public class FiringMainActivity extends SerialPortActivity {
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);
-                Utils.writeLog(pid + "-" + tid + "->:" + str);
+                Log.e("发送命令", str);//pid + "-" + tid +
+                Utils.writeLog( "->:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {
@@ -1398,7 +1398,8 @@ public class FiringMainActivity extends SerialPortActivity {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
         int pid = Process.myPid(); // 获取当前进程的ID
         int tid = Process.myTid(); // 获取当前线程的ID
-        Utils.writeLog(pid + "-" + tid + "<-:" + fromCommad);//找到问题可以把这个进程id去掉
+        //pid + "-" + tid +
+        Utils.writeLog("<-:" + fromCommad);//找到问题可以把这个进程id去掉
 //        Log.e("返回命令--起爆页面", fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
