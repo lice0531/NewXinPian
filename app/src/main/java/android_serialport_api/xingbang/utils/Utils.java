@@ -2276,7 +2276,7 @@ public class Utils {
         return destination;
     }
 
-    public static String XiangHao(String data) {
+    public static String HeHao(String data) {
         String endNo = null;
         switch (data) {
             case "01":
@@ -2387,6 +2387,92 @@ public class Utils {
             case "B9":
                 endNo = "18";
                 break;
+        }
+        return endNo;
+    }
+
+    public static int XiangHao(String data) {
+        int endNo = 0;
+        switch (data) {
+            case "L":
+                endNo = 1;
+                break;
+            case "N":
+                endNo = 3;
+                break;
+            case "P":
+                endNo = 4;
+                break;
+            case "1":
+                endNo = 5;
+                break;
+            case "Q":
+                endNo = 6;
+                break;
+            case "S":
+                endNo = 8;
+                break;
+            case "2":
+                endNo = 10;
+                break;
+            case "V":
+                endNo = 12;
+                break;
+            case "3":
+                endNo = 15;
+                break;
+            case "4":
+                endNo = 20;
+                break;
+            case "5":
+                endNo = 25;
+                break;
+            case "6":
+                endNo = 30;
+                break;
+            case "7":
+                endNo = 35;
+                break;
+            case "8":
+                endNo = 40;
+                break;
+            case "9":
+                endNo = 45;
+                break;
+            case "A":
+                endNo = 50;
+                break;
+            case "B":
+                endNo = 55;
+                break;
+            case "C":
+                endNo = 60;
+                break;
+            case "D":
+                endNo = 65;
+                break;
+            case "E":
+                endNo = 70;
+                break;
+            case "F":
+                endNo = 75;
+                break;
+            case "G":
+                endNo = 80;
+                break;
+            case "H":
+                endNo = 85;
+                break;
+            case "I":
+                endNo = 90;
+                break;
+            case "J":
+                endNo = 95;
+                break;
+            case "K":
+                endNo = 100;
+                break;
+
         }
         return endNo;
     }

@@ -829,62 +829,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     };
 
 
-    /**
-     * 扫码注册方法
-     */
-    private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
 
-        scanDecode.getBarCode(new ScanInterface.OnScanListener() {
-            @Override
-            public void getBarcode(String data) {
-                // scanInfo = data;
-                if (data.length() == 19) {
-                    Log.e("箱号", "getBarcode: " + data);
-                    addXiangHao(data);//扫描箱号
-                }
-                if (sanButtonFlag > 0) {
-                    scanDecode.stopScan();
-                    decodeBar(data);
-                } else {
-                    if (continueScanFlag == 1) {
-                        String barCode = getContinueScanBlastNo(data);
-                        if (barCode == null) return;
-                        if (checkRepeatShellNo(barCode) == 1) {
-                            singleShellNo = barCode;
-                            isCorrectReisterFea = 4;
-                            mHandler_3.sendMessage(mHandler_3.obtainMessage());
-                            return;
-                        } else {
-                            show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
-                        }
-                        SoundPlayUtils.play(1);
-                        insertSingleDenator(barCode);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * 停止扫码
-     */
-    private void stopScan() {
-        continueScanFlag = 0;
-        btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
-        btnSetdelay.setEnabled(true);
-        scanDecode.stopScan();//停止扫描
-        if (scanBarThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
 
     /***
      * 单发注册
@@ -1021,22 +966,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         sanButtonFlag = 0;
     }
 
-    /**
-     * 扫描箱号
-     */
-    private void addXiangHao(String data) {
-        char[] xh = data.toCharArray();
-        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
-        final String strNo = "00";
-        String a = xh[5] + "" + xh[6];
-        String endNo = Utils.XiangHao(a);
-        final String prex = String.valueOf(strNo1);
-        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
-        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);//添加
-        }).start();
-    }
+
 
 //    private void initAutoComplete(String field, AutoCompleteTextView auto) {
 //        SharedPreferences sp = getSharedPreferences("network_url", 0);
