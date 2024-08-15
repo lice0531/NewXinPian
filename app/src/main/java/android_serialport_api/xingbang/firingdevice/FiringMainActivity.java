@@ -462,25 +462,31 @@ public class FiringMainActivity extends SerialPortActivity {
                 String tip = "";
                 switch (msg.obj.toString()) {
                     case "00":
-                        tip = "起爆失败";
+                        tip = "线路";
                         break;
                     case "01":
-                        tip = "电压异常";
+                        tip = "电压";
                         break;
                     case "02":
-                        tip = "电流异常";
+                        tip = "电流";
                         break;
                 }
 
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("起爆异常!")//设置对话框的标题
-                        .setMessage("系统检测到:" + tip + ",可能导致起爆失败!")//设置对话框的内容
+                        .setTitle("起爆完成")//设置对话框的标题
+                        .setMessage("系统检测到:" + tip + "存在异常")//设置对话框的内容
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
-//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                        .setPositiveButton(getString(R.string.text_firing_tip17), (dialog14, which) -> {
+                            Intent intent = new Intent(FiringMainActivity.this, QueryHisDetail.class);
+                            startActivityForResult(intent, 1);
+                            dialog14.dismiss();
+                            closeThread();
+                            closeForm();
+                        })
                         .create();
                 dialog.show();
             } else if (msg.what == 4) {
@@ -1494,6 +1500,7 @@ public class FiringMainActivity extends SerialPortActivity {
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             //C000340100ABCDC0
             String qbzt = fromCommad.substring(8, 10);
+            //
             if (!isJL) {
                 MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
             }
@@ -1515,7 +1522,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 updataState(qbxm_id);
             }
             if (!isJL) {
-                if (!"FF".equals(qbzt)) {
+                if (!"FF".equals(qbzt)&&fromCommad.length()==16) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.what = 3;
                     msg.obj = qbzt;
