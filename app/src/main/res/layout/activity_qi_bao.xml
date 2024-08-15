@@ -33,22 +33,28 @@
             <TextView
                 android:id="@+id/qb_tv_tip"
                 style="@style/alltextstyle"
-                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:maxLines="2"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8"
+                android:layout_weight="1"
                 android:text="测试准备" />
             <TextView
                 android:id="@+id/qb_tv_dianya"
                 style="@style/alltextstyle"
-                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:maxLines="2"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:text="0V" />
 
             <TextView
                 android:id="@+id/qb_tv_dianliu"
                 style="@style/alltextstyle"
-                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:maxLines="2"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="0μA" />
@@ -79,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:textSize="18sp"
                 android:text="正确:0" />
 
             <View
@@ -93,6 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:textSize="18sp"
                 android:text="错误:0" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

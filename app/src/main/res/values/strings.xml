@@ -359,7 +359,11 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="text_test_dlgd">(电流过大)</string>
+    <string name="text_text_ysdl">(疑似短路)</string>
+    <string name="text_test_ysdl">(疑似断路)</string>
+    <string name="text_chongdian_state0">充电异常</string>
+    <string name="text_chongdian_stateFF">充电成功</string>
 </resources>

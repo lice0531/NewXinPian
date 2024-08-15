@@ -5,6 +5,7 @@ import android.util.Log;
 import com.orhanobut.logger.Logger;
 
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
+import android_serialport_api.xingbang.cmd.vo.From38ChongDian;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -59,6 +60,24 @@ public class ThreeFiringCmd {
 		}
 		return DefCommand.getCommadBytes(command);
 	}
+
+	/***
+	 *3.2、写入延时时间，检测结果看雷管是否正常
+	 * @param addr
+	 * @param data：共6字节，字节1，字节2，字节3，字节4为ID ，字节5，字节6为延期（ms，低字节在前）
+	 * @return
+	 */
+	public static byte[] send31(String addr, String data){
+		//C0 00 31 06 14E0FF000000 D2D4 C0
+		String command;
+//		Log.e("长度", "data: "+data.length() );
+		if(data.length()==18){
+			command = addr + DefCommand.CMD_3_DETONATE_2+"09"+data;
+		}else {
+			command = addr + DefCommand.CMD_3_DETONATE_2+"0E"+data;
+		}
+		return DefCommand.getCommadBytes(command);
+	}
 	/***
 	 * 检验返回检测命令是否正确
 	 * @param addr
@@ -74,6 +93,42 @@ public class ThreeFiringCmd {
 		if(from.contains(command))return 0;
 		else return -1;
 	}
+
+	/***
+	 * 解码写入雷管延时
+	 * @param addr
+	 * @return
+	 */
+	public static From32DenatorFiring decode31_2(String addr , byte[] cmd){
+		//C00031 04 FF FF F4 01 0059 C0
+		String fromCommad =  Utils.bytesToHexFun(cmd);
+		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+
+		if("-1".equals(realyCmd1)||"-2".equals(realyCmd1)){
+			return null;
+		}
+		if(isCorrectFromXbCommon_CheckDenator23_2(addr,realyCmd1)==0){
+			if(realyCmd1!=null&&realyCmd1.length()==14){
+				String dataHex =  realyCmd1.substring(6, 14);//取得返回数据
+
+				String commicationStatus = dataHex.substring(0,2);//通信状态
+				String denatorStatus = dataHex.substring(2,4);//雷管状态
+				String delayTime = dataHex.substring(4);//延时
+				delayTime = Utils.swop2ByteOrder(delayTime);
+				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
+				int ia = Utils.byte2ToUnsignedShort(dataBytes, 0);
+				Log.e("芯片返回的31指令",realyCmd1 + "--延时: " + delayTime + "解析后的延时时间：" + ia);
+				From32DenatorFiring vo = new From32DenatorFiring()	;
+				vo.setCommicationStatus(commicationStatus);
+				vo.setDenatorStatus(denatorStatus);
+				vo.setDelayTime(ia);
+
+				return vo;
+			}
+		}
+		return null;
+	}
+
 	/***
 	 * 解码写入雷管延时
 	 * @param addr
@@ -103,6 +158,38 @@ public class ThreeFiringCmd {
 				vo.setDenatorStatus(denatorStatus);
 				vo.setDelayTime(ia);
 
+				return vo;
+			}
+		}
+		return null;
+	}
+	/***
+	 * 解码写入雷管延时
+	 * @param addr
+	 * @return
+	 */
+	public static From32DenatorFiring decode_31_2(String addr , byte[] cmd){
+		//C00031 04 FF FF F4 01 0059 C0
+		String fromCommad =  Utils.bytesToHexFun(cmd);
+		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+
+		if("-1".equals(realyCmd1)||"-2".equals(realyCmd1)){
+			return null;
+		}
+		if(isCorrectFromXbCommon_CheckDenator23_2(addr,realyCmd1)==0){
+			if(realyCmd1!=null&&realyCmd1.length()==14){
+				String dataHex =  realyCmd1.substring(6, 14);//取得返回数据
+				String commicationStatus = dataHex.substring(0,2);//通信状态
+				String denatorStatus = dataHex.substring(2,4);//雷管状态
+				String delayTime = dataHex.substring(4);//延时
+				delayTime = Utils.swop2ByteOrder(delayTime);
+				byte[] dataBytes = Utils.hexStringToBytes(delayTime);
+				int ia = Utils.byte2ToUnsignedShort(dataBytes, 0);
+				Log.e("芯片返回31指令","通信状态:" + commicationStatus + "--延时: " + delayTime + "解析后的延时时间：" + ia);
+				From32DenatorFiring vo = new From32DenatorFiring()	;
+				vo.setCommicationStatus(commicationStatus);
+				vo.setDenatorStatus(denatorStatus);
+				vo.setDelayTime(ia);
 				return vo;
 			}
 		}
@@ -277,6 +364,17 @@ public class ThreeFiringCmd {
 		String command = addr + DefCommand.CMD_3_DETONATE_7+"00";//36
 		return DefCommand.getCommadBytes(command);
 	}
+
+	/***
+	 *在网读ID检测
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] send36(String addr,String yscs){
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"02"+yscs;//36
+		return DefCommand.getCommadBytes(command);
+	}
+
 	/***
 	 * 处理 在网读ID检测
 	 * @param addr
@@ -284,14 +382,14 @@ public class ThreeFiringCmd {
 	 * @return
 	 */
 	public static int  getCheckFromXbCommon_FiringExchange_5523_7(String addr ,String from){
-		
+
 		String cmd = DefCommand.decodeCommand(from);
 		if("-1".equals(cmd)||"-2".equals(cmd)){
 			return -1;
 		}
 		if(cmd==null||cmd.trim().length()<1)return -1;
-		
-		String command = addr + DefCommand.CMD_3_DETONATE_7+"01";
+
+		String command = addr + DefCommand.CMD_3_DETONATE_7+"07";
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
 	}
@@ -340,5 +438,76 @@ public class ThreeFiringCmd {
 		if(cmd.indexOf(command)>=0)return 0;
 		else return -1;
 	}
-	
+
+	/***
+	 * 处理在网读ID检测返回值
+	 * @param addr
+	 * @param from
+	 * @return
+	 */
+	public static String jiexi_36(String addr , String from){
+
+		int iscorrent =getCheckFromXbCommon_FiringExchange_5523_7(addr,from);//判断命令是否完整
+		if(iscorrent==0){
+			String cmd = DefCommand.decodeCommand(from);
+			//jiexi_36--cmd: 003607FF000000000000
+			return cmd.substring(6,8);
+		}else{
+			return null;
+		}
+
+	}
+	/***
+	 *3.8、写入延时时间，检测结果看雷管是否正常
+	 * @param addr
+	 * @param data：共6字节，字节1，字节2，字节3，字节4为ID ，字节5，字节6为延期（ms，低字节在前）
+	 * @return
+	 */
+	public static byte[] send38(String addr, String data){
+		//C0 00 38 04 14E0FF00 D2D4 C0
+		String command;
+//		Log.e("长度", "data: "+data.length() );
+		if(data.length()==8){
+			command = addr + DefCommand.CMD_3_DETONATE_9+"04"+data;
+		}else {
+			command = addr + DefCommand.CMD_3_DETONATE_9+"00";
+		}
+		return DefCommand.getCommadBytes(command);
+	}
+
+	/***
+	 * 检验返回检测命令是否正确
+	 * @param addr
+	 * @param from
+	 * @return
+	 */
+	public static int isCorrectFromXbCommon_Check38(String addr, String from) {
+
+		if (from == null) return -1;
+		String command = addr + DefCommand.CMD_3_DETONATE_9 + "01";
+		if (from.contains(command)) return 0;
+		else return -1;
+	}
+	/***
+	 * 解码写入雷管延时
+	 * @param addr
+	 * @return
+	 */
+	public static From38ChongDian jiexi_38(String addr, byte[] cmd) {
+		//C00031 04 FF FF F4 01 0059 C0
+		String fromCommad = Utils.bytesToHexFun(cmd);
+		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+
+		if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+			return null;
+		}
+		if (isCorrectFromXbCommon_Check38(addr, realyCmd1) == 0) {
+			//C0003801FF05C5C0
+			String commicationStatus = fromCommad.substring(8, 10);//取得返回数据
+			From38ChongDian vo = new From38ChongDian();
+			vo.setCommicationStatus(commicationStatus);
+			return vo;
+		}
+		return null;
+	}
 }

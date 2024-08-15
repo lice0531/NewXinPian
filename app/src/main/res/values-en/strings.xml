@@ -351,5 +351,9 @@
     <string name="stop_continue_Loc">停止连续定位</string>
     <string name="continue_Loc_tile">连续定位</string>
     <string name="one_Loc_tile">单次定位</string>
-
+    <string name="text_test_dlgd">(Excessive current)</string>
+    <string name="text_text_ysdl">(Suspected short circuit)</string>
+    <string name="text_test_ysdl">(Suspected open circuit)</string>
+    <string name="text_chongdian_state0">充电异常</string>
+    <string name="text_chongdian_stateFF">充电成功</string>
 </resources>

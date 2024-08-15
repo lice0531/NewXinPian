@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
 
+import java.math.BigDecimal;
+
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.utils.Utils;
@@ -108,7 +110,85 @@ public class FourStatusCmd {
 		}
 		return null;
 	}
-	
+
+	/***
+	 * 4.1 解码获取电源状态指令
+	 * @param addr
+	 * @param cmd
+	 * @return
+	 */
+	public static From42Power decodeFromReceiveDataPower24_1(String addr, byte[] cmd) {
+		//C0 00 40 08 00 00 0900 0100 0900 240B C0
+		//C0 00 40 08 00 00 BB00 0000 BB00 1375 C0
+		String fromCommad = Utils.bytesToHexFun(cmd);
+		String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+
+		if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+			return null;
+		}
+		if (getFromXbCommon_Power_Status24_1(addr, realyCmd1) == 0) {
+			if (realyCmd1 != null && realyCmd1.length() == 22) {
+
+				From42Power vo = new From42Power();
+				String dataHex = realyCmd1.substring(6);//取得返回数据
+				String commicationStatus = dataHex.substring(0, 2);//电源状态
+				vo.setPowerStatus(commicationStatus);
+
+				String tempData = dataHex.substring(2, 4);//雷管状态
+				int ia = Integer.parseInt(tempData, 16);
+				vo.setDenatorIa(ia);
+
+				tempData = dataHex.substring(4, 8);//总线电压
+				String strLow = tempData.substring(0, 2);
+				String strHigh = tempData.substring(2);
+				int volthigh = Integer.parseInt(strHigh, 16) * 256;
+				int voltLowInt = Integer.parseInt(strLow, 16);
+				//可调电压版本,系数为0.011,不可调为0.006
+//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
+				double voltTotal = (volthigh + voltLowInt) * 3.6 * 11 / 4.096 / 1000;//新芯片
+//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.011;//可调电压
+				float busVoltage = (float) voltTotal;
+				busVoltage = Utils.getFloatToFormat(busVoltage, 2, 4);
+				vo.setBusVoltage(busVoltage);
+
+				tempData = dataHex.substring(8, 12);//总线电流
+				String strLow2 = tempData.substring(0, 2);
+				String strHigh2 = tempData.substring(2);
+				if (strLow2.isEmpty()) {
+					strLow2 = "00";
+				}
+				if (strHigh2.isEmpty()) {
+					strHigh2 = "00";
+				}
+				int ichigh = Integer.parseInt(strHigh2, 16) * 256;
+				int icLowInt = Integer.parseInt(strLow2, 16);
+//				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
+				double icTotal = (ichigh + icLowInt) * 3.6 / (4.096 * 0.35);//新芯片
+				float f1 = (float) (icTotal*1.8*2)-10;//*400//减10是减0带载的电流
+				BigDecimal b = new BigDecimal(f1);
+				float busCurrent = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();//保留两位小数
+				if (busCurrent < 0) {
+					busCurrent = 0;
+				}
+				busCurrent = Utils.getFloatToFormat(busCurrent, 0, 4);
+				vo.setBusCurrentIa((int)busCurrent);//设置总线电流
+
+
+				tempData = dataHex.substring(12);//起爆电压
+				strLow = tempData.substring(0, 2);
+				strHigh = tempData.substring(2);
+				volthigh = Integer.parseInt(strHigh, 16) * 256;
+				voltLowInt = Integer.parseInt(strLow, 16);
+				voltTotal = (volthigh + voltLowInt) / 4.095 * 3.0 * 0.011;
+				float busVolt = (float) voltTotal;
+				busVolt = Utils.getFloatToFormat(busVolt, 1, 4);
+				vo.setFiringVoltage(busVolt);//设置起爆电压
+				return vo;
+			}
+		}
+		return null;
+	}
+
 	/***
 	 * 4.2开启总线电源指令
 	 * @param 

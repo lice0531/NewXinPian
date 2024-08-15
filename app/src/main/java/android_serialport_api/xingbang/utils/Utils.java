@@ -2321,6 +2321,21 @@ public class Utils {
         }
     }
 
+    public static int duibi(String str1, String str2) {
+        int a =0;
+
+        // 比较两个字符串的长度
+        if (str1.length() == str2.length()) {
+            // 比较每一位字符
+            for (int i = 0; i < str1.length(); i++) {
+                if (str1.charAt(i) == str2.charAt(i)) {
+                    a++;
+                }
+            }
+        }
+        Log.e("对比UID", "相同字符个数: "+a );
+        return a;
+    }
 
     public static String getDateFormat(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
