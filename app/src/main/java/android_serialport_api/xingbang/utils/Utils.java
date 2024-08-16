@@ -2394,29 +2394,11 @@ public class Utils {
     public static int XiangHao(String data) {
         int endNo = 0;
         switch (data) {
-            case "L":
-                endNo = 1;
-                break;
-            case "N":
-                endNo = 3;
-                break;
-            case "P":
-                endNo = 4;
-                break;
             case "1":
                 endNo = 5;
                 break;
-            case "Q":
-                endNo = 6;
-                break;
-            case "S":
-                endNo = 8;
-                break;
             case "2":
                 endNo = 10;
-                break;
-            case "V":
-                endNo = 12;
                 break;
             case "3":
                 endNo = 15;
@@ -2471,6 +2453,54 @@ public class Utils {
                 break;
             case "K":
                 endNo = 100;
+                break;
+            case "L":
+                endNo = 1;
+                break;
+            case "M":
+                endNo = 2;
+                break;
+            case "N":
+                endNo = 3;
+                break;
+            case "P":
+                endNo = 4;
+                break;
+            case "Q":
+                endNo = 6;
+                break;
+            case "R":
+                endNo = 7;
+                break;
+            case "S":
+                endNo = 8;
+                break;
+            case "T":
+                endNo = 9;
+                break;
+            case "U":
+                endNo = 11;
+                break;
+            case "V":
+                endNo = 12;
+                break;
+            case "W":
+                endNo = 13;
+                break;
+            case "X":
+                endNo = 14;
+                break;
+            case "Y":
+                endNo = 16;
+                break;
+            case "Z":
+                endNo = 17;
+                break;
+            case "a":
+                endNo = 18;
+                break;
+            case "b":
+                endNo = 19;
                 break;
 
         }
