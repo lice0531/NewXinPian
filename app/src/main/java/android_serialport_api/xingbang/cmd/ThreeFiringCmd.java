@@ -5,6 +5,7 @@ import android.util.Log;
 import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.To32FiringDenator;
 import android_serialport_api.xingbang.utils.CRC16;
+import android_serialport_api.xingbang.utils.CRC8;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class ThreeFiringCmd {
@@ -329,7 +330,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA0(String addr){
+	public static byte[] sendWxjlA0(String addr){
 		String command = DefCommand.CMD_MC_SEND_A0 + addr;//A0
 		return CRC16.hexStringToByte(command);
 	}
@@ -338,7 +339,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA1(String addr){
+	public static byte[] sendWxjlA1(String addr){
 		String command = DefCommand.CMD_MC_SEND_A1 + addr;//A1
 		return CRC16.hexStringToByte(command);
 	}
@@ -347,7 +348,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA2(String addr){
+	public static byte[] sendWxjlA2(String addr){
 		String command = DefCommand.CMD_MC_SEND_A2 + addr;//A2
 		return CRC16.hexStringToByte(command);
 	}
@@ -356,7 +357,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA8(String addr,String serId){
+	public static byte[] sendWxjlA8(String addr,String serId){
 		String command = DefCommand.CMD_MC_SEND_A8 + addr + serId;//A8
 		return CRC16.hexStringToByte(command);
 	}
@@ -365,7 +366,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA4(String addr){
+	public static byte[] sendWxjlA4(String addr){
 		String command = DefCommand.CMD_MC_SEND_A4 + addr;//A4
 		return CRC16.hexStringToByte(command);
 	}
@@ -374,7 +375,7 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA5(String addr,String getData){
+	public static byte[] sendWxjlA5(String addr,String getData){
 		String command = DefCommand.CMD_MC_SEND_A5 + addr + getData;//A5
 		return CRC16.hexStringToByte(command);
 	}
@@ -385,7 +386,7 @@ public class ThreeFiringCmd {
 	 * @param type：主子设备为01   其他子设备为00
 	 * @return
 	 */
-	public static byte[] setWxjlA6(String addr,String type){
+	public static byte[] sendWxjlA6(String addr,String type){
 		String command = DefCommand.CMD_MC_SEND_A6 + addr + type;//A6
 		return CRC16.hexStringToByte(command);
 	}
@@ -394,10 +395,42 @@ public class ThreeFiringCmd {
 	 * @param addr
 	 * @return
 	 */
-	public static byte[] setWxjlA7(String addr){
+	public static byte[] sendWxjlA7(String addr){
 		String command = DefCommand.CMD_MC_SEND_A7 + addr;//A7
 		return CRC16.hexStringToByte(command);
 	}
+
+	/***
+	 * 发送起爆卡设置信道指令
+	 * @param xdId:信道
+	 * @return
+	 */
+	public static byte[] sendWx_Qbk_F9(String xdId){
+		//C5C5 02 F9 01 AE E5E5
+		String cmd = DefCommand.CMD_QBK_F9 + xdId;//F9
+		String crc8 = CRC8.getCRC8(cmd);
+		String command = "C5C502" + cmd + crc8 + "E5E5";
+		return CRC16.hexStringToByte(command);
+	}
+
+	/***
+	 * 发送无线中继器设置信道指令
+	 * @param addr
+	 * @return
+	 */
+	/**
+	 * 发送无线中继器设置信道指令
+	 * @param serid:中继卡序列号(KKF23WS00000001)发送的中继卡序列号为ASCII码
+	 * @param xdId:信道
+	 * @return
+	 */
+	public static byte[] sendWx_Zjq_AB(String serid,String xdId){
+		String cmd = DefCommand.CMD_ZJQ_AB + serid + xdId + "07";//AB
+		String crc8 = CRC8.getCRC8(cmd);
+		String command = "C5C512" + cmd + crc8 + "E5E5";
+		return CRC16.hexStringToByte(command);
+	}
+
 	/***
 	 * 处理 在网读ID检测
 	 * @param addr
@@ -490,16 +523,5 @@ public class ThreeFiringCmd {
 			return null;
 		}
 
-	}
-
-	/**
-	 * 无线级联指令
-	 * @param cmd:指令
-	 * @param addr:设备地址
-	 * @return
-	 */
-	public static byte[] wxjl_cmd(String cmd,String addr){
-		String command = cmd + addr;
-		return DefCommand.getCommadBytes(command);
 	}
 }

@@ -4,28 +4,28 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-
-import com.tencent.bugly.proguard.D;
-
 import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.WxSearchDevicesAdapter;
-import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.DeviceBean;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.InitConst;
@@ -34,12 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class WxjlSettingActivity extends SerialPortActivity {
-    /**
-     * 界面
-     */
     private String TAG = "无线级联配置页面";
-    private String wxjlDeviceId = "01";//目前只有一台设备  所以设备地址先固定01
-    private boolean isRemote = false;//是否可以进行远距离无线级联
     @BindView(R.id.tv_xindao)
     TextView tvXinDao;
     @BindView(R.id.ns_xd)
@@ -48,16 +43,30 @@ public class WxjlSettingActivity extends SerialPortActivity {
     RelativeLayout rlSearch;
     @BindView(R.id.lv_devices)
     ListView lvDevices;
-    private String dataLength82 = "", data82 = "";
-    private boolean receive82 = false;//发出82命令是否返回
+    @BindView(R.id.ll_sp_xd)
+    LinearLayout llSpXd;
+    @BindView(R.id.ll_tv_xd)
+    LinearLayout llTvXd;
+    @BindView(R.id.btn_qbkXd)
+    Button btnQbkXd;
+    @BindView(R.id.btn_zjqXd)
+    Button btnZjqXd;
+    @BindView(R.id.btn_exit)
+    Button btnExit;
+    private boolean isCanSetXd = true;//是否展示设置信道的布局  默认不展示
+    private boolean receiveF9 = false;//发出F9命令是否返回
+    private boolean receiveAB = false;//发出AB命令是否返回
     private Handler handler_msg = new Handler();
-    private EnterJcms enterJcms;
+    private SetQbkThread setQbkThread;
+    private SetZJQThread setZjqThread;
+    private boolean isOpened = false;//串口是否已打开
     Handler openHandler = new Handler();//重新打开串口
     private boolean isRestarted = false;
-    private int errorNum;
     private List<String> xdlist = new ArrayList<>();
     private List<DeviceBean> deviceslist = new ArrayList<>();
     private WxSearchDevicesAdapter mAdapter;
+    private String zjqSerid = "KKF23WS00000001";//无线中继器序列号  目前先写死
+    private String xinDaoId = "1";//信道
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,62 +78,80 @@ public class WxjlSettingActivity extends SerialPortActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    @Override
-    protected void onRestart() {
-        isRestarted = true;
-        super.onRestart();
+    protected void onResume() {
+        super.onResume();
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isOpened = true;
+                initSerialPort(InitConst.TX_RATE);
+                Log.e(TAG, "串口已打开" + InitConst.TX_RATE);
+                show_Toast("串口已打开");
+            }
+        }, 2000);
     }
 
     private void initData(){
-        xdlist.add("CHO - 19.2kbps - 0FEC");
-        xdlist.add("CH1 - 19.2kbps - 1FEC");
-        xdlist.add("CH2 - 19.2kbps - 2FEC");
-        xdlist.add("CH3 - 19.2kbps - 3FEC");
-        xdlist.add("CH4 - 19.2kbps - 4FEC");
-        xdlist.add("CH5 - 9.6kbps  - 0FEC");
-        xdlist.add("CH6 - 9.6kbps  - 1FEC");
-        xdlist.add("CH7 - 9.6kbps  - 2FEC");
-        xdlist.add("CH8 - 9.6kbps  - 3FEC");
-        xdlist.add("CH9 - 9.6kbps  - 4FEC");
-        xdlist.add("CH1O - 4.8kbps - 0FEC");
-        xdlist.add("CH11 - 4.8kbps  - 1FEC");
-        xdlist.add("CH12 - 4.8kbps  - 2FEC");
-        xdlist.add("CH13 - 4.8kbps  - 3FEC");
-        xdlist.add("CH14 - 4.8kbps  - 4FEC");
-        xdlist.add("CH15 - 2.4kbps  - 0FEC");
-        xdlist.add("CH16 - 2.4kbps  - 1FEC");
-        xdlist.add("CH17 - 2.4kbps  - 2FEC");
-        xdlist.add("CH18 - 2.4kbps  - 3FEC");
-        xdlist.add("CH19 - 2.4kbps  - 4FEC");
-        xdlist.add("CH2O - 19.2kbps - 0");
-        xdlist.add("CH21 - 19.2kbps - 1");
-        xdlist.add("CH22 - 19.2kbps - 2");
-        xdlist.add("CH23 - 19.2kbps - 3");
-        xdlist.add("CH24 - 19.2kbps - 4");
-        xdlist.add("CH25 - 9.6kbps  - 0");
-        xdlist.add("CH26 - 9.6kbps  - 1");
-        xdlist.add("CH27 - 9.6kbps  - 2");
-        xdlist.add("CH28 - 9.6kbps  - 3");
-        xdlist.add("CH29 - 9.6kbps  - 4");
-        xdlist.add("CH30 - 4.8kbps  - 0");
-        xdlist.add("CH31 - 4.8kbps  - 1");
-        xdlist.add("CH32 - 4.8kbps  - 2");
-        xdlist.add("CH33 - 4.8kbps  - 3");
-        xdlist.add("CH34 - 4.8kbps  - 4");
-        xdlist.add("CH35 - 2.4kbps  - 0");
-        xdlist.add("CH36 - 2.4kbps  - 1");
-        xdlist.add("CH37 - 2.4kbps  - 2");
-        xdlist.add("CH38 - 2.4kbps  - 3");
-        xdlist.add("CH39 - 2.4kbps  - 4");
+        llSpXd.setVisibility(isCanSetXd ? View.VISIBLE : View.GONE);
+        llTvXd.setVisibility(isCanSetXd ? View.GONE : View.VISIBLE);
+//        //这是不同速率的信道
+        xdlist.add("CH0-19.2kbps-0FEC");
+        xdlist.add("CH1-19.2kbps-1FEC");
+        xdlist.add("CH2-19.2kbps-2FEC");
+        xdlist.add("CH3-19.2kbps-3FEC");
+        xdlist.add("CH4-19.2kbps-4FEC");
+        xdlist.add("CH5-9.6kbps-0FEC");
+        xdlist.add("CH6-9.6kbps-1FEC");
+        xdlist.add("CH7-9.6kbps-2FEC");
+        xdlist.add("CH8-9.6kbps-3FEC");
+        xdlist.add("CH9-9.6kbps-4FEC");
+        xdlist.add("CH1O-4.8kbps-0FEC");
+        xdlist.add("CH11-4.8kbps-1FEC");
+        xdlist.add("CH12-4.8kbps-2FEC");
+        xdlist.add("CH13-4.8kbps-3FEC");
+        xdlist.add("CH14-4.8kbps-4FEC");
+        xdlist.add("CH15-2.4kbps-0FEC");
+        xdlist.add("CH16-2.4kbps-1FEC");
+        xdlist.add("CH17-2.4kbps-2FEC");
+        xdlist.add("CH18-2.4kbps-3FEC");
+        xdlist.add("CH19-2.4kbps-4FEC");
+        xdlist.add("CH2O-19.2kbps-0");
+        xdlist.add("CH21-19.2kbps-1");
+        xdlist.add("CH22-19.2kbps-2");
+        xdlist.add("CH23-19.2kbps-3");
+        xdlist.add("CH24-19.2kbps-4");
+        xdlist.add("CH25-9.6kbps-0");
+        xdlist.add("CH26-9.6kbps-1");
+        xdlist.add("CH27-9.6kbps-2");
+        xdlist.add("CH28-9.6kbps-3");
+        xdlist.add("CH29-9.6kbps-4");
+        xdlist.add("CH30-4.8kbps-0");
+        xdlist.add("CH31-4.8kbps-1");
+        xdlist.add("CH32-4.8kbps-2");
+        xdlist.add("CH33-4.8kbps-3");
+        xdlist.add("CH34-4.8kbps-4");
+        xdlist.add("CH35-2.4kbps-0");
+        xdlist.add("CH36-2.4kbps-1");
+        xdlist.add("CH37-2.4kbps-2");
+        xdlist.add("CH38-2.4kbps-3");
+        xdlist.add("CH39-2.4kbps-4");
         tvXinDao.setText(xdlist.get(36));
+        //目前先只用固定速率的信道  信道有0 1 2 3 4 目前先用1试试
+//        xdlist.add("0");
+//        xdlist.add("1");
+//        xdlist.add("2");
+//        xdlist.add("3");
+//        xdlist.add("4");
+//        tvXinDao.setText(xdlist.get(1));
         nsXd.attachDataSource(xdlist);
+        nsXd.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
+            @Override
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+//                xinDaoId = xdlist.get(position);
+                xinDaoId = getXdId(xdlist.get(position));
+                Log.e(TAG,"选中的信道是:" + xdlist.get(position) + "截取后的信道id:" + xinDaoId);
+            }
+        });
         mAdapter = new WxSearchDevicesAdapter(this,R.layout.item_wx_device);
         lvDevices.setAdapter(mAdapter);
     }
@@ -134,17 +161,33 @@ public class WxjlSettingActivity extends SerialPortActivity {
             @Override
             public boolean handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
-                    case 0:
-                        String jcmsResult = (String) msg.obj;
-                        closeThread();
-                        if ("true".equals(jcmsResult)) {
-                            enterRemotePage();
+                    case 1:
+                        String qbkResult = (String) msg.obj;
+                        closeQbkThread();
+                        if ("true".equals(qbkResult)) {
+                            btnQbkXd.setText("1.起爆卡已配置");
+                            show_Toast("起爆卡配置成功");
                         } else {
-                            show_Toast("芯片未返回，请退出APP后再重新级联");
+                            show_Toast("起爆卡配置失败，请重新配置");
+                            btnQbkXd.setText("1.起爆卡配置");
                         }
                         break;
                     case 2:
-                        enterRemotePage();
+                        String zjqResult = (String) msg.obj;
+                        closeZjqThread();
+                        if ("true".equals(zjqResult)) {
+                            btnZjqXd.setText("2.无线中继器已配置");
+                            show_Toast("无线中继器配置成功,进入首页");
+                            openHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    enterNearPage();
+                                }
+                            },500);
+                        } else {
+                            show_Toast("无线中继器配置失败，请重新配置");
+                            btnZjqXd.setText("2.无线中继器配置");
+                        }
                         break;
                 }
                 return false;
@@ -152,24 +195,23 @@ public class WxjlSettingActivity extends SerialPortActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        openHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                openSerial();
-            }
-        }, 2000);
-    }
-
-    private void openSerial(){
-        if (isRestarted) {
-            initSerialPort(InitConst.TX_RATE);
-            Log.e(TAG,"重新开启打开串口" + InitConst.TX_RATE);
+    /**
+     * 提取字符串中 "CH" 后面的数字部分
+     *
+     * @param input 输入字符串
+     * @return "CH" 后面的数字部分，或者如果没有找到匹配则返回空字符串
+     */
+    public static String getXdId(String input) {
+        // 正则表达式匹配 "CH" 后面的数字部分
+        Pattern pattern = Pattern.compile("CH(\\d+)");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            // 返回第一个捕获组的内容
+            return matcher.group(1);
         }
+        // 如果没有找到匹配项，返回空字符串
+        return "";
     }
-
 
     @Override
     protected void onDataReceived(byte[] buffer, int size) {
@@ -178,22 +220,13 @@ public class WxjlSettingActivity extends SerialPortActivity {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
         Log.e(TAG + "-返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd2(fromCommad);
-                Log.e(TAG,TAG + "--返回命令" + cmd);
-                if (cmd != null) {
-                    int localSize = fromCommad.length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
-                    doWithReceivData(cmd, localBuf);//处理cmd命令
-                }
-            }
+        if (fromCommad.startsWith("C5C5") && fromCommad.endsWith("E5E5")) {
+            String cmd = DefCommand.getWxSDKCmd(fromCommad);
+            Log.e(TAG,"返回命令正常--具体命令:" + cmd);
+            byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+            doWithReceivData(cmd, localBuf);//处理cmd命令
+        } else {
+            Log.e(TAG,"返回命令出错:" + fromCommad);
         }
     }
 
@@ -201,9 +234,16 @@ public class WxjlSettingActivity extends SerialPortActivity {
      * 处理芯片返回命令
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
-        if (DefCommand.CMD_5_TRANSLATE_82.equals(cmd)) {//82 无线级联：进入检测模式
-            Log.e(TAG, "收到82指令了");
-            receive82 = true;
+        if (DefCommand.CMD_QBK_F9.equals(cmd)) {//F9 无线级联：收到起爆卡设置信道指令了
+            Log.e(TAG, "收到起爆卡设置信道指令了");
+            receiveF9 = true;
+            Message message = new Message();
+            message.what = 1;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
+        } else if (DefCommand.CMD_ZJQ_AB.equals(cmd)) {//AB 无线级联：收到无线中继器设置信道指令了
+            Log.e(TAG, "收到无线中继器设置信道指令了");
+            receiveAB = true;
             Message message = new Message();
             message.what = 2;
             message.obj = "true";
@@ -213,44 +253,34 @@ public class WxjlSettingActivity extends SerialPortActivity {
         }
     }
 
-    private void enterRemotePage() {
+    private void enterNearPage() {
         closeSerial();
-        Intent intent = new Intent(WxjlSettingActivity.this, WxjlRemoteActivity.class);
+        Intent intent = new Intent(WxjlSettingActivity.this, XingbangMain1.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("wxjlDeviceId", wxjlDeviceId);
         startActivity(intent);
+        finish();
     }
 
-    private void closeThread(){
-        if (enterJcms != null) {
-            enterJcms.exit = true;
-            enterJcms.interrupt();
-        }
-    }
-
-    private class EnterJcms extends Thread {
+    private class SetQbkThread extends Thread {
         public volatile boolean exit = false;
 
         public void run() {
             int zeroCount = 0;
             while (!exit) {
                 try {
-                    if (receive82) {
+                    if (receiveF9) {
                         exit = true;
                         break;
                     }
-                    if (zeroCount > 0 && zeroCount <= 5 && !receive82) {
-                        String b = Utils.intToHex(1);
-                        dataLength82 = Utils.addZero(b, 2);
-                        data82 = "01";
-                        sendCmd(ThreeFiringCmd.sendWxjl82(wxjlDeviceId, dataLength82, data82));
-                        Log.e(TAG, "发送82进入检测模式指令");
+                    if (zeroCount > 0 && zeroCount <= 5 && !receiveF9) {
+                        sendF9();
+                        Log.e(TAG, "发送F9设置起爆卡信道指令了");
                         Thread.sleep(1500);
                     } else if (zeroCount > 5){
-                        Log.e(TAG,"82指令未返回已发送5次，停止发送82指令");
+                        Log.e(TAG,"F9指令未返回已发送5次，停止发送F9指令");
                         exit = true;
                         Message message = new Message();
-                        message.what = 0;
+                        message.what = 1;
                         message.obj = "error";
                         handler_msg.sendMessage(message);
                         break;
@@ -263,12 +293,58 @@ public class WxjlSettingActivity extends SerialPortActivity {
         }
     }
 
+    private class SetZJQThread extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (receiveAB) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount > 0 && zeroCount <= 5 && !receiveAB) {
+                        sendAB();
+                        Log.e(TAG, "发送AB设置无线中继器信道指令了");
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 5){
+                        Log.e(TAG,"AB指令未返回已发送5次，停止发送AB指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 2;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void closeQbkThread(){
+        if (setQbkThread != null) {
+            setQbkThread.exit = true;
+            setQbkThread.interrupt();
+        }
+    }
+
+    private void closeZjqThread(){
+        if (setZjqThread != null) {
+            setZjqThread.exit = true;
+            setZjqThread.interrupt();
+        }
+    }
+
     //发送命令
     public void sendCmd(byte[] mBuffer) {
         if (mSerialPort != null && mOutputStream != null) {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);
+                Log.e(TAG + "发送命令", str);
                 Utils.writeLog("->:" + str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -279,50 +355,129 @@ public class WxjlSettingActivity extends SerialPortActivity {
 
 
     private void closeSerial() {
-        isRestarted = false;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 mApplication.closeSerialPort();
-                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                Log.e(TAG, "串口已关闭。。");
                 mSerialPort = null;
             }
         }).start();
     }
 
-    @OnClick({R.id.rl_search})
+    private boolean isSendF9 = true;//防止用户多次点击频发F9
+    private boolean isSendAB = true;//防止用户多次点击频发AB
+    @OnClick({R.id.rl_search,R.id.btn_qbkXd,R.id.btn_zjqXd,R.id.btn_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_search:
                 //开始发指令搜索附近无线设备  现在先写点假数据
-                deviceslist.add(new DeviceBean("KKF23WS00000001","CH1 无线<->有线 2023-07-06 V2.7"));
+                deviceslist.clear();
+                deviceslist.add(new DeviceBean(zjqSerid,"CH1 无线<->有线 2023-07-06 V2.7"));
                 mAdapter.setListData(deviceslist);
                 mAdapter.notifyDataSetChanged();
+                break;
+            case R.id.btn_qbkXd:
+                if (!isOpened) {
+                    show_Toast("正在打开串口，打开后您再操作");
+                    return;
+                }
+                if (isSendF9) {
+                    btnQbkXd.setText("1.起爆卡配置中...");
+                    isSendF9 = false;
+                    setQbkThread = new SetQbkThread();
+                    setQbkThread.start();
+                }  else {
+                    if (receiveF9) {
+                        show_Toast("起爆卡已配置，请勿重复点击...");
+                    } else {
+                        show_Toast("起爆卡配置中，请勿重复点击...");
+                    }
+                    return;
+                }
+                break;
+            case R.id.btn_zjqXd:
+                if (!isOpened) {
+                    show_Toast("正在打开串口，打开后您再操作");
+                    return;
+                }
+                if (isSendAB) {
+                    btnZjqXd.setText("2.无线中继器配置中...");
+                    isSendAB = false;
+                    setZjqThread = new SetZJQThread();
+                    setZjqThread.start();
+                }  else {
+                    show_Toast("无线中继器配置中，请勿重复点击...");
+                    return;
+                }
+                break;
+            case R.id.btn_exit:
+                exit();
                 break;
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(FirstEvent event) {
-        String msg = event.getMsg();
-        Log.e(TAG,"eventBus收到消息了" + msg);
-        if (event.getMsg().equals("is81End")) {
-            //说明此时近距离级联81指令已结束  并未执行82指令   此时点击远距离级联需要先发送82指令  等82成功再远距离级联
-            isRemote = true;
-        } else if (event.getMsg().equals("errorLgNum")) {
-            errorNum = Integer.parseInt(event.getData());
-            Log.e(TAG,"eventBus收到errorLgNum了:" + errorNum);
+    private long time = 0;
+    private void exit() {
+        //如果在两秒大于2秒
+        if (System.currentTimeMillis() - time > 2000) {
+            //获得当前的时间
+            time = System.currentTimeMillis();
+            show_Toast(getString(R.string.text_error_tip56));
+        } else {
+            finish();
         }
+    }
+
+    private void sendF9(){
+        /**
+         * 将起爆卡信道设置为 1 的指令及回复如下：
+         * 指令： C5C5  02  F9    01  AE  E5E5
+         *      包头  长度 指令码 信道  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复： C5C5  02   F9    00   A9  E5E5
+         *       包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         */
+        String b = Utils.intToHex(Integer.parseInt(xinDaoId));
+        String xdId = Utils.addZero(b, 2);
+//        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(qbzXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Qbk_F9(xdId));
+    }
+
+    private void sendAB() {
+        /**
+         * 给中继 KKF23WS00000001 设置信道 6 指令及回复如下：
+         * 指令：C5C5 12   AB   4B4B46323357533030303030303031    06      07   F9  E5E5
+         *      包头 长度 指令码 中继卡序列号(KKF23WS00000001)     主卡信道 固定不变  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复：C5C5  02   AB     00  8F  E5E5
+         *      包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         */
+        String b1 = Utils.intToHex(Integer.parseInt(xinDaoId));
+        String xdId1 = Utils.addZero(b1, 2);
+//        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断当点击的是返回键
+        if (keyCode == event.KEYCODE_BACK) {
+            exit();//退出方法
+        }
+        return true;
     }
 
     @Override
     protected void onDestroy() {
-        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+        closeQbkThread();
+        closeZjqThread();
         closeSerial();
         super.onDestroy();
-        closeThread();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
+        openHandler.removeCallbacksAndMessages(null);
     }
 }

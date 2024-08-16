@@ -198,7 +198,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String queryError = (String) msg.obj;
                         close84Thread();
                         if ("true".equals(queryError)) {
-                            tvLookError.setText("4.读取错误雷管中请稍等...");
+                            tvLookError.setText("4.读取错误雷管中请稍等");
                         } else {
                             tvLookError.setText("4.错误雷管读取失败");
                             show_Toast("错误雷管读取失败，请退出APP后再重新操作");
@@ -821,6 +821,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         closeSerial();
         super.onDestroy();
+        openHandler.removeCallbacksAndMessages(null);
     }
 }
 

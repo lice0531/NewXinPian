@@ -290,6 +290,10 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                         Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain1.class);
                         startActivity(intent);
                         finish();//如果不结束当前页面的话,会和后面的页面抢命令
+//                        closeSerial();
+//                        Intent intent = new Intent(ZiJianActivity_upload.this, WxjlSettingActivity.class);
+//                        startActivity(intent);
+//                        finish();//如果不结束当前页面的话,会和后面的页面抢命令
                         break;
                     }
                     firstCount--;
@@ -298,6 +302,17 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                 }
             }
         }
+    }
+
+    private void closeSerial() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("自检页面","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
     }
 
     private void test() {

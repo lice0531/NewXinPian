@@ -262,7 +262,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     }
                     if (zeroCount > 0 && zeroCount <= 5 && !reciveB0) {
                         Log.e(TAG, "发送A0同步指令");
-                        sendCmd(ThreeFiringCmd.setWxjlA0(wxjlDeviceId));
+                        sendCmd(ThreeFiringCmd.sendWxjlA0(wxjlDeviceId));
                         Thread.sleep(1500);
                     } else if (zeroCount > 5) {
                         Log.e(TAG, "A0指令未返回已发送5次，停止发送A0指令");
@@ -294,7 +294,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     }
                     if (zeroCount > 0 && zeroCount <= 5 && !reciveB1) {
                         Log.e(TAG, "发送A0同步指令");
-                        sendCmd(ThreeFiringCmd.setWxjlA1(wxjlDeviceId));
+                        sendCmd(ThreeFiringCmd.sendWxjlA1(wxjlDeviceId));
                         Thread.sleep(1500);
                     } else if (zeroCount > 5) {
                         Log.e(TAG, "A1指令未返回已发送5次，停止发送A1指令");
@@ -356,7 +356,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         break;
                     }
                     if (zeroCount > 0 && zeroCount <= 5 && !reciveB7) {
-                        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+                        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
                         Log.e(TAG, "发送A7退出级联页面指令");
                         Thread.sleep(1500);
                     } else if (zeroCount > 5) {
@@ -507,10 +507,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             //开启轮询  10秒轮询一次接收到的消息  来更新当前设备列表信息
             if (isStopGetLgNum) {
                 //只需要获取状态信息和电流即可
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId, "122130"));
+                sendCmd(ThreeFiringCmd.sendWxjlA5(wxjlDeviceId, "122130"));
             } else {
                 //检测过程中状态充电信息雷管数据都需要获取展示
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId, "1423324160"));
+                sendCmd(ThreeFiringCmd.sendWxjlA5(wxjlDeviceId, "1423324160"));
             }
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
@@ -1555,7 +1555,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //        } else {
 //            Log.e(TAG, "A7线程已开启，不再重复开启");
 //        }
-        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
+        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
     }
 
     private boolean isA7 = false;
@@ -1571,15 +1571,15 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             case "A2":
                 tvTip.setText("正在充电...");
                 isStopGetLgNum = true;
-                sendCmd(ThreeFiringCmd.setWxjlA2("01"));
+                sendCmd(ThreeFiringCmd.sendWxjlA2("01"));
                 break;
             case "A4":
                 tvTip.setText("正在执行起爆...");
-                sendCmd(ThreeFiringCmd.setWxjlA4("01"));
+                sendCmd(ThreeFiringCmd.sendWxjlA4("01"));
                 break;
             case "A6":
                 tvTip.setText("正在执行起爆...");
-                sendCmd(ThreeFiringCmd.setWxjlA6("01", "01"));
+                sendCmd(ThreeFiringCmd.sendWxjlA6("01", "01"));
                 fuwei();
                 break;
             case "A7":
@@ -1623,10 +1623,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             //询问检测状态（15）  电流信息（33） 全部雷管数量（42）   错误雷管数量（60）
             if (isStopGetLgNum) {
                 //只需要获取状态信息和电流即可
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId, "122130"));
+                sendCmd(ThreeFiringCmd.sendWxjlA5(wxjlDeviceId, "122130"));
             } else {
                 //检测过程中状态充电信息雷管数据都需要获取展示
-                sendCmd(ThreeFiringCmd.setWxjlA5(wxjlDeviceId, "1423324160"));
+                sendCmd(ThreeFiringCmd.sendWxjlA5(wxjlDeviceId, "1423324160"));
             }
             if (zeroCount > 0 && zeroCount <= 8 && !reciveB5) {
 //                Log.e(TAG,"A5线程监控次数,次数：" + zeroCount);
@@ -1648,7 +1648,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         Log.e(TAG, "发送A8命令了");
         String b = Utils.intToHex(currentCount + 1);
         String serId = Utils.addZero(b, 2);
-        sendCmd(ThreeFiringCmd.setWxjlA8(wxjlDeviceId, serId));
+        sendCmd(ThreeFiringCmd.sendWxjlA8(wxjlDeviceId, serId));
     }
 
     @Override

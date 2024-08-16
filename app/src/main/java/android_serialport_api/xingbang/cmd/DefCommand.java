@@ -70,6 +70,8 @@ public class DefCommand {
 	public static String CMD_MC_SEND_B6="B6";//无线级联：子机响应B6切换模式
 	public static String CMD_MC_SEND_B7="B7";//无线级联：子机响应B7退出指令
 	public static String CMD_MC_SEND_B8="B8";//无线级联：子机响应B8获取错误雷管指令
+	public static String CMD_QBK_F9="F9";//无线级联：起爆卡设置信道指令
+	public static String CMD_ZJQ_AB="AB";//无线级联：中继器设置信道指令
 	/***
 	 * 得到发出命令字节
 	 * @param baseBaseCmd
@@ -130,6 +132,12 @@ public class DefCommand {
 //		Log.e("工具类中返回命令",cmdInfo);
 
 		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
+		return null;
+	}
+
+	public static String  getWxSDKCmd(String cmdInfo){
+		Log.e("页面","无线命令" + cmdInfo);
+		if(cmdInfo.length()>6)return cmdInfo.substring(6,8);
 		return null;
 	}
 	/***
