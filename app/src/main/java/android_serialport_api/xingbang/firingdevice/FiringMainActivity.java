@@ -16,7 +16,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.text.TextUtils;
@@ -72,10 +71,7 @@ import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
 
-import static android_serialport_api.xingbang.Application.daoSession;
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import com.kfree.expd.ExpdDevMgr;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -143,8 +139,11 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int zeroCount = 0;//起始阶段计数器，发出关闭电源指令时间
     private volatile int zeroCmdReFlag = 0;//第0阶段结束标志 为1时0阶段结束
     private volatile int firstWaitCount = 3;//第一阶段计时
-    private int oneCount = 0;
-    private int twoCount = 0;
+    private int oneCount = 0;//低压时间
+    private int twoCount = 0;//高压时间
+    private int gaoya_cankaoSun = 0;//高压稳定时间
+    private int yichang_time = 0;//出现错误的时间
+    private int cuowuSun = 0;//电流异常错误次数
     private volatile int oneCount_max = 20;
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
@@ -206,9 +205,10 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_id = "-1";
     private String qbxm_name = "";
     private int isshow = 0;
-    private float cankao_ic = 0;
+    private float cankao_ic_gaoya = 0;
+    private float cankao_ic_diya = 0;
     private float cankao_IV = 0;
-    private boolean save_ic=true;
+    private boolean save_ic = true;
     private List<VoDenatorBaseInfo> list_all_lg = new ArrayList<>();
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
@@ -514,7 +514,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        .setNeutralButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
 //                        .create();
 //                dialog.show();
-            }else if (msg.what == 6) {
+            } else if (msg.what == 6) {
                 ll_firing_errorAmount_2.setText("0");
                 ll_firing_errorAmount_4.setText("0");
                 totalerrorNum = 0;
@@ -569,11 +569,13 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.RED);//设置颜色
-                }else if (displayIc > ( cankao_ic *0.8) && displayIc < (cankao_ic *0.9) && displayIc > 10 && stage == 6) {// "电流过大";
-                    displayIcStr = displayIcStr + "电流偏低";
-                    setIcView(Color.RED);//设置颜色
-                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
-                } else {
+                }
+//                else if (displayIc > ( cankao_ic_gaoya *0.8) && displayIc < (cankao_ic_gaoya *0.9) && displayIc > 10 && stage == 6) {// "电流过大";
+//                    displayIcStr = displayIcStr + "电流偏低";
+//                    setIcView(Color.RED);//设置颜色
+//                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏低");
+//                }
+                else {
                     ll_firing_IC_2.setTextColor(Color.GREEN);
                     ll_firing_IC_4.setTextColor(Color.GREEN);
                     ll_firing_IC_5.setTextColor(Color.GREEN);
@@ -672,9 +674,20 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            //检测电流小于参考值的80%提示弹框
+            if (twoCount - yichang_time > 1 && denatorCount > 5 && stage == 6 && twoCount > gaoya_cankaoSun && busInfo.getBusCurrentIa() < cankao_ic_diya) {
+                cuowuSun = cuowuSun + 1;
+                yichang_time = twoCount;
+                Log.e(TAG, "高压: 1" );
+            }
 
-            if (denatorCount>5 && stage == 6 && twoCount>15 && busInfo.getBusCurrentIa()  < cankao_ic *0.8 && isshow == 0) {
+            if (twoCount - yichang_time > 1 && denatorCount > 5 && stage == 6 && twoCount > gaoya_cankaoSun && busInfo.getBusCurrentIa() - cankao_ic_gaoya > cankao_ic_gaoya * 0.3) {//检测电流大于低压参考值记录一次
+                cuowuSun = cuowuSun + 1;
+                yichang_time = twoCount;
+                Log.e(TAG, "低压: 2" );
+            }
+
+
+            if (stage == 7 && cuowuSun >= 3 && isshow == 0) {
                 isshow = 1;
                 firstThread.exit = true;
                 firstThread.interrupt();
@@ -684,8 +697,8 @@ public class FiringMainActivity extends SerialPortActivity {
                     e.printStackTrace();
                 }
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前起爆器电流异常,可能是总线线路异常导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前起爆器电流出现异常波动,可能是总线线路异常导致,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNegativeButton("退出", (dialog1, which) -> {
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
@@ -707,20 +720,21 @@ public class FiringMainActivity extends SerialPortActivity {
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
-
             }
 
-            if (save_ic && stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.2&&busInfo.getBusVoltage()-cankao_IV>-0.2) {
-                cankao_ic = busInfo.getBusCurrentIa();//记录参考电流
-                Log.e(TAG, "参考电流: "+cankao_ic );
-                save_ic=false;
-            }
-            if(busInfo.getBusVoltage()>16 && twoCount>15 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) < 100&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) > -100){
-                cankao_IV=busInfo.getBusVoltage();//记录参考电压
-                Log.e(TAG, "参考电压: "+cankao_IV );
-                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 1): "+list_dianliu.get(list_dianliu.size() - 1) );
-                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 3): "+list_dianliu.get(list_dianliu.size() - 3) );
-            }
+//            if (save_ic && stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.2&&busInfo.getBusVoltage()-cankao_IV>-0.2) {
+//                cankao_ic_gaoya = busInfo.getBusCurrentIa();//记录参考电流
+//                Log.e(TAG, "参考电流: "+ cankao_ic_gaoya);
+//                save_ic=false;
+//            }
+//            if(busInfo.getBusVoltage()>16 && twoCount>15 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) < 100&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) > -100){
+//                cankao_IV=busInfo.getBusVoltage();//记录参考电压
+//                Log.e(TAG, "参考电压: "+cankao_IV );
+//                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 1): "+list_dianliu.get(list_dianliu.size() - 1) );
+//                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 3): "+list_dianliu.get(list_dianliu.size() - 3) );
+//            }
+            cankao_ic_gaoya = busInfo.getBusCurrentIa();//记录参考电流
+            //检测电流小于低压参考值记录一次
 
 //            busInfo = null;
             return false;
@@ -1048,6 +1062,13 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * cankaodianliu + "μA");
         tv__qb_dianliu_2.setText(denatorCount * cankaodianliu + "μA");
+        if (denatorCount < 200) {
+            gaoya_cankaoSun = 20;
+        } else if (denatorCount > 200 && denatorCount < 300) {
+            gaoya_cankaoSun = 25;
+        } else if (denatorCount > 300) {
+            gaoya_cankaoSun = 30;
+        }
     }
 
 
@@ -1230,7 +1251,7 @@ public class FiringMainActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Log.e("发送命令", str);//pid + "-" + tid +
-                Utils.writeLog( "->:" + str);
+                Utils.writeLog("->:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {
@@ -1522,7 +1543,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 updataState(qbxm_id);
             }
             if (!isJL) {
-                if (!"FF".equals(qbzt)&&fromCommad.length()==16) {
+                if (!"FF".equals(qbzt) && fromCommad.length() == 16) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.what = 3;
                     msg.obj = qbzt;
@@ -1623,11 +1644,11 @@ public class FiringMainActivity extends SerialPortActivity {
                 writeDenator = null;
                 reThirdWriteCount++;
             }
-            Log.e(TAG, "fromData.getCommicationStatus(): "+fromData.getCommicationStatus() );
-            if(fromData.getCommicationStatus().equals("00")){
+            Log.e(TAG, "fromData.getCommicationStatus(): " + fromData.getCommicationStatus());
+            if (fromData.getCommicationStatus().equals("00")) {
                 Message msg = new Message();
-                msg.what=5;
-                msg.obj=temp.getShellBlastNo();
+                msg.what = 5;
+                msg.obj = temp.getShellBlastNo();
                 Handler_tip.sendMessage(msg);
             }
 
@@ -2126,6 +2147,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             //发出进入起爆模式命令  准备测试计时器    报错
                             if (oneCount >= oneCount_max && secondCmdFlag == 0) {//
                                 if (list_dianliu.size() > 5 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {
+                                    cankao_ic_diya = busInfo.getBusCurrentIa();//低压参考电流值
                                     byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
                                     sendCmd(powerCmd);
                                     increase(5);

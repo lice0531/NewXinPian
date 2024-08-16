@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -85,6 +86,7 @@ import okhttp3.Response;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
+import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.annotation.NonNull;
@@ -1321,7 +1323,7 @@ public class XingbangMain extends SerialPortActivity {
         JSONObject object = new JSONObject();
 
         try {
-            String uniqueId = UUID.randomUUID().toString();
+            String uniqueId =Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("sbbh", equ_no);//设备编号
             object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
@@ -1385,7 +1387,7 @@ public class XingbangMain extends SerialPortActivity {
         JSONObject object = new JSONObject();
 
         try {
-            String uniqueId = UUID.randomUUID().toString();
+            String uniqueId =Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("sbbh", equ_no);//设备编号
             object.put("machine", uniqueId);//设备唯一标识 8d47e396-daed-451d-9b0e-61bc1bb6b134
