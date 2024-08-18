@@ -689,13 +689,13 @@ public class FiringMainActivity extends SerialPortActivity {
 
             if (stage == 7 && cuowuSun >= 3 && isshow == 0) {
                 isshow = 1;
-                firstThread.exit = true;
-                firstThread.interrupt();
-                try {
-                    firstThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                firstThread.exit = true;
+//                firstThread.interrupt();
+//                try {
+//                    firstThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电流出现异常波动,可能是总线线路异常导致,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
@@ -711,9 +711,9 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setNeutralButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
-                                firstThread = new ThreadFirst(allBlastQu);
-                                firstThread.exit = false;
-                                firstThread.start();
+//                                firstThread = new ThreadFirst(allBlastQu);
+//                                firstThread.exit = false;
+//                                firstThread.start();
                                 dialog.dismiss();
                             }
                         })
