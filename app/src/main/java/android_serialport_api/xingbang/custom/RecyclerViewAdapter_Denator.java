@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.custom;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,7 +96,9 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
             }
             if (mLine == 2) {//单发检测页面
                 holder.mTvZhuangTai.setText(detonatorBaseInfo.getStatusName() + "");//状态
-                holder.mTvShuJu.setText(detonatorBaseInfo.getVoltage()+"V " +detonatorBaseInfo.getCurrent()+"μA");
+                holder.mTvShuJu.setText((!TextUtils.isEmpty(detonatorBaseInfo.getVoltage()) ? detonatorBaseInfo.getVoltage()
+                        : "0")+"V " +(!TextUtils.isEmpty(detonatorBaseInfo.getCurrent()) ? detonatorBaseInfo.getCurrent()
+                        : "0")+"μA");
             }
 
             if (mLine == 3 || mLine == 5) {
@@ -119,20 +122,25 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
                 List<DenatorBaseinfo> list_lg = (List<DenatorBaseinfo>) mListData;
                 DenatorBaseinfo dbInfo = list_lg.get(position);
                 holder.mTvShellBlastNo.setText(dbInfo.getShellBlastNo());   // 管壳号
-                holder.mTvYouXiaoQi.setText(dbInfo.getAuthorization());//授权有效期
-                if (dbInfo.getDownloadStatus().equals("0")){
-                    holder.mTvZhuangTai.setText("雷管正常");
-                    holder.mTvZhuangTai.setTextColor(Color.GREEN);
-                }else if(dbInfo.getDownloadStatus().equals("1")){
-                    holder.mTvZhuangTai.setText("雷管在黑名单中");
-                    holder.mTvZhuangTai.setTextColor(Color.RED);
-                }else if(dbInfo.getDownloadStatus().equals("2")){
-                    holder.mTvZhuangTai.setText("雷管已使用");
-                    holder.mTvZhuangTai.setTextColor(Color.RED);
-                }else if(dbInfo.getDownloadStatus().equals("3")){
-                    holder.mTvZhuangTai.setText("申请的雷管UID不存在");
-                    holder.mTvZhuangTai.setTextColor(Color.RED);
-                }else {
+                holder.mTvYouXiaoQi.setText(!TextUtils.isEmpty(dbInfo.getAuthorization()) ?
+                        dbInfo.getAuthorization() : "");//授权有效期
+                if (!TextUtils.isEmpty(dbInfo.getDownloadStatus())) {
+                    if (dbInfo.getDownloadStatus().equals("0")){
+                        holder.mTvZhuangTai.setText("雷管正常");
+                        holder.mTvZhuangTai.setTextColor(Color.GREEN);
+                    }else if(dbInfo.getDownloadStatus().equals("1")){
+                        holder.mTvZhuangTai.setText("雷管在黑名单中");
+                        holder.mTvZhuangTai.setTextColor(Color.RED);
+                    }else if(dbInfo.getDownloadStatus().equals("2")){
+                        holder.mTvZhuangTai.setText("雷管已使用");
+                        holder.mTvZhuangTai.setTextColor(Color.RED);
+                    }else if(dbInfo.getDownloadStatus().equals("3")){
+                        holder.mTvZhuangTai.setText("申请的雷管UID不存在");
+                        holder.mTvZhuangTai.setTextColor(Color.RED);
+                    }else {
+                        holder.mTvZhuangTai.setText("");
+                    }
+                } else {
                     holder.mTvZhuangTai.setText("");
                 }
             }

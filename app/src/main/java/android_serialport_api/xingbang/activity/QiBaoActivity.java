@@ -745,15 +745,18 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     public void updateDenator(From38ChongDian fromData) {
         if (fromData.getShellNo() == null || fromData.getShellNo().trim().length() < 1) return;
         //判断雷管状态是否正价错误数量
-//        if (!"FF".equals(fromData.getCommicationStatus()) ) {//只有充电错误更新状态
+//        if (!"FF".equals(fromData.getCommicationStatus()) ) {
             DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
             denator.setStatusCode(fromData.getCommicationStatus());
             denator.setErrorName(fromData.getCommicationStatusName());
             Application.getDaoSession().update(denator);
-            totalerrorCDNum=totalerrorCDNum+1;
-            twoErrorDenatorFlag = 1;
-            noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
-            Log.e(TAG,"38指令充电结果:" + denator.getErrorName());
+            if (!"FF".equals(fromData.getCommicationStatus())) {
+                //只有充电错误更新错误状态
+                totalerrorCDNum=totalerrorCDNum+1;
+                twoErrorDenatorFlag = 1;
+            }
+        noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+        Log.e(TAG,"38指令充电结果:" + denator.getErrorName());
 //        }
         Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus() );
     }
@@ -1031,7 +1034,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     //byte[] reCmd  = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");
                                     //sendCmd(reCmd);
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                    Thread.sleep(500);
+                                    Thread.sleep(100);
                                     increase(7);
                                     Log.e(TAG,"第7阶段-increase"+ "7");
                                     break;
