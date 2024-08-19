@@ -548,7 +548,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
                                 .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
-                                .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
+                                .setMessage("当前起爆器电压异常,当前芯片短路,请检查线路或芯片后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
                                 .setNegativeButton("退出", (dialog12, which) -> {
                                     close();
@@ -567,7 +567,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
                                 .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
-                                .setMessage("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
+                                .setMessage("当前起爆器电流异常,当前芯片短路,请检查线路或芯片后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
                                 .setNegativeButton("退出", (dialog12, which) -> {
                                     close();
@@ -614,6 +614,46 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             if (tipInfoFlag == 9) {//桥丝不正常
                 show_Toast(getString(R.string.text_line_tip14));
                 SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 10) {//断路
+                AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
+                        .setTitle("总线电流为0")//设置对话框的标题//"成功起爆"
+                        .setMessage("起爆器电流为0,当前芯片断路,请检查线路或芯片后,再次注册")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog12, which) -> {
+                            close();
+                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                            dialog12.dismiss();
+                            finish();
+                        })
+                        .setNegativeButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
+                            dialog12.dismiss();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                if (!ReisterMainPage_line.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
+            }
+            if (tipInfoFlag == 11) {//断路
+                AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
+                        .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
+                        .setMessage("起爆器电流超过200,当前芯片异常,请检查线路或芯片后,再次注册")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog12, which) -> {
+                            close();
+                            sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+                            dialog12.dismiss();
+                            finish();
+                        })
+                        .setNegativeButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
+                            dialog12.dismiss();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                if (!ReisterMainPage_line.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
             }
             if (tipInfoFlag == 88) {//刷新界面
                 showDenatorSum();
@@ -1331,6 +1371,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         // 获取 管壳码
                         insertSingleDenator(detonatorId, zhuce_form);//单发注册
                     }
+                }else if(zhuce_form.getReadStatus().equals("00") && busInfo.getBusCurrentIa()==0){//短路提示
+                    tipInfoFlag = 10;//提示类型桥丝不正常
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 }
             }else {
                 Log.e("错误命令", "fromCommad: "+fromCommad );
@@ -1359,13 +1402,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 Utils.writeRecord("busInfo:" + busInfo.toString());
                 if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                     String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-//                if (busInfo.getBusCurrentIa() > 40) {//判断当前电流是否偏大
-//                    tipInfoFlag = 7;
-//                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
-//                    SoundPlayUtils.play(4);
-//                    zhuce_Flag = 0;
-//                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
-//                }
+                if (busInfo.getBusCurrentIa() > 200) {//判断当前电流是否偏大
+                    tipInfoFlag = 7;
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                    SoundPlayUtils.play(4);
+                    zhuce_Flag = 0;
+                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
+                }
 
                 }
             }else {
