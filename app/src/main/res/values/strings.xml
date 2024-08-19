@@ -394,6 +394,7 @@
     <string name="text_test_ckdl">参考电流</string>
     <string name="text_dialog_err">错误</string>
     <string name="text_test_dlgd">(电流过大)</string>
+    <string name="text_test_dlpd">(电流偏大)</string>
     <string name="text_text_ysdl">(疑似短路)</string>
     <string name="text_test_ysdl">(疑似断路)</string>
     <string name="text_firing_qbz">起爆中,请稍等</string>

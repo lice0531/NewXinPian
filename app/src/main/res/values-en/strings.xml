@@ -387,6 +387,7 @@
     <string name="text_test_ckdl">Reference current</string>
     <string name="text_dialog_err">Errors</string>
     <string name="text_test_dlgd">(Excessive current)</string>
+    <string name="text_test_dlpd">(Excessive current)</string>
     <string name="text_text_ysdl">(Suspected short circuit)</string>
     <string name="text_test_ysdl">(Suspected open circuit)</string>
     <string name="text_firing_qbz">Initiating, please wait a moment</string>
