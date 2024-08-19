@@ -1476,7 +1476,7 @@ public class FiringMainActivity extends SerialPortActivity {
             if (stage == 8 && eightCount != 5) {
                 Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu +
                         "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
-                if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 20, 1) ||
+                if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) ||
                         isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
                     Log.e(TAG, "case8电流或者电压不稳定,需延长5秒轮训40指令，页面上显示起爆中");
                     increase(13);
@@ -1489,14 +1489,14 @@ public class FiringMainActivity extends SerialPortActivity {
             if (stage == 13 && thirteenCount != 5) {
                 Log.e(TAG, "case13thirteenCount：" + thirteenCount + "--起爆中的电流: " + busInfo.getBusCurrentIa()
                         + "--beforeC:" + befor_dianliu + "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
-                if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 20, 1) &&
+                if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) &&
                         isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
                     isCasePeakWd = true;
                     isCaseVoltageWd = true;
                     Log.e(TAG, "case13电压和电流都不稳定,需展示出强制起爆的dialog");
                     increase(14);
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                } else if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 20, 1)) {
+                } else if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1)) {
                     isCasePeakWd = true;
                     isCaseVoltageWd = false;
                     Log.e(TAG, "case13电流不稳定,需展示出强制起爆的dialog");
