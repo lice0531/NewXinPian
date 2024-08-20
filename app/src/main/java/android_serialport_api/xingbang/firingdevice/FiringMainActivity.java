@@ -207,6 +207,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_id = "-1";
     private String qbxm_name = "";
     private int isshow = 0;
+    private int isshow2 = 0;
     private float cankao_ic_gaoya = 0;
     private float cankao_ic_diya = 0;
     private float cankao_IV = 0;
@@ -627,6 +628,45 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
+
+            Log.e(TAG, "-----------: ");
+            Log.e(TAG, "isshow2: "+isshow2 );
+            Log.e(TAG, "oneCount: "+oneCount );
+            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+
+            if (isshow2==0 && oneCount >=oneCount_max*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7) {// "电流过大";
+                isshow2 = 1;
+
+                firstThread.exit = true;
+                firstThread.interrupt();
+                try {
+                    firstThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前起爆器电流过大,可能是总线线路异常导致,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog1, which) -> {
+                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                            sendCmd(reCmd);
+                            dialog1.dismiss();
+                            closeThread();
+                            closeForm();
+                            finish();
+                        })
+                        .setNeutralButton("确定", (dialog15, i) -> {
+                            firstThread = new ThreadFirst(allBlastQu);
+                            firstThread.exit = false;
+                            firstThread.start();
+                            dialog15.dismiss();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
+            }
+
 
             //电流大于4000,重启检测阶段
             if (oneCount > 5 && stage == 2 && busInfo != null) {
@@ -2837,8 +2877,25 @@ public class FiringMainActivity extends SerialPortActivity {
     private void getblastQueue() {
         allBlastQu = new ConcurrentLinkedQueue<>();
         errorList = new ConcurrentLinkedQueue<>();
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        for (DenatorBaseinfo denatorBaseinfo : list) {
+
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
+//        for (DenatorBaseinfo d : denatorlist) {
+//            VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
+//            vo.setBlastserial(d.getBlastserial());
+//            vo.setDelay((short) d.getDelay());
+//            vo.setShellBlastNo(d.getShellBlastNo());
+//            vo.setDenatorId(d.getDenatorId());
+//            vo.setDenatorIdSup(d.getDenatorIdSup());
+//            vo.setZhu_yscs(d.getZhu_yscs());
+//            vo.setCong_yscs(d.getCong_yscs());
+//            vo.setLgzt(d.getErrorCode());
+//            allBlastQu.offer(vo);
+//            list_all_lg.add(vo);
+//        }
+//
+//        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
+        for (DenatorBaseinfo denatorBaseinfo : denatorlist) {
             int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
             String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
             String denatorId = denatorBaseinfo.getDenatorId();//管壳号
@@ -2852,6 +2909,7 @@ public class FiringMainActivity extends SerialPortActivity {
             vo.setDenatorIdSup(denatorIdSup);
             vo.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
             vo.setCong_yscs(denatorBaseinfo.getCong_yscs());
+            vo.setLgzt(denatorBaseinfo.getErrorCode());
             allBlastQu.offer(vo);
         }
         reThirdWriteCount = 0;
