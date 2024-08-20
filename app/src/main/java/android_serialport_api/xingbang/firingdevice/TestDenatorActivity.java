@@ -651,10 +651,16 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * cankaodianliu*2) && firstCount < Jiance_time * 0.5) {//5
+                    } else if (displayIc > (denatorCount * cankaodianliu*2) && firstCount < Jiance_time * 0.6) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
+                        ll_firing_IC_4.setTextSize(20);
+                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
+                    } else if (displayIc > (denatorCount * cankaodianliu * 1.3) &&displayIc < (denatorCount * cankaodianliu *2) && firstCount < Jiance_time * 0.6) {//5
+                        Log.e(TAG, "电流过大: ");
+                        displayIcStr = displayIcStr + getString(R.string.text_test_dlpd2);
+                        ll_firing_IC_4.setTextColor(Color.RED);// "电流偏大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < 4 + denatorCount * cankaodianliu*0.5 && firstCount < Jiance_time * 0.5) {//5
