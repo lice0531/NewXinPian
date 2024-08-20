@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="M900_PT_V2.1_240806"
+            android:text="@string/app_version_name"
             android:textSize="20sp"
             />
     </LinearLayout>

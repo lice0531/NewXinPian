@@ -356,4 +356,19 @@
     <string name="text_test_ysdl">(Suspected open circuit)</string>
     <string name="text_chongdian_state0">充电异常</string>
     <string name="text_chongdian_stateFF">充电成功</string>
+    <string name="app_version_name">M900_PT_V2.1_240806</string>
+    <string name="text_sync_tip1">Data is empty</string>
+    <string name="text_sync_tip2">Sync successful</string>
+    <string name="text_sync_tip3">Connected</string>
+    <string name="text_sync_tip4">Received detonation test command</string>
+    <string name="text_sync_tip5">Received command to prepare for charging</string>
+    <string name="text_sync_tip6">Received detonation command</string>
+    <string name="text_sync_tip7">Data sent successfully</string>
+    <string name="text_sync_tip8">Connecting…</string>
+    <string name="text_sync_tip9">Sent</string>
+    <string name="text_sync_tip10">Retrieving data</string>
+    <string name="text_sync_tip11">Sync has been disconnected</string>
+    <string name="text_sync_tip12">Retrieving data</string>
+    <string name="text_sync_szbh">Set Number</string>
+    <string name="text_sync_dqyc">Current delay(m)：</string>
 </resources>

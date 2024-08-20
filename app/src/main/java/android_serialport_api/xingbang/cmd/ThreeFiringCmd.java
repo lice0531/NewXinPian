@@ -510,4 +510,14 @@ public class ThreeFiringCmd {
 		}
 		return null;
 	}
+
+	/***
+	 * 发送切换模式指令
+	 * @param addr
+	 * @return
+	 */
+	public static byte[] setToXbCommon_Translate_83(String addr){
+		String command = addr + DefCommand.CMD_5_TRANSLATE_83 + "00";//83
+		return DefCommand.getCommadBytes(command);
+	}
 }

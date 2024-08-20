@@ -63,6 +63,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.jianlian.SyncActivityYouxian;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -82,6 +83,8 @@ public class PracticeActivity extends SerialPortActivity {
     TextView tvCeshiDianya;
     @BindView(R.id.but_pre)
     Button butPre;
+    @BindView(R.id.but_jilian)
+    Button butJianLian;
     @BindView(R.id.ll_firing_4)
     LinearLayout llFiring4;
     @BindView(R.id.activity_practice)
@@ -518,7 +521,8 @@ public class PracticeActivity extends SerialPortActivity {
     }
 
 
-    @OnClick({R.id.but_pre, R.id.but_write, R.id.btn_read,R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_test})
+    @OnClick({R.id.but_pre, R.id.but_write, R.id.btn_read,R.id.btn_read_log, R.id.but_send,
+            R.id.but_lianjie, R.id.but_jilian,R.id.but_receive, R.id.btn_openFile, R.id.but_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
 
@@ -641,6 +645,11 @@ public class PracticeActivity extends SerialPortActivity {
 
             case R.id.but_test:
                 startActivity(new Intent(this, TestActivity.class));
+                break;
+            case R.id.but_jilian://进入级联页面
+                Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
+                startActivity(intent9);
+                finish();
                 break;
         }
     }

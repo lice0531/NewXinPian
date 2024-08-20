@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/rl_uplayout"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activity.UploadDataActivity">
+
     <include
         android:id="@+id/totalbar"
         layout="@layout/title_layout"
@@ -17,34 +18,27 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ud_jilu_rv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/totalbar"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="0.5dp"
+        android:layout_marginRight="0.5dp"
+        android:background="@drawable/rv_gray_0dp"
         android:listSelector="@drawable/listview_color_selector"
         android:scrollbarFadeDuration="0"
-        android:scrollbars="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/totalbar" />
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout9"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        >
+        android:scrollbars="none" />
 
-        <Button
-            android:id="@+id/ud_btn_upload"
-            style="@style/allbtntstyle_tuanbiao"
-            android:onClick="onClick"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:text="一键上传所有数据"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+    <Button
+        android:id="@+id/ud_btn_upload"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_deepgray"
+        android:onClick="onClick"
+        android:text="一键上传所有数据"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+</RelativeLayout>

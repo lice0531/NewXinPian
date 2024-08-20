@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="app_name">煋邦科技KT50起爆器</string>
     <string name="error_configuration">请先配置你的串口.</string>
@@ -366,4 +366,19 @@
     <string name="text_test_ysdl">(疑似断路)</string>
     <string name="text_chongdian_state0">充电异常</string>
     <string name="text_chongdian_stateFF">充电成功</string>
+    <string name="app_version_name">M900_PT_V2.1_240806</string>
+    <string name="text_sync_tip1">数据为空</string>
+    <string name="text_sync_tip2">同步成功</string>
+    <string name="text_sync_tip3">已连接</string>
+    <string name="text_sync_tip4">收到起爆测试指令</string>
+    <string name="text_sync_tip5">收到准备充电指令</string>
+    <string name="text_sync_tip6">收到起爆指令</string>
+    <string name="text_sync_tip7">数据发送成功</string>
+    <string name="text_sync_tip8">连接中...</string>
+    <string name="text_sync_tip9">发送了</string>
+    <string name="text_sync_tip10">正在回传数据</string>
+    <string name="text_sync_tip11">已经断开同步</string>
+    <string name="text_sync_tip12">正在回传数据</string>
+    <string name="text_sync_szbh">设置编号</string>
+    <string name="text_sync_dqyc">当前延迟(m)：</string>
 </resources>

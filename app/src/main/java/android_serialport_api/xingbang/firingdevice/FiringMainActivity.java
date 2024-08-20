@@ -56,14 +56,20 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.jianlian.FirstEvent;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * @author lice
@@ -71,7 +77,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class FiringMainActivity extends SerialPortActivity {
-
+    public static final int RESULT_SUCCESS = 1;
     private Button btn_return1;
     private Button btn_return2;
     private Button btn_return4;
@@ -187,6 +193,14 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private String TAG = "起爆页面";
+    private String deviceStatus = "01";//显示设备状态:01（在线） 02（等待检测） 03（检测结束） 04（正在充电） 05（起爆结束）
+    private String cPeak = "0";//主控要显示的子机电流信息
+    private String qbResult = "";//给主控更新起爆信息
+    private boolean isSendWaitQb = false;//是否收到主控切换模式指令
+    private boolean isGetQbResult = false;//是否收到起爆结束指令
+    private boolean kaiguan = true;
+    private boolean isJL = false;//是否是从级联的指令进入的起爆页面
+    private String isYxjl;//接收有线级联进来起爆页面的flag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +231,8 @@ public class FiringMainActivity extends SerialPortActivity {
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
+        //给主机发消息告知已进入起爆页面
+        EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
     }
 
     private void initView() {
@@ -1045,7 +1061,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //            secondCmdFlag = 1;
 //            thirdWriteCount = 0;
 //            increase(3);
-
+            EventBus.getDefault().post(new FirstEvent("ddjc", "01"));//旧的命令
+            Log.e(TAG, "收到30指令，进入等待检测阶段");
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
             From32DenatorFiring fromData = ThreeFiringCmd.decode_31("00", locatBuf);
 //            Log.e("起爆测试结果", "fromData.toString(): "+fromData.toString() );
@@ -1067,13 +1084,17 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
             sixCmdSerial = 2;
-
+            deviceStatus = "04";//正在充电
+            EventBus.getDefault().post(new FirstEvent("zzcd", "01"));//准备充电//旧的命令
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 3;
 
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            EventBus.getDefault().post(new FirstEvent("qbjg", "01"));//旧的命令
+            deviceStatus = "05";//起爆结束
+            isGetQbResult = true;
             if (qibaoNoFlag < 5) {
                 Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
 //                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
@@ -1089,6 +1110,12 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 if (!qbxm_id.equals("-1")) {
                     updataState(qbxm_id);
+                }
+                if (isJL) {
+                    EventBus.getDefault().post(new FirstEvent("open485","B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult));
+                    Log.e("起爆结束了","去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult);
                 }
                 increase(11);//跳到第9阶段
                 Log.e("increase", "9");
@@ -1218,6 +1245,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("错误数量", "totalerrorNum: " + totalerrorNum);
                 //disPlayNoReisterDenator();
                 Log.e(TAG, "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
+                deviceStatus = "03";//检测结束
+                EventBus.getDefault().post(new FirstEvent("jcjg", "", "", denatorCount+"", totalerrorNum+""));//旧的命令
+//                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum, errNum,currentPeak));
 //                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
 //                    Log.e(TAG, "大于4000u ，全错: ");
 //                    if (chongfu) {
@@ -2074,6 +2104,87 @@ public class FiringMainActivity extends SerialPortActivity {
             field.set(dialog, true);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void jixu() {
+        Log.e(TAG, "继续线程:------------------ ");
+        firstThread = new ThreadFirst(allBlastQu);
+        firstThread.exit = false;
+        firstThread.start();
+    }
+
+    /**
+     * 级联接收命令代码 eventbus
+     */
+    private long lastProcessedTime = 0;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FirstEvent event) {
+        String msg = event.getMsg();
+        Log.e("起爆页面接收到的消息", "msg: " + msg);
+        if (msg.equals("jixu")) {
+            if (Wait_Count == 1) {
+                increase(6);
+                Utils.writeRecord("-------------------开始充电-------------------");
+            }
+            EventBus.getDefault().post(new FirstEvent("sendA4Data","B4" + MmkvUtils.getcode("ACode", "") +
+                    deviceStatus + qbResult));
+        } else if (msg.equals("qibao")) {
+            Log.e("起爆页面", "收到级联起爆指令 ");
+            if (kaiguan) {
+                jixu();
+                kaiguan = false;
+            }
+            Log.e(TAG, "继续3: ");
+            if (sixExchangeCount == 0) {
+                if (stage == 7) {
+                    keyFireCmd = 1;
+                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                }
+            }
+
+        } else if (msg.equals("finish")) {
+            closeThread();
+            closeForm();
+            finish();
+        } else if (msg.equals("pollMsg")) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastProcessedTime > 1000) {
+                //总是出现给主控发多次消息情况  所以检查是否距离上次处理超过 1 秒，优化为：1秒内只发送一次数据给主控
+                //收到主控轮巡的消息了  将实时的电流及设备状态发送给串口进行同步
+                isJL = true;
+                int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
+                int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
+                String stureNum = Utils.strPaddingZero(allNum, 3);
+                String serrNum = Utils.strPaddingZero(errNum, 3);
+                String currentPeak = Utils.strPaddingZero(cPeak, 6);
+                EventBus.getDefault().post(new FirstEvent("ssjc", deviceStatus, "", stureNum, serrNum,currentPeak));
+                lastProcessedTime = currentTime; // 更新上次处理时间
+                qbResult = stureNum + serrNum + currentPeak;
+                Log.e("多次接收到消息","只处理一次，起爆信息：" + qbResult);
+            }
+        } else if (msg.equals("sendCmd83")) {
+            // 此时进入时钟同步模式  向核心板发送指令  让核心板决定谁起爆
+            Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "下发83指令");
+            sendCmd(ThreeFiringCmd.setToXbCommon_Translate_83("" + MmkvUtils.getcode("ACode", "")));
+            EventBus.getDefault().post(new FirstEvent("close485"));
+        } else if (msg.equals("sendWaitQb")) {
+            isSendWaitQb = true;
+            if (kaiguan) {
+                jixu();
+                kaiguan = false;
+            }
+//            Log.e(TAG, "继续3: ");
+//            if (sixExchangeCount == 0) {
+//                if (stage == 7) {
+//                    keyFireCmd = 1;
+//                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+//                }
+//            }
+            //此时在页面显示出时钟校验的文字
+            increase(12);
+            Log.e("第5阶段-increase接收到时钟校验消息", "12" + msg);
         }
     }
 }

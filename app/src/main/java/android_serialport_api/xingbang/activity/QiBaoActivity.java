@@ -1443,7 +1443,6 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //            firstThread.run();
 //            increase(5);
 //            mHandler_1.sendMessage(mHandler_1.obtainMessage());
-            Log.e(TAG,"38指令已返回,进入充电检测");
             if (stage == 33) {
                 From38ChongDian fromData = ThreeFiringCmd.jiexi_38("00", locatBuf);
                 if (fromData != null && writeDenator != null) {

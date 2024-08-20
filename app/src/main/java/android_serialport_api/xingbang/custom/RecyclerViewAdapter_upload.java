@@ -2,13 +2,17 @@ package android_serialport_api.xingbang.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -16,6 +20,7 @@ import java.util.List;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
+import android_serialport_api.xingbang.models.VoFireHisMain;
 
 
 /**
@@ -32,8 +37,8 @@ public class RecyclerViewAdapter_upload<T> extends RecyclerView.Adapter<Recycler
 
     public interface OnItemClickListener {
         void onButtonClicked(View view, int position);
+        void onItemClick(View view,int position);
     }
-
 
     public void setOnItemClickListener(OnItemClickListener clickListener) {
         this.mOnItemClickListener = clickListener;
@@ -74,20 +79,28 @@ public class RecyclerViewAdapter_upload<T> extends RecyclerView.Adapter<Recycler
 
        if (mIndex == 7) {
             if (mLine == 7) {//上传页面
-                List<DenatorHis_Main> list_lg = (List<DenatorHis_Main>) mListData;
-                DenatorHis_Main dbInfo = list_lg.get(position);
+                List<VoFireHisMain> list_lg = (List<VoFireHisMain>) mListData;
+                VoFireHisMain dbInfo = list_lg.get(position);
                 holder.mTvtime.setText(dbInfo.getBlastdate());   // 日期
-                if (dbInfo.getPro_htid().length() > 0) {
-                    holder.mTvhtbh.setText("合同编号:" + dbInfo.getPro_htid() + "");//合同编号
-                } else if (dbInfo.getPro_xmbh().length() > 0) {
-                    holder.mTvhtbh.setText("项目编号:" + dbInfo.getPro_xmbh() + "");//项目编号
-                } else if (dbInfo.getPro_dwdm().length() > 0) {
-                    holder.mTvhtbh.setText("单位代码:" + dbInfo.getPro_dwdm() + "");//合同编号
+                if (dbInfo.getProjectNo().length() > 0) {
+                    holder.mTvhtbh.setText("合同编号:" + dbInfo.getProjectNo() + "");//合同编号
+                } else if (dbInfo.getXmbh().length() > 0) {
+                    holder.mTvhtbh.setText("项目编号:" + dbInfo.getXmbh() + "");//项目编号
+                } else if (dbInfo.getDwdm().length() > 0) {
+                    holder.mTvhtbh.setText("单位代码:" + dbInfo.getDwdm() + "");//单位代码
                 }else {
                     holder.mTvhtbh.setText("合同编号:");
                 }
-
-                holder.mTvtotal.setText(dbInfo.getTotal()+"");//数量
+                holder.mTvtotal.setText("数量: " + dbInfo.getTotal()+"发");//数量
+                if("已上传".equals(dbInfo.getUploadStatus())) {
+                    holder.cl_main.setBackgroundColor(Color.RED);
+                    holder.btnUplod.setBackground(null);
+                    holder.btnUplod.setText("已上传");
+                } else {
+                    holder.cl_main.setBackgroundColor(Color.GREEN);
+                    holder.btnUplod.setBackground(mContext.getResources().getDrawable(R.drawable.rv_gray_8dp));
+                    holder.btnUplod.setText("上传数据");
+                }
             }
         }
     }
@@ -103,7 +116,7 @@ public class RecyclerViewAdapter_upload<T> extends RecyclerView.Adapter<Recycler
         TextView mTvtotal;
         TextView mTvtime;
         Button btnUplod;
-
+        LinearLayout cl_main;
         ViewHolder(View view,final OnItemClickListener onClickListener) {
             super(view);
 
@@ -112,12 +125,22 @@ public class RecyclerViewAdapter_upload<T> extends RecyclerView.Adapter<Recycler
             mTvtotal = view.findViewById(R.id.tv_total);
             mTvtime = view.findViewById(R.id.tv_time);
             btnUplod = view.findViewById(R.id.btn_upload);
+            cl_main = view.findViewById(R.id.cl_main);
             btnUplod.setOnClickListener(v -> {
                 if (onClickListener != null) {
                     int position = getBindingAdapterPosition();
                     //确保position值有效
                     if (position != RecyclerView.NO_POSITION) {
-                        onClickListener.onButtonClicked(view, position);
+                        onClickListener.onButtonClicked(v, position);
+                    }
+                }
+            });
+            cl_main.setOnClickListener(v -> {
+                if (onClickListener != null) {
+                    int position = getBindingAdapterPosition();
+                    //确保position值有效
+                    if (position != RecyclerView.NO_POSITION) {
+                        onClickListener.onItemClick(v, position);
                     }
                 }
             });
@@ -135,6 +158,4 @@ public class RecyclerViewAdapter_upload<T> extends RecyclerView.Adapter<Recycler
     public void setOnItemLongClick(OnItemLongClick onitemLongClick) {
         this.onitemLongClick = onitemLongClick;
     }
-
-
 }

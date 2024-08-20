@@ -13,6 +13,7 @@ import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
@@ -31,6 +32,7 @@ public class GreenDaoMaster {
     private MessageBeanDao messageBeanDao;
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
+    private DenatorHis_MainDao denatorHis_mainDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -40,6 +42,7 @@ public class GreenDaoMaster {
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.messageBeanDao = Application.getDaoSession().getMessageBeanDao();
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
+        this.denatorHis_mainDao = Application.getDaoSession().getDenatorHis_MainDao();
     }
 
     public List<Defactory> queryDefactoryToIsSelected(String selected) {
@@ -346,5 +349,12 @@ public class GreenDaoMaster {
             return 1;
         }
 
+    }
+
+    public DenatorHis_Main queryDetonatorForMainHis(String time) {
+        return denatorHis_mainDao
+                .queryBuilder()
+                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .unique();
     }
 }

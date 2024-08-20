@@ -13,24 +13,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.kfree.expd.ExpdDevMgr;
-
-import org.litepal.LitePal;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityNewMainBinding;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.Project;
-import android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan;
 import android_serialport_api.xingbang.firingdevice.SetEnvMainActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -83,7 +76,6 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                 getUserMessage();//获取用户信息
             }
         }.start();
-
 
     }
 

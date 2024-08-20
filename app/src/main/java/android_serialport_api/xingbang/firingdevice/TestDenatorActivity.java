@@ -59,7 +59,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TestDenatorActivity extends SerialPortActivity {
-
+    public static final int RESULT_SUCCESS = 1;
     private DatabaseHelper mMyDatabaseHelper;
     private List<VoBlastModel> list_lg = new ArrayList<>();
     private SQLiteDatabase db;

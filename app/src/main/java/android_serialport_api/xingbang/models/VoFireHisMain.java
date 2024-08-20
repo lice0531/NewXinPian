@@ -17,6 +17,15 @@ public class VoFireHisMain {
 	private String dwdm;//单位代码
 	private String xmbh;//项目编号
 	private String log;//日志
+	private int total;//雷管数量
+
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
 
 	public String getId() {
 		return id;
