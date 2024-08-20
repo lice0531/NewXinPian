@@ -564,8 +564,8 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * cankaodianliu * 1.3) &&displayIc > (denatorCount * cankaodianliu *2) && displayIc > 10 && stage != 6 && stage != 7) {// "电流偏大";
-                    displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
+                } else if (displayIc > (denatorCount * cankaodianliu * 1.3) && displayIc < (denatorCount * cankaodianliu *2) && displayIc > 10 && stage != 6 && stage != 7) {// "电流偏大";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
                 } else if (displayIc > (denatorCount * cankaodianliu * 2) && displayIc > 10 && stage != 6 && stage != 7) {// "电流过大";
@@ -634,7 +634,7 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e(TAG, "oneCount: "+oneCount );
             Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
 
-            if (isshow2==0 && oneCount >=oneCount_max*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7) {// "电流过大";
+            if (isshow2==0 && oneCount >=oneCount_max*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7 && stage != 8) {// "电流过大";
                 isshow2 = 1;
 
                 firstThread.exit = true;
