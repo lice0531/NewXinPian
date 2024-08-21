@@ -140,13 +140,14 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int zeroCmdReFlag = 0;//第0阶段结束标志 为1时0阶段结束
     private volatile int firstWaitCount = 3;//第一阶段计时
     private int oneCount = 0;//低压时间
-    private int oneCount_panduan = 0;//低压时间
+    private int oneCount_panduan = 0;//低压合格次数
+    private volatile int oneCount_max = 20;
     private int twoCount = 0;//高压时间
     private int twoCount_panduan = 0;//高压时间
-    private int gaoya_cankaoSun = 0;//高压稳定时间
+    private volatile int sixExchangeCount = 25;//第6阶最大时间
+    private int gaoya_cankaoSun = 0;//高压记录参考电流的时间
     private int yichang_time = 0;//出现错误的时间
     private int cuowuSun = 0;//电流异常错误次数
-    private volatile int oneCount_max = 20;
     private volatile int Wait_Count = 5;
     private volatile int firstCmdReFlag = 0;//发出打开电源命令是否返回
     private volatile int secondCount = 0;//第二阶段 计时器
@@ -155,7 +156,6 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int thirdWriteCount;//雷管发送计数器
     private volatile int thirdWriteCount2;//雷管发送计数器
     private volatile int sevenDisplay = 0;//第7步，是否显示
-    private volatile int sixExchangeCount = 20;//第6阶最大时间
     private volatile int sevenCount = 0;//第7阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
@@ -629,10 +629,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.show();
             }
 
-            Log.e(TAG, "-----------: ");
-            Log.e(TAG, "isshow2: "+isshow2 );
-            Log.e(TAG, "oneCount: "+oneCount );
-            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+//            Log.e(TAG, "-----------: ");
+//            Log.e(TAG, "isshow2: "+isshow2 );
+//            Log.e(TAG, "oneCount: "+oneCount );
+//            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
 
             if (isshow2==0 && oneCount >=oneCount_max*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7 && stage != 8) {// "电流过大";
                 isshow2 = 1;
@@ -1109,9 +1109,10 @@ public class FiringMainActivity extends SerialPortActivity {
         tv__qb_dianliu_1.setText(denatorCount * cankaodianliu + "μA");
         tv__qb_dianliu_2.setText(denatorCount * cankaodianliu + "μA");
         if (denatorCount < 200) {
-            gaoya_cankaoSun = 20;
-        } else if (denatorCount > 200 && denatorCount < 300) {
             gaoya_cankaoSun = 25;
+        } else if (denatorCount > 200 && denatorCount < 300) {
+            gaoya_cankaoSun = 30;
+            sixExchangeCount = 30;
         } else if (denatorCount > 300) {
             gaoya_cankaoSun = 40;
             sixExchangeCount = 40;
@@ -2203,6 +2204,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                         Log.e("第5阶段-increase", "5");
                                         Log.e("充电检测WaitCount", Wait_Count + "");
                                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    }else {
+                                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                                     }
                                 }
                                 //时间到达最大值,就直接跳转
@@ -2365,7 +2368,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            Log.e("等待充电", "------");
                             break;
                         case 5://充电检测阶段38指令计时器
-                            oneCount++;
+
                             Thread.sleep(1000);
                             Log.e("充电检测oneCount", oneCount + "");
                             //说明电源打开命令未返回
@@ -2376,9 +2379,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                 increase(3);
                                 Log.e("第3阶段-increase", "3");
                             }
+                            oneCount++;
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 6://充电阶段
+
                             if (twoCount == 0) {
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_3("00"));//32充电
                             }
@@ -2396,14 +2401,14 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
 
                             if (twoCount == 5) {//第5秒时,发送高压充电指令,继电器应该响
-
                                 Log.e(TAG, "发送33高压输出指令");
                                 sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_4("00"));//33高压输出
                             }
 
-                            if (twoCount >= sixExchangeCount && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {//48
+                            if (twoCount > sixExchangeCount && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {//48
                                 twoCount_panduan++;
-                                if(twoCount_panduan>=5){
+                                Log.e(TAG, "twoCount_panduan: "+twoCount_panduan );
+                                if(twoCount_panduan>5){
                                     Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
                                     if (sixCmdSerial == 3) {
                                         //跳转到1+5倒数计时5分钟阶段
@@ -2418,6 +2423,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
 
                             }
+                            Log.e(TAG, "twoCount: "+twoCount );
+                            Log.e(TAG, "ChongDian_time: "+ChongDian_time );
                             //到达最大值之后,直接跳转
                             if (twoCount >= ChongDian_time) {
                                 if (sixCmdSerial == 3) {

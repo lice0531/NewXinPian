@@ -95,7 +95,8 @@ public class TestDenatorActivity extends SerialPortActivity {
     private Handler checkHandler = null;//更正错误
     private static volatile int stage;
     private volatile int firstCount = 0;
-    private volatile int firstCount_max = 20;
+    private volatile int firstCount_min = 25;
+    private int firstCount_panduan = 0;//低压合格次数
     private volatile int sixCount = 0;
     private volatile VoDenatorBaseInfo writeDenator;
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
@@ -974,16 +975,24 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
                             Log.e(TAG, "firstCount1: " + firstCount + "--" + Preparation_time);
-                            Log.e(TAG, "firstCount: " + firstCount + "--" + "firstCount_max = " + firstCount_max);
-                            if (firstCount >= firstCount_max && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >-20) {
+                            Log.e(TAG, "firstCount: " + firstCount + "--" + "firstCount_max = " + firstCount_min);
+                            if (firstCount >= firstCount_min && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >-20) {
+                                firstCount_panduan++;
                                 Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size()+"--电流"+list_dianliu.get(list_dianliu.size()-1));
                                 Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size() - 5)+"--电流"+list_dianliu.get(list_dianliu.size()- 5));
                                 Log.e(TAG, "list_dianliu.get(list_dianliu.size()-1)-list_dianliu.get(list_dianliu.size()-5): " + (list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5)));
 
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
+                                Log.e(TAG, "firstCount_panduan: " +firstCount_panduan);
+//                                Thread.sleep(1000);//为了发40后等待
+//                                stage = 3;
+//                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+
+                            }
+                            if(firstCount_panduan>=5){
                                 Thread.sleep(1000);//为了发40后等待
-                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 stage = 3;
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 break;
                             }
                             //到达最大时间,直接跳转
