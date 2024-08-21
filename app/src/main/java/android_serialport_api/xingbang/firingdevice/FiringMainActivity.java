@@ -2156,6 +2156,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                sendCmd(reCmd);
 //                            }
                             if (eightCount >= 1) {
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;
@@ -2209,7 +2210,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 13://起爆检测电流稳定性
                             if (thirteenCount >= 1) {
-                                sendCmd( FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 thirteenCount--;
