@@ -1574,10 +1574,10 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNeutralButton("继续", (dialog1, which) -> {
+                    .setNegativeButton("继续", (dialog1, which) -> {
                         off(true);//重新检测
                         dialog1.dismiss();
-                    }).setNegativeButton("退出", (dialog12, which) -> {
+                    }).setNeutralButton ("退出", (dialog12, which) -> {
                         stopXunHuan();
                     }).create();
             if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
@@ -1612,10 +1612,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     .setCancelable(false)
                     //设置对话框的按钮
-                    .setNeutralButton("继续", (dialog1, which) -> {
+                    .setNegativeButton ("继续", (dialog1, which) -> {
                         off(true);//重新检测
                         dialog1.dismiss();
-                    }).setNegativeButton("退出", (dialog12, which) -> {
+                    }).setNeutralButton("退出", (dialog12, which) -> {
                         stopXunHuan();
                     }).create();
             dialog.show();

@@ -429,7 +429,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            increase(6);//充电阶段
 ////                            version_1 = true;
 //                        })
-                .setNeutralButton(R.string.text_qd, (dialog2, which) -> {
+                .setPositiveButton(R.string.text_qd, (dialog2, which) -> {
                     //这里明确下需求后再确定要不要退出当前页面
 //                    dialog2.dismiss();
 //                    if (type == 1) {
@@ -453,7 +453,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle("当前雷管信息不完整")//设置对话框的标题
                         .setMessage("当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作")//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNeutralButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                             MmkvUtils.savecode("isTestDenator", "N");
@@ -497,11 +497,11 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle("电流异常!")//设置对话框的标题
                         .setMessage("系统检测到:当前电流异常,可能导致起爆失败!")//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNeutralButton("退出", (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
-                        .setNeutralButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
+                        .setNegativeButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 dialog.show();
             } else if (msg.what == 5) {
@@ -648,7 +648,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电流过大,可能是总线线路异常导致,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        . setNeutralButton("退出", (dialog1, which) -> {
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                             sendCmd(reCmd);
                             dialog1.dismiss();
@@ -656,7 +656,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             closeForm();
                             finish();
                         })
-                        .setNeutralButton("确定", (dialog15, i) -> {
+                        .setNegativeButton("继续", (dialog15, i) -> {
                             firstThread = new ThreadFirst(allBlastQu);
                             firstThread.exit = false;
                             firstThread.start();
@@ -746,7 +746,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电流出现异常波动,可能是总线线路异常导致,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNeutralButton ("退出", (dialog1, which) -> {
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                             sendCmd(reCmd);
                             dialog1.dismiss();
@@ -754,7 +754,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             closeForm();
                             finish();
                         })
-                        .setNeutralButton("确定", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("继续", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
 //                                firstThread = new ThreadFirst(allBlastQu);
@@ -1387,12 +1387,12 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
                         .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog13, which) -> {
+                        .setNeutralButton ("退出", (dialog13, which) -> {
                             dialog13.dismiss();
                             finish();
                             MmkvUtils.savecode("isTestDenator", "N");
                         })
-                        .setNeutralButton("继续", (dialog2, which) -> {
+                        .setNegativeButton("继续", (dialog2, which) -> {
                             dialog2.dismiss();
                             firstThread.start();
                         })
@@ -2000,7 +2000,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                     sendCmd(reCmd);
                     if (chongfu) {
-                        initDialog_zanting("请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。");//弹出框
+                        initDialog_zanting("请检查线路情况,确认无误后点继续进行检测。");//弹出框
                     } else {
                         initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。", 5);//弹出框
                     }
@@ -2075,14 +2075,14 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setCancelable(false)
                         .setMessage("当前" + content + "不稳定,恐影响起爆结果，是否强制起爆")//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNeutralButton ("退出", (dialog1, which) -> {
                             byte[] exCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
                             sendCmd(exCmd);
                             dialog1.dismiss();
                             finish();
                             MmkvUtils.savecode("isTestDenator", "N");
                         })
-                        .setNeutralButton("确定", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -3203,11 +3203,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     .setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNeutralButton("重检", (dialog1, which) -> {
+                    .setNegativeButton ("重检", (dialog1, which) -> {
                         off();//重新检测
                         dialog1.dismiss();
                     })
-                    .setNegativeButton("退出", (dialog12, which) -> {
+                    .setNeutralButton("退出", (dialog12, which) -> {
                         dialog12.cancel();
                         closeThread();
                         closeForm();
