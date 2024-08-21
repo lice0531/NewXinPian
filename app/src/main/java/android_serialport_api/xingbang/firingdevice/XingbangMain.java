@@ -283,7 +283,7 @@ public class XingbangMain extends SerialPortActivity {
                 if(duanlu_sun==5){
 
                     Utils.writeRecord("--主页--:总线短路");
-                    close();
+
                     AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                             .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
                             .setMessage("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
@@ -292,6 +292,7 @@ public class XingbangMain extends SerialPortActivity {
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                                 dialog12.dismiss();
                                 finish();
+                                close();
                                 duanlu_sun=0;
                             })
                             .setNegativeButton("继续", (dialog1, which) -> {

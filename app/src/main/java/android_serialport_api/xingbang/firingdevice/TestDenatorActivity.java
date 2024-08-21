@@ -724,7 +724,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",true);//弹出框
 //                        } else {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                        initDialog_zanting_xiadian("当前电流过大,请检查线路短路等情况,排查线路故障后,在进行测试。");//弹出框
+                        initDialog_zanting_xiadian("当前电流过大,请检查线路是否存在短路,漏电等情况,排查线路故障后,再进行测试。");//弹出框
 //                        }
                         return;
                     }
@@ -1593,7 +1593,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton("退出", (dialog12, which) -> {
+                    .setNeutralButton("退出", (dialog12, which) -> {
 //                        stopXunHuan();
                         ll_1.setVisibility(View.GONE);
                         ll_2.setVisibility(View.VISIBLE);
