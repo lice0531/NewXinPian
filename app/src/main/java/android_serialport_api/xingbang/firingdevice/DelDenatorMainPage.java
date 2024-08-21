@@ -205,7 +205,7 @@ public class DelDenatorMainPage extends BaseActivity  {
             Utils.saveFile();//把软存中的数据存入磁盘中
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -236,7 +236,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
@@ -421,7 +421,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                         .setTitle("删除提示")//设置对话框的标题//"成功起爆"
                         .setMessage("该操作会按序号删除表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog12, which) -> dialog12.dismiss())
+                        .setNeutralButton("取消", (dialog12, which) -> dialog12.dismiss())
                         .setPositiveButton("确认删除", (dialog1, which) -> {
                             String checstr = checkData();
                             if (checstr == null || checstr.trim().length() < 1) {

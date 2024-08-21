@@ -659,12 +659,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 .setTitle("注册提示")//设置对话框的标题//"成功起爆"
                 .setMessage("注册列表中的雷管已在起爆历史记录里,是否清空列表")//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
                 .setPositiveButton("确认清空", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -674,7 +668,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         dialog.dismiss();
                         Utils.saveFile();//把软存中的数据存入磁盘中
                     }
-                }).create();
+                })
+                .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
         dialog.show();
     }
 

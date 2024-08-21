@@ -471,7 +471,7 @@ public class XingbangMain extends BaseActivity {
 
             //  builder.
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             //builder.
             dialogOFF(dialog);
 //                finish();
@@ -868,7 +868,7 @@ public class XingbangMain extends BaseActivity {
             }
             dialog.dismiss();
         });
-        builder.setNegativeButton(R.string.text_dialog_back, (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(R.string.text_dialog_back, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -1056,7 +1056,7 @@ public class XingbangMain extends BaseActivity {
                     dialog.cancel();
                     mOffTime.cancel();
                 })
-                .setNegativeButton("继续", (dialog2, which) -> {
+                .setPositiveButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
                     if (str5.equals("组网")) {
@@ -1175,7 +1175,7 @@ public class XingbangMain extends BaseActivity {
             }
 
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
         });
         builder.show();
