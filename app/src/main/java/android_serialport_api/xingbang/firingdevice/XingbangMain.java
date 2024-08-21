@@ -547,7 +547,7 @@ public class XingbangMain extends SerialPortActivity {
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
         pro_dwdm = (String) MmkvUtils.getcode("pro_dwdm", "");
-        jiance_time = (int) MmkvUtils.getcode("jiance_time", 28);
+        jiance_time = (int) MmkvUtils.getcode("jiance_time", 48);
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         version = (String) MmkvUtils.getcode("version", "02");
         Log.e(TAG, "Yanzheng: " + Yanzheng);

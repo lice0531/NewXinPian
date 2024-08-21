@@ -2191,11 +2191,16 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
 
                         case 2://
-
+                            Log.e(TAG, "----------------------------: " );
+                            Log.e(TAG, "oneCount_panduan: "+oneCount_panduan );
+                            Log.e(TAG, "oneCount: "+oneCount );
+                            Log.e(TAG, "oneCount_max: "+oneCount_max );
+                            Log.e(TAG, "JianCe_time: "+JianCe_time );
                             //发出进入起爆模式命令  准备测试计时器    报错
                             if (oneCount >= oneCount_max && secondCmdFlag == 0) {//
                                 if (list_dianliu.size() > 5 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {
                                     oneCount_panduan++;
+                                    Log.e(TAG, "oneCount_panduan: "+oneCount_panduan );
                                     if(oneCount_panduan>=5){
                                         cankao_ic_diya = busInfo.getBusCurrentIa();//低压参考电流值
                                         byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
@@ -2204,10 +2209,16 @@ public class FiringMainActivity extends SerialPortActivity {
                                         Log.e("第5阶段-increase", "5");
                                         Log.e("充电检测WaitCount", Wait_Count + "");
                                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                    }else {
-                                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                                     }
+                                }else {
+                                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                                 }
+//                                else if(list_dianliu.size() < 5 ){
+//                                    cankao_ic_diya = busInfo.getBusCurrentIa();//低压参考电流值
+//                                    byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
+//                                    sendCmd(powerCmd);
+//                                    increase(5);
+//                                }
                                 //时间到达最大值,就直接跳转
                                 if (oneCount >= JianCe_time) {
                                     byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
