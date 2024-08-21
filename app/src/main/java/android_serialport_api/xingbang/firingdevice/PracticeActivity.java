@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -54,6 +56,7 @@ import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.activity.QiBaoActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
@@ -65,12 +68,16 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.jianlian.SyncActivityYouxian;
 import android_serialport_api.xingbang.models.VoBlastModel;
+import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import com.kfree.expd.ExpdDevMgr;
 
 /**
  * 实验发送命令页面
@@ -143,24 +150,24 @@ public class PracticeActivity extends SerialPortActivity {
 
     // 存放接收到的文字信息
     private boolean revice_type = true;
-
+    private int denatorCount = 0;//雷管总数
     /**
      * 线程池
      */
     private ExecutorService executorService = new ThreadPoolExecutor(3, 3, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(128));
     private String path;
+    private List<DenatorBaseinfo> mListData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
-
+        mExpDevMgr= new ExpdDevMgr(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText("本机IP地址:" + getlocalip());
-
         initHandle();
 
         loadMoreData();
@@ -169,6 +176,7 @@ public class PracticeActivity extends SerialPortActivity {
 //        Log.e("注册", "denator: " + denator.toString());
 //        Log.e("注册", "message: " + message.toString());
     }
+
 
     private void initHandle() {
         handler_zhuce = new Handler(msg -> {
@@ -647,11 +655,49 @@ public class PracticeActivity extends SerialPortActivity {
                 startActivity(new Intent(this, TestActivity.class));
                 break;
             case R.id.but_jilian://进入级联页面
-                Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
-                startActivity(intent9);
-                finish();
+                mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
+                Log.e("辅助功能页面", "雷管数量：" + mListData.size());
+                if (mListData.size() > 0) {
+                    if (mExpDevMgr.isSafeSwitchOpen()) {
+                        createDialog_kaiguan();
+                        return;
+                    }
+                    Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
+                    startActivity(intent9);
+                    finish();
+                } else {
+                    AlertDialog dialog = new AlertDialog.Builder(PracticeActivity.this)
+                            .setTitle("当前雷管数量为0")//设置对话框的标题
+                            .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容
+                            //设置对话框的按钮
+                            .setNegativeButton("退出", (dialog13, which) -> {
+                                dialog13.dismiss();
+                                finish();
+                                MmkvUtils.savecode("isTestDenator", "N");
+                            })
+                            .setNeutralButton("继续", (dialog2, which) -> {
+                                dialog2.dismiss();
+                                Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
+                                startActivity(intent9);
+                                finish();
+                            })
+                            .create();
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                    dialog.show();
+                }
                 break;
         }
+    }
+
+    /***
+     * 建立对话框
+     */
+    public void createDialog_kaiguan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("安全提醒");//"说明"
+        builder.setMessage("检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!");
+        builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 
     @Override

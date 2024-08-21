@@ -357,4 +357,14 @@ public class GreenDaoMaster {
                 .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
                 .unique();
     }
+
+    /**
+     * 查询雷管 区域正序
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionAsc() {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
 }

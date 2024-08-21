@@ -1,11 +1,7 @@
 package android_serialport_api.xingbang.activity;
-
 import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -27,9 +23,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +45,6 @@ import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
-import android_serialport_api.xingbang.firingdevice.QueryHisDetail;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
@@ -100,6 +92,9 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private String TAG = "上传起爆数据页面--";
     private int uploadIndex = 0;//还有多少条数据需要一键上传
     List<String> dateList = new ArrayList<>();
+    private int isDlUploadSuccess = 0;//丹灵是否上传成功 0:未上传  200:上传成功  201:上传失败
+    private int isZbUploadSuccess = 0;//中爆是否上传成功 0:未上传  200:上传成功  201:上传失败
+    private int isXbUploadSuccess = 0;//煋邦是否上传成功 0:未上传  200:上传成功  201:上传失败
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -571,10 +566,6 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    private int isDlUploadSuccess = 0;//丹灵是否上传成功 0:未上传  200:上传成功  201:上传失败
-    private int isZbUploadSuccess = 0;//中爆是否上传成功 0:未上传  200:上传成功  201:上传失败
-    private int isXbUploadSuccess = 0;//煋邦是否上传成功 0:未上传  200:上传成功  201:上传失败
-
     /**
      * 丹灵上传方法
      */
@@ -919,5 +910,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         public void setXbResult(int xbResult) {
             this.xbResult = xbResult;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (db != null) db.close();
     }
 }

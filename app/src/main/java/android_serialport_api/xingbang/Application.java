@@ -9,6 +9,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -30,6 +31,7 @@ import org.litepal.LitePal;
 
 import android_serialport_api.SerialPort;
 import android_serialport_api.SerialPortFinder;
+import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.MyOpenHelper;
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DaoSession;
@@ -47,7 +49,8 @@ public class Application extends MultiDexApplication {
 
     private String mSportName;
     private int mPowerIndex;
-
+    public static DatabaseHelper mMyDatabaseHelper;
+    public static SQLiteDatabase db;
     public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
 //        SerialPortFinder finder= new SerialPortFinder();
 //        Log.e("搜寻串口地址", "finder.getAllDevices(): "+finder.getAllDevices() );
@@ -144,6 +147,8 @@ public class Application extends MultiDexApplication {
         // 自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
         // 包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
         SDKInitializer.setCoordType(CoordType.BD09LL);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
+        db = mMyDatabaseHelper.getWritableDatabase();
     }
 
     /**
@@ -164,6 +169,9 @@ public class Application extends MultiDexApplication {
         return daoSession;
     }
 
+    public static SQLiteDatabase getDb() {
+        return db;
+    }
     public static Context getContext() {
         return mContext;
     }

@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -41,6 +42,10 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.kfree.expd.ExpdDevMgr;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -77,6 +82,7 @@ import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
 import android_serialport_api.xingbang.firingdevice.QueryHisDetail;
+import android_serialport_api.xingbang.jianlian.FirstEvent;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
@@ -84,7 +90,7 @@ import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class QiBaoActivity extends SerialPortActivity implements View.OnClickListener {
-
+    public static final int RESULT_SUCCESS = 1;
     ActivityQiBaoBinding binding;
     //----图表-----
     // 折线编号
@@ -182,6 +188,14 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
     private RecyclerViewAdapter_Denator<DenatorBaseinfo> mAdapter;
     private List<DenatorBaseinfo> mListData = new ArrayList<>();//所有雷管列表
     private LinearLayoutManager linearLayoutManager;
+    private String deviceStatus = "01";//显示设备状态:01（在线） 02（等待检测） 03（检测结束） 04（正在充电） 05（起爆结束）
+    private String cPeak = "0";//主控要显示的子机电流信息
+    private String qbResult = "";//给主控更新起爆信息
+    private boolean isSendWaitQb = false;//是否收到主控切换模式指令
+    private boolean isGetQbResult = false;//是否收到起爆结束指令
+    private boolean isJL = false;//是否是从级联的指令进入的起爆页面
+    private String isYxjl;//接收有线级联进来起爆页面的flag
+    private boolean kaiguan = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,14 +211,17 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         initLineChart();
         loadBlastModel();
 
-        Bundle bundle = getIntent().getExtras();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
         qbxm_id = (String) bundle.get("qbxm_id");
         qbxm_name = (String) bundle.get("qbxm_name");
         if (qbxm_id == null) {
             qbxm_id = "-1";
             qbxm_name = " ";
         }
-
+        isYxjl = !TextUtils.isEmpty(intent.getStringExtra("isYxjl")) ?
+                intent.getStringExtra("isYxjl") : "";
+        isJL = !TextUtils.isEmpty(isYxjl) ? true : false;
         //新的适配方法 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         binding.qbRlLg.setLayoutManager(linearLayoutManager);
@@ -223,6 +240,8 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         mAdapter.notifyDataSetChanged();
 
         firstThread = new ThreadFirst(allBlastQu);//全部线程
+        //给主机发消息告知已进入起爆页面
+        EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
     }
 
 
@@ -261,6 +280,10 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         }
 
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            //级联接收命令注册的eventbus
+            EventBus.getDefault().register(this);
+        }
     }
 
 
@@ -480,6 +503,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 getErrorBlastCount();
                 fourthDisplay = 1;
                 Log.e(TAG,"case4错误数量:totalerrorNum: " + totalerrorNum);
+                deviceStatus = "03";//检测结束
+                EventBus.getDefault().post(new FirstEvent("jcjg", "", "", denatorCount+"", totalerrorNum+""));//旧的命令
+//                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum, errNum,currentPeak));
                 //disPlayNoReisterDenator();
 //                Log.e(TAG,  "busInfo.getBusCurrentIa(): " + busInfo.getBusCurrentIa());
 //                if (totalerrorNum == denatorCount && busInfo.getBusCurrentIa() > 4500) {//大于4000u ，全错
@@ -579,7 +605,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 closeThread();
                                 closeForm();
                             }).create();
-                    dialog.show();
+                    if (!QiBaoActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                        dialog.show();
+                    }
                 }
                 break;
             case 10://跳转到查看错误雷管和继续阶段
@@ -1034,18 +1062,20 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                     //byte[] reCmd  = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");
                                     //sendCmd(reCmd);
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                    Thread.sleep(100);
+//                                    Thread.sleep(100);
+                                    Log.e(TAG,"去第7阶段-increase7");
                                     increase(7);
-                                    Log.e(TAG,"第7阶段-increase"+ "7");
+                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                    zanting();
                                     break;
                                 }
                             }
 
-                            if (sixExchangeCount == -1) {//切换电源是否返回正确
-                                exit = true;
-//                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                break;
-                            }
+//                            if (sixExchangeCount == -1) {//切换电源是否返回正确
+//                                exit = true;
+////                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                                break;
+//                            }
                             Thread.sleep(1000);
                             sixExchangeCount--;
                             //得到电流电压信息210  190
@@ -1056,57 +1086,6 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
-//                            if (twoCount == 0) {
-//                                sendCmd(ThreeFiringCmd.send_32("00"));//32充电
-//                            }
-//                            if (twoCount ==  3) {//第3秒时,单发充电
-//                                increase(33);
-//                            }
-//                            if (twoCount == 5) {//第8秒时,发送高压充电指令,继电器应该响
-//                                Log.e(TAG,"case6发送33高压输出指令");
-//                                sendCmd(ThreeFiringCmd.send_33("00"));//33高压输出
-//                            }
-//                            if (twoCount >= sixExchangeCount) {//48
-//                                Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
-//                                if (sixCmdSerial == 3) {
-//                                    //跳转到1+5倒数计时5分钟阶段
-//                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
-////                                    Thread.sleep(1000);
-//                                    increase(7);
-////                                    Log.e("第7阶段-increase", "7");
-//                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
-//                                    zanting();
-//                                    break;
-//                                }
-//                            }
-//                            //到达最大值之后,直接跳转
-//                            if(twoCount >= ChongDian_time){
-//                                if (sixCmdSerial == 3) {
-//                                    //跳转到1+5倒数计时5分钟阶段
-//                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
-////                                    Thread.sleep(1000);
-//                                    increase(7);
-////                                    Log.e("第7阶段-increase", "7");
-//                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
-//                                    zanting();
-//                                    break;
-//                                }
-//                            }
-//
-////                            if (sixExchangeCount == -1) {//切换电源是否返回正确
-////                                exit = true;
-//////                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
-////                                break;
-////                            }
-//                            Thread.sleep(1000);
-//                            twoCount++;
-//                            //得到电流电压信息210  190
-//                            if (twoCount != - 2 && twoCount != 3 && twoCount != 4 && twoCount != 5) {
-//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
-//                                Log.e(TAG,"case6发送40指令了");
-//                            }
-//                            if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
-//                            break;
                         case 7:
 //                            if (sevenDisplay == 0)
 //                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1126,6 +1105,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                                sendCmd(reCmd);
 //                            }
                             if (eightCount >= 1) {
+                                Log.e(TAG,"case8--eightCount:" + eightCount);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;
@@ -1139,7 +1119,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                         //发出34 起爆命令
                                         initBuf = ThreeFiringCmd.send_34("00");
                                         sendCmd(initBuf);
-                                        Log.e(TAG,"起爆"+ "第一次发送起爆指令: ");
+                                        Log.e("起爆", "第一次发送起爆指令: ");
                                         eightCmdFlag = 1;
                                     } else {
                                         exit = true;
@@ -1213,7 +1193,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 sendCmd(initBuf);
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
-                                Thread.sleep(1000);
+                                Thread.sleep(300);
                                 thirdWriteCount++;
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             } else {
@@ -1345,7 +1325,10 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //            secondCmdFlag = 1;
 //            thirdWriteCount = 0;
 //            increase(3);
-
+            deviceStatus = "02";//等待检测
+//            EventBus.getDefault().post(new FirstEvent("ddjc", "01",currentPeak));
+            EventBus.getDefault().post(new FirstEvent("ddjc", "01"));//旧的命令
+            Log.e(TAG, "收到30指令，进入等待检测阶段");
         } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
             From32DenatorFiring fromData = ThreeFiringCmd.decode_31_2("00", locatBuf);
             if (fromData != null && writeDenator != null) {
@@ -1364,30 +1347,42 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
             //发送 高压输出命令
             sixCmdSerial = 2;
-
+            deviceStatus = "04";//正在充电
+            EventBus.getDefault().post(new FirstEvent("zzcd", "01"));//准备充电//旧的命令
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 3;
-            Log.e(TAG,"33指令已返回,充电倒计时值twoCount:" + twoCount);
+            Log.e(TAG,"33指令已返回");
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            EventBus.getDefault().post(new FirstEvent("qbjg", "01"));//旧的命令
+            deviceStatus = "05";//起爆结束
+            isGetQbResult = true;
+            if (!isJL) {
+                MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
+            }
 //            if (qibaoNoFlag < 5) {
 //                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
 ////                Log.e(TAG,"起爆"+ "第" + qibaoNoFlag + "次发送起爆指令: ");
-//                byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34起爆
+//                byte[] initBuf = ThreeFiringCmd.send_34("00");//34起爆
 //                sendCmd(initBuf);
 //                qibaoNoFlag++;
 //            } else {
-            //stage=9;
-            eightCmdFlag = 2;
-            hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
-            saveFireResult();
-
-            if (!qbxm_id.equals("-1")) {
-                updataState(qbxm_id);
-            }
-            increase(11);//跳到第9阶段
-            Log.e(TAG,"increase"+ "9");
+                //stage=9;
+                eightCmdFlag = 2;
+                hisInsertFireDate = Utils.getDateFormatToFileName();//记录的起爆时间
+                saveFireResult();
+                if (!qbxm_id.equals("-1")) {
+                    updataState(qbxm_id);
+                }
+//                if (isJL) {
+//                    EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
+//                            deviceStatus + qbResult));
+//                    Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+//                            deviceStatus + qbResult);
+//                }
+                increase(11);//跳到第9阶段
+                Log.e(TAG, "increase" + "9");
 //                try {
 //                    Thread.sleep(50);
 //                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
@@ -1396,7 +1391,6 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                    e.printStackTrace();
 //                }
 //            }
-
         } else if (DefCommand.CMD_3_DETONATE_6.equals(cmd)) {//35 退出起爆模式
             //发出关闭获取得到电压电流
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40
@@ -1520,6 +1514,10 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);
+        } else {
+            //暂时写个假数据
+            his.setLatitude("北纬39°36’~40°02’");
+            his.setLongitude("116°32’~116°56’");
         }
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
@@ -2415,24 +2413,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         addEntry(mLineData, mLineChart, yValues, LINE_NUMBER_1);
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // 清空消息
-        mDemoHandler.removeCallbacksAndMessages(null);
-        mDemoHandler = null;
-
-        // moveViewToAnimated 移动到某个点，有内存泄漏，暂未修复，希望网友可以指着
-        mLineChart.clearAllViewportJobs();
-        mLineChart.removeAllViewsInLayout();
-        mLineChart.removeAllViews();
-
-        if (db != null) db.close();
-        closeThread();
-        closeForm();
-        fixInputMethodManagerLeak(this);
-        removeActivity();
+    private void jixu() {
+        Log.e(TAG, "继续线程:------------------ ");
+        firstThread = new ThreadFirst(allBlastQu);
+        firstThread.exit = false;
+        firstThread.start();
     }
 
     /**
@@ -2450,6 +2435,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
+                    if (kaiguan) {
+                        jixu();
+                        kaiguan = false;
+                    }
+                    Log.e(TAG, "继续1: ");
                     keyFireCmd = 1;
                     Log.e(TAG,"起爆页面"+ "keyFireCmd: " + keyFireCmd);
                 }
@@ -2459,6 +2449,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
+                    if (kaiguan) {
+                        jixu();
+                        kaiguan = false;
+                    }
+                    Log.e(TAG, "继续2: ");
                     keyFireCmd = 1;
                     Log.e(TAG,"起爆页面"+ "keyFireCmd: " + keyFireCmd);
                 }
@@ -2503,5 +2498,105 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         builder.setMessage("检测到您的安全开关处于关闭状态,请先打开掌机右侧的安全开关,再进行充电!");
         builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    /**
+     * 级联接收命令代码 eventbus
+     */
+    private long lastProcessedTime = 0;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FirstEvent event) {
+        String msg = event.getMsg();
+        Log.e(TAG + "接收到的消息", "msg: " + msg);
+        if (msg.equals("jixu")) {
+            if (Wait_Count == 1) {
+                increase(6);
+                Utils.writeRecord("-------------------开始充电-------------------");
+            }
+            EventBus.getDefault().post(new FirstEvent("sendA4Data","B4" + MmkvUtils.getcode("ACode", "") +
+                    deviceStatus + qbResult));
+        } else if (msg.equals("qibao")) {
+            Log.e(TAG, "收到级联起爆指令 ");
+            if (kaiguan) {
+                jixu();
+                kaiguan = false;
+            }
+            Log.e(TAG, "继续3: ");
+//            if (sixExchangeCount == 0) {
+                if (stage == 7) {
+                    keyFireCmd = 1;
+                    Log.e(TAG, "keyFireCmd: " + keyFireCmd);
+                }
+//            }
+
+        } else if (msg.equals("finish")) {
+            closeThread();
+            closeForm();
+            finish();
+        } else if (msg.equals("pollMsg")) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastProcessedTime > 1000) {
+                //总是出现给主控发多次消息情况  所以检查是否距离上次处理超过 1 秒，优化为：1秒内只发送一次数据给主控
+                //收到主控轮巡的消息了  将实时的电流及设备状态发送给串口进行同步
+                isJL = true;
+                String stureNum = Utils.strPaddingZero(denatorCount, 3);
+                String serrNum = Utils.strPaddingZero(totalerrorNum, 3);
+                String currentPeak = Utils.strPaddingZero(cPeak, 6);
+                EventBus.getDefault().post(new FirstEvent("ssjc", deviceStatus, "", stureNum, serrNum,currentPeak));
+                lastProcessedTime = currentTime; // 更新上次处理时间
+                qbResult = stureNum + serrNum + currentPeak;
+                Log.e(TAG + "多次接收到消息","只处理一次，起爆信息：" + qbResult);
+            }
+        } else if (msg.equals("sendCmd83")) {
+            // 此时进入时钟同步模式  向核心板发送指令  让核心板决定谁起爆
+            Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "下发83指令");
+            sendCmd(ThreeFiringCmd.setToXbCommon_Translate_83("" + MmkvUtils.getcode("ACode", "")));
+            EventBus.getDefault().post(new FirstEvent("close485"));
+        } else if (msg.equals("sendWaitQb")) {
+            isSendWaitQb = true;
+            if (kaiguan) {
+                jixu();
+                kaiguan = false;
+            }
+            Log.e(TAG, "继续4: ");
+            //此时在页面显示出时钟校验的文字
+            increase(12);
+            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            Log.e(TAG + "第5阶段-increase接收到时钟校验消息", "12" + msg);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断当点击的是返回键
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            closeThread();
+            closeForm();
+            Utils.writeRecord("---点击返回按键退出界面---");
+            return true;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 清空消息
+        mDemoHandler.removeCallbacksAndMessages(null);
+        mDemoHandler = null;
+
+        // moveViewToAnimated 移动到某个点，有内存泄漏，暂未修复，希望网友可以指着
+        mLineChart.clearAllViewportJobs();
+        mLineChart.removeAllViewsInLayout();
+        mLineChart.removeAllViews();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        if (db != null) db.close();
+        closeThread();
+        closeForm();
+        fixInputMethodManagerLeak(this);
+        removeActivity();
     }
 }

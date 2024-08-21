@@ -992,13 +992,19 @@ public class FiringMainActivity extends SerialPortActivity {
         }
 
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            //级联接收命令注册的eventbus
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         if (db != null) db.close();
-
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         closeThread();
         closeForm();
@@ -1842,8 +1848,12 @@ public class FiringMainActivity extends SerialPortActivity {
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
+                    if (kaiguan) {
+                        jixu();
+                        kaiguan = false;
+                    }
+                    Log.e(TAG, "继续1: ");
                     keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
                 }
             }
         } else if (keyCode == KeyEvent.KEYCODE_5 && Build.DEVICE.equals("KT50_B2")) {
@@ -1851,8 +1861,12 @@ public class FiringMainActivity extends SerialPortActivity {
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
                 if (stage == 7) {
+                    if (kaiguan) {
+                        jixu();
+                        kaiguan = false;
+                    }
+                    Log.e(TAG, "继续2: ");
                     keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
                 }
             }
         }

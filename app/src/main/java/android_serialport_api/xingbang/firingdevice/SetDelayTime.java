@@ -162,11 +162,9 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
         holeBetweentTxt.setText("10");
 
         getLoaderManager().initLoader(0, null, this);
-
-        setDelay_listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        setDelay_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View view,
-                                           int arg2, long arg3) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 LinearLayout myte = (LinearLayout) view;
                 TextView seralNoTxt = (TextView) myte.getChildAt(0);
                 TextView holeTxt = (TextView) myte.getChildAt(1);
@@ -178,9 +176,26 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
                 String delaytime = delayTxt.getText().toString().trim();
                 selectDenatorId = serialNo;
                 modifyBlastBaseInfo(serialNo, holeNo, delaytime, denatorNo);//序号,孔号,延时,管壳码
-                return false;
             }
         });
+//        setDelay_listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> arg0, View view,
+//                                           int arg2, long arg3) {
+//                LinearLayout myte = (LinearLayout) view;
+//                TextView seralNoTxt = (TextView) myte.getChildAt(0);
+//                TextView holeTxt = (TextView) myte.getChildAt(1);
+//                TextView delayTxt = (TextView) myte.getChildAt(2);
+//                TextView denatorTxt = (TextView) myte.getChildAt(3);
+//                String serialNo = seralNoTxt.getText().toString().trim();
+//                String holeNo = holeTxt.getText().toString().trim();
+//                String denatorNo = denatorTxt.getText().toString().trim();
+//                String delaytime = delayTxt.getText().toString().trim();
+//                selectDenatorId = serialNo;
+//                modifyBlastBaseInfo(serialNo, holeNo, delaytime, denatorNo);//序号,孔号,延时,管壳码
+//                return false;
+//            }
+//        });
 
 
         mHandler_loading = new Handler() {

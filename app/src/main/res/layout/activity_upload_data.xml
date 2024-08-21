@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/totalbar"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="85dp"
         android:layout_marginLeft="0.5dp"
         android:layout_marginRight="0.5dp"
         android:background="@drawable/rv_gray_0dp"

@@ -3,6 +3,8 @@ package android_serialport_api.xingbang.activity;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -13,7 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.kfree.expd.ExpdDevMgr;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +34,8 @@ import android_serialport_api.xingbang.databinding.ActivityNewMainBinding;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.firingdevice.SetEnvMainActivity;
+import android_serialport_api.xingbang.jianlian.FirstEvent;
+import android_serialport_api.xingbang.services.UploadWorker;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
@@ -76,7 +87,19 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                 getUserMessage();//获取用户信息
             }
         }.start();
+        // 创建一个 OneTimeWorkRequest 实例
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(UploadWorker.class)
+                .build();
+        // 通过 WorkManager开启闲时上传起爆信息功能
+        WorkManager.getInstance(this).enqueue(workRequest);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     private void initView() {
@@ -327,5 +350,22 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         builder.setMessage("检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!");
         builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(FirstEvent event) {
+        String msg = event.getMsg();
+        Log.e(TAG + "接收到EventBus消息", msg);
+        if (msg.equals("spareUploadError")) {
+            Toast.makeText(this,"网络连接不可用，请检查网络设置",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 }

@@ -122,6 +122,8 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     //RecyclerView适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    // 添加 WorkManager 依赖
+    implementation "androidx.work:work-runtime:2.6.0"
 }
 
 greendao {
