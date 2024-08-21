@@ -256,7 +256,9 @@ public class XingbangMain extends SerialPortActivity {
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         app_version_name = getString(R.string.app_version_name);
+
         getleveup();
+
         busHandler = new Handler(msg -> {
             txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
             txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa() + "μA");
@@ -313,6 +315,7 @@ public class XingbangMain extends SerialPortActivity {
     }
     @Override
     protected void onResume() {
+        duanlu_sun=0;
         getPropertiesData();//重新读取备份数据会导致已修改的数据重置
         // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -443,7 +446,7 @@ public class XingbangMain extends SerialPortActivity {
             }
 
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
         });
         builder.show();
@@ -549,7 +552,7 @@ public class XingbangMain extends SerialPortActivity {
         server_http = (String) MmkvUtils.getcode("server_http", "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         server_ip = (String) MmkvUtils.getcode("server_ip", "119.29.111.172");
         qiaosi_set = (String) MmkvUtils.getcode("qiaosi_set", "false");
-        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 50);//组网检测时间
+        Preparation_time = (int) MmkvUtils.getcode("preparation_time", 48);//组网检测时间
         ChongDian_time = (int) MmkvUtils.getcode("chongdian_time", 68);
         server_type1 = (String) MmkvUtils.getcode("server_type1", "1");
         server_type2 = (String) MmkvUtils.getcode("server_type2", "0");
@@ -573,12 +576,12 @@ public class XingbangMain extends SerialPortActivity {
         message.setServer_http("http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert");
         message.setServer_ip("119.29.111.172");
         message.setQiaosi_set("false");
-        message.setPreparation_time("50");
+        message.setPreparation_time("48");
         message.setChongdian_time("68");
         message.setServer_type1("1");
         message.setServer_type2("0");
         message.setPro_dwdm("");
-        message.setJiance_time("28");
+        message.setJiance_time("48");
         message.setVersion("02");
         getDaoSession().getMessageBeanDao().insert(message);
         Utils.saveFile_Message();//把软存中的数据存入磁盘中
@@ -637,7 +640,7 @@ public class XingbangMain extends SerialPortActivity {
 
             //  builder.
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             //builder.
             dialogOFF(dialog);
 //                finish();

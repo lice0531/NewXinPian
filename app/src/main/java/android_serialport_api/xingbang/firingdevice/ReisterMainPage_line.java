@@ -1799,7 +1799,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             //    将输入的用户名和密码打印出来
             show_Toast("管壳码: " + a + ", 延时: " + b);
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
         });
         builder.show();
@@ -2668,7 +2668,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("注册提示")
                 .setMessage("注册列表中的雷管已在起爆历史记录里,是否清空列表")//设置对话框的内容"本次任务成功起爆！"
-                .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+                .setNeutralButton("取消", (dialog1, which) -> dialog1.dismiss())
                 .setPositiveButton("确认清空", (dialog12, which) -> {
                     Application.getDaoSession().getDenatorBaseinfoDao().deleteAll();
 //                    getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
@@ -3903,7 +3903,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 .setTitle("翻转提示")//设置对话框的标题//"成功起爆"
                 .setMessage("是否翻转当前段位延时")//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNegativeButton("取消", (dialog12, which) -> dialog12.dismiss())
+                .setNeutralButton("取消", (dialog12, which) -> dialog12.dismiss())
                 .setPositiveButton("确认", (dialog1, which) -> {
 
                     GreenDaoMaster master = new GreenDaoMaster();

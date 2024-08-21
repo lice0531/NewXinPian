@@ -724,7 +724,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",true);//弹出框
 //                        } else {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                        initDialog_zanting_xiadian("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
+                        initDialog_zanting_xiadian("当前电流过大,请检查线路短路等情况,排查线路故障后,在进行测试。");//弹出框
 //                        }
                         return;
                     }

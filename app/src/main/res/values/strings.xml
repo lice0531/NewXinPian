@@ -411,8 +411,8 @@
     <string name="text_fz_kscs">快速测试电流</string>
     <string name="text_fz_sjhc">数据互传</string>
     <string name="text_fz_qchc">清除缓存</string>
-    <string name="text_test_tip5">请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。</string>
-    <string name="text_test_tip6">请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。</string>
+    <string name="text_test_tip5">当前电流过大,请检查线路短路等情况,排查线路故障后,在进行测试。。</string>
+    <string name="text_test_tip6">请检查线夹等部位是否有短路等情况,确认无误后点继续进行检测。</string>
     <string name="text_test_tip7">查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!</string>
     <string name="text_test_tip8">请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。</string>
     <string name="text_test_tip9">疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!</string>
@@ -510,11 +510,11 @@
     <string name="text_down_bc">保存并下载</string>
     <string name="text_ver_tip1">请选择工程</string>
     <string name="text_updata_sys_1">升级提醒</string>
-    <string name="text_updata_sys_2">检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
+    <string name="text_updata_sys_2">检测到有新的APP版本,请确定您当前的网络环境稳定,是否进行更新?</string>
     <string name="text_updata_sys_3">进行更新</string>
     <string name="text_updata_sys_4">不更新</string>
     <string name="text_updata_sys_5">升级提醒</string>
-    <string name="text_updata_sys_6">检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
+    <string name="text_updata_sys_6">检测到有新的硬件程序版本,请确定您当前的网络环境稳定,是否进行更新?</string>
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>

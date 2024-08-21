@@ -114,7 +114,9 @@ public class SetSystemActivity extends BaseActivity {
             } else if (msg.arg1 == 2) {
                 show_Toast(getString(R.string.text_systip_2));
             } else if (msg.arg1 == 3) {
-                show_Toast("设置的时间请大于当27s");
+                show_Toast("设置的时间请大于当47s");
+            }  else if (msg.arg1 == 5) {
+                show_Toast("设置的时间请大于当67s");
             } else if (msg.arg1 == 4) {
                 show_Toast(getString(R.string.text_systip_1));
             }
@@ -197,20 +199,20 @@ public class SetSystemActivity extends BaseActivity {
                 }
 
                 int flag1 = 0, flag2 = 0, flag3 = 0;
-                if (!TextUtils.isEmpty(etSetPreparation.getText())&&Integer.parseInt(etSetPreparation.getText().toString())>27) {//准备时间
+                if (!TextUtils.isEmpty(etSetPreparation.getText())&&Integer.parseInt(etSetPreparation.getText().toString())>47) {//准备时间
                     message.setPreparation_time(etSetPreparation.getText().toString());
                     Log.e("准备时间", "Preparation_time: " + etSetPreparation.getText().toString());
                 } else {
                     flag1 = 1;
                 }
-                if (!TextUtils.isEmpty(etSetJiancetime.getText())&&Integer.parseInt(etSetJiancetime.getText().toString())>27) {//组网检测时间
+                if (!TextUtils.isEmpty(etSetJiancetime.getText())&&Integer.parseInt(etSetJiancetime.getText().toString())>47) {//组网检测时间
                     Log.e("组网检测时间", "etSetJiancetime: " + etSetJiancetime.getText().toString());
                     message.setJiance_time(etSetJiancetime.getText().toString());
                 } else {
                     flag2 = 1;
                 }
-                if (!TextUtils.isEmpty(etSetChongdiantime.getText())) {//低压充电时间
-                    if (Integer.parseInt(etSetChongdiantime.getText().toString()) >= 28) {
+                if (!TextUtils.isEmpty(etSetChongdiantime.getText())) {//高压充电时间
+                    if (Integer.parseInt(etSetChongdiantime.getText().toString()) >= 68) {
                         Log.e("充电时间", "etSetChongdiantime: " + etSetChongdiantime.getText().toString());
                         message.setChongdian_time(etSetChongdiantime.getText().toString());
                     } else {
@@ -239,7 +241,7 @@ public class SetSystemActivity extends BaseActivity {
                 }
                 if (flag3 == 1) {
                     Message msg = Handler_tip.obtainMessage();
-                    msg.arg1 = 3;
+                    msg.arg1 = 5;
                     Handler_tip.sendMessage(msg);
                 }
                 if (flag1 == 0 && flag2 == 0 && flag3 == 0) {
