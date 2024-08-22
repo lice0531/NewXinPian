@@ -438,10 +438,10 @@
     <string name="text_fz_kscs">快速测试电流</string>
     <string name="text_fz_sjhc">数据互传</string>
     <string name="text_fz_qchc">清除缓存</string>
-    <string name="text_test_tip5">请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。</string>
-    <string name="text_test_tip6">请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。</string>
+    <string name="text_test_tip5">请检查线夹等部位是否有短路,漏电等情况,确认无误后点继续进行检测。</string>
+    <string name="text_test_tip6">请检查线夹等部位是否有短路,漏电等情况,确认无误后点继续进行检测。</string>
     <string name="text_test_tip7">查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!</string>
-    <string name="text_test_tip8">请更换错误雷管,疑似部分雷管出现进水进泥等情况,检查无误后,点击继续进行检测。</string>
+    <string name="text_test_tip8">请更换错误雷管,疑似部分雷管出现有短路,漏电等情况,检查无误后,点击继续进行检测。</string>
     <string name="text_test_tip9">疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!</string>
     <string name="text_test_tip10">请检查线路是否正确连接</string>
     <string name="text_test_tip11">正在放电</string>

@@ -796,7 +796,7 @@ public class SetDelayTime extends BaseActivity {
             }
 
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
         });
         builder.show();

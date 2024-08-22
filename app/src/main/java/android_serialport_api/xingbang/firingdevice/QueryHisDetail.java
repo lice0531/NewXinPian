@@ -211,7 +211,7 @@ public class QueryHisDetail extends BaseActivity {
                                 .setTitle("删除提示")//设置对话框的标题//"成功起爆"
                                 .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
-                                .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+                                .setNeutralButton("取消", (dialog1, which) -> dialog1.dismiss())
                                 .setPositiveButton("确认删除", (dialog12, which) -> {
                                     String t = (String) v.getTag(R.id.bt_delete);
                                     if (delHisInfo(t) == 0) {
@@ -472,7 +472,7 @@ public class QueryHisDetail extends BaseActivity {
 
 
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
         });
         builder.show();
@@ -932,7 +932,7 @@ public class QueryHisDetail extends BaseActivity {
                         .setTitle("删除提示")//设置对话框的标题//"成功起爆"
                         .setMessage("该操作会按清空当前列表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
+                        .setNeutralButton("取消", (dialog1, which) -> dialog1.dismiss())
                         .setPositiveButton("确认删除", (dialog12, which) -> {
                             dialog12.dismiss();
                             db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, null, null);

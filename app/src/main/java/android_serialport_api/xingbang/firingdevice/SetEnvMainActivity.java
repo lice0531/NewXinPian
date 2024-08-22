@@ -249,7 +249,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 Utils.saveFile_Message();//保存用户信息
             }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //builder.
@@ -289,7 +289,7 @@ public class SetEnvMainActivity extends BaseActivity {
                 Utils.saveFile_Message();//保存用户信息
             }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //builder.
