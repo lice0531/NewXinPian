@@ -298,7 +298,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 Toast.makeText(SetUserActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
             } 
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)

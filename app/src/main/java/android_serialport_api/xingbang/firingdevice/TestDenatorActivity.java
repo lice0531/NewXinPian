@@ -284,11 +284,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                         .setTitle(R.string.text_test_title1)//设置对话框的标题
                         .setMessage(R.string.text_text_msg1)//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNeutralButton ("退出", (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
-//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+//                        .setNegativeButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
                     dialog.show();
@@ -684,7 +684,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",true);//弹出框
 //                        } else {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-                        initDialog_zanting_xiadian("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,按继续键,重新进行检测。");//弹出框
+                        initDialog_zanting_xiadian("当前电流过大,请检查线路是否存在短路,漏电等情况,排查线路故障后,再进行测试。");//弹出框
 //                        }
                         return;
                     }
@@ -1489,10 +1489,10 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNeutralButton("继续", (dialog1, which) -> {
+                    .setNegativeButton("继续", (dialog1, which) -> {
                         off(true);//重新检测
                         dialog1.dismiss();
-                    }).setNegativeButton("退出", (dialog12, which) -> {
+                    }).setNeutralButton ("退出", (dialog12, which) -> {
                         stopXunHuan();
                     }).create();
             if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
@@ -1526,10 +1526,10 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this).setTitle("系统提示")//设置对话框的标题//"成功起爆"
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNeutralButton("继续", (dialog1, which) -> {
+                    .setNegativeButton ("继续", (dialog1, which) -> {
                         off(true);//重新检测
                         dialog1.dismiss();
-                    }).setNegativeButton("退出", (dialog12, which) -> {
+                    }).setNeutralButton("退出", (dialog12, which) -> {
                         stopXunHuan();
                     }).create();
             dialog.show();

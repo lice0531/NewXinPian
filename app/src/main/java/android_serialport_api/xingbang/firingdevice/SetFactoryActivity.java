@@ -233,7 +233,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
             show_Toast(getString(R.string.text_error_tip38));
             hideInputKeyboard();
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
         });
         builder.show();

@@ -254,6 +254,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private String mRegion = "1";     // 区域
     private boolean switchUid = true;//切换uid/管壳码
     private ScanQrControl mScaner = null;
+    private int xiangHao_errNum=0;//箱码重复数量
     // 雷管列表
 
     @Override
@@ -356,7 +357,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             updateMessage("02");
         }
 
-        if (data.length() == 19) {//扫描箱号
+        if (data.length() == 19) {//扫描盒号
+            addHeHao(data);
+        }if (data.length() == 18) {//扫描箱号
             addXiangHao(data);
         } else {
             if (sanButtonFlag > 0) {//扫码结果设置到输入框里
@@ -506,6 +509,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("找不到对应的生产数据,请先导入生产数据");
             } else if (msg.what == 11) {
                 show_Toast("输入的日期格式不对");
+            }else if (msg.what == 20) {
+                SoundPlayUtils.play(4);
+                show_Toast("共有"+xiangHao_errNum+"盒重复");
+                xiangHao_errNum=0;
             } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
                 SoundPlayUtils.play(4);
@@ -680,29 +687,59 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     /**
-     * 扫描箱号
+     * 扫描盒号
      */
-    private void addXiangHao(String data) {
+    private void addHeHao(String data) {
         char[] xh = data.toCharArray();
         char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
         final String strNo = "00";
         String a = xh[5] + "" + xh[6];
-        String endNo = Utils.XiangHao(a);
+        String endNo = Utils.HeHao(a);
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-//        new Thread(() -> {
-//            insertDenator(prex, finalStrNo, finalEndNo);//添加
-//        }).start();
-
-//        pb_show = 1;
-//        runPbDialog();
         new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);
-            Log.e("手动输入", "厂号日期: " + prex);
-            Log.e("手动输入", "start: " + start);
-//            pb_show = 0;
+            insertDenator(prex, finalStrNo, finalEndNo,true);//添加
         }).start();
+    }
+
+    /**
+     * 扫描箱号
+     */
+    private void addXiangHao(String data) {
+        //J 5 3 z c 1 0 S 1 9 0 4 1 5 1 0 1
+//        （1）J代表产品名称，就是电子毫秒电雷管（也就是我们平常的工业电子雷管）；
+//        （2）53代表企业代号，金建华公司代号；
+//        （3）z代表是段别，电子雷管均采用其它段z表示；
+//        （4）c代表管壳材料为钢质；
+//        （5）10代表箱内盒数，金建华都是每箱10盒。
+//        （6）S代表箱代码，对应上述表1序号5的箱代码；
+//        （7）190415代表生产日期2019年4月15日；
+//        （8）1代表特征号，理解成机台号，1号机；01代表箱号，只能01-99。
+        char[] xh = data.toCharArray();
+        //                  5      3      9       0       4       1       5       1
+        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
+        final String strNo = "00";
+        //                            1            0
+        int a = Integer.parseInt(xh[5] + "" + xh[6]) ;//代表几盒 10
+        //                                 S
+        int endNo = Utils.XiangHao(xh[7]+"");//判断每盒几发   8
+        final String prex = String.valueOf(strNo1);
+        //5630921A
+        //53904151
+        //01
+        new Thread(() -> {
+            for (int b =0;b<a;b++){
+                String xuhao=xh[15] + "" + xh[16]+b+"00";
+                int finalStrNo =Integer.parseInt(xuhao);
+                insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1),false);//添加
+            }
+            Log.e("提示", "xiangHao_errNum: "+xiangHao_errNum );
+        }).start();
+        if(xiangHao_errNum!=0){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(20));
+
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1357,13 +1394,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
+        builder.setNeutralButton (getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton("删除", (dialog, which) -> {
             dialog.dismiss();
             pb_show = 1;
             runPbDialog();
@@ -1704,7 +1741,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     /***
      * 手动输入注册(通过开始管壳码和截止管壳码计算出所有管壳码)
      */
-    private int insertDenator(String prex, int start, int end) {
+    private int insertDenator(String prex, int start, int end ,boolean x) {
 
         if (end < start) return -1;
         if (start < 0 || end > 99999) return -1;
@@ -1743,7 +1780,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo)) {
                 singleShellNo = shellNo;
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                if(x){
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                }
+                if(!x){
+                    xiangHao_errNum++;
+                }
                 break;
             }
             DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
@@ -2119,7 +2161,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
-                            insertDenator(prex, start, start + (num - 1));
+                            insertDenator(prex, start, start + (num - 1),true);
                             Log.e("手动输入", "厂号日期: " + prex);
                             Log.e("手动输入", "start: " + start);
                             pb_show = 0;
@@ -2150,7 +2192,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
-                            insertDenator(prex, start, end);
+                            insertDenator(prex, start, end,true);
                             Log.e("手动输入", "prex: " + prex);
                             Log.e("手动输入", "start: " + start);
                             Log.e("手动输入", "end: " + end);
@@ -2365,7 +2407,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         public void run() {
             while (exit) {
 
-                insertDenator(prex, start, start + (num - 1));
+                insertDenator(prex, start, start + (num - 1),true);
 
             }
 
