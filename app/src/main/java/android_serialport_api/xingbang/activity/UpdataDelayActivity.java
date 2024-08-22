@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityUpdataDelayBinding;
+import android_serialport_api.xingbang.firingdevice.ReisterMainPage_line;
+import android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan;
 import android_serialport_api.xingbang.firingdevice.SetDelayTime;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 
@@ -31,7 +33,7 @@ public class UpdataDelayActivity extends BaseActivity implements View.OnClickLis
         title.setText("延时方案设置");
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
-        iv_add.setOnClickListener(v -> startActivity(new Intent(UpdataDelayActivity.this, SetDelayTime.class)));
+        iv_add.setOnClickListener(v -> startActivity(new Intent(UpdataDelayActivity.this, ReisterMainPage_scan.class)));
         iv_back.setOnClickListener(v -> finish());
 
         binding.udEtQsys.setText((String)MmkvUtils.getcode("qsys","0"));//起始延时

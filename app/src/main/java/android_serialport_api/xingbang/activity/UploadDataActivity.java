@@ -442,7 +442,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 getHisDetailList(date,0);
                 int count = hisListData.size();
                 if (count > 0) count -= 1;
-                Log.e(TAG,"已爆雷管个数:" + count);
+//                Log.e(TAG,"已爆雷管个数:" + count);
                 VoFireHisMain item = new VoFireHisMain();
                 item.setBlastdate(hisMain.getBlastdate());
                 item.setFiredNo(hisMain.getEqu_no());

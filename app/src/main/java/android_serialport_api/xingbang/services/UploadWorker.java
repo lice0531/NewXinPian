@@ -19,7 +19,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,18 +94,29 @@ public class UploadWorker extends Worker {
          *  闲时上传这里   先查询出所有未上传的数据  然后再使用递归方式上传
          *  递归：第一条上传不管成功失败，都上传下一条，直至数据全部上传完毕
          */
-        long currentTimeMillis = System.currentTimeMillis();
-        long threeDaysAgoMillis = currentTimeMillis - 3 * 24 * 60 * 60 * 1000; // 3天前的时间戳
-
-        // 查询近三天的数据
-//        QueryBuilder<MyEntity> queryBuilder = myEntityDao.queryBuilder();
-//        queryBuilder.where(MyEntityDao.Properties.Timestamp.ge(threeDaysAgoMillis));
         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder()
-//                .where(DenatorHis_MainDao.Properties.Blastdate.between())
                 .orderDesc(DenatorHis_MainDao.Properties.Id).list();
         for (DenatorHis_Main his:list) {
-            if(his.getUploadStatus().equals("未上传")){
-                dateList.add(his.getBlastdate());
+            // 日期格式化器
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+            // 当前时间
+            Calendar now = Calendar.getInstance();
+            // 三天前的时间
+            Calendar threeDaysAgo = Calendar.getInstance();
+            threeDaysAgo.add(Calendar.DAY_OF_MONTH, -3);
+            try {
+                // 将字符串转换为 Date
+                Date date = formatter.parse(his.getBlastdate());
+                Calendar dateCal = Calendar.getInstance();
+                dateCal.setTime(date);
+                // 判断当前数据是三天内并且是未上传就做上传操作
+                if (dateCal.after(threeDaysAgo) && dateCal.before(now) && his.getUploadStatus().equals("未上传")) {
+                    // 日期在过去三天内
+                    dateList.add(his.getBlastdate());
+                }
+            } catch (ParseException e) {
+                Log.e(TAG, "日期校验出错" + his.getBlastdate());
+                e.printStackTrace();
             }
         }
         if (dateList.size() > 0) {
@@ -159,7 +173,7 @@ public class UploadWorker extends Worker {
             getHisDetailList(date,0);
             int count = hisListData.size();
             if (count > 0) count -= 1;
-            Log.e(TAG,"已爆雷管个数:" + count);
+//            Log.e(TAG,"已爆雷管个数:" + count);
             VoFireHisMain item = new VoFireHisMain();
             item.setBlastdate(hisMain.getBlastdate());
             item.setFiredNo(hisMain.getEqu_no());
@@ -216,6 +230,9 @@ public class UploadWorker extends Worker {
             Utils.writeLog("经纬度为空，不能执行上传");
             return;
         }
+//        if (server_type1.equals("1")) {
+//            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+//        }
         if (server_type2.equals("0") && server_type1.equals("0")) {
             Log.e(TAG,"设备当前未设置上传网址,请先设置上传网址");
             Utils.writeLog("设备当前未设置上传网址,请先设置上传网址");

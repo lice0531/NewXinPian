@@ -436,7 +436,8 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setErrorCode("FF");
         denatorBaseinfo.setErrorName("正常");
         denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
-        denatorBaseinfo.setPai(pai);
+        //由于单发注册是没法选择排号的  所以在这里注册成功后，默认排号都设置为1
+        denatorBaseinfo.setPai(1);
         denatorBaseinfo.setSitholeNum(1);
         denatorBaseinfo.setAuthorization("");
         denatorBaseinfo.setDownloadStatus("");
