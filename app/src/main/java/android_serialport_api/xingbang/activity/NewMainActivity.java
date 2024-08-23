@@ -32,6 +32,7 @@ import java.util.List;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityNewMainBinding;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.firingdevice.SetEnvMainActivity;
 import android_serialport_api.xingbang.jianlian.FirstEvent;
@@ -85,6 +86,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                 readCVS_pro();//把备份的信息写入到数据库中
                 pb_show = 0;
                 getUserMessage();//获取用户信息
+                GreenDaoMaster.setDenatorType();//延时最大值默认值
             }
         }.start();
         // 创建一个 OneTimeWorkRequest 实例

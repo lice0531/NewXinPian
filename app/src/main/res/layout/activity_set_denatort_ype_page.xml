@@ -1,206 +1,210 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-     android:orientation="vertical" 
-    android:background="@color/child_pg_bg"
-    tools:context="android_serialport_api.xingbang.firingdevice.SetFactoryActivity"
-    tools:ignore="MergeRootFrame">
-	<LinearLayout	    
-	    android:id="@+id/setFactoryBasePage"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" 
-        android:layout_marginTop="10dp"       
-        >
-          <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"             
-            > 
-            <TextView
-                android:layout_width="0dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/container"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/child_pg_bg"
+	android:orientation="vertical"
+	tools:context="android_serialport_api.xingbang.firingdevice.SetFactoryActivity"
+	tools:ignore="MergeRootFrame">
+
+	<LinearLayout
+		android:id="@+id/setFactoryBasePage"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:orientation="vertical"
+		android:focusable="true"
+		android:focusableInTouchMode="true">
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="40dp">
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
 				android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:text="@string/text_lgxp_lglb"
-               android:gravity="right"  
-               android:paddingRight="5dp"
-                android:textSize="@dimen/childPageBtnFontSize"
-            />
-			 <EditText
+				android:gravity="right"
+				android:paddingRight="5dp"
+				android:text="@string/text_lgxp_lglb"
+				android:textSize="@dimen/childPageBtnFontSize" />
+
+			<EditText
 				android:id="@+id/denator_type_Name"
 				android:layout_width="0dp"
-				android:layout_height="wrap_content"					
-				android:maxLength="20"
-				android:gravity="left" 
-				android:layout_weight="3"			
-			    android:padding="5dp"
-				 android:background="@drawable/translucent" 			
-			    android:textColor="@color/rangle_fc_base"
-			    android:textSize="@dimen/childPageEditFontSize"    
+				android:layout_height="wrap_content"
+				android:layout_weight="3"
+				android:background="@drawable/translucent"
+				android:gravity="left"
 				android:hint="@string/text_lgxp_lglb"
-			/>
-			 <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text=""   
-               android:gravity="left"  
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-	    </LinearLayout>		 
-		
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"             
-            > 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="@string/text_lgxp_mms"
-               android:gravity="right"  
-               android:paddingRight="5dp"
-                android:textSize="@dimen/childPageBtnFontSize"
-            />
-			 <EditText
+				android:maxLength="20"
+				android:padding="5dp"
+				android:textColor="@color/rangle_fc_base"
+				android:textSize="@dimen/childPageEditFontSize" />
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="left"
+				android:text=""
+				android:textSize="@dimen/childPageLabelFontSize" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="40dp">
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="2"
+				android:gravity="right"
+				android:paddingRight="5dp"
+				android:text="@string/text_lgxp_mms"
+				android:textSize="@dimen/childPageBtnFontSize" />
+
+			<EditText
 				android:id="@+id/denator_type_second"
 				android:layout_width="0dp"
-				android:layout_height="wrap_content"					
-				android:maxLength="30"
-				android:gravity="left" 
-				android:layout_weight="3"			
-			    android:padding="5dp"
-				 android:background="@drawable/translucent" 			
-			    android:textColor="@color/rangle_fc_base"
-			    android:textSize="@dimen/childPageEditFontSize"   
+				android:layout_height="wrap_content"
+				android:layout_weight="3"
+				android:background="@drawable/translucent"
+				android:gravity="left"
 				android:hint="@string/text_lgxp_mms"
-			/>
-		    <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text="/ms"
-               android:gravity="left"  
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-        </LinearLayout>
-         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"             
-            > 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text="@string/text_lgxp_default"
-               android:gravity="right"  
-               android:paddingLeft="5dp"
-               android:layout_marginTop="5dp" 
-                android:textSize="@dimen/childPageBtnFontSize"
-            />
-			
-			 <CheckBox 
-			    android:id="@+id/denator_type_isSelected" 
-			    android:layout_width="wrap_content" 
-			    android:layout_height="wrap_content" 
-			    android:maxLength="2"
-				android:gravity="left" 
-				android:layout_marginLeft="5dp" 
-				android:layout_weight="3"	
-		        
-			   android:button="@drawable/trade_checkbox_style"			   
-			    />
-		    <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"                
-                android:text=""   
-               android:gravity="left"  
-                android:textSize="@dimen/childPageLabelFontSize"           
-            />
-        </LinearLayout>
-        <LinearLayout
-	        android:layout_width="fill_parent"	       
-	        android:gravity="center"
-	        android:layout_height="@dimen/childReisterPageLineHeight" 
-	        >
-	        <Button
-	            android:id="@+id/btn_factory_return"
-	            android:layout_width="60dp"
-	            android:layout_height="40dp"
-	            android:layout_marginRight="10dp"
-	            android:gravity="center"
-	            android:textColor="@color/bt_fg_base"
-	        	android:background="@drawable/bt_mainpage_style"
-	            android:textSize="@dimen/childReisterPageBtnFontSize" 
-	            android:text="@string/text_return" />
-	        <Button
-	            android:id="@+id/btn_factory_inputOk"
-	            android:layout_width="60dp"
-	            android:layout_height="40dp"
-	            android:layout_marginRight="10dp"
-	            android:gravity="center"
-	            android:textColor="@color/bt_fg_base"
-	        	android:background="@drawable/bt_mainpage_style"
-	            android:textSize="@dimen/childReisterPageBtnFontSize" 
-	            android:text="@string/text_sure" />
-    	</LinearLayout>
-        
-              
-  </LinearLayout>
-  <RelativeLayout            
-            android:orientation="vertical"           
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/setFactoryBasePage"
-    		android:layout_width="fill_parent">
-        
-       <LinearLayout
-	        android:layout_width="fill_parent"	       
-	        android:gravity="center"
-	        android:orientation="vertical" 
-	        android:layout_height="fill_parent">
-	        <LinearLayout
-		        android:layout_width="fill_parent"	       
-		        android:gravity="center"
-		        android:orientation="horizontal" 		        
-		        android:layout_height="40dp">
-		        
-			  <TextView  
-			   android:layout_width="140dp"  
-			   android:layout_height="match_parent"
-			   android:gravity="center"	
-			   android:layout_marginLeft="2dp"
-			   android:background="@drawable/textview_border"		    
-			   android:text="@string/text_lgxp_lglb"
-			  />  
-			   
-			   <TextView  
-			   android:layout_width="60dp"  
-			   android:layout_height="match_parent"
-			   android:gravity="center"
-			   android:background="@drawable/textview_border"  
-			   android:text="@string/text_list_ms"
-			  />  
-			    
-			  <TextView  
-			   android:layout_width="fill_parent"  
-			   android:gravity="center"
-			   android:layout_height="match_parent"
-			   android:layout_marginRight="2dp" 
-			   android:background="@drawable/textview_border"
-			   android:text="@string/text_list_check"
-			  />  		  
-			  
-			  
-			</LinearLayout> 
-	       
-		 	<ListView 
-		    android:layout_width="fill_parent"   
-		    android:layout_height="fill_parent"   
-		    android:id="@+id/factory_listView"
-    		/> 
-    	</LinearLayout> 
-    </RelativeLayout>
-   
-</RelativeLayout>
+				android:maxLength="30"
+				android:padding="5dp"
+				android:textColor="@color/rangle_fc_base"
+				android:textSize="@dimen/childPageEditFontSize"
+				android:inputType="number"
+				android:digits="0123456789"
+				/>
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="left"
+				android:text="/ms"
+				android:textSize="@dimen/childPageLabelFontSize" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="40dp">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5dp"
+				android:layout_weight="1"
+				android:gravity="right"
+				android:paddingLeft="5dp"
+				android:text="@string/text_lgxp_default"
+				android:textSize="@dimen/childPageBtnFontSize" />
+
+			<CheckBox
+				android:id="@+id/denator_type_isSelected"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="5dp"
+				android:layout_weight="3"
+				android:button="@drawable/trade_checkbox_style"
+				android:gravity="left"
+
+				android:maxLength="2" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="left"
+				android:text=""
+				android:textSize="@dimen/childPageLabelFontSize" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="@dimen/childReisterPageLineHeight"
+			android:gravity="center">
+
+			<Button
+				android:id="@+id/btn_factory_return"
+				android:layout_width="60dp"
+				android:layout_height="40dp"
+				android:layout_marginRight="10dp"
+				android:background="@drawable/bt_mainpage_style"
+				android:gravity="center"
+				android:text="@string/text_return"
+				android:textColor="@color/bt_fg_base"
+				android:textSize="@dimen/childReisterPageBtnFontSize" />
+
+			<Button
+				android:id="@+id/btn_factory_inputOk"
+				android:layout_width="60dp"
+				android:layout_height="40dp"
+				android:layout_marginRight="10dp"
+				android:background="@drawable/bt_mainpage_style"
+				android:gravity="center"
+				android:text="@string/text_sure"
+				android:textColor="@color/bt_fg_base"
+				android:textSize="@dimen/childReisterPageBtnFontSize" />
+		</LinearLayout>
+
+
+	</LinearLayout>
+
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@+id/setFactoryBasePage"
+		android:orientation="vertical">
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:gravity="center"
+			android:orientation="vertical">
+
+			<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="40dp"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="140dp"
+					android:layout_height="match_parent"
+					android:layout_marginLeft="2dp"
+					android:background="@drawable/textview_border"
+					android:gravity="center"
+					android:text="@string/text_lgxp_lglb" />
+
+				<TextView
+					android:layout_width="60dp"
+					android:layout_height="match_parent"
+					android:background="@drawable/textview_border"
+					android:gravity="center"
+					android:text="@string/text_list_ms" />
+
+				<TextView
+					android:layout_width="fill_parent"
+					android:layout_height="match_parent"
+					android:layout_marginRight="2dp"
+					android:background="@drawable/textview_border"
+					android:gravity="center"
+					android:text="@string/text_list_check" />
+
+
+			</LinearLayout>
+
+			<ListView
+				android:id="@+id/factory_listView"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+		</LinearLayout>
+	</RelativeLayout>
+
+</LinearLayout>

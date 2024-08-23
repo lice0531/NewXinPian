@@ -1734,6 +1734,8 @@ public class Utils {
             denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
             denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
             denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
+            denatorBaseinfo.setPai(list_lg.get(i).getPai());
+            denatorBaseinfo.setSitholeNum(list_lg.get(i).getSitholeNum());
             denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
             denatorBaseinfo.setWire(list_lg.get(i).getWire());
             denatorBaseinfo.setName(list_lg.get(i).getName());

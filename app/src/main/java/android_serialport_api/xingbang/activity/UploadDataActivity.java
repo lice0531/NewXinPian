@@ -28,11 +28,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -91,10 +94,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private int totalPage;//总的页数
     private String TAG = "上传起爆数据页面--";
     private int uploadIndex = 0;//还有多少条数据需要一键上传
+    private int uploadIndexMoni = 0;//还有多少条数据需要模拟一键上传
     List<String> dateList = new ArrayList<>();
     private int isDlUploadSuccess = 0;//丹灵是否上传成功 0:未上传  200:上传成功  201:上传失败
     private int isZbUploadSuccess = 0;//中爆是否上传成功 0:未上传  200:上传成功  201:上传失败
     private int isXbUploadSuccess = 0;//煋邦是否上传成功 0:未上传  200:上传成功  201:上传失败
+    private boolean isCsDataDone = false;//测试数据是否已生成
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +135,210 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         pro_dwdm = bean.getPro_dwdm();
         Log.e(TAG,"数据库存储的经纬度:" + (!TextUtils.isEmpty(pro_coordxy) ? pro_coordxy : "")
         + "--server_type1:" + server_type1 + "--server_type2:" + server_type2);
+    }
+
+    List<VoFireHisMain> csDateList = new ArrayList<>();
+    ArrayList<Map<String, Object>> csLgData = new ArrayList<>();
+    //生成测试数据
+    private void getCsData(){
+        // 2. 生成模拟数据
+        getMoniCsTimeData(list_savedate);
+        int dateIndex = 0;
+        boolean isDateDone = false;
+        boolean isLgDone = false;
+        for (VoFireHisMain main : csDateList) {
+            dateIndex++;
+        }
+        if (dateIndex == csDateList.size()) {
+            Log.e(TAG,"起爆信息测试数据已生成--总长度:" + csDateList.size() + "--最后一条数据是:"
+                    + csDateList.get(csDateList.size() - 1).toString());
+            isDateDone = true;
+        }
+        int lgIndex = 0;
+        for (Map<String, Object> lgDatum : csLgData) {
+            lgIndex ++;
+        }
+        if (lgIndex == csLgData.size()) {
+            Log.e(TAG,"详细起爆雷管信息测试数据已生成--总长度：" + csLgData.size() + "最后一条下标:" + (csLgData.size() - 1)
+                    + "--总长度：" + csLgData.size() + "--最后一条数据是:" + csLgData.get(csLgData.size() - 1).toString());
+            isLgDone = true;
+        }
+        if (isDateDone && isLgDone) {
+            isCsDataDone = true;
+            Message msg = new Message();
+            msg.what = 7;
+            msg.obj = "正在上传测试数据";
+            mHandler_tip.sendMessage(msg);
+            uploadNextMoni(csDateList,uploadIndexMoni);
+        }
+    }
+
+    // 递归方法，逐个上传数据
+    private void uploadNextMoni(List<VoFireHisMain> csDateList, int index) {
+        Log.e(TAG,"模拟大量数据一键上传--总条数:" + csDateList.size());
+        if (index >= csDateList.size()) {
+            Log.e(TAG,"模拟大量数据一键上传--所有数据已全部上传" );
+            show_Toast("上传已结束");
+            return;
+        }
+        Log.e(TAG,"isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
+        for (int i = 0; i < csDateList.size(); i++) {
+            Log.e(TAG, "模拟大量数据一键上传的数据下标是:" + i + "--日期是:" + csDateList.get(i).getBlastdate());
+            uploadMoniQbData(csDateList,i);
+        }
+    }
+
+    private void uploadMoniQbData(List<VoFireHisMain> csDateList, int position) {
+        if (!NetUtils.haveNetWork(getContext())) {
+            show_Toast("请检查网络!");
+            return;
+        }
+        int pos = position;//位置
+        String blastdate = csDateList.get(pos).getBlastdate();//日期
+        String htbh = csDateList.get(pos).getProjectNo();//合同编号
+        String dwdm = csDateList.get(pos).getDwdm();//单位代码
+        String xmbh = csDateList.get(pos).getXmbh();//项目编号
+        String jd = csDateList.get(pos).getLongitude();//经度
+        String wd = csDateList.get(pos).getLatitude();//纬度
+        String qbxm_id = csDateList.get(pos).getXmbh();//项目编号
+        String qbxm_name = csDateList.get(pos).getUserid();//项目名称
+        String log = csDateList.get(pos).getLog();//日志
+//                        mAdapter.notifyDataSetChanged();
+        getHisDetailList(blastdate, 0);//获取起爆历史详细信息
+        if (blastdate == null || blastdate.trim().length() < 8) {
+            int count = getBlastModelCount();
+            if (count < 1) {
+                show_Toast("没有数据，不能执行上传");
+                return;
+            }
+            String fireDate = Utils.getDateFormatLong(new Date());
+            saveFireResult(fireDate);
+            blastdate = fireDate;
+        }
+//                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
+        Log.e(TAG + "上传-经纬度", "pro_coordxy: " + pro_coordxy);
+        Log.e(TAG + "上传-经纬度", "jd: " + jd);
+        if (pro_coordxy.length() < 2 && (jd == null || wd == null)) {
+            show_Toast("经纬度为空，不能执行上传");
+            return;
+        }
+        if (server_type2.equals("0") && server_type1.equals("0")) {
+            show_Toast("设备当前未设置上传网址,请先设置上传网址");
+        }
+//                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
+        pb_show = 1;
+//        runPbDialog();//loading画面
+//        if (server_type1.equals("1")) {
+//            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+//        }
+        if (server_type2.equals("2")) {
+            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
+        }
+        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+    }
+
+    public void getMoniCsTimeData(List<VoFireHisMain> originalData) {
+//        List<VoFireHisMain> simulatedData = new ArrayList<>();
+//        ArrayList<Map<String, Object>> simData = new ArrayList<>();
+        for (int j = 0; j < originalData.size(); j++) {
+            VoFireHisMain original = originalData.get(j);
+            for (int i = 0; i < 300; i++) {
+                //生成起爆日期  日期不超过当天
+                try {
+                    String newDate = getNewRandomDate(original.getBlastdate());
+                    csDateList.add(new VoFireHisMain("" + (i + 1),newDate,original.getUploadStatus(),
+                            original.getLatitude(),original.getLongitude(),original.getUserid(),original.getFiredNo(),
+                            original.getSerialNo(),original.getRemark(),original.getProjectNo(),original.getDwdm(),
+                            original.getXmbh(),original.getLog(),original.getTotal()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            for (int h = 1; h < hisListData.size(); h++) {
+                for (int k = 0; k < 300; k++) {
+                    try {
+                        //生成管壳码
+                        String newShellNo = "";
+                        String baseBallId = hisListData.get(h).get("shellNo") + "";
+                        if (baseBallId.length() > 5) {
+                            newShellNo = baseBallId.substring(0, baseBallId.length() - 5) + String.format("%05d", (int) (Math.random() * 100000));
+                        } else {
+                            newShellNo = baseBallId + String.format("%05d", (int) (Math.random() * 100000));
+                        }
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("no", j + 1);
+                        item.put("serialNo", hisListData.get(h).get("serialNo"));
+                        item.put("shellNo", newShellNo);
+                        item.put("delay", "" + hisListData.get(h).get("delay"));
+                        csLgData.add(item);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+    public ArrayList<Map<String, Object>> getMoniCsLgData(List<VoFireHisMain> voFireHisMains) {
+        ArrayList<Map<String, Object>> simData = new ArrayList<>();
+        for (int i = 0; i < voFireHisMains.size(); i++) {
+            for (int h = 1; h < hisListData.size(); h++) {
+                for (int j = 0; j < 300; j++) {
+                    try {
+                        //生成管壳码
+                        String newShellNo = "";
+                        String baseBallId = hisListData.get(h).get("shellNo") + "";
+                        Log.e(TAG, "baseBallId:" + baseBallId);
+                        if (baseBallId.length() > 5) {
+                            newShellNo = baseBallId.substring(0, baseBallId.length() - 5) + String.format("%05d", (int) (Math.random() * 100000));
+                        } else {
+                            newShellNo = baseBallId + String.format("%05d", (int) (Math.random() * 100000));
+                        }
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("no", j + 1);
+                        item.put("serialNo", hisListData.get(h).get("serialNo"));
+                        item.put("shellNo", newShellNo);
+                        item.put("delay", "" + hisListData.get(h).get("delay"));
+                        simData.add(item);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return simData;
+    }
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+    private static String getNewRandomDate(String baseDate) throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+        Date date = inputFormat.parse(baseDate);
+        calendar.setTime(date);
+        // 获取当前时间
+        Calendar now = Calendar.getInstance();
+        // 设置生成日期的年、月、日为当前年、当前月
+        calendar.set(Calendar.YEAR, now.get(Calendar.YEAR));
+        calendar.set(Calendar.MONTH, now.get(Calendar.MONTH));
+        // 设置日、小时、分钟和秒的随机值，但确保不超过当前日期
+        int maxDay = Math.min(calendar.getActualMaximum(Calendar.DAY_OF_MONTH), now.get(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.DAY_OF_MONTH, (int) (Math.random() * maxDay) + 1);
+        calendar.set(Calendar.HOUR_OF_DAY, (int) (Math.random() * 24));
+        calendar.set(Calendar.MINUTE, (int) (Math.random() * 60));
+        calendar.set(Calendar.SECOND, (int) (Math.random() * 60));
+        // 确保生成的日期不超过当前时间
+        if (calendar.after(now)) {
+            calendar.setTime(now.getTime());
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+        return dateFormat.format(calendar.getTime());
+    }
+
+    private static String getNewBallId(String originalBallId, Random random) {
+        // 这个函数生成一个新ballId，通过改变最后5个字符
+        String base = originalBallId.substring(0, originalBallId.length() - 5);
+        String newSuffix = String.format("%05d", random.nextInt(100000));
+        return base + newSuffix;
     }
 
     private void initData() {
@@ -201,10 +410,17 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
                             "--isXbUploadSuccess:" + isXbUploadSuccess);
                     if (isDlUploadSuccess != 0 || isXbUploadSuccess != 0) {
-                        uploadIndex ++ ;
+                        uploadIndex ++;
                         uploadNext(dateList,uploadIndex);
+//                        uploadIndexMoni ++;
+//                        uploadNextMoni(csDateList,uploadIndexMoni);
                     }
                     break;
+                case 7:
+                    String res = (String) msg.obj;
+                    show_Toast(res);
+                    break;
+
             }
             return false;
         });
@@ -546,6 +762,23 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             } else {
                 show_Toast("当前没有需要上传的数据");
             }
+        } else if (v.getId() == R.id.btn_csdata) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Message msg = new Message();
+//                    msg.what = 7;
+//                    msg.obj = "正在生成测试数据，请稍等...";
+//                    mHandler_tip.sendMessage(msg);
+//                    getCsData();
+//                    if (isCsDataDone) {
+//                        Message messageg = new Message();
+//                        messageg.what = 7;
+//                        messageg.obj = "已生成" + csDateList.size() + "条测试数据";
+//                        mHandler_tip.sendMessage(messageg);
+//                    }
+//                }
+//            }).start();
         }
     }
 

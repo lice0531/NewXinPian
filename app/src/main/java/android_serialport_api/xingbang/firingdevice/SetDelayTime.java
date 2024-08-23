@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,7 +116,7 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
                 if (checstr == null || checstr.trim().length() < 1) {
                     int maxDelay = getComputerDenDelay();
                     Log.e("延时", "maxSecond: " + maxSecond);
-                    if (maxSecond > 0 && maxSecond < maxDelay && maxSecond > 15000) {
+                    if (maxSecond > 0 && maxSecond < maxDelay && maxSecond > 10000) {
                         show_Toast("当前设置延时已超出最大值限制,请重新设置延时");
                         return;
                     }
@@ -235,11 +236,17 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
             if (cursor.getString(2).matches("\\d+")) {//判断是否是数字
                 second = cursor.getString(2);
             }
-            Log.e("延时", "second: " + second);
+            Log.e("设置延时页面-最大延时", "second: " + second);
             cursor.close();
         }
-        maxSecond = Integer.parseInt(second);//类型转换异常
-
+        if (TextUtils.isEmpty(second)) {
+            Log.e("最大延时","数据库中获取到的最大延时为空，特设为最大延时10000（单位毫秒，即10秒）");
+            maxSecond = 10000;
+            maxSecond = 10000;
+        } else {
+            maxSecond = Integer.parseInt(second);//类型转换异常
+        }
+        Log.e("设置延时页面-最大延时", "second: " + second);
     }
 
     private void runPbDialog() {

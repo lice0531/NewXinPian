@@ -44,6 +44,7 @@ import android_serialport_api.xingbang.databinding.ActivityZhuCeScanBinding;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -74,7 +75,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private String delay_set = "0";//是f1还是f2
-    private int maxSecond = 20000;//最大延时 毫秒
+    private int maxSecond = 0;//最大延时 毫秒
     private String factoryCode = "";//厂家代码
     private String factoryFeature = "";////厂家特征码
     private String deTypeSecond = "";//该类型雷管最大延期值
@@ -285,12 +286,12 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
             delaytimeTxt.setText(info.getDelay() + "");
             builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
                 String delay = delaytimeTxt.getText().toString().trim();
-                if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
-                    show_Toast(getString(R.string.text_error_tip37));
-                    dialog.dismiss();
-                } else if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond || Integer.parseInt(delay) > 8000) {//
+                if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {//
                     tipInfoFlag = 13;
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                    dialog.dismiss();
+                } else if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
+                    show_Toast(getString(R.string.text_error_tip37));
                     dialog.dismiss();
                 } else {
                     Utils.writeRecord("-单发修改延时:" + "-管壳码:" + info.getShellBlastNo() + "-延时:" + delay);
@@ -1261,6 +1262,9 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         }
         if (deTypeSecond != null && deTypeSecond.length() > 0) {
             maxSecond = Integer.parseInt(deTypeSecond);
+        } else {
+            Log.e(TAG,"数据库中获取到的最大延时为空，特设为最大延时10000（单位毫秒，即10秒）");
+            maxSecond = 10000;
         }
         Log.e("最大延时", "deTypeSecond: " + deTypeSecond);
     }

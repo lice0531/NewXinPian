@@ -240,10 +240,26 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         mAdapter.notifyDataSetChanged();
 
         firstThread = new ThreadFirst(allBlastQu);//全部线程
+        elevenCount = getMaxDelay() / 1000 + 1;
+        Log.e(TAG, "elevenCount: " + elevenCount);
         //给主机发消息告知已进入起爆页面
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
     }
 
+    /***
+     * 得到最大序号
+     * @return
+     */
+    private int getMaxDelay() {//
+        Cursor cursor = db.rawQuery("select max(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null);
+        if (cursor != null && cursor.moveToNext()) {
+            int delayMax = cursor.getInt(0);
+            cursor.close();
+            Log.e(TAG, "当前最大延时: " + delayMax);
+            return delayMax;
+        }
+        return 0;
+    }
 
     @Override
     protected void onStart() {
@@ -655,8 +671,10 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 }
                 break;
             case 11://给范总加的起爆后的放电阶段
-                binding.qbTvTip.setText("正在放电,请稍等" + elevenCount + "s");
-                binding.qbTvQbTip.setText("正在放电,请稍等" + elevenCount + "s");
+//                binding.qbTvTip.setText("正在放电,请稍等" + elevenCount + "s");
+//                binding.qbTvQbTip.setText("正在放电,请稍等" + elevenCount + "s");
+                binding.qbTvTip.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
+                binding.qbTvQbTip.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
                 break;
             case 33:
 //                if (thirdWriteCount == 1) {
@@ -1152,7 +1170,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             Thread.sleep(1000);
                             elevenCount--;
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            if (elevenCount == 0) {
+                            if (elevenCount <= 0) {
                                 increase(9);
                             }
                             break;

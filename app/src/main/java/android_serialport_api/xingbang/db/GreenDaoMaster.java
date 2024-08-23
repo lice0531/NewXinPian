@@ -367,4 +367,15 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
+
+    public static void setDenatorType() {
+        List<Denator_type> msg = getDaoSession().getDenator_typeDao().loadAll();
+        if (msg.size() == 0) {
+            Denator_type message = new Denator_type();
+            message.setDeTypeName("scyb");
+            message.setDeTypeSecond("10000");
+            message.setIsSelected("是");
+            getDaoSession().getDenator_typeDao().insert(message);
+        }
+    }
 }

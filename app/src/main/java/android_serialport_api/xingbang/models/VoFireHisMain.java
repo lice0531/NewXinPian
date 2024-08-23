@@ -19,6 +19,28 @@ public class VoFireHisMain {
 	private String log;//日志
 	private int total;//雷管数量
 
+	public VoFireHisMain() {
+	}
+
+	public VoFireHisMain(String id, String blastdate, String uploadStatus, String longitude,
+						 String latitude, String userid, String firedNo, String serialNo, String remark,
+						 String projectNo, String dwdm, String xmbh, String log, int total) {
+		this.id = id;
+		this.blastdate = blastdate;
+		this.uploadStatus = uploadStatus;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.userid = userid;
+		this.firedNo = firedNo;
+		this.serialNo = serialNo;
+		this.remark = remark;
+		this.projectNo = projectNo;
+		this.dwdm = dwdm;
+		this.xmbh = xmbh;
+		this.log = log;
+		this.total = total;
+	}
+
 	public int getTotal() {
 		return total;
 	}

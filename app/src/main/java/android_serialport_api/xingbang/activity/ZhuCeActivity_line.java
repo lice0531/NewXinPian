@@ -57,7 +57,8 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
     private RecyclerViewAdapter_Denator<DenatorBaseinfo> mAdapter;
     private List<DenatorBaseinfo> mListData = new ArrayList<>();//所有雷管列表
     private LinearLayoutManager linearLayoutManager;
-    private int maxSecond = 20000;//最大延时
+    private String deTypeSecond = "";//该类型雷管最大延期值
+    private int maxSecond = 0;//最大延时
     //是否单发注册
     private int isSingleReisher = 0;
     private Handler mHandler_0 = new Handler();     // UI处理
@@ -98,6 +99,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
 
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
+        getFactoryType();//获取延期最大值
         getFactoryCode();//获取厂家号
         getUserMessage();//获取版本号
         //新的适配方法 适配器
@@ -463,11 +465,11 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         delaytimeTxt.setText(info.getDelay() + "");
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay = delaytimeTxt.getText().toString().trim();
-            if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
-                show_Toast(getString(R.string.text_error_tip37));
-                dialog.dismiss();
-            } else if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond || Integer.parseInt(delay) > 8000) {//
+            if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {//
                 mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
+                dialog.dismiss();
+            } else if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
+                show_Toast(getString(R.string.text_error_tip37));
                 dialog.dismiss();
             } else {
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + info.getShellBlastNo() + "-延时:" + delay);
@@ -609,6 +611,26 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         }
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         return 1;
+    }
+
+    /**
+     * 获得设置中的最大延时
+     */
+    private void getFactoryType() {
+        String selection = " isSelected = ?"; // 选择条件，给null查询所有
+        String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOR_TYPE, null, selection, selectionArgs, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            deTypeSecond = cursor.getString(2);
+            cursor.close();
+        }
+        if (deTypeSecond != null && deTypeSecond.length() > 0) {
+            maxSecond = Integer.parseInt(deTypeSecond);
+        } else {
+            Log.e(TAG,"数据库中获取到的最大延时为空，特设为最大延时10000（单位毫秒，即10秒）");
+            maxSecond = 10000;
+        }
+        Log.e("最大延时", "deTypeSecond: " + deTypeSecond);
     }
 
     /**

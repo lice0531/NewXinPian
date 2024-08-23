@@ -221,6 +221,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private String qiaosi_set = "";//是否检测桥丝
     private String version = "";//是否检测桥丝
     private ScanQrControl mScaner = null;
+    private String TAG = "雷管注册手动输入页面--";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -830,6 +831,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         if (deTypeSecond != null && deTypeSecond.length() > 0) {
             maxSecond = Integer.parseInt(deTypeSecond);
+        } else {
+            Log.e(TAG,"数据库中获取到的最大延时为空，特设为最大延时10000（单位毫秒，即10秒）");
+            maxSecond = 10000;
         }
         Log.e("最大延时", "deTypeSecond: " + deTypeSecond);
     }
@@ -1661,6 +1665,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
                 values.put("statusName", "已注册");
+                values.put("pai", 1);
                 values.put("errorCode", "FF");
                 values.put("errorName", "");
                 db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});

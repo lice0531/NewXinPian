@@ -366,7 +366,7 @@
     <string name="text_test_ysdl">(疑似断路)</string>
     <string name="text_chongdian_state0">充电异常</string>
     <string name="text_chongdian_stateFF">充电成功</string>
-    <string name="app_version_name">M900_PT_V2.1_240822</string>
+    <string name="app_version_name">M900_PT_V2.1_240823</string>
     <string name="text_sync_tip1">数据为空</string>
     <string name="text_sync_tip2">同步成功</string>
     <string name="text_sync_tip3">已连接</string>
@@ -381,4 +381,5 @@
     <string name="text_sync_tip12">正在回传数据</string>
     <string name="text_sync_szbh">设置编号</string>
     <string name="text_sync_dqyc">当前延迟(m)：</string>
+    <string name="text_firing_qbz">起爆中,请稍等</string>
 </resources>
