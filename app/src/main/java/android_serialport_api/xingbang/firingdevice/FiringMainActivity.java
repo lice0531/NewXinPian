@@ -637,29 +637,33 @@ public class FiringMainActivity extends SerialPortActivity {
             if (isshow2==0 && oneCount >=oneCount_max*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7 && stage != 8) {// "电流过大";
                 isshow2 = 1;
 
-                firstThread.exit = true;
-                firstThread.interrupt();
-                try {
-                    firstThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                firstThread.exit = true;
+//                firstThread.interrupt();
+//                try {
+//                    firstThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电流过大,总线线路异常,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         . setNeutralButton("退出", (dialog1, which) -> {
-                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                            sendCmd(reCmd);
+                            sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             dialog1.dismiss();
                             closeThread();
                             closeForm();
                             finish();
                         })
                         .setNegativeButton("继续", (dialog15, i) -> {
-                            firstThread = new ThreadFirst(allBlastQu);
-                            firstThread.exit = false;
-                            firstThread.start();
+//                            firstThread = new ThreadFirst(allBlastQu);
+//                            firstThread.exit = false;
+//                            firstThread.start();
                             dialog15.dismiss();
                         })
                         .create();
@@ -673,31 +677,17 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 21000) {
-                    firstThread.exit = true;
-                    firstThread.interrupt();
-                    try {
-                        firstThread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     if (!chongfu) {
-                        initDialog_zanting_stop("当前电流过大,请检查线路是否存在短路,漏电等情况,排查线路故障后,再进行测试。");//弹出框
+                        initDialog_zanting_stop("当前电流短路,请检查线路是否存在短路,漏电等情况,排查线路故障后,再进行测试。");//弹出框
                     }
                 }
             }
-            if (twoCount > sixExchangeCount*0.8 && stage == 6 && busInfo != null) {
+            if (twoCount > sixExchangeCount && stage == 6 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 30000) {
-                    firstThread.exit = true;
-                    firstThread.interrupt();
-                    try {
-                        firstThread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     if (!chongfu) {
-                        initDialog_zanting_stop("当前电流过大,请检查线路是否存在短路,漏电等情况,排除问题后,重新进行检测。");//弹出框
+                        initDialog_zanting_stop("当前电流短路,请检查线路是否存在短路,漏电等情况,排除问题后,重新进行检测。");//弹出框
                     }
                 }
             }
@@ -3216,6 +3206,13 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private void initDialog_zanting_stop(String tip) {
         if (!FiringMainActivity.this.isFinishing()) {
+            firstThread.exit = true;
+            firstThread.interrupt();
+            try {
+                firstThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             chongfu = true;//已经检测了一次
             AlertDialog dialog = new Builder(FiringMainActivity.this)
                     .setTitle("系统提示")//设置对话框的标题//"成功起爆"
@@ -3223,9 +3220,13 @@ public class FiringMainActivity extends SerialPortActivity {
                     //设置对话框的按钮
 
                     .setNeutralButton("退出", (dialog12, which) -> {
-                        dialog12.cancel();
+
+                        byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                        sendCmd(reCmd);
                         closeThread();
                         closeForm();
+
+                        dialog12.cancel();
                     })
                     .setPositiveButton("继续", (dialog12, which) -> {
 //                    off();//重新检测

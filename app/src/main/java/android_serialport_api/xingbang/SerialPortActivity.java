@@ -66,24 +66,25 @@ public abstract class SerialPortActivity extends BaseActivity {
             super.run();
             try {
                 while (!isInterrupted() && !exit) {
-                    int size;
+                    if (mInputStream.available() > 0) {
+                        int size;
 
-                    Thread.sleep(20);
-                    if (exit) return;
-                    byte[] buffer = new byte[64];
-                    if (mInputStream == null) return;
-                    //Utils.writeLog("Read------11111111");
-                    size = mInputStream.read(buffer);
+                        Thread.sleep(20);
+                        if (exit) return;
+                        byte[] buffer = new byte[64];
+                        if (mInputStream == null) return;
+                        //Utils.writeLog("Read------11111111");
+                        size = mInputStream.read(buffer);
 //                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
-                    //Utils.writeLog("Read------22222222");
-                    if (size > 0) {
+                        //Utils.writeLog("Read------22222222");
+                        if (size > 0) {
 //                        byte[] cmdBuf = new byte[size];
 //                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
 //                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
 //                        Log.e("收到: ",fromCommad );
-                        onDataReceived(buffer, size);
+                            onDataReceived(buffer, size);
+                        }
                     }
-
                 }
             } catch (IOException | InterruptedException e) {
                 //e.printStackTrace();
