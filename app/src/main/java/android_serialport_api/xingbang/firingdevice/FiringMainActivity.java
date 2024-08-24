@@ -669,30 +669,34 @@ public class FiringMainActivity extends SerialPortActivity {
 
 
             //电流大于4000,重启检测阶段
-            if (oneCount > 5 && stage == 2 && busInfo != null) {
+            if (oneCount > 20 && stage == 2 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 21000) {
-                    increase(99);//暂停阶段
-                    mHandler_1.handleMessage(Message.obtain());
+                    firstThread.exit = true;
+                    firstThread.interrupt();
+                    try {
+                        firstThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     if (!chongfu) {
-//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-//                    } else {
-                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));
                         initDialog_zanting_stop("当前电流过大,请检查线路是否存在短路,漏电等情况,排查线路故障后,再进行测试。");//弹出框
                     }
                 }
             }
-            if (twoCount > 17 && stage == 6 && busInfo != null) {
+            if (twoCount > sixExchangeCount*0.8 && stage == 6 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 30000) {
-                    increase(99);//暂停阶段
-                    mHandler_1.handleMessage(Message.obtain());
+                    firstThread.exit = true;
+                    firstThread.interrupt();
+                    try {
+                        firstThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     if (!chongfu) {
-//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-//                    } else {
-                        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));
                         initDialog_zanting_stop("当前电流过大,请检查线路是否存在短路,漏电等情况,排除问题后,重新进行检测。");//弹出框
                     }
                 }
@@ -3223,11 +3227,13 @@ public class FiringMainActivity extends SerialPortActivity {
                         closeThread();
                         closeForm();
                     })
-//                    .setPositiveButton("继续", (dialog12, which) -> {
-////                    off();//重新检测
-//                        increase(2);
-//                        dialog12.cancel();
-//                    })
+                    .setPositiveButton("继续", (dialog12, which) -> {
+//                    off();//重新检测
+                        firstThread = new ThreadFirst(allBlastQu);
+                        firstThread.exit = false;
+                        firstThread.start();
+                        dialog12.cancel();
+                    })
                     .create();
             dialog.show();
         }
