@@ -686,7 +686,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 21000 && firstCount < 15) {//Preparation_time * 0.5
+                    if (displayIc > 21000 && firstCount > 15) {//Preparation_time * 0.5
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
                         ll_firing_IC_4.setTextSize(20);
@@ -717,7 +717,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
                     //电流大于4800
 //                    Log.e(TAG, "displayIc: " + displayIc);
-                    if (displayIc > 21000 && firstCount >= 5) {
+                    if (displayIc > 21000 && firstCount >= 20) {
                         stage = 7;
                         mHandler_1.handleMessage(Message.obtain());
 //                        if (!chongfu) {
