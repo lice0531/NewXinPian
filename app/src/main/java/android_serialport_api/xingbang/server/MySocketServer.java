@@ -196,6 +196,7 @@ public class MySocketServer {
      */
     public void writeData(final String content) {
         switch (Build.DEVICE){
+            case "T-QBZD-Z6":
             case "M900":
 
 

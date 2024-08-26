@@ -492,6 +492,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void scan() {
         switch (Build.DEVICE) {
             // KT50 起爆器设备
+            case "T-QBZD-Z6":
             case "M900": {
                 // 创建扫描头操作对象，并注册回调
                 mScaner = new ScanQrControl(this);
@@ -1067,6 +1068,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         btnSetdelay.setEnabled(true);
         btnInput.setEnabled(true);
         switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
             case "M900": {
                 //M900关闭扫码
                 mScaner.stopScan();
@@ -2989,6 +2991,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void kaishiScan() {
         switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
             case "M900": {
                 //M900打开扫码
                 mScaner.startScan();
@@ -3009,6 +3012,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void tingzhiScan() {
         switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
             case "M900": {
                 //M900关闭扫码
                 mScaner.stopScan();
@@ -3168,6 +3172,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             while (!exit) {
                 try {
                     switch (Build.DEVICE) {
+                        case "T-QBZD-Z6":
                         case "M900": {
                             mScaner.startScan();
                             break;

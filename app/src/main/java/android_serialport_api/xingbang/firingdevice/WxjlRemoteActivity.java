@@ -1485,6 +1485,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             dialog1.dismiss();
                         }
                         switch (Build.DEVICE) {
+                            case "T-QBZD-Z6":
                             case "M900":
                                 if (reciveB0) {
                                     setTipText(data);

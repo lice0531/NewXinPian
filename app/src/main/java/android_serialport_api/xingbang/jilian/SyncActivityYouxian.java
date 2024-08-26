@@ -130,6 +130,7 @@ public class SyncActivityYouxian extends BaseActivity {
             case "KT50_B2": {
                 break;
             }
+            case "T-QBZD-Z6":
             case "M900": {
                 mExpDevMgr = new ExpdDevMgr(this);
                 break;
@@ -634,6 +635,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         }
                         break;
                     }
+                    case "T-QBZD-Z6":
                     case "M900": {
 
                         //串口打开监听
@@ -693,6 +695,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         getString(R.string.text_sync_tip11));
                 isTongBu = false;
                 switch (Build.DEVICE) {
+                    case "T-QBZD-Z6":
                     case "M900":
                         send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
                         break;
@@ -899,6 +902,7 @@ public class SyncActivityYouxian extends BaseActivity {
             }
         } else if (msg.equals("open485")) {
             switch (Build.DEVICE) {
+                case "T-QBZD-Z6":
                 case "M900":
                     openM900Rs485(event.getData());
                     break;
@@ -994,6 +998,7 @@ public class SyncActivityYouxian extends BaseActivity {
 
     private void closeM900Rs485(String code) {
         switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
             case "M900":
                 if (mExpDevMgr != null) {
                     mExpDevMgr.closeRs485();

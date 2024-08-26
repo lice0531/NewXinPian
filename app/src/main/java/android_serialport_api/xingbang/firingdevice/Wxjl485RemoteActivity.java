@@ -317,6 +317,7 @@ public class Wxjl485RemoteActivity extends BaseActivity {
                                     cmdList.addAll(list_device);
                                     if (server != null) {
                                         switch (Build.DEVICE) {
+                                            case "T-QBZD-Z6":
                                             case "M900":
 //                                            send485Cmd("A001" + bean.getCode());
                                                 send485Cmd("A1" + bean.getCode());
@@ -605,6 +606,7 @@ public class Wxjl485RemoteActivity extends BaseActivity {
                 .setPositiveButton("确定", (dialog, which) -> {
                     show_Toast("正在执行" + data);
                     switch (Build.DEVICE) {
+                        case "T-QBZD-Z6":
                         case "M900":
 //                            send485Cmd(data);
 //                            if (list_device != null && list_device.size() > 0) {
