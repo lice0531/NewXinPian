@@ -60,6 +60,9 @@ public abstract class SerialPortActivity extends BaseActivity {
             super.run();
             try {
                 while (!isInterrupted() && !exit) {
+                    if (mInputStream.available() > 0) {
+
+
                     int size;
 
                     Thread.sleep(20);
@@ -74,10 +77,11 @@ public abstract class SerialPortActivity extends BaseActivity {
                         byte[] cmdBuf = new byte[size];
                         System.arraycopy(buffer, 0, cmdBuf, 0, size);
                         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-                        Log.e("串口收到: ",fromCommad );
+//                        Log.e("串口收到: ",fromCommad );
                         onDataReceived(buffer, size);
                     }
-                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
+//                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
+                    }
                 }
             } catch (IOException | InterruptedException e) {
                 //e.printStackTrace();
