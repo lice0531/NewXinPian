@@ -552,11 +552,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                                 .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
                                 .setMessage("当前起爆器电压异常,当前芯片短路,请检查线路或芯片后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
-                                .setNegativeButton("退出", (dialog12, which) -> {
+                                .setNeutralButton("退出", (dialog12, which) -> {
                                     close();
                                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                                     dialog12.dismiss();
                                     finish();
+                                }).setPositiveButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
+                                    dialog12.dismiss();
                                 })
                                 .create();
                         dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
@@ -571,11 +573,14 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                                 .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
                                 .setMessage("当前起爆器电流异常,当前芯片短路,请检查线路或芯片后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
-                                .setNegativeButton("退出", (dialog12, which) -> {
+                                .setNeutralButton("退出", (dialog12, which) -> {
                                     close();
                                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                                     dialog12.dismiss();
                                     finish();
+                                })
+                                .setPositiveButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
+                                    dialog12.dismiss();
                                 })
                                 .create();
                         dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
@@ -622,13 +627,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         .setTitle("总线电流为0")//设置对话框的标题//"成功起爆"
                         .setMessage("起爆器电流为0,当前芯片断路,请检查线路或芯片后,再次注册")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog12, which) -> {
+                        .setNeutralButton("退出", (dialog12, which) -> {
                             close();
                             sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             dialog12.dismiss();
                             finish();
                         })
-                        .setNegativeButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
+                        .setPositiveButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
                             dialog12.dismiss();
                         })
                         .create();
@@ -662,13 +667,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         .setTitle("芯片异常")//设置对话框的标题//"成功起爆"
                         .setMessage("起爆器检测当前芯片异常,请检查线路或芯片后,再次注册")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog12, which) -> {
+                        .setNeutralButton("退出", (dialog12, which) -> {
                             close();
                             sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             dialog12.dismiss();
                             finish();
                         })
-                        .setNegativeButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
+                        .setPositiveButton(getString(R.string.text_alert_cancel), (dialog12, which) -> {
                             dialog12.dismiss();
                         })
                         .create();
@@ -1155,7 +1160,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             //    将输入的用户名和密码打印出来
             show_Toast(getString(R.string.text_error_tip3) + a + getString(R.string.text_regist_tip7) + b);
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
         });
         builder.show();
