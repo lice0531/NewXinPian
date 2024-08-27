@@ -521,6 +521,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_errorAmount_2.setText("0");
                 ll_firing_errorAmount_4.setText("0");
                 totalerrorNum = 0;
+            } else if (msg.what == 7) {
+                initDialog_chongdian("当前有充电失败雷管,请检查错误雷管后再进行起爆.");
             }
             return false;
         });
@@ -1042,7 +1044,25 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         Log.e(TAG, "errDeData: " + errDeData.toString());
     }
-
+    /***
+     * 加载充电错误雷管
+     */
+    private void loadErrCDBlastModel() {
+        errDeData.clear();
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan_CD();//带参数是查一个区域,不带参数是查所有
+        for (DenatorBaseinfo d : list) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("serialNo", d.getBlastserial());
+            item.put("konghao", d.getDuan() + "-" + d.getDuanNo());
+            item.put("shellNo", d.getShellBlastNo());
+            item.put("errorName", d.getErrorName());
+            item.put("delay", d.getDelay());
+            item.put("piece", d.getPiece());
+            errDeData.add(item);
+        }
+        Log.e(TAG, "errDeData: " + errDeData.toString());
+    }
     /***
      * 建立错误对话框
      */
@@ -1336,16 +1356,19 @@ public class FiringMainActivity extends SerialPortActivity {
 
 
         //判断雷管状态是否正价错误数量
-        if (!"FF".equals(fromData.getCommicationStatus())) {//只有充电错误更新状态
+//        if (!"FF".equals(fromData.getCommicationStatus())) {//只有充电错误更新状态
             DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
-            denator.setStatusCode(fromData.getCommicationStatus());
-            denator.setErrorName(fromData.getCommicationStatusName());
+            denator.setStatusCode(fromData.getCommicationStatus());//00
+            denator.setErrorName(fromData.getCommicationStatusName());//充电异常
             Application.getDaoSession().update(denator);
+        if (!"FF".equals(fromData.getCommicationStatus())) {
             totalerrorCDNum = totalerrorCDNum + 1;
+        }
+
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 
-        }
+//        }
         Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus());
     }
 
@@ -1659,8 +1682,9 @@ public class FiringMainActivity extends SerialPortActivity {
 
 //            Log.e(TAG, "38指令已返回,进入充电检测");
 
-            if (stage == 33) {
+            if (stage == 33||stage == 55) {
                 From38ChongDian fromData = ThreeFiringCmd.jiexi_38("00", locatBuf);
+                Log.e(TAG, "雷管充电状态: "+fromData.getCommicationStatus()+" -- "+fromData.getCommicationStatus() );
                 if (fromData != null && writeDenator != null) {
                     VoDenatorBaseInfo temp = writeDenator;
                     fromData.setShellNo(temp.getShellBlastNo());
@@ -2569,9 +2593,10 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {
-                                    Utils.writeRecord("--第二轮检测结束-------------");
+                                    Utils.writeRecord("--充电结束-------------");
                                     Utils.writeRecord("blastQueue.size():" + blastQueue.size());
                                     //检测一次
+                                    Log.e("充电阶段-totalerrorCDNum", totalerrorCDNum+"");
                                     if (totalerrorCDNum != 0) {
                                         totalerrorCDNum = 0;
                                         getErrblastQueue_CD();//重新给雷管队列赋值
@@ -2678,17 +2703,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 short delayTime = write.getDelay();
                                 byte[] delayBye = Utils.shortToByte(delayTime);
                                 String delayStr = Utils.bytesToHexFun(delayBye);//延时时间
-                                String zhuangtai = write.getLgzt();
-                                if (zhuangtai == null) {
-                                    zhuangtai = "00";
-                                }
-                                if (denatorCount < 200) {//雷管数量小于200,全部00
-                                    zhuangtai = "00";
-                                }
-                                //电流小于参考值一半,全部00
-                                if (busInfo.getBusCurrentIa() < denatorCount * cankaodianliu * 0.5) {
-                                    zhuangtai = "00";
-                                }
+
                                 String data = denatorId + delayStr + write.getZhu_yscs() + "00";
                                 if (write.getDenatorIdSup() != null && write.getDenatorIdSup().length() > 4) {
                                     String denatorIdSup = Utils.DetonatorShellToSerialNo_newXinPian(write.getDenatorIdSup());//新芯片
@@ -2743,9 +2758,18 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {
-                                    Utils.writeRecord("--第二轮检测结束-------------");
-                                    //检测一次
-                                    increase(6);//之前是4
+                                    Utils.writeRecord("--重发错误雷管结束-------------");
+                                    Log.e(TAG, "重发错误雷管totalerrorCDNum: "+totalerrorCDNum );
+                                    if (totalerrorCDNum != 0) {
+                                        totalerrorCDNum = 0;
+                                        Handler_tip.sendMessage(Handler_tip.obtainMessage(7));
+
+                                    }else {
+                                        //检测一次
+                                        increase(6);//之前是4
+                                    }
+
+
                                     Log.e("第4阶段-检测阶段-increase33", "4-2");
                                     fourOnlineDenatorFlag = 0;
                                     break;
@@ -2805,9 +2829,15 @@ public class FiringMainActivity extends SerialPortActivity {
                                 thirdStartTime = 0;
                                 writeDenator = null;
                                 if (blastQueue == null || blastQueue.size() < 1) {
-                                    Utils.writeRecord("--第二轮检测结束-------------");
-                                    //检测一次
-                                    increase(6);//之前是4
+                                    Utils.writeRecord("--复检结束-------------");
+                                    if (totalerrorCDNum != 0) {
+                                        totalerrorCDNum = 0;
+                                        Handler_tip.sendMessage(Handler_tip.obtainMessage(7));
+
+                                    }else {
+                                        //检测一次
+                                        increase(6);//之前是4
+                                    }
                                     Log.e("第4阶段-检测阶段-increase33", "4-2");
                                     fourOnlineDenatorFlag = 0;
                                     break;
@@ -2975,6 +3005,7 @@ public class FiringMainActivity extends SerialPortActivity {
         thirdWriteCount = 0;
         firstThread.blastQueue = allBlastQu;
         Log.e(TAG, "充电失败雷管--allBlastQu: " + allBlastQu.size());
+        Log.e(TAG, "充电失败雷管--list: " + list.size());
     }
 
 
@@ -3297,6 +3328,58 @@ public class FiringMainActivity extends SerialPortActivity {
             builder.create().show();
         }
     }
+
+    private void initDialog_chongdian(String tip) {
+        if (!FiringMainActivity.this.isFinishing()) {
+            firstThread.exit = true;
+            firstThread.interrupt();
+            try {
+                firstThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            chongfu = true;//已经检测了一次
+            loadErrCDBlastModel();//重新给雷管队列赋值
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
+            LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+            llview.setVisibility(View.GONE);
+            TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+            text_tip.setText(tip);
+            text_tip.setVisibility(View.VISIBLE);
+            // 给ListView绑定内容
+            ListView errlistview = getlistview.findViewById(R.id.X_listview);
+            ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+            errlistview.setAdapter(mAdapter);
+
+            Builder builder = new Builder(this);
+            builder.setTitle("系统提示");//"错误雷管列表"
+            builder.setView(getlistview);
+            builder.setPositiveButton("继续", (dialog, which) -> {
+                dialogOFF(dialog);
+                firstThread = new ThreadFirst(allBlastQu);
+                firstThread.exit = false;
+                firstThread.start();
+                increase(6);//之前是4
+            });
+            builder.setNeutralButton("退出", (dialog, which) -> {
+                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                sendCmd(reCmd);
+                closeThread();
+                closeForm();
+            });
+//            builder.setNegativeButton("查看充电错误雷管", (dialog, which) -> {
+////            stopXunHuan();
+//                llview.setVisibility(View.VISIBLE);
+//                text_tip.setVisibility(View.GONE);
+//                errlistview.setVisibility(View.VISIBLE);
+//                dialogOn(dialog);
+//            });
+            builder.create().show();
+        }
+    }
+
+
 
     /**
      * 让dialog一直显示
