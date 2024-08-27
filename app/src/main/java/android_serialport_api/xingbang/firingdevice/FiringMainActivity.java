@@ -523,6 +523,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 totalerrorNum = 0;
             } else if (msg.what == 7) {
                 initDialog_chongdian("当前有充电失败雷管,请检查错误雷管后再进行起爆.");
+            }else if (msg.what == 8) {
+                initDialog_chongdian("当前有复检失败雷管,请检查错误雷管后再进行起爆.");
             }
             return false;
         });
@@ -2832,7 +2834,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     Utils.writeRecord("--复检结束-------------");
                                     if (totalerrorCDNum != 0) {
                                         totalerrorCDNum = 0;
-                                        Handler_tip.sendMessage(Handler_tip.obtainMessage(7));
+                                        Handler_tip.sendMessage(Handler_tip.obtainMessage(8));
 
                                     }else {
                                         //检测一次
