@@ -232,6 +232,14 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 SoundPlayUtils.play(4);
                 show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
             }
+            if (tipInfoFlag == 17) {
+                SoundPlayUtils.play(4);
+                show_Toast("当前雷管异常,请更换其他雷管注册");
+            }
+            if (tipInfoFlag == 18) {
+                SoundPlayUtils.play(4);
+                show_Toast("电容异常");
+            }
             if (tipInfoFlag == 88) {//刷新界面
                 showDenatorSum();
                 initList();
@@ -409,11 +417,31 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
             sendCmd(reCmd);
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
             zhuce_form = OneReisterCmd.decode12_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
-            if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
-                tipInfoFlag = 5;
-                mHandler_1.sendMessage(mHandler_1.obtainMessage());//提示类型桥丝不正常
-                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                Utils.writeRecord("--接触式注册--:管壳码:" + GreenDaoMaster.serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+//            if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
+//                tipInfoFlag = 5;
+//                mHandler_1.sendMessage(mHandler_1.obtainMessage());//提示类型桥丝不正常
+//                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+//                Utils.writeRecord("--接触式注册--:管壳码:" + GreenDaoMaster.serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+//            }
+            if ("FF".equals(zhuce_form.getReadStatus())) {
+                if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
+                    tipInfoFlag = 5;
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());//提示类型桥丝不正常
+                    String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+                    Utils.writeRecord("--接触式注册--:管壳码:" + GreenDaoMaster.serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+                }
+            } else if ("00".equals(zhuce_form.getReadStatus())) {
+                //没有芯片  toast提示异常  不需要在列表中显示当前芯片(这是在第一次读取无芯片的雷管时返回)
+                tipInfoFlag = 17;
+                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            } else if ("02".equals(zhuce_form.getReadStatus())) {
+                //芯片没有电容  电容异常
+                tipInfoFlag = 18;
+                mHandler_1.sendMessage(mHandler_1.obtainMessage());//提示类型电容不正常
+            } else if ("03".equals(zhuce_form.getReadStatus())) {
+                //雷管注册通讯失败(在中途读取芯片通讯失败时返回)
+                tipInfoFlag = 17;
+                mHandler_1.sendMessage(mHandler_1.obtainMessage());
             }
             zhuce_Flag = 1;
 
@@ -441,10 +469,12 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                     Utils.writeRecord("--单发注册--:管壳码:" + GreenDaoMaster.serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                 } else {
                     if (zhuce_form != null) {//管厂码,特征码,雷管id
+                        if (!"00".equals(zhuce_form.getReadStatus()) && !"03".equals(zhuce_form.getReadStatus())) {
 //                        // 获取 管壳码
 //                        String shellNo = new GreenDaoMaster().getShellNo(detonatorId);
-                        insertSingleDenator(detonatorId, zhuce_form);//单发注册
-                        zhuce_Flag = 0;
+                            insertSingleDenator(detonatorId, zhuce_form);//单发注册
+                            zhuce_Flag = 0;
+                        }
                     }
                 }
             }
@@ -535,6 +565,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
     private void scan() {
         switch (Build.DEVICE) {
             // KT50 起爆器设备
+            case "T-QBZD-Z6":
             case "M900": {
                 // 创建扫描头操作对象，并注册回调
                 mScaner = new ScanQrControl(this);
@@ -964,9 +995,25 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setDelay(0);
         denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
         denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setStatusName("正常");
-        denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("正常");
+//        denatorBaseinfo.setStatusName("正常");
+//        denatorBaseinfo.setErrorCode("FF");
+        denatorBaseinfo.setErrorName("");
+        if ((qiaosi_set.equals("true") && zhuce_form.getWire().equals("无"))) {
+            //桥丝异常
+            denatorBaseinfo.setErrorCode("00");
+            denatorBaseinfo.setStatusName("异常");
+        } else if ("02".equals(zhuce_form.getReadStatus())) {
+            //没有电容  充电异常
+            denatorBaseinfo.setErrorCode("00");
+            denatorBaseinfo.setStatusName("异常");
+        } else if ("03".equals(zhuce_form.getReadStatus())) {
+            // 通讯失败
+            denatorBaseinfo.setErrorCode("00");
+            denatorBaseinfo.setStatusName("异常");
+        } else {
+            denatorBaseinfo.setErrorCode("FF");
+            denatorBaseinfo.setStatusName("正常");
+        }
         denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
 //        denatorBaseinfo.setPai(pai);
         denatorBaseinfo.setPai(paiChoice);

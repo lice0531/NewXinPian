@@ -52,6 +52,7 @@ public class AddProjectActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String[] delay = getResources().getStringArray(R.array.gsxz_name);
                 select_business = delay[i];
+                Log.e("页面","选择的是:" + select_business);
                 MmkvUtils.savecode("guizeSelection",i);
             }
             @Override
@@ -110,6 +111,7 @@ public class AddProjectActivity extends BaseActivity {
             project.setDwdm(e);
             project.setBprysfz(a);
             project.setHtbh(b);
+            project.setBusiness(select_business);
             project.setProject_name(f);
             project.setBusiness(select_business);
             project.setSelected("false");

@@ -280,6 +280,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void scan() {
         switch (Build.DEVICE) {
             // KT50 起爆器设备
+            case "T-QBZD-Z6":
             case "M900": {
                 // 创建扫描头操作对象，并注册回调
                 mScaner = new ScanQrControl(this);

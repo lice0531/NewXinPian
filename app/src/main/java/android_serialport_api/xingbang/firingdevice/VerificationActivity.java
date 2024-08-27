@@ -32,6 +32,7 @@ import java.util.Map;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.activity.QiBaoActivity;
 import android_serialport_api.xingbang.custom.LoadListView;
 import android_serialport_api.xingbang.custom.VerificationAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -350,8 +351,8 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
 
         }
         for (int i = 0; i < list_data.size(); i++) {
-//            list_lg2.add(list_data.get(i).getShellBlastNo());//UID和管壳码一致
-            list_lg2.add(Utils.ShellNo13toSiChuan(list_data.get(i).getShellBlastNo()));//四川编码规则
+            list_lg2.add(list_data.get(i).getShellBlastNo());//UID和管壳码一致
+//            list_lg2.add(Utils.ShellNo13toSiChuan(list_data.get(i).getShellBlastNo()));//四川编码规则
 //            list_lg2.add(Utils.ShellNo13toSiChuan_new(list_data.get(i).getShellBlastNo()));//四川包工定的编码规则
         }
         for (int i = 0; i < list_lg2.size(); i++) {
@@ -364,7 +365,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         show_Toast("在准爆范围内,可以起爆");
         qbxm_id = (String) map_dl.get(position).get("id");
         qbxm_name = map_dl.get(position).get("spare1").toString();
-        Intent intent = new Intent(this, FiringMainActivity.class);
+        Intent intent = new Intent(this, QiBaoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("qbxm_id", qbxm_id);
         bundle.putString("qbxm_name", qbxm_name);
@@ -394,7 +395,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 mLocationClient.startLocation();
                 break;
             case R.id.btn_yz:
-                Intent intent = new Intent(this, FiringMainActivity.class);
+                Intent intent = new Intent(this, QiBaoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("qbxm_id", qbxm_id);
                 intent.putExtras(bundle);

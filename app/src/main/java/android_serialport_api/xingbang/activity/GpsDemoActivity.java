@@ -1,10 +1,12 @@
 package android_serialport_api.xingbang.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -73,7 +75,12 @@ public class GpsDemoActivity extends CheckPermissionsActivity implements View.On
         super.onCreate(savedInstanceState);
         binding = ActivityGpsDemoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        TextView title = findViewById(R.id.title_text);
+        title.setText("GPS定位");
+        ImageView add = findViewById(R.id.title_add);
+        ImageView back = findViewById(R.id.title_back);
+        add.setVisibility(View.GONE);
+        back.setOnClickListener(v -> finish());
         mOneLocationBt = findViewById(R.id.one_location);
         mOneLocTV = findViewById(R.id.one_loc_tv);
         mContinuoueLocaionBt = findViewById(R.id.continuous_location);

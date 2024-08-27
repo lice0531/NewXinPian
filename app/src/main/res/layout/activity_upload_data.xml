@@ -49,15 +49,16 @@
         android:orientation="vertical">
         <Button
             android:id="@+id/btn_csdata"
-            android:layout_width="180dp"
+            android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_deepgray"
             android:onClick="onClick"
-            android:text="生成测试数据"
+            android:text="上传测试"
             android:visibility="gone"
             android:textColor="@color/black"
             android:textSize="20sp" />
+
         <Button
             android:id="@+id/ud_btn_upload"
             android:layout_width="180dp"

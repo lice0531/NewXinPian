@@ -84,6 +84,7 @@ public class RecyclerViewAdapter_Project<T> extends RecyclerView.Adapter<Recycle
        if (mIndex == 1) {
                 List<Project> list_pro = (List<Project>) mListData;
                 holder.tv_sp_name.setText(list_pro.get(position).getProject_name());
+                holder.tv_sp_yyx_1.setText(showBusinessType(list_pro.get(position).getBusiness()));
                 if(list_pro.get(position).getHtbh().length()>1){
                     holder.tv_sp_htbh.setText(list_pro.get(position).getHtbh());
                     holder.ll_htbh.setVisibility(View.VISIBLE);
@@ -109,6 +110,25 @@ public class RecyclerViewAdapter_Project<T> extends RecyclerView.Adapter<Recycle
                 }else {
                     holder.cb_isChoice.setVisibility(View.GONE);
                 }
+        }
+    }
+
+    /**
+     * 从给定的字符串中提取“营业性”或“非营业性”部分
+     * @param str 输入字符串
+     * @return 提取的部分
+     */
+    public static String showBusinessType(String str) {
+        // 定义要匹配的关键字
+        String keyword1 = "营业性";
+        String keyword2 = "非营业性";
+        // 检查并提取相应的部分
+        if (str.contains(keyword1)) {
+            return keyword1;
+        } else if (str.contains(keyword2)) {
+            return keyword2;
+        } else {
+            return "";
         }
     }
 

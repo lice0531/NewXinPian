@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +28,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -76,14 +80,18 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loding = new Handler();//等待动画
     private Handler mHandler_tip = new Handler();//
+    private DatabaseHelper mMyDatabaseHelper;
+    private SQLiteDatabase db;
+    private String TAG = "下载工作码页面";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_down_project);
         binding=ActivityDownProjectBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
+        db = mMyDatabaseHelper.getWritableDatabase();
         TextView title = findViewById(R.id.title_text);
         title.setText("下载工作码");
         ImageView add = findViewById(R.id.title_add);
@@ -140,6 +148,7 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
             pro_htid=projects.get(0).getHtbh();
             pro_xmbh=projects.get(0).getXmbh();
         }
+        Log.e(TAG,"经纬度:" + pro_coordxy);
         MessageBean messages = master.getAllFromInfo_bean();
         equ_no=messages.getEqu_no();
         binding.downAtProjectName.setText(pro_name);
@@ -177,7 +186,7 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
     }
 
     private boolean checkMessage() {
-        if (pro_coordxy==null) {
+        if (TextUtils.isEmpty(pro_coordxy)) {
             Log.e("长度", "" + list_uid.size());
             show_Toast("当前项目还未定位,请先进行定位");
             return false;
@@ -256,36 +265,54 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         pb_show = 1;
 //        runPbDialog();//loading画面
         final String key = "jadl12345678912345678912";
-        String url = Utils.httpurl_down_dl;//丹灵下载
-//        String url = Utils.httpurl_down;//丹灵下载
+//        String url = Utils.httpurl_down_dl;//丹灵下载正式地址
+        String url = Utils.httpurl_down_test;//丹灵下载测试地址
         OkHttpClient client = new OkHttpClient();
 
         JSONObject object = new JSONObject();
         String sfz = pro_bprysfz.replace(" ", "");//证件号码
         String tx_htid = pro_htid.trim().replace(" ", "");//合同编号 15位
         String tv_xmbh = pro_xmbh.trim().replace(" ", "");//项目编号
-        Logger.e("地理位置"+pro_coordxy);
+        Log.e(TAG,"地理位置"+pro_coordxy);
         final String xy[] = pro_coordxy.replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
         String tv_dwdm = pro_dwdm.trim();//单位代码 13位
 
         //四川转换规则
-        if (list_uid != null && list_uid.get(0).length() < 14) {
-            for (int i = 0; i < list_uid.size(); i++) {
-                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
-//                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
-            }
-        }
+//        if (list_uid != null && list_uid.get(0).length() < 14) {
+//            for (int i = 0; i < list_uid.size(); i++) {
+//                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan(list_uid.get(i)));//替换
+////                Collections.replaceAll(list_uid, list_uid.get(i), Utils.ShellNo13toSiChuan_new(list_uid.get(i)));//替换
+//            }
+//        }
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
-        Log.e("uid", uid);
+        Log.e(TAG,"uid:" + uid);
         try {
-            object.put("sbbh", equ_no);//起爆器设备编号XBTS0003
+            object.put("sbbh", equ_no);//起爆器设备编号：XBTS0003
             object.put("jd", xy[0]);//经度
             object.put("wd", xy[1]);//纬度
             object.put("uid", uid);//雷管uid
             object.put("xmbh", tv_xmbh);//项目编号370101318060006
             object.put("htid", tx_htid);//合同编号370100X15040027
             object.put("dwdm", tv_dwdm);//单位代码
-            Log.e("上传信息", object.toString());
+            /**
+             * 入参测试数据：
+             *  object.put("sbbh", "F60C7002222");//起爆器设备编号XBTS0003
+             *  object.put("jd", "120.498324");//经度
+             *  object.put("wd", "30.354008");//纬度
+             *  object.put("uid", "3830422489602");//雷管uid
+             *  object.put("xmbh", "");//项目编号370101318060006
+             *  object.put("htid", "370101318060045");//合同编号370100X15040027
+             *  object.put("dwdm", "");//单位代码
+             */
+//             object.put("sbbh", "F60C7002222");//起爆器设备编号XBTS0003
+//             object.put("jd", "120.498324");//经度
+//             object.put("wd", "30.354008");//纬度
+//             object.put("uid", "3830422489602");//雷管uid
+//             object.put("xmbh", "");//项目编号370101318060006
+//             object.put("htid", "370101318060045");//合同编号370100X15040027
+//             object.put("dwdm", "");//单位代码
+            Log.e(TAG + "上传信息", object.toString());
+            Utils.writeRecord("---上传丹灵信息:" + object);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -312,7 +339,6 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                pb_show = 0;
                 String res;
                 try {
                     res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(response.body().string().toString(), Base64.DEFAULT)));
@@ -320,42 +346,68 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
                     show_Toast_ui("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
                     return;
                 }
-                Log.e("网络请求", "res: " + res);
+                Log.e(TAG + "丹灵下载网络请求返回信息--", "res: " + res);
+//                Utils.writeRecord("---丹灵网返回:" + res);
                 Gson gson = new Gson();
                 DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
                 try {
                     JSONObject object1 = new JSONObject(res);
                     String cwxx = object1.getString("cwxx");
                     if (cwxx.equals("0")) {
+                        String sqrq2 = danLingBean.getSqrq();
+                        long time2 = (long) 3 * 86400000;
+                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String yxq = "";
+                        try {
+                            Date date3 = sd.parse(sqrq2);//当前日期
+                            yxq = sd.format(date3.getTime() + time2);
+                            Log.e(TAG + "获取申请日期3天后的日期", "yxq: " + yxq + " sqrq2:" + sqrq2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                         int err = 0;
                         for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
                             if (!danLingBean.getLgs().getLg().get(i).getGzmcwxx().equals("0")) {
                                 err++;
                             }
-                            updataLeiGuan(mListData.get(i),danLingBean.getLgs().getLg().get(i).getYxq(),danLingBean.getLgs().getLg().get(i).getGzmcwxx());
                         }
-                        Log.e("下载的雷管", "错误数量: " + err);
+                        Log.e(TAG + "下载的雷管", "错误数量: " + err);
                         if (danLingBean.getCwxx().equals("0")) {
                             if (danLingBean.getZbqys().getZbqy().size() > 0) {
                                 double zbqyjd = Double.parseDouble(xy[0]);//116.456535
                                 double zbqywd = Double.parseDouble(xy[1]);//37.427541
                                 for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
-                                    double jingdu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd());
-                                    double weidu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
-                                    double banjing = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqybj());
-                                    //判断经纬度
-                                    LngLat start = new LngLat(zbqyjd, zbqywd);
-                                    LngLat end = new LngLat(jingdu, weidu);
-                                    double juli3 = AMapUtils.calculateLineDistance(start, end);
-                                    Log.e("经纬度", "juli3: "+juli3 );
-                                    if (juli3 < banjing) {
-                                        insertJson(pro_htid, pro_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+                                    try {
+                                        double jingdu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd());
+                                        double weidu = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqywd());
+                                        double banjing = Double.parseDouble(danLingBean.getZbqys().getZbqy().get(i).getZbqybj());
+                                        //判断经纬度
+                                        LngLat start = new LngLat(zbqyjd, zbqywd);
+                                        LngLat end = new LngLat(jingdu, weidu);
+                                        double juli3 = AMapUtils.calculateLineDistance(start, end);
+                                        Log.e(TAG + "经纬度", "juli3: " + juli3);
+
+//                                        if (juli3 < banjing) {
+                                            insertJson(pro_htid.trim(), tv_xmbh.trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(), yxq);
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
+//                                        }
+                                    } catch (Exception e) {
+                                        show_Toast(danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd() + "经纬度错误");
+                                        e.printStackTrace();
                                     }
                                 }
                             }
                         }
-//                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+
+
+                        if (danLingBean.getLgs().getLg().size() > 0) {
+                            for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i), yxq);
+                            }
+
+                        }
+
                         if (err != 0) {
                             Log.e("下载", "err: " + err);
 //                            show_Toast_ui(danLingBean.getZbqys().getZbqy().get(0).getZbqymc() + "下载的雷管出现错误,请检查数据");
@@ -364,7 +416,7 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
 
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
                     } else if (cwxx.equals("1")) {
-                        show_Toast_ui(object1.getString("cwxxms"));
+                        show_Toast_ui(object1.getString("cwxx"));
                     } else if (cwxx.equals("2")) {
                         show_Toast_ui("未找到该起爆器设备信息或起爆器未设置作业任务");
                     } else if (cwxx.equals("3")) {
@@ -387,7 +439,7 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
                         show_Toast_ui("离线下载不支持生产厂家试爆");
                     } else if (cwxx.equals("12")) {
                         show_Toast_ui("营业性单位必须设置合同或者项目");
-                    } else if (cwxx.equals("99")) {
+                    } else {
                         show_Toast_ui(danLingBean.getCwxxms());
                     }
                 } catch (JSONException e) {
@@ -397,6 +449,31 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         });
     }
 
+    /**
+     * 向数据库中插入数据
+     */
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name, String yxq) {
+        ContentValues values = new ContentValues();
+        values.put("htbh", htbh);
+        values.put("xmbh", xmbh);
+        values.put("json", json);
+        values.put("errNum", errNum);
+        values.put("qbzt", "未爆破");
+        values.put("dl_state", "未上传");
+        values.put("zb_state", "未上传");
+        values.put("spare1", name);//项目名称
+        values.put("spare2", yxq);//下载日期
+        values.put("total", list_uid.size());//总数
+        values.put("bprysfz", pro_bprysfz);//身份证号
+        values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
+        if (pro_dwdm.length() < 1) {//单位代码
+            values.put("dwdm", "");
+        } else {
+            values.put("dwdm", pro_dwdm);
+        }
+        Log.e(TAG + "SHOUQUAN表插入数据", "成功");
+        db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
+    }
 
     /**
      * 向数据库中插入数据
@@ -429,5 +506,17 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         denatorBaseinfo.setDownloadStatus(downloadStatus);
         denatorBaseinfo.setAuthorization(authorization);
         Application.getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tipDlg != null) {
+            tipDlg.dismiss();
+            tipDlg = null;
+        }
+        if (db != null) db.close();
+        Utils.saveFile();//把软存中的数据存入磁盘中
+        super.onDestroy();
+        fixInputMethodManagerLeak(this);
     }
 }

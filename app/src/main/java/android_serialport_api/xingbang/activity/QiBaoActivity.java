@@ -1532,11 +1532,12 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);
-        } else {
-            //暂时写个假数据
-            his.setLatitude("北纬39°36’~40°02’");
-            his.setLongitude("116°32’~116°56’");
         }
+//        } else {
+//            //暂时写个假数据
+//            his.setLatitude("北纬39°36’~40°02’");
+//            his.setLongitude("116°32’~116°56’");
+//        }
         getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
         Utils.deleteRecord();//删除日志
 
@@ -1854,7 +1855,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             closeForm();
                             finish();
                         })
-                        .setNeutralButton("确定", new DialogInterface.OnClickListener() {
+                        .setNeutralButton("继续", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
                                 firstThread = new ThreadFirst(allBlastQu);

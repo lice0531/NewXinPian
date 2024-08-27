@@ -52,7 +52,7 @@ import okhttp3.Response;
  * 闲时上传调度器
  */
 public class UploadWorker extends Worker {
-    private String TAG = "闲时上传UploadWorker--";
+    private String TAG = "闲时上传页面UploadWorker--";
     private ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//错误雷管
     private List<VoFireHisMain> list_savedate = new ArrayList<>();
     private int currentPage = 1;//当前页数
@@ -160,7 +160,7 @@ public class UploadWorker extends Worker {
         server_type1 = bean.getServer_type1();
         server_type2 = bean.getServer_type2();
         pro_dwdm = bean.getPro_dwdm();
-        Log.e(TAG,"数据库存储的经纬度:" + (!TextUtils.isEmpty(pro_coordxy) ? pro_coordxy : "40°N,116°E")
+        Log.e(TAG,"message表中的经纬度:" + (!TextUtils.isEmpty(pro_coordxy) ? pro_coordxy : "40°N,116°E")
                 + "--server_type1:" + server_type1 + "--server_type2:" + server_type2);
     }
 
@@ -230,9 +230,9 @@ public class UploadWorker extends Worker {
             Utils.writeLog("经纬度为空，不能执行上传");
             return;
         }
-//        if (server_type1.equals("1")) {
-//            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
-//        }
+        if (server_type1.equals("1")) {
+            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+        }
         if (server_type2.equals("0") && server_type1.equals("0")) {
             Log.e(TAG,"设备当前未设置上传网址,请先设置上传网址");
             Utils.writeLog("设备当前未设置上传网址,请先设置上传网址");
@@ -442,7 +442,7 @@ public class UploadWorker extends Worker {
                 Utils.writeLog("煋邦网络上传错误-IOException:" + e);
                 setIsXbUploadSuccess(201);
                 updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
-                updateSqlDataStatus(blastdate,pos);
+//                updateSqlDataStatus(blastdate,pos);
             }
 
             @Override
@@ -450,7 +450,7 @@ public class UploadWorker extends Worker {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
                 Utils.writeLog("煋邦网络上传成功-IOException:" + response.toString());
                 setIsXbUploadSuccess(200);
-                updateSqlDataStatus(blastdate,pos);
+//                updateSqlDataStatus(blastdate,pos);
             }
         });
     }

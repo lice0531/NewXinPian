@@ -78,6 +78,7 @@ public class Application extends MultiDexApplication {
                     mPowerIndex = 3;
                     break;
                 }
+                case "T-QBZD-Z6":
                 case "M900": {//新设备
                     mSportName = "/dev/ttyS1";//ttyS0或者ttyS1
                     mPowerIndex = 4;
