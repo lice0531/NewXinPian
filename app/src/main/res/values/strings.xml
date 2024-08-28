@@ -519,7 +519,7 @@
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
     <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_V2.1_240827</string>
-
+    <string name="device_init">设备初始化中...</string>
     <string-array name="sp_changjia">
         <item>通用</item>
         <item>重庆</item>

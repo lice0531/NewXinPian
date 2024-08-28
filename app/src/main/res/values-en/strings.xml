@@ -513,6 +513,7 @@
     <string name="text_firing_ssqb">Timing detonation</string>
     <string name="text_chongdian_state0">充电异常</string>
     <string name="text_chongdian_stateFF">充电成功</string>
+    <string name="device_init">Initializing the device...</string>
     <string-array name="sp_changjia">
         <item>TY</item>
         <item>CQ</item>
