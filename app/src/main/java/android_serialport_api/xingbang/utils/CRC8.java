@@ -30,7 +30,7 @@ public class CRC8 {
 			(byte) 0xde, (byte) 0xd9, (byte) 0xd0, (byte) 0xd7, (byte) 0xc2, (byte) 0xc5, (byte) 0xcc, (byte) 0xcb, (byte) 0xe6,
 			(byte) 0xe1, (byte) 0xe8, (byte) 0xef, (byte) 0xfa, (byte) 0xfd, (byte) 0xf4, (byte) 0xf3};
 	/**
-	 * 将十六进制的字符串 求出 CRC 8 的 CRC_H CRC_L
+	 * 将十六进制的字符串 求出 CRC8 的 CRC_H CRC_L
 	 */
 	public static String getCRC8(String msg) {
 		// 十六进制的字符串转换成字节数组

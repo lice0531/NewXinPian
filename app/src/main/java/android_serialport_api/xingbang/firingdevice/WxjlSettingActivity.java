@@ -61,7 +61,6 @@ public class WxjlSettingActivity extends SerialPortActivity {
     private SetZJQThread setZjqThread;
     private boolean isOpened = false;//串口是否已打开
     Handler openHandler = new Handler();//重新打开串口
-    private boolean isRestarted = false;
     private List<String> xdlist = new ArrayList<>();
     private List<DeviceBean> deviceslist = new ArrayList<>();
     private WxSearchDevicesAdapter mAdapter;
@@ -94,7 +93,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
     private void initData(){
         llSpXd.setVisibility(isCanSetXd ? View.VISIBLE : View.GONE);
         llTvXd.setVisibility(isCanSetXd ? View.GONE : View.VISIBLE);
-//        //这是不同速率的信道
+//        //这是不同速率的信道  CH后面的数字就是信道ID
         xdlist.add("CH0-19.2kbps-0FEC");
         xdlist.add("CH1-19.2kbps-1FEC");
         xdlist.add("CH2-19.2kbps-2FEC");
@@ -135,15 +134,9 @@ public class WxjlSettingActivity extends SerialPortActivity {
         xdlist.add("CH37-2.4kbps-2");
         xdlist.add("CH38-2.4kbps-3");
         xdlist.add("CH39-2.4kbps-4");
-        tvXinDao.setText(xdlist.get(36));
-        //目前先只用固定速率的信道  信道有0 1 2 3 4 目前先用1试试
-//        xdlist.add("0");
-//        xdlist.add("1");
-//        xdlist.add("2");
-//        xdlist.add("3");
-//        xdlist.add("4");
-//        tvXinDao.setText(xdlist.get(1));
+        tvXinDao.setText(xdlist.get(0));
         nsXd.attachDataSource(xdlist);
+        Log.e(TAG,"默认信道id: " + getXdId(nsXd.getItemAtPosition(0).toString()));
         nsXd.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
@@ -389,7 +382,11 @@ public class WxjlSettingActivity extends SerialPortActivity {
                     setQbkThread.start();
                 }  else {
                     if (receiveF9) {
-                        show_Toast("起爆卡已配置，请勿重复点击...");
+                        Log.e(TAG,"F9指令已收到，再次发送F9配置起爆卡指令了");
+                        setQbkThread = new SetQbkThread();
+                        setQbkThread.start();
+                        isSendF9 = false;
+//                        show_Toast("起爆卡已配置，请勿重复点击...");
                     } else {
                         show_Toast("起爆卡配置中，请勿重复点击...");
                     }
@@ -407,7 +404,15 @@ public class WxjlSettingActivity extends SerialPortActivity {
                     setZjqThread = new SetZJQThread();
                     setZjqThread.start();
                 }  else {
-                    show_Toast("无线中继器配置中，请勿重复点击...");
+                    if (receiveAB) {
+                        Log.e(TAG,"F9指令已收到，再次发送F9配置起爆卡指令了");
+                        setZjqThread = new SetZJQThread();
+                        setZjqThread.start();
+                        isSendAB = false;
+//                        show_Toast("无线中继器配置中，请勿重复点击...");
+                    } else {
+                        show_Toast("无线中继器配置中，请勿重复点击...");
+                    }
                     return;
                 }
                 break;
@@ -441,6 +446,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
          */
         String b = Utils.intToHex(Integer.parseInt(xinDaoId));
         String xdId = Utils.addZero(b, 2);
+        Log.e(TAG,"配置起爆卡F9指令信道id:" + xinDaoId);
 //        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
 //        sendCmd(CRC16.hexStringToByte(qbzXdCmd));
         sendCmd(ThreeFiringCmd.sendWx_Qbk_F9(xdId));
@@ -458,6 +464,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
          */
         String b1 = Utils.intToHex(Integer.parseInt(xinDaoId));
         String xdId1 = Utils.addZero(b1, 2);
+        Log.e(TAG,"配置中继器AB指令信道id:" + xinDaoId);
 //        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
 //        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
         sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
