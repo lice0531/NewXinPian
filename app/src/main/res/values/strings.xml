@@ -893,5 +893,5 @@
     <string name="text_sbsb">识别失败</string>
     <string name="text_set_zhuyi">请注意,您已设置设备编号为空</string>
     <string name="text_ipwk">ip地址不能为空</string>
-    <string name="text_dkwk">请注意,您已设置设备编号为空</string>
+    <string name="text_dkwk">ip端口不能为空</string>
 </resources>
