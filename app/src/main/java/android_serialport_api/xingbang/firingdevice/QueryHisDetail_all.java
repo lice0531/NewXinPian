@@ -386,16 +386,16 @@ public class QueryHisDetail_all extends BaseActivity implements LoadListView.OnL
                 break;
             case R.id.btn_del_all:
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("该操作会按序号删除表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_delete_tip12))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         })
-                        .setPositiveButton("确认删除", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL_ALL, null, null);

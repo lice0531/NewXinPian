@@ -75,7 +75,7 @@
             android:id="@+id/btn_currentinfo_all"
             android:layout_width="200dp"
             android:layout_height="60dp"
-            android:text="查看雷管状态"
+            android:text="@string/text_query_ck"
             style="@style/allbtntstyle"
             />
 
@@ -94,7 +94,7 @@
             android:id="@+id/btn_hisinfo"
             android:layout_width="200dp"
             android:layout_height="60dp"
-            android:text="起爆历史数据"
+            android:text="@string/text_query_history"
             style="@style/allbtntstyle"
             android:textSize="@dimen/fireChildPageLabelFontSize" />
     </LinearLayout>

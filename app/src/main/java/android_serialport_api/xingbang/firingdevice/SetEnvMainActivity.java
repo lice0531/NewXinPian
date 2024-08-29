@@ -233,12 +233,12 @@ public class SetEnvMainActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(server_ip)) {
                     values.put("server_ip", server_ip);//中爆网址
                 } else {
-                    show_Toast("ip地址不能为空");
+                    show_Toast(getResources().getString(R.string.text_ipwk));
                 }
                 if (!TextUtils.isEmpty(server_port)) {
                     values.put("server_port", server_port);//中爆端口
                 } else {
-                    show_Toast("ip端口不能为空");
+                    show_Toast(getResources().getString(R.string.text_dkwk));
                 }
                 if (!TextUtils.isEmpty(server_http)) {
                     values.put("server_http", server_http);//丹灵网址
@@ -281,7 +281,7 @@ public class SetEnvMainActivity extends BaseActivity {
                     values.put("equ_no", b);//设备编号
                 } else {
                     values.put("equ_no", "");//设备编号
-                    show_Toast("请注意,您已设置设备编号为空");
+                    show_Toast(getResources().getString(R.string.text_set_zhuyi));
                 }
                 db.update(DatabaseHelper.TABLE_NAME_USER_MESSQGE, values, "id=?", new String[]{"1"});
                 dialog.dismiss();

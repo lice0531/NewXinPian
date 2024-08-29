@@ -189,7 +189,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             project.setCoordxy(d);
             project.setProject_name(f);
             project.save();
-            show_Toast("数据保存成功");
+            show_Toast(getString(R.string.text_bccg));
         } else {
             show_Toast(checstr);
         }
@@ -222,27 +222,27 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         String dwdm = at_dwdm.getText().toString().trim().replace(" ", "");
         String name = at_projectName.getText().toString().trim().replace(" ", "");
         if(htid.length()>1&&htid.length()<15){
-            return "当前合同编号小于15位,请重新输入";
+            return getResources().getString(R.string.text_htxy);
         }
         if(xmbh.length()>1&&xmbh.length()<15){
-            return "当前项目编号小于15位,请重新输入";
+            return getResources().getString(R.string.text_xmxy);
         }
         if(sfz==null||sfz.length()<18){
-            return "请输入爆破员身份证";
+            return getResources().getString(R.string.text_sfz);
         }
         if(name==null){
-            return "请输入项目名称";
+            return getResources().getString(R.string.text_xmmc);
         }
 
         if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5) {
-            tipStr = "经度纬度设置不正确，具体格式为如:116.585989,36.663456";
+            tipStr = getResources().getString(R.string.text_down_tip11);
             return tipStr;
         }
         List<Project> newsList = LitePal.where("project_name = ?", name).find(Project.class);
         Log.e("项目保存", "newsList: "+newsList.toString() );
         Log.e("项目保存", "size: "+newsList.size());
         if (newsList.size()>0) {
-                return "项目名称重复";
+                return getResources().getString(R.string.text_mccf);
         } else {
             return "";
         }
@@ -260,11 +260,11 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.btn_down_inputOK:
                 hideInputKeyboard();//隐藏键盘
                 if (at_coordxy.getText().toString().trim().length() < 1) {
-                    show_Toast("经纬度不能为空!");
+                    show_Toast(getResources().getString(R.string.text_down_err3));
                     return;
                 }
                 if (at_bprysfz.getText().toString().trim().length() < 1) {
-                    show_Toast("人员证号不能为空!");
+                    show_Toast(getResources().getString(R.string.text_down_err10));
                     return;
                 }
                 saveData();
@@ -340,7 +340,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         }
         Log.e("删除项目", "history_projectName: " + sb.toString());
         sp.edit().putString("history_projectName", sb.toString()).apply();
-        show_Toast("删除成功");
+        show_Toast(getResources().getString(R.string.text_del_ok));
         initAutoComplete("history_projectName", at_projectName);
         return 0;
     }
@@ -349,7 +349,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         SharedPreferences sp = getSharedPreferences("network_url", 0);
         sp.edit().putString(field, "").apply();
         initAutoComplete(field, auto);
-        show_Toast("删除成功");
+        show_Toast(getResources().getString(R.string.text_del_ok));
     }
 
     @Override

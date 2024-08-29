@@ -90,7 +90,7 @@
 					android:layout_height="match_parent"
 					android:layout_weight="1"
 					android:background="@drawable/textview_border"
-					android:text="删除" />
+					android:text="@string/text_tip_delete" />
 			</LinearLayout>
 
 			<android_serialport_api.xingbang.custom.LoadListView

@@ -499,7 +499,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         duan_old = new GreenDaoMaster().getPieceMaxDuan(mRegion);
         duan_new = (int) MmkvUtils.getcode("duan", 1);
         Log.e(TAG, "onRestart-duan: " + duan_new);
-        btnAddDelay.setText("段位:" + duan_new);
+        btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
     }
 
     private void initView() {
@@ -730,7 +730,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("FF");
-        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setStatusName(getString(R.string.text_reister_tip1));
         denatorBaseinfo.setErrorCode("00");
         denatorBaseinfo.setErrorName("");
         denatorBaseinfo.setWire("");//桥丝状态
@@ -1189,8 +1189,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 // 电源显示
                 case 1003:
                     if (busInfo != null) {
-                        txt_currentVolt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-                        txt_currentIC.setText("当前电流:" + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
+                        txt_currentVolt.setText(getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
+                        txt_currentIC.setText(getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
                         // 判断当前电流是否偏大
                         if (Math.round(busInfo.getBusCurrentIa() * 1000) > 60) {
                             txt_currentIC.setTextColor(Color.RED);
@@ -1230,30 +1230,30 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 show_Toast(getResources().getString(R.string.text_error_tip2));
             } else if (msg.what == 3) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_Toast(getString(R.string.text_reister_tip5) + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast_long(getString(R.string.text_error_tip69)+ lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
                 MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_Toast(getString(R.string.text_line_tip7));
             } else if (msg.what == 7) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与" + lg_Piece + "区第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
             } else if (msg.what == 8) {
                 SoundPlayUtils.play(4);
-                show_Toast("有延时为空,请先设置延时");
+                show_Toast(getString(R.string.text_error_tip64));
             }  else if (msg.what == 9) {
                 decodeBar(msg.obj.toString());
             } else if (msg.what == 10) {
-                show_Toast("找不到对应的生产数据,请先导入生产数据");
+                show_Toast(getString(R.string.text_line_tip8));
             }  else if (msg.what == 11) {
-                show_Toast("输入的日期格式不对");
+                show_Toast(getString(R.string.text_error_tip66));
             } else if (msg.what == 12) {
-                show_Toast("当前雷管为煤许产品,注册失败");
+                show_Toast(getString(R.string.text_mx_zcsb));
             } else if (msg.what == 99) {
                 adapter.notifyDataSetChanged();
             }else if (msg.what == 2001) {
@@ -1261,7 +1261,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 SoundPlayUtils.play(4);
             } else {
                 SoundPlayUtils.play(4);
-                show_Toast("注册失败");
+                show_Toast(getString(R.string.text_line_tip9));
             }
             return false;
         });
@@ -1287,7 +1287,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 showDenatorSum();//得到数据的总条数
             }
             if (tipInfoFlag == 3) {//未收到关闭电源命令
-                show_Toast("未收到单片机返回命令");
+                show_Toast(getString(R.string.text_line_tip10));
             }
             if (tipInfoFlag == 4) {//未收到打开电源命令
                 show_Toast(getResources().getString(R.string.text_error_tip6));
@@ -1297,18 +1297,18 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 6) {//桥丝不正常
-                show_Toast("请先设置延时");
+                show_Toast(getResources().getString(R.string.text_line_tip11));
             }
             if (tipInfoFlag == 7) {//桥丝不正常
-                show_Toast("当前注册雷管电流过大,请检查雷管");
+                show_Toast(getResources().getString(R.string.text_line_tip12));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 8) {//桥丝不正常
-                show_Toast("当前雷管有异常,请检测后重新注册");
+                show_Toast(getResources().getString(R.string.text_line_tip13));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 9) {//桥丝不正常
-                show_Toast("当前雷管读码异常,请检查该雷管编码规则");
+                show_Toast(getResources().getString(R.string.text_line_tip14));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 88) {//刷新界面
@@ -1317,7 +1317,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 edit_end_entboxNoAndSerial_ed.getText().clear();//.setText("")
             }
             if (tipInfoFlag == 89) {//刷新界面
-                show_Toast("输入的管壳码重复");
+                show_Toast(getResources().getString(R.string.text_line_tip15));
                 showDenatorSum();
                 SoundPlayUtils.play(4);
             }
@@ -1495,7 +1495,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private int showDenatorSum() {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list = master.queryDetonatorRegionDesc(mRegion);
-        txtReisteramount.setText("已注册:" + list.size());
+        txtReisteramount.setText(getString(R.string.text_reister_tip1) + list.size());
         return list.size();
     }
 
@@ -1753,7 +1753,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         String Temp = "";
         switch (item.getItemId()) {
             case 1:
-                Temp = "删除";
+                Temp = getResources().getString(R.string.text_tip_delete);
                 String whereClause = "id=?";
                 String[] whereArgs = {String.valueOf(id)};
                 db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
@@ -1764,20 +1764,20 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
             case 2:
                 this.modifyBlastBaseInfo(id);
-                Temp = "修改";
+                Temp = getResources().getString(R.string.text_tip_modify);
                 break;
 
             default:
                 break;
         }
-        show_Toast(Temp + "处理");
+        show_Toast(Temp + getResources().getString(R.string.text_tip_handle));
         return super.onContextItemSelected(item);
     }
 
     private void modifyBlastBaseInfo(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle("请修改雷管信息");
+        builder.setTitle(getResources().getString(R.string.text_reister_tip6));
         View view = LayoutInflater.from(this).inflate(R.layout.blastbasedialog, null);
         builder.setView(view);
         final EditText username = (EditText) view.findViewById(R.id.blast_shellBlastNo_field);
@@ -1797,7 +1797,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             String a = username.getText().toString().trim();
             String b = password.getText().toString().trim();
             //    将输入的用户名和密码打印出来
-            show_Toast("管壳码: " + a + ", 延时: " + b);
+            show_Toast(getResources().getString(R.string.text_error_tip3) + a + getResources().getString(R.string.text_regist_tip7) + b);
         });
         builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
@@ -1823,30 +1823,30 @@ public class ReisterMainPage_line extends SerialPortActivity {
         et_shell.setText(shellBlastNo);
         tv_duan.setText(duan + "-" + duanNo);
         int d = getFan(info.getDuan());
-        builder.setNegativeButton("插入孔", (dialog, which) -> {
+        builder.setNegativeButton(getResources().getString(R.string.text_crk), (dialog, which) -> {
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                show_Toast(getResources().getString(R.string.text_lgfz));
             } else {
                 //插入方法
-                getSupportActionBar().setTitle("正在插入孔");
+                getSupportActionBar().setTitle(getResources().getString(R.string.text_zzcrk));
                 GreenDaoMaster master = new GreenDaoMaster();
                 db_charu = master.querylgMaxduanNo(info.getDuanNo(), info.getDuan(), mRegion);
                 charu = true;
             }
 
         });
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNeutralButton(getResources().getString(R.string.xingbang_main_page_btn_del), (dialog, which) -> {
             dialog.dismiss();
             AlertDialog dialog2 = new AlertDialog.Builder(this)
-                    .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                    .setMessage("是否删除选中雷管")//设置对话框的内容"本次任务成功起爆！"
+                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton("取消", (dialog1, which1) -> dialog1.dismiss())
-                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                                show_Toast("当前雷管已翻转,请恢复后再删除雷管");
+                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
                             } else {
                                 // TODO 开启进度条
                                 runPbDialog();
@@ -1870,17 +1870,17 @@ public class ReisterMainPage_line extends SerialPortActivity {
             dialog2.show();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                show_Toast("当前段位雷管已翻转,请恢复后再进行新操作");
+                show_Toast(getResources().getString(R.string.text_queryHis_dialog3));
                 return;
             }
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getResources().getString(R.string.text_reister_tip5) + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                show_Toast("延时为空或大于最大设定延时，修改失败! ");
+                show_Toast(getResources().getString(R.string.text_reister_tip8));
 
             } else {
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
@@ -1890,7 +1890,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -2098,7 +2098,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private int insertSingleDenator(String shellNo) {
         int f = getFan(duan_new);
         if (f == 1) {
-            show_Toast("当前段位雷管已翻转,请恢复后再插入新的雷管");
+            show_Toast(getString(R.string.text_queryHis_dialog3));
             return -1;
         }
         Log.e("扫码", "单发注册方法1: ");
@@ -2666,10 +2666,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
     private void showAlertDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("注册提示")
-                .setMessage("注册列表中的雷管已在起爆历史记录里,是否清空列表")//设置对话框的内容"本次任务成功起爆！"
-                .setNeutralButton("取消", (dialog1, which) -> dialog1.dismiss())
-                .setPositiveButton("确认清空", (dialog12, which) -> {
+                .setTitle(getResources().getString(R.string.scan_text_tip1))
+                .setMessage(getResources().getString(R.string.scan_text_tip2))//设置对话框的内容"本次任务成功起爆！"
+                .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
+                .setPositiveButton(getResources().getString(R.string.text_line_qrqk), (dialog12, which) -> {
                     Application.getDaoSession().getDenatorBaseinfoDao().deleteAll();
 //                    getLoaderManager().restartLoader(1, null, ReisterMainPage_line.this);
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
@@ -2735,7 +2735,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         switch (view.getId()) {
             case R.id.btn_tk:
                 if (etTk.getText().length() == 0) {
-                    show_Toast("请输入跳孔个数");
+                    show_Toast(getResources().getString(R.string.text_sctkgs));
                     return;
                 }
                 hideInputKeyboard();
@@ -2786,7 +2786,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             case R.id.btn_singleReister:
                 int d = getFan(duan_new);
                 if (d == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
+                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
                     return;
                 }
                 hideInputKeyboard();
@@ -2808,9 +2808,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //                    if (num > 0||num2>0) {
 //                        showAlertDialog();
 //                    }
-                    show_Toast("请等待电流电压显示出来后，再连接雷管!");
+                    show_Toast(getResources().getString(R.string.text_line_tip1));
                     btnInputOk.setEnabled(false);
-                    btnSingleReister.setText("停止注册");
+                    btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
                     isSingleReisher = 1;
                     closeThread();
 //                    closeOpenThread = new CloseOpenPower();
@@ -2819,9 +2819,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
                 } else {
                     btnInputOk.setEnabled(true);
-                    btnSingleReister.setText("单发注册");
-                    txt_currentVolt.setText("当前电压:");
-                    txt_currentIC.setText("当前电流:");
+                    btnSingleReister.setText(getResources().getString(R.string.text_singleReister));
+                    txt_currentVolt.setText(getResources().getString(R.string.text_reister_vol));
+                    txt_currentIC.setText(getResources().getString(R.string.text_reister_ele));
                     txt_currentIC.setTextColor(Color.BLACK);
                     isSingleReisher = 0;
                     initCloseCmdReFlag = 0;
@@ -2835,7 +2835,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             case R.id.btn_scanReister:
                 int d1 = getFan(duan_new);
                 if (d1 == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
+                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
                     return;
                 }
                 Log.e(TAG, "是否翻转: " + d1);
@@ -2893,7 +2893,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
             case R.id.btn_setdelay:
                 if (getFan(duan_new) == 1) {
-                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
+                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
                     return;
                 }
                 Intent intent3 = new Intent(this, SetDelayTime.class);
@@ -3278,26 +3278,26 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
     private boolean checkDelay() {
         if (reEtF1.getText().toString().equals("")) {
-            show_Toast("当前设置延时为空,请重新设置");
+            show_Toast(getString(R.string.text_line_tip2));
             Log.e("f2", reEtF2.getText().toString());
             return true;
         }
         if (reEtF2.getText().toString().equals("")) {
-            show_Toast("当前设置延时为空,请重新设置");
+            show_Toast(getString(R.string.text_line_tip2));
             Log.e("f2", reEtF2.getText().toString());
             return true;
         }
         if (et_startDelay.getText().length() == 0) {
-            show_Toast("当前起始延时为空,请重新设置");
+            show_Toast(getString(R.string.text_line_tip18));
             return true;
         }
         if (maxSecond != 0) {
             if (Integer.parseInt(reEtF2.getText().toString()) > maxSecond) {
-                show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                show_Toast(getString(R.string.text_line_tip3) + maxSecond + getString(R.string.text_line_tip4));
                 return true;
             }
             if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
-                show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
+                show_Toast(getString(R.string.text_line_tip3) + maxSecond + getString(R.string.text_line_tip4));
                 return true;
             }
         }
@@ -3632,7 +3632,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             int index = strParamBarcode.indexOf("SC:");
             subBarCode = strParamBarcode.substring(index + 3, index + 16);
             if (subBarCode.trim().length() < 13) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
+                show_Toast(getResources().getString(R.string.text_reister_tip2));
                 return;
             }
         } else {
@@ -3720,7 +3720,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         //判断当点击的是返回键
         if (keyCode == event.KEYCODE_BACK) {
             if (isSingleReisher != 0) {
-                show_Toast("请停止注册后再退出当前页面");
+                show_Toast(getResources().getString(R.string.text_reister_tip3));
             } else {
                 finish();
             }
@@ -3801,7 +3801,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
@@ -3811,7 +3811,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 }
                 duan_new = 1;
                 MmkvUtils.savecode("duan", 1);
-                btnAddDelay.setText("段位:" + duan_new);
+                btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
                 return true;
 
             default:
@@ -3827,9 +3827,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getResources().getString(R.string.text_list_piace) + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getResources().getString(R.string.text_list_piace) + region + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
@@ -3900,11 +3900,11 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private void fanzhuan(int duan) {
         Log.e("注册页面", "翻转: ");
         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
-                .setTitle("翻转提示")//设置对话框的标题//"成功起爆"
-                .setMessage("是否翻转当前段位延时")//设置对话框的内容"本次任务成功起爆！"
+                .setTitle(getResources().getString(R.string.text_fzts))//设置对话框的标题//"成功起爆"
+                .setMessage(getResources().getString(R.string.text_ssfz))//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNeutralButton("取消", (dialog12, which) -> dialog12.dismiss())
-                .setPositiveButton("确认", (dialog1, which) -> {
+                .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
+                .setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog1, which) -> {
 
                     GreenDaoMaster master = new GreenDaoMaster();
                     List<DenatorBaseinfo> list = master.queryLeiguanDuan(duan, mRegion);

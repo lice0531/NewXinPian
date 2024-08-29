@@ -347,11 +347,11 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         for (int i = 0; i < list_lg2.size(); i++) {
             if (!list_lg_down.contains(list_lg2.get(i))) {
                 Log.e("对比", "list_lg_down: " + list_lg_down + "---list_lg2.get(i)" + list_lg2.get(i));
-                show_Toast("注册雷管与下载雷管不符");
+                show_Toast(getResources().getString(R.string.text_ver_tip4));
                 return;
             }
         }
-        show_Toast("在准爆范围内,可以起爆");
+        show_Toast(getResources().getString(R.string.text_ver_tip5));
         Log.e("验证数据", "map_dl.get(position): " + map_dl.get(position).toString());
         Log.e("验证数据", "map_dl.get(position).get(id): " + map_dl.get(position).get("id"));
         qbxm_id = map_dl.get(position).get("id") + "";

@@ -296,7 +296,7 @@ public class SetVoltageActivity extends SerialPortActivity {
             case R.id.btn_sys://保存设置
                 MmkvUtils.savecode("sys_ver_name",sys_ver_name);
                 MmkvUtils.savecode("sys_ver_position",position_save);
-                show_Toast("保存成功");
+                show_Toast(getString(R.string.text_systip_1));
                 break;
         }
     }

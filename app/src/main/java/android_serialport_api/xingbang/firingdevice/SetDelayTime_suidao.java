@@ -390,8 +390,8 @@ public class SetDelayTime_suidao extends BaseActivity {
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(getResources().getString(R.string.text_dialog_sc), (dialog, which) -> {
             dialog.dismiss();
 
             // TODO 开启进度条
@@ -407,14 +407,14 @@ public class SetDelayTime_suidao extends BaseActivity {
             }).start();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(getResources().getString(R.string.text_dialog_qd), (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                show_Toast("延时为空或大于最大设定延时，修改失败! ");
+                show_Toast(getResources().getString(R.string.text_reister_tip8));
 
             } else {
                 // 修改雷管延时
@@ -422,7 +422,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -633,10 +633,10 @@ public class SetDelayTime_suidao extends BaseActivity {
                 break;
             case R.id.btn_setDelayTime_inputOK:
                 AlertDialog dialog = new AlertDialog.Builder(SetDelayTime_suidao.this)
-                        .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_setDelay_dialog2))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("继续", (dialog13, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog13, which) -> {
                             dialog13.dismiss();
                             getTotalDelay();
                             hideInputKeyboard();
@@ -645,7 +645,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                             saveData();
                             int totalDelay=getTotalDelay();
                             if(totalDelay>maxSecond){
-                                show_Toast("当前设置延时已超出最大值"+maxSecond+"限制,请重新设置延时");
+                                show_Toast(getResources().getString(R.string.text_setDelay_dialog5)+maxSecond+getResources().getString(R.string.text_setDelay_dialog6));
                             }else {
                                 new Thread(() -> {
                                     for (int i = 1; i < 21; i++) {
@@ -665,7 +665,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                                 }
                                 totalNum = 0;
                                 dangqianNum = 1;
-                                show_Toast("延时写入成功");
+                                show_Toast(getResources().getString(R.string.txt_suidao_chenggong));
                                 Utils.writeRecord("-设置隧道延时成功");
                                 // 区域 更新视图
                                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
@@ -673,7 +673,7 @@ public class SetDelayTime_suidao extends BaseActivity {
 
                             pb_show = 0;
                         })
-                        .setNeutralButton("退出", (dialog2, which) -> {
+                        .setNeutralButton(getResources().getString(R.string.xingbang_main_page_btn_exit), (dialog2, which) -> {
                             dialog2.dismiss();
 
 
@@ -1330,7 +1330,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
                 return true;
 
             default:
@@ -1345,9 +1345,9 @@ public class SetDelayTime_suidao extends BaseActivity {
     private void setTitleRegion(String region,int size) {
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getResources().getString(R.string.text_list_piace) + region;
         } else {
-            str = " 区域" + region + "(数量:" + size + ")";
+            str = getResources().getString(R.string.text_list_piace) + region + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

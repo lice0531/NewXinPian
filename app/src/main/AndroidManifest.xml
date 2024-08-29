@@ -38,39 +38,39 @@
         <activity
             android:name=".firingdevice.SouSuoSQActivity"
             android:exported="false"
-            android:label="搜索授权信息"
+            android:label="@string/text_sssqxx"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".firingdevice.ShouQuanActivity"
             android:exported="false"
-            android:label="授权数据"
+            android:label="@string/text_sqsj"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".firingdevice.ChoseDuanActivity"
             android:exported="false"
-            android:label="选择段位"
+            android:label="@string/text_scan_xzdw"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".firingdevice.DownLoadActivity"
             android:exported="false"
-            android:label="升级程序"
+            android:label="@string/text_sjcx"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".firingdevice.SendMsgActivity"
             android:exported="false"
-            android:label="数据互传"
+            android:label="@string/text_fz_sjhc"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UpgradeActivity"
             android:exported="false"
-            android:label="程序升级"
+            android:label="@string/text_cxsj"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.TestICActivity"
             android:exported="false"
-            android:label="快速测试电流"
+            android:label="@string/text_activity_kscsdl"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.UpdataDelayActivity"
@@ -272,17 +272,17 @@
         <activity
             android:name=".firingdevice.UploadMessageActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="数据上传"
+            android:label="@string/text_sjsc"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SetVoltageActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="设置"
+            android:label="@string/title_activity_sz"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SaveProjectActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="保存项目数据"
+            android:label="@string/text_bcxm"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
@@ -293,17 +293,17 @@
         <activity
             android:name=".firingdevice.SystemVersionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="系统版本号"
+            android:label="@string/title_activity_xtbbh"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.SetDelayTime_suidao"
             android:configChanges="orientation|keyboardHidden"
-            android:label="隧道延时"
+            android:label="@string/text_sdys"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.DownOfflineActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="离线下载"
+            android:label="@string/text_lxxz"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UpLoadLogActivity"
@@ -325,22 +325,22 @@
         <activity
             android:name=".jilian.SyncActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="级联"
+            android:label="@string/title_activity_jl"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".jilian.SyncActivityYouxian"
             android:configChanges="orientation|keyboardHidden"
-            android:label="级联"
+            android:label="@string/title_activity_jl"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".jilian.SettingActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="级联设置"
+            android:label="@string/title_activity_jlsz"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- BootReceiver是上面建的广播类 -->
         <activity
             android:name=".zxing.activity.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="扫码"
+            android:label="@string/text_sm"
             android:theme="@style/AppTheme.NoActionBar" />
         <provider
             android:name="androidx.core.content.FileProvider"

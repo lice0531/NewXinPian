@@ -278,7 +278,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
             this.currentPage++;
         }
         if (leiguan_list == null) {
-            show_Toast("请注册雷管!");
+            show_Toast(getResources().getString(R.string.text_down_tip20));
         }
         list_uid.clear();
         for (int i = 0; i < leiguan_list.size(); i++) {
@@ -447,7 +447,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
                 break;
             case R.id.btn_upload://上传按钮
                 if (list_message.get(position).get("qbzt").toString().equals("未爆破")) {
-                    show_Toast("当前项目未起爆,请上传已起爆数据");
+                    show_Toast(getResources().getString(R.string.text_down_tip21));
                 } else {
                     String blastdate = list_message.get(position).get("blastdate").toString();//日期
                     String htbh = list_message.get(position).get("htbh").toString();//合同编号
@@ -466,13 +466,13 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
                         performUp(blastdate, htbh, jd, wd, position);
                     }
                     if (server_type2.equals("0") && server_type1.equals("0")) {
-                        show_Toast("设备当前未设置上传网址,请先设置上传网址");
+                        show_Toast(getResources().getString(R.string.text_his_scwz));
                     }
                 }
                 break;
             case R.id.tv_chakan_sq://查看按钮
                 if (list_message.get(position).get("qbzt").toString().equals("未爆破")) {
-                    show_Toast("当前项目未起爆,请上传已起爆数据");
+                    show_Toast(getResources().getString(R.string.text_down_tip21));
                 }else {
                     Log.e("起爆时间", list_message.get(position).get("blastdate").toString() );
                     createDialog(list_message.get(position).get("blastdate").toString());
@@ -643,7 +643,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
                         message.obj = blastdate;
                         message.arg1 = pos;
                         mHandler_update.sendMessage(message);
-                        show_Toast_ui("丹灵上传成功");
+                        show_Toast_ui(getResources().getString(R.string.text_dlsccg));
                         if(!server_type2.equals("2")){
                             pb_show = 0;
                         }
@@ -652,7 +652,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
                         if (cwxx.equals("1")) {
                             show_Toast_ui("错误信息:" + object.getString("cwxxms"));
                         } else if (cwxx.equals("2")) {
-                            show_Toast_ui("起爆器未备案或未设置作业任务");
+                            show_Toast_ui(getResources().getString(R.string.text_uploda_tip3));
                         } else {
                             show_Toast_ui(object.getString("cwxxms"));
                         }

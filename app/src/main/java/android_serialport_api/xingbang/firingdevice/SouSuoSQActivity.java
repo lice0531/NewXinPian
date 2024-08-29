@@ -114,7 +114,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
                     Log.e("查询", "mListData: " + mListData.toString());
                     if (mListData.size() == 0) {
-                        show_Toast("未找到当前雷管");
+                        show_Toast(getResources().getString(R.string.text_wzd));
                     }
                     mList.clear();
                     Log.e("加载", "mListData.size(): " + mListData.size());
@@ -137,10 +137,10 @@ public class SouSuoSQActivity extends BaseActivity {
                     hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 2:
-                    show_Toast("雷管重复");
+                    show_Toast(getResources().getString(R.string.text_lgvf));
                     break;
                 case 3:
-                    show_Toast("雷管管壳码长度错误");
+                    show_Toast(getResources().getString(R.string.text_cdcw));
                     break;
                 case 4:
                     try {
@@ -148,11 +148,11 @@ public class SouSuoSQActivity extends BaseActivity {
                         mAdapter2.setNewData(mList);
                         mAdapter2.notifyDataSetChanged();
                     } catch (Exception e) {
-                        show_Toast("排序失败!");
+                        show_Toast(getResources().getString(R.string.text_pxsb));
                     }
                     break;
                 case 7:
-                    show_Toast("数据异常,请检查雷管厂家是否正确");
+                    show_Toast(getResources().getString(R.string.text_send_tip26));
                     break;
                 default:
                     break;
@@ -282,7 +282,7 @@ public class SouSuoSQActivity extends BaseActivity {
                 mList.remove(i);
             }
         }
-        show_Toast("删除成功");
+        show_Toast(getResources().getString(R.string.text_del_ok));
         Log.e("删除", "mList.size(): " + mList.size());
         master.updataShouQuan(sqrq, mList.size());
         //删除选中的item之后判断是否还有数据，没有则退出编辑模式

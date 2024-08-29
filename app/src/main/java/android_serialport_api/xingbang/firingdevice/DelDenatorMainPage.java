@@ -339,11 +339,11 @@ public class DelDenatorMainPage extends BaseActivity  {
             case R.id.btn_serialNo_del://按序号删除
                 hideInputKeyboard();
                 AlertDialog dialog = new Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("该操作会按序号删除表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_delete_tip12))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog12, which) -> dialog12.dismiss())
-                        .setPositiveButton("确认删除", (dialog1, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
+                        .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog1, which) -> {
                             pb_show = 1;
                             runPbDialog();
                             String checstr = checkData();
@@ -415,7 +415,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -429,9 +429,9 @@ public class DelDenatorMainPage extends BaseActivity  {
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getResources().getString(R.string.text_list_piace) + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getResources().getString(R.string.text_list_piace) + region + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

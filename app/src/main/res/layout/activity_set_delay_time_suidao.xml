@@ -124,7 +124,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -148,7 +148,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -159,7 +159,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -171,7 +171,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -183,7 +183,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -201,7 +201,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -225,7 +225,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -236,7 +236,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -248,7 +248,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -260,7 +260,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -278,7 +278,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -302,7 +302,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -313,7 +313,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -325,7 +325,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -337,7 +337,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -355,7 +355,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -379,7 +379,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -390,7 +390,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -402,7 +402,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -414,7 +414,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -432,7 +432,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -456,7 +456,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -467,7 +467,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -479,7 +479,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -491,7 +491,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -509,7 +509,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -533,7 +533,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -544,7 +544,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -556,7 +556,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -568,7 +568,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -586,7 +586,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -610,7 +610,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -621,7 +621,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -633,7 +633,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -645,7 +645,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -663,7 +663,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -687,7 +687,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -698,7 +698,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -710,7 +710,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -722,7 +722,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -740,7 +740,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -764,7 +764,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -775,7 +775,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -787,7 +787,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -799,7 +799,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -817,7 +817,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -841,7 +841,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -852,7 +852,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -864,7 +864,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -876,7 +876,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -894,7 +894,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -918,7 +918,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -929,7 +929,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -941,7 +941,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -953,7 +953,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -971,7 +971,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -995,7 +995,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1006,7 +1006,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1018,7 +1018,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1030,7 +1030,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1048,7 +1048,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1072,7 +1072,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1083,7 +1083,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1095,7 +1095,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1107,7 +1107,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1125,7 +1125,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1149,7 +1149,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1160,7 +1160,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1172,7 +1172,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1184,7 +1184,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1202,7 +1202,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1226,7 +1226,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1237,7 +1237,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1249,7 +1249,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1261,7 +1261,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1279,7 +1279,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1303,7 +1303,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1314,7 +1314,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1326,7 +1326,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1338,7 +1338,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1356,7 +1356,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1380,7 +1380,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1391,7 +1391,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1403,7 +1403,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1415,7 +1415,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1433,7 +1433,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1457,7 +1457,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1468,7 +1468,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1480,7 +1480,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1492,7 +1492,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1510,7 +1510,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1534,7 +1534,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1545,7 +1545,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1557,7 +1557,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1569,7 +1569,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"
@@ -1587,7 +1587,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="段号"
+                        android:text="@string/text_list_duan"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1611,7 +1611,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="数量"
+                        android:text="@string/text_main_sl"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1622,7 +1622,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="数量"
+                        android:hint="@string/text_main_sl"
                         android:maxLength="3"
                         android:numeric="integer"
                         android:padding="5dp"
@@ -1634,7 +1634,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="间隔"
+                        android:text="@string/text_suidao_jiange"
                         android:textSize="@dimen/childReisterPageEditFontSize" />
 
                     <EditText
@@ -1646,7 +1646,7 @@
                         android:layout_weight="1.5"
                         android:background="@drawable/translucent"
                         android:gravity="left"
-                        android:hint="间隔"
+                        android:hint="@string/text_suidao_jiange"
                         android:numeric="integer"
                         android:padding="5dp"
                         android:textColor="@color/rangle_fc_base"

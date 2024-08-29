@@ -36,14 +36,14 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="match_parent"
-            android:hint="可输入日期或部分管壳码"
+            android:hint="@string/text_srrq"
             />
         <Button
             android:id="@+id/ss_btn_ss"
             android:layout_width="0dp"
             android:layout_weight="0.8"
             android:layout_height="wrap_content"
-            android:text="搜索"
+            android:text="@string/text_ss"
             android:textSize="18sp"
             style="@style/allbtntstyle"/>
         <Button
@@ -51,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.8"
             android:layout_height="wrap_content"
-            android:text="排序"
+            android:text="@string/text_query_px"
             android:textSize="18sp"
             android:layout_marginLeft="2dp"
             style="@style/allbtntstyle"/>
@@ -76,7 +76,7 @@
             android:id="@+id/tv_lg_uid"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="有效期"
+            android:text="@string/text_yxq"
             style="@style/alltextstyle"
             android:textSize="18sp"/>
         <TextView
@@ -85,7 +85,7 @@
             android:id="@+id/tv_lg_yxq"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="工作码"
+            android:text="@string/text_gzm"
             style="@style/alltextstyle"
             android:textSize="18sp"/>
         <TextView
@@ -94,7 +94,7 @@
             android:id="@+id/tv_lg_qb"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="状态"
+            android:text="@string/text_list_state"
             style="@style/alltextstyle"
             android:textSize="18sp"/>
     </LinearLayout>
@@ -123,7 +123,7 @@
             android:layout_weight="1"
             android:foreground="@drawable/bg_white"
             android:gravity="center"
-            android:text="全选"
+            android:text="@string/text_qx"
             android:textColor="@color/white"
             style="@style/alltextstyle"
             />
@@ -140,7 +140,7 @@
             android:layout_weight="1"
             android:foreground="@drawable/bg_white"
             android:gravity="center"
-            android:text="全选正确"
+            android:text="@string/text_qxzq"
             android:textColor="@color/color_red"
             style="@style/alltextstyle" />
 
@@ -157,7 +157,7 @@
             android:layout_weight="1"
             android:foreground="@drawable/bg_white"
             android:gravity="center"
-            android:text="注册"
+            android:text="@string/t_xingbang_main_page_btn_reister"
             android:textColor="@color/white"
             style="@style/alltextstyle" />
 

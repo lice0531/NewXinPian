@@ -167,7 +167,7 @@ public class QueryHisDetail extends BaseActivity {
                 switch (v.getId()) {
                     case R.id.bt_upload://上传按钮
                         if (!NetUtils.haveNetWork(getContext())) {
-                            show_Toast("请检查网络!");
+                            show_Toast(getResources().getString(R.string.text_jcwl));
                             return;
                         }
                         int pos = (Integer) v.getTag(R.id.bt_upload);//位置
@@ -185,7 +185,7 @@ public class QueryHisDetail extends BaseActivity {
                         if (blastdate == null || blastdate.trim().length() < 8) {
                             int count = getBlastModelCount();
                             if (count < 1) {
-                                show_Toast("没有数据，不能执行上传");
+                                show_Toast(getResources().getString(R.string.text_error_tip55));
                                 return;
                             }
                             String fireDate =Utils.getDateFormatLong(new Date());
@@ -196,12 +196,12 @@ public class QueryHisDetail extends BaseActivity {
                         Log.e("上传-经纬度", "pro_coordxy: "+pro_coordxy );
                         Log.e("上传-经纬度", "jd: "+jd );
                         if (pro_coordxy.length() < 2 && jd == null) {
-                            show_Toast("经纬度为空，不能执行上传");
+                            show_Toast(getResources().getString(R.string.text_his_jwdwk));
                             return;
                         }
 
                         if (server_type2.equals("0") && server_type1.equals("0")) {
-                            show_Toast("设备当前未设置上传网址,请先设置上传网址");
+                            show_Toast(getResources().getString(R.string.text_his_scwz));
                         }
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
                         pb_show = 1;
@@ -217,11 +217,11 @@ public class QueryHisDetail extends BaseActivity {
                         break;
                     case R.id.bt_delete:
                         AlertDialog dialog = new AlertDialog.Builder(QueryHisDetail.this)
-                                .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                                .setMessage("请确认是否删除当前记录")//设置对话框的内容"本次任务成功起爆！"
+                                .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                                .setMessage(getResources().getString(R.string.text_queryHis_dialog9))//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
-                                .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
-                                .setPositiveButton("确认删除", (dialog12, which) -> {
+                                .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
+                                .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog12, which) -> {
                                     String t = (String) v.getTag(R.id.bt_delete);
                                     if (delHisInfo(t) == 0) {
                                         show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
@@ -259,16 +259,16 @@ public class QueryHisDetail extends BaseActivity {
         mHandler_tip = new Handler(msg -> {
             switch (msg.what){
                 case 1:
-                    show_Toast("网络请求失败,请检查网络正确连接后,再次上传");
+                    show_Toast(getResources().getString(R.string.text_xzsb16));
                     break;
                 case 2:
-                    show_Toast("丹灵上传成功");
+                    show_Toast(getResources().getString(R.string.text_dlsccg));
                     break;
                 case 3:
-                    show_Toast("错误信息:" + msg.obj);
+                    show_Toast(getResources().getString(R.string.text_xzsb17) + msg.obj);
                     break;
                 case 4:
-                    show_Toast("起爆器未备案或未设置作业任务");
+                    show_Toast(getResources().getString(R.string.text_uploda_tip3));
                     break;
                 case 5:
                     show_Toast(msg.obj.toString());
@@ -951,7 +951,7 @@ public class QueryHisDetail extends BaseActivity {
                 updatalog(blastdate,"煋邦网络上传错误-IOException:"+e);
                 Message msg = new Message();
                 msg.what=5;
-                msg.obj="煋邦后台上传失败";
+                msg.obj=getResources().getString(R.string.text_xbscsb);
                 mHandler_tip.sendMessage(msg);
             }
 
@@ -975,11 +975,11 @@ public class QueryHisDetail extends BaseActivity {
                 break;
             case R.id.btn_del_all:
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("该操作会按清空当前列表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_queryHis_dialog11))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss())
-                        .setPositiveButton("确认删除", (dialog12, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog12, which) -> {
                             dialog12.dismiss();
                             db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, null, null);
                             //主表
@@ -1025,7 +1025,7 @@ public class QueryHisDetail extends BaseActivity {
 
             case R.id.item_1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
-                builder.setTitle("删除提示");//"请输入用户名和密码"
+                builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
                 View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
                 builder.setView(view);
                 final EditText password = view.findViewById(R.id.password);
@@ -1048,9 +1048,9 @@ public class QueryHisDetail extends BaseActivity {
                             }
                         }
 
-                        show_Toast("删除已上传记录");
+                        show_Toast(getResources().getString(R.string.text_his_scyscjl));
                     } else {
-                        show_Toast("密码错误");
+                        show_Toast(getResources().getString(R.string.text_mmcw));
                     }
                     loadMoreData(currentPage);//读取数据
                     showLoadMore();

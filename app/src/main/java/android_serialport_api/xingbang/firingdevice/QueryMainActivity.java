@@ -249,13 +249,13 @@ public class QueryMainActivity extends BaseActivity {
             }
                 double a = 4.9E-324;
                 if (location.getLatitude() != a) {
-                    tvWD.setText("纬度坐标：" + location.getLatitude());
+                    tvWD.setText(getResources().getString(R.string.text_query_lat) + location.getLatitude());
                 }
 
                 sb.append("\nlontitude : ");// 经度
                 sb.append(location.getLongitude());
                 if (location.getLatitude() != a) {
-                    tvJD.setText("经度坐标：" + location.getLongitude());
+                    tvJD.setText(getResources().getString(R.string.text_query_lon) + location.getLongitude());
                 }
         }
     };
@@ -313,13 +313,13 @@ public class QueryMainActivity extends BaseActivity {
             }
                 double a = 4.9E-324;
                 if (location.getLatitude() != a) {
-                    tvWD.setText("纬度坐标：" + location.getLatitude());
+                    tvWD.setText(getResources().getString(R.string.text_query_lat) + location.getLatitude());
                 }
 
                 sb.append("\nlontitude : ");// 经度
                 sb.append(location.getLongitude());
                 if (location.getLatitude() != a) {
-                    tvJD.setText("经度坐标：" + location.getLongitude());
+                    tvJD.setText(getResources().getString(R.string.text_query_lon) + location.getLongitude());
                 }
         }
     };
@@ -366,13 +366,13 @@ public class QueryMainActivity extends BaseActivity {
                 sb.append(location.getLatitude());
                 double a = 4.9E-324;
                 if (location.getLatitude() != a) {
-                    tvWD.setText("纬度坐标：" + location.getLatitude());
+                    tvWD.setText(getResources().getString(R.string.text_query_lat) + location.getLatitude());
                 }
 
                 sb.append("\nlontitude : ");// 经度
                 sb.append(location.getLongitude());
                 if (location.getLatitude() != a) {
-                    tvJD.setText("经度坐标：" + location.getLongitude());
+                    tvJD.setText(getResources().getString(R.string.text_query_lon) + location.getLongitude());
                 }
                 //保存数据
 //                saveData(location.getLongitude(),location.getLatitude());
@@ -511,7 +511,7 @@ public class QueryMainActivity extends BaseActivity {
                 //海拔
                 double altitude = location.getAltitude();
 
-                txtGps.setText("经度:==>" + longitude + " \n 纬度==>" + latitude + "\n" + "海拔==>" + altitude);
+                txtGps.setText(getResources().getString(R.string.text_query_jd) + longitude + getResources().getString(R.string.text_query_wd) + latitude + "\n" + getResources().getString(R.string.text_query_hb) + altitude);
             }
 
             //当GPS状态发生改变的时候调用
@@ -522,17 +522,17 @@ public class QueryMainActivity extends BaseActivity {
                 switch (status) {
 
                     case LocationProvider.AVAILABLE:
-                        show_Toast("当前GPS为可用状态!");
+                        show_Toast(getResources().getString(R.string.text_gps1));
 
                         break;
 
                     case LocationProvider.OUT_OF_SERVICE:
-                        show_Toast("当前GPS不在服务内");
+                        show_Toast(getResources().getString(R.string.text_gps2));
 
                         break;
 
                     case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                        show_Toast("当前GPS为暂停服务状态");
+                        show_Toast(getResources().getString(R.string.text_gps3));
                         break;
 
 
@@ -543,14 +543,14 @@ public class QueryMainActivity extends BaseActivity {
             //GPS开启的时候调用
             @Override
             public void onProviderEnabled(String provider) {
-                show_Toast("GPS开启了");
+                show_Toast(getResources().getString(R.string.text_gps4));
 
             }
 
             //GPS关闭的时候调用
             @Override
             public void onProviderDisabled(String provider) {
-                show_Toast("GPS关闭了");
+                show_Toast(getResources().getString(R.string.text_gps5));
 
             }
         });

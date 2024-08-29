@@ -204,11 +204,11 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 		
 		
 		if(StringUtils.isNotBlank(st2Bit)==false){
-			tipStr="用户名不能为空";
+			tipStr=getResources().getString(R.string.text_user_err1);
 			return tipStr;
 		}
 		if(StringUtils.isNotBlank(stproDt)==false){
-			tipStr="密码不能为空";
+			tipStr=getResources().getString(R.string.text_user_err2);
 			return tipStr;
 		}
 		
@@ -226,7 +226,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
         String Temp="";
         switch (item.getItemId()) {
             case 1:
-                Temp="删除";
+                Temp=getResources().getString(R.string.text_user_err3);
                 String whereClause="id=?";  
                 String[] whereArgs={String.valueOf(id)};  
                 db.delete(DatabaseHelper.TABLE_USER_MAIN, whereClause, whereArgs);  
@@ -234,12 +234,12 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 break;
             case 2:
             	this.modifyBlastBaseInfo(id);
-                Temp="修改";
+                Temp=getResources().getString(R.string.text_user_err4);
                 break;
             default:
                 break;
         }
-		show_Toast(Temp+"处理");
+		show_Toast(Temp+getResources().getString(R.string.text_tip_handle));
         return super.onContextItemSelected(item);
     }
 	/***
@@ -248,7 +248,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	private void insertDenator(String name,String pw){
 		
 		if(checkRepeatUserName(name)==1){
-			show_Toast("用户名: " +name+"重复");
+			show_Toast(getResources().getString(R.string.text_user_err5) +name+getResources().getString(R.string.text_user_err6));
 		    return ;
 		}
 		
@@ -266,7 +266,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	private void modifyBlastBaseInfo(int id){
 		AlertDialog.Builder builder = new AlertDialog.Builder(SetUserActivity.this);
        // builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle("修改密码信息");
+        builder.setTitle(getResources().getString(R.string.text_user_err7));
         //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
         View view = LayoutInflater.from(SetUserActivity.this).inflate(R.layout.usermodifydialog, null);
         //    设置我们自己定义的布局文件作为弹出框的Content

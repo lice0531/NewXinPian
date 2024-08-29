@@ -193,7 +193,7 @@ public class QueryCurrentDetail extends BaseActivity {
                     setTitleRegion(a.toString(), mListData.size());
                     break;
                 case 1005://按管壳码排序
-                    show_Toast("红色背景雷管是与前一发雷管中间可能有漏扫");
+                    show_Toast(getResources().getString(R.string.text_err1));
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
@@ -302,7 +302,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 // 区域 更新视图
                 mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -321,9 +321,9 @@ public class QueryCurrentDetail extends BaseActivity {
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getResources().getString(R.string.text_list_piace) + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getResources().getString(R.string.text_list_piace) + region + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
@@ -368,7 +368,7 @@ public class QueryCurrentDetail extends BaseActivity {
                 mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
 
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast(getResources().getString(R.string.text_suidao_tip));
             }
 
         });

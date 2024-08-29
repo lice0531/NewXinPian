@@ -17,7 +17,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="序号"
+            android:text="@string/text_list_Serial"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -27,7 +27,7 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="序号"
+            android:hint="@string/text_list_Serial"
             android:maxLength="20"
             android:focusable="false"
             android:padding="5dp"
@@ -55,7 +55,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="孔号"
+            android:text="@string/text_list_kong"
             style="@style/alltextstyle"/>
         <TextView
             android:id="@+id/tv_duan"
@@ -63,7 +63,7 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:gravity="left|center_vertical"
-            android:text="段"
+            android:text="@string/text_list_d"
             style="@style/alltextstyle"
              />
         <EditText
@@ -103,7 +103,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="管壳码"
+            android:text="@string/text_list_guan"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -113,7 +113,7 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="管壳码"
+            android:hint="@string/text_list_guan"
             android:maxLength="13"
             android:focusable="false"
             android:padding="5dp"
@@ -141,7 +141,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="延时"
+            android:text="@string/text_list_delay"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -151,7 +151,7 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="延时"
+            android:hint="@string/text_list_delay"
             android:maxLength="6"
             android:numeric="integer"
             android:padding="5dp"

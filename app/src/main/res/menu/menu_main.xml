@@ -4,31 +4,31 @@
     <item
         android:id="@+id/item_1"
         android:orderInCategory="1"
-        android:title="区域1"
+        android:title="@string/text_zone1"
         app:showAsAction="withText" />
 
     <item
         android:id="@+id/item_2"
         android:orderInCategory="2"
-        android:title="区域2"
+        android:title="@string/text_zone2"
         app:showAsAction="withText" />
 
     <item
         android:id="@+id/item_3"
         android:orderInCategory="3"
-        android:title="区域3"
+        android:title="@string/text_zone3"
         app:showAsAction="withText" />
 
     <item
         android:id="@+id/item_4"
         android:orderInCategory="4"
-        android:title="区域4"
+        android:title="@string/text_zone4"
         app:showAsAction="withText" />
 
     <item
         android:id="@+id/item_5"
         android:orderInCategory="5"
-        android:title="区域5"
+        android:title="@string/text_zone5"
         app:showAsAction="withText" />
 
 </menu>
