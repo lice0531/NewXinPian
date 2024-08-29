@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -190,6 +192,7 @@ public class XingbangMain extends SerialPortActivity {
     private boolean isCmdClosed = false;//是否已经关闭串口
     private boolean isRestarted = false;
     private boolean threadStarted = false;
+    private boolean isshow1 = true;
     private int duanlu_sun=0;
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
@@ -262,31 +265,45 @@ public class XingbangMain extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
             txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa() + "μA");
-            if (busInfo.getBusVoltage() < 6) {
+            if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
-                close();
+                isshow1=false;
+                TextView view = new TextView(this);
+                view.setTextSize(25);
+                view.setTextColor(Color.RED);
+                view.setText("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆");
+                view.setTypeface(null, Typeface.BOLD);
                 AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                         .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
+                        .setView(view)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNeutralButton("退出", (dialog12, which) -> {
+                            close();
                             sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             dialog12.dismiss();
                             finish();
+                        })
+                        .setNegativeButton("继续", (dialog1, which) -> {
+                            isshow1=true;
+                            dialog1.dismiss();
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
-            if ((int)busInfo.getBusCurrentIa()>21000) {
+            if ((int)busInfo.getBusCurrentIa()>30000) {
                 duanlu_sun++;
-                if(duanlu_sun==5){
+                if(duanlu_sun==6){
 
                     Utils.writeRecord("--主页--:总线短路");
-
+                    TextView view = new TextView(this);
+                    view.setTextSize(25);
+                    view.setTextColor(Color.RED);
+                    view.setText("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序");
+                    view.setTypeface(null, Typeface.BOLD);
                     AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                             .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
-                            .setMessage("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序")//设置对话框的内容"本次任务成功起爆！"
+                            .setView(view)
                             //设置对话框的按钮
                             .setNeutralButton ("退出", (dialog12, which) -> {
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
