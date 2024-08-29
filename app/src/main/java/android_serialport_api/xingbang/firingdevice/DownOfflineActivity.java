@@ -169,54 +169,54 @@ public class DownOfflineActivity extends BaseActivity {
         mHandler_1 = new Handler(msg -> {
             switch (msg.what) {
                 case 0:
-                    show_Toast("项目下载成功");
+                    show_Toast(getResources().getString(R.string.text_xxcg));
                     break;
                 case 1:
                 case 99:
                     show_Toast(String.valueOf(msg.obj));
                     break;
                 case 2:
-                    show_Toast("未找到该起爆器设备信息或起爆器未设置作业任务");
+                    show_Toast(getResources().getString(R.string.text_xzsb1));
                     break;
                 case 3:
-                    show_Toast("该起爆器未设置作业任务");
+                    show_Toast(getResources().getString(R.string.text_xzsb2));
                     break;
                 case 4:
-                    show_Toast("起爆器在黑名单中");
+                    show_Toast(getResources().getString(R.string.text_xzsb3));
                     break;
                 case 5:
-                    show_Toast("起爆位置不在起爆区域内");
+                    show_Toast(getResources().getString(R.string.text_xzsb4));
                     break;
                 case 6:
-                    show_Toast("起爆位置在禁爆区域内");
+                    show_Toast(getResources().getString(R.string.text_xzsb5));
                     break;
                 case 7:
-                    show_Toast("该起爆器已注销/报废");
+                    show_Toast(getResources().getString(R.string.text_xzsb6));
                     break;
                 case 8:
-                    show_Toast("禁爆任务");
+                    show_Toast(getResources().getString(R.string.text_xzsb7));
                     break;
                 case 9:
-                    show_Toast("作业合同存在项目");
+                    show_Toast(getResources().getString(R.string.text_xzsb8));
                     break;
                 case 10:
-                    show_Toast("作业任务未设置准爆区域");
+                    show_Toast(getResources().getString(R.string.text_xzsb9));
                     break;
                 case 11:
-                    show_Toast("离线下载不支持生产厂家试爆");
+                    show_Toast(getResources().getString(R.string.text_xzsb10));
                     break;
                 case 12:
-                    show_Toast("营业性单位必须设置合同或者项目");
+                    show_Toast(getResources().getString(R.string.text_xzsb11));
                     break;
                 case 13:
                 case 15:
-                    show_Toast("网络请求失败,请检查网络后再次尝试");
+                    show_Toast(getResources().getString(R.string.text_xzsb12));
                     break;
                 case 14:
-                    show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    show_Toast(getResources().getString(R.string.text_xzsb13));
                     break;
                 case 16:
-                    show_Toast("煋邦网络异常，请与煋邦管理员联系后再尝试下载");
+                    show_Toast(getResources().getString(R.string.text_xzsb18));
                     break;
                 case 17:
                     pb_show = 1;
@@ -232,13 +232,13 @@ public class DownOfflineActivity extends BaseActivity {
                     String mima = editMima.getText().toString();//txt中的密文
                     String res = msg.obj.toString();
                     if (mima.length() < 6) {
-                        show_Toast("请输入文件6位序列号");
+                        show_Toast(getResources().getString(R.string.text_xzsb19));
                     } else {
                         insertData(res, mima);
                     }
                     break;
                 case 89:
-                    show_Toast("输入的管壳码重复");
+                    show_Toast(getResources().getString(R.string.text_line_tip15));
                     break;
 
 
@@ -296,22 +296,22 @@ public class DownOfflineActivity extends BaseActivity {
         String tv_dwdm = dfAtDwdm.getText().toString().trim();//单位代码 13位
         String tv_sfz = dfAtBprysfz.getText().toString().trim();//单位代码 13位
         if (StringUtils.isBlank(tx_htid) && StringUtils.isBlank(tv_xmbh) && StringUtils.isBlank(tv_dwdm)) {
-            show_Toast("合同编号,项目编号,单位代码不能同时为空");
+            show_Toast(getResources().getString(R.string.text_down_err8));
             return;
         }
         if (StringUtils.isBlank(tv_sfz)) {
-            show_Toast("爆破人员身份证号不能为空");
+            show_Toast(getResources().getString(R.string.text_down_err11));
             return;
         }
         try {
             res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
 //            Utils.writeRecord("离线下载:" + res);
         } catch (IllegalArgumentException e) {
-            show_Toast("解密失败,请检查txt文件是否正确或密码是否正确");
+            show_Toast(getResources().getString(R.string.text_down_err12));
             e.printStackTrace();
             return;
         } catch (NullPointerException e) {
-            show_Toast("解密失败,请核对信息是否正确后再次尝试");
+            show_Toast(getResources().getString(R.string.text_down_err13));
             e.printStackTrace();
             return;
         }
@@ -668,7 +668,7 @@ public class DownOfflineActivity extends BaseActivity {
                 String json = Utils.readOffline(textFilePath.getText().toString()).replace("\n", "");//txt中的密文
                 String mima = editMima.getText().toString();//txt中的密文
                 if (mima.length() < 6) {
-                    show_Toast("请输入文件6位序列号");
+                    show_Toast(getResources().getString(R.string.text_xzsb19));
                 } else {
                     insertData(json, mima);
                 }

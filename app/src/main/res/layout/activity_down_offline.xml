@@ -46,7 +46,7 @@
                     style="@style/alltextstyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="本功能用于在网站下载的TXT密码文档生成一条新的下载记录"
+                    android:text="@string/text_lx1"
                     android:textSize="18sp" />
 
                 <LinearLayout
@@ -62,7 +62,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:text="合同编号" />
+                        android:text="@string/text_down_htbh" />
 
                     <AutoCompleteTextView
                         android:id="@+id/df_at_htid"
@@ -73,7 +73,7 @@
                         android:background="@drawable/translucent"
                         android:digits="0123456789"
                         android:gravity="center_vertical"
-                        android:hint="15位数字"
+                        android:hint="@string/text_down_tip1"
                         android:inputType="number"
                         android:maxLength="15"
                         android:padding="5dp"
@@ -101,7 +101,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:text="项目编号" />
+                        android:text="@string/text_xmbh" />
 
                     <AutoCompleteTextView
                         android:id="@+id/df_at_xmbh"
@@ -112,7 +112,7 @@
                         android:background="@drawable/translucent"
                         android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
                         android:gravity="center_vertical"
-                        android:hint="15位数字或字母"
+                        android:hint="@string/text_down_tip2"
                         android:inputType="textNoSuggestions"
                         android:maxLength="15"
                         android:padding="5dp"
@@ -123,7 +123,7 @@
                         style="@style/allbtntstyle"
                         android:layout_width="48dp"
                         android:layout_height="wrap_content"
-                        android:text="清空"
+                        android:text="@string/text_down_tip6"
                         android:visibility="invisible" />
                 </LinearLayout>
 
@@ -140,7 +140,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:text="单位代码" />
+                        android:text="@string/text_dwdm" />
 
                     <AutoCompleteTextView
                         android:id="@+id/df_at_dwdm"
@@ -151,7 +151,7 @@
                         android:background="@drawable/translucent"
                         android:digits="1234567890"
                         android:gravity="center_vertical"
-                        android:hint="13位数字"
+                        android:hint="@string/text_down_tip3"
                         android:inputType="number"
                         android:maxLength="13"
                         android:padding="5dp" />
@@ -161,7 +161,7 @@
                         style="@style/allbtntstyle"
                         android:layout_width="48dp"
                         android:layout_height="wrap_content"
-                        android:text="清空"
+                        android:text="@string/text_down_tip6"
                         android:visibility="invisible" />
                 </LinearLayout>
 
@@ -178,7 +178,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:text="身份证号" />
+                        android:text="@string/text_down_sfz" />
 
                     <AutoCompleteTextView
                         android:id="@+id/df_at_bprysfz"
@@ -189,7 +189,7 @@
                         android:background="@drawable/translucent"
                         android:digits="0123456789X"
                         android:gravity="center_vertical"
-                        android:hint="爆破人员身份证"
+                        android:hint="@string/text_down_tip5"
                         android:inputType="textNoSuggestions"
                         android:maxLength="18"
                         android:padding="5dp"
@@ -200,7 +200,7 @@
                         style="@style/allbtntstyle"
                         android:layout_width="48dp"
                         android:layout_height="wrap_content"
-                        android:text="清空"
+                        android:text="@string/text_down_tip6"
                         android:visibility="invisible" />
                 </LinearLayout>
 
@@ -217,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="1.请输入在网站获取的6位密码" />
+                    android:text="@string/text_lx2" />
 
                 <EditText
                     android:id="@+id/edit_mima"
@@ -227,7 +227,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:hint="6位密码"
+                    android:hint="@string/text_lx3"
                     android:numeric="integer" />
             </LinearLayout>
 
@@ -241,7 +241,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="2.通过二维码获取离线文档" />
+                    android:text="@string/text_lx4" />
 
                 <Button
                     android:id="@+id/btn_scan"
@@ -250,7 +250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="打开摄像头扫码" />
+                    android:text="@string/text_lx5" />
             </LinearLayout>
 
             <LinearLayout
@@ -264,7 +264,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="2.选择从网站下载的txt文件" />
+                    android:text="@string/text_lx6" />
 
                 <Button
                     android:id="@+id/btn_openFile"
@@ -273,7 +273,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="打开文件管理器" />
+                    android:text="@string/text_send_tip9" />
 
                 <TextView
                     android:id="@+id/text_filePath"
@@ -281,7 +281,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="文件路径" />
+                    android:text="@string/text_send_tip8" />
 
                 <Button
                     android:id="@+id/btn_OK"
@@ -290,7 +290,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="确定" />
+                    android:text="@string/text_qd" />
             </LinearLayout>
 
         </LinearLayout>

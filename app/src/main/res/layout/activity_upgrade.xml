@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorGrey"
                 android:textSize="15sp"
-                android:text="正在升级硬件程序,请稍等..."
+                android:text="@string/text_sjyj"
                 android:textStyle="bold" />
 
         </RelativeLayout>

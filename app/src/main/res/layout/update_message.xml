@@ -16,7 +16,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:paddingRight="5dp"
-            android:text="合同编号"
+            android:text="@string/text_down_htbh"
             android:textSize="@dimen/childPageLabelFontSize" />
 
         <EditText
@@ -26,7 +26,7 @@
             android:layout_weight="2"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="合同编号"
+            android:hint="@string/text_down_htbh"
             android:maxLength="15"
             android:padding="5dp"
             android:textColor="@color/rangle_fc_base"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="项目编号"
+            android:text="@string/text_xmbh"
             android:textSize="@dimen/childPageLabelFontSize" />
 
         <EditText
@@ -61,7 +61,7 @@
             android:layout_weight="2"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="项目编号"
+            android:hint="@string/text_xmbh"
             android:maxLength="15"
             android:padding="5dp"
             android:textColor="@color/rangle_fc_base"
@@ -86,7 +86,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:paddingRight="5dp"
-            android:text="单位代码"
+            android:text="@string/text_dwdm"
             android:textSize="@dimen/childPageLabelFontSize" />
 
         <EditText
@@ -96,7 +96,7 @@
             android:layout_weight="2"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="单位代码"
+            android:hint="@string/text_dwdm"
             android:maxLength="15"
             android:padding="5dp"
             android:textColor="@color/rangle_fc_base"
@@ -125,7 +125,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:paddingRight="5dp"
-            android:text="经纬度"
+            android:text="@string/text_tv_jwd1"
             android:textSize="@dimen/childPageLabelFontSize" />
 
         <EditText
@@ -135,7 +135,7 @@
             android:layout_weight="2"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="经纬度"
+            android:hint="@string/text_tv_jwd1"
             android:padding="5dp"
             android:textColor="@color/rangle_fc_base"
             android:textSize="@dimen/childPageEditFontSize" />
@@ -162,7 +162,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:paddingRight="5dp"
-            android:text="身份证号"
+            android:text="@string/text_down_sfz"
             android:textSize="@dimen/childPageLabelFontSize" />
 
         <EditText
@@ -172,7 +172,7 @@
             android:layout_weight="2"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="身份证号"
+            android:hint="@string/text_down_sfz"
             android:maxLength="18"
             android:padding="5dp"
             android:textColor="@color/rangle_fc_base"

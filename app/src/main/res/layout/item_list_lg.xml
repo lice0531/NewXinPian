@@ -21,7 +21,7 @@
         android:id="@+id/tv_lg_yxq"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:text="有效期"
+        android:text="@string/text_yxq"
         style="@style/alltextstyle"/>
     <TextView
         android:background="@drawable/textview_border"
@@ -29,7 +29,7 @@
         android:id="@+id/tv_lg_gzm"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:text="工作码"
+        android:text="@string/text_gzm"
         style="@style/alltextstyle"/>
     <TextView
         android:background="@drawable/textview_border"
@@ -37,7 +37,7 @@
         android:id="@+id/tv_lg_gzmcwxx"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:text="错误信息"
+        android:text="@string/text_xzsb20"
         android:gravity="center_vertical"
         style="@style/alltextstyle"/>
     </LinearLayout>
