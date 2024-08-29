@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -42,7 +41,6 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -57,7 +55,6 @@ import org.json.JSONObject;
 import org.litepal.LitePal;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,16 +71,17 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.ErrDuanAdapter;
-import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.ShouQuanAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
@@ -188,6 +186,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     Button btnClearHtid;
     @BindView(R.id.btn_clear_xmbh)
     Button btnClearXmbh;
+    @BindView(R.id.btn_clear_dwdm)
+    Button btnClearDwdm;
     @BindView(R.id.btn_clear_sfz)
     Button btnClearSfz;
     @BindView(R.id.down_at_project_name)
@@ -306,7 +306,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setOnClickListener(v -> {
-            choiceQuYu();
+            choiceQuYu_danxuan();
         });
         iv_back.setOnClickListener(v -> finish());
         // 标题栏
@@ -524,23 +524,17 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     for (int i = 0; i < mListData.size(); i++) {
                         list_uid.add(mListData.get(i).getShellBlastNo());
                     }
-                    StringBuilder a = new StringBuilder();
-                    if (mRegion1) {
-                        a.append("1");
-                    }
-                    if (mRegion2) {
-                        a.append(",2");
-                    }
-                    if (mRegion3) {
-                        a.append(",3");
-                    }
-                    if (mRegion4) {
-                        a.append(",4");
-                    }
-                    if (mRegion5) {
-                        a.append(",5");
-                    }
-
+                   if(mRegion1){
+                       mRegion="1";
+                   }else if(mRegion2){
+                       mRegion="2";
+                   }else if(mRegion3){
+                       mRegion="3";
+                   }else if(mRegion4){
+                       mRegion="4";
+                   }else if(mRegion5){
+                       mRegion="5";
+                   }
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     break;
@@ -2425,39 +2419,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @OnClick({R.id.btn_down_return,R.id.btn_shouquan, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_ReisterScanStart_st,
             R.id.btn_ReisterScanStart_ed, R.id.btn_inputOk,
             R.id.ly_setUpdata, R.id.btn_inputGKM, R.id.btn_location, R.id.btn_scanReister, R.id.btn_setdelay,
-            R.id.btn_clear_htid, R.id.btn_clear_xmbh, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
+            R.id.btn_clear_htid, R.id.btn_clear_xmbh,R.id.btn_clear_dwdm, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_down_return://添加项目
-//                if (lySetUpData.getVisibility() == View.GONE) {
-//                    btnDownReturn.setText("隐藏内容");
-//                    lySetUpData.setVisibility(View.VISIBLE);
-//                } else {
-//                    lySetUpData.setVisibility(View.GONE);
-//                    btnDownReturn.setText("添加项目");
-//                }
-
-                TextView textview = new TextView(this);
-                textview.setTextSize(25);
-                textview.setTextColor(Color.RED);
-                textview.setText("请确认是否清空所有授权信息,点击确认清空!");
-                textview.setTypeface(null, Typeface.BOLD);
-                AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle("清空提示")//设置对话框的标题
-                        .setView(textview)
-                        //设置对话框的按钮
-                        .setPositiveButton("确认清空", (dialog3, which) -> {
-                            dialog3.dismiss();
-                            GreenDaoMaster.delAllMessage();//清空数据
-                            GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
-                            mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
-                        })
-                        .setNeutralButton("取消", (dialog3, which) -> {
-                        dialog3.dismiss();
-                        })
-                        .create();
-                dialog2.show();
-
+            case R.id.btn_down_return://保存
+                saveData();
+                show_Toast("保存成功");
                 break;
             case R.id.btn_shouquan:
                 startActivity(new Intent(this, ShouQuanActivity.class));
@@ -2466,7 +2433,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                hideInputKeyboard();//隐藏键盘
 //                saveData();
 //                show_Toast("数据保存成功");
-                Intent intent = new Intent(this, SaveProjectActivity.class);
+                Intent intent = new Intent(this, DownOfflineActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btn_down_workcode://下载
@@ -2582,6 +2549,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 break;
             case R.id.btn_clear_xmbh:
                 deleteHistory("history_xmbh", at_xmbh);
+                break;
+                case R.id.btn_clear_dwdm:
+                deleteHistory("history_dwdm", at_dwdm);
                 break;
             case R.id.btn_clear_sfz:
                 deleteHistory("history_bprysfz", at_bprysfz);
@@ -2727,7 +2697,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_xiazai, menu);
         return true;
     }
 
@@ -2750,17 +2720,36 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         switch (item.getItemId()) {
 
             case R.id.item_1:
+                choiceQuYu_danxuan();
+                return true;
             case R.id.item_2:
-            case R.id.item_3:
-            case R.id.item_4:
-            case R.id.item_5:
-                // 区域 更新视图
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                // 显示提示
-                show_Toast("已选择 区域" + mRegion);
-                // 延时选择重置
-//                resetView();
-//                delay_set = "0";
+                AlertDialog.Builder builder = new AlertDialog.Builder(DownWorkCode.this);
+                builder.setTitle("删除提示");//"请输入用户名和密码"
+                View view = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_delete, null);
+                builder.setView(view);
+                final EditText password = view.findViewById(R.id.password);
+                builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                    String b = password.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    if ( b.equals("123")) {
+                        GreenDaoMaster.delAllMessage();//清空数据
+                        GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
+                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+                        show_Toast("已清空下载记录");
+                    } else {
+                        show_Toast("密码错误");
+                    }
+                    dialog.dismiss();
+                });
+                builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+
+                builder.show();
+
                 return true;
 
             default:
@@ -2787,7 +2776,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         Log.e("liyi_Region", "已选择" + str);
     }
 
-    private void choiceQuYu() {
+    /**
+     * 单选对话框
+     * */
+    private void choiceQuYu_danxuan() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
         builder.setTitle("请选择区域");
@@ -2803,6 +2795,47 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         cb_mRegion3.setChecked(mRegion3);
         cb_mRegion4.setChecked(mRegion4);
         cb_mRegion5.setChecked(mRegion5);
+        cb_mRegion1.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                cb_mRegion2.setChecked(false);
+                cb_mRegion3.setChecked(false);
+                cb_mRegion4.setChecked(false);
+                cb_mRegion5.setChecked(false);
+            }
+        });
+        cb_mRegion2.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                cb_mRegion1.setChecked(false);
+                cb_mRegion3.setChecked(false);
+                cb_mRegion4.setChecked(false);
+                cb_mRegion5.setChecked(false);
+            }
+        });
+        cb_mRegion3.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                cb_mRegion1.setChecked(false);
+                cb_mRegion2.setChecked(false);
+                cb_mRegion4.setChecked(false);
+                cb_mRegion5.setChecked(false);
+            }
+        });
+        cb_mRegion4.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                cb_mRegion1.setChecked(false);
+                cb_mRegion2.setChecked(false);
+                cb_mRegion3.setChecked(false);
+                cb_mRegion5.setChecked(false);
+            }
+        });
+        cb_mRegion5.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked){
+                cb_mRegion1.setChecked(false);
+                cb_mRegion2.setChecked(false);
+                cb_mRegion3.setChecked(false);
+                cb_mRegion4.setChecked(false);
+            }
+        });
+
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
 
             if (cb_mRegion1.isChecked() || cb_mRegion2.isChecked() || cb_mRegion3.isChecked() || cb_mRegion4.isChecked() || cb_mRegion5.isChecked()) {
@@ -2822,14 +2855,15 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast("请选择一个区域");
             }
 
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
         });
         builder.show();
     }
+
 
 }

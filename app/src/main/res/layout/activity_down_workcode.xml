@@ -48,14 +48,7 @@
             android:paddingTop="1dip"
             >
 
-            <Button
-                android:id="@+id/btn_down_return"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="50dp"
-                android:text="清空"
-                style="@style/allbtntstyle"
-                />
+
             <Button
                 android:layout_marginLeft="8dp"
                 android:id="@+id/btn_inputGKM"
@@ -85,7 +78,7 @@
                 android:layout_weight="1.5"
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
-                android:text="输入项目"
+                android:text="离线下载"
                 android:textSize="20sp"
                 />
 
@@ -97,7 +90,17 @@
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
                 android:textSize="20sp"
-                android:text="保存并下载"
+                android:text="在线下载"
+                />
+            <Button
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/btn_down_return"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:layout_height="50dp"
+                android:text="保存"
+                style="@style/allbtntstyle"
                 />
         </LinearLayout>
 
@@ -247,13 +250,13 @@
                     android:padding="5dp"
                     style="@style/alltextstyle"/>
 
-                <TextView
+                <Button
+                    android:id="@+id/btn_clear_dwdm"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:paddingRight="3dp"
-                    android:text=""
-                    android:textSize="@dimen/childPageEditFontSize" />
+                    style="@style/allbtntstyle"
+                    android:text="清空"
+                    />
             </LinearLayout>
 
             <LinearLayout
