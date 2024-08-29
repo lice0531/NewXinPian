@@ -116,6 +116,8 @@ public class PracticeActivity extends BaseActivity {
     Button butTest;
     @BindView(R.id.but_version)
     Button butVersion;
+    @BindView(R.id.but_xiangmu)
+    Button butXiangmu;
     @BindView(R.id.but_sendMsg)
     Button but_sendMsg;
     @BindView(R.id.but_delete)
@@ -463,7 +465,7 @@ public class PracticeActivity extends BaseActivity {
 
 
     @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_write, R.id.btn_read, R.id.btn_read_log,
-            R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version,
+            R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_xiangmu,
             R.id.but_test, R.id.but_sendMsg, R.id.but_delete})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -475,6 +477,9 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_version://进入级联页面
                 Intent intent11 = new Intent(this, SystemVersionActivity.class);//版本号
                 startActivity(intent11);
+                break;
+            case R.id.but_xiangmu://进入级联页面
+                startActivity(new Intent(this, SaveProjectActivity.class));//输入项目
                 break;
             case R.id.but_sendMsg://进入数据互传页面
                 Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
