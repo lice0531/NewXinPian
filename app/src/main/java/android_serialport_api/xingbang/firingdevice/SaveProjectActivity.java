@@ -187,7 +187,9 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             project.setBprysfz(a);
             project.setHtbh(b);
             project.setCoordxy(d);
-            project.setProject_name(f);
+            if (at_bprysfz.getText().toString().trim().length() < 1) {
+                project.setProject_name(f);
+            }
             project.save();
             show_Toast("数据保存成功");
         } else {
@@ -264,10 +266,10 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                     show_Toast("经纬度不能为空!");
                     return;
                 }
-                if (at_bprysfz.getText().toString().trim().length() < 1) {
-                    show_Toast("人员证号不能为空!");
-                    return;
-                }
+//                if (at_bprysfz.getText().toString().trim().length() < 1) {
+//                    show_Toast("人员证号不能为空!");
+//                    return;
+//                }
                 saveData();
                 loadMoreData();
                 mAdapter.notifyDataSetChanged();
