@@ -639,10 +639,12 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "isshow2: "+isshow2 );
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
-
+            Log.e(TAG, "stage: "+stage );
             if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && (stage == 2 || stage == 6 )) {// "电流过大";
                 Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
-                isshow2 = 1;
+                Log.e(TAG, "stage: "+stage );
+                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+
                 duanlu_sun++;
 //                firstThread.exit = true;
 //                firstThread.interrupt();
@@ -651,7 +653,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-                if(duanlu_sun>3){
+                if(duanlu_sun>1){
+                    isshow2 = 1;
                     AlertDialog dialog = new Builder(FiringMainActivity.this)
                             .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                             .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
@@ -1127,12 +1130,12 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * cankaodianliu + "μA");
         tv__qb_dianliu_2.setText(denatorCount * cankaodianliu + "μA");
-        if (denatorCount < 200) {
+        if (denatorCount <= 200) {
             gaoya_cankaoSun = 25;
-        } else if (denatorCount > 200 && denatorCount < 300) {
+        } else if (  denatorCount < 300) {
             gaoya_cankaoSun = 30;
             sixExchangeCount = 30;
-        } else if (denatorCount > 300) {
+        } else  {
             gaoya_cankaoSun = 40;
             sixExchangeCount = 40;
         }
@@ -3275,6 +3278,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         dialog12.cancel();
                     })
                     .create();
+            dialog.setCancelable(false);
             dialog.show();
         }
     }
