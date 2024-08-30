@@ -416,6 +416,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private ScanQrControl mScaner = null;
     private ScanBar scanBarThread;
     private String changjia = "TY";
+    private int xiangHao_errNum=0;//箱码重复数量
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -867,8 +868,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(prex.substring(0, 2))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return;
+        }
         new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);//添加
+            insertDenator(prex, finalStrNo, finalEndNo,true);//添加
         }).start();
     }
 
@@ -899,6 +904,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
         //01
 //        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
 //        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + strNo);//01
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(prex.substring(0, 2))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return;
+        }
         new Thread(() -> {
             for (int b =0;b<a;b++){
                 String xuhao=xh[15] + "" + xh[16]+b+"00";
@@ -907,10 +916,14 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 int finalStrNo =Integer.parseInt(xuhao);
                 Log.e(TAG, "finalStrNo: "+finalStrNo );
                 Log.e(TAG, "finalStrNo + (endNo - 1): "+finalStrNo + (endNo - 1) );
-                insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1));//添加
+                insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1),false);//添加
             }
 
         }).start();
+        if(xiangHao_errNum!=0){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(20));
+
+        }
     }
 
     /**
@@ -943,7 +956,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
      * 注册方法
      * 手动输入注册(通过开始管壳码和截止管壳码计算出所有管壳码)
      */
-    private int insertDenator(String prex, int start, int end) {
+    private int insertDenator(String prex, int start, int end ,boolean x) {
         Log.e("扫码", "单发注册方法3: ");
         if (end < start) return -1;
         if (start < 0 || end > 99999) return -1;
@@ -962,6 +975,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
+
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -988,7 +1002,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo)) {
                 singleShellNo = shellNo;
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                if(x){
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                }
+                if(!x){
+                    xiangHao_errNum++;
+                }
                 break;
             }
             DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
@@ -1254,6 +1273,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 show_Toast(getString(R.string.text_error_tip66));
             } else if (msg.what == 12) {
                 show_Toast(getString(R.string.text_mx_zcsb));
+            }else if (msg.what == 20) {
+                SoundPlayUtils.play(4);
+                show_Toast("共有"+xiangHao_errNum+"盒重复");
+                xiangHao_errNum=0;
             } else if (msg.what == 99) {
                 adapter.notifyDataSetChanged();
             }else if (msg.what == 2001) {
