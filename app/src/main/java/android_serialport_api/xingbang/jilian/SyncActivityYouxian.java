@@ -205,7 +205,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         }
                         A002=false;
                     }else {
-                        show_Toast("正在起爆流程中");
+                        show_Toast(getString(R.string.text_sync_tip13));
                     }
 
                 } else if (response.contains("A003")) {

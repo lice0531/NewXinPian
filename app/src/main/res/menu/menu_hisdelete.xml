@@ -4,7 +4,7 @@
     <item
         android:id="@+id/item_1"
         android:orderInCategory="1"
-        android:title="删除所有已上传记录"
+        android:title="@string/text_his_scsyjl"
         app:showAsAction="withText" />
 
 </menu>

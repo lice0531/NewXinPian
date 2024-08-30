@@ -114,7 +114,7 @@ public class TestICActivity extends SerialPortActivity {
                     sendPower.exit = false;
                     sendPower.start();
                     revOpenCmdTestFlag = 1;
-                    butPre.setText("停止测试");
+                    butPre.setText(getString(R.string.text_ceshi_tzcs));
                 } else {
                     sendPower.exit = true;
                     sendPower.interrupt();
@@ -125,7 +125,7 @@ public class TestICActivity extends SerialPortActivity {
                     }
                     byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13 退出注册模式
                     sendCmd(powerCmd);
-                    butPre.setText("开始测试");
+                    butPre.setText(getString(R.string.text_ceshi_kscs));
                     tvCeshiDianliu.setText("0.0μA");
                     tvCeshiDianya.setText("0.0V");
                     tvCeshiDianliu.setTextColor(Color.BLACK);

@@ -1097,11 +1097,11 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
         Log.e("注册页面", "翻转: ");
         AlertDialog dialog = new AlertDialog.Builder(ChoseDuanActivity.this)
-                .setTitle("翻转提示")//设置对话框的标题//"成功起爆"
-                .setMessage("是否翻转当前段位延时")//设置对话框的内容"本次任务成功起爆！"
+                .setTitle(getResources().getString(R.string.text_fzts))//设置对话框的标题//"成功起爆"
+                .setMessage(getResources().getString(R.string.text_ssfz))//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNegativeButton("取消", (dialog12, which) -> dialog12.dismiss())
-                .setPositiveButton("确认", (dialog1, which) -> {
+                .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
+                .setPositiveButton(getResources().getString(R.string.text_verify), (dialog1, which) -> {
 
                     GreenDaoMaster master = new GreenDaoMaster();
                     DaoSession session = getDaoSession();
@@ -1184,7 +1184,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                     Log.e(TAG, "list_alldelay: "+list_alldelay.toString() );
                     if(!isIncreasing(list_alldelay)&&! isDecreasing(list_alldelay)){
-                        show_Toast("当前延时不是按规律设置,请您手动修改延时");
+                        show_Toast(getResources().getString(R.string.text_xgys));
                         return;
                     }
 
@@ -1280,7 +1280,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                         Log.e(TAG, "结束----------------: ");
                     }
-                    show_Toast("翻转完成");
+                    show_Toast(getResources().getString(R.string.text_fzwc));
 //                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                     setBtnColor(duan);
 

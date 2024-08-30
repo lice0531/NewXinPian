@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="是否在线下载"
+                    android:text="@string/set_zxxz"
                     android:textSize="20sp" />
 
                 <com.suke.widget.SwitchButton
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="是否验证雷管已经授权"
+                    android:text="@string/set_shouquan"
                     android:textSize="20sp" />
 
                 <com.suke.widget.SwitchButton
@@ -118,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="是否开启充电复检功能"
+                    android:text="@string/set_cdfj"
                     android:textSize="20sp" />
 
                 <com.suke.widget.SwitchButton
@@ -184,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="设置充电最大时间/s"
+                    android:text="@string/set_cdzdsj"
                     android:textSize="20sp" />
 
                 <EditText
@@ -209,7 +209,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="设置1+3组合键后的起爆等待时间/s"
+                    android:text="@string/set_ddqbsj"
                     android:textSize="20sp" />
 
                 <EditText
@@ -255,7 +255,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bt_mainpage_style"
-                    android:text="程序设置"
+                    android:text="@string/set_cxss"
                     android:textColor="@color/bt_fg_base" />
             </LinearLayout>
 

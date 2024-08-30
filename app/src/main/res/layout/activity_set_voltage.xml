@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="请选择使用厂家"
+            android:text="@string/set_xzcj"
             android:textSize="20sp"/>
 
         <Spinner
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="保存设置"
+            android:text="@string/set_bcsz"
             android:background="@drawable/bt_mainpage_style"
             style="@style/allbtntstyle"
             android:textColor="@color/bt_fg_base" />

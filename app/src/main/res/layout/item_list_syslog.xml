@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="match_parent"
-            android:text="21-03-01程序日志"
+            android:text="@string/text_tv_rz"
             android:background="@drawable/textview_border"
             style="@style/alltextstyle"/>
 
@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="上传状态"
+            android:text="@string/text_tv_sczt"
             android:background="@drawable/textview_border"
             style="@style/alltextstyle"/>
         <!-- 上传-->
@@ -42,7 +42,7 @@
             android:paddingTop="5dp"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:text="上传"/>
+            android:text="@string/text_query_uploda"/>
 
         <Button
             android:id="@+id/lf_bt_delete"
@@ -58,7 +58,7 @@
             android:paddingTop="5dp"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:text="删除" />
+            android:text="@string/text_dialog_sc" />
     </LinearLayout>
 
 

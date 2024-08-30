@@ -37,7 +37,7 @@
             android:layout_weight="1"
             android:background="@drawable/textview_border"
             android:textSize="18sp"
-            android:text="日期" />
+            android:text="@string/text_rq" />
 
         <TextView
             android:id="@+id/tv_lg_yxq"
@@ -46,7 +46,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/textview_border"
-            android:text="工作码" />
+            android:text="@string/text_gzm" />
 
         <TextView
             android:id="@+id/tv_lg_qb"
@@ -56,6 +56,6 @@
             android:layout_weight="1"
             android:background="@drawable/textview_border"
             android:textSize="18sp"
-            android:text="状态" />
+            android:text="@string/text_list_state" />
     </LinearLayout>
 </LinearLayout>

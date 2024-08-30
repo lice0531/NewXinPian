@@ -164,7 +164,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
             return false;
         }
         if (selected.equals("是") && checkRepeatSelected(selected)) {
-            show_Toast("已有" + getString(R.string.text_fac_default) + getString(R.string.text_fac_tip2));
+            show_Toast(getResources().getString(R.string.text_setFac_show1));
             return false;
         }
         Defactory defactory = new Defactory();

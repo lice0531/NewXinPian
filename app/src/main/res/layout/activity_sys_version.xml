@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="起爆程序版本号:"
+            android:text="@string/text_qbcx_bbh"
             android:textSize="20sp"
             />
         <TextView
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="控制模块软件版本号"
+            android:text="@string/text_kzrj_bbh"
             android:textSize="20sp"
             />
 
@@ -87,7 +87,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="软件版本号" />
+            android:text="@string/text_rjbbh" />
     </LinearLayout>
 
     <LinearLayout
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="控制模块硬件版本号"
+            android:text="@string/text_kzyj_bbh"
             android:textSize="20sp" />
 
         <TextView
@@ -110,7 +110,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="硬件版本号" />
+            android:text="@string/text_yjbbh" />
     </LinearLayout>
 
     <LinearLayout
@@ -157,6 +157,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/allbtntstyle"
-        android:text="检查是否需要更新软件版本"
+        android:text="@string/text_jcgx"
         />
 </LinearLayout>

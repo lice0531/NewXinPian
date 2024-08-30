@@ -282,7 +282,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="参考电流"
+                android:text="@string/text_test_ckdl"
                 style="@style/alltextstyle"/>
 
             <TextView
@@ -486,7 +486,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="参考电流"
+                android:text="@string/text_test_ckdl"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -836,7 +836,7 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 style="@style/allbtntstyle"
-                android:text="起爆"/>
+                android:text="@string/xingbang_main_page_btn_blast"/>
 
         </LinearLayout>
 

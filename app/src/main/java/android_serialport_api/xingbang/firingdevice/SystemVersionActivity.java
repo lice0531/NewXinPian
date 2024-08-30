@@ -71,7 +71,7 @@ public class SystemVersionActivity extends SerialPortActivity {
             } else if(msg.what == 2){
                 btnHardwareVersion.setText(msg.obj.toString());
             }else {
-                show_Toast("切换的单片机本号:"+msg.obj.toString());
+                show_Toast(getResources().getString(R.string.toast_dpjh)+msg.obj.toString());
             }
             return false;
         });
@@ -186,7 +186,7 @@ public class SystemVersionActivity extends SerialPortActivity {
         switch (view.getId()) {
             case R.id.set_Hardware_Version:
                 if(etHardwareVersion.getText().toString().length()!=10){
-                    show_Toast("版本号长度错误,请输入10位版本号");
+                    show_Toast(getResources().getString(R.string.toast_bbhcdcw));
                     break;
                 }
                 String version=  etHardwareVersion.getText().toString();

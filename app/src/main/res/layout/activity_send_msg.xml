@@ -32,7 +32,7 @@
             style="@style/alltextstyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="数据协同功能"
+            android:text="@string/text_send_tip1"
             android:textSize="25sp" />
     </LinearLayout>
 
@@ -48,13 +48,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="本机ip" />
+            android:text="@string/text_send_tip2" />
         <TextView
             style="@style/alltextstyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="输入要发送设备的IP地址" />
+            android:text="@string/text_send_tip3" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:inputType="number"
                 android:digits="1234567890"
-                android:hint="IP地址" />
+                android:hint="@string/text_send_tip4" />
         </LinearLayout>
 
         <LinearLayout
@@ -94,7 +94,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="接收数据" />
+                android:text="@string/text_send_tip5" />
 
             <Button
                 android:id="@+id/but_lianjie"
@@ -115,7 +115,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
-                android:text="发送数据" />
+                android:text="@string/text_send_tip6" />
         </LinearLayout>
 
     </LinearLayout>
@@ -149,7 +149,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="选择要读取的文件" />
+        android:text="@string/text_send_tip7" />
 
     <TextView
         android:id="@+id/text_filePath"
@@ -157,7 +157,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="文件路径" />
+        android:text="@string/text_send_tip8" />
 
     <Button
         android:id="@+id/btn_openFile"
@@ -166,7 +166,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:text="打开文件管理器" />
+        android:text="@string/text_send_tip9" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -181,7 +181,7 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginStart="90dp"
-            android:text="读取雷管" />
+            android:text="@string/text_send_tip10" />
 
 
 

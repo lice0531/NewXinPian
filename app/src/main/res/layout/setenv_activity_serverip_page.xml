@@ -25,19 +25,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@drawable/black"
-                android:text="丹灵" />
+                android:text="@string/text_sc_dl" />
             <CheckBox
                 android:id="@+id/rbtn_zbw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@drawable/black"
-                android:text="中爆网" />
+                android:text="@string/text_sc_zb" />
             <CheckBox
                 android:id="@+id/rbtn_cs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@drawable/black"
-                android:text="测试网址" />
+                android:text="@string/text_sc_cs" />
         </LinearLayout>
 
     </LinearLayout>
@@ -61,7 +61,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="中爆IP地址"
+                android:text="@string/text_zbip"
                 android:textColor="@drawable/black"
                 android:textSize="@dimen/childReisterPageLabelFontSize" />
 
@@ -72,7 +72,7 @@
                 android:layout_weight="6"
                 android:background="@drawable/translucent"
                 android:gravity="left"
-                android:hint="服务器地址"
+                android:hint="@string/text_fwqdz"
                 android:maxLength="20"
                 android:padding="5dp"
                 android:textColor="@color/rangle_fc_base"
@@ -100,7 +100,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="中爆端口"
+                android:text="@string/text_zbdk"
                 android:textColor="@drawable/black"
                 android:textSize="@dimen/childReisterPageLabelFontSize" />
 
@@ -111,7 +111,7 @@
                 android:layout_weight="6"
                 android:background="@drawable/translucent"
                 android:gravity="left"
-                android:hint="端口"
+                android:hint="@string/text_dk"
                 android:maxLength="20"
                 android:padding="5dp"
                 android:textColor="@color/rangle_fc_base"
@@ -140,7 +140,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="丹灵地址"
+                android:text="@string/text_dldz"
                 android:textColor="@drawable/black"
                 android:textSize="@dimen/childReisterPageLabelFontSize" />
 
@@ -151,7 +151,7 @@
                 android:layout_weight="6"
                 android:background="@drawable/translucent"
                 android:gravity="left"
-                android:hint="服务器地址"
+                android:hint="@string/text_fwqdz"
                 android:maxLength="300"
                 android:padding="5dp"
                 android:textColor="@color/rangle_fc_base"
@@ -178,7 +178,7 @@
             android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="测试地址"
+            android:text="@string/text_csdz"
             android:textColor="@drawable/black"
             android:textSize="@dimen/childReisterPageLabelFontSize" />
 
@@ -189,7 +189,7 @@
             android:layout_weight="6"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="服务器地址"
+            android:hint="@string/text_fwqdz"
             android:maxLength="300"
             android:padding="5dp"
             android:textColor="@color/rangle_fc_base"

@@ -270,22 +270,21 @@ public class XingbangMain extends SerialPortActivity {
         getleveup();
 
         busHandler = new Handler(msg -> {
-            txt_Volt.setText("当前电压:" + busInfo.getBusVoltage() + "V");
-            txt_IC.setText("当前电流:" + (int)busInfo.getBusCurrentIa() + "μA");
+            txt_Volt.setText(getResources().getString(R.string.text_reister_vol)+ busInfo.getBusVoltage() + "V");
+            txt_IC.setText(getResources().getString(R.string.text_reister_ele) + (int)busInfo.getBusCurrentIa() + "μA");
             if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
                 isshow1=false;
                 TextView view = new TextView(this);
                 view.setTextSize(25);
                 view.setTextColor(Color.RED);
-                view.setText("当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆");
+                view.setText(getString(R.string.text_fir_dialog8));
                 view.setTypeface(null, Typeface.BOLD);
                 AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
-                        .setTitle("总线电压过低")//设置对话框的标题//"成功起爆"
+                        .setTitle(getString(R.string.text_fir_dialog7))//设置对话框的标题//"成功起爆"
                         .setView(view)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNeutralButton("退出", (dialog12, which) -> {
-                            close();
+                        .setNeutralButton(getString(R.string.text_test_exit), (dialog12, which) -> {
                             sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                             dialog12.dismiss();
                             finish();
@@ -306,20 +305,20 @@ public class XingbangMain extends SerialPortActivity {
                     TextView view = new TextView(this);
                     view.setTextSize(25);
                     view.setTextColor(Color.RED);
-                    view.setText("当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序");
+                    view.setText(getString(R.string.text_fir_dlyc));
                     view.setTypeface(null, Typeface.BOLD);
                     AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
-                            .setTitle("总线电流过大")//设置对话框的标题//"成功起爆"
+                            .setTitle(getString(R.string.text_fir_dlgd))//设置对话框的标题//"成功起爆"
                             .setView(view)
                             //设置对话框的按钮
-                            .setNeutralButton ("退出", (dialog12, which) -> {
+                            .setNeutralButton (getString(R.string.text_test_exit), (dialog12, which) -> {
                                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                                 dialog12.dismiss();
                                 finish();
                                 close();
                                 duanlu_sun=0;
                             })
-                            .setNegativeButton("继续", (dialog1, which) -> {
+                            .setNegativeButton(getString(R.string.text_firing_jixu), (dialog1, which) -> {
                                 duanlu_sun=0;
                                 dialog1.dismiss();
                             })
@@ -440,7 +439,7 @@ public class XingbangMain extends SerialPortActivity {
                 mRegion4 = cb_mRegion4.isChecked();
                 mRegion5 = cb_mRegion5.isChecked();
                 if (mRegion1) {
-                    a.append("区域1");
+                    a.append(getString(R.string.text_zone1));
                 }
                 if (mRegion2) {
                     a.append(",2");
@@ -464,10 +463,10 @@ public class XingbangMain extends SerialPortActivity {
                 //更新标题
                 setTitleRegion();
                 // 显示提示
-                show_Toast("已选择 " + a);
+                show_Toast(getString(R.string.text_suidao_yxz) + a);
                 mHandler_load.sendMessage(mHandler_load.obtainMessage());
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast(getString(R.string.text_suidao_tip));
             }
 
         });
@@ -492,7 +491,7 @@ public class XingbangMain extends SerialPortActivity {
         mHandler_updata = new Handler(msg -> {
             Log.e("起爆器编号", "equ_no: " + equ_no);
             if (!equ_no.equals("")) {
-                tvMainNo.setText("设备编号:" + equ_no);
+                tvMainNo.setText(getString(R.string.text_query_num) + equ_no);
                 CrashReport.setUserId(equ_no);
             }
             return false;
@@ -652,10 +651,10 @@ public class XingbangMain extends SerialPortActivity {
 
                 dialog.dismiss();
             } else if (!a.equals("xingbang")) {
-                show_Toast("用户名错误");
+                show_Toast(getString(R.string.text_main_yhmcw));
                 dialogOn(dialog);
             } else if (!b.equals("123456")) {
-                show_Toast("密码错误");
+                show_Toast(getString(R.string.text_main_mmcw));
                 dialogOn(dialog);
             } else {
                 show_Toast(getString(R.string.text_error_tip50));
@@ -804,7 +803,7 @@ public class XingbangMain extends SerialPortActivity {
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
                     if (a < 180000) {
-                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
+                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "组网");
                     }
                     return;
                 }
@@ -851,7 +850,7 @@ public class XingbangMain extends SerialPortActivity {
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
                     if (a < 180000) {
-                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
+                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
                         return;
                     }
 //                    Log.e(TAG, "a: "+a);
@@ -1034,9 +1033,9 @@ public class XingbangMain extends SerialPortActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("未授权提醒");//"说明"
-        builder.setMessage("有未授权的雷管,请进行授权后再进行起爆!");
-        builder.setNegativeButton("返回查看", (dialog, which) -> dialog.dismiss());
+        builder.setTitle(getString(R.string.text_alert_tip_wsq));//"说明"
+        builder.setMessage(getString(R.string.text_alert_tip_wsqtx));
+        builder.setNegativeButton(getString(R.string.text_alert_tip_fhck), (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
     /***
@@ -1044,9 +1043,9 @@ public class XingbangMain extends SerialPortActivity {
      */
     public void createDialog_kaiguan() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("安全提醒");//"说明"
-        builder.setMessage("检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!");
-        builder.setNegativeButton("返回", (dialog, which) -> dialog.dismiss());
+        builder.setTitle(getString(R.string.text_alert_tip_aqtx));//"说明"
+        builder.setMessage(getString(R.string.text_alert_tip_gbkg));
+        builder.setNegativeButton(getString(R.string.text_return), (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -1105,7 +1104,7 @@ public class XingbangMain extends SerialPortActivity {
         if (mRegion5) {
             a.append(",5");
         }
-        String str = "区域" + a;
+        String str = getString(R.string.text_list_piace) + a;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + changjia + str);
         // 保存区域参数(单选的时候要放开,多选关闭)
@@ -1161,7 +1160,7 @@ public class XingbangMain extends SerialPortActivity {
                 // 设置标题区域
                 setTitleRegion();
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_show_1) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -1184,20 +1183,20 @@ public class XingbangMain extends SerialPortActivity {
         Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n放电倒计时：");
+        mOffTextView.setText(tip + "\n" + getString(R.string.text_fir_dialog1));
         mDialog = new AlertDialog.Builder(this)
-                .setTitle("系统提示")
+                .setTitle(getString(R.string.text_fir_dialog2))
                 .setCancelable(false)
                 .setView(mOffTextView)
 //                .setPositiveButton("确定", (dialog, id) -> {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNeutralButton("退出", (dialog, id) -> {
+                .setNeutralButton(getString(R.string.text_tc), (dialog, id) -> {
                     dialog.cancel();
                     mOffTime.cancel();
                 })
-                .setNegativeButton("继续", (dialog2, which) -> {
+                .setNegativeButton(getString(R.string.text_firing_jixu), (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
                     close();//停止访问电流
@@ -1223,7 +1222,7 @@ public class XingbangMain extends SerialPortActivity {
         mOffHandler = new Handler(msg -> {
             if (msg.what > 0) {
                 //动态显示倒计时
-                mOffTextView.setText(tip + "\n放电倒计时：" + msg.what);
+                mOffTextView.setText(tip + "\n" + getString(R.string.text_fir_dialog1) + msg.what);
             } else {
                 //倒计时结束自动关闭
                 if (mDialog != null) {

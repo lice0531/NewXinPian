@@ -134,7 +134,7 @@ public class CaptureActivity extends AppCompatActivity implements Callback {
         final Uri uri = data.getData();
 
         mProgress = new ProgressDialog(CaptureActivity.this);
-        mProgress.setMessage("正在扫描...");
+        mProgress.setMessage(getResources().getString(R.string.text_zzsm));
         mProgress.setCancelable(false);
         mProgress.show();
 
@@ -152,7 +152,7 @@ public class CaptureActivity extends AppCompatActivity implements Callback {
                     CaptureActivity.this.setResult(RESULT_OK, resultIntent);
                     finish();
                 } else {
-                    Toast.makeText(CaptureActivity.this, "识别失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, getResources().getString(R.string.text_sbsb), Toast.LENGTH_SHORT).show();
                 }
             }
         });

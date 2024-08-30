@@ -40,7 +40,7 @@
             android:id="@+id/tv_lg_yxq"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="有效期"
+            android:text="@string/text_yxq"
             android:textSize="20sp"
             style="@style/alltextstyle"/>
         <TextView
@@ -49,7 +49,7 @@
             android:id="@+id/tv_lg_gzm"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="工作码"
+            android:text="@string/text_gzm"
             android:textSize="20sp"
             style="@style/alltextstyle"/>
         <TextView
@@ -58,7 +58,7 @@
             android:id="@+id/tv_lg_gzmcwxx"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="雷管状态"
+            android:text="@string/text_lgzt"
             style="@style/alltextstyle"/>
     </LinearLayout>
     <android_serialport_api.xingbang.custom.LoadListView

@@ -14,7 +14,7 @@
         android:background="@drawable/textview_border"
         style="@style/alltextstyle"
         android:gravity="center"
-        android:text="管壳码" />
+        android:text="@string/text_list_guan" />
 
     <TextView
         android:id="@+id/X_item_delay"
@@ -23,7 +23,7 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         style="@style/alltextstyle"
-        android:text="延时" />
+        android:text="@string/text_list_delay" />
 
     <TextView
         android:id="@+id/X_item_errorname"
@@ -32,6 +32,6 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         style="@style/alltextstyle"
-        android:text="状态" />
+        android:text="@string/text_list_state" />
 
 </LinearLayout>

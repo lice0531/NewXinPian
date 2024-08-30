@@ -178,8 +178,8 @@ public class ShouQuanActivity extends BaseActivity {
                     GreenDaoMaster master = new GreenDaoMaster();
                     List<DetonatorTypeNew> list = master.queryDetonatorShouQuan("雷管正常", sqrq);
                     List<DetonatorTypeNew> list2 = master.queryDetonatorShouQuan("已起爆", sqrq);
-                    tv_ysy.setText("已起爆:" + list2.size());
-                    tv_wsy.setText("雷管正常:" + list.size());
+                    tv_ysy.setText(getResources().getString(R.string.text_yqb) + list2.size());
+                    tv_wsy.setText(getResources().getString(R.string.text_help_tip1) + ":" + list.size());
                     break;
                 case 2:
                     Log.e("刷新", "mListData.size(): " + mListData.size());
@@ -221,16 +221,16 @@ public class ShouQuanActivity extends BaseActivity {
 
                     break;
                 case 4:
-                    show_Toast("选中雷管注册到区域" + mRegion + "中");
+                    show_Toast(getResources().getString(R.string.text_xzqy) + mRegion + getResources().getString(R.string.text_z));
                     break;
                 case 5:
-                    show_Toast("导入成功,有数据注册重复");
+                    show_Toast(getResources().getString(R.string.text_send_tip28));
                     break;
                 case 6:
-                    show_Toast("数据不完整");
+                    show_Toast(getResources().getString(R.string.text_send_tip29));
                     break;
                 case 7:
-                    show_Toast("数据异常,请检查雷管厂家是否正确");
+                    show_Toast(getResources().getString(R.string.text_send_tip26));
                     break;
                 case 8:
                     GreenDaoMaster master2 = new GreenDaoMaster();
@@ -393,7 +393,7 @@ public class ShouQuanActivity extends BaseActivity {
                 mList.remove(i);
             }
         }
-        show_Toast("删除成功");
+        show_Toast(getResources().getString(R.string.text_del_ok));
         Log.e("删除", "mList.size(): " + mList.size());
         master.updataShouQuan(sqrq, mList.size());
         //删除选中的item之后判断是否还有数据，没有则退出编辑模式
@@ -437,7 +437,7 @@ public class ShouQuanActivity extends BaseActivity {
             }
         }
         updateEditState();
-        show_Toast("注册成功");
+        show_Toast(getResources().getString(R.string.text_zccg));
 //        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
         mAdapter2.notifyDataSetChanged();
     }

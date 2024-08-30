@@ -114,9 +114,9 @@ public class SetSystemActivity extends BaseActivity {
             } else if (msg.arg1 == 2) {
                 show_Toast(getString(R.string.text_systip_2));
             } else if (msg.arg1 == 3) {
-                show_Toast("设置的时间请大于当47s");
+                show_Toast(getString(R.string.text_systip_11));
             }  else if (msg.arg1 == 5) {
-                show_Toast("设置的时间请大于当67s");
+                show_Toast(getString(R.string.text_systip_12));
             } else if (msg.arg1 == 4) {
                 show_Toast(getString(R.string.text_systip_1));
             }
@@ -140,7 +140,7 @@ public class SetSystemActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.set_Voltage://设置电压
                 AlertDialog.Builder builder = new AlertDialog.Builder(SetSystemActivity.this);
-                builder.setTitle("操作提示");//"请输入用户名和密码"
+                builder.setTitle(getString(R.string.text_czts));//"请输入用户名和密码"
                 View view2 = LayoutInflater.from(SetSystemActivity.this).inflate(R.layout.userlogindialog_set, null);
                 builder.setView(view2);
                 final EditText password = view2.findViewById(R.id.password);
@@ -156,7 +156,7 @@ public class SetSystemActivity extends BaseActivity {
                         startActivity(intent);
                         dialog.dismiss();
                     } else {
-                        show_Toast("密码错误");
+                        show_Toast(getString(R.string.text_mmcw));
                     }
                 });
                 builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());

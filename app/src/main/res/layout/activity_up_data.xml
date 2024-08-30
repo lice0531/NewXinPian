@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="本页面只显示已起爆项目数据"
+        android:text="@string/text_xsyqb"
         style="@style/alltextstyle"/>
     <ListView
         android:id="@+id/lv_updata"
@@ -39,7 +39,7 @@
             style="@style/allbtntstyle"
             android:layout_width="80dp"
             android:layout_height="50dp"
-            android:text="还原" />
+            android:text="@string/text_hy" />
     </LinearLayout>
 
 </LinearLayout>
