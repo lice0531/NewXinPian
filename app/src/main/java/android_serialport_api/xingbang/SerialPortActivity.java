@@ -67,7 +67,7 @@ public abstract class SerialPortActivity extends BaseActivity {
             try {
                 while (!isInterrupted() && !exit) {
                     if (mInputStream.available() > 0) {
-                        Thread.sleep(20);
+                        Thread.sleep(20);//等待20ms可以减少命令为两截的情况
                         int size;
                         int count = mInputStream.available();
 //                        Log.e("读取命令", "数据流长度: "+count );

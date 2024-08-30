@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -32,6 +33,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Socket;
@@ -2810,5 +2812,23 @@ public class Utils {
             Log.e("对比UID", "相同字符个数: "+a );
             return a;
         }
+    public static void dialogOn(DialogInterface dialog) {
+        try {
+            Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+            field.setAccessible(true);
+            field.set(dialog, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static void dialogOFF(DialogInterface dialog) {
+        try {
+            Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+            field.setAccessible(true);
+            field.set(dialog, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
