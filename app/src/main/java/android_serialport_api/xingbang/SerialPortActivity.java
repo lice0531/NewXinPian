@@ -60,22 +60,26 @@ public abstract class SerialPortActivity extends BaseActivity {
             super.run();
             try {
                 while (!isInterrupted() && !exit) {
-                    int size;
+                    if (mInputStream.available() > 0) {
+                        Thread.sleep(20);
+                        int size;
+                        int count = mInputStream.available();
+//                        Log.e("读取命令", "数据流长度: "+count );
 
-                    Thread.sleep(20);
-                    if (exit) return;
-                    byte[] buffer = new byte[64];
-                    if (mInputStream == null) return;
-                    //Utils.writeLog("Read------11111111");
-                    size = mInputStream.read(buffer);
+                        if (exit) return;
+                        byte[] buffer = new byte[count];
+                        if (mInputStream == null) return;
+                        //Utils.writeLog("Read------11111111");
+                        size = mInputStream.read(buffer);
 //                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
-                    //Utils.writeLog("Read------22222222");
-                    if (size > 0) {
+                        //Utils.writeLog("Read------22222222");
+                        if (size > 0) {
 //                        byte[] cmdBuf = new byte[size];
 //                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
 //                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//                        Log.e("收到: ",fromCommad );
-                        onDataReceived(buffer, size);
+//                        Log.e("读取命令: ",fromCommad );
+                            onDataReceived(buffer, size);
+                        }
                     }
 
                 }
