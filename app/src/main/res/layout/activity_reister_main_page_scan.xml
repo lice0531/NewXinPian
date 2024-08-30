@@ -599,7 +599,7 @@
                         android:layout_width="85dp"
                         android:layout_height="50dp"
                         android:text="@string/text_reister_scanReister"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
 
 
                     <Button
@@ -618,7 +618,7 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
                         android:text="@string/text_scan_xgys"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/btn_single"
@@ -628,7 +628,7 @@
                         android:layout_marginLeft="3dp"
                         android:background="@drawable/bt_mainpage_style"
                         android:text="@string/text_scan_sdsr"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/btn_inputOk"
@@ -649,7 +649,7 @@
                         android:layout_marginLeft="3dp"
                         android:background="@drawable/bt_mainpage_style"
                         android:text="@string/text_scan_xzdw"
-                        android:textSize="20sp"/>
+                        android:textSize="16sp"/>
                 </LinearLayout>
 
 

@@ -585,7 +585,7 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_240829</string>//通用
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PTE_V2.1_240829</string>//通用
     <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_240829</string>//华丰/金建华(新疆客户)
     <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_240829</string>//重庆
     <string name="text_zijian_title">设备初始化中...</string>
@@ -593,13 +593,13 @@
     <string name="text_main_dfzc">1.单发检测</string>
     <string name="text_main_zc">2.注册</string>
     <string name="text_main_xmgl">3.项目管理</string>
-    <string name="text_main_wlcs">4.网络测试</string>
-    <string name="text_main_qb">5.起爆</string>
-    <string name="text_main_ck">6.查看</string>
-    <string name="text_main_sz">7.设置</string>
-    <string name="text_main_sc">8.删除</string>
-    <string name="text_main_fzgn">9.辅助功能</string>
-    <string name="text_main_tc">10.退出</string>
+    <string name="text_main_wlcs">3.网络测试</string>
+    <string name="text_main_qb">4.起爆</string>
+    <string name="text_main_ck">5.查看</string>
+    <string name="text_main_sz">6.设置</string>
+    <string name="text_main_sc">7.删除</string>
+    <string name="text_main_fzgn">8.辅助功能</string>
+    <string name="text_main_tc">9.退出</string>
     <string name="text_main_qu"> /区域</string>
     <string name="text_main_sl"> 数量</string>
     <string-array name="sp_changjia">
@@ -978,4 +978,9 @@
     <string name="text_dk">端口</string>
     <string name="text_toastts">Tosat提示</string>
     <string name="text_his_sclsjl">请输入密码后,再进行删除历史记录操作</string>
+    <string name="text_alert_deleteErr">是否删除错误雷管</string>
+    <string name="text_hf">华丰</string>
+    <string name="text_ty">通用</string>
+    <string name="text_cq">重庆</string>
+
 </resources>

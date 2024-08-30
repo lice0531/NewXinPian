@@ -204,7 +204,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         sendOpenThread = new SendOpenPower();
         sendOpenThread.start();
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
     }
 
     private void initHandler() {
@@ -958,7 +958,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             //第15秒发20
                             if (firstCount == 0) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (changjia.equals("重庆")) {
+                                if (changjia.equals(getResources().getString(R.string.text_cq))) {
                                     sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
@@ -1007,7 +1007,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
                             if (firstCount == 9) {//经过测试初始化命令需要6秒
                                 //切换模块芯片版本
-                                if (changjia.equals("重庆")) {
+                                if (changjia.equals(getResources().getString(R.string.text_cq))) {
                                     sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                                 } else {
                                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)

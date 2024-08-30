@@ -207,7 +207,7 @@ public class XingbangMain extends SerialPortActivity {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         try {
             Thread.sleep(100);
@@ -258,10 +258,10 @@ public class XingbangMain extends SerialPortActivity {
         Utils.writeRecord("---进入主页面---");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
-        if(changjia.equals("华丰")){
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
+        if(changjia.equals(getResources().getString(R.string.text_hf))){
             app_version_name =getString(R.string.app_version_name2);
-        }else if(changjia.equals("重庆")){
+        }else if(changjia.equals(getResources().getString(R.string.text_cq))){
             app_version_name =getString(R.string.app_version_name3);
         }else {
             app_version_name =getString(R.string.app_version_name);
@@ -332,7 +332,7 @@ public class XingbangMain extends SerialPortActivity {
         });
         openPower = new OpenPower();
         openPower.start();
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
         Log.e(TAG, "changjia: " + changjia);
 //        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
 

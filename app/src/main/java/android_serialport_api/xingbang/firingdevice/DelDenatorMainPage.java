@@ -197,7 +197,7 @@ public class DelDenatorMainPage extends BaseActivity  {
     public void Del_Err_Denator() {
         Builder builder = new Builder(DelDenatorMainPage.this);
         builder.setTitle(getString(R.string.text_alert_tip));//"提示"
-        builder.setMessage("是否删除错误雷管");//是否全部删除注册雷管数
+        builder.setMessage(getResources().getString(R.string.text_alert_deleteErr));//是否全部删除注册雷管数
         builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -428,7 +428,7 @@
                     android:id="@+id/btn_singleReister"
                     style="@style/allbtntstyle"
                     android:layout_width="85dp"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:layout_marginLeft="5dp"
                     android:layout_height="50dp"
                     android:background="@drawable/bt_mainpage_style"
@@ -440,11 +440,11 @@
                     android:layout_marginLeft="5dp"
                     android:layout_height="50dp"
                     android:text="@string/text_reister_scanReister"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
                 <Button
                     android:id="@+id/btn_setdelay"
                     style="@style/allbtntstyle"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:layout_width="85dp"
                     android:layout_height="50dp"
                     android:layout_marginLeft="5dp"
@@ -477,7 +477,7 @@
                     android:id="@+id/btn_addDelay"
                     style="@style/allbtntstyle"
                     android:layout_width="85dp"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:layout_height="45dp"
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/bt_mainpage_style"
