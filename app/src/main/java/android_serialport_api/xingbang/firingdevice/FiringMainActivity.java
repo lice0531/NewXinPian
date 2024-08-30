@@ -640,7 +640,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
             Log.e(TAG, "stage: "+stage );
-            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && (stage == 2 || stage == 6 )) {// "电流过大";
+            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2  ) {// "电流过大";
                 Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
                 Log.e(TAG, "stage: "+stage );
                 Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
@@ -683,6 +683,52 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
 
             }
+
+
+            if (isshow2 == 0 && twoCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 &&  stage == 6 ) {// "电流过大";
+                Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
+                Log.e(TAG, "stage: "+stage );
+                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+
+                duanlu_sun++;
+//                firstThread.exit = true;
+//                firstThread.interrupt();
+//                try {
+//                    firstThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                if(duanlu_sun>1){
+                    isshow2 = 1;
+                    AlertDialog dialog = new Builder(FiringMainActivity.this)
+                            .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
+                            .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
+                            //设置对话框的按钮
+                            . setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog1, which) -> {
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                                try {
+                                    Thread.sleep(100);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                dialog1.dismiss();
+                                closeThread();
+                                closeForm();
+                                finish();
+                            })
+                            .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog15, i) -> {
+//                            firstThread = new ThreadFirst(allBlastQu);
+//                            firstThread.exit = false;
+//                            firstThread.start();
+                                dialog15.dismiss();
+                            })
+                            .create();
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                    dialog.show();
+                }
+
+            }
+
 
 
             //电流大于4000,重启检测阶段

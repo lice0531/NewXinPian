@@ -268,12 +268,24 @@ public class XingbangMain extends SerialPortActivity {
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
 
-
         getleveup();
 
         busHandler = new Handler(msg -> {
             txt_Volt.setText(getResources().getString(R.string.text_reister_vol)+ busInfo.getBusVoltage() + "V");
             txt_IC.setText(getResources().getString(R.string.text_reister_ele) + (int)busInfo.getBusCurrentIa() + "μA");
+            String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
+            float displayIc = busInfo.getBusCurrentIa();
+
+            if (displayIc > 21000 ) {
+                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr + getString(R.string.text_text_ysdl);
+                txt_IC.setTextColor(Color.RED);//设置颜色
+                txt_IC.setText(displayIcStr);
+                Utils.writeRecord("--主页--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+            }else {
+                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr;
+                txt_IC.setTextColor(Color.WHITE);//设置颜色
+                txt_IC.setText(displayIcStr);
+            }
             if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
                 isshow1=false;
@@ -1279,6 +1291,7 @@ public class XingbangMain extends SerialPortActivity {
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             close();//停止访问电流
+
             finish();
             if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);
