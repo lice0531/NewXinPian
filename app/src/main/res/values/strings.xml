@@ -518,11 +518,13 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_V2.1_240827</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_240827</string>//通用
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_240827</string>//华丰/金建华(新疆客户)
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_240827</string>//重庆
 
     <string-array name="sp_changjia">
-        <item>通用</item>
-        <item>重庆</item>
-        <item>华丰</item>
+        <item>TY</item>
+        <item>CQ</item>
+        <item>XJ</item>
     </string-array>
 </resources>

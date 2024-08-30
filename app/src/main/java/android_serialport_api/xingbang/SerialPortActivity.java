@@ -67,11 +67,13 @@ public abstract class SerialPortActivity extends BaseActivity {
             try {
                 while (!isInterrupted() && !exit) {
                     if (mInputStream.available() > 0) {
-                        int size;
-
                         Thread.sleep(20);
+                        int size;
+                        int count = mInputStream.available();
+//                        Log.e("读取命令", "数据流长度: "+count );
+
                         if (exit) return;
-                        byte[] buffer = new byte[64];
+                        byte[] buffer = new byte[count];
                         if (mInputStream == null) return;
                         //Utils.writeLog("Read------11111111");
                         size = mInputStream.read(buffer);
@@ -81,7 +83,7 @@ public abstract class SerialPortActivity extends BaseActivity {
 //                        byte[] cmdBuf = new byte[size];
 //                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
 //                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//                        Log.e("收到: ",fromCommad );
+//                        Log.e("读取命令: ",fromCommad );
                             onDataReceived(buffer, size);
                         }
                     }

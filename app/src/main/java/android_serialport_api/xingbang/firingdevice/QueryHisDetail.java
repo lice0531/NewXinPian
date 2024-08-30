@@ -893,7 +893,15 @@ public class QueryHisDetail extends BaseActivity {
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);
         String xy[] = pro_coordxy.split(",");//经纬度
-        String app_verson_name = getString(R.string.app_version_name);
+        String app_verson_name ;
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        if(changjia.equals("华丰")){
+            app_verson_name =getString(R.string.app_version_name2);
+        }else if(changjia.equals("重庆")){
+            app_verson_name =getString(R.string.app_version_name3);
+        }else {
+            app_verson_name =getString(R.string.app_version_name);
+        }
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
             if (jd != null) {

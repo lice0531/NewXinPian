@@ -258,7 +258,14 @@ public class XingbangMain extends SerialPortActivity {
         Utils.writeRecord("---进入主页面---");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        app_version_name = getString(R.string.app_version_name);
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        if(changjia.equals("华丰")){
+            app_version_name =getString(R.string.app_version_name2);
+        }else if(changjia.equals("重庆")){
+            app_version_name =getString(R.string.app_version_name3);
+        }else {
+            app_version_name =getString(R.string.app_version_name);
+        }
 
         getleveup();
 

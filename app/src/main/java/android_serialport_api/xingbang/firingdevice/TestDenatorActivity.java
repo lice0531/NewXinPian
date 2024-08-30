@@ -825,8 +825,8 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    }
                     Log.e(TAG, "小于参考值 ，部分错: stage=" + stage);
                 } else if (totalerrorNum < denatorCount && totalerrorNum != 0 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu + 100)) {//大于参考值 ，部分错
-                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
-                    sendCmd(reCmd);
+//                    byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
+//                    sendCmd(reCmd);
 //                    if (chongfu) {
                     initDialog_zanting2(getString(R.string.text_test_tip8));//弹出框
 //                    } else {
@@ -989,12 +989,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
 
                             }
-                            if(firstCount_panduan>=5){
-                                Thread.sleep(1000);//为了发40后等待
-                                stage = 3;
-                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                break;
-                            }
+
                             //到达最大时间,直接跳转
                             if (firstCount >= Preparation_time){
                                 Thread.sleep(1000);//为了发40后等待
@@ -1025,6 +1020,12 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
+                            if(firstCount_panduan>5){//判断是否符合条件,跳转阶段
+                                Thread.sleep(1000);//为了发40后等待
+                                stage = 3;
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                break;
+                            }
                             firstCount++;
                             if (firstCount == -10) {//最大值
                                 Log.e(TAG, "退出流程: ");

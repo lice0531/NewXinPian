@@ -638,7 +638,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
 
-            if (isshow2==0 && oneCount >=oneCount_max*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7 && stage != 8) {// "电流过大";
+            if (isshow2==0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7 && stage != 8 && stage != 11) {// "电流过大";
                 isshow2 = 1;
 
 //                firstThread.exit = true;
@@ -696,7 +696,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (oneCount > oneCount_max * 0.5 && busInfo.getBusVoltage() < 6) {
+            if (oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
                 Log.e(TAG, secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
@@ -2209,7 +2209,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 if (list_dianliu.size() > 5 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {
                                     oneCount_panduan++;
                                     Log.e(TAG, "oneCount_panduan: "+oneCount_panduan );
-                                    if(oneCount_panduan>=5){
+                                    if(oneCount_panduan>5){
                                         cankao_ic_diya = busInfo.getBusCurrentIa();//低压参考电流值
                                         byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
                                         sendCmd(powerCmd);
@@ -2217,6 +2217,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                         Log.e("第5阶段-increase", "5");
                                         Log.e("充电检测WaitCount", Wait_Count + "");
                                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    }else {
+                                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
                                     }
                                 }else {
                                     sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40 获取电源状态指令
