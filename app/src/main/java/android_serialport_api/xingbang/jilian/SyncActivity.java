@@ -166,17 +166,17 @@ public class SyncActivity extends BaseActivity {
                     } else if (response.contains("A002")) {
                         show_Toast(getString(R.string.text_sync_tip4));
                         String str5 = "级联起爆";
-                        if (Yanzheng.equals("验证")) {
-                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                            Intent intent5 = new Intent(SyncActivity.this, VerificationActivity.class);//验证爆破范围页面
-                            intent5.putExtra("dataSend", str5);
-                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        } else {
+//                        if (Yanzheng.equals("验证")) {
+//                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                            Intent intent5 = new Intent(SyncActivity.this, VerificationActivity.class);//验证爆破范围页面
+//                            intent5.putExtra("dataSend", str5);
+//                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
+//                        } else {
                             Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity.class);//四川大带载
 //                            Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity_hf.class);//华丰
                             intent5.putExtra("dataSend", str5);
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        }
+//                        }
                     } else if (response.contains("A003")) {
                         show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));

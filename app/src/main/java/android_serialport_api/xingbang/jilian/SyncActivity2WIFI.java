@@ -147,9 +147,9 @@ public class SyncActivity2WIFI extends BaseActivity {
 
         mBuffer = new byte[50];
         delay = MyTools.getADelay();
-        tvDelay.setText("当前延迟(m)：" + delay);
+        tvDelay.setText(getString(R.string.text_jilianset_tip4) + delay);
 
-        tvCode.setText(MyTools.getACode().equals("") ? "设置编号" : MyTools.getACode());
+        tvCode.setText(MyTools.getACode().equals("") ? getString(R.string.text_sync_szbh) : MyTools.getACode());
 
         sp = getSharedPreferences("ip", MODE_PRIVATE);
 
@@ -157,7 +157,7 @@ public class SyncActivity2WIFI extends BaseActivity {
 
         createClient();
         getPropertiesData();
-        textAndroidIp.setText("本机IP地址:" + getlocalip());
+        textAndroidIp.setText(getString(R.string.text_sendMsg_ip) + getlocalip());
         new Thread(networkTask).start();
     }
     /**
@@ -271,8 +271,8 @@ public class SyncActivity2WIFI extends BaseActivity {
     protected void onResume() {
         super.onResume();
         delay = MyTools.getADelay();
-        tvDelay.setText("当前延迟(m)：" + delay);
-        tvCode.setText(MyTools.getACode().equals("") ? "设置编号" : MyTools.getACode());
+        tvDelay.setText(getResources().getString(R.string.text_sync_dqyc) + delay);
+        tvCode.setText(MyTools.getACode().equals("") ? getResources().getString(R.string.text_sync_szbh) : MyTools.getACode());
     }
 
     /**
@@ -308,28 +308,28 @@ public class SyncActivity2WIFI extends BaseActivity {
                         //收到服务器的同步确认指令
                         isTongBu = true;
                         handler.sendEmptyMessageDelayed(5, 3600);
-                        show_Toast("同步成功");
+                        show_Toast(getResources().getString(R.string.text_sync_tip2));
                         btnTest.setEnabled(false);
-                        btnTest.setText("已连接");
+                        btnTest.setText(getResources().getString(R.string.text_sync_tip3));
                     } else if (response.contains("A002")) {
-                        show_Toast("收到起爆测试指令");
+                        show_Toast(getResources().getString(R.string.text_sync_tip4));
                         Log.e("接收消息", "收到起爆测试指令: " );
                         String str5 = "起爆";
-                        if (Yanzheng.equals("验证")) {
-                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                            Intent intent5 = new Intent(SyncActivity2WIFI.this, VerificationActivity.class);//验证爆破范围页面
-                            intent5.putExtra("dataSend", str5);
-                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        } else {
+//                        if (Yanzheng.equals("验证")) {
+//                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                            Intent intent5 = new Intent(SyncActivity2WIFI.this, VerificationActivity.class);//验证爆破范围页面
+//                            intent5.putExtra("dataSend", str5);
+//                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
+//                        } else {
                             Intent intent5 = new Intent(SyncActivity2WIFI.this, FiringMainActivity_hf.class);//金建华
                             intent5.putExtra("dataSend", str5);
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        }
+//                        }
 //                        show_Toast("收到网络测试指令");
 //                        Intent intent = new Intent(SyncActivity2Net.this, TestDenatorActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_NET);
                     } else if (response.contains("A003")) {
-                        show_Toast("收到准备充电指令");
+                        show_Toast(getResources().getString(R.string.text_sync_tip5));
                         Log.e("接收消息", "收到准备充电指令: " );
                         EventBus.getDefault().post(new FirstEvent("jixu"));
                         //王工的
@@ -337,7 +337,7 @@ public class SyncActivity2WIFI extends BaseActivity {
 //                        Intent intent = new Intent(SyncActivity2Net.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
                     } else if (response.contains("A004")) {
-                        show_Toast("收到起爆指令");
+                        show_Toast(getResources().getString(R.string.text_sync_tip6));
                         Log.e("接收消息", "收到起爆指令: " );
                         EventBus.getDefault().post(new FirstEvent("qibao"));
                         //王工的
@@ -364,7 +364,7 @@ public class SyncActivity2WIFI extends BaseActivity {
 //                    show_Toast("同步指令错误");
                     break;
                 case 2:
-                    show_Toast("数据发送成功");
+                    show_Toast(getString(R.string.text_sync_tip7));
                     break;
                 case 3:
                     //心跳数据
@@ -378,7 +378,7 @@ public class SyncActivity2WIFI extends BaseActivity {
                     handler.sendEmptyMessageDelayed(5, 3600);*/
                     break;
                 case 6:
-                    btnTest.setText("连接中...");
+                    btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
                     final String data2 = "0001" + MyTools.getACode() + "\n";
                     writeData(data2);
@@ -510,7 +510,7 @@ public class SyncActivity2WIFI extends BaseActivity {
 //                }
 //            }
         }
-        show_Toast("toCheck6+正在回传数据");
+        show_Toast(getResources().getString(R.string.text_sync_tip10));
         String a;
         if (check.equals("1")) {
             a = "0008" + code + ",0" + check;
@@ -678,11 +678,11 @@ public class SyncActivity2WIFI extends BaseActivity {
                 }
                 hideInputKeyboard();
                 if (MyTools.getACode().equals("")) {
-                    show_Toast("设置编号");
+                    show_Toast(getResources().getString(R.string.text_sync_szbh));
                     return;
                 }
 
-                btnTest.setText("连接中...");
+                btnTest.setText(getResources().getString(R.string.text_sync_tip8));
                 btnTest.setEnabled(false);
 
                 if (socket == null) {
@@ -715,7 +715,7 @@ public class SyncActivity2WIFI extends BaseActivity {
                     editor.putStringSet("keySet", set);
                     editor.apply();
                 }
-                btnConnect.setText("连接中...");
+                btnConnect.setText(getResources().getString(R.string.text_sync_tip8));
                 btnConnect.setEnabled(false);
                 connect();
                 break;
@@ -740,7 +740,7 @@ public class SyncActivity2WIFI extends BaseActivity {
 //            }
         }
 
-        show_Toast("myInfo正在回传数据");
+        show_Toast(getResources().getString(R.string.text_sync_tip12));
         String a;
         if (check.equals("1")) {
             a = "0001" + code + ",0" + check;
@@ -879,7 +879,7 @@ public class SyncActivity2WIFI extends BaseActivity {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int ipAddress = wifiInfo.getIpAddress();
         if (ipAddress == 0) {
-            return "请检查是否连接WIFI";
+            return getResources().getString(R.string.text_practice_tip11);
         }
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));

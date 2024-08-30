@@ -226,10 +226,10 @@
     <string name="text_reister_ele1">bus current</string>
     <string name="text_ceshi_tzcs">Stop</string>
     <string name="text_list_Serial">serial</string>
-    <string name="text_list_kong">number</string>
+    <string name="text_list_kong">no</string>
     <string name="text_list_guan">shell code</string>
     <string name="text_list_delay">delay</string>
-    <string name="text_list_state">login</string>
+    <string name="text_list_state">status</string>
     <string name="text_list_qibao_data">Detonating date</string>
     <string name="text_list_factory_name">Manufacturer\'s name</string>
     <string name="text_list_fac_num">factory code</string>
@@ -259,7 +259,7 @@
     <string name="text_delay_det_num">hole detonator</string>
     <string name="text_delay_start">initial delay</string>
     <string name="text_delay_kong_de">hole delay</string>
-    <string name="text_delay_kong_2">delay between holes</string>
+    <string name="text_delay_kong_2">Hole delay</string>
     <string name="text_delay_pai">Row delay</string>
     <string name="text_delay_total">total:0</string>
 
@@ -279,7 +279,7 @@
     <string name="text_firing_tip3">Enter the charging process？</string>
     <string name="text_firing_err_lg">Error List</string>
     <string name="text_firing_jixu">Continue</string>
-    <string name="text_firing_tip4">Charging, please wait a moment(</string>
+    <string name="text_firing_tip4">Charging, please wait a moment</string>
     <string name="text_firing_qibao_vol">Detonation voltage :</string>
     <string name="text_firing_tip5">Ready（press 1&amp;3 together to blast）</string>
     <string name="text_firing_tip5_2">Ready（press 1&amp;5 together to blast）</string>
@@ -405,8 +405,8 @@
     <string name="text_scan_f1">F1 delay</string>
     <string name="text_scan_f2">F2 delay</string>
     <string name="text_scan_df">Single shot</string>
-    <string name="text_gkm">Shell code</string>
-    <string name="text_scan_xgys">Single shot</string>
+    <string name="text_gkm">Shell</string>
+    <string name="text_scan_xgys">Modify delay time</string>
     <string name="text_scan_sdsr">Manual input</string>
     <string name="text_query_ck">View detonator status</string>
     <string name="text_query_history">Detonation history data</string>
@@ -416,7 +416,7 @@
     <string name="text_scan_gs">/Number</string>
     <string name="text_scan_back">Back</string>
     <string name="text_dialog_xh">Serial number</string>
-    <string name="text_dialog_gkm">Tubcodee and shell</string>
+    <string name="text_dialog_gkm">Shell</string>
     <string name="text_dialog_qx">Cancel</string>
     <string name="text_dialog_sc">Delete</string>
     <string name="text_dialog_qd">Determine</string>
@@ -438,7 +438,7 @@
     <string name="text_dialog_back">Back</string>
     <string name="text_show_1">Selected Zone</string>
     <string name="text_fir_dialog1">Discharge countdown：</string>
-    <string name="text_fir_dialog2">prompted</string>
+    <string name="text_fir_dialog2">Prompted</string>
     <string name="text_suidao_yxz">\"Selected \"</string>
     <string name="text_suidao_tip">Please select at least one area</string>
     <string name="text_fz_bbh">VERSION</string>
@@ -446,10 +446,10 @@
     <string name="text_fz_kscs">Quick test current</string>
     <string name="text_fz_sjhc">Data exchange</string>
     <string name="text_fz_qchc">Clear Cache</string>
-    <string name="text_test_tip5">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection。</string>
-    <string name="text_test_tip6">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection。</string>
+    <string name="text_test_tip5">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection.</string>
+    <string name="text_test_tip6">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection.</string>
     <string name="text_test_tip7">Check the list of incorrect detonators. It is suspected that some of the detonator connecting wires are disconnected. Please check if there are any situations such as disconnected detonator connecting wires and incorrect input of the shell code. After checking, click the continue button to proceed with the detection!</string>
-    <string name="text_test_tip8">Please replace the incorrect detonator. It is suspected that some detonators may have water ingress or mud ingress. After checking for any errors, click to continue with the detection。</string>
+    <string name="text_test_tip8">Please replace the incorrect detonator. It is suspected that some detonators may have water ingress or mud ingress. After checking for any errors, click to continue with the detection.</string>
     <string name="text_test_tip9">Suspected that some detonators have entered incorrect detonator numbers. Please check if the detonator numbers are entered correctly!</string>
     <string name="text_test_tip10">Please check if the wiring is connected correctly</string>
     <string name="text_test_tip11">Discharging</string>
@@ -970,4 +970,6 @@
     <string name="text_toastts">Tosat Tips</string>
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
     <string name="text_alert_deleteErr">Do you want to delete the incorrect detonator</string>
+    <string name="text_yes">YES</string>
+    <string name="text_no">NO</string>
 </resources>

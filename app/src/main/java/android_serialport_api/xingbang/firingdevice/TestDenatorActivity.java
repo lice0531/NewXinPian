@@ -395,12 +395,12 @@ public class TestDenatorActivity extends SerialPortActivity {
         String str5 = "起爆";
         Log.e("验证2", "Yanzheng: " + Yanzheng);
         Intent intent;//金建华
-        if (Yanzheng.equals("验证")) {
-            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
-        } else {
+//        if (Yanzheng.equals("验证")) {
+//            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
+//        } else {
             intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
-        }
+//        }
         intent.putExtra("dataSend", str5);
         startActivity(intent);
     }
@@ -1633,8 +1633,8 @@ public class TestDenatorActivity extends SerialPortActivity {
             LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
             llview.setVisibility(View.GONE);
             TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
-            text_tip.setText(tip);
-            text_tip.setVisibility(View.VISIBLE);
+//            text_tip.setText(tip);
+//            text_tip.setVisibility(View.VISIBLE);
             // 给ListView绑定内容
             ListView errlistview = getlistview.findViewById(R.id.X_listview);
             errlistview.setVisibility(View.GONE);
@@ -1644,6 +1644,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getResources().getString(R.string.text_fir_dialog2));//"错误雷管列表"
             builder.setView(getlistview);
+            builder.setMessage(tip);
             builder.setCancelable(false);
             builder.setPositiveButton(getResources().getString(R.string.text_firing_jixu), (dialog, which) -> {
                 dialogOFF(dialog);

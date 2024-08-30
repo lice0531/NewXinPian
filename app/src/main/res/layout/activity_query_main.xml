@@ -39,6 +39,7 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:text="@string/text_return"
+            android:textSize="18sp"
             style="@style/allbtntstyle" />
 
     </LinearLayout>
@@ -76,6 +77,7 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:text="@string/text_query_ck"
+            android:textSize="18sp"
             style="@style/allbtntstyle"
             />
 
@@ -152,6 +154,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
+            android:textSize="22sp"
 
             android:text="@string/text_query_lon" />
 
@@ -161,6 +164,7 @@
             android:layout_width="300dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:textSize="22sp"
             android:gravity="center_vertical"
             android:text="@string/text_query_lat"
             />
@@ -171,6 +175,7 @@
             android:layout_width="300dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:textSize="22sp"
             android:gravity="center_vertical"
             android:text="@string/text_query_num"
             />

@@ -372,7 +372,6 @@
                                 android:layout_weight="0.5"
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_tk"
-                                android:textSize="18sp"
                                 style="@style/allbtntstyle"
                                 />
                         </TableRow>
@@ -432,7 +431,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="2dp"
                                 android:text="@string/text_tiaok"
-                                android:textSize="18sp"
                                 style="@style/allbtntstyle"
                                 />
                         </TableRow>
@@ -1551,7 +1549,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
-                                android:gravity="right"
+                                android:gravity="right|center_vertical"
                                 android:text="@string/text_gkm" />
 
                             <TextView
@@ -1560,7 +1558,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
-                                android:gravity="left"
+                                android:gravity="left|center_vertical"
                                 android:text="/UID" />
                         </LinearLayout>
 

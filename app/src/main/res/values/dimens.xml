@@ -9,9 +9,9 @@
     <dimen name="DownWork_Item_FontSize">20sp</dimen>
     <dimen name="listViewFontSize">14sp</dimen>
     <dimen name="childPageLabelFontSize">16sp</dimen>
-    <dimen name="fireChildPageLabelFontSize">22sp</dimen>
+    <dimen name="fireChildPageLabelFontSize">18sp</dimen>
     <dimen name="item_project_size">18sp</dimen>
-    <dimen name="MainPage_FontSize">25sp</dimen>
+    <dimen name="MainPage_FontSize">20sp</dimen>
 
     <dimen name="childPageEditFontSize">16sp</dimen>
     <dimen name="childPageTipFontSize">12sp</dimen>
@@ -20,14 +20,14 @@
 
     <dimen name="childReisterPageEditHeight">30dp</dimen>
 
-    <dimen name="childReisterPageBtnFontSize">18sp</dimen>
-    <dimen name="childReisterPageLabelFontSize">20sp</dimen>
+    <dimen name="childReisterPageBtnFontSize">14sp</dimen>
+    <dimen name="childReisterPageLabelFontSize">16sp</dimen>
     <dimen name="childReisterPageEditFontSize">16sp</dimen>
     <dimen name="childReisterPageTipFontSize">12sp</dimen>
 
     <dimen name="DeletePageBtnFontSize">16sp</dimen>
 
-    <dimen name="childSimpleCheckDisplayFontSize">20sp</dimen>
+    <dimen name="childSimpleCheckDisplayFontSize">16sp</dimen>
     <dimen name="childSimpleCheckEditFontSize">28sp</dimen>
     <dimen name="childSimpleSpecRowHeight">50dp</dimen>
     <dimen name="childSimpleCheckReisterRowHeight">36dp</dimen>

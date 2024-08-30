@@ -163,7 +163,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
             show_Toast(getString(R.string.text_fac_factory_name) + name + getString(R.string.text_fac_tip4));
             return false;
         }
-        if (selected.equals("是") && checkRepeatSelected(selected)) {
+        if (selected.equals(getString(R.string.text_yes)) && checkRepeatSelected(selected)) {
             show_Toast(getResources().getString(R.string.text_setFac_show1));
             return false;
         }
@@ -215,16 +215,16 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
         factoryname.setText(defactory.getDeName());
         factorycode.setText(defactory.getDeEntCode());
         factoryfea.setText(defactory.getDeFeatureCode());
-        if ("是".equals(defactory.getIsSelected())) {
+        if (getString(R.string.text_yes).equals(defactory.getIsSelected())) {
             factoryselected.setChecked(true);
         }
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String a = factoryname.getText().toString().trim();
             String b = factorycode.getText().toString().trim();
             String c = factoryfea.getText().toString().trim();
-            String d = "否";
+            String d = getResources().getString(R.string.text_no);
             if (factoryselected.isChecked()) {
-                d = "是";
+                d = getResources().getString(R.string.text_yes);
             }
 
             updateFactory(a, b, c, d, id);
@@ -300,9 +300,9 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
                     String facname = et_factory_name.getText().toString();
                     String faccode = et_factory_code.getText().toString();
                     String facTe = et_factory_feature.getText().toString().toUpperCase();//转成大写
-                    String facselected = "否";
+                    String facselected = getResources().getString(R.string.text_no);
                     if (et_factory_selected.isChecked()) {
-                        facselected = "是";
+                        facselected = getResources().getString(R.string.text_yes);
                     }
                     if (insertFactory(facname, faccode, facTe, facselected)) {
                         show_Toast(getString(R.string.text_fac_tip1));

@@ -979,4 +979,6 @@
     <string name="text_toastts">Tosat提示</string>
     <string name="text_his_sclsjl">请输入密码后,再进行删除历史记录操作</string>
     <string name="text_alert_deleteErr">是否删除错误雷管</string>
+    <string name="text_yes">是</string>
+    <string name="text_no">否</string>
 </resources>

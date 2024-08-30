@@ -862,13 +862,13 @@ public class XingbangMain extends SerialPortActivity {
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent5 = new Intent(this, VerificationActivity.class);
-                } else {
-                    Log.e(TAG, "验证2: "+Yanzheng_sq);
+//                if (Yanzheng.equals("验证")) {
+//                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                    intent5 = new Intent(this, VerificationActivity.class);
+//                } else {
+//                    Log.e(TAG, "验证2: "+Yanzheng_sq);
                     intent5 = new Intent(this, FiringMainActivity.class);
-                }
+//                }
                 close();//停止访问电流
                 intent5.putExtra("dataSend", str5);
                 startActivityForResult(intent5, 1);
@@ -1204,12 +1204,12 @@ public class XingbangMain extends SerialPortActivity {
                     if (str5.equals("组网")) {
                         intent5 = new Intent(this, TestDenatorActivity.class);
                     } else {
-                        Log.e("验证2", "Yanzheng: " + Yanzheng);
-                        if (Yanzheng.equals("验证")) {
-                            intent5 = new Intent(this, VerificationActivity.class);
-                        } else {
+//                        Log.e("验证2", "Yanzheng: " + Yanzheng);
+//                        if (Yanzheng.equals("验证")) {
+//                            intent5 = new Intent(this, VerificationActivity.class);
+//                        } else {
                             intent5 = new Intent(this, FiringMainActivity.class);
-                        }
+//                        }
                     }
 
                     intent5.putExtra("dataSend", str5);

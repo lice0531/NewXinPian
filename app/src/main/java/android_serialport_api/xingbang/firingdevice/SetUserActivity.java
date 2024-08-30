@@ -106,9 +106,9 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 TextView dd = (TextView) myte.getChildAt(1);
                 menu.setHeaderIcon(R.drawable.icon);
                 menu.setHeaderTitle(dd.getText().toString());
-                menu.add(0, 1, 3, "删除");
+                menu.add(0, 1, 3, getResources().getString(R.string.text_tip_delete));
               
-                menu.add(0, 2, 2, "修改");
+                menu.add(0, 2, 2, getResources().getString(R.string.text_tip_modify));
                 //设置第三个参数反向  所以出现的菜单是反着的
 
             }
@@ -295,8 +295,8 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 modifyPw(a,b);
                 getLoaderManager().restartLoader(1, null, SetUserActivity.this);
                 //    将输入的用户名和密码打印出来
-                Toast.makeText(SetUserActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
-            } 
+				show_Toast(getResources().getString(R.string.text_error_tip38));
+            }
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()
         {
