@@ -231,7 +231,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isGetQbResult = false;//是否收到起爆结束指令
     private float befor_dianliu = 0;
     private float befor_dianya = 0;
-    private String changjia = "通用";
+    private String changjia = "TY";
     private String Fujian = "复检";
     private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
@@ -274,7 +274,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         //给主机发消息告知已进入起爆页面
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
 
     }
@@ -385,7 +385,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                return;
 //            }
             String err = ll_firing_errorAmount_4.getText().toString();
-            if (changjia.equals("华丰")) {
+            if (changjia.equals("XJ")) {
                 if (err.equals("0")) {
 //                increase(33);//之前是4
                     increase(6);//充电阶段
@@ -1785,7 +1785,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
-                if (changjia.equals("重庆")) {
+                if (changjia.equals("CQ")) {
                     sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                 } else {
                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
@@ -2417,7 +2417,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
 
                             if (twoCount == 3) {//第3秒时,单发充电
-                                if (changjia.equals("重庆")) {
+                                if (changjia.equals("CQ")) {
                                     increase(33);
                                 } else {
                                     sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40

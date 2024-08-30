@@ -415,7 +415,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
     private DenatorBaseinfo db_charu;
     private ScanQrControl mScaner = null;
     private ScanBar scanBarThread;
-    private String changjia = "通用";
+    private String changjia = "TY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -452,8 +452,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //        showDenatorSum();//显示雷管总数
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入单发注册页面---");
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
-        if (changjia.equals("重庆")) {
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        if (changjia.equals("CQ")) {
             sendCmd(FourStatusCmd.send46("00", "03"));//20(第一代)
         } else {
             sendCmd(FourStatusCmd.send46("00", "01"));//20(第二代)

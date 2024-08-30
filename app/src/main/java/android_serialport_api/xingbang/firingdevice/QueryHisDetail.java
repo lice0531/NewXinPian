@@ -129,7 +129,7 @@ public class QueryHisDetail extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
-    private String changjia = "通用";
+    private String changjia = "TY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +142,7 @@ public class QueryHisDetail extends BaseActivity {
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         totalNum = getDaoSession().getDenatorHis_DetailDao().loadAll().size();//得到数据的总条数
         totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
         if (1 == currentPage) {
@@ -300,7 +300,7 @@ public class QueryHisDetail extends BaseActivity {
     //获取配置文件中的值
     private void getPropertiesData() {
 //        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
-        if(changjia.equals("华丰")){
+        if(changjia.equals("XJ")){
             Shangchuan="否";
         }else {
             Shangchuan="是";
@@ -894,10 +894,10 @@ public class QueryHisDetail extends BaseActivity {
         Log.e("上传uid", uid);
         String xy[] = pro_coordxy.split(",");//经纬度
         String app_verson_name ;
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "通用");
-        if(changjia.equals("华丰")){
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        if(changjia.equals("XJ")){
             app_verson_name =getString(R.string.app_version_name2);
-        }else if(changjia.equals("重庆")){
+        }else if(changjia.equals("CQ")){
             app_verson_name =getString(R.string.app_version_name3);
         }else {
             app_verson_name =getString(R.string.app_version_name);
