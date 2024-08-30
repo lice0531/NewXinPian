@@ -979,8 +979,4 @@
     <string name="text_toastts">Tosat提示</string>
     <string name="text_his_sclsjl">请输入密码后,再进行删除历史记录操作</string>
     <string name="text_alert_deleteErr">是否删除错误雷管</string>
-    <string name="text_hf">华丰</string>
-    <string name="text_ty">通用</string>
-    <string name="text_cq">重庆</string>
-
 </resources>

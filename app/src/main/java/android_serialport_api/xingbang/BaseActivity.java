@@ -79,7 +79,7 @@ public class  BaseActivity extends AppCompatActivity {
 				.config()
 				.messageColor(Color.RED)
 				.backgroundColorResource(R.color.toast_bg_color)
-				.messageSize(30f)//设置文本大小，单位sp，默认14sp
+				.messageSize(20f)//设置文本大小，单位sp，默认14sp
 				.messageBold(true)//设置文本为粗体，默认false
 				.apply()
 				.show(text);
@@ -91,7 +91,7 @@ public class  BaseActivity extends AppCompatActivity {
 				.config()
 				.messageColor(Color.RED)
 				.backgroundColorResource(R.color.toast_bg_color)
-				.messageSize(30f)//设置文本大小，单位sp，默认14sp
+				.messageSize(26f)//设置文本大小，单位sp，默认14sp
 				.messageBold(true)//设置文本为粗体，默认false
 				.apply()
 				.show(text);

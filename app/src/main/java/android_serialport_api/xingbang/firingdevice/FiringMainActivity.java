@@ -231,7 +231,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isGetQbResult = false;//是否收到起爆结束指令
     private float befor_dianliu = 0;
     private float befor_dianya = 0;
-    private String changjia = "通用";
+    private String changjia = "TY";
     private String Fujian = "复检";
     private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
@@ -274,7 +274,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         //给主机发消息告知已进入起爆页面
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
 
     }
@@ -385,7 +385,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                return;
 //            }
             String err = ll_firing_errorAmount_4.getText().toString();
-            if (changjia.equals(getResources().getString(R.string.text_hf))) {
+            if (changjia.equals("XJ")) {
                 if (err.equals("0")) {
 //                increase(33);//之前是4
                     increase(6);//充电阶段
@@ -639,10 +639,12 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "isshow2: "+isshow2 );
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
-
+            Log.e(TAG, "stage: "+stage );
             if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && (stage == 2 || stage == 6 )) {// "电流过大";
                 Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
-                isshow2 = 1;
+                Log.e(TAG, "stage: "+stage );
+                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+
                 duanlu_sun++;
 //                firstThread.exit = true;
 //                firstThread.interrupt();
@@ -651,7 +653,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-                if(duanlu_sun>3){
+                if(duanlu_sun>1){
+                    isshow2 = 1;
                     AlertDialog dialog = new Builder(FiringMainActivity.this)
                             .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                             .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
@@ -1127,12 +1130,12 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_deAmount_2.setText("" + allBlastQu.size());
         tv__qb_dianliu_1.setText(denatorCount * cankaodianliu + "μA");
         tv__qb_dianliu_2.setText(denatorCount * cankaodianliu + "μA");
-        if (denatorCount < 200) {
+        if (denatorCount <= 200) {
             gaoya_cankaoSun = 25;
-        } else if (denatorCount > 200 && denatorCount < 300) {
+        } else if (  denatorCount < 300) {
             gaoya_cankaoSun = 30;
             sixExchangeCount = 30;
-        } else if (denatorCount > 300) {
+        } else  {
             gaoya_cankaoSun = 40;
             sixExchangeCount = 40;
         }
@@ -1365,16 +1368,16 @@ public class FiringMainActivity extends SerialPortActivity {
 
         //判断雷管状态是否正价错误数量
 //        if (!"FF".equals(fromData.getCommicationStatus())) {//只有充电错误更新状态
-            DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
-            denator.setStatusCode(fromData.getCommicationStatus());//00
-            denator.setErrorName(fromData.getCommicationStatusName());//充电异常
-            Application.getDaoSession().update(denator);
+        DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(fromData.getShellNo())).unique();
+        denator.setStatusCode(fromData.getCommicationStatus());//00
+        denator.setErrorName(fromData.getCommicationStatusName());//充电异常
+        Application.getDaoSession().update(denator);
         if (!"FF".equals(fromData.getCommicationStatus())) {
             totalerrorCDNum = totalerrorCDNum + 1;
         }
 
-            twoErrorDenatorFlag = 1;
-            noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+        twoErrorDenatorFlag = 1;
+        noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 
 //        }
         Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus());
@@ -1782,7 +1785,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
-                if (changjia.equals(getResources().getString(R.string.text_cq))) {
+                if (changjia.equals("CQ")) {
                     sendCmd(FourStatusCmd.send46("00", "03", denatorCount));//20(第一代)
                 } else {
                     sendCmd(FourStatusCmd.send46("00", "01", denatorCount));//20(第一代)
@@ -2415,7 +2418,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
 
                             if (twoCount == 3) {//第3秒时,单发充电
-                                if (changjia.equals(getResources().getString(R.string.text_cq))) {
+                                if (changjia.equals("CQ")) {
                                     increase(33);
                                 } else {
                                     sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
@@ -3276,6 +3279,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         dialog12.cancel();
                     })
                     .create();
+            dialog.setCancelable(false);
             dialog.show();
         }
     }

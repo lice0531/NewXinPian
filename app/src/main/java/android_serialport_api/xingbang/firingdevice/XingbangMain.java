@@ -207,7 +207,7 @@ public class XingbangMain extends SerialPortActivity {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         try {
             Thread.sleep(100);
@@ -258,10 +258,10 @@ public class XingbangMain extends SerialPortActivity {
         Utils.writeRecord("---进入主页面---");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
-        if(changjia.equals(getResources().getString(R.string.text_hf))){
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        if(changjia.equals("XJ")){
             app_version_name =getString(R.string.app_version_name2);
-        }else if(changjia.equals(getResources().getString(R.string.text_cq))){
+        }else if(changjia.equals("CQ")){
             app_version_name =getString(R.string.app_version_name3);
         }else {
             app_version_name =getString(R.string.app_version_name);
@@ -272,6 +272,7 @@ public class XingbangMain extends SerialPortActivity {
         busHandler = new Handler(msg -> {
             txt_Volt.setText(getResources().getString(R.string.text_reister_vol)+ busInfo.getBusVoltage() + "V");
             txt_IC.setText(getResources().getString(R.string.text_reister_ele) + (int)busInfo.getBusCurrentIa() + "μA");
+            Log.e(TAG,"电流:" + (int)busInfo.getBusCurrentIa() + "μA");
             if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
                 isshow1=false;
@@ -332,7 +333,7 @@ public class XingbangMain extends SerialPortActivity {
         });
         openPower = new OpenPower();
         openPower.start();
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Log.e(TAG, "changjia: " + changjia);
 //        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
 
@@ -1580,12 +1581,12 @@ public class XingbangMain extends SerialPortActivity {
 
             while (!exit) {
 //                try {
-                    //发送获取电源信息
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastProcessedTime > 1000){
-                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
-                        lastProcessedTime = currentTime;
-                    }
+                //发送获取电源信息
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastProcessedTime > 1000){
+                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
+                    lastProcessedTime = currentTime;
+                }
 //                    Thread.sleep(1000);
 //                } catch (InterruptedException e) {
 //                    // TODO Auto-generated catch block
@@ -1628,7 +1629,7 @@ public class XingbangMain extends SerialPortActivity {
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
 //            try {
-                openPower.interrupt();
+            openPower.interrupt();
 //            } catch (InterruptedException e) {
 //                // TODO Auto-generated catch block
 //                e.printStackTrace();

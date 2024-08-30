@@ -41,7 +41,7 @@ public class SystemVersionActivity extends SerialPortActivity {
     @BindView(R.id.check_version)
     Button checkVersion;
     private Handler Handler_tip = null;//提示信息
-    private String changjia = "通用";
+    private String changjia = "TY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +49,10 @@ public class SystemVersionActivity extends SerialPortActivity {
         setContentView(R.layout.activity_sys_version);//version
         ButterKnife.bind(this);
         //初始化在主页面,全局搜索默认值
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", getResources().getString(R.string.text_ty));
-        if(changjia.equals(getResources().getString(R.string.text_hf))){
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        if(changjia.equals("XJ")){
             rj_version.setText(getString(R.string.app_version_name2));
-        }else if(changjia.equals(getResources().getString(R.string.text_cq))){
+        }else if(changjia.equals("CQ")){
             rj_version.setText(getString(R.string.app_version_name3));
         }else {
             rj_version.setText(getString(R.string.app_version_name));

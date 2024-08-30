@@ -598,7 +598,7 @@
     <string-array name="sp_changjia">
         <item>TY</item>
         <item>CQ</item>
-        <item>HF</item>
+        <item>XJ</item>
     </string-array>
 <!--    <string name="tongyong">TY</string>-->
 <!--    <string name="chongqing">CQ</string>-->
@@ -970,8 +970,4 @@
     <string name="text_toastts">Tosat Tips</string>
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
     <string name="text_alert_deleteErr">Do you want to delete the incorrect detonator</string>
-    <string name="text_hf">HT</string>
-    <string name="text_ty">TY</string>
-    <string name="text_cq">CQ</string>
-
 </resources>
