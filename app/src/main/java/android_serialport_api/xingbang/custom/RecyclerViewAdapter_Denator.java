@@ -95,6 +95,8 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
             }
             if (mLine == 2) {//单发检测页面
+                holder.mTvZhuangTai.setTextColor("异常".equals(detonatorBaseInfo.getStatusName()) ?
+                        Color.RED : Color.BLACK);
                 holder.mTvZhuangTai.setText(detonatorBaseInfo.getStatusName() + "");//状态
                 holder.mTvShuJu.setText((!TextUtils.isEmpty(detonatorBaseInfo.getVoltage()) ? detonatorBaseInfo.getVoltage()
                         : "0")+"V " +(!TextUtils.isEmpty(detonatorBaseInfo.getCurrent()) ? detonatorBaseInfo.getCurrent()

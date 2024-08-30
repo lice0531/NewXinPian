@@ -161,65 +161,65 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
                     }
                     break;
                 case 3://未收到关闭电源命令
-                    show_Toast("未收到单片机返回命令");
+                    show_centerToast_long("未收到单片机返回命令");
                     break;
                 case 4://未收到打开电源命令
-                    show_Toast(getResources().getString(R.string.text_error_tip6));
+                    show_centerToast_long(getResources().getString(R.string.text_error_tip6));
                     break;
                 case 5://桥丝不正常
-                    show_Toast(getResources().getString(R.string.text_error_tip7));
+                    show_centerToast_long(getResources().getString(R.string.text_error_tip7));
                     SoundPlayUtils.play(4);
                     break;
                 case 6:
-                    show_Toast("请先设置延时");
+                    show_centerToast_long("请先设置延时");
                     break;
                 case 7:
-                    show_Toast("当前注册雷管电流过大,请检查雷管");
+                    show_centerToast_long("当前注册雷管电流过大,请检查雷管");
                     SoundPlayUtils.play(4);
                     break;
-                case 8://没有电容或其他异常
-                    show_Toast("当前雷管有异常,请检测后重新注册");
+                case 8:
+                    show_centerToast_long("当前雷管有异常,请检测后重新注册");
                     SoundPlayUtils.play(4);
                     break;
                 case 9:
-                    show_Toast("当前雷管读码异常,请检查该雷管编码规则");
+                    show_centerToast_long("当前雷管读码异常,请检查该雷管编码规则");
                     SoundPlayUtils.play(4);
                     break;
                 case 10:
-                    show_Toast("当前雷管为煤许产品,请用煤许版本进行注册");
+                    show_centerToast_long("当前雷管为煤许产品,请用煤许版本进行注册");
                     SoundPlayUtils.play(4);
                     break;
                 case 11:
                     SoundPlayUtils.play(4);
-                    show_Toast(getResources().getString(R.string.text_error_tip1));
+                    show_centerToast_long(getResources().getString(R.string.text_error_tip1));
                     //"雷管信息有误，管厂码不正确，请检查"
                     break;
                 case 12:
                     SoundPlayUtils.play(4);
-                    show_Toast(getResources().getString(R.string.text_error_tip2));
+                    show_centerToast_long(getResources().getString(R.string.text_error_tip2));
                     break;
                 case 13:
                     SoundPlayUtils.play(4);
-                    show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                    show_centerToast_long("已达到最大延时限制" + maxSecond + "ms");
                     break;
                 case 14://重复的时候跳到对应的条目
                     SoundPlayUtils.play(4);
-                    show_Toast_long("与第" + lg_No + "发" + singleShellNo + "重复");
+                    show_centerToast_long("与第" + lg_No + "发" + singleShellNo + "重复");
                     int total = GreenDaoMaster.showDenatorSum();
                     MoveToPosition(linearLayoutManager, binding.zclRlLgRv, total - Integer.parseInt(lg_No));
                     break;
                 case 16:
                     SoundPlayUtils.play(4);
-                    show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+                    show_centerToast_long("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
                     break;
                 case 17:
                     //没有芯片
-                    show_Toast("当前雷管异常,请更换其他雷管注册");
+                    show_centerToast_long("芯片异常");
                     SoundPlayUtils.play(4);
                     break;
                 case 18:
                     //没有芯片
-                    show_Toast("电容异常");
+                    show_centerToast_long("电容异常");
                     SoundPlayUtils.play(4);
                     break;
                 case 99://刷新页面
@@ -243,31 +243,31 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         mHandler_tip = new Handler(msg -> {
             if (msg.what == 1) {
                 SoundPlayUtils.play(4);
-                show_Toast(getResources().getString(R.string.text_error_tip1));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip1));
                 //"雷管信息有误，管厂码不正确，请检查"
             } else if (msg.what == 2) {
                 SoundPlayUtils.play(4);
-                show_Toast(getResources().getString(R.string.text_error_tip2));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip2));
             } else if (msg.what == 3) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_centerToast_long("已达到最大延时限制" + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与第" + lg_No + "发" + singleShellNo + "重复");
+                show_centerToast_long("与第" + lg_No + "发" + singleShellNo + "重复");
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));//跳到对应的条目
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_centerToast_long("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
             } else if (msg.what == 10) {
-                show_Toast("找不到对应的生产数据,请先导入生产数据");
+                show_centerToast_long("找不到对应的生产数据,请先导入生产数据");
             } else if (msg.what == 99) {
                 mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                 mAdapter.setListData(mListData, 1);
                 mAdapter.notifyDataSetChanged();
             } else {
                 SoundPlayUtils.play(4);
-                show_Toast("注册失败");
+                show_centerToast_long("注册失败");
             }
             return false;
         });
@@ -399,12 +399,12 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
     /**
      * 单发注册(存储桥丝状态)
      */
-    private void insertSingleDenator(String detonatorId, From12Reister zhuce_form) {
+    private int insertSingleDenator(String detonatorId, From12Reister zhuce_form) {
         // 管厂码
         String facCode = Utils.getDetonatorShellToFactoryCodeStr(detonatorId);
         // 特征码
         String facFea = Utils.getDetonatorShellToFeatureStr(detonatorId);
-        Log.e(TAG,"注册"+ "detonatorId: " + detonatorId);
+        Log.e(TAG,"注册detonatorId: " + detonatorId);
 //        String shellBlastNo = serchShellBlastNo(detonatorId);
         DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
 //        if (detonatorTypeNew == null) {//考虑到可以直接注册A6
@@ -413,27 +413,33 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
 //        }
         if (checkRepeatdenatorId(detonatorId)) {//判断8位芯片码
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
         }
         if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {//判断管壳码
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
         }
         if (detonatorId.startsWith("00000", 2)) {
             mHandler_1.sendMessage(mHandler_1.obtainMessage(8));
+            return -1;
         }
         if (detonatorId.length() != 13) {
             mHandler_1.sendMessage(mHandler_1.obtainMessage(9));
+            return -1;
         }
         if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode)) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return -1;
         }
 
         if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+            return -1;
         }
-        Log.e(TAG,"查询生产数据库查管壳码"+ "detonatorId: " + detonatorId);
+        Log.e(TAG,"查询生产数据库查管壳码detonatorId: " + detonatorId);
         int maxNo = getMaxNumberNo();
         int pai = getMaxPai();
-        Log.e(TAG,"最大排号"+ "pai: " + pai);
+        Log.e(TAG,"最大排号pai: " + pai);
         int sitholeNum = getMaxSitholeNum(pai);//目前是单孔单发,考虑一下怎么注册单孔多发
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
@@ -458,7 +464,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setDelay(0);
         denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
         denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setErrorName("已注册");
         if ((qiaosi_set.equals("true") && zhuce_form.getWire().equals("无"))) {
             //桥丝异常
             denatorBaseinfo.setErrorCode("00");
@@ -486,6 +492,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(99));
         SoundPlayUtils.play(1);
+        return 0;
     }
 
     private void modifyBlastBaseInfo(DenatorBaseinfo info, int position) {
@@ -602,11 +609,13 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
      * @return 是否重复
      */
     public boolean checkRepeatdenatorId(String detonatorId) {
-        Log.e(TAG,"检查重复的数据"+ "detonatorId: " + detonatorId);
+        if (detonatorId.length() == 0) {
+            return false;
+        }
+        Log.e("检查重复的数据", "detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
+        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));
         if (list_lg.size() > 0) {
-            Log.e(TAG,"注册"+ "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";
             singleShellNo = list_lg.get(0).getShellBlastNo();
             return true;
@@ -777,7 +786,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
      * @return
      */
     public boolean checkRepeatShellNo(String shellNo) {
-        Log.e(TAG,"检查重复的数据"+ "shellNo: " + shellNo);
+        Log.e(TAG,"检查重复的数据shellNo: " + shellNo);
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatShellNo(shellNo);
         if (list_lg.size() > 0) {
@@ -814,7 +823,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where pai =? ";
         Cursor cursor = db.rawQuery(sql, new String[]{no + ""});
         if (cursor != null && cursor.moveToNext()) {
-            Log.e(TAG,"最大孔内序号"+ "maxSitholeNum: " + cursor.getInt(19));
+            Log.e(TAG,"最大孔内序号maxSitholeNum: " + cursor.getInt(19));
             int maxSitholeNum = cursor.getInt(19);
             cursor.close();
             return maxSitholeNum;

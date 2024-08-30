@@ -67,6 +67,9 @@ public class  BaseActivity extends Activity {
 		Utils.showToast(this,text,5000);
 	}
 
+	public void show_centerToast_long(String text) {
+		Utils.showCengterToast(this,text,6000);
+	}
 	public static void fixInputMethodManagerLeak(Context destContext) {  
 	    if (destContext == null) {  
 	        return;  

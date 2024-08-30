@@ -195,9 +195,14 @@ public class GreenDaoMaster {
 //                .queryBuilder()
 //                .where(DenatorBaseinfoDao.Properties.DenatorId.eq(detonatorId))
 //                .list();
+//        return mDeantorBaseDao
+//                .queryBuilder()
+//                .where(DenatorBaseinfoDao.Properties.DenatorId.like(detonatorId.substring(7)))
+//                .list();//0209为李斌改的不用4字节的首字节进行的模糊查询
+
         return mDeantorBaseDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.DenatorId.like(detonatorId.substring(7)))
+                .where(DenatorBaseinfoDao.Properties.DenatorId.like("%" + detonatorId))
                 .list();//0209为李斌改的不用4字节的首字节进行的模糊查询
     }
     /**

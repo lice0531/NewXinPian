@@ -118,6 +118,8 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
                 //+"-"+mChildList.get(groupPosition).get(childPosition).getSitholeNum())
         viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getShellBlastNo());
         viewHolder2.tv2_zc_delay.setText(mChildList.get(groupPosition).get(childPosition).getDelay()+"");
+        viewHolder2.tv2_zc_status.setTextColor("异常".equals(mChildList.get(groupPosition).
+                get(childPosition).getStatusName()) ? Color.RED : Color.BLACK);
         viewHolder2.tv2_zc_status.setText(mChildList.get(groupPosition).get(childPosition).getStatusName());
         return convertView;
     }

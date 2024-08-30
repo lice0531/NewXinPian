@@ -221,7 +221,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private String qiaosi_set = "";//是否检测桥丝
     private String version = "";//是否检测桥丝
     private ScanQrControl mScaner = null;
-    private String TAG = "雷管注册手动输入页面--";
+    private String TAG = "手动输入注册页面--";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,6 +231,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         SoundPlayUtils.init(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
+        openSerialPort();
         getUserMessage();
         getFactoryType();//获取延期最大值
         showDenatorSum();//显示雷管总数
@@ -246,7 +247,25 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         hideInputKeyboard();//隐藏焦点
         Utils.writeRecord("---进入扫码注册页面---");
     }
+    Handler openHandler = new Handler();//重新打开串口
+    private void openSerialPort() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initSerialPort();
+            }
+        }, 2500);
 
+
+    }
     private void getUserMessage() {
         List<MessageBean> list = getDaoSession().getMessageBeanDao().loadAll();
         qiaosi_set = list.get(0).getQiaosi_set();
@@ -498,6 +517,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 edit_start_entboxNoAndSerial_st.getText().clear();
                 edit_end_entboxNoAndSerial_ed.getText().clear();//.setText("")
 //                    etNum.getText().clear();//连续注册个数
+                adapter.notifyDataSetChanged();
             }
             if (tipInfoFlag == 89) {//刷新界面
                 show_Toast("输入的管壳码重复");
@@ -1254,7 +1274,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
                     return;
                 }
-                int a = insertSingleDenator(barCode);
+                insertSingleDenator(barCode);
             }
 
         }
@@ -1448,9 +1468,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             values.put("delay", delay);
             values.put("regdate", Utils.getDateFormatLong(new Date()));
             values.put("statusCode", "02");
-            values.put("statusName", "已注册");
+            values.put("statusName", "正常");
             values.put("errorCode", "FF");
-            values.put("errorName", "");
+            values.put("errorName", "已注册");
             values.put("wire", "");
             //向数据库插入数据
             db.insert("denatorBaseinfo", null, values);
@@ -1459,9 +1479,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             ContentValues values = new ContentValues();
             values.put("shellBlastNo", shellNo);//key为字段名，value为值
             values.put("statusCode", "02");
-            values.put("statusName", "已注册");
+            values.put("statusName", "正常");
             values.put("errorCode", "FF");
-            values.put("errorName", "");
+            values.put("errorName", "已注册");
             values.put("regdate", Utils.getDateFormatLong(new Date()));
             db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
         }
@@ -1554,9 +1574,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setStatusName("正常");
         denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setErrorName("已注册");
         denatorBaseinfo.setWire("");//桥丝状态
         denatorBaseinfo.setPai(1);
         denatorBaseinfo.setAuthorization(version);//雷管芯片型号
@@ -1567,6 +1587,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
+        adapter.notifyDataSetChanged();
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         return 0;
@@ -1650,11 +1671,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
-                values.put("statusName", "已注册");
+                values.put("statusName", "正常");
                 values.put("errorCode", "FF");
                 values.put("pai", 1);
                 values.put("sitholeNum", 1);
-                values.put("errorName", "");
+                values.put("errorName", "已注册");
                 values.put("wire", "");//桥丝状态
                 //向数据库插入数据
                 db.insert("denatorBaseinfo", null, values);
@@ -1665,10 +1686,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 values.put("statusName", "");
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
-                values.put("statusName", "已注册");
+                values.put("statusName", "正常");
                 values.put("pai", 1);
                 values.put("errorCode", "FF");
-                values.put("errorName", "");
+                values.put("errorName", "已注册");
                 db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
             }
             reCount++;
@@ -2069,10 +2090,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
+                    kaishiScan();//启动扫描
                 } else {
                     continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
+                    tingzhiScan();//停止扫描
                 }
                 sanButtonFlag = 1;
                 break;
@@ -2080,10 +2101,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
+                    kaishiScan();//启动扫描
                 } else {
                     continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
+                    tingzhiScan();//停止扫描
                 }
                 sanButtonFlag = 2;
                 break;
@@ -2104,6 +2125,47 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return false;
     }
 
+    private void kaishiScan() {
+        switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
+            case "M900": {
+                //M900打开扫码
+                mScaner.startScan();
+                break;
+            }
+            case "ST327":
+            case "S337": {
+                //st327上电
+                powerOnScanDevice(PIN_TRACKER_EN);//扫码头上电
+                break;
+            }
+            default: {
+                scanDecode.starScan();
+
+            }
+        }
+    }
+
+    private void tingzhiScan() {
+        switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
+            case "M900": {
+                //M900关闭扫码
+                mScaner.stopScan();
+                break;
+            }
+            case "ST327":
+            case "S337": {
+                //st327扫码下电
+                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                break;
+            }
+            default: {
+                //kt50停止扫码头方法
+                scanDecode.stopScan();//停止扫描
+            }
+        }
+    }
 
     private class SendOpenPower extends Thread {
         public volatile boolean exit = false;

@@ -111,7 +111,21 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         title.setText("雷管注册");
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
-        iv_add.setOnClickListener(v -> startActivity(new Intent(ZhuCeActivity_scan.this, UpdataDelayActivity.class)));
+        iv_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mApplication.closeSerialPort();
+                        Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                        mSerialPort = null;
+                    }
+                }).start();
+            }
+        });
+        iv_add.setOnClickListener(v -> startActivity(
+                new Intent(ZhuCeActivity_scan.this, UpdataDelayActivity.class)));
         iv_back.setOnClickListener(v -> finish());
         getUserMessage();//获取版本号
 //        getDate();
@@ -139,33 +153,33 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         mHandler_tip = new Handler(msg -> {
             if (isCorrectReisterFea == 1) {
                 SoundPlayUtils.play(4);
-                show_Toast(getResources().getString(R.string.text_error_tip1));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip1));
                 //"雷管信息有误，管厂码不正确，请检查"
             } else if (isCorrectReisterFea == 2) {
                 SoundPlayUtils.play(4);
-                show_Toast(getResources().getString(R.string.text_error_tip2));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip2));
             } else if (isCorrectReisterFea == 3) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_centerToast_long("已达到最大延时限制" + maxSecond + "ms");
             } else if (isCorrectReisterFea == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast("与第" + lg_No + "发" + singleShellNo + "重复");
+                show_centerToast_long("与第" + lg_No + "发" + singleShellNo + "重复");
 //                int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
             } else if (isCorrectReisterFea == 6) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码超出13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_centerToast_long("当前管壳码超出13位,请检查雷管或系统版本是否符合后,再次注册");
             } else if (isCorrectReisterFea == 7) {
                 SoundPlayUtils.play(4);
-                show_Toast_long("与第" + lg_No + "发" + singleShellNo + "重复");
+                show_centerToast_long("与第" + lg_No + "发" + singleShellNo + "重复");
             } else if (isCorrectReisterFea == 8) {
                 SoundPlayUtils.play(4);
-                show_Toast("有延时为空,请先设置延时");
+                show_centerToast_long("有延时为空,请先设置延时");
             } else if (isCorrectReisterFea == 9) {
                 decodeBar(msg.obj.toString());
             } else {
                 SoundPlayUtils.play(4);
-                show_Toast("注册失败");
+                show_centerToast_long("注册失败");
             }
             isCorrectReisterFea = 0;
             return false;
@@ -181,71 +195,71 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 showDenatorSum();
             }
             if (tipInfoFlag == 3) {//未收到关闭电源命令
-                show_Toast(getResources().getString(R.string.text_error_tip5));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip5));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 4) {//未收到打开电源命令
-                show_Toast(getResources().getString(R.string.text_error_tip6));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip6));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 5) {//桥丝不正常
-                show_Toast(getResources().getString(R.string.text_error_tip7));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip7));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 6) {//延时不正常
-                show_Toast("请先设置延时");
+                show_centerToast_long("请先设置延时");
             }
             if (tipInfoFlag == 7) {//桥丝不正常
-                show_Toast("当前注册雷管电流过大,请检查雷管");
+                show_centerToast_long("当前注册雷管电流过大,请检查雷管");
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 8){
-                show_Toast("当前雷管有异常,请检测后重新注册");
+                show_centerToast_long("当前雷管有异常,请检测后重新注册");
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 9) {
-                show_Toast("当前雷管读码异常,请检查该雷管编码规则");
+                show_centerToast_long("当前雷管读码异常,请检查该雷管编码规则");
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 10) {
-                show_Toast("当前雷管为煤许产品,请用煤许版本进行注册");
+                show_centerToast_long("当前雷管为煤许产品,请用煤许版本进行注册");
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 11) {
                 SoundPlayUtils.play(4);
-                show_Toast(getResources().getString(R.string.text_error_tip1));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip1));
                 //"雷管信息有误，管厂码不正确，请检查"
             }
             if (tipInfoFlag == 12) {
                 SoundPlayUtils.play(4);
-                show_Toast(getResources().getString(R.string.text_error_tip2));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip2));
             }
             if (tipInfoFlag == 13) {
                 SoundPlayUtils.play(4);
-                show_Toast("已达到最大延时限制" + maxSecond + "ms");
+                show_centerToast_long("已达到最大延时限制" + maxSecond + "ms");
             }
             if (tipInfoFlag == 14) {//重复的时候跳到对应的条目
                 SoundPlayUtils.play(4);
-                show_Toast_long("与第" + lg_No + "发" + singleShellNo + "重复");
+                show_centerToast_long("与第" + lg_No + "发" + singleShellNo + "重复");
             }
             if (tipInfoFlag == 16) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+                show_centerToast_long("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
             }
             if (tipInfoFlag == 17) {
                 SoundPlayUtils.play(4);
-                show_Toast("当前雷管异常,请更换其他雷管注册");
+                show_centerToast_long("芯片异常");
             }
             if (tipInfoFlag == 18) {
                 SoundPlayUtils.play(4);
-                show_Toast("电容异常");
+                show_centerToast_long("电容异常");
             }
             if (tipInfoFlag == 88) {//刷新界面
                 showDenatorSum();
                 initList();
             }
             if (tipInfoFlag == 89) {//刷新界面
-                show_Toast("输入的管壳码重复");
+                show_centerToast_long("输入的管壳码重复");
                 showDenatorSum();
             }
             return false;
@@ -929,7 +943,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
     /**
      * 单发注册(存储桥丝状态)
      */
-    private void insertSingleDenator(String detonatorId, From12Reister zhuce_form) {
+    private int insertSingleDenator(String detonatorId, From12Reister zhuce_form) {
         // 管厂码
         String facCode = Utils.getDetonatorShellToFactoryCodeStr(detonatorId);
         // 特征码
@@ -944,28 +958,34 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         if (checkRepeatdenatorId(detonatorId)) {//判断8位芯片码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
+            return -1;
         }
         if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {//判断管壳码
             isCorrectReisterFea = 4;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
+            return -1;
         }
         if (detonatorId.startsWith("00000", 2)) {
             //电流过大
             tipInfoFlag = 8;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            return -1;
         }
         if (detonatorId.length() != 13) {
             tipInfoFlag = 9;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            return -1;
         }
         if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode)) {
             isCorrectReisterFea = 1;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
+            return -1;
         }
 
         if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
             isCorrectReisterFea = 2;
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
+            return -1;
         }
         Log.e(TAG,"查询生产数据库查管壳码"+ "detonatorId: " + detonatorId);
         int maxNo = getMaxNumberNo();
@@ -997,7 +1017,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setStatusCode("02");
 //        denatorBaseinfo.setStatusName("正常");
 //        denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("");
+        denatorBaseinfo.setErrorName("已注册");
         if ((qiaosi_set.equals("true") && zhuce_form.getWire().equals("无"))) {
             //桥丝异常
             denatorBaseinfo.setErrorCode("00");
@@ -1026,6 +1046,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
         SoundPlayUtils.play(1);
+        return 0;
     }
 
     /**
@@ -1036,7 +1057,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
     public boolean checkRepeatdenatorId(String detonatorId) {
         Log.e(TAG,"检查重复的数据detonatorId: " + detonatorId);
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId);
+        List<DenatorBaseinfo> list_lg = master.checkRepeatdenatorId(detonatorId.substring(5));
         if (list_lg.size() > 0) {
             Log.e(TAG,"注册"+ "list_lg: " + list_lg.toString());
             lg_No = list_lg.get(0).getBlastserial() + "";
@@ -1354,6 +1375,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         if (denatorBaseinfo != null) {
             Log.e("注册", "denatorBaseinfo: " + denatorBaseinfo.toString());
             lg_No = denatorBaseinfo.getBlastserial() + "";
+            singleShellNo = denatorBaseinfo.getShellBlastNo();
             return true;
         } else {
             return false;
