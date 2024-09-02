@@ -39,7 +39,7 @@ public class UpdataDelayActivity extends BaseActivity implements View.OnClickLis
             MmkvUtils.savecode("knys",binding.udEtKnys.getText());//孔内延时
             MmkvUtils.savecode("f1ys",binding.udEtF1ys.getText());//f1延时
             MmkvUtils.savecode("f2ys",binding.udEtF2ys.getText());//f2延时
-            show_Toast("保存成功");
+            show_Toast(getResources().getString(R.string.text_systip_1));
         }
     }
 }

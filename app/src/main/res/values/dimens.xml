@@ -9,7 +9,7 @@
     <dimen name="DownWork_Item_FontSize">20sp</dimen>
     <dimen name="listViewFontSize">14sp</dimen>
     <dimen name="childPageLabelFontSize">16sp</dimen>
-    <dimen name="fireChildPageLabelFontSize">18sp</dimen>
+    <dimen name="fireChildPageLabelFontSize">16sp</dimen>
     <dimen name="item_project_size">18sp</dimen>
     <dimen name="MainPage_FontSize">20sp</dimen>
 

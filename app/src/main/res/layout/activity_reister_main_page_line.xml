@@ -361,7 +361,7 @@
                             android:layout_width="0dp"
                             android:layout_height="35dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1.5"
+                            android:layout_weight="1"
                             android:background="@drawable/translucent"
                             android:gravity="left"
                             android:hint="@string/text_scan_f2"
@@ -374,9 +374,10 @@
                         <EditText
                             android:id="@+id/et_tk"
                             android:layout_width="0dp"
-                            android:layout_weight="0.5"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="2dp"
+                            android:textSize="@dimen/childPageBtnFontSize"
                             android:hint="@string/text_tiaok"
                             android:inputType="number"
                             />

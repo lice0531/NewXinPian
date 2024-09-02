@@ -290,7 +290,7 @@ public class XingbangMain extends SerialPortActivity {
                             dialog12.dismiss();
                             finish();
                         })
-                        .setNegativeButton("继续", (dialog1, which) -> {
+                        .setNegativeButton(getString(R.string.text_firing_jixu), (dialog1, which) -> {
                             isshow1=true;
                             dialog1.dismiss();
                         })

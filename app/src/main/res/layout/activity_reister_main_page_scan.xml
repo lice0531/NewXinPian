@@ -257,7 +257,7 @@
                             android:id="@+id/et_num"
                             style="@style/alltextstyle"
                             android:layout_width="100dp"
-                            android:layout_height="@dimen/childReisterPageEditHeight"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="2dp"
                             android:background="@drawable/translucent"
@@ -396,7 +396,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="35dp"
                                 android:layout_gravity="center_vertical"
-                                android:layout_weight="1.5"
+                                android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
                                 android:hint="@string/text_delay_pai"
@@ -418,10 +418,11 @@
                             <EditText
                                 android:id="@+id/et_tk"
                                 android:layout_width="0dp"
-                                android:layout_weight="0.5"
+                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="2dp"
                                 android:hint="@string/text_tiaok"
+                                android:textSize="@dimen/childPageBtnFontSize"
                                 android:inputType="number"
                                 />
                             <Button
