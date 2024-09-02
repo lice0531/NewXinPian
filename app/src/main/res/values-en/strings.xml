@@ -972,4 +972,10 @@
     <string name="text_alert_deleteErr">Do you want to delete the incorrect detonator</string>
     <string name="text_yes">YES</string>
     <string name="text_no">NO</string>
+    <string name="text_xzjd">Download progress:</string>
+    <string name="text_xzwc">Download complete</string>
+    <string name="text_djtzl">The user clicks the notification bar</string>
+    <string name="text_xzzt">Download pause</string>
+    <string name="text_xzz">Being downloaded......</string>
+    <string name="text_xzsb">Download failure</string>
 </resources>

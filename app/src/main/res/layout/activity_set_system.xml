@@ -258,9 +258,20 @@
                     android:layout_weight="1"
                     android:background="@drawable/bt_mainpage_style"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:text="@string/set_language"
                     android:textColor="@color/bt_fg_base" />
-
+                <Button
+                    android:id="@+id/set_save"
+                    style="@style/allbtntstyle"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bt_mainpage_style"
+                    android:text="@string/set_save"
+                    android:textColor="@color/bt_fg_base" />
 
                 <Button
                     android:id="@+id/set_Voltage"
@@ -276,16 +287,16 @@
                     android:textColor="@color/bt_fg_base" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/set_save"
-                style="@style/allbtntstyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/bt_mainpage_style"
-                android:text="@string/set_save"
-                android:textColor="@color/bt_fg_base" />
+<!--            <Button-->
+<!--                android:id="@+id/set_save"-->
+<!--                style="@style/allbtntstyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:background="@drawable/bt_mainpage_style"-->
+<!--                android:text="@string/set_save"-->
+<!--                android:textColor="@color/bt_fg_base" />-->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

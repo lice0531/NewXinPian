@@ -364,6 +364,7 @@ public class XingbangMain extends SerialPortActivity {
             }
         }, 2500);
 
+
     }
 
     private void openSerial(){
@@ -1183,7 +1184,7 @@ public class XingbangMain extends SerialPortActivity {
         String str5 = c;
         Log.e(TAG, "倒计时: " + daojishi);
         mOffTextView = new TextView(this);
-        mOffTextView.setTextSize(25);
+        mOffTextView.setTextSize(20);
         mOffTextView.setText(tip + "\n" + getString(R.string.text_fir_dialog1));
         mDialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.text_fir_dialog2))

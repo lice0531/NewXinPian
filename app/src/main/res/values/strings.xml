@@ -981,4 +981,11 @@
     <string name="text_alert_deleteErr">是否删除错误雷管</string>
     <string name="text_yes">是</string>
     <string name="text_no">否</string>
+    <string name="text_xzjd">下载进度：</string>
+    <string name="text_xzwc">下载完成</string>
+    <string name="text_djtzl">用户点击了通知栏</string>
+    <string name="text_xzzt">下载暂停</string>
+    <string name="text_xzz">正在下载中......</string>
+    <string name="text_xzsb">下载失败</string>
+
 </resources>

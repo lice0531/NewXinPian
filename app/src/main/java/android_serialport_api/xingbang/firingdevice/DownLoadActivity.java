@@ -449,7 +449,7 @@ public class DownLoadActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-                Toast.makeText(DownLoadActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DownLoadActivity.this, getResources().getString(R.string.text_xzwc), Toast.LENGTH_SHORT).show();
                 try {
                     XbUtils.openAPK(DownLoadActivity.this, Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+app_name);    // 升级程序下载成功
                     //跳转到显示下载内容的activity界面
@@ -460,7 +460,7 @@ public class DownLoadActivity extends BaseActivity {
                     Log.e("下载",  "no activity for " + ex.getMessage());
                 }
             } else if (intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
-                Toast.makeText(DownLoadActivity.this, "用户点击了通知栏", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DownLoadActivity.this, getResources().getString(R.string.text_djtzl), Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -473,7 +473,7 @@ public class DownLoadActivity extends BaseActivity {
             Bundle bundle = msg.getData();
             int pro = bundle.getInt("progressMsg");
             pb_update.setProgress(pro);
-            mTvMessage.setText("下载进度：" + pro + "%");
+            mTvMessage.setText(getResources().getString(R.string.text_xzjd) + pro + "%");
         }
     };
 
@@ -491,7 +491,7 @@ public class DownLoadActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mBtnVersion.setText("下载暂停");
+                                mBtnVersion.setText(getResources().getString(R.string.text_xzzt));
                             }
                         });
                         break;
@@ -505,7 +505,7 @@ public class DownLoadActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mBtnVersion.setText("正在下载中......");
+                                mBtnVersion.setText(getResources().getString(R.string.text_xzz));
                             }
                         });
                         break;
@@ -518,7 +518,7 @@ public class DownLoadActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 pb_update.setProgress(100);
-                                mBtnVersion.setText("下载完成");
+                                mBtnVersion.setText(getResources().getString(R.string.text_xzwc));
                             }
                         });
                         break;
@@ -527,7 +527,7 @@ public class DownLoadActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(DownLoadActivity.this, "下载失败", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DownLoadActivity.this, getResources().getString(R.string.text_xzsb), Toast.LENGTH_LONG).show();
                             }
                         });
                         break;

@@ -8,7 +8,7 @@
     <!-- 序号 -->
     <TextView
         android:id="@+id/tv_blastserial"
-        android:layout_width="40dp"
+        android:layout_width="60dp"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />

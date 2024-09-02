@@ -357,6 +357,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
+                android:textSize="18sp"
                 android:layout_gravity="center"
                 android:text="@string/text_test_vol"
                 style="@style/alltextstyle"/>
@@ -391,6 +392,7 @@
                 android:gravity="right"
                 android:layout_gravity="center"
                 android:text="@string/text_test_ele"
+                android:textSize="18sp"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -400,6 +402,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
+                android:textSize="18sp"
                 android:text="0μA"
                 style="@style/alltextstyle"/>
 
@@ -423,6 +426,7 @@
                 android:gravity="right"
                 android:layout_gravity="center"
                 android:text="@string/text_test_num"
+                android:textSize="18sp"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -432,6 +436,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
+                android:textSize="18sp"
                 android:text="0"
                 style="@style/alltextstyle" />
 
@@ -455,6 +460,7 @@
                 android:gravity="right"
                 android:layout_gravity="center"
                 android:text="@string/text_test_errnum"
+                android:textSize="18sp"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -464,6 +470,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:textSize="18sp"
                 android:gravity="right"
                 android:text="0"
                 android:textColor="@color/color_green" />
@@ -487,6 +494,7 @@
                 android:gravity="right"
                 android:layout_gravity="center"
                 android:text="@string/text_test_ckdl"
+                android:textSize="18sp"
                 style="@style/alltextstyle" />
 
             <TextView
@@ -496,6 +504,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:gravity="right"
+                android:textSize="18sp"
                 android:text="0μA"
                 style="@style/alltextstyle" />
 

@@ -115,6 +115,8 @@ public class UpgradeActivity extends SerialPortActivity {
     private DownloadManager.Query query;
     private Timer mTimer;
     String appname;
+    Handler openHandler = new Handler();//重新打开串口
+    private boolean isRestarted = false;
     // 通用
     public DialogPlus mDialogPlus;
     @SuppressLint("MissingInflatedId")
@@ -123,6 +125,11 @@ public class UpgradeActivity extends SerialPortActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -135,6 +142,15 @@ public class UpgradeActivity extends SerialPortActivity {
         Log.e("下载地址", "wangzhi: " + wangzhi);
         downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
         query = new DownloadManager.Query();
+        // 延时3秒后执行的操作
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                openSerial();
+                mDownloadTest = new DownloadTest(UpgradeActivity.this);
+                mDownloadId = mDownloadTest.downloadAPK(wangzhi, downloadManager, appname);
+            }
+        }, 2500);
         mDownloadTest = new DownloadTest(this);
 
         mDownloadId = mDownloadTest.downloadAPK(wangzhi, downloadManager, appname);
@@ -163,6 +179,12 @@ public class UpgradeActivity extends SerialPortActivity {
         intentfilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
         registerReceiver(receiver, intentfilter);
 
+    }
+
+    private void openSerial(){
+        if (isRestarted) {
+            initSerialPort();
+        }
     }
 
     // 进度条
@@ -574,7 +596,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 .setCancelable(false)
                 .setMessage(getResources().getString(R.string.text_sjerror20))//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNegativeButton("确认", (dialog13, which) -> {
+                .setNegativeButton(getResources().getString(R.string.text_verify), (dialog13, which) -> {
                     dialog13.dismiss();
                     if (XbUtils.isExists(mPath_Local)) {
                         // 删除本次下载的bin文件
@@ -983,6 +1005,12 @@ public class UpgradeActivity extends SerialPortActivity {
 
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        isRestarted = true;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
 
         switch (requestCode) {
@@ -1171,6 +1199,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
+        isRestarted = false;
         new Thread(new Runnable() {
             @Override
             public void run() {
