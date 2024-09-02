@@ -33,6 +33,7 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
     private Context mContext;
     private int mIndex;
     private int mLine;
+    private boolean isHideStatus = false;//起爆页面（mLine=8）再页面刚进来时候不显示状态，等到状态改变时候再显示
 
     /**
      * 构造方法
@@ -58,6 +59,10 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
         this.mIndex = index;
     }
 
+    public void setErrorNameNull(boolean hide){
+        this.isHideStatus = hide;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -76,6 +81,8 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_upload, parent, false);
         } else if (mLine == 8) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_qibao, parent, false);
+        } else if (mLine == 9) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.a_item_paper, parent, false);
         }
         return new ViewHolder(view);
     }
@@ -166,8 +173,27 @@ public class RecyclerViewAdapter_Denator<T> extends RecyclerView.Adapter<Recycle
             DenatorBaseinfo dbInfo = list_lg.get(position);
             holder.mTvBlastSerial.setText(dbInfo.getPai()+"-"+dbInfo.getSithole()+"-");//+dbInfo.getSitholeNum() 序号
             holder.mTvShellBlastNo.setText(dbInfo.getShellBlastNo());   // 管壳号
-            holder.mTvZhuangTai.setText(dbInfo.getErrorName() + "");//状态
+            if (isHideStatus) {
+                holder.mTvZhuangTai.setText("");
+            } else {
+                holder.mTvZhuangTai.setText(dbInfo.getErrorName() + "");//状态
+            }
             holder.mTvDelay.setText(dbInfo.getDelay()+"");//有效期
+        } else if (mIndex == 9) {
+            //手动输入注册页面
+            List<DenatorBaseinfo> scanList = (List<DenatorBaseinfo>) mListData;
+            DenatorBaseinfo baseinfo = scanList.get(position);
+            holder.mTvBlastSerial.setText((scanList.size() - position) + "");
+            holder.mTvSitHole.setText(baseinfo.getSithole() + "");     // 孔号
+            holder.mTvDelay.setText(baseinfo.getDelay() + "");         // 延时
+            holder.mTvShellBlastNo.setText(baseinfo.getShellBlastNo());   // 管壳号
+            // 长按
+            if (onitemLongClick != null) {
+                holder.itemView.setOnLongClickListener(v -> {
+                    onitemLongClick.itemLongClick(position);
+                    return true;
+                });
+            }
         }
     }
 

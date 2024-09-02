@@ -117,15 +117,17 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        closeScan();
                         mApplication.closeSerialPort();
                         Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
                         mSerialPort = null;
+                        startActivity(new Intent(ZhuCeActivity_scan.this, UpdataDelayActivity.class));
                     }
                 }).start();
             }
         });
-        iv_add.setOnClickListener(v -> startActivity(
-                new Intent(ZhuCeActivity_scan.this, UpdataDelayActivity.class)));
+//        iv_add.setOnClickListener(v -> startActivity(
+//                new Intent(ZhuCeActivity_scan.this, UpdataDelayActivity.class)));
         iv_back.setOnClickListener(v -> finish());
         getUserMessage();//获取版本号
 //        getDate();
@@ -686,43 +688,43 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
 //            mHandler_tip.sendMessage(msg);
 ////            scanDecode.stopScan();
 //        } else {
-            String barCode;
-            String denatorId;
-            if (data.length() == 28) {
-                //Y5620413H00009A630FD74D87604()
-                //5620722H12345+000ABCDEF+B603+0+1  13 22 26 27 28
-                Log.e("扫码", "data: " + data);
-                //5620302H00001A62F400FFF20AB603
-                //5420302H00001A6F4FFF20AB603
-                //Y5620413H00009A630FD74D87604
+        String barCode;
+        String denatorId;
+        if (data.length() == 28) {
+            //Y5620413H00009A630FD74D87604()
+            //5620722H12345+000ABCDEF+B603+0+1  13 22 26 27 28
+            Log.e("扫码", "data: " + data);
+            //5620302H00001A62F400FFF20AB603
+            //5420302H00001A6F4FFF20AB603
+            //Y5620413H00009A630FD74D87604
 //                    barCode = data.substring(1, 14);
 //                    String a = data.substring(13, 22);
 //                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                if (data.charAt(0) == 'Y') {
-                    barCode = data.substring(1, 14);
-                    String a = data.substring(14, 24);
-                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                    String yscs =data.substring(24);
-                    Log.e("扫码", "barCode: " + barCode);
-                    Log.e("扫码", "denatorId: " + denatorId);
-                    Log.e("扫码", "yscs: " +yscs);
-                    insertSingleDenator_2(barCode, denatorId, yscs,"1", "0");//因为四川二维码不带段位和版本号,所以写个固定的
-                }else {//其他规则
-                    //内蒙版
-                    barCode = data.substring(0, 13);
-                    denatorId = "A621" + data.substring(13, 22);
-                    String yscs = data.substring(22, 26);
-                    String version = data.substring(26, 27);
-                    String duan = data.substring(27, 28);
+            if (data.charAt(0) == 'Y') {
+                barCode = data.substring(1, 14);
+                String a = data.substring(14, 24);
+                denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                String yscs =data.substring(24);
+                Log.e("扫码", "barCode: " + barCode);
+                Log.e("扫码", "denatorId: " + denatorId);
+                Log.e("扫码", "yscs: " +yscs);
+                insertSingleDenator_2(barCode, denatorId, yscs,"1", "0");//因为四川二维码不带段位和版本号,所以写个固定的
+            }else {//其他规则
+                //内蒙版
+                barCode = data.substring(0, 13);
+                denatorId = "A621" + data.substring(13, 22);
+                String yscs = data.substring(22, 26);
+                String version = data.substring(26, 27);
+                String duan = data.substring(27, 28);
 
-                    insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
-                }
-
-            } else if (data.length() == 13) {
-                barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
-                insertSingleDenator(barCode);
+                insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
             }
-            hideInputKeyboard();//隐藏光标
+
+        } else if (data.length() == 13) {
+            barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
+            insertSingleDenator(barCode);
+        }
+        hideInputKeyboard();//隐藏光标
 //        }
     }
 
@@ -912,7 +914,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 values.put("delay", delay);
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
-                values.put("statusName", "已注册");
+                values.put("statusName", "正常");
                 values.put("errorCode", "FF");
                 values.put("errorName", "");
                 values.put("wire", "");//桥丝状态
@@ -926,7 +928,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 values.put("statusName", "");
                 values.put("regdate", Utils.getDateFormatLong(new Date()));
                 values.put("statusCode", "02");
-                values.put("statusName", "已注册");
+                values.put("statusName", "正常");
                 values.put("errorCode", "FF");
                 values.put("errorName", "");
                 db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + index});
@@ -1017,7 +1019,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setStatusCode("02");
 //        denatorBaseinfo.setStatusName("正常");
 //        denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("已注册");
+        denatorBaseinfo.setErrorName("");
         if ((qiaosi_set.equals("true") && zhuce_form.getWire().equals("无"))) {
             //桥丝异常
             denatorBaseinfo.setErrorCode("00");
@@ -1137,7 +1139,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
             values.put("delay", delay);
             values.put("regdate", Utils.getDateFormatLong(new Date()));
             values.put("statusCode", "02");
-            values.put("statusName", "已注册");
+            values.put("statusName", "");
             values.put("errorCode", "FF");
             values.put("errorName", "");
             values.put("wire", "");
@@ -1149,7 +1151,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
             ContentValues values = new ContentValues();
             values.put("shellBlastNo", shellNo);//key为字段名，value为值
             values.put("statusCode", "02");
-            values.put("statusName", "已注册");
+            values.put("statusName", "");
             values.put("errorCode", "FF");
             values.put("errorName", "");
             values.put("regdate", Utils.getDateFormatLong(new Date()));
@@ -1242,7 +1244,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setDelay(delay);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setStatusName("已注册");
+        denatorBaseinfo.setStatusName("正常");
         denatorBaseinfo.setErrorCode("FF");
         denatorBaseinfo.setErrorName("");
         denatorBaseinfo.setWire("");//桥丝状态
@@ -1521,13 +1523,7 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
         return subBarCode;
     }
 
-    @Override
-    protected void onDestroy() {
-        if (db != null) db.close();
-        if (tipDlg != null) {
-            tipDlg.dismiss();
-            tipDlg = null;
-        }
+    private void closeScan() {
         if(mScaner!=null){
             mScaner.unregisterScanCb();
         }
@@ -1544,6 +1540,16 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (db != null) db.close();
+        if (tipDlg != null) {
+            tipDlg.dismiss();
+            tipDlg = null;
+        }
+        closeScan();
         super.onDestroy();
     }
 

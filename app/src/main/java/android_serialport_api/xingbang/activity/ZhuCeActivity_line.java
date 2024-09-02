@@ -464,7 +464,7 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         denatorBaseinfo.setDelay(0);
         denatorBaseinfo.setRegdate(Utils.getDateFormatLong(new Date()));
         denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setErrorName("已注册");
+        denatorBaseinfo.setErrorName("");
         if ((qiaosi_set.equals("true") && zhuce_form.getWire().equals("无"))) {
             //桥丝异常
             denatorBaseinfo.setErrorCode("00");
