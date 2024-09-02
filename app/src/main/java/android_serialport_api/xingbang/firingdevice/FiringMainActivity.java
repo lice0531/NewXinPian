@@ -409,14 +409,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 .setTitle(R.string.text_fir_tcts)//设置对话框的标题
                 .setMessage(R.string.text_fir_fangdian)//设置对话框的内容
                 //设置对话框的按钮
-                .setNegativeButton(R.string.text_tc, (dialog1, which) -> {
+                .setNeutralButton(R.string.text_tc, (dialog1, which) -> {
                     dialog1.dismiss();
                     closeThread();
                     closeForm();
                     finish();
                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                 })
-                .setNeutralButton(R.string.text_setDealy_qx, (dialog12, which) -> dialog12.dismiss())
+                .setPositiveButton(R.string.text_setDealy_qx, (dialog12, which) -> dialog12.dismiss())
                 .create();
         dialog.show();
     }
@@ -433,7 +433,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle(R.string.text_fir_dialog19)//设置对话框的标题
                         .setMessage(R.string.text_fir_dialog20)//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog1, which) -> {
+                        .setNeutralButton(R.string.text_setDelay_dialog4, (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
@@ -447,7 +447,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle(R.string.text_fir_dialog29)//设置对话框的标题
                         .setMessage(msg.obj + getString(R.string.text_fir_dialog30))//设置对话框的内容
                         //设置对话框的按钮
-                        .setNegativeButton(R.string.text_tc, (dialog1, which) -> {
+                        .setNeutralButton(R.string.text_tc, (dialog1, which) -> {
                             dialog1.dismiss();
                             finish();
                         })
@@ -572,7 +572,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle(R.string.text_fir_dialog17)//设置对话框的标题//"成功起爆"
                         .setMessage(R.string.text_fir_dialog22)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
+                        .setNeutralButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
                             dialog13.dismiss();
                             closeThread();
                             closeForm();
@@ -598,7 +598,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setTitle(R.string.text_fir_dialog2)//设置对话框的标题//"成功起爆"
                             .setMessage(getString(R.string.text_fir_dialog6))//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
+                            .setNeutralButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
                                 dialog12.cancel();
                                 closeThread();
                                 closeForm();
@@ -617,7 +617,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle(R.string.text_fir_dialog7)//设置对话框的标题//"成功起爆"
                         .setMessage(R.string.text_fir_dialog8)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
+                        .setNeutralButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
                             dialog12.dismiss();
 //                                    closeThread();
                             closeForm();
@@ -1257,11 +1257,11 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setTitle(R.string.text_fir_dialog23)//设置对话框的标题//"成功起爆"
                         .setMessage(R.string.text_fir_dialog24)//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
+                        .setNeutralButton(R.string.text_setDelay_dialog4, (dialog13, which) -> {
                             dialog13.dismiss();
                             finish();
                         })
-                        .setNeutralButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
+                        .setPositiveButton(R.string.text_setDelay_dialog3, (dialog2, which) -> {
                             dialog2.dismiss();
                             firstThread.start();
                         })
@@ -1641,7 +1641,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setTitle(R.string.text_fir_dialog17)//设置对话框的标题//"成功起爆"
                             .setMessage(R.string.text_fir_dialog18)//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton(R.string.text_setDelay_dialog4, (dialog1, which) -> {
+                            .setNeutralButton(R.string.text_setDelay_dialog4, (dialog1, which) -> {
                                 dialog1.dismiss();
                                 closeThread();
                                 closeForm();
@@ -1659,7 +1659,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setTitle(R.string.text_fir_dialog2)//设置对话框的标题//"成功起爆"
                             .setMessage(R.string.text_fir_dialog21)//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton(getString(R.string.text_test_exit), (dialog12, which) -> {
+                            .setNeutralButton(getString(R.string.text_test_exit), (dialog12, which) -> {
                                 dialog12.dismiss();
                                 finish();
                             })
@@ -1680,7 +1680,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             .setTitle(getString(R.string.text_firing_tip15))//设置对话框的标题//"成功起爆"
                             .setMessage(getString(R.string.text_firing_tip16))//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNegativeButton(getString(R.string.text_test_exit), new DialogInterface.OnClickListener() {
+                            .setNeutralButton(getString(R.string.text_test_exit), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -2449,7 +2449,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     closeThread();
                     closeForm();
                 })
-                .setNegativeButton("继续", (dialog2, which) -> {
+                .setPositiveButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
                     firstThread.start();
                     mOffTime.cancel();
@@ -2507,7 +2507,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    off();//重新检测
 //                    dialog1.dismiss();
 //                })
-                .setNegativeButton(R.string.text_setDealy_qx, (dialog12, which) -> {
+                .setNeutralButton(R.string.text_setDealy_qx, (dialog12, which) -> {
                     dialog12.cancel();
 //                    closeThread();
 //                    closeForm();
@@ -2549,7 +2549,7 @@ public class FiringMainActivity extends SerialPortActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.text_fir_dialog2);//"错误雷管列表"
         builder.setView(getlistview);
-        builder.setPositiveButton(R.string.text_setDealy_qx, (dialog, which) -> {
+        builder.setNeutralButton(R.string.text_setDealy_qx, (dialog, which) -> {
             dialogOFF(dialog);
 //            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
 //            sendCmd(reCmd);
@@ -2567,7 +2567,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            stopXunHuan();
 //            dialog.dismiss();
 //        });
-        builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
+        builder.setPositiveButton("查看错误雷管", (dialog, which) -> {
 //            stopXunHuan();
             llview.setVisibility(View.VISIBLE);
             text_tip.setVisibility(View.GONE);

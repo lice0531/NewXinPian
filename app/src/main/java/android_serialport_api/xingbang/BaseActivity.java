@@ -349,6 +349,8 @@ public class  BaseActivity extends AppCompatActivity {
 		}
 	}
 
+
+
 	/**
 	 * 初始化AutoCompleteTextView，最多显示5项提示，使
 	 * AutoCompleteTextView在一开始获得焦点时自动提示

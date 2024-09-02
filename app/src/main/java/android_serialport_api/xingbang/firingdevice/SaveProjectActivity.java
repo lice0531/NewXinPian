@@ -184,11 +184,13 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             Project project =new Project();
             project.setXmbh(c);
             project.setDwdm(e);
-            project.setBprysfz(a);
             project.setHtbh(b);
             project.setCoordxy(d);
+            project.setProject_name(f);
             if (at_bprysfz.getText().toString().trim().length() < 1) {
-                project.setProject_name(f);
+                project.setBprysfz("");
+            }else {
+                project.setBprysfz(a);
             }
             project.save();
             show_Toast("数据保存成功");
@@ -230,7 +232,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         if(xmbh.length()>1&&xmbh.length()<15){
             return "当前项目编号小于15位,请重新输入";
         }
-        if(sfz==null||sfz.length()<18){
+        if(sfz!=null&&sfz.length()!=0&&sfz.length()<18){
             return "请输入爆破员身份证";
         }
         if(name==null){

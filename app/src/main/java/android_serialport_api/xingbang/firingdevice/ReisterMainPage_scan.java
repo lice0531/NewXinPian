@@ -53,6 +53,8 @@ import java.util.List;
 
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.activity.GpsDemoActivity;
+import android_serialport_api.xingbang.activity.NewMainActivity;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -2261,6 +2263,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                     }
                     kaishiScan();
+                    btnScanReister.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                     //kt50持续扫码线程
                     scanBarThread = new ScanBar();
                     scanBarThread.start();
@@ -2271,6 +2274,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     continueScanFlag = 0;
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
+                    btnScanReister.setBackgroundResource(R.drawable.bt_mainpage_style);
                     btnReisterScanStartEd.setEnabled(true);
                     btnReisterScanStartSt.setEnabled(true);
                     tingzhiScan();
@@ -2341,25 +2345,27 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
 
                 break;
-            case R.id.btn_input:
-                if (llStart.getVisibility() == View.GONE) {
-                    llEnd.setVisibility(View.VISIBLE);
-                    llStart.setVisibility(View.VISIBLE);
-                    llNum.setVisibility(View.VISIBLE);
-                    btnInputOk.setVisibility(View.VISIBLE);
-                    btnScanReister.setVisibility(View.GONE);
-                    lySetDelay.setVisibility(View.GONE);
+            case R.id.btn_input://改为授权注册
+                startActivity(new Intent(ReisterMainPage_scan.this, DownWorkCode.class));
 
-                    btnInput.setText("扫码注册");
-                } else {
-                    llEnd.setVisibility(View.GONE);
-                    llStart.setVisibility(View.GONE);
-                    llNum.setVisibility(View.GONE);
-                    btnInputOk.setVisibility(View.GONE);
-                    btnScanReister.setVisibility(View.VISIBLE);
-                    lySetDelay.setVisibility(View.VISIBLE);
-                    btnInput.setText("手动输入");
-                }
+//                if (llStart.getVisibility() == View.GONE) {
+//                    llEnd.setVisibility(View.VISIBLE);
+//                    llStart.setVisibility(View.VISIBLE);
+//                    llNum.setVisibility(View.VISIBLE);
+//                    btnInputOk.setVisibility(View.VISIBLE);
+//                    btnScanReister.setVisibility(View.GONE);
+//                    lySetDelay.setVisibility(View.GONE);
+//
+////                    btnInput.setText("扫码注册");
+//                } else {
+//                    llEnd.setVisibility(View.GONE);
+//                    llStart.setVisibility(View.GONE);
+//                    llNum.setVisibility(View.GONE);
+//                    btnInputOk.setVisibility(View.GONE);
+//                    btnScanReister.setVisibility(View.VISIBLE);
+//                    lySetDelay.setVisibility(View.VISIBLE);
+////                    btnInput.setText("手动输入");
+//                }
                 break;
             case R.id.btn_inputOk:
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
@@ -3197,7 +3203,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_scan, menu);
         return true;
     }
 
@@ -3233,7 +3239,32 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 //初始化雷管数量
                 mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
                 return true;
+            case R.id.item_6:
+                if (llStart.getVisibility() == View.GONE) {
+                    lySetDelay.setVisibility(View.GONE);
+//                    zcLlTitle.setVisibility(View.GONE);
+                    btnScanReister.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.VISIBLE);
+                    llStart.setVisibility(View.VISIBLE);
+                    llEnd.setVisibility(View.VISIBLE);
+                    llNum.setVisibility(View.VISIBLE);
+                    btnInputOk.setVisibility(View.VISIBLE);
+                    btnSingle.setText("选择段位");
+                    item.setTitle("选择段位");
+                } else {
+                    lySetDelay.setVisibility(View.VISIBLE);
+//                    zcLlTitle.setVisibility(View.VISIBLE);
+                    btnScanReister.setVisibility(View.VISIBLE);
+                    llSingle.setVisibility(View.GONE);
+                    llStart.setVisibility(View.GONE);
+                    llEnd.setVisibility(View.GONE);
+                    llNum.setVisibility(View.GONE);
+                    btnInputOk.setVisibility(View.GONE);
+                    btnSingle.setText("手动输入");
+                    item.setTitle("手动输入");
+                }
 
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,7 +1,5 @@
 package android_serialport_api.xingbang.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +8,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityNewMainBinding;
-import android_serialport_api.xingbang.firingdevice.DownWorkCode;
 import android_serialport_api.xingbang.firingdevice.QueryHisDetail;
 import android_serialport_api.xingbang.firingdevice.ReisterMainPage_line;
-import android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan;
 import android_serialport_api.xingbang.firingdevice.SetEnvMainActivity;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
@@ -60,7 +58,6 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(NewMainActivity.this, ReisterMainPage_line.class));
                 break;
             case R.id.cardView4://下载工作码
-                startActivity(new Intent(NewMainActivity.this, DownWorkCode.class));
                 break;
             case R.id.cardView5://雷管注册
                 startActivity(new Intent(NewMainActivity.this, ZhuCeActivity_scan.class));

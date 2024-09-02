@@ -205,7 +205,7 @@
     <string name="text_reister_1b">1</string>
     <string name="text_reister_3b">3</string>
     <string name="text_reister_scanReister">Scan</string>
-    <string name="text_reister_scaning">Sweeping code</string>
+    <string name="text_reister_scaning">Stop scanning</string>
     <string name="text_reister_vol">bus voltage:</string>
     <string name="text_reister_ele">bus current:</string>
 
@@ -753,5 +753,6 @@
     <string name="text_his_scts">Tip</string>
     <string name="text_srmm">Please enter your password before deleting history records</string>
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
+    <string name="menu_scan">手动输入</string>
 
 </resources>

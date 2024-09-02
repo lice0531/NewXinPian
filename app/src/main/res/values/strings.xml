@@ -208,7 +208,7 @@
     <string name="text_reister_1b">1位</string>
     <string name="text_reister_3b">3位</string>
     <string name="text_reister_scanReister">扫码注册</string>
-    <string name="text_reister_scaning">正在扫码</string>
+    <string name="text_reister_scaning">关闭扫码</string>
     <string name="text_reister_vol">当前电压:</string>
     <string name="text_reister_ele">当前电流:</string>
 
@@ -434,7 +434,7 @@
     <string name="text_show_1">已选择 区域</string>
     <string name="text_fz_bbh">版本号</string>
     <string name="text_fz_jl">级联设置</string>
-    <string name="text_fz_kscs">快速测试电流</string>
+    <string name="text_fz_kscs">测试电流</string>
     <string name="text_fz_sjhc">数据互传</string>
     <string name="text_fz_qchc">清除缓存</string>
     <string name="text_test_tip5">请检查线夹等部位是否有进水进泥等短路情况,确认无误后点继续进行检测。</string>
@@ -651,6 +651,7 @@
     <string name="menu_3">区域3</string>
     <string name="menu_4">区域4</string>
     <string name="menu_5">区域5</string>
+    <string name="menu_scan">手动输入</string>
     <string name="text_loading">正在操作,请等待</string>
     <string name="text_send_choice">已选择 区域</string>
     <string name="text_suidao_yxz">\"已选择 \"</string>

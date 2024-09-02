@@ -34,27 +34,26 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:orientation="vertical">
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
 
             <Button
                 android:id="@+id/but_version"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:gravity="center"
                 android:text="@string/text_fz_bbh" />
 
             <Button
                 android:id="@+id/but_xiangmu"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:gravity="center"
                 android:text="@string/text_down_srxm" />
         </LinearLayout>
 
@@ -103,7 +102,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
 
             <TextView
                 style="@style/alltextstyle"
@@ -113,15 +115,20 @@
                 android:text="跳转到级联设置页面"
                 android:textSize="25sp"
                 android:visibility="gone" />
+            <Button
+                android:id="@+id/but_pre"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="@string/text_fz_kscs" />
 
             <Button
                 android:id="@+id/but_jilian"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
                 android:text="@string/text_fz_jl" />
 
             <Button
@@ -139,7 +146,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="@color/label_color" />
 
         <LinearLayout
@@ -220,21 +227,31 @@
         </LinearLayout>
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:divider="@drawable/spacer_medium"
+        android:showDividers="middle">
+        <Button
+            android:id="@+id/but_shezhi"
+            style="@style/allbtntstyle"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="设置" />
 
-            <Button
-                android:id="@+id/but_pre"
-                style="@style/allbtntstyle"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="90dp"
-                android:text="@string/text_fz_kscs" />
-
-        </RelativeLayout>
+        <Button
+            android:id="@+id/but_chakan"
+            style="@style/allbtntstyle"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="查看雷管" />
+    </LinearLayout>
 
         <Button
             android:id="@+id/but_test"
@@ -248,48 +265,49 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="@color/label_color" />
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
 
             <Button
                 android:id="@+id/but_sendMsg"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="90dp"
-                android:text="@string/text_fz_sjhc" />
 
-        </RelativeLayout>
+                android:text="@string/text_fz_sjhc" />
+            <Button
+                android:id="@+id/but_delete"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+
+                android:text="@string/text_fz_qchc" />
+
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="@color/label_color" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp">
 
-            <Button
-                android:id="@+id/but_delete"
-                style="@style/allbtntstyle"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="90dp"
-                android:text="@string/text_fz_qchc" />
+
 
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="@color/label_color" />
         <RelativeLayout
             android:layout_width="match_parent"
