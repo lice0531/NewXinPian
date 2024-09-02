@@ -277,14 +277,14 @@ public class XingbangMain extends SerialPortActivity {
             float displayIc = busInfo.getBusCurrentIa();
 
             if (displayIc > 21000 ) {
-                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr + getString(R.string.text_text_ysdl);
+//                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr + getString(R.string.text_text_ysdl);
                 txt_IC.setTextColor(Color.RED);//设置颜色
-                txt_IC.setText(displayIcStr);
+//                txt_IC.setText(displayIcStr);
                 Utils.writeRecord("--主页--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
             }else {
-                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr;
+//                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr;
                 txt_IC.setTextColor(Color.WHITE);//设置颜色
-                txt_IC.setText(displayIcStr);
+//                txt_IC.setText(displayIcStr);
             }
             if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
