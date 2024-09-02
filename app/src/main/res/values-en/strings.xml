@@ -226,7 +226,7 @@
     <string name="text_reister_ele1">bus current</string>
     <string name="text_ceshi_tzcs">Stop</string>
     <string name="text_list_Serial">serial</string>
-    <string name="text_list_kong">hole no</string>
+    <string name="text_list_kong">no</string>
     <string name="text_list_guan">shell code</string>
     <string name="text_list_delay">delay</string>
     <string name="text_list_state">status</string>
@@ -258,7 +258,7 @@
     <string name="text_delay_endnum">END</string>
     <string name="text_delay_det_num">hole detonator</string>
     <string name="text_delay_start">initial delay</string>
-    <string name="text_delay_kong_de">hole delay</string>
+    <string name="text_delay_kong_de">In-hole delay</string>
     <string name="text_delay_kong_2">Hole delay</string>
     <string name="text_delay_pai">Row delay</string>
     <string name="text_delay_total">total:0</string>
@@ -579,8 +579,8 @@
     <string name="text_updata_sys_7">updates</string>
     <string name="text_updata_sys_8">update</string>
     <string name="text_firing_ssqb">Timing detonation</string>
-    <string name="text_chongdian_state0">充电异常</string>
-    <string name="text_chongdian_stateFF">充电成功</string>
+    <string name="text_chongdian_state0">Charging error</string>
+    <string name="text_chongdian_stateFF">Charge successfully</string>
     <string name="text_zijian_title">Device initialization in progress…</string>
     <string name="text_main_sbbh">Equipment No：</string>
     <string name="text_main_dfzc">1.Single registration</string>
