@@ -1621,14 +1621,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 return;
             }
             String delay1 = et_delay.getText().toString();
+
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Log.e("单发修改", "delay1: " + delay1);
             Log.e("单发修改", "maxSecond: " + maxSecond);
-            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getResources().getString(R.string.text_reister_tip5) + maxSecond + "ms"));
-
-            } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 show_Toast(getResources().getString(R.string.text_reister_tip8));
+
+            } else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getResources().getString(R.string.text_reister_tip5) + maxSecond + "ms"));
 
             } else {
                 // 修改雷管延时
