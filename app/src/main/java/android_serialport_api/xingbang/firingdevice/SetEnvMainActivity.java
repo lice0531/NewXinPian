@@ -1,5 +1,4 @@
 package android_serialport_api.xingbang.firingdevice;
-
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -9,18 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.tencent.bugly.Bugly;
-
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -30,40 +24,38 @@ import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.tencent.bugly.beta.Beta.checkUpgrade;
-
+import androidx.cardview.widget.CardView;
 /**
  * 设置页面
  */
 public class SetEnvMainActivity extends BaseActivity {
-
-    @BindView(R.id.btn_set_user)//用户管理
-    Button btnSetUser;
-    @BindView(R.id.btn_set_onlineuprade)//在线升级
-    Button btnSetOnlineuprade;
-    @BindView(R.id.btn_set_netmodel)//网络模式
-    Button btnSetNetmodel;
-    @BindView(R.id.btn_set_upload)//上传数据
-    Button btnSetUpload;
-    @BindView(R.id.btn_set_warrant)//授权码数据
-    Button btnSetWarrant;
-    @BindView(R.id.btn_set_dechip)//雷管芯片
-    Button btnSetDechip;
-    @BindView(R.id.btn_set_facCode)//厂家码
-    Button btnSetFacCode;
-    @BindView(R.id.btn_set_flow)//设备编号
-    Button btnSetFlow;
-    @BindView(R.id.btn_set_ver)//版本
-    Button btnSetVer;
-    @BindView(R.id.btn_set_system)//系统设置
-    Button btnSetSystem;
-    @BindView(R.id.btn_set_exit)//退出
-    Button btnSetExit;
+    @BindView(R.id.cardView1)//用户管理
+    CardView btnSetUser;
+    @BindView(R.id.cardView2)//在线升级
+    CardView btnSetOnlineuprade;
+    @BindView(R.id.cardView3)//删除
+    CardView btnSetNetmodel;
+    @BindView(R.id.cardView4)//上传数据
+    CardView btnSetUpload;
+    @BindView(R.id.cardView5)//授权码数据
+    CardView btnSetWarrant;
+    @BindView(R.id.cardView6)//雷管芯片
+    CardView btnSetDechip;
+    @BindView(R.id.cardView7)//厂家码
+    CardView btnSetFacCode;
+    @BindView(R.id.cardView8)//设备编号
+    CardView btnSetFlow;
+    @BindView(R.id.cardView9)//版本
+    CardView btnSetVer;
+    @BindView(R.id.cardView10)//系统设置
+    CardView btnSetSystem;
+    @BindView(R.id.cardView11)//辅助功能
+    CardView btnUpload;
+    @BindView(R.id.cardView12)//退出
+    CardView btnSetExit;
     @BindView(R.id.container)
-    FrameLayout container;
-    @BindView(R.id.btn_upload)
-    Button btnUpload;
+    LinearLayout container;
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
     private String equ_no = "";//设备编码
@@ -314,65 +306,65 @@ public class SetEnvMainActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_set_user, R.id.btn_set_onlineuprade, R.id.btn_set_netmodel,
-            R.id.btn_set_upload, R.id.btn_set_warrant, R.id.btn_set_dechip, R.id.btn_set_facCode,
-            R.id.btn_set_flow, R.id.btn_set_ver, R.id.btn_set_system, R.id.btn_set_exit, R.id.btn_upload})
+    @OnClick({R.id.cardView1, R.id.cardView2, R.id.cardView3, R.id.cardView4, R.id.cardView5,
+            R.id.cardView6, R.id.cardView7, R.id.cardView8, R.id.cardView9, R.id.cardView10,
+            R.id.cardView11, R.id.cardView12})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_set_user:
+            case R.id.cardView1:
                 String str1 = new String("注册");
                 Intent intent = new Intent(SetEnvMainActivity.this, SetUserActivity.class);
                 intent.putExtra("dataSend", str1);
                 startActivityForResult(intent, 1);
                 break;
-            case R.id.btn_set_onlineuprade://在线升级
+            case R.id.cardView2://在线升级
 //                show_Toast(getString(R.string.text_error_tip57));
                 checkUpgrade();
                 Log.e("版本号", "Bugly.getAppChannel(): " + Bugly.getAppChannel());
                 break;
-            case R.id.btn_set_netmodel://网络模式
+            case R.id.cardView3://删除
                 Intent intent5 = new Intent(SetEnvMainActivity.this, DelDenatorMainPage.class);
                 startActivity(intent5);
                 break;
-            case R.id.btn_set_upload://上传数据
+            case R.id.cardView4://上传数据
                 setServerIpEnv();
                 break;
-            case R.id.btn_set_warrant://授权码
+            case R.id.cardView5://授权码
                 show_Toast(getString(R.string.text_error_tip57));
                 break;
-            case R.id.btn_set_dechip://雷管芯片
+            case R.id.cardView6://雷管芯片
                 startActivity(new Intent(SetEnvMainActivity.this, SetDenatorTypeActivity.class));
                 break;
-            case R.id.btn_set_facCode:
+            case R.id.cardView7:
                 String str2 = new String(getString(R.string.text_lgxp_setFac));//"厂家设置"
                 Intent intent2 = new Intent(SetEnvMainActivity.this, SetFactoryActivity.class);
                 intent2.putExtra("dataSend", str2);
                 startActivityForResult(intent2, 1);
                 break;
-            case R.id.btn_set_flow:
+            case R.id.cardView8:
                 setEquNoEnv();//设置起爆编号
                 break;
-            case R.id.btn_set_ver://查看版本号
+            case R.id.cardView9://查看版本号
                 Intent intent6 = new Intent(SetEnvMainActivity.this, SystemVersionActivity.class);
                 startActivityForResult(intent6, 1);
                 break;
-            case R.id.btn_set_system:
+            case R.id.cardView10:
                 Intent intent3 = new Intent(SetEnvMainActivity.this, SetSystemActivity.class);
                 String str3 = new String("系统设置");
                 intent3.putExtra("dataSend", str3);
                 startActivityForResult(intent3, 1);
                 break;
-            case R.id.btn_set_exit:
+            case R.id.cardView11:
+                //辅助功能
+//                Intent intent4 = new Intent(SetEnvMainActivity.this, UploadFaceDataActivity.class);
+                Intent intent4 = new Intent(SetEnvMainActivity.this, PracticeActivity.class);
+                startActivity(intent4);
+                break;
+            case R.id.cardView12:
                 Intent intentTemp = new Intent();
                 intentTemp.putExtra("backString", "");
                 setResult(1, intentTemp);
                 finish();
-                break;
-            case R.id.btn_upload:
-                //信息采集
-//                Intent intent4 = new Intent(SetEnvMainActivity.this, UploadFaceDataActivity.class);
-                Intent intent4 = new Intent(SetEnvMainActivity.this, PracticeActivity.class);
-                startActivity(intent4);
                 break;
         }
     }

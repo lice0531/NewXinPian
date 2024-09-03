@@ -2,7 +2,6 @@ package android_serialport_api.xingbang.activity;
 import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -25,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -156,7 +157,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         boolean isDateDone = false;
         boolean isLgDone = false;
         String base = "3830422489602";  // 前缀部分
-        int numStrings = 3000;          // 需要生成的随机字符串数量
+        int numStrings = 3000;// 需要生成的随机字符串数量  目前测试的结果是：300条可以正常上传，可以分成10次上传
         Set<String> uniqueStrings = getUniqueShellIdStrings(base, numStrings);
         // 将 Set 转换为 List
         stringList = new ArrayList<>(uniqueStrings);
@@ -278,24 +279,52 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //        }
 //    }
 
+    private ExecutorService executor;
     // 递归方法，逐个上传数据
     private void uploadNextMoni(List<String> stringList, int index) {
-        Log.e(TAG,"模拟大量数据一键上传--总条数:" + csDateList.size());
+        executor = Executors.newFixedThreadPool(4); // 在循环外部创建线程池
+        Log.e(TAG,"模拟大量数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
         if (index >= stringList.size()) {
-            pb_show = 0;
-            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+//            pb_show = 0;
+//            mHandler_2.sendMessage(mHandler_2.obtainMessage());
             Log.e(TAG,"模拟大量数据一键上传--所有数据已全部上传" );
             show_Toast("上传已结束");
+            // 等待所有任务完成后关闭线程池
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                        Log.e(TAG, "线程池未能正常关闭");
+                    }
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
             return;
         }
-        Log.e(TAG,"isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
-        for (int i = 0; i < stringList.size(); i++) {
-            Log.e(TAG, "模拟3000条测试数据上传--下标是:" + i + "--管壳码是:" + stringList.get(i));
-            uploadMoniQbData(stringList,i);
-        }
+        Log.e(TAG, "isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
+        executor.submit(() -> {
+            Log.e(TAG, "threadpool start");
+            String data = stringList.get(index);
+            for (int i = 0; i < stringList.size(); i++) {
+                if (data.equals(stringList.get(i))) {
+                    try {
+                        // 执行具体任务，例如上传数据
+                        uploadMoniQbData();
+                    } catch (Exception e) {
+                        Log.e(TAG, "threadpool error",e);
+                        executor.shutdownNow();
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+            Log.e(TAG, "threadpool finish");
+        });
     }
 
-    private void uploadMoniQbData(List<String> csDateList, int position) {
+    private void uploadMoniQbData() {
         if (!NetUtils.haveNetWork(getContext())) {
             show_Toast("请检查网络!");
             return;
@@ -303,10 +332,10 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (server_type2.equals("0") && server_type1.equals("0")) {
             show_Toast("设备当前未设置上传网址,请先设置上传网址");
         }
-        pb_show = 1;
-        mHandler_2.sendMessage(mHandler_2.obtainMessage());
-        runPbDialog();//loading画面
-        if (server_type1.equals("1")) {
+//        pb_show = 1;
+//        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+//        runPbDialog();//loading画面
+//        if (server_type1.equals("1")) {
             // "sbbh", "F60C7002222"//起爆器设备编号XBTS0003
 //            "jd", "120.498324"//经度
 //            "wd", "30.354008"//纬度
@@ -314,14 +343,13 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //            "xmbh", ""//项目编号370101318060006
 //            "htid", "370101318060045"//合同编号370100X15040027
 //            "dwdm", ""//单位代码
-            uploadMoni(list_savedate.get(0).getBlastdate(), uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "");//丹灵上传信息
-        }
+//            uploadMoni(list_savedate.get(0).getBlastdate(), uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "");//丹灵上传信息
+//        }
 //        if (server_type2.equals("2")) {
 //            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
 //        }
         upload_xingbang_moni(list_savedate.get(0).getBlastdate(), uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "", "", "");//我们自己的网址
-
-//        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+        //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
     }
 
     public void getMoniCsTimeData(List<VoFireHisMain> originalData) {
@@ -599,7 +627,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             saveFireResult(fireDate);
             blastdate = fireDate;
         }
-//                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
+//                        Utils.writeRecord("项目上传信息:" + list_savedate.get(pos));
         Log.e(TAG + "上传-经纬度", "pro_coordxy: " + pro_coordxy);
         Log.e(TAG + "上传-经纬度", "jd: " + jd);
         if (pro_coordxy.length() < 2 && (jd == null || wd == null)) {
@@ -1316,12 +1344,13 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
+//        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 //                pb_show = 0;
 //                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
-                Utils.writeLog("模拟3000条上传测试--煋邦网络上传错误-IOException:" + e);
+                Utils.writeRecord("模拟3000条上传测试--煋邦网络上传错误-IOException:" + e);
                 Message msg = new Message();
                 msg.what = 6;
                 UploadResult result = new UploadResult();
@@ -1333,7 +1362,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
-                Utils.writeLog("煋邦网络上传成功-IOException:" + response.toString());
+                Utils.writeRecord("煋邦网络上传成功-IOException:" + response.toString());
                 Message msg = new Message();
                 msg.what = 6;
                 UploadResult result = new UploadResult();
@@ -1416,7 +1445,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //                pb_show = 0;
 //                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
-                Utils.writeLog("煋邦网络上传错误-IOException:" + e);
+                Utils.writeRecord("煋邦网络上传错误-IOException:" + e);
                 updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
                 Message msg = new Message();
                 msg.what = 6;
@@ -1433,7 +1462,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
-                Utils.writeLog("煋邦网络上传成功-IOException:" + response.toString());
+                Utils.writeRecord("煋邦网络上传成功-IOException:" + response.toString());
 //                pb_show = 0;
 //                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Message msg = new Message();
@@ -1487,6 +1516,9 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (tipDlg != null) {
             tipDlg.dismiss();
             tipDlg = null;
+        }
+        if (executor != null) {
+            executor.shutdown();
         }
         super.onDestroy();
     }

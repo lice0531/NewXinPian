@@ -24,6 +24,7 @@ import com.kfree.expd.ExpdDevMgr;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.SPUtil;
 import android_serialport_api.xingbang.utils.Utils;
 
 public class  BaseActivity extends Activity {
@@ -295,7 +296,8 @@ public class  BaseActivity extends Activity {
 	 * @param auto  要操作的AutoCompleteTextView
 	 */
 	public void initAutoComplete(String field, AutoCompleteTextView auto) {
-		String longhistory =(String) MmkvUtils.getcode(field, "当前无记录");
+		String longhistory = SPUtil.getInstance(oContext).getString(field, "");
+//		String longhistory =(String) MmkvUtils.getcode(field, "当前无记录");
 		String[] hisArrays = longhistory.split("#");
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
@@ -330,7 +332,8 @@ public class  BaseActivity extends Activity {
 		if (!longhistory.contains(text + "#")) {
 			StringBuilder sb = new StringBuilder(longhistory);
 			sb.insert(0, text + "#");
-			MmkvUtils.savecode(field, sb.toString());
+//			MmkvUtils.savecode(field, sb.toString());
+			SPUtil.getInstance(oContext).putString(field, sb.toString());
 		}
 	}
 

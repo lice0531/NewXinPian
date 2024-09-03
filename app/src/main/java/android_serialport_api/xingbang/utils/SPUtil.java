@@ -34,6 +34,14 @@ public class SPUtil {
         return mSharedPreferences.getInt(TAG_LANGUAGE, 0);
     }
 
+    public void putString(String key, String value) {
+        SharedPreferences.Editor edit = mSharedPreferences.edit();
+        edit.putString(key, value).commit();
+    }
+
+    public String getString(String key, String defValue) {
+        return mSharedPreferences.getString(key, defValue);
+    }
 
     public Locale getSystemCurrentLocal() {
         return systemCurrentLocal;

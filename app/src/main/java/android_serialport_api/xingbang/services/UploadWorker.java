@@ -133,7 +133,7 @@ public class UploadWorker extends Worker {
     private void uploadNext(List<String> dateList, int index) {
         if (index >= dateList.size()) {
             Log.e(TAG,"闲时上传已结束,需要上传的起爆信息总数为:" + dateList.size());
-            Utils.writeLog("闲时上传已结束,需要上传的起爆信息总数为:" + dateList.size());
+            Utils.writeRecord("闲时上传已结束,需要上传的起爆信息总数为:" + dateList.size());
             return;
         }
         Log.e(TAG,"isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
@@ -198,7 +198,7 @@ public class UploadWorker extends Worker {
         if (!NetUtils.haveNetWork(getContext())) {
             EventBus.getDefault().post(new FirstEvent("spareUploadError"));
             Log.e(TAG,"当前无网络，闲时上传无法进行");
-            Utils.writeLog("当前无网络，闲时上传无法进行");
+            Utils.writeRecord("当前无网络，闲时上传无法进行");
             return;
         }
         int pos = position;//位置
@@ -216,7 +216,7 @@ public class UploadWorker extends Worker {
             int count = getBlastModelCount();
             if (count < 1) {
                 Log.e(TAG,"当前没有没有数据，不能执行上传");
-                Utils.writeLog("当前没有没有数据，不能执行上传");
+                Utils.writeRecord("当前没有没有数据，不能执行上传");
                 return;
             }
             String fireDate = Utils.getDateFormatLong(new Date());
@@ -227,7 +227,7 @@ public class UploadWorker extends Worker {
         Log.e(TAG + "上传-经纬度", "jd: " + jd);
         if (pro_coordxy.length() < 2 && (jd == null || wd == null)) {
             Log.e(TAG,"经纬度为空，不能执行上传");
-            Utils.writeLog("经纬度为空，不能执行上传");
+            Utils.writeRecord("经纬度为空，不能执行上传");
             return;
         }
         if (server_type1.equals("1")) {
@@ -235,7 +235,7 @@ public class UploadWorker extends Worker {
         }
         if (server_type2.equals("0") && server_type1.equals("0")) {
             Log.e(TAG,"设备当前未设置上传网址,请先设置上传网址");
-            Utils.writeLog("设备当前未设置上传网址,请先设置上传网址");
+            Utils.writeRecord("设备当前未设置上传网址,请先设置上传网址");
         }
         if (server_type2.equals("2")) {
             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
@@ -439,7 +439,7 @@ public class UploadWorker extends Worker {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
-                Utils.writeLog("煋邦网络上传错误-IOException:" + e);
+                Utils.writeRecord("煋邦网络上传错误-IOException:" + e);
                 setIsXbUploadSuccess(201);
                 updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
 //                updateSqlDataStatus(blastdate,pos);
@@ -448,7 +448,7 @@ public class UploadWorker extends Worker {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
-                Utils.writeLog("煋邦网络上传成功-IOException:" + response.toString());
+                Utils.writeRecord("煋邦网络上传成功-IOException:" + response.toString());
                 setIsXbUploadSuccess(200);
 //                updateSqlDataStatus(blastdate,pos);
             }

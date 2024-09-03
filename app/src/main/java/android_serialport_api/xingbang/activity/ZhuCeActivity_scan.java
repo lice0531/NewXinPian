@@ -249,12 +249,12 @@ public class ZhuCeActivity_scan extends SerialPortActivity implements View.OnCli
                 show_centerToast_long("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
             }
             if (tipInfoFlag == 17) {
-                SoundPlayUtils.play(4);
                 show_centerToast_long("芯片异常");
+                SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 18) {
-                SoundPlayUtils.play(4);
                 show_centerToast_long("电容异常");
+                SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 88) {//刷新界面
                 showDenatorSum();

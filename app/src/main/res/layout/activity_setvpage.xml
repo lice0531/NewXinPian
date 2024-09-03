@@ -1,159 +1,350 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/child_pg_bg"
-    tools:context="android_serialport_api.xingbang.firingdevice.SetEnvMainActivity"
+    android:orientation="vertical"
     tools:ignore="MergeRootFrame">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="vertical">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_set_user"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_user" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView1"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/totalbar"
+                app:layout_constraintVertical_bias="0.0">
 
-            <Button
-                android:id="@+id/btn_set_onlineuprade"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_onlineuprade" />
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_yhgl" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_user" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView2"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.473"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView1"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_zxgx" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_onlineuprade" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView2"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_delete" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/t_xingbang_main_page_btn_del" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView4"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView3"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_shangchuan_2" />
+
+                <TextView
+                    android:id="@+id/menu_project"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_upload" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView5"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView4"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_smgl" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_warrant" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView6"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView5"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_lgxp" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_dechip" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView7"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView6"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_cjgm" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_facCode" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView8"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_sbbh" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_flow" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView9"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_bbh" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_ver" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView10"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_shezhi6" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_system" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView11"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_fzgn" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_fzgn" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView12"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_item_heigh"
+                android:layout_marginBottom="10dp"
+                android:onClick="onClick"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/icon_tc" />
+
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xingbang_set_page_btn_exit" />
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_set_netmodel"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/t_xingbang_main_page_btn_del" />
-
-            <Button
-                android:id="@+id/btn_set_upload"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_upload" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_set_warrant"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_warrant" />
-
-            <Button
-                android:id="@+id/btn_set_dechip"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_dechip" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_set_facCode"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_facCode" />
-
-            <Button
-                android:id="@+id/btn_set_flow"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_flow" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_set_ver"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_ver" />
-
-            <Button
-                android:id="@+id/btn_set_system"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_system" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_upload"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="辅助功能"
-                android:visibility="visible" />
-
-            <Button
-                android:id="@+id/btn_set_exit"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_exit" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</FrameLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
 
