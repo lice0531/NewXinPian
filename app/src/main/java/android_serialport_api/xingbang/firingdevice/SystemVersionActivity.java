@@ -83,8 +83,8 @@ public class SystemVersionActivity extends SerialPortActivity {
             e.printStackTrace();
         }
 
-        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
-
+//        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
 //        openHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {

@@ -1498,6 +1498,7 @@ public class FiringMainActivity extends SerialPortActivity {
         // TODO Auto-generated method stub
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
+        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35
         closeThread();
         closeForm();
         new Thread(new Runnable() {
