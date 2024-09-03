@@ -758,10 +758,7 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_query://查看
-                String str6 = "查看雷管";
-                Intent intent6 = new Intent(XingbangMain.this, QueryMainActivity.class);
-                intent6.putExtra("dataSend", str6);
-                startActivityForResult(intent6, 1);
+                startActivity(new Intent(XingbangMain.this, QueryHisDetail.class));
                 break;
 
             case R.id.btn_main_setevn://设置

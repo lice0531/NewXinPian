@@ -158,7 +158,7 @@
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
                 android:text="@string/xingbang_set_page_btn_fzgn"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <Button
                 android:id="@+id/btn_set_exit"

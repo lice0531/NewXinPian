@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
@@ -3406,6 +3408,85 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 scanDecode.stopScan();//停止扫描
             }
         }
+    }
+
+
+    private TextView mTextView_dianya;
+    private TextView mTextView_dianliu;
+    private Handler mOffHandler;
+    private java.util.Timer mOffTime;
+    private android.app.Dialog mDialog;
+
+    private void initDialog_zhuce(String tip, int daojishi, String c) {
+        mTextView_dianya = new TextView(this);
+        mTextView_dianya.setTextSize(25);
+        mTextView_dianya.setText("电压:");
+
+        mTextView_dianliu = new TextView(this);
+        mTextView_dianliu.setTextSize(25);
+        mTextView_dianliu.setText("电流:");
+        mDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.text_fir_dialog2)
+                .setCancelable(false)
+                .setView(mTextView_dianya)
+                .setView(mTextView_dianliu)
+                .setPositiveButton(R.string.text_dialog_qd, (dialog, id) -> {
+                    mOffTime.cancel();//清除计时
+
+                })
+                .setNeutralButton(R.string.text_test_exit, (dialog, id) -> {
+                    dialog.cancel();
+                    mOffTime.cancel();
+                })
+//                .setNegativeButton(R.string.text_firing_jixu, (dialog2, which) -> {
+//                    dialog2.dismiss();
+//
+//                    mOffTime.cancel();
+//                })
+                .create();
+        mDialog.show();
+        mDialog.setCanceledOnTouchOutside(false);
+
+        mOffHandler = new Handler(msg -> {
+            if (msg.what > 0) {
+                //动态显示倒计时
+                mTextView_dianya.setText("电压:"+ msg.what);
+                mTextView_dianliu.setText("电流:" + msg.what);
+            }
+//            else {
+//                //倒计时结束自动关闭
+//                if (mDialog != null) {
+//                    mDialog.dismiss();
+//
+//                }
+////                off();//关闭后的操作
+//                mOffTime.cancel();//终止此计时器，丢弃任何当前计划的任务
+//                mOffTime.purge();//从此计时器的任务队列中删除所有取消的任务
+//            }
+            return false;
+        });
+
+        //倒计时
+
+        mOffTime = new Timer(true);
+        TimerTask tt = new TimerTask() {
+            private int countTime = daojishi;
+
+            public void run() {
+//                if(countTime==0){
+//                    mOffTime.cancel();
+//                    mOffTime.purge();
+//                }
+                if (countTime > 0) {
+                    countTime--;
+                }
+                Log.e("倒计时", "countTime: " + countTime);
+                Message msg = new Message();
+                msg.what = countTime;
+                mOffHandler.sendMessage(msg);
+            }
+        };
+        mOffTime.schedule(tt, 1000, 1000);
     }
 
 }
