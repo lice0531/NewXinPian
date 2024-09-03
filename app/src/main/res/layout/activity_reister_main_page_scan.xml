@@ -486,8 +486,8 @@
 
 
                         <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
                             android:layout_marginTop="3dp">
 
                             <Button
@@ -496,14 +496,16 @@
                                 android:layout_width="0dp"
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
+                                android:layout_marginRight="3dp"
                                 android:background="@drawable/bt_mainpage_style"
                                 android:text="@string/text_line_duan1" />
 
                             <TextView
                                 android:id="@+id/re_num_f1"
                                 style="@style/alltextstyle"
+                                android:layout_marginRight="10dp"
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:text="0" />
@@ -512,7 +514,7 @@
                                 android:id="@+id/re_et_f1"
                                 style="@style/alltextstyle"
                                 android:layout_width="0dp"
-                                android:layout_height="35dp"
+                                android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:focusable="false"
@@ -525,10 +527,11 @@
                                 android:visibility="gone" />
 
                             <TextView
+                                android:visibility="gone"
                                 android:id="@+id/re_text_1"
                                 style="@style/alltextstyle"
                                 android:layout_width="0dp"
-                                android:layout_height="35dp"
+                                android:layout_height="match_parent"
                                 android:layout_weight="2"
                                 android:background="@drawable/translucent"
                                 android:gravity="center"
@@ -539,11 +542,12 @@
                         <TableRow
                             android:layout_width="fill_parent"
                             android:layout_height="40dp"
-                            android:layout_marginTop="8dp">
+                            android:layout_marginTop="2dp">
 
                             <Button
                                 android:id="@+id/re_btn_f2"
                                 style="@style/allbtntstyle"
+                                android:layout_marginRight="3dp"
                                 android:layout_width="0dp"
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
@@ -553,8 +557,9 @@
                             <TextView
                                 android:id="@+id/re_num_f2"
                                 style="@style/alltextstyle"
+                                android:layout_marginRight="10dp"
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:text="0" />
@@ -576,6 +581,7 @@
                                 android:visibility="gone" />
 
                             <TextView
+                                android:visibility="gone"
                                 android:id="@+id/re_text_2"
                                 style="@style/alltextstyle"
                                 android:layout_width="0dp"
@@ -590,11 +596,12 @@
                         <TableRow
                             android:layout_width="fill_parent"
                             android:layout_height="40dp"
-                            android:layout_marginTop="8dp">
+                            android:layout_marginTop="2dp">
 
                             <Button
                                 android:id="@+id/re_btn_f3"
                                 style="@style/allbtntstyle"
+                                android:layout_marginRight="3dp"
                                 android:layout_width="0dp"
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
@@ -604,8 +611,9 @@
                             <TextView
                                 android:id="@+id/re_num_f3"
                                 style="@style/alltextstyle"
+                                android:layout_marginRight="10dp"
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:text="0" />
@@ -628,6 +636,7 @@
                                 android:visibility="gone" />
 
                             <TextView
+                                android:visibility="gone"
                                 android:id="@+id/re_text_3"
                                 style="@style/alltextstyle"
                                 android:layout_width="0dp"
@@ -642,11 +651,12 @@
                         <TableRow
                             android:layout_width="fill_parent"
                             android:layout_height="40dp"
-                            android:layout_marginTop="8dp">
+                            android:layout_marginTop="2dp">
 
                             <Button
                                 android:id="@+id/re_btn_f4"
                                 style="@style/allbtntstyle"
+                                android:layout_marginRight="3dp"
                                 android:layout_width="0dp"
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
@@ -656,8 +666,9 @@
                             <TextView
                                 android:id="@+id/re_num_f4"
                                 style="@style/alltextstyle"
+                                android:layout_marginRight="10dp"
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:text="0" />
@@ -680,6 +691,7 @@
                                 android:visibility="gone" />
 
                             <TextView
+                                android:visibility="gone"
                                 android:id="@+id/re_text_4"
                                 style="@style/alltextstyle"
                                 android:layout_width="0dp"
@@ -693,12 +705,13 @@
 
                         <TableRow
                             android:layout_width="fill_parent"
-                            android:layout_height="40dp"
-                            android:layout_marginTop="8dp">
+                            android:layout_height="30dp"
+                            android:layout_marginTop="2dp">
 
                             <Button
                                 android:id="@+id/re_btn_f5"
                                 style="@style/allbtntstyle"
+                                android:layout_marginRight="3dp"
                                 android:layout_width="0dp"
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
@@ -708,8 +721,9 @@
                             <TextView
                                 android:id="@+id/re_num_f5"
                                 style="@style/alltextstyle"
+                                android:layout_marginRight="10dp"
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/translucent"
                                 android:text="0" />
@@ -732,6 +746,7 @@
                                 android:visibility="gone" />
 
                             <TextView
+                                android:visibility="gone"
                                 android:id="@+id/re_text_5"
                                 style="@style/alltextstyle"
                                 android:layout_width="0dp"
@@ -852,22 +867,15 @@
                     </TableLayout>
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="0.8"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
-                        <Button
-                            android:id="@+id/btn_scanReister"
-                            style="@style/allbtntstyle"
-                            android:layout_marginTop="5dp"
-                            android:layout_width="90dp"
-                            android:layout_height="50dp"
-                            android:text="@string/text_reister_scanReister"
-                            android:textSize="20sp" />
+
 
                         <Button
                             android:id="@+id/btn_singleReister"
                             style="@style/allbtntstyle"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="15dp"
                             android:layout_width="90dp"
                             android:layout_height="50dp"
                             android:text="@string/text_singleReister"
@@ -876,13 +884,22 @@
 
                         <Button
                             android:id="@+id/btn_input"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="15dp"
                             style="@style/allbtntstyle"
                             android:layout_width="90dp"
                             android:layout_height="50dp"
                             android:text="授权注册"
                             android:visibility="visible"
                             android:textSize="20sp"/>
+
+                        <Button
+                            android:id="@+id/btn_scanReister"
+                            style="@style/allbtntstyle"
+                            android:layout_marginTop="15dp"
+                            android:layout_width="90dp"
+                            android:layout_height="50dp"
+                            android:text="@string/text_reister_scanReister"
+                            android:textSize="20sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -1054,6 +1071,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/ly_xinxi"
                 android:layout_width="fill_parent"
                 android:layout_height="25dp"
                 android:layout_marginTop="5dp"
@@ -1061,6 +1079,7 @@
 
                 <TextView
                     android:id="@+id/txt_currentVolt"
+                    style="@style/alltextstyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -1069,6 +1088,7 @@
 
                 <TextView
                     android:id="@+id/txt_currentIC"
+                    style="@style/alltextstyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
