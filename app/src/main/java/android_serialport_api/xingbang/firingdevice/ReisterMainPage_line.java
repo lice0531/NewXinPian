@@ -752,7 +752,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
      */
     private void getFactoryCode() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<Defactory> list = master.queryDefactoryToIsSelected("是");
+        List<Defactory> list = master.queryDefactoryToIsSelected(getString(R.string.text_setFac_yes));
         if (list.size() > 0) {
             factoryCode = list.get(0).getDeEntCode();
             factoryFeature = list.get(0).getDeFeatureCode();
@@ -765,14 +765,18 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
      */
     private void getFactoryType() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<Denator_type> list = master.queryDefactoryTypeToIsSelected("是");
+        List<Denator_type> list = master.queryDefactoryTypeToIsSelected(getString(R.string.text_setFac_yes));
         if (list.size() > 0) {
             deTypeName = list.get(0).getDeTypeName();
             deTypeSecond = list.get(0).getDeTypeSecond();
         }
         if (deTypeSecond != null) {
             maxSecond = Integer.parseInt(deTypeSecond);
+        } else {
+            Log.e("单发注册页面","数据库中获取到的最大延时为空，特设为最大延时150毫秒");
+            maxSecond = 150;
         }
+        Log.e("单发注册页面最大延时", "maxSecond: " + maxSecond);
     }
 
     @Override
@@ -1101,7 +1105,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
 
         });
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNeutralButton(getResources().getString(R.string.text_setDealy_sc), (dialog, which) -> {
             dialog.dismiss();
             runPbDialog();
             Utils.writeRecord("-单发删除:" + "-删除管壳码:" + denatorNo + "-延时" + delaytime);

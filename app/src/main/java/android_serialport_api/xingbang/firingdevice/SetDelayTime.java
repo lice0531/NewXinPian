@@ -55,6 +55,7 @@ import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -86,6 +87,8 @@ public class SetDelayTime extends BaseActivity {
     private Button btn_OK;
     private Button btn_suidao;
     private int maxSecond = 0;//最大秒数
+    private String deTypeName = null;//雷管类型名称
+    private String deTypeSecond = null;//该类型雷管最大延期值
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loading = new Handler();//显示进度条
@@ -107,6 +110,7 @@ public class SetDelayTime extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
+        getFactoryType();//获取延期最大值
         initView();
 
 
@@ -208,7 +212,7 @@ public class SetDelayTime extends BaseActivity {
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
 
         totalbar_title = findViewById(R.id.title_text);
-        totalbar_title.setText("删除");
+        totalbar_title.setText(getResources().getString(R.string.text_setDealy_sc));
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         iv_add.setOnClickListener(v -> {
@@ -249,10 +253,10 @@ public class SetDelayTime extends BaseActivity {
         btn_OK = findViewById(R.id.btn_setDelayTime_inputOK);
         btn_OK.setOnClickListener(v -> {
             AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
-                    .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
-                    .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
+                    .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
+                    .setMessage(getResources().getString(R.string.text_setDelay_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton("继续", (dialog13, which) -> {
+                    .setNegativeButton(getResources().getString(R.string.text_setDelay_dialog3), (dialog13, which) -> {
                         dialog13.dismiss();
 
                         hideInputKeyboard();
@@ -263,7 +267,7 @@ public class SetDelayTime extends BaseActivity {
                             Log.e("延时1", "maxDelay: " + maxDelay);//9010
                             Log.e("延时2", "maxSecond: " + maxSecond);//5000
                             if (maxSecond > 0 && maxSecond < maxDelay) {
-                                show_Toast("当前设置延时已超出最大值" + maxSecond + "限制,请重新设置延时");
+                                show_Toast(getResources().getString(R.string.text_setDealy_tip1) + maxSecond + getResources().getString(R.string.text_setDealy_tip2));
                                 return;
                             }
                             pb_show = 1;
@@ -274,7 +278,7 @@ public class SetDelayTime extends BaseActivity {
                             show_Toast(checstr);
                         }
                     })
-                    .setNeutralButton("退出", (dialog2, which) -> {
+                    .setNeutralButton(getResources().getString(R.string.text_setDelay_dialog4), (dialog2, which) -> {
                         dialog2.dismiss();
                         finish();
                     })
@@ -335,7 +339,7 @@ public class SetDelayTime extends BaseActivity {
     private void getDenatorType() {
 
         String selection = "isSelected = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        String[] selectionArgs = {getString(R.string.text_setFac_yes)};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOR_TYPE, null, selection, selectionArgs, null, null, null);
         String second = "0";
         if (cursor != null && cursor.moveToFirst()) {
@@ -347,6 +351,25 @@ public class SetDelayTime extends BaseActivity {
         }
         maxSecond = Integer.parseInt(second);//类型转换异常
 
+    }
+
+    /**
+     * 获得最大延时
+     */
+    private void getFactoryType() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<Denator_type> list = master.queryDefactoryTypeToIsSelected(getString(R.string.text_setFac_yes));
+        if (list.size() > 0) {
+            deTypeName = list.get(0).getDeTypeName();
+            deTypeSecond = list.get(0).getDeTypeSecond();
+        }
+        if (deTypeSecond != null) {
+            maxSecond = Integer.parseInt(deTypeSecond);
+        } else {
+            Log.e("修改延时页面","数据库中获取到的最大延时为空，特设为最大延时150毫秒");
+            maxSecond = 150;
+        }
+        Log.e("修改延时页面最大延时", "maxSecond: " + maxSecond);
     }
 
     private void runPbDialog() {
@@ -403,8 +426,8 @@ public class SetDelayTime extends BaseActivity {
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton(R.string.text_dialog_qx, (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(R.string.text_dialog_sc, (dialog, which) -> {
             dialog.dismiss();
 
             // TODO 开启进度条
@@ -420,19 +443,19 @@ public class SetDelayTime extends BaseActivity {
             }).start();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(R.string.text_dialog_qd, (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getString(R.string.text_reister_tip9) + maxSecond + "ms"));
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "延时为空或大于最大设定延时，修改失败! "));
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getString(R.string.text_reister_tip8)));
             } else {
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getString(R.string.text_dialog_xgcg));
                 Utils.saveFile();
             }
             dialog.dismiss();
@@ -729,7 +752,7 @@ public class SetDelayTime extends BaseActivity {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getString(R.string.text_reister_tip4) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -746,7 +769,7 @@ public class SetDelayTime extends BaseActivity {
      */
     private void setTitleRegion(String region, int size) {
 
-        String str = " 区域" + region;
+        String str = getString(R.string.text_dfzc_qy) + region;
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
@@ -757,7 +780,7 @@ public class SetDelayTime extends BaseActivity {
     private void choiceQuYu() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
-        builder.setTitle("请选择区域");
+        builder.setTitle(getResources().getString(R.string.text_dialog_choice));
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_choice_quyu, null);
         builder.setView(view);
         final CheckBox cb_mRegion1 = view.findViewById(R.id.dialog_cb_mRegion1);
@@ -790,7 +813,7 @@ public class SetDelayTime extends BaseActivity {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast(getResources().getString(R.string.text_setDelay_toast1));
             }
 
         });

@@ -156,7 +156,7 @@ public class DownLoadActivity extends BaseActivity {
         mNS_Version.attachDataSource(new LinkedList<>(Arrays.asList(mArr_Version)));
         mNS_Version.setOnSpinnerItemSelectedListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            ToastUtils.longs("已选择: " + item);
+            ToastUtils.longs(getResources().getString(R.string.text_yxz) + item);
             mIndex = position;
             Log.e("liyi", "选择了服务器上文件名为 " + mList_version.get(mIndex) + " 的文件");
         });
@@ -225,7 +225,7 @@ public class DownLoadActivity extends BaseActivity {
         mTvMessage.setBackgroundResource(R.color.white);
 
         if (!NetUtils.haveNetWork(mContext)) {
-            mTip = "访问服务器失败\n(可能是没有连接网络)";
+            mTip = getResources().getString(R.string.text_sjerror21) + getResources().getString(R.string.text_sjerror22);
             mTvMessage.setText(mTip);
             mTvMessage.setBackgroundResource(R.color.colorRed);
             if (mDialogPlus != null) {
@@ -263,7 +263,7 @@ public class DownLoadActivity extends BaseActivity {
 
                 // 如果服务器没有所需文件
                 if (ftpFileName == null) {
-                    mTip = "服务器上没有\n升级程序安装包(请联系管理员上传安装包)";
+                    mTip = getResources().getString(R.string.text_sjerror23) + getResources().getString(R.string.text_sjerror24);
                     mTvMessage.setText(mTip);
                     mTvMessage.setBackgroundResource(R.color.colorRed);
                     return;
@@ -293,7 +293,7 @@ public class DownLoadActivity extends BaseActivity {
                 if (mPath_Local.isEmpty()) {
                     // FTP服务器 开始下载 所需文件
                     mHandler.sendMessage(mHandler.obtainMessage(1400, ftpFileName));
-                    mTip = "FTP服务器登录成功" + "\n正在下载程序...\n" + ftpFileName + " 文件\n";
+                    mTip = getResources().getString(R.string.text_sjerror28) + "\n" + getResources().getString(R.string.text_sjerror39) + "\n" + ftpFileName + getResources().getString(R.string.text_sjerror30) + "\n";
                     mTvMessage.setText(mTip);
                     Log.e("Download_APK", "index == -1 " + "开始下载");
 
@@ -307,7 +307,7 @@ public class DownLoadActivity extends BaseActivity {
 
             } else {
                 Log.e("Download_APK", "FTP服务器登录失败");
-                mTip = "FTP服务器登录失败";
+                mTip = getResources().getString(R.string.text_sjerror32);
                 mTvMessage.setText(mTip);
                 mTvMessage.setBackgroundResource(R.color.colorRed);
                 mDialogPlus.dismiss();
@@ -456,12 +456,12 @@ public class DownLoadActivity extends BaseActivity {
                     if (mResult != null) {
 
                         if (mResult.isSucceed()) {
-                            mTip = mTip + "升级程序下载成功\n";
+                            mTip = mTip + getResources().getString(R.string.text_sjerror38) + "\n";
                             mTvMessage.setBackgroundResource(R.color.colorGreen);
                             // 打开APK
                             XbUtils.openAPK(this, mResult.getPath());    // 升级程序下载成功
                         } else {
-                            mTip = mTip + "升级程序下载失败\n";
+                            mTip = mTip + getResources().getString(R.string.text_sjerror8) + "\n";
                             mTvMessage.setBackgroundResource(R.color.colorRed);
                         }
 
@@ -514,12 +514,12 @@ public class DownLoadActivity extends BaseActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (!getPackageManager().canRequestPackageInstalls()) {
                         Log.e("liyi", "没有赋予 未知来源安装权限");
-                        ToastUtils.longs("没有赋予 未知来源安装权限");
+                        ToastUtils.longs(getResources().getString(R.string.text_sjerror34));
                     }
                 }
             } else if (requestCode == 3500) {
                 Log.e("liyi", "再次点击下载，进行安装");
-                ToastUtils.longs("再次点击下载，进行安装");
+                ToastUtils.longs(getResources().getString(R.string.text_sjerror40));
             }
         }
 

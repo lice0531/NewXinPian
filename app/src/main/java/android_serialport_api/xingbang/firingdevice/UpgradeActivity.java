@@ -307,7 +307,7 @@ public class UpgradeActivity extends SerialPortActivity {
     private void initView() {
         mBtnAssets = findViewById(R.id.btn_assets);
         mBtnAssets.setOnClickListener(v -> {
-            Toast.makeText(this, "待开发", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_sjerror1), Toast.LENGTH_SHORT).show();
         });
 
         mBtnOpenFile = findViewById(R.id.btn_open_file);
@@ -370,7 +370,7 @@ public class UpgradeActivity extends SerialPortActivity {
         });
 
         mTvVersion = findViewById(R.id.tv_version);
-        mTvVersion.setText("版本号: " + XbUtils.getVersionName(mContext));
+        mTvVersion.setText(getResources().getString(R.string.text_bbh) + XbUtils.getVersionName(mContext));
         mTvVersion.setOnLongClickListener(v -> {
 
             // xb文件夹不存在则创建
@@ -391,7 +391,7 @@ public class UpgradeActivity extends SerialPortActivity {
         });
 
         mTvCmd = findViewById(R.id.tv_cmd);
-        mTvCmd.setText("注意！使用前请关闭起爆器程序");
+        mTvCmd.setText(getResources().getString(R.string.text_zy));
     }
 
 
@@ -412,9 +412,9 @@ public class UpgradeActivity extends SerialPortActivity {
                 // 升级失败
                 case 1200:
                     mDialogPlus.dismiss();
-                    mTip = "使用 " + mDownLoadFilePath +
-                            " 路径下bin文件升级失败 " +
-                            "\n\n失败原因: 没有IAP硬件升级程序";
+                    mTip = getResources().getString(R.string.text_sjerror2) + mDownLoadFilePath +
+                            getResources().getString(R.string.text_sjerror3) +
+                            "\n\n" + getResources().getString(R.string.text_sjerror37);
                     mTvCmd.setText(mTip);
                     mTvCmd.setBackgroundResource(R.color.color_red);
                     break;
@@ -422,7 +422,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 // 超时
                 case 1300:
                     Log.e("UpgradeActivity", "串口超时 " + msg.obj + "秒 没有返回");
-                    mTip = "升级超时 串口没有返回";
+                    mTip = getResources().getString(R.string.text_sjerror5);
                     mTvCmd.setText(mTip);
                     mTvCmd.setBackgroundResource(R.color.color_red);
                     break;
@@ -471,7 +471,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
                             // apk文件
                             if (type.equals(".apk")) {
-                                mTip = mTip + "\n升级程序下载成功";
+                                mTip = mTip + "\n" + getResources().getString(R.string.text_sjerror38);
                                 mTvCmd.setBackgroundResource(R.color.green);
                                 mDialogPlus.dismiss();
 
@@ -482,15 +482,15 @@ public class UpgradeActivity extends SerialPortActivity {
                             else if (type.equals(".bin")) {
 
                                 if (name.equals("currency")) {
-                                    mTip = "通用版升级文件 下载成功\n\n";
+                                    mTip = getResources().getString(R.string.text_sjerror6) + "\n\n";
                                 } else if (name.equals("permit")) {
-                                    mTip = "煤许版升级文件 下载成功\n\n";
+                                    mTip = getResources().getString(R.string.text_sjerror7) + "\n\n";
                                 }
                                 startUpdate(path);
                             }
 
                         } else {
-                            mTip = mTip + "升级程序下载失败\n";
+                            mTip = mTip + getResources().getString(R.string.text_sjerror8) + "\n";
                             mTvCmd.setBackgroundResource(R.color.color_red);
                         }
                     }
@@ -523,7 +523,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
             case "E0":
                 Log.e("返回E0", "E0 -> E1");
-                mTip = mTip + "\nE0 强制升级指令完成";
+                mTip = mTip + "\n" + getResources().getString(R.string.text_sjerror9);
                 mTvCmd.setText(mTip);
                 mReadThread_upload.mIsReturnCmd = true;
                 E1();
@@ -531,7 +531,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
             case "E1":
                 Log.e("返回E1", "开始升级指令完成");
-                mTip = mTip + "\nE1 开始升级指令完成";
+                mTip = mTip + "\n" + getResources().getString(R.string.text_sjerror12);
                 mTvCmd.setText(mTip);
                 Log.e("E1后续操作", "E1 -> E2");
                 E2();
@@ -553,7 +553,7 @@ public class UpgradeActivity extends SerialPortActivity {
                     // 最后一次传输 例如: 31 < 31
                 } else {
                     Log.e("返回E2 最后一次", "bin文件发送完成 E2 -> E4");
-                    mTip = mTip + "\nE2 固件发送和接收指令完成";
+                    mTip = mTip + "\n" + getResources().getString(R.string.text_sjerror13);
                     mTvCmd.setText(mTip);
 
                     E4();
@@ -562,7 +562,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
             case "E4":
                 Log.e("返回E4", "E4 -> 固件升级完成");
-                mTip = mTip + "\nE4 验证分割块数一致指令完成";
+                mTip = mTip + "\n" + getResources().getString(R.string.text_sjerror14);
                 mTvCmd.setText(mTip);
                 // E4返回命令
                 String Cmd_E4 = ByteUtil.ByteArrToHex(cmdBuf);
@@ -578,20 +578,20 @@ public class UpgradeActivity extends SerialPortActivity {
 
                     String version;
                     if (fileName.contains("currency")) {
-                        version = "通用版";
+                        version = getResources().getString(R.string.text_sjerror15);
                     } else if (fileName.contains("permit")) {
-                        version = "煤许版";
+                        version = getResources().getString(R.string.text_sjerror16);
                     } else {
                         version = "";
                     }
 
-                    mTip = mTip + "\n" + version + "升级成功";
+                    mTip = mTip + "\n" + version + getResources().getString(R.string.text_sjerror17);
                     mTvCmd.setText(mTip);
                     mTvCmd.setBackgroundResource(R.color.green);
                     Log.e("UpgradeActivity", "int_E4_10_Number == mNumber_E2: " + int_E4_10_Number + " == " + mNumber_E2);
                     dialog();
                 } else {
-                    mTip = mTip + "\n使用\n" + mDownLoadFilePath + "\n路径下 bin文件升级失败";
+                    mTip = mTip + "\n" + getResources().getString(R.string.text_sjerror2) + "\n" + mDownLoadFilePath + "\n" + getResources().getString(R.string.text_sjerror18);
                     mTvCmd.setText(mTip);
                     mTvCmd.setBackgroundResource(R.color.color_red);
 
@@ -617,10 +617,10 @@ public class UpgradeActivity extends SerialPortActivity {
 
     private void dialog() {
         AlertDialog dialog = new AlertDialog.Builder(UpgradeActivity.this)
-                .setTitle("系统程序升级成功")//设置对话框的标题//"成功起爆"
-                .setMessage("系统程序升级成功,请点击确认后,重新进入程序!")//设置对话框的内容"本次任务成功起爆！"
+                .setTitle(getResources().getString(R.string.text_sjerror19))//设置对话框的标题//"成功起爆"
+                .setMessage(getResources().getString(R.string.text_sjerror20))//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNegativeButton("确认", (dialog13, which) -> {
+                .setNegativeButton(getResources().getString(R.string.text_down_dialog3), (dialog13, which) -> {
                     dialog13.dismiss();
                     finish();
                 })
@@ -771,7 +771,7 @@ public class UpgradeActivity extends SerialPortActivity {
 
         // 网络判断
         if (!NetUtils.haveNetWork(mContext)) {
-            mTip = "访问服务器失败\n(可能是没有连接网络)";
+            mTip = getResources().getString(R.string.text_sjerror21) + getResources().getString(R.string.text_sjerror22);
             mTvCmd.setText(mTip);
             mTvCmd.setBackgroundResource(R.color.color_red);
             if (mDialogPlus != null) {
@@ -854,9 +854,9 @@ public class UpgradeActivity extends SerialPortActivity {
                 // 如果服务器没有所需文件
                 if (ftpFileName == null) {
                     if (type.equals(".apk")) {
-                        mTip = "服务器上没有\n升级程序安装包(请联系管理员上传安装包)";
+                        mTip = getResources().getString(R.string.text_sjerror23) + getResources().getString(R.string.text_sjerror24);
                     } else if (type.equals(".bin")) {
-                        mTip = "服务器上没有\n升级程序文件(请联系管理员上传升级文件)";
+                        mTip = getResources().getString(R.string.text_sjerror23) + getResources().getString(R.string.text_sjerror25);
                     }
                     mTvCmd.setText(mTip);
                     mTvCmd.setBackgroundResource(R.color.color_red);
@@ -879,13 +879,13 @@ public class UpgradeActivity extends SerialPortActivity {
                     // 服务器版本 和 当前版本一致
                     if (index == 0) {
                         mDialogPlus.dismiss();
-                        ToastUtils.longs("已经是最新版本了");
+                        ToastUtils.longs(getResources().getString(R.string.text_sjerror26));
                         Log.e("Download_APK", "index == 0 已经是最新版本了");
                     }
                     // 不变
                     else if (index == 1) {
                         mDialogPlus.dismiss();
-                        ToastUtils.longs("本地程序版本 高于 服务器版本");
+                        ToastUtils.longs(getResources().getString(R.string.text_sjerror27));
                         Log.e("Download_APK", "index == 1 本地程序版本 高于 服务器版本");
                     }
                     // 需要更新软件
@@ -913,7 +913,7 @@ public class UpgradeActivity extends SerialPortActivity {
                         if (mPath_Local.isEmpty()) {
                             // FTP服务器 开始下载 所需文件
                             mHandler.sendMessage(mHandler.obtainMessage(1400, ftpFileName));
-                            mTip = "FTP服务器登录成功\n正在下载最新程序...\n" + ftpFileName + " 文件\n\n";
+                            mTip = getResources().getString(R.string.text_sjerror28) + "\n" + getResources().getString(R.string.text_sjerror29) + "\n" + ftpFileName + getResources().getString(R.string.text_sjerror30) + "\n\n";
                             mTvCmd.setText(mTip);
                             Log.e("file_local", "index == -1 开始下载");
 
@@ -931,13 +931,13 @@ public class UpgradeActivity extends SerialPortActivity {
                 } else if (type.equals(".bin")) {
                     // FTP服务器 开始下载 所需文件
                     mHandler.sendMessage(mHandler.obtainMessage(1400, ftpFileName));
-                    mTip = "FTP服务器登录成功\n正在下载最新bin文件...\n";
+                    mTip = getResources().getString(R.string.text_sjerror28) + "\n" + getResources().getString(R.string.text_sjerror31) + "\n";
                     mTvCmd.setText(mTip);
                 }
 
             } else {
                 Log.e("Download_APK", "FTP服务器登录失败");
-                mTip = "FTP服务器登录失败";
+                mTip = getResources().getString(R.string.text_sjerror32);
                 mTvCmd.setText(mTip);
                 mTvCmd.setBackgroundResource(R.color.color_red);
                 mDialogPlus.dismiss();
@@ -960,7 +960,7 @@ public class UpgradeActivity extends SerialPortActivity {
         if (path.substring(path.length() - 3).equals("bin")) {
 //            OpenSerialHelper();  // 打开串口
 
-            mTip = mTip + "使用 " + path + " 路径下的bin文件\n\n开始升级...";
+            mTip = mTip + getResources().getString(R.string.text_sjerror2) + path + getResources().getString(R.string.text_sjerror10) + "\n\n" + getResources().getString(R.string.text_sjerror11);
             mTvCmd.setText(mTip);
             E0();
 
@@ -1026,7 +1026,7 @@ public class UpgradeActivity extends SerialPortActivity {
             case 9001:
                 Log.e("liyi", "9001");
                 if (grantResults[0] == -1) {
-                    ToastUtils.longs("需要读权限,请点击允许");
+                    ToastUtils.longs(getResources().getString(R.string.text_sjerror33));
                 }
 //                if (IntervalUtil.isFastClick_2()) {
 //                    selectFile_2();
@@ -1037,7 +1037,7 @@ public class UpgradeActivity extends SerialPortActivity {
             case 9002:
                 Log.e("liyi", "9002");
                 if (grantResults[0] == -1) {
-                    ToastUtils.longs("需要读权限,请点击允许");
+                    ToastUtils.longs(getResources().getString(R.string.text_sjerror33));
                 }
 //                if (IntervalUtil.isFastClick_2()) {
 //                    DownLoadAndUpdate_BIN(0);
@@ -1048,7 +1048,7 @@ public class UpgradeActivity extends SerialPortActivity {
             case 9003:
                 Log.e("liyi", "9003");
                 if (grantResults[0] == -1) {
-                    ToastUtils.longs("需要读权限,请点击允许");
+                    ToastUtils.longs(getResources().getString(R.string.text_sjerror33));
                 }
 //                if (IntervalUtil.isFastClick_2()) {
 //                    DownLoadAndUpdate_BIN(1);
@@ -1058,7 +1058,7 @@ public class UpgradeActivity extends SerialPortActivity {
             case 9004:
                 Log.e("liyi", "9004");
                 if (grantResults[0] == -1) {
-                    ToastUtils.longs("需要读权限,请点击允许");
+                    ToastUtils.longs(getResources().getString(R.string.text_sjerror33));
                 }
 //                if (IntervalUtil.isFastClick_2()) {
 //                    Download_APK("KT50UpgradeProgram");
@@ -1068,7 +1068,7 @@ public class UpgradeActivity extends SerialPortActivity {
             case 9005:
                 Log.e("liyi", "9005");
                 if (grantResults[0] == -1) {
-                    ToastUtils.longs("需要读权限,请点击允许");
+                    ToastUtils.longs(getResources().getString(R.string.text_sjerror33));
                 }
 //                if (IntervalUtil.isFastClick_2()) {
 //                    startActivity(new Intent(mContext, DownLoadActivity.class));
@@ -1179,12 +1179,12 @@ public class UpgradeActivity extends SerialPortActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (!getPackageManager().canRequestPackageInstalls()) {
                         Log.e("liyi", "没有赋予 未知来源安装权限");
-                        ToastUtils.longs("没有赋予 未知来源安装权限");
+                        ToastUtils.longs(getResources().getString(R.string.text_sjerror34));
                     }
                 }
             } else if (requestCode == 3500) {
                 Log.e("liyi", "安装新程序，请长按版本号");
-                ToastUtils.longs("安装新程序，请长按版本号");
+                ToastUtils.longs(getResources().getString(R.string.text_sjerror35));
             }
 
         }

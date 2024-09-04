@@ -822,7 +822,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/text_scan_df"
-                    android:textSize="@dimen/childReisterPageLabelFontSize"
+                    android:textSize="16sp"
                     style="@style/alltextstyle"
                     />
 
@@ -973,11 +973,11 @@
                     android:id="@+id/btn_setdelay"
                     style="@style/allbtntstyle"
                     android:layout_width="90dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="5dp"
                     android:text="@string/text_scan_xgys"
-                    android:visibility="gone"
-                    android:textSize="20sp" />
+                    android:visibility="visible"
+                    android:textSize="15sp" />
 
                 <Button
                     android:id="@+id/btn_single"
@@ -1085,7 +1085,7 @@
                         <TextView
                             android:id="@+id/text_gkm1"
                             style="@style/alltextstyle"
-                            android:gravity="right"
+                            android:gravity="right|center_vertical"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="30dp"
@@ -1093,7 +1093,7 @@
                         <TextView
                             android:id="@+id/text_gkm2"
                             style="@style/alltextstyle"
-                            android:gravity="left"
+                            android:gravity="left|center_vertical"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="30dp"

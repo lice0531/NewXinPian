@@ -233,11 +233,11 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         permissonItems.add(new PermissonItem(Manifest.permission.RECEIVE_BOOT_COMPLETED, "网络", R.drawable.permission_ic_memory));
         HiPermission.create(this)
                 .permissions(permissonItems)
-                .title("用户您好")
+                .title(getResources().getString(R.string.text_yhnh))
                 .checkMutiPermission(new PermissionCallback() {
                     @Override
                     public void onClose() {
-                        show_Toast("用户关闭权限申请");
+                        show_Toast(getResources().getString(R.string.text_yhgbqx));
                     }
 
                     @Override
@@ -434,9 +434,9 @@ public class ZiJianActivity_upload extends SerialPortActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("升级提醒");//"说明"
-        builder.setMessage("检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
-        builder.setPositiveButton("进行更新", (dialog, which) -> {
+        builder.setTitle(getResources().getString(R.string.text_updata_sys_1));//"说明"
+        builder.setMessage(getResources().getString(R.string.text_updata_sys_6));
+        builder.setPositiveButton(getResources().getString(R.string.text_updata_sys_3), (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             finish();
             Intent intent = new Intent(this, UpgradeActivity.class);
@@ -448,7 +448,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            dialog.dismiss();
 //            finish();
 //        });
-        builder.setNegativeButton("不更新", (dialog, which) -> {
+        builder.setNegativeButton(getResources().getString(R.string.text_updata_sys_4), (dialog, which) -> {
             finish();
             Intent intent = new Intent(this, XingbangMain.class);
             startActivity(intent);

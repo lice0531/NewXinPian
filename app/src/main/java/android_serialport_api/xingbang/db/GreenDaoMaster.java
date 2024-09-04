@@ -1009,7 +1009,8 @@ public class GreenDaoMaster {
         if(msg.size()==0){
             Denator_type message = new Denator_type();
             message.setDeTypeName("scyb");
-            message.setDeTypeSecond("10000");
+//            message.setDeTypeSecond("10000");
+            message.setDeTypeSecond("150");//目前最大延时先修改150ms
             message.setIsSelected(getContext().getString(R.string.text_setFac_yes));
             getDaoSession().getDenator_typeDao().insert(message);
         }

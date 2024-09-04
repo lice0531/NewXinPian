@@ -54,7 +54,7 @@
         <activity
             android:name=".firingdevice.UpgradeActivity"
             android:exported="false"
-            android:label="程序升级"
+            android:label="@string/title_activity_cxsj"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.TestICActivity"
@@ -286,7 +286,7 @@
         <activity
             android:name=".firingdevice.DownLoadActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="程序下载"
+            android:label="@string/title_activity_cxxz"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.UpLoadLogActivity"

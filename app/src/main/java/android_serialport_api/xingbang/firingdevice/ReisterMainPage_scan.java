@@ -992,8 +992,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         if (deTypeSecond != null && deTypeSecond.length() > 0) {
             maxSecond = Integer.parseInt(deTypeSecond);
+        } else {
+            Log.e("扫码注册页面","数据库中获取到的最大延时为空，特设为最大延时150毫秒");
+            maxSecond = 150;
         }
-        Log.e("最大延时", "deTypeSecond: " + deTypeSecond);
+        Log.e("扫码注册页面最大延时", "maxSecond: " + maxSecond);
     }
 
     @Override
@@ -1277,7 +1280,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String Temp = "";
         switch (item.getItemId()) {
             case 1:
-                Temp = "删除";
+                Temp = getResources().getString(R.string.text_setDealy_sc);
                 String whereClause = "id=?";
                 String[] whereArgs = {String.valueOf(id)};
                 db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
@@ -1287,12 +1290,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case 2:
                 this.modifyBlastBaseInfo(id);
-                Temp = "修改";
+                Temp = getResources().getString(R.string.text_tip_modify);
                 break;
             default:
                 break;
         }
-        show_Toast(Temp + "处理");
+        show_Toast(Temp + getResources().getString(R.string.text_tip_handle));
         return super.onContextItemSelected(item);
     }
 
@@ -1333,10 +1336,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("单发修改", "delay1: " + delay1);
             Log.e("单发修改", "maxSecond: " + maxSecond);
             if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getString(R.string.text_reister_tip9) + maxSecond + "ms"));
 
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                show_Toast("延时为空或大于最大设定延时，修改失败! ");
+                show_Toast(getString(R.string.text_reister_tip8));
 
             } else {
                 // 修改雷管延时
@@ -1442,7 +1445,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 dialog.dismiss();
             }
         });
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNeutralButton(getResources().getString(R.string.text_setDealy_sc), (dialog, which) -> {
             dialog.dismiss();
             pb_show = 1;
             runPbDialog();

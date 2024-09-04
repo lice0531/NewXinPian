@@ -106,9 +106,9 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 TextView dd = (TextView) myte.getChildAt(1);
                 menu.setHeaderIcon(R.drawable.icon);
                 menu.setHeaderTitle(dd.getText().toString());
-                menu.add(0, 1, 3, "删除");
+                menu.add(0, 1, 3, getResources().getString(R.string.text_setDealy_sc));
               
-                menu.add(0, 2, 2, "修改");
+                menu.add(0, 2, 2, getResources().getString(R.string.text_tip_modify));
                 //设置第三个参数反向  所以出现的菜单是反着的
 
             }
@@ -226,7 +226,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
         String Temp="";
         switch (item.getItemId()) {
             case 1:
-                Temp="删除";
+                Temp=getResources().getString(R.string.text_tip_delete);
                 String whereClause="id=?";  
                 String[] whereArgs={String.valueOf(id)};  
                 db.delete(DatabaseHelper.TABLE_USER_MAIN, whereClause, whereArgs);  
@@ -234,12 +234,12 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 break;
             case 2:
             	this.modifyBlastBaseInfo(id);
-                Temp="修改";
+                Temp=getResources().getString(R.string.text_tip_modify);
                 break;
             default:
                 break;
         }
-		show_Toast(Temp+"处理");
+		show_Toast(Temp+getResources().getString(R.string.text_tip_handle));
         return super.onContextItemSelected(item);
     }
 	/***
@@ -248,7 +248,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	private void insertDenator(String name,String pw){
 		
 		if(checkRepeatUserName(name)==1){
-			show_Toast("用户名: " +name+"重复");
+			show_Toast(getResources().getString(R.string.text_user_err5) +name+getResources().getString(R.string.text_user_err6));
 		    return ;
 		}
 		
@@ -266,7 +266,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	private void modifyBlastBaseInfo(int id){
 		AlertDialog.Builder builder = new AlertDialog.Builder(SetUserActivity.this);
        // builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle("修改密码信息");
+        builder.setTitle(getResources().getString(R.string.text_user_err7));
         //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
         View view = LayoutInflater.from(SetUserActivity.this).inflate(R.layout.usermodifydialog, null);
         //    设置我们自己定义的布局文件作为弹出框的Content
@@ -295,7 +295,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
                 modifyPw(a,b);
                 getLoaderManager().restartLoader(1, null, SetUserActivity.this);
                 //    将输入的用户名和密码打印出来
-				show_Toast("修改成功");
+				show_Toast(getResources().getString(R.string.text_error_tip38));
             }
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()

@@ -427,7 +427,7 @@ public class FiringMainActivity extends SerialPortActivity {
             Bundle b = msg.getData();
             String shellStr = b.getString("shellStr");
             if (msg.what == 1) {
-                show_Toast("当前版本只支持0-F," + shellStr + "雷管超出范围");
+                show_Toast(getResources().getString(R.string.text_qberr3) + shellStr + getResources().getString(R.string.text_qberr4));
             } else if (msg.what == 2) {
                 AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
                         .setTitle(R.string.text_fir_dialog19)//设置对话框的标题
@@ -2536,7 +2536,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            stopXunHuan();
 //            dialog.dismiss();
 //        });
-        builder.setNegativeButton("查看错误雷管", (dialog, which) -> {
+        builder.setNegativeButton(getResources().getString(R.string.text_fir_dialog5), (dialog, which) -> {
 //            stopXunHuan();
             llview.setVisibility(View.VISIBLE);
             text_tip.setVisibility(View.GONE);
@@ -2627,7 +2627,7 @@ public class FiringMainActivity extends SerialPortActivity {
             closeForm();
             finish();
         } else {
-            show_Toast("命令错误");
+            show_Toast(getResources().getString(R.string.text_fir_show1));
         }
     }
 

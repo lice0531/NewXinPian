@@ -11,7 +11,7 @@
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
-        android:text="序号"
+        android:text="@string/text_dialog_xh"
         />
     
     <!-- 孔号 -->
@@ -21,7 +21,7 @@
         android:layout_width="60dp"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
-        android:text="孔号"
+        android:text="@string/text_list_kong"
         />
 
     <!-- 延时-->
@@ -31,7 +31,7 @@
         android:layout_width="70dp"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
-        android:text="延时"
+        android:text="@string/text_list_delay"
         />
     
     <!-- 管壳号-->
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
-        android:text="管壳码"
+        android:text="@string/text_list_guan"
         />
 
 

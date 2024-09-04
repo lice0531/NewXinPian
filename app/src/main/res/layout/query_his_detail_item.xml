@@ -11,7 +11,7 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="序号" />
+        android:text="@string/text_list_Serial" />
 
     <TextView
         android:id="@+id/X_item_shellno"
@@ -20,7 +20,7 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="管壳码" />
+        android:text="@string/text_list_guan" />
 
     <TextView
         android:id="@+id/X_item_delay"
@@ -29,7 +29,7 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="延时" />
+        android:text="@string/text_list_delay" />
 
     <TextView
         android:id="@+id/X_item_errorname"
@@ -38,6 +38,6 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="状态" />
+        android:text="@string/text_list_state" />
 
 </LinearLayout>

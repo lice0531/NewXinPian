@@ -287,7 +287,11 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
                 if (factoryselected.isChecked()) {
                     d = getString(R.string.text_setFac_yes);
                 }
-
+                int maxSecond = Integer.parseInt(b);
+                if (maxSecond != 0 && maxSecond > 150) {
+                    show_Toast(getString(R.string.text_reister_tip9)  + "150ms");//"秒数不能为空";
+                    return;
+                }
                 modifyDenatorType(typeId, a, b, d);
                 getLoaderManager().restartLoader(1, null, SetDenatorTypeActivity.this);
                 //    将输入的用户名和密码打印出来
@@ -364,12 +368,17 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
         String tipStr = "";
         String st2Bit = denator_type_Name.getText().toString();
         String stproDt = denator_type_second.getText().toString();
+        int maxSecond = Integer.parseInt(stproDt);
         if (StringUtils.isNotBlank(st2Bit) == false) {
             tipStr = getString(R.string.text_error_tip60);//"类别名不能为空";
             return tipStr;
         }
         if (StringUtils.isNotBlank(stproDt) == false) {
             tipStr = getString(R.string.text_error_tip61);//"秒数不能为空";
+            return tipStr;
+        }
+        if (maxSecond != 0 && maxSecond > 150) {
+            tipStr = getString(R.string.text_reister_tip9)  + "150ms";//"秒数不能为空";
             return tipStr;
         }
         return tipStr;

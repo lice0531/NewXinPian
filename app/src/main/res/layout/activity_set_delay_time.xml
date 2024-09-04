@@ -81,7 +81,7 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/bt_mainpage_style"
                     android:gravity="center"
-                    android:text="隧道设置"
+                    android:text="@string/text_delay_sdsz"
                     style="@style/allbtntstyle"  />
             </LinearLayout>
 

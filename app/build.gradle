@@ -110,7 +110,7 @@ dependencies {
     compileOnly 'com.google.zxing:core:3.3.0'
 //    异常捕获
 //    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
-    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
+    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:1.1.8"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
 
     //androidx项目(UI框架)

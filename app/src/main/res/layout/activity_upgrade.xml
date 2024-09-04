@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
 
-                android:text="请选择 bin 结尾文件 进行升级" />
+                android:text="@string/text_xzb" />
 
             <Button
                 android:id="@+id/btn_new_currency"
@@ -53,7 +53,7 @@
                 style="@style/btn_style"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="下载 二代芯片版升级文件 进行升级" />
+                android:text="@string/text_xzxp" />
 
         </LinearLayout>
 
