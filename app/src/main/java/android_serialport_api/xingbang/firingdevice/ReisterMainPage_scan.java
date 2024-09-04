@@ -2672,11 +2672,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_singleReister:
                 if (isSingleReisher) {
+                    btnSingleReister.setText("正在注册");
                     isSingleReisher=false;
                     lyXinxi.setVisibility(View.VISIBLE);
                     show_Toast(getString(R.string.text_line_tip1));
                     sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
                 }else {
+                    btnSingleReister.setText("单发注册");
                     lyXinxi.setVisibility(View.GONE);
                     isSingleReisher=true;
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
