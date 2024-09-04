@@ -546,5 +546,5 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
 
-    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_240808</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_240904</string>
 </resources>
