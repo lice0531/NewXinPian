@@ -1746,42 +1746,6 @@ public class Utils {
 
     private static Toast toast;
 
-    public static void showCengterToast(final Context context, final String msg, int time) {
-        if (toast == null)
-            toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
-
-        toast.setGravity(Gravity.CENTER, 0, 0);
-
-        Activity context1 = (Activity) context;
-
-        LayoutInflater layoutInflater = context1.getLayoutInflater();
-
-        View inflate = layoutInflater.inflate(R.layout.toast_layout, null);
-
-        TextView toast_msg = inflate.findViewById(R.id.toast_msg);
-
-        toast_msg.setText(msg);
-
-        toast.setView(inflate);
-
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                toast.show();
-            }
-        }, 0, 2000);
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                toast.cancel();
-                timer.cancel();
-            }
-        }, time);
-
-
-    }
-
     public static void showToast(final Context context, final String msg, int time) {
         if (toast == null)
             toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);

@@ -1,5 +1,4 @@
 package android_serialport_api.xingbang;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Timer;
@@ -11,13 +10,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.serialport.DeviceControlSpd;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kfree.expd.ExpdDevMgr;
@@ -31,7 +34,8 @@ public class  BaseActivity extends Activity {
 	
 	protected Application mApplication;
 	private BaseActivity oContext;
-
+	private static Toast toast;
+	private static Handler handler = new Handler();
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
 		//禁止横屏
@@ -69,7 +73,24 @@ public class  BaseActivity extends Activity {
 	}
 
 	public void show_centerToast_long(String text) {
-		Utils.showCengterToast(this,text,6000);
+		if (toast == null)
+			toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		LayoutInflater layoutInflater = getLayoutInflater();
+		View inflate = layoutInflater.inflate(R.layout.toast_layout, null);
+		TextView toast_msg = inflate.findViewById(R.id.toast_msg);
+		toast_msg.setText(text);
+
+		toast.setView(inflate);
+		toast.setDuration(Toast.LENGTH_LONG); // 使用短时间以便自定义时间控制
+		toast.show();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				toast.cancel();
+			}
+		}, 5000);
 	}
 	public static void fixInputMethodManagerLeak(Context destContext) {  
 	    if (destContext == null) {  
@@ -337,4 +358,9 @@ public class  BaseActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		handler.removeCallbacksAndMessages(null); // 清除所有 Handler 回调
+	}
 }
