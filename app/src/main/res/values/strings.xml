@@ -79,7 +79,7 @@
     <string name="set_chongdian_time">设置网络测试检测时间/s</string>
     <string name="set_language">设置语言</string>
     <string name="set_save">保存设置</string>
-
+    <string name="set_wxsettings">无线配置</string>
     <string name="user_select_language">当前用户选择语言: %s</string>
     <string name="language_cn">中文</string>
     <string name="language_en">ENGLISH</string>

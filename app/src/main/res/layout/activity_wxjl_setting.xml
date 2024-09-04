@@ -11,8 +11,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -29,17 +29,13 @@
         android:id="@+id/btn_qbq_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/ll_mainlayout"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/ivqbq"
@@ -73,87 +69,55 @@
         <LinearLayout
             android:id="@+id/ll_xindao"
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/ll_tv_xd"
+            <TextView
+                android:id="@+id/tv_xd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginBottom="10dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:maxLines="2"
-                    android:text="起爆卡信道 :"
-                    android:textColor="#333333"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_xindao"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:maxLines="2"
-                    android:text=""
-                    android:textColor="#333333"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:maxLines="2"
+                android:text="当前信道 :"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/ll_sp_xd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:text="信道: "
+                    android:text="配置信道: "
                     android:textColor="#333333"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/ns_xd"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
-                    android:textSize="16sp"
-                    app:backgroundSelector="@color/color_bg"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundSelector="@color/text_hint"
                     app:textTint="@color/black" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="无线中继器序列号 :"
-                android:textColor="#333333"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:text="无线中继器序列号 : KKF23WS00000001"
                 android:layout_marginTop="10dp"
-                android:text="KKF23WS00000001"
                 android:textColor="#333333"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -221,32 +185,31 @@
         <Button
             android:id="@+id/btn_qbkXd"
             style="@style/allbtntstyle"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="240dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
             android:text="1.起爆卡配置"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_zjqXd"
             style="@style/allbtntstyle"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="240dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:text="2.无线中继器配置"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_exit"
             style="@style/allbtntstyle"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="240dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="3.退出程序"
-            android:textSize="20sp" />
+            android:layout_marginTop="10dp"
+            android:text="3.退出"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -257,7 +220,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="40dp"
-        android:background="@drawable/ll_mainlayout"
         android:orientation="vertical">
 
         <TextView
@@ -265,10 +227,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:background="@drawable/ll_mainlayout"
             android:text="注:  请先点击1、2步骤完成配置"
             android:textColor="@color/colorRed"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 </RelativeLayout>

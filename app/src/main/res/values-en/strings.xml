@@ -78,7 +78,7 @@
     <string name="set_chongdian_time">Setting Charging Detection Time/s</string>
     <string name="set_language">Setup language</string>
     <string name="set_save">Save settings</string>
-
+    <string name="set_wxsettings">Wireless configuration</string>
     <string name="user_select_language">Current User Selection Language: %s</string>
     <string name="language_cn">中文</string>
     <string name="language_en">ENGLISH</string>
