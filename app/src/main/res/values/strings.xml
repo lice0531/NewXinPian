@@ -451,8 +451,8 @@
     <string name="text_reister_tip4">已选择 区域</string>
     <string name="text_reister_tip5">已达到最大延时限制</string>
     <string name="text_reister_tip6">请修改雷管信息</string>
-    <string name="text_regist_tip7">\", 延时: \"</string>
-    <string name="text_reister_tip8">\"延时为空或大于最大设定延时，修改失败! \"</string>
+    <string name="text_regist_tip7">, 延时: </string>
+    <string name="text_reister_tip8">延时为空或大于最大设定延时，修改失败!</string>
     <string name="text_reister_tip9">已达到最大延时限制</string>
     <string name="text_practice_tip1">是否清除程序日志等缓存</string>
     <string name="text_practice_tip2">当前正在进行清除程序日志缓存操作,请确认是否清除!</string>

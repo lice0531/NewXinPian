@@ -654,7 +654,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (secondCount < Preparation_time * 0.2 && isshow2==0&& busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage != 6 && stage != 7 && stage != 8 && stage !=99 ) {// "电流过大";
+            if (secondCount < Preparation_time * 0.2 && isshow2==0&& busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2 ) {// "电流过大";
                 isshow2 = 1;
 
                 firstThread.exit = true;
