@@ -425,10 +425,10 @@ public class SetDelayTime extends BaseActivity {
         builder.setPositiveButton("确定", (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
-            } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+            if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "延时为空或大于最大设定延时，修改失败! "));
+            } else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
             } else {
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));

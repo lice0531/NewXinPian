@@ -698,6 +698,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(prex.substring(0, 2))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return;
+        }
         new Thread(() -> {
             insertDenator(prex, finalStrNo, finalEndNo,true);//添加
         }).start();
@@ -728,6 +732,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         //5630921A
         //53904151
         //01
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(prex.substring(0, 2))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return;
+        }
         new Thread(() -> {
             for (int b =0;b<a;b++){
                 String xuhao=xh[15] + "" + xh[16]+b+"00";
