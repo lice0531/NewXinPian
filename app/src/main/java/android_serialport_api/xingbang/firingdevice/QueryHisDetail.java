@@ -1064,6 +1064,45 @@ public class QueryHisDetail extends BaseActivity {
                 builder.show();
 
                 return true;
+            case R.id.item_2:
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(QueryHisDetail.this);
+                builder2.setTitle("上传提示");//"请输入用户名和密码"
+                View view2 = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                builder2.setView(view2);
+                final EditText password2 = view2.findViewById(R.id.password);
+                builder2.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                    String b = password2.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
+                    if ( b.equals("123")) {
+
+                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+                        GreenDaoMaster master = new GreenDaoMaster();
+                        for (DenatorHis_Main his:list) {
+                            if(his.getUploadStatus().equals("已上传")){
+                                master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
+                                master.deleteForHis(his.getBlastdate());
+                                master.deleteForDetail(his.getBlastdate());
+                            }
+                        }
+
+                        show_Toast("已上传所有未上传记录");
+                    } else {
+                        show_Toast("密码错误");
+                    }
+                    loadMoreData(currentPage);//读取数据
+                    showLoadMore();
+                    dialog.dismiss();
+                });
+                builder2.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+
+                builder2.show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

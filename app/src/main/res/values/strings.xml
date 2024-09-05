@@ -752,5 +752,6 @@
     <string name="text_line_pd">偏大</string>
     <string name="text_his_scts">删除提示</string>
     <string name="text_srmm">请输入密码后,再进行删除历史记录操作</string>
+    <string name="text_uploadAllHis">请输入密码后,再进行上传未上传记录操作</string>
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
 </resources>
