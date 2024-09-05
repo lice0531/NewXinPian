@@ -92,10 +92,8 @@ public class WxjlNearActivity extends SerialPortActivity {
     //      用户修改后的信道Id  已经设置成功的信道Id
     private int xinDaoId = -1;
     private String xinDaoValue = "";//完整信道值
-    private boolean receiveF9 = false;//发出F9命令是否返回
     private boolean receiveAB = false;//发出AB命令是否返回
     private boolean isReSendAB = true;//是否是切换信道，如果是切换信道，需要先发送AB设置无线驱动指令，再依次发送F9,AB
-    private boolean isSendAB = true;//防止用户多次点击频发AB
     private SetZJQThread setZjqThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +136,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     private void initLgData() {
         xinDaoValue = (String) MmkvUtils.getcode("xinDaoValue", "");
         xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
+        Log.e(TAG,"当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
         openHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -174,9 +173,13 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String jcmsResult = (String) msg.obj;
                         close82Thread();
                         if ("true".equals(jcmsResult)) {
-                            setZjqThread = new SetZJQThread();
-                            setZjqThread.start();
-                            Log.e(TAG,"启动AB线程了");
+                            if (xinDaoId == 27) {
+                                enterRemotePage();
+                            } else {
+                                setZjqThread = new SetZJQThread();
+                                setZjqThread.start();
+                                Log.e(TAG,"启动AB线程了");
+                            }
                         } else {
                             tvEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
@@ -227,24 +230,11 @@ public class WxjlNearActivity extends SerialPortActivity {
                                 receiveAB = false;
                                 isReSendAB = false;
                             } else {
-                                tvEnterJcms.setText("3.进入级联页面");
-                                show_Toast("数据检测结束,进入级联页面");
-                                xinDaoValue = "CH27-9.6kbps-2";
-                                MmkvUtils.savecode("xinDaoValue",xinDaoValue);
-                                MmkvUtils.savecode("xinDao",xinDaoId);
-                                closeSerial();
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
                                 enterRemotePage();
-                                currentCount = 0;
                             }
                         } else {
                             tvEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
-                            isSendAB = true;
                         }
                         break;
                 }
@@ -282,6 +272,7 @@ public class WxjlNearActivity extends SerialPortActivity {
          *       包头 长度 指令码 回复数据 CRC 包尾
          * 回复CRC:不包含包头和包尾
          */
+        xinDaoId = 27;
         String b = Utils.intToHex(xinDaoId);
         String xdId = Utils.addZero(b, 2);
 //        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
@@ -304,7 +295,19 @@ public class WxjlNearActivity extends SerialPortActivity {
     }
 
     private void enterRemotePage() {
-//        finish();
+        tvEnterJcms.setText("3.进入级联页面");
+        show_Toast("数据检测结束,进入级联页面");
+        xinDaoValue = "CH27-9.6kbps-2";
+        MmkvUtils.savecode("xinDaoValue",xinDaoValue);
+        MmkvUtils.savecode("xinDao",27);
+        xinDaoId = -1;
+        closeSerial();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        currentCount = 0;
         Intent intent = new Intent(WxjlNearActivity.this, WxjlRemoteActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("wxjlDeviceId", deviceId);
@@ -529,7 +532,6 @@ public class WxjlNearActivity extends SerialPortActivity {
     private void doWithWxpzReceivData(String cmd, byte[] locatBuf) {
         if (DefCommand.CMD_QBK_F9.equals(cmd)) {//F9 无线级联：收到起爆卡设置信道指令了
             Log.e(TAG, "收到起爆卡设置信道指令了");
-            receiveF9 = true;
             Message message = new Message();
             message.what = 6;
             message.obj = "true";
