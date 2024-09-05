@@ -152,7 +152,7 @@ public class XingbangMain1 extends BaseActivity {
     private Handler mHandler_updataVersion = new Handler();//更新版本
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
-    private String TAG = "主页";
+    private String TAG = "主页面";
 
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
@@ -217,7 +217,7 @@ public class XingbangMain1 extends BaseActivity {
 //        }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        int xindao = (int) MmkvUtils.getcode("xinDao", 7);
+        int xindao = (int) MmkvUtils.getcode("xinDao", -1);
         Log.e(TAG, "app信道: " + xindao);
         app_version_name = getString(R.string.app_version_name);
         getleveup();

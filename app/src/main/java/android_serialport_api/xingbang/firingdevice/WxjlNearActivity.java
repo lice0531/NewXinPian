@@ -38,7 +38,7 @@ import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
-import android_serialport_api.xingbang.jilian.FirstEvent;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.utils.upload.InitConst;
 import butterknife.BindView;
@@ -89,6 +89,14 @@ public class WxjlNearActivity extends SerialPortActivity {
     private ArrayList<Map<String, Object>> errDeData = new ArrayList<>();//错误雷管
     private int errorTotalNum;//错误雷管总数
     private boolean isRestarted = false;
+    //      用户修改后的信道Id  已经设置成功的信道Id
+    private int xinDaoId = -1;
+    private String xinDaoValue = "";//完整信道值
+    private boolean receiveF9 = false;//发出F9命令是否返回
+    private boolean receiveAB = false;//发出AB命令是否返回
+    private boolean isReSendAB = true;//是否是切换信道，如果是切换信道，需要先发送AB设置无线驱动指令，再依次发送F9,AB
+    private boolean isSendAB = true;//防止用户多次点击频发AB
+    private SetZJQThread setZjqThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +136,8 @@ public class WxjlNearActivity extends SerialPortActivity {
     }
 
     private void initLgData() {
+        xinDaoValue = (String) MmkvUtils.getcode("xinDaoValue", "");
+        xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
         openHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -164,17 +174,9 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String jcmsResult = (String) msg.obj;
                         close82Thread();
                         if ("true".equals(jcmsResult)) {
-                            tvEnterJcms.setText("3.进入级联页面");
-                            show_Toast("数据检测结束,进入级联页面");
-                            closeSerial();
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-//                            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
-                            currentCount = 0;
-                            enterRemotePage();
+                            setZjqThread = new SetZJQThread();
+                            setZjqThread.start();
+                            Log.e(TAG,"启动AB线程了");
                         } else {
                             tvEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
@@ -204,11 +206,90 @@ public class WxjlNearActivity extends SerialPortActivity {
                             show_Toast("错误雷管读取失败，请退出APP后再重新操作");
                         }
                         break;
+                    case 6:
+                        String qbkResult = (String) msg.obj;
+                        if ("true".equals(qbkResult)) {
+                            setZjqThread = new SetZJQThread();
+                            setZjqThread.start();
+                            Log.e(TAG,"进入级联页面时信道已配置:" + xinDaoId + "--启动AB线程了");
+                        } else {
+                            tvEnterJcms.setText("3.进入检测模式");
+                            show_Toast("数据检测失败，请退出APP后再重新检测");
+                        }
+                        break;
+                    case 7:
+                        String zjqResult = (String) msg.obj;
+                        closeABThread();
+                        if ("true".equals(zjqResult)) {
+                            if (isReSendAB) {
+                                sendF9();
+                                zeroCount = 0;
+                                receiveAB = false;
+                                isReSendAB = false;
+                            } else {
+                                tvEnterJcms.setText("3.进入级联页面");
+                                show_Toast("数据检测结束,进入级联页面");
+                                xinDaoValue = "CH27-9.6kbps-2";
+                                MmkvUtils.savecode("xinDaoValue",xinDaoValue);
+                                MmkvUtils.savecode("xinDao",xinDaoId);
+                                closeSerial();
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                enterRemotePage();
+                                currentCount = 0;
+                            }
+                        } else {
+                            tvEnterJcms.setText("3.进入检测模式");
+                            show_Toast("数据检测失败，请退出APP后再重新检测");
+                            isSendAB = true;
+                        }
+                        break;
                 }
                 return false;
             }
         });
     }
+
+    private void sendAB() {
+        /**
+         * 给中继 KKF23WS00000001 设置信道 6 指令及回复如下：
+         * 指令：C5C5 12   AB   4B4B46323357533030303030303031    06      07   F9  E5E5
+         *      包头 长度 指令码 中继卡序列号(KKF23WS00000001)     主卡信道 固定不变  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复：C5C5  02   AB     00  8F  E5E5
+         *      包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         * 进入级联页面，直接将信道切为27
+         */
+        xinDaoId = 27;
+        String b1 = Utils.intToHex(xinDaoId);
+        String xdId1 = Utils.addZero(b1, 2);
+//        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
+    }
+
+    private void sendF9(){
+        /**
+         * 将起爆卡信道设置为 1 的指令及回复如下：
+         * 指令： C5C5  02  F9    01  AE  E5E5
+         *      包头  长度 指令码 信道  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复： C5C5  02   F9    00   A9  E5E5
+         *       包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         */
+        String b = Utils.intToHex(xinDaoId);
+        String xdId = Utils.addZero(b, 2);
+//        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(qbzXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Qbk_F9(xdId));
+        Log.e(TAG,"发送F9指令了");
+    }
+
 
     private void closeSerial() {
         isRestarted = false;
@@ -228,38 +309,6 @@ public class WxjlNearActivity extends SerialPortActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("wxjlDeviceId", deviceId);
         startActivityForResult(intent,100);
-    }
-
-    private void close80Thread() {
-        if (rDevices != null) {
-            rDevices.exit = true;
-            rDevices.interrupt();
-            Log.e(TAG,"80线程已关闭");
-        }
-    }
-
-    private void close81Thread() {
-        if (sendData != null) {
-            sendData.exit = true;
-            sendData.interrupt();
-            Log.e(TAG,"81线程已关闭");
-        }
-    }
-
-    private void close82Thread() {
-        if (enterJcms != null) {
-            enterJcms.exit = true;
-            enterJcms.interrupt();
-            Log.e(TAG,"82线程已关闭");
-        }
-    }
-
-    private void close84Thread() {
-        if (queryError != null) {
-            queryError.exit = true;
-            queryError.interrupt();
-            Log.e(TAG,"84线程已关闭");
-        }
     }
 
     private class RegisterDevices extends Thread {
@@ -392,6 +441,34 @@ public class WxjlNearActivity extends SerialPortActivity {
             }
         }
     }
+    private int zeroCount = 0;
+    private class SetZJQThread extends Thread {
+        public volatile boolean exit = false;
+        public void run() {
+            while (!exit) {
+                try {
+                    Log.e(TAG,"AB指令发送次数:" + zeroCount);
+                    if (zeroCount <= 1 && !receiveAB) {
+                        sendAB();
+                        Log.e(TAG, "发送AB设置无线中继器信道指令了");
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 1){
+                        Log.e(TAG,"AB指令未返回已发送1次，停止发送AB指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 7;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     //发送命令
     public void sendCmd(byte[] mBuffer) {
         if (mSerialPort != null && mOutputStream != null) {
@@ -413,14 +490,14 @@ public class WxjlNearActivity extends SerialPortActivity {
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
 //        Log.e(TAG + "处理前--返回命令", fromCommad + "--mAfter:"  + mAfter);
-        if ((!fromCommad.endsWith("C0") || !fromCommad.startsWith("C0")) && TextUtils.isEmpty(mAfter)) {
-            Log.e(TAG, "mAfter为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
-            mAfter = fromCommad;
-        } else if (!fromCommad.startsWith("C0") || !fromCommad.endsWith("C0")) {
-            fromCommad = mAfter + fromCommad;
-            Log.e(TAG, "mAfter不为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
-            mAfter = "";
-        }
+//        if ((!fromCommad.endsWith("C0") || !fromCommad.startsWith("C0")) && TextUtils.isEmpty(mAfter)) {
+//            Log.e(TAG, "mAfter为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
+//            mAfter = fromCommad;
+//        } else if (!fromCommad.startsWith("C0") || !fromCommad.endsWith("C0")) {
+//            fromCommad = mAfter + fromCommad;
+//            Log.e(TAG, "mAfter不为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
+//            mAfter = "";
+//        }
         Log.e(TAG + "处理后--返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
         if (fromCommad.startsWith("C0") && fromCommad.endsWith("C0") && fromCommad.length() > 12) {
@@ -436,8 +513,36 @@ public class WxjlNearActivity extends SerialPortActivity {
                     doWithReceivData(cmd, fromCommad);
                 }
             }
+        } else if (fromCommad.startsWith("C5C5") && fromCommad.endsWith("E5E5")) {
+            String cmd = DefCommand.getWxSDKCmd(fromCommad);
+            Log.e(TAG,"返回命令正常--具体命令:" + cmd);
+            byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+            doWithWxpzReceivData(cmd, localBuf);//处理cmd命令
         } else {
             Log.e(TAG, "-返回命令不完整" + fromCommad);
+        }
+    }
+
+    /***
+     * 处理芯片返回无线配置命令
+     */
+    private void doWithWxpzReceivData(String cmd, byte[] locatBuf) {
+        if (DefCommand.CMD_QBK_F9.equals(cmd)) {//F9 无线级联：收到起爆卡设置信道指令了
+            Log.e(TAG, "收到起爆卡设置信道指令了");
+            receiveF9 = true;
+            Message message = new Message();
+            message.what = 6;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
+        } else if (DefCommand.CMD_ZJQ_AB.equals(cmd)) {//AB 无线级联：收到无线中继器设置信道指令了
+            Log.e(TAG, "收到无线中继器设置信道指令了");
+            receiveAB = true;
+            Message message = new Message();
+            message.what = 7;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
+        } else {
+            Log.e(TAG, TAG + "-无线配置返回命令没有匹配对应的命令-cmd: " + cmd);
         }
     }
 
@@ -564,7 +669,6 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
         Log.e(TAG, "数据库查询错误雷管总数: " + errDeData.size());
     }
-
 
     private void showErrorLgList() {
         if (!WxjlNearActivity.this.isFinishing()) {
@@ -809,6 +913,46 @@ public class WxjlNearActivity extends SerialPortActivity {
                     tvLookError.setText("4.查看错误雷管列表");
                 }
             }
+        }
+    }
+
+    private void close80Thread() {
+        if (rDevices != null) {
+            rDevices.exit = true;
+            rDevices.interrupt();
+            Log.e(TAG,"80线程已关闭");
+        }
+    }
+
+    private void close81Thread() {
+        if (sendData != null) {
+            sendData.exit = true;
+            sendData.interrupt();
+            Log.e(TAG,"81线程已关闭");
+        }
+    }
+
+    private void close82Thread() {
+        if (enterJcms != null) {
+            enterJcms.exit = true;
+            enterJcms.interrupt();
+            Log.e(TAG,"82线程已关闭");
+        }
+    }
+
+    private void close84Thread() {
+        if (queryError != null) {
+            queryError.exit = true;
+            queryError.interrupt();
+            Log.e(TAG,"84线程已关闭");
+        }
+    }
+
+    private void closeABThread(){
+        if (setZjqThread != null) {
+            setZjqThread.exit = true;
+            setZjqThread.interrupt();
+            Log.e(TAG,"AB线程已关闭");
         }
     }
 
