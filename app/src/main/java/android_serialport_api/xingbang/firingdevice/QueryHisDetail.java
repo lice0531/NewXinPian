@@ -55,6 +55,7 @@ import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
+import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -119,6 +120,9 @@ public class QueryHisDetail extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
+    List<String> dateList = new ArrayList<>();//未上传日期
+    private int uploadIndex = 0;//还有多少条数据需要一键上传
+    private String TAG="上传页面";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1079,7 +1083,18 @@ public class QueryHisDetail extends BaseActivity {
                     }
                     Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
                     if ( b.equals("123")) {
-
+                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+                        for (DenatorHis_Main his:list) {
+                            if(his.getUploadStatus().equals("未上传")){
+                                dateList.add(his.getBlastdate());
+                            }
+                        }
+                        if (dateList.size() > 0) {
+                            Log.e("一键上传","未上传的date集合:" + dateList.toString());
+                            uploadNext(dateList,uploadIndex);
+                        } else {
+                            show_Toast("当前没有需要上传的数据");
+                        }
 
 
                         show_Toast("已上传所有未上传记录");
@@ -1098,5 +1113,74 @@ public class QueryHisDetail extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // 递归方法，逐个上传数据
+    private void uploadNext(List<String> dateList, int index) {
+        if (index >= dateList.size()) {
+            Log.e("一键上传","一键上传--所有数据已全部上传");
+            show_Toast("上传已结束");
+            pb_show = 0;
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            return;
+        }
+//        Log.e("一键上传","isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
+        String data = dateList.get(index);
+        for (int i = 0; i < list_savedate.size(); i++) {
+            if (data.equals(list_savedate.get(i).getBlastdate())) {
+                Log.e("一键上传","一键上传的数据下标是:" + i + "--日期是:" + list_savedate.get(i).getBlastdate());
+                uploadQbData(i);
+            }
+        }
+    }
+
+    private void uploadQbData(int position) {
+        if (!NetUtils.haveNetWork(Application.getContext())) {
+            show_Toast("请检查网络!");
+            return;
+        }
+        int pos = position;//位置
+        String blastdate = list_savedate.get(pos).getBlastdate();//日期
+        String htbh = list_savedate.get(pos).getProjectNo();//合同编号
+        String dwdm = list_savedate.get(pos).getDwdm();//单位代码
+        String xmbh = list_savedate.get(pos).getXmbh();//项目编号
+        String jd = list_savedate.get(pos).getLongitude();//经度
+        String wd = list_savedate.get(pos).getLatitude();//纬度
+        String qbxm_id = list_savedate.get(pos).getXmbh();//项目编号
+        String qbxm_name = list_savedate.get(pos).getUserid();//项目名称
+        String log = list_savedate.get(pos).getLog();//日志
+//                        mAdapter.notifyDataSetChanged();
+        getHisDetailList(blastdate, 0);//获取起爆历史详细信息
+        if (blastdate == null || blastdate.trim().length() < 8) {
+            int count = getBlastModelCount();
+            if (count < 1) {
+                show_Toast("没有数据，不能执行上传");
+                return;
+            }
+            String fireDate = Utils.getDateFormatLong(new Date());
+            saveFireResult(fireDate);
+            blastdate = fireDate;
+        }
+//                        Utils.writeRecord("项目上传信息:" + list_savedate.get(pos));
+        Log.e(TAG + "上传-经纬度", "pro_coordxy: " + pro_coordxy);
+        Log.e(TAG + "上传-经纬度", "jd: " + jd);
+        if (pro_coordxy.length() < 2 && (jd == null || wd == null)) {
+            show_Toast("经纬度为空，不能执行上传");
+            return;
+        }
+        if (server_type2.equals("0") && server_type1.equals("0")) {
+            show_Toast("设备当前未设置上传网址,请先设置上传网址");
+        }
+//                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
+        pb_show = 1;
+        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+        runPbDialog();//loading画面
+        if (server_type1.equals("1")) {
+            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+        }
+        if (server_type2.equals("2")) {
+            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
+        }
+        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
     }
 }
