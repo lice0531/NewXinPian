@@ -519,7 +519,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
-                } else if (displayIc < (denatorCount * ic_cankao * 0.5) && displayIc > 10  ) {// "电流偏低";
+                }else if (displayIc < (denatorCount * ic_cankao * 0.5) && displayIc > 10 && stage != 6 && stage != 33) {// "电流偏低";
                     Log.e(TAG, "电流偏低: ");
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
                     setIcView(Color.RED);//设置颜色
@@ -608,32 +608,6 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
                 }
             }
-
-            if(sixExchangeCount <= 10 && stage == 6){
-                float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 9000) {
-                    increase(99);//暂停阶段
-                    mHandler_1.handleMessage(Message.obtain());
-
-//                    if (!chongfu) {
-//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-//                    } else {
-                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
-                    AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
-                            .setTitle(R.string.text_fir_dialog2)//设置对话框的标题//"成功起爆"
-                            .setMessage(getString(R.string.text_fir_dialog6))//设置对话框的内容"本次任务成功起爆！"
-                            //设置对话框的按钮
-                            .setNeutralButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
-                                dialog12.cancel();
-                                closeThread();
-                                closeForm();
-                            })
-                            .create();
-                    dialog.show();
-//                    }
-                }
-            }
-
 
             if (secondCount < JianCe_time * 0.4 && busInfo != null && busInfo.getBusVoltage() < 6.3) {
                 Utils.writeRecord("--起爆测试--:总线短路");
