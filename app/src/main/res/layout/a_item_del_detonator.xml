@@ -15,7 +15,7 @@
         <!-- 孔号 -->
         <TextView
             android:id="@+id/tv_sithole"
-            android:layout_width="50dp"
+            android:layout_width="52dp"
             android:layout_height="match_parent"
             android:background="@drawable/a_bg_border_blue_1dp"
             style="@style/alltextstyle"/>

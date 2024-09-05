@@ -20,7 +20,7 @@
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:text="@string/text_list_kong"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:background="@drawable/textview_border"
         android:textStyle="bold"
         android:gravity="center" />

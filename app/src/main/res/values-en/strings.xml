@@ -226,7 +226,7 @@
     <string name="text_reister_ele1">bus current</string>
     <string name="text_ceshi_tzcs">Stop</string>
     <string name="text_list_Serial">serial</string>
-    <string name="text_list_kong">no</string>
+    <string name="text_list_kong">Hole no</string>
     <string name="text_list_guan">shell code</string>
     <string name="text_list_delay">delay</string>
     <string name="text_list_state">status</string>
@@ -834,7 +834,7 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PTE_V2.1_240829</string>
+    <string name="app_version_name">M900_PTE_V2.1_240905</string>
     <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
