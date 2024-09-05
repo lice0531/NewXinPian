@@ -1080,15 +1080,7 @@ public class QueryHisDetail extends BaseActivity {
                     Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
                     if ( b.equals("123")) {
 
-                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
-                        GreenDaoMaster master = new GreenDaoMaster();
-                        for (DenatorHis_Main his:list) {
-                            if(his.getUploadStatus().equals("已上传")){
-                                master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
-                                master.deleteForHis(his.getBlastdate());
-                                master.deleteForDetail(his.getBlastdate());
-                            }
-                        }
+
 
                         show_Toast("已上传所有未上传记录");
                     } else {
