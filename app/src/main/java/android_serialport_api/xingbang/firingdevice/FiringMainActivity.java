@@ -582,6 +582,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.RED);//设置颜色
+                }else if (displayIc > 30000 && stage == 6) {
+                    Log.e(TAG, "疑似短路stage: " + stage);
+                    displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                 }
 //                else if (displayIc > ( cankao_ic_gaoya *0.8) && displayIc < (cankao_ic_gaoya *0.9) && displayIc > 10 && stage == 6) {// "电流过大";
 //                    displayIcStr = displayIcStr + "电流偏低";
