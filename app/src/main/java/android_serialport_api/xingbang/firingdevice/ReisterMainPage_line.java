@@ -220,7 +220,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private int send_13 = 0;
     private int send_10 = 0;
     private int send_41 = 0;
-    private int send_40 = 0;
+    private boolean send_40 = true;
 
     // 雷管列表
     private LinearLayoutManager linearLayoutManager;
@@ -1237,15 +1237,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
                 Log.e("发送命令", str);
-                if (str.contains("C00010")) {
-                    send_10 = 1;
-                } else if (str.contains("C00041")) {
-                    send_41 = 1;
-                } else if (str.contains("C00013")) {
-                    send_13 = 1;
-                } else if (str.contains("C00040")) {
-                    send_40 = 1;
-                }
                 mOutputStream.write(mBuffer);
                 //实验有没有用
 //                mOutputStream.flush();
@@ -1303,8 +1294,12 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 e.printStackTrace();
             }
             //2  连续发三次询问电流指令
-            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
-            sendCmd(reCmd);
+            if(send_40){
+                byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
+                sendCmd(reCmd);
+                send_40=false;
+            }
+
 //            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
             zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
             if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
@@ -1325,7 +1320,10 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //            }
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
-            send_40 = 0;
+            if(!send_40){
+                send_40 = true;
+            }
+
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
