@@ -755,5 +755,6 @@
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
     <string name="menu_scan">手动输入</string>
     <string name="text_uploadAllHis">请输入密码后,再进行上传未上传记录操作</string>
+    <string name="text_test_dlpd_di">(电流偏大)</string>
 
 </resources>
