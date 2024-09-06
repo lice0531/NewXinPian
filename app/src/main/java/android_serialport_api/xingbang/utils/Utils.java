@@ -735,7 +735,7 @@ public class Utils {
 
     public static String getDateFormat_log(Date date) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
         String dateString = formatter.format(date);
 
         return dateString;
