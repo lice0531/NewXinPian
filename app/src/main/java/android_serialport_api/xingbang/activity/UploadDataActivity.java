@@ -58,6 +58,7 @@ import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
+import android_serialport_api.xingbang.utils.ThreadUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -171,7 +172,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             isLgDone = true;
         }
         // 调用方法生成 3000 个唯一的日期时间字符串
-        dateTimeList = getUniqueDateTimes("yyyy/MM/dd,HH:mm:ss", 3000);
+        dateTimeList = getUniqueDateTimes("yyyy/MM/dd,HH:mm:ss", numStrings);
         for (String s : dateTimeList) {
             moDataIndex++;
         }
@@ -282,49 +283,66 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private ExecutorService executor;
     // 递归方法，逐个上传数据
     private void uploadNextMoni(List<String> stringList, int index) {
-        executor = Executors.newFixedThreadPool(4); // 在循环外部创建线程池
-        Log.e(TAG,"模拟大量数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
+//        executor = Executors.newFixedThreadPool(4); // 在循环外部创建线程池
+        Log.e(TAG, "模拟大量数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
         if (index >= stringList.size()) {
 //            pb_show = 0;
 //            mHandler_2.sendMessage(mHandler_2.obtainMessage());
-            Log.e(TAG,"模拟大量数据一键上传--所有数据已全部上传" );
+            Log.e(TAG, "模拟大量数据一键上传--所有数据已全部上传");
             show_Toast("上传已结束");
             // 等待所有任务完成后关闭线程池
-            executor.shutdown();
-            try {
-                if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                    executor.shutdownNow();
-                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                        Log.e(TAG, "线程池未能正常关闭");
-                    }
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
+//            executor.shutdown();
+//            try {
+//                if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+//                    executor.shutdownNow();
+//                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+//                        Log.e(TAG, "线程池未能正常关闭");
+//                    }
+//                }
+//            } catch (InterruptedException e) {
+//                executor.shutdownNow();
+//                Thread.currentThread().interrupt();
+//            }
             return;
         }
         Log.e(TAG, "isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
-        executor.submit(() -> {
-            Log.e(TAG, "threadpool start");
-            String data = stringList.get(index);
-            for (int i = 0; i < stringList.size(); i++) {
-                if (data.equals(stringList.get(i))) {
-                    try {
-                        // 执行具体任务，例如上传数据
-                        uploadMoniQbData();
-                    } catch (Exception e) {
-                        Log.e(TAG, "threadpool error",e);
-                        executor.shutdownNow();
-                        Thread.currentThread().interrupt();
+//        executor.submit(() -> {
+        Log.e(TAG, "threadpool start");
+        String data = stringList.get(index);
+        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
+            @Override
+            public void run() {
+                for (String s : stringList) {
+                    if (data.equals(s)) {
+                        try {
+                            // 执行具体任务，例如上传数据
+                            uploadMoniQbData(dateTimeList.get(uploadIndexMoni));
+                        } catch (Exception e) {
+                            Log.e(TAG, "threadpool error", e);
+//                            executor.shutdownNow();
+//                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
             }
-            Log.e(TAG, "threadpool finish");
         });
+//        for (int i = 0; i < stringList.size(); i++) {
+//            if (data.equals(stringList.get(i))) {
+//                try {
+//                    // 执行具体任务，例如上传数据
+//                    uploadMoniQbData();
+//                } catch (Exception e) {
+//                    Log.e(TAG, "threadpool error", e);
+//                    executor.shutdownNow();
+//                    Thread.currentThread().interrupt();
+//                }
+//            }
+//        }
+//        Log.e(TAG, "threadpool finish");
+//        });
     }
 
-    private void uploadMoniQbData() {
+    private void uploadMoniQbData(String dataTime) {
         if (!NetUtils.haveNetWork(getContext())) {
             show_Toast("请检查网络!");
             return;
@@ -332,11 +350,15 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (server_type2.equals("0") && server_type1.equals("0")) {
             show_Toast("设备当前未设置上传网址,请先设置上传网址");
         }
+        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
 //        pb_show = 1;
 //        mHandler_2.sendMessage(mHandler_2.obtainMessage());
 //        runPbDialog();//loading画面
 //        if (server_type1.equals("1")) {
-            // "sbbh", "F60C7002222"//起爆器设备编号XBTS0003
+                    // "sbbh", "F60C7002222"//起爆器设备编号XBTS0003
 //            "jd", "120.498324"//经度
 //            "wd", "30.354008"//纬度
 //            "uid", "3830422489602"//雷管uid
@@ -348,8 +370,16 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //        if (server_type2.equals("2")) {
 //            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
 //        }
-        upload_xingbang_moni(list_savedate.get(0).getBlastdate(), uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "", "", "");//我们自己的网址
-        //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+                    upload_xingbang_moni(dataTime, uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "", "", "");//我们自己的网址
+                    //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+                } catch (
+                        Exception e) {
+                    Log.e(TAG, "起爆数据上传异常--异常信息为：" + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+        });
     }
 
     public void getMoniCsTimeData(List<VoFireHisMain> originalData) {
