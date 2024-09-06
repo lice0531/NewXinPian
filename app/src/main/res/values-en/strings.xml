@@ -752,5 +752,5 @@
     <string name="text_line_pd">Over sized</string>
     <string name="text_his_scts">Tip</string>
     <string name="text_srmm">Please enter your password before deleting history records</string>
-
+    <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
 </resources>
