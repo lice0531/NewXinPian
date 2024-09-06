@@ -158,7 +158,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         boolean isDateDone = false;
         boolean isLgDone = false;
         String base = "3830422489602";  // 前缀部分
-        int numStrings = 3000;// 需要生成的随机字符串数量  目前测试的结果是：300条可以正常上传，可以分成10次上传
+        int numStrings = 3;// 需要生成的随机字符串数量  目前测试的结果是：300条可以正常上传，可以分成10次上传
         Set<String> uniqueStrings = getUniqueShellIdStrings(base, numStrings);
         // 将 Set 转换为 List
         stringList = new ArrayList<>(uniqueStrings);
@@ -1354,6 +1354,8 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             object.put("rj_version", app_version_name);//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e(TAG,"模拟3000条上传测试--煋邦上传信息-项目名称" + qbxm_name);
+            Log.e(TAG,"模拟3000条上传测试--加密前的json:" + object.toString());
+            Utils.writeRecord("煋邦上传加密前的json入参:" + object.toString());
         } catch (JSONException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -1365,6 +1367,8 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.e(TAG,"加密后的json入参:" + json);
+        Utils.writeRecord("煋邦上传加密后的json入参:" + json);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = FormBody.create(JSON, object2.toString());
         Request request = new Request.Builder()
