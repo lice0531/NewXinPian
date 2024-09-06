@@ -150,9 +150,11 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int sevenCount = 0;//第7阶段计时
     private volatile int sixCmdSerial = 1;//命令倒计时
     private volatile int eightCount = 5;//第8阶段
+    private volatile int thirteenCount = 5;//第13阶段
     private volatile int eightCmdFlag = 0;//第八阶段命令发出起爆
     private volatile int qibaoNoFlag = 1;//第八阶段命令发出起爆
     private volatile int eightCmdExchangePower = 0;//切换电源命令
+    private volatile int thirteenCmdExchangePower = 0;//切换电源命令
     private volatile int neightCount = 0;//
     private int elevenCount = 10;//放电时间
     private long thirdStartTime = 0;//第三阶段每个雷管返回命令计时器
@@ -215,6 +217,10 @@ public class FiringMainActivity extends SerialPortActivity {
     private long time = 0;
     private String Yanzheng_sq = "";//是否验雷管授权
     private int duan_total=0;
+    private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
+    private float befor_dianliu = 0;
+    private float befor_dianya = 0;
+    List<Float> list_dianliu = new ArrayList();
 
     private int twoCount_panduan = 0;//高压时间
     private int gaoya_cankaoSun = 0;//高压稳定时间
@@ -1018,6 +1024,11 @@ public class FiringMainActivity extends SerialPortActivity {
             case 11:
                 btn_return8.setVisibility(View.GONE);
                 break;
+            case 13:
+                //为了防止起爆结果不返回，要把退出按钮显示出来
+                ll_7.setVisibility(View.GONE);
+                ll_8.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
@@ -1342,31 +1353,21 @@ public class FiringMainActivity extends SerialPortActivity {
         denator.setErrorCode(fromData.getCommicationStatus());
         denator.setErrorName(fromData.getCommicationStatusName());
         //判断雷管状态是否是错误和延时和写入的是否一致
-//        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
-//            denator.setErrorCode("01");
-//            denator.setErrorName("延时写入不一致");
-//            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
-//        }
-
-        if ("F1".equals(fromData.getCommicationStatus())) {
-            denator.setAuthorization("01");
-        }
-        if ("F2".equals(fromData.getCommicationStatus())) {
-            denator.setAuthorization("02");
+        if ("FF".equals(fromData.getCommicationStatus()) && writeDelay != fromData.getDelayTime()) {
+            denator.setErrorCode("01");
+            denator.setErrorName("延时写入不一致");
+            Log.e("延时不一致", "fromData.getDelayTime(): " + fromData.getDelayTime() + "--writeDelay:" + writeDelay);
         }
         Application.getDaoSession().update(denator);
 
-        //判断雷管状态是否正价错误数量//|| (writeDelay != fromData.getDelayTime())
-        if (!"FF".equals(fromData.getCommicationStatus()) && !"F2".equals(fromData.getCommicationStatus()) && !"F1".equals(fromData.getCommicationStatus())) {
+        //判断雷管状态是否正价错误数量
+        if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
-        }else {
-             if ("02".equals(fromData.getCommicationStatus())) {
-                show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
-                Utils.writeRecord("--起爆检测错误:" + fromData.toString());
-            }
-            tureHandler.sendMessage(tureHandler.obtainMessage());
+        } else if ("02".equals(fromData.getCommicationStatus())) {
+            show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
+            Utils.writeRecord("--起爆检测错误:" + fromData.toString());
         }
 
         Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
@@ -1578,6 +1579,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                qibaoNoFlag++;
 //            } else {
             //stage=9;
+            MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
             eightCmdFlag = 2;
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
@@ -1640,8 +1642,57 @@ public class FiringMainActivity extends SerialPortActivity {
             }
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            busHandler.sendMessage(busHandler.obtainMessage());
-
+            list_dianliu.add(busInfo.getBusCurrentIa());
+            Log.e(TAG, "list_dianliu: " + list_dianliu.size() + "--" + list_dianliu);
+            if (busHandler != null) {
+                busHandler.sendMessage(busHandler.obtainMessage());
+            } else {
+                Utils.writeRecord("busHandler为空");
+            }
+            if (stage == 8 && eightCount!= 5) {
+                Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu +
+                        "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
+                if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) ||
+                        isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
+                    Log.e(TAG, "case8电流或者电压不稳定,需延长5秒轮训40指令，页面上显示起爆中");
+                    increase(13);
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                } else {
+                    Log.e(TAG, "case8电流电压稳定，可以发34指令");
+                    eightCmdExchangePower = 1;
+                }
+            }
+            if (stage == 13 && thirteenCount != 5) {
+                Log.e(TAG, "case13thirteenCount：" + thirteenCount + "--起爆中的电流: " + busInfo.getBusCurrentIa()
+                        + "--beforeC:" + befor_dianliu + "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
+                if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) &&
+                        isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
+                    isCasePeakWd = true;
+                    isCaseVoltageWd = true;
+                    Log.e(TAG, "case13电压和电流都不稳定,需展示出强制起爆的dialog");
+                    increase(14);
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                } else if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1)) {
+                    isCasePeakWd = true;
+                    isCaseVoltageWd = false;
+                    Log.e(TAG, "case13电流不稳定,需展示出强制起爆的dialog");
+                    increase(14);
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                } else if (isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
+                    isCasePeakWd = false;
+                    isCaseVoltageWd = true;
+                    Log.e(TAG, "case13电压不稳定,需展示出强制起爆的dialog");
+                    increase(14);
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                } else {
+                    Log.e(TAG, "case13电流电压稳定，可以发34指令");
+                    isCasePeakWd = false;
+                    isCaseVoltageWd = false;
+                    thirteenCmdExchangePower = 1;
+                }
+            }
+            befor_dianliu = busInfo.getBusCurrentIa();
+            befor_dianya = busInfo.getBusVoltage();
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
@@ -1663,6 +1714,16 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
 
+    }
+
+    public boolean isDifferenceWithin(float int1, float int2, int cha, int type) {
+        float difference = Math.abs(int1 - int2);
+        if (type == 1) {
+            Log.e(TAG, "倒计时的电流差值： " + difference);
+        } else {
+            Log.e(TAG, "倒计时的电压差值： " + difference);
+        }
+        return difference > cha;
     }
 
     public synchronized void increase(int val) {
@@ -1888,6 +1949,46 @@ public class FiringMainActivity extends SerialPortActivity {
             case 11://给范总加的起爆后的放电阶段
                 btn_return8.setVisibility(View.GONE);
                 eightTxt.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
+                break;
+            case 13:
+                //组合键5秒倒计时后，多检测5秒电流稳定性
+                //时钟校验中 显示出起爆中文字
+                ctlLinePanel(13);
+                Log.e("进入时钟校验阶段", "显示起爆中view");
+                eightTxt.setText(getString(R.string.text_firing_qbz));
+                break;
+            case 14:
+                String content;
+                if (isCasePeakWd && isCaseVoltageWd) {
+                    content = "电流和电压都";
+                } else if (isCasePeakWd) {
+                    content = "电流";
+                } else {
+                    content = "电压";
+                }
+                //起爆时电流不稳定，此时dialog提示用户
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
+                        .setCancelable(false)
+                        .setMessage(getResources().getString(R.string.text_dlyc6))//设置对话框的内容
+                        //设置对话框的按钮
+                        .setNeutralButton (getResources().getString(R.string.text_tc), (dialog1, which) -> {
+                            byte[] exCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+                            sendCmd(exCmd);
+                            dialog1.dismiss();
+                            finish();
+                            MmkvUtils.savecode("isTestDenator", "N");
+                        })
+                        .setNegativeButton(getResources().getString(R.string.text_dialog_jxqb), (dialog15, which) -> {
+                            dialog15.dismiss();
+                            //发出34 起爆命令
+                            byte[] qbCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
+                            sendCmd(qbCmd);
+                            Log.e("起爆", "第一次发送起爆指令: ");
+                            eightCmdFlag = 1;
+                        }).create();
+                dialog.show();
+                Log.e("case14", "显示起爆电流不稳定dialog");
                 break;
             case 99://暂停阶段
                 break;
@@ -2210,10 +2311,11 @@ public class FiringMainActivity extends SerialPortActivity {
 
                             if (eightCount >= 1) {
                                 Log.e(TAG, "起爆阶段: --准备保存历史记录" );
-
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;
+                                Log.e(TAG,"eightCount:" + eightCount);
                             } else {
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 if (eightCmdFlag == 0) {
@@ -2263,7 +2365,40 @@ public class FiringMainActivity extends SerialPortActivity {
                                 increase(9);
                             }
                             break;
+                        case 13://起爆检测电流稳定性
+                            if (thirteenCount >= 1) {
+                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                Thread.sleep(1000);
+                                thirteenCount--;
+                                Log.e(TAG,"thirteenCount:" + thirteenCount);
+                            } else {
+                                if (eightCmdFlag == 0) {
+                                    if (thirteenCmdExchangePower == 1) {//
+                                        //2代芯片不切换低压
+//                                        byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
+//                                        sendCmd(reCmd);
+                                        //发出34 起爆命令
+                                        initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
+                                        sendCmd(initBuf);
+                                        Log.e("起爆", "第一次发送起爆指令: ");
+                                        eightCmdFlag = 1;
+                                    } else {
+                                        exit = true;
+                                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                        break;
+                                    }
 
+                                }
+                                if (thirteenCount <= -5) {
+                                    exit = true;
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                    break;
+                                }
+                                Thread.sleep(1000);
+                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            }
+                            break;
                         case 33://写入延时时间，检测结果看雷管是否正常
                             if (reThirdWriteCount == thirdWriteCount) {//判断是否全部测试完成
                                 thirdStartTime = 0;

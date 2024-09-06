@@ -752,6 +752,7 @@
     <string name="text_line_pd">Over sized</string>
     <string name="text_his_scts">Tip</string>
     <string name="text_srmm">Please enter your password before deleting history records</string>
+    <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
     <string name="menu_scan">手动输入</string>
     <string name="text_uploadAllHis">请输入密码后,再进行上传未上传记录操作</string>
