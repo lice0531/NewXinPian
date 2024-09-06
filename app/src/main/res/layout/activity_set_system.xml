@@ -194,6 +194,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/set_language"

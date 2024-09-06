@@ -336,7 +336,7 @@ public class SyncActivity extends BaseActivity {
 //                }
 //            }
         }
-        show_Toast("正在回传数据");
+        show_Toast(getResources().getString(R.string.text_sync_tip10));
         String a;
         if (check.equals("1")) {
             a = "0008" + code + ",0" + check;

@@ -179,7 +179,7 @@ public class PracticeActivity extends BaseActivity {
                 case 1:
                     // 从客户端接收到消息
 //                    runPbDialog();
-                    show_Toast("接收成功,正在导入数据,请稍等");
+                    show_Toast(getResources().getString(R.string.text_send_tip12));
                     new Thread(() -> {
                         String leiguan = Utils.replace(lg);//去除回车
                         Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
@@ -188,7 +188,7 @@ public class PracticeActivity extends BaseActivity {
                             registerDetonator(leiguan);
                         } else {
 //                            tipDlg.dismiss();
-                            show_Toast("没有接收到数据");
+                            show_Toast(getResources().getString(R.string.text_send_tip13));
                         }
                     }).start();
                     break;
@@ -212,13 +212,13 @@ public class PracticeActivity extends BaseActivity {
                 String displayIcStr = dianliu + "μA";// 保留两位小数
 
                 if (dianliu > 4800) {
-                    displayIcStr = displayIcStr + "(疑似短路)";
+                    displayIcStr = displayIcStr + getResources().getString(R.string.text_text_ysdl);
                     tvCeshiDianliu.setTextColor(Color.RED);
                 } else if (dianliu < 4800 && dianliu > denatorCount * 24) {
-                    displayIcStr = displayIcStr + "(电流过大)";
+                    displayIcStr = displayIcStr + getResources().getString(R.string.text_test_dlgd);
                     tvCeshiDianliu.setTextColor(Color.RED);
                 } else if (dianliu < 8) {
-                    displayIcStr = displayIcStr + "(疑似断路)";
+                    displayIcStr = displayIcStr + getResources().getString(R.string.text_test_ysdl);
                     tvCeshiDianliu.setTextColor(Color.RED);
                 } else {
                     tvCeshiDianliu.setTextColor(Color.GREEN);
@@ -298,7 +298,7 @@ public class PracticeActivity extends BaseActivity {
         }
 
         Utils.writeLeiGuan(sb.toString());
-        show_Toast("写入成功");
+        show_Toast(getResources().getString(R.string.text_send_tip17));
     }
 
     private int registerDetonator(String leiguan) {
@@ -372,7 +372,7 @@ public class PracticeActivity extends BaseActivity {
             getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
         }
         pb_show = 0;
-        show_Toast_ui("读取成功");
+        show_Toast_ui(getResources().getString(R.string.text_send_tip15));
     }
 
 
@@ -397,7 +397,7 @@ public class PracticeActivity extends BaseActivity {
             }
 
         }
-        show_Toast("解析成功");
+        show_Toast(getResources().getString(R.string.text_send_tip27));
     }
 
     //C000120CFF000BE6FF0041A6A2DEFF00028DC0

@@ -820,4 +820,16 @@
     <string name="text_sjerror38">The upgrade program is downloaded successfully</string>
     <string name="text_sjerror39">Downloading the program...</string>
     <string name="text_sjerror40">Click Download again to install</string>
+    <string name="toast_dpjh">Switch the MCU version number:</string>
+    <string name="toast_bbhcdcw">The length of the version number is incorrect. Please enter a 10-digit version number</string>
+    <string name="text_ipwk">IP address cannot be empty</string>
+    <string name="text_dkwk">The ip port cannot be empty</string>
+    <string name="text_jcls">Detection history</string>
+    <string name="text_gps1">The current GPS is available</string>
+    <string name="text_gps2">GPS is not currently in service</string>
+    <string name="text_gps3">The GPS service is suspended</string>
+    <string name="text_gps4">GPS is off</string>
+    <string name="text_gps5">GPS is on</string>
+    <string name="text_dlsccg">Dan Ling uploaded successfully</string>
+
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="app_name">煋邦科技KT50起爆器</string>
     <string name="error_configuration">请先配置你的串口.</string>
@@ -819,6 +819,15 @@
     <string name="text_sjerror38">升级程序下载成功</string>
     <string name="text_sjerror39">正在下载程序...</string>
     <string name="text_sjerror40">再次点击下载，进行安装</string>
-
-
+    <string name="toast_dpjh">切换的单片机版本号:</string>
+    <string name="toast_bbhcdcw">版本号长度错误,请输入10位版本号</string>
+    <string name="text_ipwk">ip地址不能为空</string>
+    <string name="text_dkwk">ip端口不能为空</string>
+    <string name="text_jcls">检测历史</string>
+    <string name="text_gps1">当前GPS为可用状态</string>
+    <string name="text_gps2">当前GPS不在服务内</string>
+    <string name="text_gps3">当前GPS为暂停服务状态</string>
+    <string name="text_gps4">GPS开启了</string>
+    <string name="text_gps5">GPS关闭了</string>
+    <string name="text_dlsccg">丹灵上传成功</string>
 </resources>

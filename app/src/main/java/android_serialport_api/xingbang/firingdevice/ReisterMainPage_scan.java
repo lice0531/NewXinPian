@@ -1145,7 +1145,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return tipStr;
         }
         if (StringUtils.isBlank(stsno) || stsno.length() != 5) {
-            tipStr = "开始流水号不能为空";//"起始厂家码不能为空"
+            tipStr = getResources().getString(R.string.text_scan_liushuihaocuowu);//"起始厂家码不能为空"
             return tipStr;
         }
         if (StringUtils.isBlank(stproDt)) {
@@ -1174,7 +1174,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return tipStr;
         }
         if (StringUtils.isBlank(edsno) && !StringUtils.isNotBlank(addNum)) {
-            tipStr = "结束序列号和连续注册个数不能同时为空";//  "结束序列号不能为空";
+            tipStr = getResources().getString(R.string.text_scan_cuowu1);//  "结束序列号不能为空";
             return tipStr;
         }
 

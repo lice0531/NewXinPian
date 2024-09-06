@@ -58,9 +58,10 @@
         <TextView
             android:id="@+id/tx_total"
             style="@style/alltextstyle"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="left|center_vertical"
             android:text="@string/text_total" />
         <Button
             android:id="@+id/btn_paixu"
@@ -128,16 +129,16 @@
                     <TextView
                         android:id="@+id/text_gkm1"
                         style="@style/alltextstyle"
-                        android:gravity="right"
+                        android:gravity="right|center_vertical"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="30dp"
                         android:text="@string/text_list_guan"
-                        android:textSize="@dimen/childPageLabelFontSize"/>
+                        android:textSize="16sp"/>
                     <TextView
                         android:id="@+id/text_gkm2"
                         style="@style/alltextstyle"
-                        android:gravity="left"
+                        android:gravity="left|center_vertical"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="30dp"

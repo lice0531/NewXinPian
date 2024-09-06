@@ -266,16 +266,16 @@ public class QueryHisDetail extends BaseActivity {
         mHandler_tip = new Handler(msg -> {
             switch (msg.what){
                 case 1:
-                    show_Toast("网络请求失败,请检查网络正确连接后,再次上传");
+                    show_Toast(getResources().getString(R.string.text_queryHis_show1));
                     break;
                 case 2:
-                    show_Toast("丹灵上传成功");
+                    show_Toast(getResources().getString(R.string.text_dlsccg));
                     break;
                 case 3:
                     show_Toast("错误信息:" + msg.obj);
                     break;
                 case 4:
-                    show_Toast("起爆器未备案或未设置作业任务");
+                    show_Toast(getResources().getString(R.string.text_uploda_tip3));
 
                     break;
                 case 5:
