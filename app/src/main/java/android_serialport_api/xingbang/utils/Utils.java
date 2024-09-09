@@ -73,6 +73,8 @@ public class Utils {
     public static String httpurl_zbw = "14.23.69.2";
     public static String httpurl_zbw_port = "1088";
     public static String httpurl_face = "http://125.77.73.145:8180/entweb/WSPROXY.do";
+    public static String httpurl_xb_erweima = "http://xbmonitor1.xingbangtech.com:800/File/Ciphertext/";
+
     private static SQLiteDatabase db;
     public static int POLLING_TIME = 1000;
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',

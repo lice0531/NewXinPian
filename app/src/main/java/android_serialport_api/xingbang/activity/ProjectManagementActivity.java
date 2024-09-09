@@ -33,6 +33,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.RecyclerViewAdapter_Denator;
 import android_serialport_api.xingbang.custom.ItemProjectAdapter;
 import android_serialport_api.xingbang.custom.RecyclerViewAdapter_Project;
+import android_serialport_api.xingbang.custom.SaveProjectAdapter;
 import android_serialport_api.xingbang.databinding.ActivityProjectManagementBinding;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -42,11 +43,12 @@ import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
-public class ProjectManagementActivity extends BaseActivity implements ItemProjectAdapter.InnerItemOnclickListener, AdapterView.OnItemClickListener {
+public class ProjectManagementActivity extends BaseActivity implements ItemProjectAdapter.InnerItemOnclickListener,SaveProjectAdapter.InnerItemOnclickListener, AdapterView.OnItemClickListener {
     private List<Project> list_project = new ArrayList<>();
     ActivityProjectManagementBinding binding;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapter_Project<Project> mAdapter;
+    private SaveProjectAdapter mAdapter1;
     private String equ_no = "";//设备编码
     private String pro_bprysfz = "";//证件号码
     private String pro_htid = "";//合同号码
@@ -56,13 +58,17 @@ public class ProjectManagementActivity extends BaseActivity implements ItemProje
     private String pro_name = "";//项目名称
     private String jd = "";
     private String wd = "";
+    private DatabaseHelper mMyDatabaseHelper;
+    private SQLiteDatabase db;
+    private List<Map<String, Object>> map_project = new ArrayList<Map<String, Object>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityProjectManagementBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
+        db = mMyDatabaseHelper.getWritableDatabase();
         TextView title = findViewById(R.id.title_text);
         title.setText("项目管理");
         ImageView add = findViewById(R.id.title_add);
@@ -91,6 +97,12 @@ public class ProjectManagementActivity extends BaseActivity implements ItemProje
             modifyBlastBaseInfo(info, position);//序号,孔号,延时,管壳码
             Logger.e("点击事件");
         });
+
+        loadMoreData1();
+        mAdapter1 = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject);
+        mAdapter1.setOnInnerItemOnClickListener(this);
+        binding.lvProject.setAdapter(mAdapter1);
+        binding.lvProject.setOnItemClickListener(this);
     }
 
     //获取用户信息
@@ -119,6 +131,36 @@ public class ProjectManagementActivity extends BaseActivity implements ItemProje
         Logger.e("list_project" + list_project.toString());
     }
 
+    private void loadMoreData1() {
+        map_project.clear();
+        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_PROJECT;//+" order by htbh "
+        Cursor cursor = db.rawQuery(sql, null);
+        //return getCursorTolist(cursor);
+        if (cursor != null) {
+
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                String project_name = cursor.getString(1); //获取第二列的值 ,序号
+                String xmbh = cursor.getString(2);
+                String htbh = cursor.getString(3);//管壳号
+                String dwdm = cursor.getString(4);//错误数量
+                String bprysfz = cursor.getString(5);//起爆状态
+                String coordxy = cursor.getString(6);//经纬度
+
+                Map<String, Object> item = new HashMap<String, Object>();
+                item.put("id", id);
+                item.put("project_name", project_name);
+                item.put("xmbh", xmbh);
+                item.put("htbh", htbh);
+                item.put("dwdm", dwdm);
+                item.put("bprysfz", bprysfz);
+                item.put("coordxy", coordxy);
+
+                map_project.add(item);
+            }
+            cursor.close();
+        }
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

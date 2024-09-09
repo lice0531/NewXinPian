@@ -284,6 +284,11 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="级联设置"
             android:theme="@style/blackActivityTheme" />
+        <activity
+            android:name=".zxing.activity.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/text_sm"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

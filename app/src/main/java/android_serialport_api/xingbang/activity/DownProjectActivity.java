@@ -48,6 +48,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.firingdevice.DownOfflineActivity;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
@@ -96,11 +97,11 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         title.setText("下载工作码");
         ImageView add = findViewById(R.id.title_add);
         ImageView back = findViewById(R.id.title_back);
-        add.setOnClickListener(v -> {
-            Intent intent = new Intent(DownProjectActivity.this, AddProjectActivity.class);
-            startActivity(intent);
-        });
-        add.setVisibility(View.VISIBLE);
+//        add.setOnClickListener(v -> {
+//            Intent intent = new Intent(DownProjectActivity.this, AddProjectActivity.class);
+//            startActivity(intent);
+//        });
+//        add.setVisibility(View.VISIBLE);
         back.setOnClickListener(v -> finish());
 
         linearLayoutManager = new LinearLayoutManager(this);
@@ -182,6 +183,8 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
                         }
                     }).create();
             dialog.show();
+        } else if (v.getId()==R.id.btn_down_offline) {
+            startActivity(new Intent(this, DownOfflineActivity.class));
         }
     }
 

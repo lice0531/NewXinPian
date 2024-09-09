@@ -366,7 +366,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
             case 3:
                 break;
             case 4:
-                binding.qbTvTip.setText("是否继续充电?");
+                binding.qbTvTip.setText("是否开始充电?");
                 break;
             case 5:
                 break;
@@ -1811,27 +1811,19 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 21000) {
-                    increase(99);//暂停阶段
-                    mHandler_1.handleMessage(Message.obtain());
                     if (!chongfu) {
-//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-//                    } else {
                         sendCmd(ThreeFiringCmd.send_35("00"));
-                        initDialog_zanting_stop("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
+                        initDialog_zanting_stop(getResources().getString(R.string.text_dlyc3));//弹出框
                     }
                 }
             }
-            if (twoCount > 17 && stage == 6 && busInfo != null) {
+            if (twoCount > sixExchangeCount && stage == 6 && busInfo != null) {
                 Log.e(TAG, "busInfo: " + busInfo.toString());
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 30000) {
-                    increase(99);//暂停阶段
-                    mHandler_1.handleMessage(Message.obtain());
                     if (!chongfu) {
-//                        initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。", 5);//弹出框
-//                    } else {
                         sendCmd(ThreeFiringCmd.send_35("00"));
-                        initDialog_zanting_stop("当前电流过大,请检查线夹等部位是否存在浸水或母线短路等情况,排查处理浸水后,重新进行检测。");//弹出框
+                        initDialog_zanting_stop(getResources().getString(R.string.text_dlyc4));//弹出框
                     }
                 }
             }

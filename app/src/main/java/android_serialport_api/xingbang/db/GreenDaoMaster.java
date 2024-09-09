@@ -24,6 +24,7 @@ import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.models.DanLingOffLinBean;
 
 /**
  * 管理GreenDao查询语句
@@ -573,5 +574,117 @@ public class GreenDaoMaster {
         } else {
             return false;
         }
+    }
+
+    public static void updateLgState_lixian(DanLingOffLinBean.Lgs.Lg lgBean, String yxq) {
+        //94242214050
+        //F42F1C 2E0A 2 5
+        if ( !lgBean.getUid().startsWith("00000")) {
+            String uid = null;
+            String yscs = null;
+            String duan = null;
+            String version = null;
+            if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+                yscs = lgBean.getGzm().substring(6, 10);
+            }
+            if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                duan = lgBean.getGzm().substring(11, 12);
+                version = lgBean.getGzm().substring(10, 11);
+            }
+            DenatorBaseinfo db_sc= new DenatorBaseinfo();
+            db_sc.setShellBlastNo(lgBean.getUid());
+            db_sc.setDenatorId(uid);
+            if(version!=null){
+                db_sc.setAuthorization("0"+version);
+            }
+
+            db_sc.setZhu_yscs(yscs);
+            db_sc.setCong_yscs(duan);
+
+            db_sc.setRegdate(lgBean.getYxq());//原来是截取到日,现在改到小时
+            if (lgBean.getGzmcwxx().equals("0")){
+                db_sc.setErrorName("雷管正常");
+            }else if(lgBean.getGzmcwxx().equals("1")){
+                db_sc.setErrorName("雷管在黑名单中");
+            }else if(lgBean.getGzmcwxx().equals("2")){
+                db_sc.setErrorName("雷管已使用");
+            }else if(lgBean.getGzmcwxx().equals("3")){
+                db_sc.setErrorName("申请的雷管UID不存在");
+            }
+            //小于0x0600的就是快速
+            //0x09C1就是慢速的
+            //0x04C1就是快速的
+//            String yscs2=yscs.substring(2)+yscs.substring(0,2);
+//            BigInteger one = new BigInteger(yscs2,16);
+//            BigInteger two = new BigInteger("0699",16);
+//            Log.e("判断产品型号-lgBean.getGzm()",lgBean.getGzm());
+//            Log.e("判断产品型号-version",version);
+//            Log.e("判断产品型号-比较",one.compareTo(two)+"");
+//            if(one.compareTo(two) > 0&&!version.equals("2")){
+//                db_sc.setAuthorization("02");
+//                Log.e("判断产品型号","02");
+//            }else if(one.compareTo(two) < 0&&!version.equals("1")){
+//                Log.e("判断产品型号","01");
+//                db_sc.setAuthorization("01");
+//            }
+            registerDetonator_typeNew(db_sc,yxq);//更新到生产数据库中
+
+
+            SimpleDateFormat sd2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format2 = sd2.format(new Date(System.currentTimeMillis() ));
+//            Utils.writeRecord("format2: " + format2);
+            QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+            DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
+            if (db != null) {
+                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+//                Utils.writeRecord("db: " + db.toString());
+//                Utils.writeRecord("uid: " + uid);
+                db.setDenatorId(uid);
+                db.setRegdate(lgBean.getYxq());
+                if(lgBean.getGzm().length()>=10){
+                    db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                }
+
+                if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                    int delay=0;
+                    switch (duan){
+                        case "1":
+                            break;
+                        case "2":
+                            delay=25;
+                            break;
+                        case "3":
+                            delay=50;
+                            break;
+                        case "4":
+                            delay=75;
+                            break;
+                        case "5":
+                            delay=100;
+                            break;
+                    }
+                    if(!duan.equals("0")){
+                        db.setDelay(delay);
+                    }
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                    db.setAuthorization("0"+version);
+//                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                }
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String format1 = sd.format(new Date(System.currentTimeMillis() ));
+                try {
+                    Date date1 = sd.parse(format1);//当前日期
+                    Date date2 = sd.parse(db.getRegdate());//有效期
+                    if (date1.compareTo(date2) <= 0) {
+                        getDaoSession().getDenatorBaseinfoDao().update(db);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
     }
 }

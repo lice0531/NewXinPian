@@ -7,6 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".activity.LoginActivity">
 
+    <android_serialport_api.xingbang.custom.WatermarkView
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="match_parent"/>
     <include
         android:id="@+id/totalbar"
         layout="@layout/title_layout"
