@@ -152,7 +152,7 @@ public class XingbangMain1 extends BaseActivity {
     private Handler mHandler_updataVersion = new Handler();//更新版本
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
-    private String TAG = "主页";
+    private String TAG = "主页面";
 
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
@@ -170,59 +170,6 @@ public class XingbangMain1 extends BaseActivity {
     private String Yanzheng_sq = "";//是否验雷管已经授权
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
     private String app_version_name = "";
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onRestart() {
-        MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
-        equ_no = messageBean.getEqu_no();
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        loadMoreData_all_lg();//获取雷管信息
-        mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
-        getPropertiesData();
-//        getUserMessage();
-        super.onRestart();
-    }
-
-
-    @Override
-    protected void onResume() {
-        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
-        // 获取 区域参数
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
-        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
-        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
-        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
-        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
-        // 设置标题区域
-        setTitleRegion();
-        // 获取区域雷管数量
-        getRegionNumber();
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.e(TAG, "onDestroy: ");
-        SQLiteStudioService.instance().stop();
-//        if (db != null) db.close();
-//        if (tipDlg != null) {
-//            tipDlg.dismiss();
-//            tipDlg = null;
-//        }
-        super.onDestroy();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,9 +217,51 @@ public class XingbangMain1 extends BaseActivity {
 //        }
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
+        int xindao = (int) MmkvUtils.getcode("xinDao", -1);
+        Log.e(TAG, "app信道: " + xindao);
         app_version_name = getString(R.string.app_version_name);
         getleveup();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
+        equ_no = messageBean.getEqu_no();
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        loadMoreData_all_lg();//获取雷管信息
+        mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
+        getPropertiesData();
+//        getUserMessage();
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        getPropertiesData();//重新读取备份数据会导致已修改的数据重置
+        // 获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+        // 设置标题区域
+        setTitleRegion();
+        // 获取区域雷管数量
+        getRegionNumber();
+        super.onResume();
     }
 
     private void queryBeian() {
@@ -1466,5 +1455,17 @@ public class XingbangMain1 extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e(TAG, "onDestroy: ");
+        SQLiteStudioService.instance().stop();
+//        if (db != null) db.close();
+//        if (tipDlg != null) {
+//            tipDlg.dismiss();
+//            tipDlg = null;
+//        }
+        super.onDestroy();
     }
 }

@@ -119,6 +119,8 @@ public class PracticeActivity extends BaseActivity {
     RelativeLayout butVersion;
     @BindView(R.id.but_sendMsg)
     RelativeLayout but_sendMsg;
+    @BindView(R.id.but_wxpz)
+    RelativeLayout but_wxpz;
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list_uid = new ArrayList<>();
@@ -443,7 +445,7 @@ public class PracticeActivity extends BaseActivity {
 
 
 
-    @OnClick({R.id.but_pre, R.id.but_jilian,R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_test, R.id.but_sendMsg})
+    @OnClick({R.id.but_pre, R.id.but_jilian,R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_test, R.id.but_sendMsg,R.id.but_wxpz})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -464,6 +466,9 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_sendMsg://进入数据互传页面
                 Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
                 startActivity(intent12);
+                break;
+            case R.id.but_wxpz:
+                startActivity(new Intent(this,WxjlSettingActivity.class));//无线配置
                 break;
             case R.id.but_pre://开启测试
 

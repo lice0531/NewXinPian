@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -286,12 +287,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                     }
                     if (firstCount == 0) {
                         exit = true;
-//                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
-//                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain1.class);
-//                        startActivity(intent);
-//                        finish();//如果不结束当前页面的话,会和后面的页面抢命令
-                        closeSerial();
-                        Intent intent = new Intent(ZiJianActivity_upload.this, WxjlSettingActivity.class);
+                        //Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
+                        Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain1.class);
                         startActivity(intent);
                         finish();//如果不结束当前页面的话,会和后面的页面抢命令
                         break;

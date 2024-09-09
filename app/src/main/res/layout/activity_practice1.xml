@@ -221,6 +221,43 @@
                 android:src="@drawable/iv_back" />
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/but_wxpz"
+            android:padding="15dp"
+            android:background="@drawable/ll_mainlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp20"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:id="@+id/ivpz"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_wxpz" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/ivpz"
+                android:text="无线配置"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/iv_back" />
+        </RelativeLayout>
+        <RelativeLayout
             android:id="@+id/but_delete"
             android:background="@drawable/ll_mainlayout"
             android:layout_marginBottom="20dp"

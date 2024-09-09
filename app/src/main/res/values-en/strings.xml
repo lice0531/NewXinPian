@@ -78,7 +78,7 @@
     <string name="set_chongdian_time">Setting Charging Detection Time/s</string>
     <string name="set_language">Setup language</string>
     <string name="set_save">Save settings</string>
-
+    <string name="set_wxsettings">Wireless configuration</string>
     <string name="user_select_language">Current User Selection Language: %s</string>
     <string name="language_cn">中文</string>
     <string name="language_en">ENGLISH</string>
@@ -498,5 +498,5 @@
     <string name="text_down_srxm">Input Project</string>
     <string name="text_down_bc">Save and Download</string>
     <string name="text_ver_tip1">Please select a project</string>
-    <string name="app_version_name">M900_PT_HF_WXJL_V1.0_240603</string>
+    <string name="app_version_name">M900_PT_WXJL_V1.0_240906</string>
 </resources>

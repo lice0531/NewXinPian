@@ -158,6 +158,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private int errorNum;//错误雷管数量
     private int currentCount;//当前A8发送的次数
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
+    private int xinDaoId = -1;
+    private String xinDaoValue = "";//完整信道值
+    private boolean receiveAB = false;//发出AB命令是否返回
+    private boolean isReSendAB = true;//是否是切换信道，如果是切换信道，需要先发送AB设置无线驱动指令，再依次发送F9,AB
+    private SetZJQThread setZjqThread;
 
     @Override
     protected void onStart() {
@@ -228,6 +233,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     }
 
     private void initData() {
+        xinDaoValue = (String) MmkvUtils.getcode("xinDaoValue", "");
+        xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
+        Log.e(TAG,"当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
         wxjlDeviceId = !TextUtils.isEmpty(getIntent().getStringExtra("wxjlDeviceId")) ?
                 getIntent().getStringExtra("wxjlDeviceId") : "01";
         Log.e(TAG, "设备号：" + getIntent().getStringExtra("wxjlDeviceId"));
@@ -376,6 +384,72 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
+    private int zeroCountAB = 0;
+    private class SetZJQThread extends Thread {
+        public volatile boolean exit = false;
+        public void run() {
+            while (!exit) {
+                try {
+                    Log.e(TAG,"AB指令发送次数:" + zeroCountAB);
+                    if (zeroCountAB <= 1 && !receiveAB) {
+                        sendAB();
+                        Log.e(TAG, "发送AB设置无线中继器信道指令了");
+                        Thread.sleep(1500);
+                    } else if (zeroCountAB > 1){
+                        Log.e(TAG,"AB指令未返回已发送1次，停止发送AB指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 11;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendAB() {
+        /**
+         * 给中继 KKF23WS00000001 设置信道 6 指令及回复如下：
+         * 指令：C5C5 12   AB   4B4B46323357533030303030303031    06      07   F9  E5E5
+         *      包头 长度 指令码 中继卡序列号(KKF23WS00000001)     主卡信道 固定不变  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复：C5C5  02   AB     00  8F  E5E5
+         *      包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         * 进入级联页面，直接将信道切为1
+         */
+        xinDaoId = 1;
+        String b1 = Utils.intToHex(xinDaoId);
+        String xdId1 = Utils.addZero(b1, 2);
+//        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
+    }
+
+    private void sendF9(){
+        /**
+         * 将起爆卡信道设置为 1 的指令及回复如下：
+         * 指令： C5C5  02  F9    01  AE  E5E5
+         *      包头  长度 指令码 信道  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复： C5C5  02   F9    00   A9  E5E5
+         *       包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         */
+        xinDaoId = 1;
+        String b = Utils.intToHex(xinDaoId);
+        String xdId = Utils.addZero(b, 2);
+//        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(qbzXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Qbk_F9(xdId));
+        Log.e(TAG,"发送F9指令了");
+    }
+
     private String mAfter = "";
 
     /**
@@ -423,19 +497,51 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //                mAfter = "";
 //            }
 //        }
-        if (fromCommad.startsWith("B8") || fromCommad.endsWith("B8")) {
-            if (!fromCommad.endsWith("B8") && TextUtils.isEmpty(mAfter)) {
-                mAfter = fromCommad;
-                Log.e(TAG, "mAfter为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
-            } else if (!fromCommad.startsWith("B8")) {
-                fromCommad = mAfter + fromCommad;
-                Log.e(TAG, "mAfter不为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
-                mAfter = "";
-            }
-        }
+//        if (fromCommad.startsWith("B8") || fromCommad.endsWith("B8")) {
+//            if (!fromCommad.endsWith("B8") && TextUtils.isEmpty(mAfter)) {
+//                mAfter = fromCommad;
+//                Log.e(TAG, "mAfter为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
+//            } else if (!fromCommad.startsWith("B8")) {
+//                fromCommad = mAfter + fromCommad;
+//                Log.e(TAG, "mAfter不为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
+//                mAfter = "";
+//            }
+//        }
+
         Log.e(TAG + "处理后--返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
-        doWithReceivData(fromCommad);//处理cmd命令
+        if (fromCommad.startsWith("B") || fromCommad.startsWith("3") || fromCommad.startsWith("4")) {
+            doWithReceivData(fromCommad);//处理cmd命令
+        } else if (fromCommad.startsWith("C5C5") && fromCommad.endsWith("E5E5")) {
+            String cmd = DefCommand.getWxSDKCmd(fromCommad);
+            Log.e(TAG,"无线配置返回命令正常--具体命令:" + cmd);
+            byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+            doWithWxpzReceivData(cmd, localBuf);//处理cmd命令
+        } else {
+            Log.e(TAG, "-返回命令不完整" + fromCommad);
+        }
+    }
+
+    /***
+     * 处理芯片返回无线配置命令
+     */
+    private void doWithWxpzReceivData(String cmd, byte[] locatBuf) {
+        if (DefCommand.CMD_QBK_F9.equals(cmd)) {//F9 无线级联：收到起爆卡设置信道指令了
+            Log.e(TAG, "收到起爆卡设置信道指令了");
+            Message message = new Message();
+            message.what = 10;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
+        } else if (DefCommand.CMD_ZJQ_AB.equals(cmd)) {//AB 无线级联：收到无线中继器设置信道指令了
+            Log.e(TAG, "收到无线中继器设置信道指令了");
+            receiveAB = true;
+            Message message = new Message();
+            message.what = 11;
+            message.obj = "true";
+            handler_msg.sendMessage(message);
+        } else {
+            Log.e(TAG, TAG + "-无线配置返回命令没有匹配对应的命令-cmd: " + cmd);
+        }
     }
 
     private void closeA0Thread() {
@@ -467,6 +573,14 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             queryError.exit = true;  // 终止线程thread
             queryError.interrupt();
             Log.e(TAG, "A8线程已关闭");
+        }
+    }
+
+    private void closeABThread(){
+        if (setZjqThread != null) {
+            setZjqThread.exit = true;
+            setZjqThread.interrupt();
+            Log.e(TAG,"AB线程已关闭");
         }
     }
 
@@ -869,132 +983,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             }
                         }
                         break;
-                    case 15:
-                        //根据设备个数  超过1个时，点起爆按钮发送切换模式命令  1个就还是发送起爆命令
-                        if (msg.arg1 <= 1) {
-                            qbFlag = "qb";
-                        } else {
-                            qbFlag = "qh";
-                        }
-                        break;
-                    case 16:
-                        String toastMsg = (String) msg.obj;
-                        if (toastMsg.contains("级联")) {
-                            closeLx();
-                        }
-                        Log.e(TAG, "case16返回信息：" + toastMsg);
-                        show_Toast_long(toastMsg);
-                        break;
-                    case 17:
-                        String data = (String) msg.obj;
-                        closeA8Thread();
-                        Log.e(TAG, "case17返回信息：" + (data.equals("true") ? "A8第一次指令已收到" : "A8无返回"));
-                        break;
-                    case InitConst.CODE_EXIT:
-                        if (isA7) {
-                            cmdDialog.dismiss();
-                            list_device.clear();
-                            lastReceivedMessages.clear();
-                            adapter.notifyDataSetChanged();
-                            cs = true;
-                            cd = false;
-                            qb = false;
-                            qh = false;
-                            closeLx();
-                            closeSerial();
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("errorTotalNum", errorNum);
-                            resultIntent.putExtra("finishRemote", "Y");
-                            setResult(Activity.RESULT_OK, resultIntent);
-                            Log.e(TAG, "finish远距离页面了errorNum:" + errorNum);
-                            finish();
-                        } else {
-                            if (!isShowError) {
-                                closeLx();
-                                closeSerial();
-                                //跳转到近距离页面
-                                Intent intent = new Intent();
-                                intent.putExtra("finishRemote", "Y");
-                                intent.putExtra("errorTotalNum", errorNum);
-                                intent.putExtra("transhighRate", "Y");
-                                setResult(Activity.RESULT_OK, intent);
-                                finish();
-                            }
-                        }
-                        break;
-                    case InitConst.CODE_UPDAE_STATUS:
-                        //接收到子机发送的起爆不同状态消息  此时需更新每个设备的轮询状态
-                        if (msg.obj != null) {
-                            DeviceBean dc = (DeviceBean) msg.obj;
-                            if (dc.getRes() != null && msg.obj != null && dc.getRes().length() == 18) {
-                                Log.e("map是", lastReceivedMessages.toString());
-                                //得到当前的消息
-                                String currentMsg = dc.getRes();
-                                String currentCode = dc.getCode();
-                                if (lastReceivedMessages.get(currentCode) != null &&
-                                        currentMsg.length() >= 4 &&
-                                        lastReceivedMessages.get(currentCode).length() >= 4 &&
-                                        currentMsg.substring(0, 4).equals(lastReceivedMessages.get(currentCode).substring(0, 4))) {
-                                    // 如果上一条接收的消息不为null，并且与当前消息的前四个字符相同，则执行相应的逻辑
-                                    Log.e("接受的还是旧消息", "不做处理");
-                                } else {
-                                    //说明已经处理过当前设备的消息   此时就不再处理
-                                    if (dc.getRes().length() > 1) {
-                                        String value = dc.getRes().substring(1, 2);
-                                        if ("3".equals(value)) {
-                                            String lastMsg = lastReceivedMessages.get(currentMsg.substring(0, 4));
-                                            lastReceivedMessages.put(currentMsg.substring(0, 4), currentMsg);
-                                            for (DeviceBean reBean : list_device) {
-                                                if (reBean.getCode().equals(dc.getCode())) {
-                                                    reBean.setRes(dc.getRes());
-                                                    reBean.setSend(dc.getIsSend());
-                                                    reBean.setInfo(dc.getInfo());
-                                                    reBean.setErrNum(dc.getErrNum());
-                                                    reBean.setCurrentPeak(dc.getCurrentPeak());
-                                                    reBean.setTrueNum(dc.getTrueNum());
-                                                }
-                                            }
-//                                            int a = 0;
-//                                            for (int i = 0; i < list_device.size(); i++) {
-//                                                if (list_device.get(i).getCode().equals(dc.getCode())) {
-//                                                    a = i + 1;
-//                                                }
-//                                            }
-//                                            if (list_device.size() != 1 && a < list_device.size()) {
-//                                                send485Cmd("A5" + list_device.get(a).getCode());
-//                                                // 说明接收到了子机的轮询消息  点击按钮单独接收子机响应的消息时，将list_device作为参数循环去给子机发消息
-//                                                Log.e("轮询发送下一条子机消息了，指令", "A5" + list_device.get(a).getCode() + "index是：" + a +
-//                                                        list_device.toString());
-//                                            }
-                                        } else {
-                                            lastReceivedMessages.put(currentMsg, currentMsg);
-                                            String lastMsg = lastReceivedMessages.get(currentMsg);
-                                            Log.e("按钮：旧消息：" + lastMsg + "新消息", currentMsg + "消息已去重");
-                                            for (DeviceBean reBean : list_device) {
-                                                if (reBean.getCode().equals(dc.getCode())) {
-                                                    reBean.setRes(dc.getRes());
-                                                    reBean.setSend(dc.getIsSend());
-                                                }
-                                            }
-                                            int a = 0;
-                                            for (int i = 0; i < list_device.size(); i++) {
-                                                if (list_device.get(i).getCode().equals(dc.getCode())) {
-                                                    a = i + 1;
-                                                }
-                                            }
-//                                            if (!"2".equals(value) && list_device.size() != 1 && a < list_device.size()) {
-//                                                send485Cmd("A" + dc.getRes().substring(1, 2) + list_device.get(a).getCode());
-//                                                // 说明接收到了子机的轮询消息  点击按钮单独接收子机响应的消息时，将list_device作为参数循环去给子机发消息
-//                                                Log.e("按钮点击开始发送下一条子机消息了，指令", "A" + dc.getRes().substring(1, 2)
-//                                                        + list_device.get(a).getCode() + "index是：" + a + list_device.toString());
-//                                            }
-                                        }
-                                    }
-                                    adapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                        break;
                     case 7:
                         DeviceBean bn = (DeviceBean) msg.obj;
                         //受控指令
@@ -1220,6 +1208,35 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             }
                         }
                         break;
+                    case 10:
+                        String qbkResult = (String) msg.obj;
+                        if ("true".equals(qbkResult)) {
+                            setZjqThread = new SetZJQThread();
+                            setZjqThread.start();
+                            Log.e(TAG,"查看错误雷管--信道已配置:" + xinDaoId + "--启动AB线程了");
+                        } else {
+                            show_Toast("切换信道AB指令失败");
+                            Log.e(TAG,"切换1信道失败");
+                        }
+                        break;
+                    case 11:
+                        String zjqResult = (String) msg.obj;
+                        closeABThread();
+                        if ("true".equals(zjqResult)) {
+                            if (isReSendAB) {
+                                sendF9();
+                                zeroCountAB = 0;
+                                receiveAB = false;
+                                isReSendAB = false;
+                            } else {
+                                enterNearPage();
+                                dialog.dismiss();
+                            }
+                        } else {
+                            show_Toast("切换信道AB指令失败");
+                            Log.e(TAG,"切换1信道失败");
+                        }
+                        break;
                     case 99:
                         DeviceBean bean2 = (DeviceBean) msg.obj;
                         String res2 = bean2.getRes();
@@ -1248,6 +1265,134 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             message.what = 15;
                             message.arg1 = collectionSize;
                             handler_msg.sendMessage(message);
+                        }
+                        break;
+                    case 15:
+                        //根据设备个数  超过1个时，点起爆按钮发送切换模式命令  1个就还是发送起爆命令
+                        if (msg.arg1 <= 1) {
+                            qbFlag = "qb";
+                        } else {
+                            qbFlag = "qh";
+                        }
+                        break;
+                    case 16:
+                        String toastMsg = (String) msg.obj;
+                        if (toastMsg.contains("级联")) {
+                            closeLx();
+                        }
+                        Log.e(TAG, "case16返回信息：" + toastMsg);
+                        show_Toast_long(toastMsg);
+                        break;
+                    case 17:
+                        String data = (String) msg.obj;
+                        closeA8Thread();
+                        Log.e(TAG, "case17返回信息：" + (data.equals("true") ? "A8第一次指令已收到" : "A8无返回"));
+                        break;
+                    case InitConst.CODE_EXIT:
+                        if (!isEnterNear) {
+                            if (isA7) {
+                                cmdDialog.dismiss();
+                                list_device.clear();
+                                lastReceivedMessages.clear();
+                                adapter.notifyDataSetChanged();
+                                cs = true;
+                                cd = false;
+                                qb = false;
+                                qh = false;
+                                closeLx();
+                                closeSerial();
+                                Intent resultIntent = new Intent();
+                                resultIntent.putExtra("errorTotalNum", errorNum);
+                                resultIntent.putExtra("finishRemote", "Y");
+                                setResult(Activity.RESULT_OK, resultIntent);
+                                Log.e(TAG, "finish远距离页面了errorNum:" + errorNum);
+                                finish();
+                            } else {
+                                if (!isShowError) {
+                                    closeLx();
+                                    closeSerial();
+                                    //跳转到近距离页面
+                                    Intent intent = new Intent();
+                                    intent.putExtra("finishRemote", "Y");
+                                    intent.putExtra("errorTotalNum", errorNum);
+                                    intent.putExtra("transhighRate", "Y");
+                                    setResult(Activity.RESULT_OK, intent);
+                                    finish();
+                                }
+                            }
+                        }
+                        break;
+                    case InitConst.CODE_UPDAE_STATUS:
+                        //接收到子机发送的起爆不同状态消息  此时需更新每个设备的轮询状态
+                        if (msg.obj != null) {
+                            DeviceBean dc = (DeviceBean) msg.obj;
+                            if (dc.getRes() != null && msg.obj != null && dc.getRes().length() == 18) {
+                                Log.e("map是", lastReceivedMessages.toString());
+                                //得到当前的消息
+                                String currentMsg = dc.getRes();
+                                String currentCode = dc.getCode();
+                                if (lastReceivedMessages.get(currentCode) != null &&
+                                        currentMsg.length() >= 4 &&
+                                        lastReceivedMessages.get(currentCode).length() >= 4 &&
+                                        currentMsg.substring(0, 4).equals(lastReceivedMessages.get(currentCode).substring(0, 4))) {
+                                    // 如果上一条接收的消息不为null，并且与当前消息的前四个字符相同，则执行相应的逻辑
+                                    Log.e("接受的还是旧消息", "不做处理");
+                                } else {
+                                    //说明已经处理过当前设备的消息   此时就不再处理
+                                    if (dc.getRes().length() > 1) {
+                                        String value = dc.getRes().substring(1, 2);
+                                        if ("3".equals(value)) {
+                                            String lastMsg = lastReceivedMessages.get(currentMsg.substring(0, 4));
+                                            lastReceivedMessages.put(currentMsg.substring(0, 4), currentMsg);
+                                            for (DeviceBean reBean : list_device) {
+                                                if (reBean.getCode().equals(dc.getCode())) {
+                                                    reBean.setRes(dc.getRes());
+                                                    reBean.setSend(dc.getIsSend());
+                                                    reBean.setInfo(dc.getInfo());
+                                                    reBean.setErrNum(dc.getErrNum());
+                                                    reBean.setCurrentPeak(dc.getCurrentPeak());
+                                                    reBean.setTrueNum(dc.getTrueNum());
+                                                }
+                                            }
+//                                            int a = 0;
+//                                            for (int i = 0; i < list_device.size(); i++) {
+//                                                if (list_device.get(i).getCode().equals(dc.getCode())) {
+//                                                    a = i + 1;
+//                                                }
+//                                            }
+//                                            if (list_device.size() != 1 && a < list_device.size()) {
+//                                                send485Cmd("A5" + list_device.get(a).getCode());
+//                                                // 说明接收到了子机的轮询消息  点击按钮单独接收子机响应的消息时，将list_device作为参数循环去给子机发消息
+//                                                Log.e("轮询发送下一条子机消息了，指令", "A5" + list_device.get(a).getCode() + "index是：" + a +
+//                                                        list_device.toString());
+//                                            }
+                                        } else {
+                                            lastReceivedMessages.put(currentMsg, currentMsg);
+                                            String lastMsg = lastReceivedMessages.get(currentMsg);
+                                            Log.e("按钮：旧消息：" + lastMsg + "新消息", currentMsg + "消息已去重");
+                                            for (DeviceBean reBean : list_device) {
+                                                if (reBean.getCode().equals(dc.getCode())) {
+                                                    reBean.setRes(dc.getRes());
+                                                    reBean.setSend(dc.getIsSend());
+                                                }
+                                            }
+                                            int a = 0;
+                                            for (int i = 0; i < list_device.size(); i++) {
+                                                if (list_device.get(i).getCode().equals(dc.getCode())) {
+                                                    a = i + 1;
+                                                }
+                                            }
+//                                            if (!"2".equals(value) && list_device.size() != 1 && a < list_device.size()) {
+//                                                send485Cmd("A" + dc.getRes().substring(1, 2) + list_device.get(a).getCode());
+//                                                // 说明接收到了子机的轮询消息  点击按钮单独接收子机响应的消息时，将list_device作为参数循环去给子机发消息
+//                                                Log.e("按钮点击开始发送下一条子机消息了，指令", "A" + dc.getRes().substring(1, 2)
+//                                                        + list_device.get(a).getCode() + "index是：" + a + list_device.toString());
+//                                            }
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
                         }
                         break;
                 }
@@ -1504,10 +1649,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             cmdDialog.show();
         }
     }
-
+    AlertDialog dialog;
     public void showAlertDialog(String content, String cancleText, String sureText) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
-            AlertDialog dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
+            dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
                     .setTitle("系统提示")
                     .setMessage(content)
                     .setCancelable(false)
@@ -1516,8 +1661,19 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     })
                     //设置对话框的按钮
                     .setNeutralButton(cancleText, (dialog1, which) -> {
-                        exitRemotePage();
-                        dialog1.dismiss();
+                        if (content.contains("错误雷管")) {
+                            if (xinDaoId == 1) {
+                                enterNearPage();
+                                dialog1.dismiss();
+                            } else {
+                                setZjqThread = new SetZJQThread();
+                                setZjqThread.start();
+                                Log.e(TAG,"启动AB线程了");
+                            }
+                        } else {
+                            exitRemotePage();
+                            dialog1.dismiss();
+                        }
                     }).create();
             dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
             dialog.show();
@@ -1528,8 +1684,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private void showErrorDialog(String tip) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
             AlertDialog dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
-                    .setTitle("系统提示")//设置对话框的标题//"成功起爆"
-                    .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
+                    .setTitle("系统提示")//设置对话框的标题
+                    .setMessage(tip)//设置对话框的内容
                     .setCancelable(false)
                     //设置对话框的按钮
                     .setNegativeButton("退出", (dialog1, which) -> {
@@ -1547,6 +1703,23 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
 
+    private boolean isEnterNear = false;
+    private void enterNearPage() {
+        isEnterNear = true;
+        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
+        xinDaoValue = "CH1-19.2kbps-1FEC";
+        MmkvUtils.savecode("xinDaoValue",xinDaoValue);
+        MmkvUtils.savecode("xinDao",1);
+        closeLx();
+        closeSerial();
+        //跳转到近距离页面
+        Intent intent = new Intent();
+        intent.putExtra("finishRemote", "Y");
+        intent.putExtra("errorTotalNum", errorNum);
+        intent.putExtra("transhighRate", "Y");
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
     private void exitRemotePage() {
 //        if (!threadStarted) {
 //            exitJl = new ExitJl();
@@ -1557,6 +1730,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //            Log.e(TAG, "A7线程已开启，不再重复开启");
 //        }
         sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
+        xinDaoValue = "CH1-19.2kbps-1FEC";
+        MmkvUtils.savecode("xinDaoValue",xinDaoValue);
+        MmkvUtils.savecode("xinDao",xinDaoId);
     }
 
     private boolean isA7 = false;
@@ -1669,6 +1845,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         closeA1Thread();
         closeA7Thread();
         closeA8Thread();
+        closeABThread();
         openHandler.removeCallbacksAndMessages(null);
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);

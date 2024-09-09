@@ -46,6 +46,8 @@ public class SetSystemActivity extends BaseActivity {
     Button set_languages;
     @BindView(R.id.set_save)
     Button setSave;
+    @BindView(R.id.set_wx)
+    Button setWx;
     @BindView(R.id.et_set_chongdiantime)
     EditText etSetChongdiantime;
     @BindView(R.id.et_set_Jiancetime)
@@ -123,7 +125,7 @@ public class SetSystemActivity extends BaseActivity {
         etSetJiancetime.setText(JianCe_time + "");
     }
 
-    @OnClick({R.id.set_languages, R.id.set_save, R.id.set_Voltage})
+    @OnClick({R.id.set_languages, R.id.set_save, R.id.set_Voltage,R.id.set_wx})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.set_Voltage://设置电压
@@ -209,7 +211,9 @@ public class SetSystemActivity extends BaseActivity {
                     Handler_tip.sendMessage(msg);
                 }
                 break;
-
+            case R.id.set_wx:
+                startActivity(new Intent(this,WxjlSettingActivity.class));
+                break;
         }
     }
 
