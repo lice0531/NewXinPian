@@ -588,6 +588,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
+                    }else if (displayIc > (denatorCount * ic_cankao * 1.3) &&displayIc < (denatorCount * ic_cankao * 1.5) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
+                        displayIcStr = displayIcStr + getString(R.string.text_test_dlpd_di);
+                        ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
+                        ll_firing_IC_4.setTextSize(20);
+                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                     } else if (displayIc > (denatorCount * ic_cankao * 1.5) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);

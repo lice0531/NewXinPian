@@ -223,7 +223,7 @@ public class FiringMainActivity extends SerialPortActivity {
     List<Float> list_dianliu = new ArrayList();
 
     private int twoCount_panduan = 0;//高压时间
-    private int gaoya_cankaoSun = 0;//高压稳定时间
+    private int gaoya_cankaoSun = 25;//高压稳定时间
     private int yichang_time = sixExchangeCount;//出现错误的时间
     private int cuowuSun = 0;//电流异常错误次数
     private float cankao_ic_gaoya = 0;
@@ -747,7 +747,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
 
 
-            if (stage == 7&& cuowuSun >= 3 && isshow3 == 0) {
+            if (stage == 6&&sixExchangeCount==0&& cuowuSun >= 3 && isshow3 == 0) {
                 isshow3 = 1;
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
@@ -775,22 +775,22 @@ public class FiringMainActivity extends SerialPortActivity {
             //检测电流小于参考值的80%提示弹框
 
 
-            if(stage == 6){
-                Log.e(TAG, "------------: " );
-                Log.e(TAG, "ChongDian_time:"+ChongDian_time );
-                Log.e(TAG, "sixExchangeCount:"+sixExchangeCount );
-                Log.e(TAG, "ChongDian_time-sixExchangeCount> gaoya_cankaoSun:"+(ChongDian_time-sixExchangeCount> gaoya_cankaoSun) );
-                Log.e(TAG, "cankao_ic_diya:"+( cankao_ic_diya) );
-                Log.e(TAG, "cankao_ic_gaoya :"+(cankao_ic_gaoya ) );
-                Log.e(TAG, "busInfo.getBusCurrentIa() < cankao_ic_diya:"+(busInfo.getBusCurrentIa() < cankao_ic_diya) );
-                Log.e(TAG, "cankao_ic_gaoya * 0.3:"+(cankao_ic_gaoya * 0.3) );
-                Log.e(TAG, "cuowuSun:"+(cuowuSun) );
-                Log.e(TAG, "------------: " );
-                Log.e(TAG, "yichang_time-sixExchangeCount>1:"+(yichang_time-sixExchangeCount>1) );
-                Log.e(TAG, "denatorCount > 5:"+(denatorCount > 5) );
-                Log.e(TAG, "stage == 6:"+(stage == 6) );
-                Log.e(TAG, "busInfo.getBusCurrentIa() - cankao_ic_gaoya > cankao_ic_gaoya * 0.3:"+(busInfo.getBusCurrentIa() - cankao_ic_gaoya > cankao_ic_gaoya * 0.3) );
-            }
+//            if(stage == 6){
+//                Log.e(TAG, "------------: " );
+//                Log.e(TAG, "ChongDian_time:"+ChongDian_time );
+//                Log.e(TAG, "sixExchangeCount:"+sixExchangeCount );
+//                Log.e(TAG, "ChongDian_time-sixExchangeCount> gaoya_cankaoSun:"+(ChongDian_time-sixExchangeCount> gaoya_cankaoSun) );
+//                Log.e(TAG, "cankao_ic_diya:"+( cankao_ic_diya) );
+//                Log.e(TAG, "cankao_ic_gaoya :"+(cankao_ic_gaoya ) );
+//                Log.e(TAG, "busInfo.getBusCurrentIa() < cankao_ic_diya:"+(busInfo.getBusCurrentIa() < cankao_ic_diya) );
+//                Log.e(TAG, "cankao_ic_gaoya * 0.3:"+(cankao_ic_gaoya * 0.3) );
+//                Log.e(TAG, "cuowuSun:"+(cuowuSun) );
+//                Log.e(TAG, "------------: " );
+//                Log.e(TAG, "yichang_time-sixExchangeCount>1:"+(yichang_time-sixExchangeCount>1) );
+//                Log.e(TAG, "denatorCount > 5:"+(denatorCount > 5) );
+//                Log.e(TAG, "stage == 6:"+(stage == 6) );
+//                Log.e(TAG, "busInfo.getBusCurrentIa() - cankao_ic_gaoya > cankao_ic_gaoya * 0.3:"+(busInfo.getBusCurrentIa() - cankao_ic_gaoya > cankao_ic_gaoya * 0.3) );
+//            }
 
             //电流偏低异常
             if (ChongDian_time-sixExchangeCount> gaoya_cankaoSun && yichang_time-sixExchangeCount>1  && denatorCount > 5 && stage == 6 &&  busInfo.getBusCurrentIa() < cankao_ic_diya) {
@@ -803,15 +803,15 @@ public class FiringMainActivity extends SerialPortActivity {
             if (ChongDian_time-sixExchangeCount> gaoya_cankaoSun && yichang_time-sixExchangeCount>1 && denatorCount > 5 && stage == 6 &&  busInfo.getBusCurrentIa() - cankao_ic_gaoya > cankao_ic_gaoya * 0.3) {//检测电流大于低压参考值记录一次
                 cuowuSun = cuowuSun + 1;
                 yichang_time = sixExchangeCount;
-                Log.e(TAG, "高压: 1 ----sixExchangeCount="+ sixExchangeCount);
-                Log.e(TAG, "busInfo.getBusCurrentIa()"+busInfo.getBusCurrentIa() );
+                Log.e(TAG, "高压: 电流不稳定 ----sixExchangeCount="+ sixExchangeCount);
                 Log.e(TAG, "cankao_ic_gaoya"+cankao_ic_gaoya );
                 Log.e(TAG, "ChongDian_time "+ChongDian_time );
-                Log.e(TAG, "sixExchangeCount "+sixExchangeCount );
-                Log.e(TAG, "gaoya_cankaoSun "+gaoya_cankaoSun );
+                Log.e(TAG, "busInfo.getBusCurrentIa() "+busInfo.getBusCurrentIa() );
+                Log.e(TAG, "cuowuSun: " + cuowuSun);
             }
 
             Log.e(TAG, "cankao_IV: " + cankao_IV);
+
 //            busInfo = null;
             cankao_IV= busInfo.getBusVoltage();//记录参考电压
 
@@ -2079,6 +2079,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
                             //发出进入起爆模式命令  准备测试计时器
                             if (secondCount == 0 && secondCmdFlag == 0) {//
+                                cankao_ic_diya = busInfo.getBusCurrentIa();//低压参考电流值
                                 byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
                                 sendCmd(powerCmd);
                                 increase(5);
