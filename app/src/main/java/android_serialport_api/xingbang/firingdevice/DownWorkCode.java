@@ -41,19 +41,14 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
 import com.google.gson.Gson;
-import com.scandecode.ScanDecode;
-import com.scandecode.inf.ScanInterface;
-
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePal;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,7 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -76,12 +70,10 @@ import android_serialport_api.xingbang.custom.MlistView;
 import android_serialport_api.xingbang.custom.ShouQuanAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.ShouQuan;
-import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
@@ -104,10 +96,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
 import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -225,14 +215,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private String factoryCode = null;//厂家代码
     private String factoryFeature = null;////厂家特征码
     private SimpleCursorAdapter list_adapter;
-    private ScanInterface scanDecode;
-    private int sanButtonFlag = 0;//1s是起始按钮，2是终止按钮
-    private int continueScanFlag = 0;//是否继续扫码标志 0否1是
     private String singleShellNo;//单发注册
     private int isCorrectReisterFea = 0; //是否正确的管厂码
     private Handler mHandler_3 = new Handler();//错误信息提醒
     private String lg_No;//雷管编号
-    private ScanBar scanBarThread;
     //定位
     private Geocoder geocoder;
     private List<Address> addressList;
@@ -872,29 +858,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         return 0;
     }
 
-    //得到连续管壳码
-    private String getContinueScanBlastNo(String strBarcode) {
-
-        if (strBarcode.length() < 13) return null;
-        if (strBarcode.trim().length() == 14) {
-            strBarcode = strBarcode.substring(1);
-            return strBarcode;
-        } else if (strBarcode.trim().length() == 13) {
-            //strBarcode= strBarcode;
-            return strBarcode;
-        }
-        int index = strBarcode.indexOf("SC:");
-        if (index < 0) return null;
-        String subBarCode = strBarcode.substring(index + 3, index + 16);
-        if (subBarCode.trim().length() < 13) {
-            /*
-            Toast.makeText(ReisterMainPage_scan.this, "不正确的编码，请扫描选择正确的编码",
-                    Toast.LENGTH_SHORT).show();
-                    **/
-            return null;
-        }
-        return subBarCode;
-    }
 
 
     //获取用户信息
@@ -1296,17 +1259,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         }
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        scanDecode.stopScan();//停止扫描
-        if (scanBarThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        scanDecode.onDestroy();//回复初始状态
+
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -2350,35 +2303,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
 
                 break;
-            case R.id.btn_scanReister://扫码注册
-                if (continueScanFlag == 0) {
-                    continueScanFlag = 1;
-                    if (scanBarThread != null) {
-                        scanBarThread.exit = true;  // 终止线程thread
-                        try {
-                            scanBarThread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    scanBarThread = new ScanBar();
-                    scanBarThread.start();
-                    btnScanReister.setText(getResources().getString(R.string.text_reister_scaning));//"正在扫码"
-                } else {
-                    continueScanFlag = 0;
-                    btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
-                    scanDecode.stopScan();//停止扫描
-                    if (scanBarThread != null) {
-                        scanBarThread.exit = true;  // 终止线程thread
-                        try {
-                            scanBarThread.join();
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                break;
+
             case R.id.btn_setdelay://修改延时
                 String str3 = new String("设置延时");//"当前雷管信息"
                 Intent intent3 = new Intent(this, SetDelayTime.class);
@@ -2402,28 +2327,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             case R.id.btn_clear_sfz:
                 deleteHistory("history_bprysfz", at_bprysfz);
                 break;
-            case R.id.btn_ReisterScanStart_st:
-                hideInputKeyboard();
-                if (continueScanFlag == 0) {
-                    continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
-                } else {
-                    continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
-                }
-                sanButtonFlag = 2;
-                break;
-            case R.id.btn_ReisterScanStart_ed:
-                hideInputKeyboard();
-                if (continueScanFlag == 0) {
-                    continueScanFlag = 1;
-                    scanDecode.starScan();//启动扫描
-                } else {
-                    continueScanFlag = 0;
-                    scanDecode.stopScan();//停止扫描
-                }
-                sanButtonFlag = 2;
-                break;
+
 
         }
     }
@@ -2442,25 +2346,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     public void onViewClicked() {
     }
 
-    private class ScanBar extends Thread {
-        public volatile boolean exit = false;
-
-        public void run() {
-            int zeroCount = 0;
-
-            while (!exit) {
-                try {
-                    scanDecode.starScan();
-                    Thread.sleep(1250);
-                    //break;
-
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     TextWatcher htbh_watcher = new TextWatcher() {
         @Override
