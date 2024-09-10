@@ -138,4 +138,5 @@
     <color name="viewfinder_frame">#90FFFFFF</color>
     <color name="laser_color">#0F0</color>
     <color name="result_point_color">#C0FFFF00</color>
+    <color name="app_bg_color">#020C49</color>
 </resources>

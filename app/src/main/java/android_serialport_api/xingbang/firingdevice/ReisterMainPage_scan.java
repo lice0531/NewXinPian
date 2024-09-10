@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -147,7 +148,7 @@ public class ReisterMainPage_scan extends SerialPortActivity {
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.container1)
-    LinearLayout container1;
+    FrameLayout container1;
     @BindView(R.id.ll_start)
     LinearLayout llStart;
     @BindView(R.id.ll_end)

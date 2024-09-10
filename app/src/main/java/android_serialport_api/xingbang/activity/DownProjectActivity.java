@@ -1,6 +1,5 @@
 package android_serialport_api.xingbang.activity;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.AlertDialog;
@@ -10,37 +9,36 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
-
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.RecyclerViewAdapter_Denator;
+import android_serialport_api.xingbang.custom.ShouQuanAdapter2;
 import android_serialport_api.xingbang.databinding.ActivityDownProjectBinding;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -49,6 +47,7 @@ import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.firingdevice.DownOfflineActivity;
+import android_serialport_api.xingbang.firingdevice.ShouQuanActivity;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
@@ -61,7 +60,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
 public class DownProjectActivity extends BaseActivity  implements View.OnClickListener{
     ActivityDownProjectBinding binding;
     private RecyclerViewAdapter_Denator<DenatorBaseinfo> mAdapter;
@@ -85,6 +83,10 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
     private SQLiteDatabase db;
     private String TAG = "下载工作码页面";
 
+    private ShouQuanAdapter2<Map<String, Object>> mAdapter_sq2;
+    private List<Map<String, Object>> map_dl = new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +103,7 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
 //            Intent intent = new Intent(DownProjectActivity.this, AddProjectActivity.class);
 //            startActivity(intent);
 //        });
-//        add.setVisibility(View.VISIBLE);
+        add.setVisibility(View.GONE);
         back.setOnClickListener(v -> finish());
 
         linearLayoutManager = new LinearLayoutManager(this);
@@ -114,7 +116,6 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         mAdapter.notifyDataSetChanged();
         initAutoComplete("history_projectName", binding.downAtProjectName);
         getUserMessage();
-
         for (int i = 0; i < mListData.size(); i++) {
             list_uid.add(mListData.get(i).getShellBlastNo());
         }
@@ -153,6 +154,127 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         MessageBean messages = master.getAllFromInfo_bean();
         equ_no=messages.getEqu_no();
         binding.downAtProjectName.setText(pro_name);
+    }
+
+    private void loadMoreData_sq() {
+        map_dl.clear();
+        List<ShouQuan> list = GreenDaoMaster.getAllShouQuan();
+        Log.e("查询", "授权表list:" + list.toString());
+        Gson gson = new Gson();
+        DanLingBean danLingBean;
+        for (ShouQuan sq : list) {
+            danLingBean = gson.fromJson(sq.getJson(), DanLingBean.class);
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("id", sq.getId());
+            item.put("htbh", sq.getHtbh());
+            item.put("xmbh", sq.getXmbh());
+            item.put("qbzt", sq.getQbzt());
+            item.put("errNum", sq.getErrNum());
+            item.put("coordxy", sq.getCoordxy());
+            item.put("spare1", sq.getSpare1());
+            item.put("spare2", sq.getSpare2());//申请日期
+            item.put("total", sq.getTotal());
+            item.put("danLingBean", danLingBean);
+            map_dl.add(item);
+        }
+
+//        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_SHOUQUAN;//+" order by htbh "
+//        Cursor cursor = db.rawQuery(sql, null);
+//        //return getCursorTolist(cursor);
+//        if (cursor != null) {
+//            Gson gson = new Gson();
+//            DanLingBean danLingBean;
+//            while (cursor.moveToNext()) {
+//                String id = cursor.getString(0);
+//                String xmbh = cursor.getString(1); //获取第二列的值 ,序号
+//                String htbh = cursor.getString(2);
+//                String json = cursor.getString(3);//管壳号
+//                String errNum = cursor.getString(4);//错误数量
+//                String qbzt = cursor.getString(5);//起爆状态
+//                String coordxy = cursor.getString(11);//经纬度
+//                String spare1 = cursor.getString(13);//工程名称
+//                danLingBean = gson.fromJson(json, DanLingBean.class);
+//                Map<String, Object> item = new HashMap<String, Object>();
+//                item.put("id", id);
+//                item.put("htbh", htbh);
+//                item.put("xmbh", xmbh);
+//                item.put("qbzt", qbzt);
+//                item.put("spare1", spare1);
+//                item.put("coordxy", coordxy);
+//                item.put("errNum", errNum);
+//                item.put("danLingBean", danLingBean);
+//                map_dl.add(item);
+//            }
+//            cursor.close();
+//        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadMoreData_sq();
+        binding.lvShouquan.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter_sq2 = new ShouQuanAdapter2<>(this);
+        binding.lvShouquan.setAdapter(mAdapter_sq2);
+        mAdapter_sq2.setListData(map_dl);
+        mAdapter_sq2.setOnItemClick(new ShouQuanAdapter2.OnItemClick() {
+            @Override
+            public void onButtonClicked(View view, int position) {
+                switch (view.getId()) {
+                    case R.id.btn_del_sq://删除按钮
+                        TextView textview = new TextView(DownProjectActivity.this);
+                        textview.setTextSize(25);
+                        textview.setTextColor(Color.RED);
+                        textview.setText("请确认是否删除所选授权信息,点击确认删除!");
+                        textview.setTypeface(null, Typeface.BOLD);
+                        AlertDialog dialog2 = new AlertDialog.Builder(DownProjectActivity.this)
+                                .setTitle("删除提示")//设置对话框的标题
+                                .setView(textview)
+                                //设置对话框的按钮
+                                .setPositiveButton("确认", (dialog3, which) -> {
+                                    dialog3.dismiss();
+                                    delShouQuan(map_dl.get(position).get("id").toString());//删除方法
+                                    GreenDaoMaster master = new GreenDaoMaster();
+                                    master.deleteTypeLeiGuanFroTime(map_dl.get(position).get("spare2").toString());
+                                    if (map_dl != null && map_dl.size() > 0) {//移除map中的值
+                                        map_dl.remove(position);
+                                    }
+                                    mAdapter_sq2.notifyDataSetChanged();
+                                })
+                                .setNeutralButton("取消", (dialog3, which) -> {
+                                    dialog3.dismiss();
+                                })
+                                .create();
+                        dialog2.show();
+                        break;
+                    case R.id.ly_sq://
+                    case R.id.tv_chakan_sq:
+                        Log.e("点击项目", "position: " + position);
+                        Log.e("点击项目", "id: " + map_dl.get(position).get("id").toString());
+                        Intent intent = new Intent(DownProjectActivity.this, ShouQuanActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("sqrq", map_dl.get(position).get("spare2").toString());//申请日期
+                        bundle.putInt("position", Integer.parseInt(map_dl.get(position).get("id").toString()));
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.e("点击项目", "position: " + position);
+                Intent intent = new Intent(DownProjectActivity.this, ShouQuanActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("list_dl", (Serializable) map_dl);
+                bundle.putString("sqrq", map_dl.get(position).get("spare2").toString());//申请日期
+                bundle.putInt("position", position);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -509,6 +631,14 @@ public class DownProjectActivity extends BaseActivity  implements View.OnClickLi
         denatorBaseinfo.setDownloadStatus(downloadStatus);
         denatorBaseinfo.setAuthorization(authorization);
         Application.getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+    }
+
+    private int delShouQuan(String id) {//删除雷管
+        String selection = "id = ?"; // 选择条件，给null查询所有
+        String[] selectionArgs = {id + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        db.delete(DatabaseHelper.TABLE_NAME_SHOUQUAN, selection, selectionArgs);
+        show_Toast("删除成功");
+        return 0;
     }
 
     @Override

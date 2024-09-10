@@ -289,6 +289,16 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/text_sm"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".firingdevice.SouSuoSQActivity"
+            android:exported="false"
+            android:label="@string/text_sssqxx"
+            android:theme="@style/blackActivityTheme"/>
+        <activity
+            android:name=".firingdevice.ShouQuanActivity"
+            android:exported="false"
+            android:label="@string/text_sqsj"
+            android:theme="@style/blackActivityTheme"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

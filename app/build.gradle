@@ -33,8 +33,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false//是否代码混淆
-
+            minifyEnabled true//是否代码混淆
+//            shrinkResources true // 可选：缩减资源
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -54,21 +54,24 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-//    /**
-//     * 生成outputFileName： xingbang_new-2020-11-20 10/38.apk
-//     */
-//    android.applicationVariants.all { variant ->
-//        variant.outputs.all { output ->
-//            def outputFile = output.outputFile
-//            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//
-//                outputFileName = defaultConfig.applicationId.subSequence(
-//                        defaultConfig.applicationId.lastIndexOf(".") + 1,
-//                        defaultConfig.applicationId.length()) +
-//                        "-" + releaseTime() + ".apk"
-//            }
-//        }
-//    }
+    /**
+     * 打包生成的包名跟strings.xml的app_version_name一致
+     */
+    def dateFormat = new java.text.SimpleDateFormat("yyMMdd", java.util.Locale.getDefault())
+    def currentDate = dateFormat.format(new Date())
+    def baseName = "M900_TB_V2.1_"
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFileName = "${baseName}_${currentDate}.apk"
+            // If you want to differentiate between debug and release builds
+            outputFileName = "${baseName}_${currentDate}.apk"
+            // Update the APK file name using output.outputFileName
+            output.outputFileName = outputFileName
+        }
+    }
+
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -110,7 +113,7 @@ dependencies {
     compileOnly 'com.google.zxing:core:3.3.0'
 //    异常捕获
 //    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
-    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
+    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:1.1.8"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
 
     //androidx项目(UI框架)

@@ -365,12 +365,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //            "xmbh", ""//项目编号370101318060006
 //            "htid", "370101318060045"//合同编号370100X15040027
 //            "dwdm", ""//单位代码
-//            uploadMoni(list_savedate.get(0).getBlastdate(), uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "");//丹灵上传信息
+//            uploadMoni(dataTime, uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "");//丹灵上传信息
 //        }
 //        if (server_type2.equals("2")) {
 //            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
 //        }
-                    upload_xingbang_moni(dataTime, uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "", "", "");//我们自己的网址
+                    upload_xingbang_moni(dataTime, uploadIndexMoni, "", "", "", "", "", "", "");//我们自己的网址
                     //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
                 } catch (
                         Exception e) {
@@ -589,11 +589,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     isXbUploadSuccess = rt.getXbResult();
                     Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
                             "--isXbUploadSuccess:" + isXbUploadSuccess);
-                    if (isDlUploadSuccess == 200 && isXbUploadSuccess == 200) {
+                    if (isDlUploadSuccess == 200 || isXbUploadSuccess == 200) {
 //                        uploadIndex ++;
 //                        uploadNext(dateList,uploadIndex);
                         uploadIndexMoni ++;
                         uploadNextMoni(stringList,uploadIndexMoni);
+                        Log.e(TAG,"当前第" + uploadIndexMoni + "条已上传成功");
                     }
                     break;
                 case 7:
@@ -1326,7 +1327,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         String xy[] = pro_coordxy.split(",");//经纬度
         String app_version_name = getString(R.string.app_version_name);
         try {
-            object.put("sbbh", "F60C7002222");//起爆器设备编号
+            object.put("sbbh", equ_no);//起爆器设备编号
             if (jd != null) {
                 object.put("jd", jd);//经度
             } else if (pro_coordxy.length() > 5) {
@@ -1343,7 +1344,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 object.put("htid", pro_htid);//合同编号
             }
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
-            object.put("bprysfz", "370101787000000000");//人员身份证
+            object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", stringList.get(uploadIndexMoni));//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
@@ -1360,7 +1361,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             e.printStackTrace();
         }
         //3des加密
-        String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
+        String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().trim().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
             object2.put("param", json.trim());
@@ -1401,6 +1402,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 msg.what = 6;
                 UploadResult result = new UploadResult();
                 result.setXbResult(200);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 msg.obj = result;
                 mHandler_tip.sendMessage(msg);
             }
@@ -1507,6 +1513,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 msg.what = 6;
                 UploadResult result = new UploadResult();
                 result.setXbResult(200);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 msg.obj = result;
                 mHandler_tip.sendMessage(msg);
 //                Message message = new Message();

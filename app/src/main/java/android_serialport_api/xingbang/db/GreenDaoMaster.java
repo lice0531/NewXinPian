@@ -685,6 +685,79 @@ public class GreenDaoMaster {
             }
 
         }
+    }
 
+    /**
+     * 从数据库表中拿数据
+     *
+     * @return
+     */
+    public static List<ShouQuan> getAllShouQuan() {
+//        return mShouquanDao.queryBuilder().orderDesc(ShouQuanDao.Properties.Id).list();
+        return getDaoSession().getShouQuanDao().queryBuilder().orderDesc(ShouQuanDao.Properties.Id).list();
+    }
+
+    //------授权用--------/
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt,String sqrq) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Qibao.eq(zt))
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 根据申请日期查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForSqrq(String sqrq) {
+        return detonatorTypeNewDao.queryBuilder().
+                where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm,String sqrq) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public void deleteDetonatorShouQuan(String gkm) {
+        detonatorTypeNewDao
+                .queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(gkm))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 更新授权数量
+     */
+    public  void updataShouQuan(String time,int total) {
+        QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
+        ShouQuan shouQuan =result.where(ShouQuanDao.Properties.Spare2.eq(time)).unique();
+        shouQuan.setTotal(total);
+        mShouquanDao.update(shouQuan);
+    }
+
+    /**
+     * 删除生产数据中的雷管
+     */
+    public  void deleteTypeLeiGuanFroTime(String time) {
+        Log.e("删除生产数据中的雷管", "time: "+time );
+        QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
+        result.where(DetonatorTypeNewDao.Properties.Time.eq(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 }

@@ -6,10 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.AddProjectActivity">
-    <android_serialport_api.xingbang.custom.WatermarkView
-        android:layout_width="match_parent"
-        android:visibility="visible"
-        android:layout_height="match_parent"/>
     <include
         android:id="@+id/totalbar"
         layout="@layout/title_layout"
@@ -21,7 +17,7 @@
         android:id="@+id/cardView1"
         style="@style/cardview_style"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
+        android:layout_height="280dp"
         android:orientation="vertical"
         app:contentPadding="0dp"
         app:cardCornerRadius="3dp"
@@ -47,6 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="项目名称: "
+                    android:textSize="20sp"
                     android:layout_marginStart="@dimen/addproject_tv_left"
                     style="@style/alltextstyle"/>
                 <AutoCompleteTextView
@@ -74,6 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="公司性质: "
+                    android:textSize="20sp"
                     android:layout_marginStart="@dimen/addproject_tv_left"
                     style="@style/alltextstyle"/>
                 <Spinner
@@ -97,6 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="合同编号: "
+                    android:textSize="20sp"
                     android:layout_marginStart="@dimen/addproject_tv_left"
                     style="@style/alltextstyle"/>
                 <AutoCompleteTextView
@@ -127,6 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="项目编号: "
+                    android:textSize="20sp"
                     android:layout_marginStart="@dimen/addproject_tv_left"
                     style="@style/alltextstyle"/>
                 <AutoCompleteTextView
@@ -157,6 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="单位代码: "
+                    android:textSize="20sp"
                     android:layout_marginStart="@dimen/addproject_tv_left"
                     style="@style/alltextstyle"/>
                 <AutoCompleteTextView
@@ -187,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:text="爆破员身份证:"
                     android:layout_marginStart="@dimen/addproject_tv_left"
-                    android:textSize="17sp"
+                    android:textSize="20sp"
                     style="@style/alltextstyle"/>
                 <AutoCompleteTextView
                     android:id="@+id/down_at_bprysfz"

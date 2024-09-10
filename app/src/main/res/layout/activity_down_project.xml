@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
@@ -25,7 +26,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -51,27 +52,27 @@
                     android:background="@drawable/translucent"
                     android:gravity="center_vertical"
                     android:hint="选择项目"
-                    android:padding="5dp" />
+                    android:padding="5dp"
+                    android:textSize="17sp" />
 
                 <Button
                     android:id="@+id/btn_clear_project_name"
                     style="@style/allbtntstyle"
-                    android:layout_width="48dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/icon_forward"
                     android:visibility="visible" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.3"
-                android:background="@color/color_zhuce1" />
+            <!--            <View-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="8dp"-->
+            <!--                android:background="#11333333" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp">
 
                 <!-- 管壳号-->
                 <TextView
@@ -81,7 +82,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:background="@drawable/a_bg_border_blue_1dp"
-                    android:text="管壳码" />
+                    android:text="管壳码"
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/tv_youxiaoqi"
@@ -90,7 +92,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.5"
                     android:background="@drawable/a_bg_border_blue_1dp"
-                    android:text="有效期" />
+                    android:text="有效期"
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/tv_zhuangtai"
@@ -99,48 +102,70 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/a_bg_border_blue_1dp"
-                    android:text="状态" />
+                    android:text="状态"
+                    android:textSize="17sp" />
             </LinearLayout>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/zcl_rl_lg_rv"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6"
-            android:listSelector="@drawable/listview_color_selector"
-            android:scrollbarFadeDuration="0"
-            android:scrollbars="none"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="145dp" />
+            android:layout_marginBottom="50dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/linearLayout9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/dp_btn_xiazai"
-                style="@style/allbtntstyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/zcl_rl_lg_rv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:onClick="onClick"
-                android:text="下载项目" />
+                android:listSelector="@drawable/listview_color_selector"
+                android:scrollbarFadeDuration="0"
+                android:scrollbars="none"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="125dp" />
 
-            <Button
-                android:id="@+id/btn_down_offline"
-                style="@style/allbtntstyle"
-                android:layout_width="0dp"
-                android:onClick="onClick"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
-                android:layout_weight="1"
-                android:text="离线下载" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lv_shouquan"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.2"
+                android:listSelector="@drawable/listview_color_selector"
+                android:scrollbarFadeDuration="0"
+                android:scrollbars="none"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="125dp" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dp_btn_xiazai"
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="下载项目"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_down_offline"
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="离线下载" />
     </LinearLayout>
 </FrameLayout>
