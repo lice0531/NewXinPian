@@ -1913,7 +1913,6 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
-
             case R.id.re_btn_f1:
                 hideInputKeyboard();
                 delay_set = "f1";
