@@ -8,14 +8,24 @@
         android:id="@+id/ly_his"
         android:layout_width="match_parent"
         android:layout_height="70dp">
+        <ImageView
+            android:id="@+id/iv_check"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/icon_choose_default"
+            android:button="@null"
+            android:visibility="gone"/>
     <!-- 序号 -->
     <TextView
         android:id="@+id/serialNo"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_height="match_parent"
         android:background="@drawable/textview_border"
         style="@style/alltextstyle"
+        android:textSize="20sp"
         android:text="序号"/>
     <!-- 起爆日期 -->
     <TextView
@@ -25,6 +35,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/textview_border"
         style="@style/alltextstyle"
+        android:textSize="20sp"
         android:text="起爆日期"/>
     <!-- 状态-->
     <TextView
@@ -35,6 +46,14 @@
         android:background="@drawable/textview_border"
         style="@style/alltextstyle"
         android:text="状态"/>
+        <TextView
+        android:id="@+id/txtsum"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/textview_border"
+        style="@style/alltextstyle"
+        android:text="数量"/>
 
     <!-- 上传-->
     <Button

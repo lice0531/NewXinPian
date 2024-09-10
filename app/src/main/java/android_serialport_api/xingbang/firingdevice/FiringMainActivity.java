@@ -628,7 +628,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //高压电流大于10000,提示电流短路
             if (sixExchangeCount < ChongDian_time * 0.2 && stage == 6 && busInfo != null) {
                 float displayIc = busInfo.getBusCurrentIa();
-                if (displayIc > 10000) {
+                if (displayIc > 9500) {
                     increase(99);//暂停阶段
                     mHandler_1.handleMessage(Message.obtain());
 
@@ -1218,6 +1218,7 @@ public class FiringMainActivity extends SerialPortActivity {
         his.setPro_dwdm(pro_dwdm);
         his.setSerialNo(Integer.parseInt(qbxm_id));
         his.setLog(Utils.readLog(Utils.getDate(new Date())));
+        his.setSum(denatorCount);
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);

@@ -37,6 +37,7 @@ public class DenatorHis_MainDao extends AbstractDao<DenatorHis_Main, Long> {
         public final static Property Pro_dwdm = new Property(10, String.class, "pro_dwdm", false, "pro_dwdm");
         public final static Property Remark = new Property(11, String.class, "remark", false, "remark");
         public final static Property Log = new Property(12, String.class, "log", false, "log");
+        public final static Property Sum = new Property(13, int.class, "sum", false, "sum");
     }
 
 
@@ -64,7 +65,8 @@ public class DenatorHis_MainDao extends AbstractDao<DenatorHis_Main, Long> {
                 "\"pro_htid\" TEXT," + // 9: pro_htid
                 "\"pro_dwdm\" TEXT," + // 10: pro_dwdm
                 "\"remark\" TEXT," + // 11: remark
-                "\"log\" TEXT);"); // 12: log
+                "\"log\" TEXT," + // 12: log
+                "\"sum\" INTEGER NOT NULL );"); // 13: sum
     }
 
     /** Drops the underlying database table. */
@@ -137,6 +139,7 @@ public class DenatorHis_MainDao extends AbstractDao<DenatorHis_Main, Long> {
         if (log != null) {
             stmt.bindString(13, log);
         }
+        stmt.bindLong(14, entity.getSum());
     }
 
     @Override
@@ -203,6 +206,7 @@ public class DenatorHis_MainDao extends AbstractDao<DenatorHis_Main, Long> {
         if (log != null) {
             stmt.bindString(13, log);
         }
+        stmt.bindLong(14, entity.getSum());
     }
 
     @Override
@@ -225,7 +229,8 @@ public class DenatorHis_MainDao extends AbstractDao<DenatorHis_Main, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // pro_htid
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // pro_dwdm
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // remark
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // log
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // log
+            cursor.getInt(offset + 13) // sum
         );
         return entity;
     }
@@ -245,6 +250,7 @@ public class DenatorHis_MainDao extends AbstractDao<DenatorHis_Main, Long> {
         entity.setPro_dwdm(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setRemark(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setLog(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setSum(cursor.getInt(offset + 13));
      }
     
     @Override

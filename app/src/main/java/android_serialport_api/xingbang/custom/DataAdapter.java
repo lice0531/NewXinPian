@@ -63,8 +63,10 @@ public class DataAdapter extends BaseQuickAdapter<ShouQuanData, BaseViewHolder> 
             helper.getView(R.id.iv_check).setVisibility(View.VISIBLE);
 
             if (item.isSelect()) {//点击时，true 选中
+                //设置选中时的背景图片
                 helper.getView(R.id.iv_check).setBackgroundResource(R.drawable.icon_choose_selected);
             } else {//false 取消选中
+                //设置取消选中时的背景图片
                 helper.getView(R.id.iv_check).setBackgroundResource(R.drawable.icon_choose_default);
             }
         }

@@ -37,11 +37,13 @@ public class DenatorHis_Main {
     private String remark;
     @Property(nameInDb = "log")
     private String log;
-    @Generated(hash = 960757556)
+    @Property(nameInDb = "sum")
+    private int sum;
+    @Generated(hash = 1336495481)
     public DenatorHis_Main(Long id, String blastdate, String uploadStatus,
             String longitude, String latitude, String userid, String equ_no,
             int serialNo, String pro_xmbh, String pro_htid, String pro_dwdm,
-            String remark, String log) {
+            String remark, String log, int sum) {
         this.id = id;
         this.blastdate = blastdate;
         this.uploadStatus = uploadStatus;
@@ -55,6 +57,7 @@ public class DenatorHis_Main {
         this.pro_dwdm = pro_dwdm;
         this.remark = remark;
         this.log = log;
+        this.sum = sum;
     }
     @Generated(hash = 812921624)
     public DenatorHis_Main() {
@@ -155,5 +158,11 @@ public class DenatorHis_Main {
                 ", remark='" + remark + '\'' +
                 ", log='" + log + '\'' +
                 '}';
+    }
+    public int getSum() {
+        return this.sum;
+    }
+    public void setSum(int sum) {
+        this.sum = sum;
     }
 }

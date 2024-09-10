@@ -341,7 +341,7 @@ public class  BaseActivity extends AppCompatActivity {
 		String[] hisArrays = longhistory.split("#");
 		boolean contains = Arrays.asList(hisArrays).contains(text + "#");
 		Log.e("保存", "longhistory: "+longhistory );
-		Log.e("保存", "longhistory: "+contains );
+		Log.e("保存", "contains: "+contains );
 		if (!Arrays.asList(hisArrays).contains(text + "#")) {
 			StringBuilder sb = new StringBuilder(longhistory);
 			sb.insert(0, text + "#");

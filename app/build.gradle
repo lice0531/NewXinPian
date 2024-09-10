@@ -125,7 +125,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 24 //数据库版本号
+    schemaVersion 25 //数据库版本号
     targetGenDir 'src/main/java'
     // 设置DaoMaster、DaoSession、Dao 包名
     daoPackage 'android_serialport_api.xingbang.db.greenDao'

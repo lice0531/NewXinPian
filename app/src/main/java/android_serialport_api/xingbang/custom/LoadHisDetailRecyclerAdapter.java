@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
     private List<VoFireHisMain> list_his;
     private Context mContext;
     private OnItemClickListener onItemClickListener;//声明自定义的监听接口
+    private static final int STATE_DEFAULT = 0;//默认状态
+    int mEditMode = STATE_DEFAULT;
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // 创建新的定义列表元素UI的View
@@ -86,6 +89,24 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
             holder.fireDate.setBackgroundResource(R.drawable.textview_border_red);
             holder.txtstatus.setBackgroundResource(R.drawable.textview_border_red);
         }
+        if (mEditMode == STATE_DEFAULT) {
+            holder.iv_check.setVisibility(View.GONE);
+            //默认不显示
+        } else {
+            //显示   显示之后再做点击之后的判断
+            holder.iv_check.setVisibility(View.VISIBLE);
+            holder.ly_his.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(holder.iv_check.isClickable()){
+                        holder.iv_check.setBackgroundResource(R.drawable.icon_choose_selected);
+                    }else {
+                        holder.iv_check.setBackgroundResource(R.drawable.icon_choose_default);
+                    }
+                }
+            });
+
+        }
         holder.itemView.setTag(position);
 
     }
@@ -103,6 +124,7 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
         private Button bt_upload;
         private Button bt_delete;
         private LinearLayout ly_his;
+        private ImageView iv_check;
         public ViewHolder(View itemView, final OnItemClickListener onItemClickListener) {
             super(itemView);
             serialNo = itemView.findViewById(R.id.serialNo);
@@ -111,7 +133,7 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
             bt_upload = itemView.findViewById(R.id.bt_upload);
             bt_delete = itemView.findViewById(R.id.bt_delete);
             ly_his = itemView.findViewById(R.id.ly_his);
-
+            iv_check= itemView.findViewById(R.id.iv_check);
             bt_upload.setOnClickListener(view -> {
                 if (onItemClickListener != null) {
                     int position1 = getAdapterPosition();
@@ -132,5 +154,15 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
                 }
             });
         }
+    }
+
+
+
+    /**
+     * 设置编辑状态   接收Activity中传递的值，并改变Adapter的状态
+     */
+    public void setEditMode(int editMode) {
+        mEditMode = editMode;
+        notifyDataSetChanged();//刷新
     }
 }
