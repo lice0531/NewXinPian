@@ -54,21 +54,22 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-//    /**
-//     * 生成outputFileName： xingbang_new-2020-11-20 10/38.apk
-//     */
-//    android.applicationVariants.all { variant ->
-//        variant.outputs.all { output ->
-//            def outputFile = output.outputFile
-//            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//
-//                outputFileName = defaultConfig.applicationId.subSequence(
-//                        defaultConfig.applicationId.lastIndexOf(".") + 1,
-//                        defaultConfig.applicationId.length()) +
-//                        "-" + releaseTime() + ".apk"
-//            }
-//        }
-//    }
+    /**
+     * 打包生成的包名跟strings.xml的app_version_name一致
+     */
+    def dateFormat = new java.text.SimpleDateFormat("yyMMdd", java.util.Locale.getDefault())
+    def currentDate = dateFormat.format(new Date())
+    def baseName = "M900_PT_WXJL_V1.0_"
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFileName = "${baseName}_${currentDate}.apk"
+            // If you want to differentiate between debug and release builds
+            outputFileName = "${baseName}_${currentDate}.apk"
+            // Update the APK file name using output.outputFileName
+            output.outputFileName = outputFileName
+        }
+    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
