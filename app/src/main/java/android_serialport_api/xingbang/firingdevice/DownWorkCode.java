@@ -330,7 +330,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mListView.setLayoutManager(linearLayoutManager);
         mListView.setAdapter(mAdapter);
 
-        scan();//扫描初始化
         initHandle();//handle初始化
         edit_start_entBF2Bit_st.addTextChangedListener(st_1_watcher);
         edit_start_entproduceDate_st.addTextChangedListener(st_2_watcher);
@@ -806,62 +805,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     };
 
 
-    /**
-     * 扫码注册方法
-     */
-    private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
 
-        scanDecode.getBarCode(new ScanInterface.OnScanListener() {
-            @Override
-            public void getBarcode(String data) {
-                // scanInfo = data;
-                if (data.length() == 19) {
-                    Log.e("箱号", "getBarcode: " + data);
-                    addXiangHao(data);//扫描箱号
-                }
-                if (sanButtonFlag > 0) {
-                    scanDecode.stopScan();
-                    decodeBar(data);
-                } else {
-                    if (continueScanFlag == 1) {
-                        String barCode = getContinueScanBlastNo(data);
-                        if (barCode == null) return;
-                        if (checkRepeatShellNo(barCode) == 1) {
-                            singleShellNo = barCode;
-                            isCorrectReisterFea = 4;
-                            mHandler_3.sendMessage(mHandler_3.obtainMessage());
-                            return;
-                        } else {
-                            show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
-                        }
-                        SoundPlayUtils.play(1);
-                        insertSingleDenator(barCode);
-                    }
-                }
-            }
-        });
-    }
 
-    /**
-     * 停止扫码
-     */
-    private void stopScan() {
-        continueScanFlag = 0;
-        btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
-        btnSetdelay.setEnabled(true);
-        scanDecode.stopScan();//停止扫描
-        if (scanBarThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
+
 
     /***
      * 单发注册
@@ -950,107 +896,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         return subBarCode;
     }
 
-    //扫码方法
-    private void decodeBar(String strParamBarcode) {
-        String subBarCode = "";
-        Log.e("扫码结果", "strParamBarcode: " + strParamBarcode);
-        if (strParamBarcode.trim().length() >= 14) {
-            int index = strParamBarcode.indexOf("SC:");
-            subBarCode = strParamBarcode.substring(index + 3, index + 16);
-            if (subBarCode.trim().length() < 13) {
-                show_Toast("不正确的编码，请扫描选择正确的编码");
-                return;
-            }
-        } else {
-            if (strParamBarcode.trim().length() == 14) {
-                subBarCode = strParamBarcode.substring(1);
-            } else if (strParamBarcode.trim().length() == 13) {
-                subBarCode = strParamBarcode;
-            } else
-                return;
-        }
-        String facCode = subBarCode.substring(0, 2);
-        String dayCode = subBarCode.substring(2, 7);
-        String featureCode = subBarCode.substring(7, 8);
-        String serialNo = subBarCode.substring(8);
-        Log.e("注册页面--扫码注册", "facCode: " + facCode + "  dayCode:" + dayCode + "  featureCode:" + featureCode + "  serialNo:" + serialNo);
-
-        if (sanButtonFlag == 1) {
-            edit_start_entBF2Bit_st.setText(facCode);
-            edit_start_entproduceDate_st.setText(dayCode);//日期码
-            edit_start_entAT1Bit_st.setText(featureCode);
-            edit_start_entboxNoAndSerial_st.setText(serialNo);
-
-            edit_end_entBF2Bit_en.setText("");
-            edit_end_entproduceDate_ed.setText("");
-            edit_end_entAT1Bit_ed.setText("");
-            edit_end_entboxNoAndSerial_ed.setText("");
-            btnScanReister.setEnabled(true);
-        }
-        if (sanButtonFlag == 2) {
-            edit_end_entBF2Bit_en.setText(facCode);
-            edit_end_entproduceDate_ed.setText(dayCode);
-            edit_end_entAT1Bit_ed.setText(featureCode);
-            edit_end_entboxNoAndSerial_ed.clearFocus();
-            edit_end_entboxNoAndSerial_ed.setText(serialNo);
-            btnScanReister.setEnabled(true);
-        }
-        sanButtonFlag = 0;
-    }
-
-    /**
-     * 扫描箱号
-     */
-    private void addXiangHao(String data) {
-        char[] xh = data.toCharArray();
-        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
-        final String strNo = "00";
-        String a = xh[5] + "" + xh[6];
-        String endNo = Utils.XiangHao(a);
-        final String prex = String.valueOf(strNo1);
-        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
-        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);//添加
-        }).start();
-    }
-
-//    private void initAutoComplete(String field, AutoCompleteTextView auto) {
-//        SharedPreferences sp = getSharedPreferences("network_url", 0);
-////        MMKV kv = MMKV.mmkvWithID("network_url");
-////        kv.importFromSharedPreferences(sp);
-//        String longhistory = sp.getString(field, "当前无记录");
-//        String[] hisArrays = longhistory.split("#");
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_auto_textview, hisArrays);
-//        auto.setAdapter(adapter);
-//        auto.setDropDownHeight(500);
-//        auto.setDropDownWidth(450);
-//        auto.setThreshold(1);
-//        auto.setCompletionHint("最近的20条记录");
-//        auto.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                AutoCompleteTextView view = (AutoCompleteTextView) v;
-//                if (hasFocus) {
-//                    view.showDropDown();
-//                }
-//            }
-//        });
-//    }
-
-//    private void saveHistory(String field, AutoCompleteTextView auto) {
-//        String text = auto.getText().toString();
-//        Log.e("保存输入框历史", "text: " + text);//MMKV保存为空,有空再排错
-////        MMKV mmkv_his = MMKV.mmkvWithID("network_url");
-//        SharedPreferences sp = getSharedPreferences("network_url", 0);
-//        String longhistory = sp.getString(field, "");
-//        if (!longhistory.contains(text + "#")) {
-//            StringBuilder sb = new StringBuilder(longhistory);
-//            sb.insert(0, text + "#");
-//            sp.edit().putString(field, sb.toString()).apply();
-//        }
-//    }
 
     //获取用户信息
     private void getUserMessage() {

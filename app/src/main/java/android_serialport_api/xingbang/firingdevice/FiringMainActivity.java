@@ -912,7 +912,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             dialog.dismiss();
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
             closeThread();
             closeForm();
@@ -2663,7 +2663,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNegativeButton("退出", (dialog, id) -> {
+                .setNeutralButton("退出", (dialog, id) -> {
                     dialog.cancel();
                     mOffTime.cancel();
                     closeThread();
