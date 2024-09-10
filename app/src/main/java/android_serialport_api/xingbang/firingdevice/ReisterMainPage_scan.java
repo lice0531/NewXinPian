@@ -353,6 +353,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     Button btnAddDelay;
     @BindView(R.id.btn_tk_F1)
     Button btnTkF1;
+    @BindView(R.id.btn_JH_F1)
+    Button btnJHF1;
+    @BindView(R.id.btn_JH_F2)
+    Button btnJHF2;
 
     @BindView(R.id.btn_tk)
     Button btnTk;
@@ -1979,29 +1983,54 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-
-        if (delay_set.equals("f1")) {//孔间延时
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay + f1 * (tk_num + 1);
+        if(flag_jh_f1||flag_jh_f2){
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = delay - start_delay;
                 } else {
-                    delay = delay + f1;
+                    if (flag_tk) {
+                        delay = delay - f1 * (tk_num + 1);
+                    } else {
+                        delay = delay - f1;
+                    }
+
                 }
-
-            }
-        } else if (delay_set.equals("f2")) {//排间延时
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay_minNum + f2 * (tk_num + 1);
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay - start_delay;
                 } else {
-                    delay = delay_minNum + f2;
+                    if (flag_tk) {
+                        delay = delay_minNum - f2 * (tk_num + 1);
+                    } else {
+                        delay = delay_minNum - f2;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f1 * (tk_num + 1);
+                    } else {
+                        delay = delay + f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay_minNum + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay_minNum + f2;
+                    }
                 }
             }
         }
+
         int duanNUM = getDuanNo(duan_new, mRegion);//也得做区域区分
 
         Log.e("扫码", "duanNo2: " + duanNo2);
@@ -2583,9 +2612,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     int flag1 = 0;
     int flag2 = 0;
     boolean flag_t1 = true;//同孔标志
+    boolean flag_jh_f1 = true;//减号标志
+    boolean flag_jh_f2 = true;//减号标志
     boolean flag_tk = false;//跳孔标志
 
-    @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
+    @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1,R.id.btn_JH_F1,R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
             R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay,
             R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3,
@@ -2634,7 +2665,26 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     flag_t1 = true;
                 }
                 break;
-
+            case R.id.btn_JH_F1:
+                btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_jh_f1) {
+                    btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_jh_f1 = false;
+                } else {
+                    btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_jh_f1 = true;
+                }
+                break;
+            case R.id.btn_JH_F2:
+                btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_jh_f2) {
+                    btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_jh_f2 = false;
+                } else {
+                    btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_jh_f2 = true;
+                }
+                break;
             case R.id.btn_scanReister:
                 int d = getFan(duan_new);
                 if (d == 1) {

@@ -306,7 +306,7 @@
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
-                            android:text="@string/text_delay_kong_2" />
+                            android:text="@string/text_scan_f1" />
 
                         <EditText
                             android:id="@+id/re_et_f1"
@@ -316,7 +316,7 @@
                             android:layout_weight="1.5"
                             android:background="@drawable/translucent"
                             android:gravity="left"
-                            android:hint="@string/text_delay_kong_2"
+                            android:hint="@string/text_scan_f1"
                             android:maxLength="6"
                             android:numeric="integer"
                             android:padding="5dp"
@@ -355,7 +355,7 @@
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
-                            android:text="@string/text_delay_pai" />
+                            android:text="@string/text_scan_f2" />
 
                         <EditText
                             android:id="@+id/re_et_f2"
@@ -365,7 +365,7 @@
                             android:layout_weight="1.5"
                             android:background="@drawable/translucent"
                             android:gravity="left"
-                            android:hint="@string/text_delay_pai"
+                            android:hint="@string/text_scan_f2"
                             android:maxLength="6"
                             android:numeric="integer"
                             android:padding="5dp"
