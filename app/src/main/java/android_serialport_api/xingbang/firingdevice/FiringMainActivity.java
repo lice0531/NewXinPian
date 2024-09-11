@@ -821,9 +821,6 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
-            busInfo.setPowerStatus("01");
-            busInfo.setPowerStatus("02");
-            busInfo.setPowerStatus("04");
             if(busInfo.getPowerStatus().equals("01")){
                 Utils.writeRecord("电流状态低压异常");
                 closeThread();
