@@ -979,4 +979,5 @@
     <string name="text_dk">端口</string>
     <string name="text_toastts">Tosat提示</string>
     <string name="text_his_sclsjl">请输入密码后,再进行删除历史记录操作</string>
+    <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
 </resources>

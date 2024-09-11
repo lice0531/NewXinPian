@@ -93,7 +93,8 @@
 
                 <TextView
                     style="@style/alltextstyle"
-                    android:layout_width="40dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
@@ -102,7 +103,8 @@
 
                 <TextView
                     style="@style/alltextstyle"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
@@ -111,16 +113,18 @@
 
                 <TextView
                     style="@style/alltextstyle"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
                     android:text="@string/text_list_piace"
                     android:textSize="18sp" />
+
                 <TextView
-                    android:visibility="gone"
                     style="@style/alltextstyle"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
@@ -128,7 +132,8 @@
                     android:textSize="@dimen/childPageLabelFontSize" />
                 <LinearLayout
                     android:id="@+id/re_gkm"
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border">
                     <TextView
@@ -154,7 +159,8 @@
 
                 <TextView
                     style="@style/alltextstyle"
-                    android:layout_width="fill_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"

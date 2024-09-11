@@ -35,7 +35,9 @@ import android_serialport_api.xingbang.custom.LoadAdapter;
 import android_serialport_api.xingbang.custom.LoadListView;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -49,6 +51,8 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.tencent.bugly.proguard.D;
 
 /**
  * 删除页面
@@ -322,8 +326,31 @@ public class DelDenatorMainPage extends BaseActivity  {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_all_del:
-                tipALLDelDenator();
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(DelDenatorMainPage.this);
+                builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+                View view2 = LayoutInflater.from(DelDenatorMainPage.this).inflate(R.layout.userlogindialog_deletelg, null);
+                builder.setView(view2);
+                final EditText password = view2.findViewById(R.id.password);
+                builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                    String b = password.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    if ( b.equals("123")) {
+                        tipALLDelDenator();
+//                        show_Toast(getResources().getString(R.string.text_his_scyscjl));
+                    } else {
+                        show_Toast(getResources().getString(R.string.text_mmcw));
+                    }
+                    dialog.dismiss();
+                });
+                builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+
+                builder.show();
                 break;
             case R.id.btn_error_del://删除错误雷管
                 pb_show = 1;

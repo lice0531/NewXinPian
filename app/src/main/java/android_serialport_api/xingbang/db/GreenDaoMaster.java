@@ -845,16 +845,31 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxNumDelay(int duan , String piece) {
-        int delay;
-        String sql = "select max(delay) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
-        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+//        int delay;
+//        String sql = "select max(delay) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+//        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+//
+//        if (cursor != null && cursor.moveToNext()) {
+//            delay = cursor.getInt(0);
+//            cursor.close();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: "+delay);
+//            return delay;
+//        }else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
 
-        if (cursor != null && cursor.moveToNext()) {
-            delay = cursor.getInt(0);
-            cursor.close();
-            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: "+delay);
+        // 倒叙查询
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据 该区域 最大序号 的延时
+            int delay = mList.get(0).getDelay();
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
             return delay;
-        }else {
+            // 如果没数据
+        } else {
             Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
             return 0;
         }

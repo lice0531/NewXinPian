@@ -1070,7 +1070,7 @@ public class QueryHisDetail extends BaseActivity {
                     showLoadMore();
                     dialog.dismiss();
                 });
-                builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+                builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
 
 
                 builder.show();

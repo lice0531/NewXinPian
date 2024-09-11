@@ -1585,7 +1585,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
                     .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+                    .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
                     .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -1972,12 +1972,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         //判断延时是否超出范围
         if(!flag_jh_f1||!flag_jh_f2){
             if (delay_set.equals("f1")) {
-                if (maxSecond != 0 && delay - f1 < 0) {//
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
-                if (maxSecond != 0 && delay - f2 < 0) {//
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                     return -1;
                 }
@@ -2218,9 +2218,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     delay =start_delay - delay;
                 } else {
                     if (flag_tk) {
-                        delay = delay_minNum - f1 * (tk_num + 1);
+                        delay = delay - f1 * (tk_num + 1);
                     } else {
-                        delay = delay_minNum - f1;
+                        delay = delay - f1;
                     }
 
                 }
@@ -2229,9 +2229,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     delay = start_delay - delay;
                 } else {
                     if (flag_tk) {
-                        delay = delay_minNum - f2 * (tk_num + 1);
+                        delay = delay - f2 * (tk_num + 1);
                     } else {
-                        delay = delay_minNum - f2;
+                        delay = delay - f2;
                     }
                 }
             }
@@ -2385,17 +2385,32 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         int delay_start = delay;
 
-        if (delay_set.equals("f1")) {
-            if (maxSecond != 0 && delay + f1 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
             }
-        } else if (delay_set.equals("f2")) {
-            if (maxSecond != 0 && delay + f2 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
             }
         }
+
         if (maxSecond != 0 && f1 > maxSecond) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
             return -1;
@@ -2430,24 +2445,50 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
 
-            if (delay_set.equals("f1")) {//获取最大延时有问题
-                if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else {
-                    if (flag_tk) {
-                        delay = delay + f1 * (tk_num + 1);
+            if(!flag_jh_f1||!flag_jh_f2){
+                if (delay_set.equals("f1")) {//孔间延时
+                    if (maxNo == 0) {
+                        delay =start_delay - delay;
                     } else {
-                        delay = delay + f1;
+                        if (flag_tk) {
+                            delay = delay - f1 * (tk_num + 1);
+                        } else {
+                            delay = delay - f1;
+                        }
+
+                    }
+                } else if (delay_set.equals("f2")) {//排间延时
+                    if (maxNo == 0) {
+                        delay = start_delay - delay;
+                    } else {
+                        if (flag_tk) {
+                            delay = delay - f2 * (tk_num + 1);
+                        } else {
+                            delay = delay - f2;
+                        }
                     }
                 }
-            } else if (delay_set.equals("f2")) {
-                if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else {
-                    if (flag_tk) {
-                        delay = delay_minNum + f2 * (tk_num + 1);
+            }else {
+                if (delay_set.equals("f1")) {//孔间延时
+                    if (maxNo == 0) {
+                        delay = delay + start_delay;
                     } else {
-                        delay = delay_minNum + f2;
+                        if (flag_tk) {
+                            delay = delay + f1 * (tk_num + 1);
+                        } else {
+                            delay = delay + f1;
+                        }
+
+                    }
+                } else if (delay_set.equals("f2")) {//排间延时
+                    if (maxNo == 0) {
+                        delay = delay + start_delay;
+                    } else {
+                        if (flag_tk) {
+                            delay = delay + f2 * (tk_num + 1);
+                        } else {
+                            delay = delay + f2;
+                        }
                     }
                 }
             }
