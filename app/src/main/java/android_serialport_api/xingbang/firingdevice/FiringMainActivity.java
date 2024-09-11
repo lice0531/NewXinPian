@@ -1548,7 +1548,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e("eventBus开始传送ddjc数据", "currentPeak: " + currentPeak);
             deviceStatus = "02";//等待检测
 //            EventBus.getDefault().post(new FirstEvent("ddjc", "01",currentPeak));
-            EventBus.getDefault().post(new FirstEvent("ddjc", "01"));//旧的命令
+//            EventBus.getDefault().post(new FirstEvent("ddjc", "01"));//旧的命令
             //得到电流电压信息
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//00400101获取电源状态指令
 //            sendCmd(powerCmd);
@@ -1581,14 +1581,14 @@ public class FiringMainActivity extends SerialPortActivity {
             //发送 高压输出命令
             sixCmdSerial = 2;
             deviceStatus = "04";//正在充电
-            EventBus.getDefault().post(new FirstEvent("zzcd", "01"));//准备充电//旧的命令
+//            EventBus.getDefault().post(new FirstEvent("zzcd", "01"));//准备充电//旧的命令
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
             //stage=7;
             sixCmdSerial = 3;
             Log.e(TAG, "33指令已返回,充电倒计时值twoCount:" + twoCount);
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
-            EventBus.getDefault().post(new FirstEvent("qbjg", "01"));//旧的命令
+//            EventBus.getDefault().post(new FirstEvent("qbjg", "01"));//旧的命令
             deviceStatus = "05";//起爆结束
             isGetQbResult = true;
             String fromCommad = Utils.bytesToHexFun(locatBuf);
@@ -1886,7 +1886,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    }
 //                    Log.e("eventBus开始传送"+"jcjg数据", "currentPeak: " + currentPeak);
                     deviceStatus = "03";//检测结束
-                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum + "", errNum + ""));//旧的命令
+//                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum + "", errNum + ""));//旧的命令
 //                    EventBus.getDefault().post(new FirstEvent("jcjg", "", "", allNum, errNum,currentPeak));
                     ctlLinePanel(4);//修改页面显示项
                     getErrorBlastCount();
