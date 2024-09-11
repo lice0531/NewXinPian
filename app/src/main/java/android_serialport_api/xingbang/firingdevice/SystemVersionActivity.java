@@ -19,6 +19,8 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.utils.DownloadTest;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -42,7 +44,7 @@ public class SystemVersionActivity extends SerialPortActivity {
     Button checkVersion;
     private Handler Handler_tip = null;//提示信息
     private String changjia = "TY";
-
+    Handler openHandler = new Handler();//重新打开串口
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +78,21 @@ public class SystemVersionActivity extends SerialPortActivity {
             return false;
         });
         try {
-            Thread.sleep(1500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+//        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         sendCmd(FourStatusCmd.getSoftVersion("00"));//43
+//        openHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                openSerial();
+//                sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
+//            }
+//        }, 1500);
+
     }
 
     @Override
@@ -148,6 +160,8 @@ public class SystemVersionActivity extends SerialPortActivity {
             Log.e("软件版本返回的命令", "a: "+a );
             Log.e("软件版本返回的命令", "c: "+c );
             Handler_tip.sendMessage(Handler_tip.obtainMessage(3, c));
+        }else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
+            sendCmd(FourStatusCmd.getSoftVersion("00"));//43
         }
     }
 

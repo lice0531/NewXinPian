@@ -536,17 +536,17 @@ public class SetDelayTime extends BaseActivity {
                     .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                                // TODO 开启进度条
-                                runPbDialog();
-                                new Thread(() -> {
-                                    // 删除某一发雷管
-                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
-                                    Utils.writeRecord("--删除雷管:" + shellBlastNo);
-                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
-                                    // 区域 更新视图
-                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                                    pb_show = 0;
-                                }).start();
+                            // TODO 开启进度条
+                            runPbDialog();
+                            new Thread(() -> {
+                                // 删除某一发雷管
+                                new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                                Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                                Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
+                                // 区域 更新视图
+                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                                pb_show = 0;
+                            }).start();
 
                         }
                     }).create();
@@ -565,11 +565,11 @@ public class SetDelayTime extends BaseActivity {
             }
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
-            } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip8)));
-            } else {
+            }else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
+            }  else {
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
                 // 区域 更新视图

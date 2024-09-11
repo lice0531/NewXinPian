@@ -686,7 +686,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 21000 && firstCount > 15) {//Preparation_time * 0.5
+                    if (displayIc > 21000 ) {//Preparation_time * 0.5
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
                         ll_firing_IC_4.setTextSize(20);
@@ -697,13 +697,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
-                    }else if (displayIc > (denatorCount * cankaodianliu * 2) && firstCount < Preparation_time) {//Preparation_time * 0.5
+                    }else if (displayIc > (denatorCount * cankaodianliu * 2) ) {//Preparation_time * 0.5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * 6 && firstCount < Preparation_time) {//Preparation_time * 0.5
+                    } else if (displayIc < 4 + denatorCount * 6 ) {//Preparation_time * 0.5
                         displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
@@ -1633,8 +1633,8 @@ public class TestDenatorActivity extends SerialPortActivity {
             LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
             llview.setVisibility(View.GONE);
             TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
-//            text_tip.setText(tip);
-//            text_tip.setVisibility(View.VISIBLE);
+            text_tip.setText(tip);
+            text_tip.setVisibility(View.VISIBLE);
             // 给ListView绑定内容
             ListView errlistview = getlistview.findViewById(R.id.X_listview);
             errlistview.setVisibility(View.GONE);
@@ -1644,7 +1644,6 @@ public class TestDenatorActivity extends SerialPortActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getResources().getString(R.string.text_fir_dialog2));//"错误雷管列表"
             builder.setView(getlistview);
-            builder.setMessage(tip);
             builder.setCancelable(false);
             builder.setPositiveButton(getResources().getString(R.string.text_firing_jixu), (dialog, which) -> {
                 dialogOFF(dialog);

@@ -140,9 +140,13 @@ public class QueryHisDetail extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        Log.e("上传", "changjia: "+changjia );
+
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+
+
         totalNum = getDaoSession().getDenatorHis_DetailDao().loadAll().size();//得到数据的总条数
         totalPage = (int) Math.ceil(totalNum / (float) pageSize);//通过计算得到总的页数
         if (1 == currentPage) {
@@ -305,6 +309,8 @@ public class QueryHisDetail extends BaseActivity {
         }else {
             Shangchuan="是";
         }
+        Log.e("是否上传错误雷管", "changjia: "+changjia );
+        Log.e("是否上传错误雷管", "Shangchuan: "+Shangchuan );
         Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
     }
 
@@ -1064,7 +1070,7 @@ public class QueryHisDetail extends BaseActivity {
                     showLoadMore();
                     dialog.dismiss();
                 });
-                builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+                builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
 
 
                 builder.show();

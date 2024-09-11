@@ -582,6 +582,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似断路");
                     setIcView(Color.RED);//设置颜色
+                }else if (displayIc > 30000 && stage == 6) {
+                    Log.e(TAG, "疑似短路stage: " + stage);
+                    displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                 }
 //                else if (displayIc > ( cankao_ic_gaoya *0.8) && displayIc < (cankao_ic_gaoya *0.9) && displayIc > 10 && stage == 6) {// "电流过大";
 //                    displayIcStr = displayIcStr + "电流偏低";
@@ -640,7 +645,52 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
             Log.e(TAG, "stage: "+stage );
-            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && (stage == 2 || stage == 6 )) {// "电流过大";
+            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2  ) {// "电流过大";
+                Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
+                Log.e(TAG, "stage: "+stage );
+                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+
+                duanlu_sun++;
+//                firstThread.exit = true;
+//                firstThread.interrupt();
+//                try {
+//                    firstThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                if(duanlu_sun>1){
+                    isshow2 = 1;
+                    AlertDialog dialog = new Builder(FiringMainActivity.this)
+                            .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
+                            .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
+                            //设置对话框的按钮
+                            . setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog1, which) -> {
+                                sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
+                                try {
+                                    Thread.sleep(100);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                dialog1.dismiss();
+                                closeThread();
+                                closeForm();
+                                finish();
+                            })
+                            .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog15, i) -> {
+//                            firstThread = new ThreadFirst(allBlastQu);
+//                            firstThread.exit = false;
+//                            firstThread.start();
+                                dialog15.dismiss();
+                            })
+                            .create();
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                    dialog.show();
+                }
+
+            }
+
+
+            if (isshow2 == 0 && twoCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 &&  stage == 6 ) {// "电流过大";
                 Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
                 Log.e(TAG, "stage: "+stage );
                 Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
@@ -771,18 +821,72 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
-
-//            if (save_ic && stage == 6 && busInfo.getBusVoltage()-cankao_IV<0.2&&busInfo.getBusVoltage()-cankao_IV>-0.2) {
-//                cankao_ic_gaoya = busInfo.getBusCurrentIa();//记录参考电流
-//                Log.e(TAG, "参考电流: "+ cankao_ic_gaoya);
-//                save_ic=false;
-//            }
-//            if(busInfo.getBusVoltage()>16 && twoCount>15 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) < 100&&list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 3) > -100){
-//                cankao_IV=busInfo.getBusVoltage();//记录参考电压
-//                Log.e(TAG, "参考电压: "+cankao_IV );
-//                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 1): "+list_dianliu.get(list_dianliu.size() - 1) );
-//                Log.e(TAG, "list_dianliu.get(list_dianliu.size() - 3): "+list_dianliu.get(list_dianliu.size() - 3) );
-//            }
+            busInfo.setPowerStatus("01");
+            busInfo.setPowerStatus("02");
+            busInfo.setPowerStatus("04");
+            if(busInfo.getPowerStatus().equals("01")){
+                Utils.writeRecord("电流状态低压异常");
+                closeThread();
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle(getResources().getString(R.string.text_dyyc))//设置对话框的标题//
+                        .setMessage(getResources().getString(R.string.dialog_dyyc))//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                            sendCmd(reCmd);
+                            dialog12.dismiss();
+//                                    closeThread();
+                            closeForm();
+                            finish();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
+            }
+            if(busInfo.getPowerStatus().equals("02")){
+                Utils.writeRecord("电流状态高压异常");
+                closeThread();
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle(getResources().getString(R.string.text_gyyc))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.dialog_gyyc))//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                            sendCmd(reCmd);
+                            dialog12.dismiss();
+//                                    closeThread();
+                            closeForm();
+                            finish();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
+            }
+            if(busInfo.getPowerStatus().equals("04")){
+                Utils.writeRecord("电流状态短路");
+                closeThread();
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle(getResources().getString(R.string.text_czdl))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.dialog_czdl))//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+                            sendCmd(reCmd);
+                            dialog12.dismiss();
+//                                    closeThread();
+                            closeForm();
+                            finish();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.show();
+                }
+            }
             cankao_ic_gaoya = busInfo.getBusCurrentIa();//记录参考电流
             //检测电流小于低压参考值记录一次
 
@@ -1452,6 +1556,7 @@ public class FiringMainActivity extends SerialPortActivity {
         // TODO Auto-generated method stub
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
+        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35
         closeThread();
         closeForm();
         new Thread(new Runnable() {

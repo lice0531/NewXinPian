@@ -834,7 +834,7 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PTE_V2.1_240905</string>
+    <string name="app_version_name">M900_PTE_V2.1_240829</string>
     <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
@@ -978,4 +978,13 @@
     <string name="text_xzzt">Download pause</string>
     <string name="text_xzz">Being downloaded......</string>
     <string name="text_xzsb">Download failure</string>
+    <string name="text_dyyc">Bus low voltage exception</string>
+    <string name="dialog_dyyc">The current line low voltage is abnormal, please check the line and start the detonation process again</string>
+    <string name="text_gyyc">Bus high voltage exception</string>
+    <string name="dialog_gyyc">If the current status is abnormally high voltage, check the circuit and start the detonation process again</string>
+    <string name="text_czdl">Bus short circuit</string>
+    <string name="dialog_czdl">The current line is short circuited, please check the line and start the detonation process again to detonate</string>
+    <string name="text_gy">A total of</string>
+    <string name="text_hcf">Box duplication</string>
+    <string name="text_jh">-</string>
 </resources>

@@ -585,9 +585,9 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PTE_V2.1_240905</string>//通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_240905</string>//华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_240905</string>//重庆
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PTE_V2.1_240829</string>//通用
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_240829</string>//华丰/金建华(新疆客户)
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_240829</string>//重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
     <string name="text_main_dfzc">1.单发检测</string>
@@ -987,5 +987,13 @@
     <string name="text_xzzt">下载暂停</string>
     <string name="text_xzz">正在下载中......</string>
     <string name="text_xzsb">下载失败</string>
-
+    <string name="text_dyyc">总线低压异常</string>
+    <string name="dialog_dyyc">当前线路低压异常,请检查线路后再次启动起爆流程,进行起爆</string>
+    <string name="text_gyyc">总线高压异常</string>
+    <string name="dialog_gyyc">电流状态高压异常,请检查线路后再次启动起爆流程,进行起爆</string>
+    <string name="text_czdl">总线存在短路</string>
+    <string name="dialog_czdl">当前线路短路,请检查线路后再次启动起爆流程,进行起爆</string>
+    <string name="text_gy">共有</string>
+    <string name="text_hcf">盒重复</string>
+    <string name="text_jh">减号</string>
 </resources>
