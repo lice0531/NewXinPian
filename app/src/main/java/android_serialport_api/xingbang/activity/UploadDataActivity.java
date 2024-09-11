@@ -280,34 +280,17 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //        }
 //    }
 
-    private ExecutorService executor;
     // 递归方法，逐个上传数据
     private void uploadNextMoni(List<String> stringList, int index) {
-//        executor = Executors.newFixedThreadPool(4); // 在循环外部创建线程池
-        Log.e(TAG, "模拟大量数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
+        Log.e(TAG, "1111模拟大量数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
         if (index >= stringList.size()) {
-//            pb_show = 0;
-//            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            uploadIndexMoni = 0;//重置上传下标
+            pb_show = 0;
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
             Log.e(TAG, "模拟大量数据一键上传--所有数据已全部上传");
             show_Toast("上传已结束");
-            // 等待所有任务完成后关闭线程池
-//            executor.shutdown();
-//            try {
-//                if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-//                    executor.shutdownNow();
-//                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-//                        Log.e(TAG, "线程池未能正常关闭");
-//                    }
-//                }
-//            } catch (InterruptedException e) {
-//                executor.shutdownNow();
-//                Thread.currentThread().interrupt();
-//            }
             return;
         }
-        Log.e(TAG, "isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
-//        executor.submit(() -> {
-        Log.e(TAG, "threadpool start");
         String data = stringList.get(index);
         ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
             @Override
@@ -319,27 +302,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                             uploadMoniQbData(dateTimeList.get(uploadIndexMoni));
                         } catch (Exception e) {
                             Log.e(TAG, "threadpool error", e);
-//                            executor.shutdownNow();
-//                            Thread.currentThread().interrupt();
                         }
                     }
                 }
             }
         });
-//        for (int i = 0; i < stringList.size(); i++) {
-//            if (data.equals(stringList.get(i))) {
-//                try {
-//                    // 执行具体任务，例如上传数据
-//                    uploadMoniQbData();
-//                } catch (Exception e) {
-//                    Log.e(TAG, "threadpool error", e);
-//                    executor.shutdownNow();
-//                    Thread.currentThread().interrupt();
-//                }
-//            }
-//        }
-//        Log.e(TAG, "threadpool finish");
-//        });
     }
 
     private void uploadMoniQbData(String dataTime) {
@@ -354,24 +321,35 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void run() {
                 try {
-//        pb_show = 1;
-//        mHandler_2.sendMessage(mHandler_2.obtainMessage());
-//        runPbDialog();//loading画面
-//        if (server_type1.equals("1")) {
-                    // "sbbh", "F60C7002222"//起爆器设备编号XBTS0003
-//            "jd", "120.498324"//经度
-//            "wd", "30.354008"//纬度
-//            "uid", "3830422489602"//雷管uid
-//            "xmbh", ""//项目编号370101318060006
-//            "htid", "370101318060045"//合同编号370100X15040027
-//            "dwdm", ""//单位代码
-//            uploadMoni(dataTime, uploadIndexMoni, "370101318060045", "120.498324", "30.354008", "", "");//丹灵上传信息
-//        }
-//        if (server_type2.equals("2")) {
-//            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
-//        }
+                    pb_show = 1;
+//                    runPbDialog();//loading画面
+                    if (server_type1.equals("1")) {
+//                        "sbbh", "F60C7002222"//起爆器设备编号XBTS0003
+//                        "jd", "120.498324"//经度
+//                        "wd", "30.354008"//纬度
+//                        "uid", "3830422489602"//雷管uid
+//                        "xmbh", ""//项目编号370101318060006
+//                        "htid", "370101318060045"//合同编号370100X15040027
+//                        "dwdm", ""//单位代码
+                        uploadMoni(dataTime, uploadIndexMoni, "", "117.0274", "36.6748", "370100X15040027", "");//丹灵上传信息
+                    }
+                    if (server_type2.equals("2")) {
+                        performUp(dataTime, uploadIndexMoni, "", "117.0274", "36.6748");//中爆上传
+                    }
                     upload_xingbang_moni(dataTime, uploadIndexMoni, "", "", "", "", "", "", "");//我们自己的网址
                     //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+                    //等待一段时间
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Message msg = new Message();
+                    msg.what = 6;
+                    UploadResult result = new UploadResult();
+                    isDlUploadSuccess = 200;
+                    msg.obj = result;
+                    mHandler_tip.sendMessage(msg);
                 } catch (
                         Exception e) {
                     Log.e(TAG, "起爆数据上传异常--异常信息为：" + e.getMessage());
@@ -535,63 +513,33 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             switch (msg.what){
                 case 1:
                     show_Toast("网络请求失败,请检查网络正确连接后,再次上传");
-                    Message m1 = mHandler_tip.obtainMessage();
-                    m1.what = 6;
-                    UploadResult result = new UploadResult();
-                    result.setDlReslut(201);
-                    m1.obj = result;
-                    mHandler_tip.sendMessage(m1);
                     Log.e(TAG,"丹灵上传失败，错误信息:网络请求失败,请检查网络正确连接后,再次上传");
                     break;
                 case 2:
-                    Message m2 = mHandler_tip.obtainMessage();
-                    m2.what = 6;
-                    UploadResult re1 = new UploadResult();
-                    re1.setDlReslut(200);
-                    m2.obj = re1;
-                    mHandler_tip.sendMessage(m2);
-                    Log.e(TAG,"丹灵上传成功");
                     show_Toast("丹灵上传成功");
+                    Log.e(TAG,"丹灵上传成功");
                     break;
                 case 3:
-                    Message m3 = mHandler_tip.obtainMessage();
-                    m3.what = 6;
-                    UploadResult re2 = new UploadResult();
-                    re2.setDlReslut(201);
-                    m3.obj = re2;
-                    mHandler_tip.sendMessage(m3);
-                    show_Toast("错误信息:" + msg.obj.toString());
-                    Log.e(TAG,"丹灵上传失败，错误信息:" + msg.obj.toString());
+                    show_Toast("错误信息:" + msg.obj);
                     break;
                 case 4:
-                    Message m4 = mHandler_tip.obtainMessage();
-                    m4.what = 6;
-                    UploadResult re3 = new UploadResult();
-                    re3.setDlReslut(201);
-                    m4.obj = re3;
-                    mHandler_tip.sendMessage(m4);
-                    show_Toast("上传失败，起爆器未备案或未设置作业任务");
-                    Log.e(TAG,"丹灵上传失败，错误信息:起爆器未备案或未设置作业任务");
+                    show_Toast("起爆器未备案或未设置作业任务");
+
                     break;
                 case 5:
-                    Message m5 = mHandler_tip.obtainMessage();
-                    m5.what = 6;
-                    UploadResult re4 = new UploadResult();
-                    re4.setDlReslut(201);
-                    m5.obj = re4;
-                    mHandler_tip.sendMessage(m5);
                     show_Toast(msg.obj.toString());
-                    Log.e(TAG,"丹灵上传失败，错误信息:" + msg.obj.toString());
                     break;
                 case 6:
                     UploadResult rt = (UploadResult) msg.obj;
-                    isDlUploadSuccess = rt.getDlReslut();
-                    isXbUploadSuccess = rt.getXbResult();
+//                    isDlUploadSuccess = rt.getDlReslut();
+//                    isXbUploadSuccess = rt.getXbResult();
                     Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
                             "--isXbUploadSuccess:" + isXbUploadSuccess);
-                    if (isDlUploadSuccess == 200 || isXbUploadSuccess == 200) {
-//                        uploadIndex ++;
-//                        uploadNext(dateList,uploadIndex);
+                    if (isDlUploadSuccess == 200 && isXbUploadSuccess == 200) {
+                        isDlUploadSuccess = 0;
+                        isXbUploadSuccess = 0;
+                        uploadIndex ++;
+                        uploadNext(dateList,uploadIndex);
                         uploadIndexMoni ++;
                         uploadNextMoni(stringList,uploadIndexMoni);
                         Log.e(TAG,"当前第" + uploadIndexMoni + "条已上传成功");
@@ -679,6 +627,18 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
         }
         upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+        //等待一段时间
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Message msg = new Message();
+        msg.what = 6;
+        UploadResult result = new UploadResult();
+        isDlUploadSuccess = 200;
+        msg.obj = result;
+        mHandler_tip.sendMessage(msg);
     }
 
     public void hideInputKeyboard() {
@@ -1006,7 +966,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         JSONObject object = new JSONObject();
         String xy[] = pro_coordxy.split(",");//经纬度
         try {
-            object.put("sbbh", "F60C7002222");//起爆器设备编号
+            object.put("sbbh", "F76A6001");//起爆器设备编号
             if (jd != null) {
                 object.put("jd", jd);//经度
             } else {
@@ -1023,11 +983,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 object.put("htid", pro_htid);//合同编号
             }
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
-            object.put("bprysfz", "370101787000000000");//人员身份证
+            object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", stringList.get(uploadIndexMoni));//雷管uid
-            object.put("dwdm", "");//单位代码
-            object.put("xmbh", "");//项目编号
-            Log.e(TAG + "丹灵上传信息", object.toString());
+            object.put("dwdm", pro_dwdm);//单位代码
+            object.put("xmbh", xmbh);//项目编号
+            Log.e(TAG + "模拟上传--丹灵上传信息", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1045,7 +1005,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG + "丹灵上传失败", "IOException: " + e);
+                Log.e(TAG + "模拟上传--丹灵上传失败", "IOException: " + e);
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             }
 
@@ -1054,46 +1014,41 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 JSONObject object;
                 try {
                     if (!server_type2.equals("2")) {
-//                        pb_show = 0;
-//                        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+                        pb_show = 0;
+                        mHandler_2.sendMessage(mHandler_2.obtainMessage());
                     }
                     object = new JSONObject(response.body().string());
                     String success = object.getString("success");
                     if (success.equals("true")) {
-                        Message msg = new Message();
-                        msg.what = 6;
-                        UploadResult result = new UploadResult();
-                        result.setDlReslut(200);
-                        msg.obj = result;
-                        mHandler_tip.sendMessage(msg);
-                        Log.e(TAG + "丹灵上传成功", "丹灵返回: " + object.toString());
+                        Log.e(TAG + "模拟上传--丹灵上传成功", "丹灵返回: " + object.toString());
+                        isDlUploadSuccess=200;
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
                         mHandler_update_moni.sendMessage(message);
                         if (!server_type2.equals("2")) {
-//                            pb_show = 0;
-//                            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+                            pb_show = 0;
+                            mHandler_2.sendMessage(mHandler_2.obtainMessage());
                         }
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
                     } else if (success.equals("fail")) {
-                        Log.e(TAG + "丹灵上传失败", "丹灵返回: " + object.toString());
+                        Log.e(TAG + "模拟上传--丹灵上传失败", "丹灵返回: " + object.toString());
                         String cwxx = object.getString("cwxx");
                         if (cwxx.equals("1")) {
-                            Log.e(TAG,"丹灵上传错误，handler:3");
+                            Log.e(TAG,"模拟上传--丹灵上传错误，handler:3--cwxx:" + cwxx);
                             Message msg = new Message();
                             msg.what = 3;
                             msg.obj = cwxx;
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                         } else if (cwxx.equals("2")) {
-                            Log.e(TAG,"丹灵上传错误，handler:4");
+                            Log.e(TAG,"丹灵上传错误，handler:4--cwxx:" + cwxx);
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
                         } else {
                             Message msg = new Message();
                             msg.what = 5;
                             msg.obj = cwxx;
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
-                            Log.e(TAG,"丹灵上传错误，handler:5");
+                            Log.e(TAG,"丹灵上传错误，handler:5--cwxx:" + cwxx);
                         }
                     }
                 } catch (JSONException e) {
@@ -1178,16 +1133,9 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-//                pb_show = 0;
-//                mHandler_2.sendMessage(mHandler_2.obtainMessage());
+                pb_show = 0;
                 Log.e(TAG + "丹灵上传失败", "IOException: " + e);
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
-//                Message message = new Message();
-//                message.what = 6;
-//                UploadResult result = new UploadResult();
-//                result.setDlReslut(201);
-//                message.obj = result;
-//                mHandler_tip.sendMessage(message);
             }
 
             @Override
@@ -1201,19 +1149,14 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     object = new JSONObject(response.body().string());
                     String success = object.getString("success");
                     if (success.equals("true")) {
-                        Message msg = new Message();
-                        msg.what = 6;
-                        UploadResult result = new UploadResult();
-                        result.setDlReslut(200);
-                        msg.obj = result;
-                        mHandler_tip.sendMessage(msg);
+                        isDlUploadSuccess = 200;
                         Log.e(TAG + "丹灵上传成功", "丹灵返回: " + object.toString());
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
                         mHandler_update.sendMessage(message);
                         if (!server_type2.equals("2")) {
-//                            pb_show = 0;
+                            pb_show = 0;
 //                            mHandler_2.sendMessage(mHandler_2.obtainMessage());
                         }
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
@@ -1382,33 +1325,18 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-//                pb_show = 0;
+                pb_show = 0;
 //                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
                 Utils.writeRecord("模拟3000条上传测试--煋邦网络上传错误-IOException:" + e);
-                Message msg = new Message();
-                msg.what = 6;
-                UploadResult result = new UploadResult();
-                result.setXbResult(201);
-                msg.obj = result;
-                mHandler_tip.sendMessage(msg);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
                 Utils.writeRecord("煋邦网络上传成功-IOException:" + response.toString());
-                Message msg = new Message();
-                msg.what = 6;
-                UploadResult result = new UploadResult();
-                result.setXbResult(200);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                msg.obj = result;
-                mHandler_tip.sendMessage(msg);
+                pb_show = 0;
+                isXbUploadSuccess = 200;
             }
         });
     }
@@ -1469,12 +1397,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
-            object2.put("param", json.trim());
+            object2.put("param", json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e(TAG,"加密后的json入参:" + json.trim());
-        Utils.writeRecord("煋邦上传加密后的json入参:" + json.trim());
+        Log.e(TAG,"加密后的json入参:" + json);
+        Utils.writeRecord("煋邦上传加密后的json入参:" + json);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = FormBody.create(JSON, object2.toString());
         Request request = new Request.Builder()
@@ -1486,44 +1414,19 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-//                pb_show = 0;
+                pb_show = 0;
 //                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
                 Utils.writeRecord("煋邦网络上传错误-IOException:" + e);
-                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
-                Message msg = new Message();
-                msg.what = 6;
-                UploadResult result = new UploadResult();
-                result.setXbResult(201);
-                msg.obj = result;
-                mHandler_tip.sendMessage(msg);
-//                Message message = new Message();
-//                message.obj = blastdate;
-//                message.arg1 = pos;
-//                mHandler_update.sendMessage(message);
+//                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
                 Utils.writeRecord("煋邦网络上传成功-IOException:" + response.toString());
-//                pb_show = 0;
-//                mHandler_2.sendMessage(mHandler_2.obtainMessage());
-                Message msg = new Message();
-                msg.what = 6;
-                UploadResult result = new UploadResult();
-                result.setXbResult(200);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                msg.obj = result;
-                mHandler_tip.sendMessage(msg);
-//                Message message = new Message();
-//                message.obj = blastdate;
-//                message.arg1 = pos;
-//                mHandler_update.sendMessage(message);
+                pb_show = 0;
+                isXbUploadSuccess = 200;
             }
         });
     }
@@ -1565,9 +1468,6 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (tipDlg != null) {
             tipDlg.dismiss();
             tipDlg = null;
-        }
-        if (executor != null) {
-            executor.shutdown();
         }
         super.onDestroy();
     }
