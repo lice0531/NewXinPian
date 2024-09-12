@@ -1273,7 +1273,7 @@ public class FiringMainActivity extends SerialPortActivity {
         String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
         DenatorHis_Main his = new DenatorHis_Main();
         his.setBlastdate(fireDate);
-        his.setUploadStatus("未上传");
+        his.setUploadStatus("未传");
         his.setRemark("已起爆");
         his.setEqu_no(equ_no);
         his.setUserid(qbxm_name);
@@ -1335,7 +1335,7 @@ public class FiringMainActivity extends SerialPortActivity {
         maxNo++;
         String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
         values.put("blastdate", fireDate);
-        values.put("uploadStatus", "未上传");
+        values.put("uploadStatus", "未传");
         values.put("longitude", "0");
         values.put("latitude", "0");
         values.put("remark", "已起爆");

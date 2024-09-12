@@ -1098,6 +1098,17 @@ public class GreenDaoMaster {
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
 
     /**
      * 查询生产库中雷管

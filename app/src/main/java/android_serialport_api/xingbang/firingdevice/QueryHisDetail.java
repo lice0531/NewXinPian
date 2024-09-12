@@ -306,13 +306,14 @@ public class QueryHisDetail extends BaseActivity {
                     Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
                             "--isXbUploadSuccess:" + isXbUploadSuccess);
                     if (isDlUploadSuccess == 200 && isXbUploadSuccess == 200) {
-                        isDlUploadSuccess=0;
-                        isXbUploadSuccess=0;
+                        //准备丹灵和煋邦都传成功,再更新按钮颜色(未完成)
                         uploadIndex ++;
-                        uploadNext(dateList,uploadIndex);
 //                        uploadIndexMoni ++;
 //                        uploadNextMoni(stringList,uploadIndexMoni);
                     }
+                    isDlUploadSuccess=0;
+                    isXbUploadSuccess=0;
+                    uploadNext(dateList,uploadIndex);
                     break;
                 case 7:
                     String res = (String) msg.obj;
@@ -339,7 +340,7 @@ public class QueryHisDetail extends BaseActivity {
             updataState(result + "");//更新上传状态
             updataState_sq_dl(result + "");
             int pos = msg.arg1;
-            list_savedate.get(pos).setUploadStatus("已上传");
+            list_savedate.get(pos).setUploadStatus("已传");
 //            hisAdapter.setDataSource(list_savedate);
 //            showLoadMore();
             hisAdapter.notifyItemChanged(pos);
@@ -418,7 +419,7 @@ public class QueryHisDetail extends BaseActivity {
     public void updataState_sq_dl(String blastdate) {
         Log.e("更新起爆状态-丹灵", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("dl_state", "已上传");
+        values.put("dl_state", "已传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
@@ -429,7 +430,7 @@ public class QueryHisDetail extends BaseActivity {
     public void updataState_sq_zb(String blastdate, int pos) {
         Log.e("更新起爆状态-中爆", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("zb_state", "已上传");
+        values.put("zb_state", "已传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
 
@@ -629,7 +630,7 @@ public class QueryHisDetail extends BaseActivity {
     public void updataState(String blastdate) {
         Log.e("更新起爆状态", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("uploadStatus", "已上传");
+        values.put("uploadStatus", "已传");
         db.update(DatabaseHelper.TABLE_NAME_HISMAIN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把闪存中的数据存入磁盘中
     }
@@ -1029,7 +1030,7 @@ public class QueryHisDetail extends BaseActivity {
             case R.id.tv_upload:
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(QueryHisDetail.this);
                 builder2.setTitle("上传提示");//"请输入用户名和密码"
-                View view2 = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                View view2 = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_upload, null);
                 builder2.setView(view2);
                 final EditText password2 = view2.findViewById(R.id.password);
                 builder2.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
@@ -1144,7 +1145,7 @@ public class QueryHisDetail extends BaseActivity {
                         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
                         GreenDaoMaster master = new GreenDaoMaster();
                         for (DenatorHis_Main his : list) {
-                            if (his.getUploadStatus().equals("已上传")) {
+                            if (his.getUploadStatus().equals("已传")) {
                                 master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
                                 master.deleteForHis(his.getBlastdate());
                                 master.deleteForDetail(his.getBlastdate());

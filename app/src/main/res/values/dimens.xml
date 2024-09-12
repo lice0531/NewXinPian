@@ -32,8 +32,8 @@
     <dimen name="childSimpleSpecRowHeight">50dp</dimen>
     <dimen name="childSimpleCheckReisterRowHeight">36dp</dimen>
 
-    <dimen name="main_BT_Height">70dp</dimen>
-    <dimen name="main_BT_Width">150dp</dimen>
+    <dimen name="main_BT_Height">80dp</dimen>
+    <dimen name="main_BT_Width">160dp</dimen>
 
     <dimen name="setenv_BT_Height">50dp</dimen>
     <dimen name="setenv_BT_Width">120dp</dimen>

@@ -76,7 +76,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
     private List<ShouQuanData> mList = new ArrayList<>();
     private Handler mHandler_UI = new Handler();     // UI处理
-    private String sqrq;
+    private String sqrq="";
     private static final int STATE_DEFAULT = 0;//默认状态
     private static final int STATE_EDIT = 1;//编辑状态
     private int mEditMode = STATE_DEFAULT;
@@ -94,7 +94,10 @@ public class SouSuoSQActivity extends BaseActivity {
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        sqrq = bundle.getString("sqrq");
+        if(bundle!= null){
+            sqrq = bundle.getString("sqrq");
+        }
+
 //        long time = (long) 5 * 86400000;
 //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 //        String format2 = simpleDateFormat.format(sqrq);
@@ -105,6 +108,27 @@ public class SouSuoSQActivity extends BaseActivity {
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
         re_ss.setLayoutManager(linearLayoutManager);
         re_ss.setAdapter(mAdapter2);
+        if(sqrq.equals("")){
+            mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+            mList.clear();
+            Log.e("加载", "mListData.size(): " + mListData.size());
+            for (DetonatorTypeNew item : mListData) {
+                ShouQuanData shouQuanData = new ShouQuanData();
+                shouQuanData.setId(item.getId());
+                shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                shouQuanData.setDetonatorId(item.getDetonatorId());
+                shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                shouQuanData.setCong_yscs(item.getCong_yscs());
+                shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                shouQuanData.setQibao(item.getQibao());
+                shouQuanData.setTime(item.getTime());
+                if (!mList.contains(shouQuanData)) {
+                    mList.add(shouQuanData);
+                }
+            }
+            mAdapter2.setNewData(mList);
+            mAdapter2.notifyDataSetChanged();
+        }
 
         mHandler_UI = new Handler(msg -> {
             switch (msg.what) {
@@ -117,7 +141,7 @@ public class SouSuoSQActivity extends BaseActivity {
                         show_Toast("未找到当前雷管");
                     }
                     mList.clear();
-                    Log.e("加载", "mListData.size(): " + mListData.size());
+                    Log.e("加载单个项目", "mListData.size(): " + mListData.size());
                     for (DetonatorTypeNew item : mListData) {
                         ShouQuanData shouQuanData = new ShouQuanData();
                         shouQuanData.setId(item.getId());
@@ -150,6 +174,33 @@ public class SouSuoSQActivity extends BaseActivity {
                     } catch (Exception e) {
                         show_Toast("排序失败!");
                     }
+                    break;
+                case 5:
+                    Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
+                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString());
+                    Log.e("查询", "mListData: " + mListData.toString());
+                    if (mListData.size() == 0) {
+                        show_Toast("未找到当前雷管");
+                    }
+                    mList.clear();
+                    Log.e("加载全部项目", "mListData.size(): " + mListData.size());
+                    for (DetonatorTypeNew item : mListData) {
+                        ShouQuanData shouQuanData = new ShouQuanData();
+                        shouQuanData.setId(item.getId());
+                        shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                        shouQuanData.setDetonatorId(item.getDetonatorId());
+                        shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                        shouQuanData.setCong_yscs(item.getCong_yscs());
+                        shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                        shouQuanData.setQibao(item.getQibao());
+                        shouQuanData.setTime(item.getTime());
+                        if (!mList.contains(shouQuanData)) {
+                            mList.add(shouQuanData);
+                        }
+                    }
+                    mAdapter2.setNewData(mList);
+                    mAdapter2.notifyDataSetChanged();
+                    hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 7:
                     show_Toast("数据异常,请检查雷管厂家是否正确");
@@ -249,10 +300,15 @@ public class SouSuoSQActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ss_btn_ss:
+
                 String gkm = edit_gkm.getText().toString();
                 Message msg = new Message();
-                msg.what = 1;
                 msg.obj = gkm;
+                if(sqrq.equals("")){
+                    msg.what = 5;//全局搜索
+                }else {
+                    msg.what = 1;//单个项目搜索
+                }
                 mHandler_UI.sendMessage(msg);
                 break;
             case R.id.ss_btn_px:

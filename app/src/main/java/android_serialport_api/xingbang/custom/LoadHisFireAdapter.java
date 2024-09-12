@@ -88,7 +88,7 @@ public class LoadHisFireAdapter extends BaseAdapter implements OnClickListener {
 //        }else {
 //            viewHolder.bt_upload.setVisibility(View.VISIBLE);
 //        }
-        if("未上传".equals(list_his.get(position).getUploadStatus())){
+        if("未传".equals(list_his.get(position).getUploadStatus())){
         	viewHolder.txtstatus.setText(mContext.getString(R.string.text_query_up));	//"未上传"
         	viewHolder.bt_upload.setText(mContext.getString(R.string.text_query_uploda));//"上传"
             viewHolder.ly_his.setBackgroundResource(R.drawable.textview_border_green);

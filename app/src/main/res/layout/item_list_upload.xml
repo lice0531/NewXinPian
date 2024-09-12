@@ -83,7 +83,7 @@
                         style="@style/alltextstyle"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:text="未上传"
+                        android:text="未传"
                         android:textColor="@color/white" />
                 </LinearLayout>
 
@@ -104,7 +104,7 @@
                         style="@style/alltextstyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="未上传"
+                        android:text="未传"
                         android:textColor="@color/white" />
                 </LinearLayout>
 

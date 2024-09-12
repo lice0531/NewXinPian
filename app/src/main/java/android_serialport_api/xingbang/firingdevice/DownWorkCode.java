@@ -299,6 +299,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         setSupportActionBar(findViewById(R.id.toolbar));
         //         获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        Log.e("区域", "mRegion: "+mRegion );
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         loadMoreData_sq();
@@ -509,17 +510,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     for (int i = 0; i < mListData.size(); i++) {
                         list_uid.add(mListData.get(i).getShellBlastNo());
                     }
-                   if(mRegion1){
-                       mRegion="1";
-                   }else if(mRegion2){
-                       mRegion="2";
-                   }else if(mRegion3){
-                       mRegion="3";
-                   }else if(mRegion4){
-                       mRegion="4";
-                   }else if(mRegion5){
-                       mRegion="5";
-                   }
+
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     break;
@@ -1226,10 +1217,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     protected void onStart() {
         hideInputKeyboard();
-        btnDownReturn.setFocusable(true);
-        btnDownReturn.setFocusableInTouchMode(true);
-        btnDownReturn.requestFocus();
-        btnDownReturn.findFocus();
+
         super.onStart();
     }
 
@@ -1692,33 +1680,38 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         int position = (int) v.getTag();
         switch (v.getId()) {
             case R.id.btn_del_sq://删除按钮
-                TextView textview = new TextView(this);
-                textview.setTextSize(25);
-                textview.setTextColor(Color.RED);
-                textview.setText("请确认是否删除所选授权信息,点击确认删除!");
-                textview.setTypeface(null, Typeface.BOLD);
-                AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题
-                        .setView(textview)
-                        //设置对话框的按钮
-                        .setPositiveButton("确认", (dialog3, which) -> {
-                            dialog3.dismiss();
-                            delShouQuan(map_dl.get(position).get("id").toString());//删除方法
-                            GreenDaoMaster master = new GreenDaoMaster();
-                            master.deleteTypeLeiGuanFroTime(map_dl.get(position).get("spare2").toString());
-                            if (map_dl != null && map_dl.size() > 0) {//移除map中的值
-                                map_dl.remove(position);
-                            }
-                            mAdapter_sq.notifyDataSetChanged();
-                        })
-                        .setNeutralButton("取消", (dialog3, which) -> {
-                            dialog3.dismiss();
-                        })
-                        .create();
-                dialog2.show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(DownWorkCode.this);
+                builder.setTitle("删除提示");//"请输入用户名和密码"
+                View view = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_down, null);
+                final TextView tip = view.findViewById(R.id.text_down);
+                final EditText password = view.findViewById(R.id.password);
+                tip.setText("请输入密码后,再进行删除授权操作");
+                builder.setView(view);
+                builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                    String b = password.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    if ( b.equals("123")) {
+                        delShouQuan(map_dl.get(position).get("id").toString());//删除方法
+                        GreenDaoMaster master = new GreenDaoMaster();
+                        master.deleteTypeLeiGuanFroTime(map_dl.get(position).get("spare2").toString());
+                        if (map_dl != null && map_dl.size() > 0) {//移除map中的值
+                            map_dl.remove(position);
+                        }
+                        mAdapter_sq.notifyDataSetChanged();
+                        show_Toast("已删除授权记录");
+                    } else {
+                        show_Toast("密码错误");
+                    }
+                    dialog.dismiss();
+                });
+                builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
 
 
-
+                builder.show();
 
                 break;
             case R.id.ly_sq://
@@ -1747,8 +1740,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         values.put("json", json);
         values.put("errNum", errNum);
         values.put("qbzt", "未爆破");
-        values.put("dl_state", "未上传");
-        values.put("zb_state", "未上传");
+        values.put("dl_state", "未传");
+        values.put("zb_state", "未传");
         values.put("spare1", name);//项目名称
         values.put("spare2", yxq);//下载日期
         values.put("total", list_uid.size());//总数
@@ -1775,8 +1768,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         sq.setHtbh(htbh);
         sq.setJson(json);
         sq.setQbzt("未爆破");
-        sq.setDl_state("未上传");
-        sq.setZb_state("未上传");
+        sq.setDl_state("未传");
+        sq.setZb_state("未传");
         sq.setSpare1(name);
         sq.setBprysfz(at_bprysfz.getText().toString().trim());
         sq.setCoordxy(coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));
@@ -2445,20 +2438,33 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mRegion = String.valueOf(item.getOrder());
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, mRegion);
         switch (item.getItemId()) {
-
             case R.id.item_1:
-                choiceQuYu_danxuan();
-                return true;
             case R.id.item_2:
+            case R.id.item_3:
+            case R.id.item_4:
+            case R.id.item_5:
+                mRegion = String.valueOf(item.getOrder());
+                // 区域 更新视图
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                // 显示提示
+                show_Toast(getString(R.string.text_reister_tip4)+ mRegion);
+                // 延时选择重置
+//                resetView();
+//                delay_set = "0";
+//                //初始化雷管数量
+//                mHandler_showNum_all.sendMessage(mHandler_showNum_all.obtainMessage());
+                return true;
+            case R.id.item_6:
                 AlertDialog.Builder builder = new AlertDialog.Builder(DownWorkCode.this);
                 builder.setTitle("删除提示");//"请输入用户名和密码"
-                View view = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_delete, null);
-                builder.setView(view);
+                View view = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_down, null);
+                final TextView tip = view.findViewById(R.id.text_down);
                 final EditText password = view.findViewById(R.id.password);
+                tip.setText("请输入密码后,再进行清空授权操作");
+                builder.setView(view);
                 builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
 
                     String b = password.getText().toString().trim();
@@ -2470,7 +2476,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         GreenDaoMaster.delAllMessage();//清空数据
                         GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
                         mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
-                        show_Toast("已清空下载记录");
+                        show_Toast("已清空授权记录");
                     } else {
                         show_Toast("密码错误");
                     }
@@ -2504,7 +2510,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         getSupportActionBar().setTitle(mOldTitle + str);
 
         totalbar_title.setText(mOldTitle + str);
-        Log.e("liyi_Region", "已选择" + str);
+        Log.e("设置标题区域_Region", "已选择" + str);
     }
 
     /**

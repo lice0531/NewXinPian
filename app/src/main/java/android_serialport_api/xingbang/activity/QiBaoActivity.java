@@ -1192,7 +1192,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
         DenatorHis_Main his = new DenatorHis_Main();
         his.setBlastdate(fireDate);
-        his.setUploadStatus("未上传");
+        his.setUploadStatus("未传");
         his.setRemark("已起爆");
         his.setEqu_no(equ_no);
         his.setUserid(qbxm_name);

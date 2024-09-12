@@ -2635,7 +2635,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.btn_input://改为授权注册
-                startActivity(new Intent(ReisterMainPage_scan.this, DownWorkCode.class));
+                startActivity(new Intent(ReisterMainPage_scan.this, SouSuoSQActivity.class));
 
 //                if (llStart.getVisibility() == View.GONE) {
 //                    llEnd.setVisibility(View.VISIBLE);
@@ -2749,12 +2749,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnSingleReister.setText("正在注册");
                     isSingleReisher=false;
                     lyXinxi.setVisibility(View.VISIBLE);
+                    btnSingleReister.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                     show_Toast(getString(R.string.text_line_tip1));
                     sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
                 }else {
                     btnSingleReister.setText("单发注册");
                     lyXinxi.setVisibility(View.GONE);
                     isSingleReisher=true;
+                    btnSingleReister.setBackgroundResource(R.drawable.bt_mainpage_style);
                     sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
                 }
 
@@ -3496,7 +3498,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mRegion = String.valueOf(item.getOrder());
+
 
         switch (item.getItemId()) {
 
@@ -3505,6 +3507,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.item_3:
             case R.id.item_4:
             case R.id.item_5:
+                mRegion = String.valueOf(item.getOrder());
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示

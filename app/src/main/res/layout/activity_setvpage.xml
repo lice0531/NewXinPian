@@ -130,6 +130,7 @@
             android:showDividers="middle">
 
             <Button
+                android:visibility="invisible"
                 android:id="@+id/btn_set_ver"
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"

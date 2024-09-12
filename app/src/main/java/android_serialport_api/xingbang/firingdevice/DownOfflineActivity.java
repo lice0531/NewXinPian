@@ -372,8 +372,8 @@ public class DownOfflineActivity extends BaseActivity {
         values.put("json", json);
         values.put("errNum", errNum);
         values.put("qbzt", "未爆破");
-        values.put("dl_state", "未上传");
-        values.put("zb_state", "未上传");
+        values.put("dl_state", "未传");
+        values.put("zb_state", "未传");
         values.put("spare1", name);
         values.put("spare2", yxq);//申请日期 yxq.substring(0, 10)
         values.put("total", toal);//总数

@@ -181,7 +181,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
     public void updataState(String blastdate) {
         Log.e("更新起爆状态", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("uploadStatus", "已上传");
+        values.put("uploadStatus", "已传");
         db.update(DatabaseHelper.TABLE_NAME_HISMAIN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
@@ -192,7 +192,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
     public void updataState_sq_dl(String blastdate) {
         Log.e("更新起爆状态", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("dl_state", "已上传");
+        values.put("dl_state", "已传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
@@ -204,7 +204,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
 
         Log.e("更新起爆状态", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("zb_state", "已上传");
+        values.put("zb_state", "已传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
@@ -215,7 +215,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
     public void updataState_sq_zb_huanyuan(String blastdate) {
         Log.e("更新起爆状态", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("zb_state", "未上传");
+        values.put("zb_state", "未传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
@@ -516,7 +516,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
                 if (updata(blastdate, htid, jd, wd).equals("0")) {//updata是上传中爆网方法成功返回0
                     updataState(blastdate);
                     updataState_sq_zb(blastdate);
-                    list_message.get(position).put("zb_state", "已上传");
+                    list_message.get(position).put("zb_state", "已传");
                     Message message = new Message();
                     message.obj = blastdate;
                     message.arg1 = position;
@@ -638,7 +638,7 @@ public class UploadMessageActivity extends BaseActivity implements AdapterView.O
                     String success = object.getString("success");
                     if (success.equals("true")) {
                         updataState_sq_dl(blastdate);
-                        list_message.get(pos).put("dl_state", "已上传");
+                        list_message.get(pos).put("dl_state", "已传");
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;

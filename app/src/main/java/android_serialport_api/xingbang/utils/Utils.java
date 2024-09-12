@@ -727,7 +727,7 @@ public class Utils {
 
     public static String getDateFormatLong(Date date) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss:SSS");
+        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         String dateString = formatter.format(date);
 
         return dateString;

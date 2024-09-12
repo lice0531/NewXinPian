@@ -113,7 +113,7 @@ public class QueryHisDetail_all extends BaseActivity implements LoadListView.OnL
         item.setLongitude("");
         item.setRemark("");
         item.setSerialNo("");
-        item.setUploadStatus("未上传");
+        item.setUploadStatus("未传");
         item.setUserid("");
         item.setId("");
         list.add(item);
@@ -150,7 +150,7 @@ public class QueryHisDetail_all extends BaseActivity implements LoadListView.OnL
                 Object result = msg.obj;
                 updataState(result + "");//更新上传状态
                 int pos = msg.arg1;
-                list.get(pos).setUploadStatus("已上传");
+                list.get(pos).setUploadStatus("已传");
                 loadMoreData(currentPage);//读取历史记录列表数据
                 mAdapter.notifyDataSetChanged();
             }
@@ -319,7 +319,7 @@ public class QueryHisDetail_all extends BaseActivity implements LoadListView.OnL
     public void updataState(String blastdate) {
         Log.e("更新起爆状态", "id: " + blastdate);
         ContentValues values = new ContentValues();
-        values.put("uploadStatus", "已上传");
+        values.put("uploadStatus", "已传");
         db.update(DatabaseHelper.TABLE_NAME_HISMAIN_ALL, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
     }

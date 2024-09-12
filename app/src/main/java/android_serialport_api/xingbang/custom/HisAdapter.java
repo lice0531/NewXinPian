@@ -26,11 +26,12 @@ public class HisAdapter extends BaseQuickAdapter<QueryHisData, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, QueryHisData item) {
         int position = helper.getLayoutPosition();
-        helper.setText(R.id.serialNo, (position+1) + "");//序号
+
+        helper.setText(R.id.serialNo,  (getData().size()- position)+"");//序号
         helper.setText(R.id.fireDate,item.getBlastdate());
         helper.setText(R.id.txtstatus,item.getBlastdate());
         helper.setText(R.id.txtsum,item.getSum()+"");
-        if("未上传".equals(item.getUploadStatus())){
+        if("未传".equals(item.getUploadStatus())){
             helper.setText(R.id.txtstatus,mContext.getString(R.string.text_query_up));	//"未上传"
             helper.setText(R.id.bt_upload,mContext.getString(R.string.text_query_uploda));//"上传"
             helper.setBackgroundRes(R.id.ly_his,R.drawable.textview_border_green);

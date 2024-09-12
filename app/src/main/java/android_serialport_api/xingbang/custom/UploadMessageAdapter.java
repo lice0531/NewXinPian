@@ -101,13 +101,13 @@ public class UploadMessageAdapter extends BaseAdapter implements OnClickListener
         }
         DanLingBean dl = (DanLingBean) list.get(position).get("danLingBean");
         viewHolder.tv_up_dl_state.setText(" " + list.get(position).get("dl_state"));//丹灵上传状态
-        if(list.get(position).get("dl_state").equals("未上传")){
+        if(list.get(position).get("dl_state").equals("未传")){
             viewHolder.tv_up_dl_state.setTextColor(Color.RED);
         }else {
             viewHolder.tv_up_dl_state.setTextColor(Color.GREEN);
         }
         viewHolder.tv_up_zb_state.setText(" " + list.get(position).get("zb_state"));//中爆上传状态
-        if(list.get(position).get("zb_state").equals("未上传")){
+        if(list.get(position).get("zb_state").equals("未传")){
             viewHolder.tv_up_zb_state.setTextColor(Color.RED);
         }else {
             viewHolder.tv_up_zb_state.setTextColor(Color.GREEN);

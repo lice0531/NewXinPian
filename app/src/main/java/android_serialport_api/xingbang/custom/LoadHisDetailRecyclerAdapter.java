@@ -74,7 +74,7 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
         holder.fireDate.setText(list_his.get(position).getBlastdate());
         holder.bt_delete.setTag(R.id.bt_delete, list_his.get(position).getBlastdate());
         holder.bt_upload.setTag(R.id.bt_upload,position);
-        if("未上传".equals(list_his.get(position).getUploadStatus())){
+        if("未传".equals(list_his.get(position).getUploadStatus())){
             holder.txtstatus.setText(mContext.getString(R.string.text_query_up));	//"未上传"
             holder.bt_upload.setText(mContext.getString(R.string.text_query_uploda));//"上传"
             holder.ly_his.setBackgroundResource(R.drawable.textview_border_green);
