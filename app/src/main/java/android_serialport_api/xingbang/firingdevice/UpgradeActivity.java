@@ -948,7 +948,7 @@ public class UpgradeActivity extends SerialPortActivity {
      */
     private void startUpdate(String path) {
         Log.e("开始升级-startUpdate", "path: " + path);
-        initSerialPort(InitConst.TX_RATE);
+        initSerialPort();
         // 如果是bin文件
         if (path.substring(path.length() - 3).equals("bin")) {
 //            OpenSerialHelper();  // 打开串口

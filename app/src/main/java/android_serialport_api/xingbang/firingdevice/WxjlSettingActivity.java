@@ -85,8 +85,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
             @Override
             public void run() {
                 isOpened = true;
-                initSerialPort(InitConst.TX_RATE);
-                Log.e(TAG, "串口已打开" + InitConst.TX_RATE);
+                initSerialPort();
                 show_Toast("串口已打开");
             }
         }, 2000);
@@ -97,6 +96,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
         currentXinDaoId = (int) MmkvUtils.getcode("xinDao", 0);
         Log.e(TAG, "app信道: " + xv + "--信道Id:" + currentXinDaoId);
         tvXinDao.setText("当前信道: " + xv);
+        Utils.writeRecord("无线设置页面当前信道id:" + currentXinDaoId + "--信道value:" + xv);
 //        //这是不同速率的信道
         xdlist.add("CH0-19.2kbps-0FEC");
         xdlist.add("CH1-19.2kbps-1FEC");
@@ -150,7 +150,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
                 }
                 xinDaoValue = xdlist.get(position);
                 xinDaoId = getXdId(xdlist.get(position));
-                Utils.writeLog("设置的信道是:" + xinDaoId);
+                Utils.writeLog("无线设置页面下拉框选中的信道是:" + xinDaoId);
                 Log.e(TAG,"选中的信道是:" + xdlist.get(position) + "截取后的信道id:" + xinDaoId);
             }
         });
@@ -169,7 +169,9 @@ public class WxjlSettingActivity extends SerialPortActivity {
                             btnQbkXd.setText("1.起爆卡信道已配置");
                             Log.e(TAG,"信道已配置:" + xinDaoId);
                             show_Toast("起爆卡配置成功");
+                            Utils.writeRecord("无线设置页面F9已返回");
                         } else {
+                            Utils.writeRecord("无线设置页面F9无返回");
                             show_Toast("起爆卡配置失败，请重新配置");
                             btnQbkXd.setText("1.起爆卡配置");
                         }
@@ -183,7 +185,9 @@ public class WxjlSettingActivity extends SerialPortActivity {
                                 zeroCount = 0;
                                 receiveAB = false;
                                 isReSendAB = false;
+                                Utils.writeRecord("无线设置页面第一次发送AB已返回，开始发送F9");
                             } else {
+                                Utils.writeRecord("无线设置页面信道切换成功，信道id:" + xinDaoId + "--信道value:" + xinDaoValue);
                                 btnZjqXd.setText("2.无线中继器已配置");
                                 AlertDialog dialog = new AlertDialog.Builder(WxjlSettingActivity.this)
                                         .setTitle("无线配置成功")//设置对话框的标题//"成功起爆"
@@ -200,6 +204,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
                                 dialog.show();
                             }
                         } else {
+                            Utils.writeRecord("无线设置页面AB无返回");
                             show_Toast("无线中继器配置失败，请重新配置");
                             btnZjqXd.setText("2.无线中继器配置");
                             isSendAB = true;

@@ -83,6 +83,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     private boolean end84 = false;//84命令是否结束
     private String flag = "";//接收是否需要将波特率升至115200
     private String finishRemote = "";
+    private String isQueryError = "";//是否是从远距离页面查看错误雷管按钮到的近距离页面
     Handler openHandler = new Handler();
     private int currentCount;//当前84发送的次数
     private boolean isOpened = false;//串口是否已打开
@@ -104,50 +105,38 @@ public class WxjlNearActivity extends SerialPortActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initPower();                // 初始化上电方式()
         powerOnDevice(PIN_ADSL);    // 上电
-        initLgData();
+        initData();
     }
 
     @Override
     protected void onRestart() {
-        isRestarted = true;
+//        isRestarted = true;
         super.onRestart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         openHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                openSerial();
+//                openSerial();
+                initSerialPort();
+                show_Toast("串口已打开");
+                Log.e(TAG,"onresume打开串口了");
+                isOpened = true;
             }
         }, 2000);
     }
 
-    private void openSerial(){
-        if (isRestarted) {
-            initSerialPort(InitConst.TX_RATE);
-//            Log.e(TAG, "重新打开串口，波特率为" + InitConst.TX_RATE);
-            show_Toast("串口已打开");
-            isOpened = true;
-        }
-    }
-
-    private void initLgData() {
-        xinDaoValue = (String) MmkvUtils.getcode("xinDaoValue", "");
-        xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
-        Log.e(TAG,"当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
+    private void initData() {
         openHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                initSerialPort(InitConst.TX_RATE);
-//                Log.e(TAG, "重新打开串口，波特率为" + InitConst.TX_RATE);
+                initSerialPort();
                 isOpened = true;
                 show_Toast("串口已打开");
+                Log.e(TAG,"init打开串口了");
             }
         }, 2000);
         mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
         Log.e(TAG,"雷管总数量：" + mListData.size());
+        Utils.writeRecord("近距离页面雷管总数量:" + mListData.size());
         handler_msg = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(@NonNull Message msg) {
@@ -164,6 +153,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                         }
                         break;
                     case 1:
+                        Utils.writeRecord("近距离页面81指令已结束");
                         tvSendData.setText("2.数据传输结束");
                         show_Toast("数据传输结束");
                         end81 = true;
@@ -174,13 +164,16 @@ public class WxjlNearActivity extends SerialPortActivity {
                         close82Thread();
                         if ("true".equals(jcmsResult)) {
                             if (xinDaoId == 27) {
+                                Utils.writeRecord("近距离页面已经是27信道，直接进入级联页面");
                                 enterRemotePage();
                             } else {
+                                Utils.writeRecord("近距离页面信道不是27，开始发送AB指令");
                                 setZjqThread = new SetZJQThread();
                                 setZjqThread.start();
                                 Log.e(TAG,"启动AB线程了");
                             }
                         } else {
+                            Utils.writeRecord("近距离页面82指令无返回");
                             tvEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
                         }
@@ -215,7 +208,9 @@ public class WxjlNearActivity extends SerialPortActivity {
                             setZjqThread = new SetZJQThread();
                             setZjqThread.start();
                             Log.e(TAG,"进入级联页面时信道已配置:" + xinDaoId + "--启动AB线程了");
+                            Utils.writeRecord("近距离页面F9已返回，开始发AB指令");
                         } else {
+                            Utils.writeRecord("近距离F9无返回");
                             tvEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
                         }
@@ -225,14 +220,17 @@ public class WxjlNearActivity extends SerialPortActivity {
                         closeABThread();
                         if ("true".equals(zjqResult)) {
                             if (isReSendAB) {
+                                Utils.writeRecord("近距离页面第一次发送AB指令接收成功，开始发F9指令");
                                 sendF9();
                                 zeroCount = 0;
                                 receiveAB = false;
                                 isReSendAB = false;
                             } else {
+                                Utils.writeRecord("近距离页面成功切换到27信道，进入级联页面");
                                 enterRemotePage();
                             }
                         } else {
+                            Utils.writeRecord("近距离页面AB无返回");
                             tvEnterJcms.setText("3.进入检测模式");
                             show_Toast("数据检测失败，请退出APP后再重新检测");
                         }
@@ -241,6 +239,24 @@ public class WxjlNearActivity extends SerialPortActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        xinDaoValue = (String) MmkvUtils.getcode("xinDaoValue", "");
+        xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
+        Log.e(TAG,"当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
+        Utils.writeRecord("近距离页面当前信道id:" + xinDaoId + "--信道value:" + xinDaoValue);
+    }
+
+    private void openSerial(){
+        if (isRestarted) {
+            initSerialPort();
+            show_Toast("串口已打开");
+            Log.e(TAG,"onresume打开串口了");
+            isOpened = true;
+        }
     }
 
     private void sendAB() {
@@ -450,7 +466,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         public void run() {
             while (!exit) {
                 try {
-                    Log.e(TAG,"AB指令发送次数:" + zeroCount);
+                    Log.e(TAG,"AB指令发送次数:" + zeroCount + "--receiveAB:" + receiveAB);
                     if (zeroCount <= 1 && !receiveAB) {
                         sendAB();
                         Log.e(TAG, "发送AB设置无线中继器信道指令了");
@@ -501,7 +517,7 @@ public class WxjlNearActivity extends SerialPortActivity {
 //            Log.e(TAG, "mAfter不为空--cmd拼接前：" + mAfter + "--拼接后:" + fromCommad);
 //            mAfter = "";
 //        }
-        Log.e(TAG + "处理后--返回命令", fromCommad);
+        Log.e(TAG + "--返回命令", fromCommad);
         Utils.writeLog("<-:" + fromCommad);
         if (fromCommad.startsWith("C0") && fromCommad.endsWith("C0") && fromCommad.length() > 12) {
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
@@ -597,9 +613,10 @@ public class WxjlNearActivity extends SerialPortActivity {
 
     private void doWith84(String completeCmd) {
         /**
-         * 芯片84指令一次最多给返回20条错误雷管数据，如超过20，则需要再次发送84指令获取剩下的错误雷管
+         * 芯片84指令一次最多给返回10条错误雷管数据，如超过10，则需要再次发送84指令获取剩下的错误雷管
          * 84指令：84后面:错误数量  序号(发送84的次数) 错误雷管编号)  错误雷管：C00184 0B 01 0D001500200046004F0051005400560059005A005C00 0642C0
-         * 截取出错误雷管的序号，0300 0500 0D00就是发81指令时候的雷管顺序  得通过这个序号找到对应的雷管id给错误雷管更新状态
+         * 截取出错误雷管的序号，0300 0500 0D00（转化时，低位在前，高位在后）就是发84指令时候的雷管顺序
+         * 得通过这个序号找到对应的雷管id给错误雷管更新状态
          * 同时在当前页面展示出错误雷管列表
          */
         currentCount ++;
@@ -609,8 +626,9 @@ public class WxjlNearActivity extends SerialPortActivity {
         int aa = errorLgCmd.length() / 4;
         for (int i = 0; i < aa; i++) {
             String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
-            String idCmd = value.substring(0,2);
-            int id = Integer.parseInt(idCmd, 16);
+            String idCmd = value.substring(0,4);
+//            int id = Integer.parseInt(idCmd, 16);
+            int id = hexToDecimalLowHigh(idCmd);
             for (int j = 0; j < mListData.size(); j++) {
                 if (id == j + 1) {
                     //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
@@ -632,6 +650,21 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
         send84();
         Log.e(TAG,"错误数量>20，发84了--错误总数量:" + errorTotalNum + "--需要发送84的次数是:" + sendCount);
+    }
+
+    // 转换方法
+    private int hexToDecimalLowHigh(String hexStr) {
+        // 确保输入是有效的16进制字符串并且长度是4
+        if (hexStr.length() != 4 || !hexStr.matches("[0-9A-Fa-f]{4}")) {
+            throw new IllegalArgumentException("输入必须是一个4位的有效16进制字符串");
+        }
+        // 分割低位和高位
+        String lowByte = hexStr.substring(0, 2);
+        String highByte = hexStr.substring(2);
+        // 合并低位和高位
+        String combinedHexStr = highByte + lowByte;
+        // 转换为十进制
+        return Integer.parseInt(combinedHexStr, 16);
     }
 
     private boolean isCanSend84 = false;
@@ -746,6 +779,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                     denatorIdSup = Utils.getReverseDetonatorNo(denatorIdSup);
                     data = denatorId + delayStr + write.getZhu_yscs() + denatorIdSup + write.getCong_yscs();
                 }
+//                Log.e(TAG, lid + "--发送81的十进制序号:" + sendNum + "--16进制序号:" + serId + "--denatorId:" + denatorId);
 //                Log.e(TAG, lid + "--雷管序号:" + serId + "--denatorId:" + denatorId + "--delayTime:" + delayTime + "--delayStr:" + delayStr +
 //                        "--延时参数:" + write.getZhu_yscs() + "--数据体长度:" + dataLength81 + "--data81:" + data);
                 sBuilder.append(data);
@@ -795,7 +829,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 if (end81) {
                     show_Toast("数据传输已结束，无需重复传输!");
                 } else {
-                    //雷管数据10条发一次  但目前暂定1条发一次
+                    //雷管数据10条发一次
                     show_Toast("数据传输中，请勿重复点击...");
                     tvSendData.setText("2.数据传输中请稍等...");
                     if (isSend81) {
@@ -903,7 +937,9 @@ public class WxjlNearActivity extends SerialPortActivity {
                 flag = (data.getStringExtra("transhighRate") != null) ?
                         data.getStringExtra("transhighRate") : "";
                 errorTotalNum = data.getIntExtra("errorTotalNum",0);
-                Log.e(TAG,"flag:" + flag + "--errorTotalNum:" + errorTotalNum + "--finishRemote:" + finishRemote);
+                isQueryError = (data.getStringExtra("isQueryError") != null) ?
+                        data.getStringExtra("isQueryError") : "";
+                Log.e(TAG,"flag:" + flag + "--errorTotalNum:" + errorTotalNum + "--finishRemote:" + finishRemote + "--isQueryError:" + isQueryError);
                 if (!TextUtils.isEmpty(finishRemote)) {
                     receive80 = true;
                     receive81 = true;
@@ -913,6 +949,11 @@ public class WxjlNearActivity extends SerialPortActivity {
                     end84 = false;
                     isSend84 = true;
                     tvLookError.setText("4.查看错误雷管列表");
+                }
+                if (!TextUtils.isEmpty(isQueryError)) {
+                    zeroCount = 0;
+                    receiveAB = false;
+                    isReSendAB = true;
                 }
             }
         }

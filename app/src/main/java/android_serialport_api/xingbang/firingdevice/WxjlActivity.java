@@ -82,7 +82,7 @@ public class WxjlActivity extends SerialPortActivity {
 
     private void openSerial(){
         if (isRestarted) {
-            initSerialPort(InitConst.TX_RATE);
+            initSerialPort();
             Log.e(TAG,"重新开启打开串口" + InitConst.TX_RATE);
         }
     }

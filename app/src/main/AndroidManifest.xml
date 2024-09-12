@@ -358,9 +358,6 @@
         <activity android:name=".firingdevice.WxjlNearActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".firingdevice.NewNearJlActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".firingdevice.Wxjl485RemoteActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />

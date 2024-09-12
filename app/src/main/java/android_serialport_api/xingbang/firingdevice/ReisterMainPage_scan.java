@@ -863,7 +863,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.e("点击按键", "keyCode: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_THUMBS_DOWN || keyCode == KeyEvent.KEYCODE_PROFILE_SWITCH || keyCode == 289) {//287
-            if (Build.DEVICE.equals("M900")) {
+            if (Build.DEVICE.equals("M900") || Build.DEVICE.equals("T-QBZD-Z6")) {
                 mScaner.startScan();
             }
 

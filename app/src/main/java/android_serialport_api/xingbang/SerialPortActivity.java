@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -35,8 +37,6 @@ import com.orhanobut.dialogplus.DialogPlus;
 
 import android_serialport_api.SerialPort;
 import android_serialport_api.xingbang.utils.LoadingUtils;
-import android_serialport_api.xingbang.utils.Utils;
-import android_serialport_api.xingbang.utils.upload.InitConst;
 
 public abstract class SerialPortActivity extends BaseActivity {
 
@@ -51,6 +51,9 @@ public abstract class SerialPortActivity extends BaseActivity {
     // 通用
     public DialogPlus mDialogPlus;
     public Context mContext;
+    //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
+
     private class ReadThread extends Thread {
 
         public boolean exit = false;
@@ -61,25 +64,26 @@ public abstract class SerialPortActivity extends BaseActivity {
             try {
                 while (!isInterrupted() && !exit) {
                     if (mInputStream.available() > 0) {
+                        Thread.sleep(20);//等待20ms可以减少命令为两截的情况
                         int size;
+                        int count = mInputStream.available();
+//                        Log.e("读取命令", "数据流长度: "+count );
 
-                        Thread.sleep(50);
                         if (exit) return;
-                        byte[] buffer = new byte[64];
+                        byte[] buffer = new byte[count];
                         if (mInputStream == null) return;
                         //Utils.writeLog("Read------11111111");
                         size = mInputStream.read(buffer);
 //                    mSerialPort.tcflush();//刷新方法,添加上后会丢失串口数据,以后再实验
                         //Utils.writeLog("Read------22222222");
                         if (size > 0) {
-                            byte[] cmdBuf = new byte[size];
-                            System.arraycopy(buffer, 0, cmdBuf, 0, size);
-                            String fromCommad = Utils.bytesToHexFun(cmdBuf);
-                            Log.e("收到: ",fromCommad );
+//                        byte[] cmdBuf = new byte[size];
+//                        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//                        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//                        Log.e("读取命令: ",fromCommad );
                             onDataReceived(buffer, size);
                         }
                     }
-
                 }
             } catch (IOException | InterruptedException e) {
                 //e.printStackTrace();
@@ -123,7 +127,7 @@ public abstract class SerialPortActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.e("父页面", "onCreate: " );
         try {
-            mSerialPort = mApplication.getSerialPort(InitConst.TX_RATE);
+            mSerialPort = mApplication.getSerialPort();
             mSerialPort.tcflush();
 
             mOutputStream = mSerialPort.getOutputStream();
@@ -131,7 +135,7 @@ public abstract class SerialPortActivity extends BaseActivity {
 
             /* Create a receiving thread */
             mReadThread = new ReadThread();
-            mReadThread.start();
+            threadPoolExecutor.execute(mReadThread);
         } catch (SecurityException e) {
             DisplayError(R.string.error_security);
         } catch (IOException e) {
@@ -146,11 +150,11 @@ public abstract class SerialPortActivity extends BaseActivity {
         mDialogPlus.show();
     }
     // 进度条
-    public void initSerialPort(int baudrate) {
+    public void initSerialPort() {
         Log.e("父页面", "initSerialPort: " );
 //        mReadThread.exit = false;
         try {
-            mSerialPort = mApplication.getSerialPort(baudrate);
+            mSerialPort = mApplication.getSerialPort();
             mSerialPort.tcflush();
 
             mOutputStream = mSerialPort.getOutputStream();
@@ -158,7 +162,7 @@ public abstract class SerialPortActivity extends BaseActivity {
 
             /* Create a receiving thread */
             mReadThread = new ReadThread();
-            mReadThread.start();
+            threadPoolExecutor.execute(mReadThread);
         } catch (SecurityException e) {
             DisplayError(R.string.error_security);
         } catch (IOException e) {
@@ -168,20 +172,6 @@ public abstract class SerialPortActivity extends BaseActivity {
         }
     }
     protected abstract void onDataReceived(final byte[] buffer, final int size);
-
-    @Override
-    protected void onDestroy() {
-        if (mReadThread != null) {
-
-            mReadThread.exit = true;
-            mReadThread.interrupt();
-            sendInterruptCmd();
-        }
-        mApplication.closeSerialPort();
-        mSerialPort = null;
-        Log.e("父页面-destroy", "mReadThread: "+mReadThread.exit );
-        super.onDestroy();
-    }
 
     public void sendInterruptCmd() {
 
@@ -252,5 +242,19 @@ public abstract class SerialPortActivity extends BaseActivity {
             return 0;
         }
         return 1;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mReadThread != null) {
+
+            mReadThread.exit = true;
+            threadPoolExecutor.shutdown();
+            sendInterruptCmd();
+        }
+//        mApplication.closeSerialPort();
+//        mSerialPort = null;
+        Log.e("父页面-destroy", "mReadThread: "+mReadThread.exit );
+        super.onDestroy();
     }
 }

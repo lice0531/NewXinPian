@@ -1267,7 +1267,7 @@ public class XingbangMain1 extends BaseActivity {
                 if (countTime > 0) {
                     countTime--;
                 }
-                Log.e(TAG, "countTime: " + countTime);
+//                Log.e(TAG, "countTime: " + countTime);
                 Message msg = new Message();
                 msg.what = countTime;
                 mOffHandler.sendMessage(msg);

@@ -672,7 +672,7 @@ public class Wxjl485RemoteActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        if (Build.DEVICE.equals("M900")) {
+        if (Build.DEVICE.equals("M900") || Build.DEVICE.equals("T-QBZD-Z6")) {
             mExpDevMgr.closeRs485();
             mExpDevMgr.set12VEnable(false);
         }
