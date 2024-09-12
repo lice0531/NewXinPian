@@ -1051,8 +1051,10 @@ public class PracticeActivity extends BaseActivity {
                 return;
             }
             if (a.equals("xingbang") && b.equals("123456")) {
+                dialogOFF(dialog);
                 startActivity(new Intent(PracticeActivity.this, SetEnvMainActivity.class));
                 dialog.dismiss();
+                finish();
             } else if (!a.equals("xingbang")) {
                 show_Toast(getString(R.string.text_main_yhmcw));
                 dialogOn(dialog);

@@ -9,7 +9,7 @@
     <item
         android:id="@+id/item_2"
         android:orderInCategory="1"
-        android:title="选择上传记录"
+        android:title="批量上传"
         app:showAsAction="withText" />
 
 </menu>

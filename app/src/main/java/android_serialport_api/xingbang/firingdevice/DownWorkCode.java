@@ -41,14 +41,17 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
 import com.google.gson.Gson;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePal;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -96,8 +100,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -253,7 +259,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         getUserMessage();//获取用户信息
 //        getPropertiesData();//第二种获取用户信息
         initUi();
-
+        hideInputKeyboard();
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入项目下载页面---");
@@ -299,7 +305,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         setSupportActionBar(findViewById(R.id.toolbar));
         //         获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-        Log.e("区域", "mRegion: "+mRegion );
+        Log.e("区域", "mRegion: " + mRegion);
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         loadMoreData_sq();
@@ -456,7 +462,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             double juli3 = AMapUtils.calculateLineDistance(start, end);
                             Log.e("经纬度", "juli3: " + juli3);
 //                            if (juli3 < banjing) {//
-                                insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getSqrq());
+                            insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res2, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(), danLingBean.getSqrq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
 //                            }
                         }
@@ -466,7 +472,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                 if (danLingBean.getLgs().getLg().size() > 0) {
                     for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),danLingBean.getSqrq());
+                        GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i), danLingBean.getSqrq());
                     }
                 }
 //                mHandler_httpresult2.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
@@ -637,7 +643,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private void upData_sq_size() {
         GreenDaoMaster master = new GreenDaoMaster();
         List<ShouQuan> list_sq = master.queryShouQuan();
-        for (int a =0;a<list_sq.size();a++){
+        for (int a = 0; a < list_sq.size(); a++) {
             master.updataShouQuan(list_sq.get(a).getSpare2());
         }
     }
@@ -782,10 +788,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     };
 
 
-
-
-
-
     /***
      * 单发注册
      */
@@ -848,7 +850,6 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //        Utils.saveFile_Message();//保存用户信息
         return 0;
     }
-
 
 
     //获取用户信息
@@ -956,16 +957,15 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     String cwxx = object1.getString("cwxx");
 
 
-
                     if (cwxx.equals("0")) {
-                        String sqrq2=danLingBean.getSqrq();
+                        String sqrq2 = danLingBean.getSqrq();
                         long time2 = (long) 3 * 86400000;
                         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String yxq="";
+                        String yxq = "";
                         try {
                             Date date3 = sd.parse(sqrq2);//当前日期
                             yxq = sd.format(date3.getTime() + time2);
-                            Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
+                            Log.e("获取申请日期3天后的日期", "yxq: " + yxq + " sqrq2:" + sqrq2);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -992,7 +992,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     Log.e("经纬度", "juli3: " + juli3);
 
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),yxq);
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(), yxq);
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
@@ -1002,7 +1002,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),yxq);
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i), yxq);
                             }
 
                         }
@@ -1038,7 +1038,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(11));//离线下载不支持生产厂家试爆
                     } else if (cwxx.equals("12")) {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(12));//营业性单位必须设置合同或者项目
-                    } else  {
+                    } else {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(99, danLingBean.getCwxxms()));
                     }
                 } catch (JSONException e) {
@@ -1051,7 +1051,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     private void upload_xingbang() {
         show_Toast("当前为煋邦测试下载");
-        Log.e("loding画面", "画面开始: " );
+        Log.e("loding画面", "画面开始: ");
         pb_show = 1;
         runPbDialog();//loading画面
         String url = Utils.httpurl_xb_upload;//煋邦下载
@@ -1116,14 +1116,14 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 Gson gson = new Gson();
                 DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
                 try {
-                    String sqrq2=danLingBean.getSqrq();
+                    String sqrq2 = danLingBean.getSqrq();
                     long time2 = (long) 3 * 86400000;
                     SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String yxq="";
+                    String yxq = "";
                     try {
                         Date date3 = sd.parse(sqrq2);//当前日期
                         yxq = sd.format(date3.getTime() + time2);
-                        Log.e("获取申请日期3天后的日期", "yxq: "+yxq+" sqrq2:"+sqrq2 );
+                        Log.e("获取申请日期3天后的日期", "yxq: " + yxq + " sqrq2:" + sqrq2);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -1153,7 +1153,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                     double juli3 = AMapUtils.calculateLineDistance(start, end);
                                     Log.e("经纬度", "juli3: " + juli3);
                                     if (juli3 < banjing) {
-                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),danLingBean.getLgs().getLg().get(0).getYxq());
+                                        insertJson(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(), danLingBean.getLgs().getLg().get(0).getYxq());
 //                                        insertJson_new(at_htid.getText().toString().trim(), at_xmbh.getText().toString().trim(), res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc());
                                     }
                                 }
@@ -1163,7 +1163,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
                         if (danLingBean.getLgs().getLg().size() > 0) {
                             for (int i = 0; i < danLingBean.getLgs().getLg().size(); i++) {
-                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i),yxq);
+                                GreenDaoMaster.updateLgState(danLingBean.getLgs().getLg().get(i), yxq);
                             }
                         }
 
@@ -1174,7 +1174,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(0));//"项目下载成功"
                         mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
                         pb_show = 0;//loding画面结束
-                        Log.e("loding画面", "画面结束: " );
+                        Log.e("loding画面", "画面结束: ");
                     } else if (cwxx.equals("1")) {
                         mHandler_1.sendMessage(mHandler_1.obtainMessage(1, object1.getString("cwxxms")));
                     } else if (cwxx.equals("2")) {
@@ -1254,7 +1254,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     //隐藏键盘
     public void hideInputKeyboard() {
-
+        at_projectName.clearFocus();
         at_bprysfz.clearFocus();//取消焦点
         at_htid.clearFocus();
         at_xmbh.clearFocus();
@@ -1694,7 +1694,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         show_Toast(getString(R.string.text_alert_password));
                         return;
                     }
-                    if ( b.equals("123")) {
+                    if (b.equals("123")) {
                         delShouQuan(map_dl.get(position).get("id").toString());//删除方法
                         GreenDaoMaster master = new GreenDaoMaster();
                         master.deleteTypeLeiGuanFroTime(map_dl.get(position).get("spare2").toString());
@@ -1717,7 +1717,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             case R.id.ly_sq://
             case R.id.tv_chakan_sq:
                 Log.e("点击项目", "position: " + position);
-                Log.e("点击项目", "id: " +  map_dl.get(position).get("id").toString());
+                Log.e("点击项目", "id: " + map_dl.get(position).get("id").toString());
                 Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("sqrq", map_dl.get(position).get("spare2").toString());//申请日期
@@ -1733,7 +1733,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     /**
      * 向数据库中插入数据
      */
-    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq) {
+    public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name, String yxq) {
         ContentValues values = new ContentValues();
         values.put("htbh", htbh);
         values.put("xmbh", xmbh);
@@ -2208,10 +2208,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
 
-    @OnClick({R.id.btn_down_return,R.id.btn_shouquan, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_ReisterScanStart_st,
+    @OnClick({R.id.btn_down_return, R.id.btn_shouquan, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_ReisterScanStart_st,
             R.id.btn_ReisterScanStart_ed, R.id.btn_inputOk,
             R.id.ly_setUpdata, R.id.btn_inputGKM, R.id.btn_location, R.id.btn_scanReister, R.id.btn_setdelay,
-            R.id.btn_clear_htid, R.id.btn_clear_xmbh,R.id.btn_clear_dwdm, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
+            R.id.btn_clear_htid, R.id.btn_clear_xmbh, R.id.btn_clear_dwdm, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_down_return://保存
@@ -2221,7 +2221,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             case R.id.btn_shouquan:
                 startActivity(new Intent(this, ShouQuanActivity.class));
                 break;
-            case R.id.btn_down_inputOK://保存
+            case R.id.btn_down_inputOK://离线下载
 //                hideInputKeyboard();//隐藏键盘
 //                saveData();
 //                show_Toast("数据保存成功");
@@ -2304,21 +2304,34 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 startActivityForResult(intent3, 1);
                 break;
             case R.id.btn_clear_htid:
+                at_htid.setText("");
+                at_htid.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_htid", at_htid);
-
+                saveData();
                 break;
             case R.id.btn_clear_project_name:
+                at_projectName.setText("");
+                at_projectName.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_project", at_htid);
-
+                saveData();
                 break;
             case R.id.btn_clear_xmbh:
+                at_xmbh.setText("");
+                at_xmbh.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_xmbh", at_xmbh);
+                saveData();
                 break;
-                case R.id.btn_clear_dwdm:
+            case R.id.btn_clear_dwdm:
+                at_dwdm.setText("");
+                at_dwdm.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_dwdm", at_dwdm);
+                saveData();
                 break;
             case R.id.btn_clear_sfz:
+                at_bprysfz.setText("");
+                at_bprysfz.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_bprysfz", at_bprysfz);
+                saveData();
                 break;
 
 
@@ -2450,7 +2463,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast(getString(R.string.text_reister_tip4)+ mRegion);
+                show_Toast(getString(R.string.text_reister_tip4) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -2472,7 +2485,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         show_Toast(getString(R.string.text_alert_password));
                         return;
                     }
-                    if ( b.equals("123")) {
+                    if (b.equals("123")) {
                         GreenDaoMaster.delAllMessage();//清空数据
                         GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
                         mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
@@ -2515,7 +2528,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
     /**
      * 单选对话框
-     * */
+     */
     private void choiceQuYu_danxuan() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.logo);
@@ -2533,7 +2546,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         cb_mRegion4.setChecked(mRegion4);
         cb_mRegion5.setChecked(mRegion5);
         cb_mRegion1.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
+            if (isChecked) {
                 cb_mRegion2.setChecked(false);
                 cb_mRegion3.setChecked(false);
                 cb_mRegion4.setChecked(false);
@@ -2541,7 +2554,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         });
         cb_mRegion2.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
+            if (isChecked) {
                 cb_mRegion1.setChecked(false);
                 cb_mRegion3.setChecked(false);
                 cb_mRegion4.setChecked(false);
@@ -2549,7 +2562,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         });
         cb_mRegion3.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
+            if (isChecked) {
                 cb_mRegion1.setChecked(false);
                 cb_mRegion2.setChecked(false);
                 cb_mRegion4.setChecked(false);
@@ -2557,7 +2570,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         });
         cb_mRegion4.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
+            if (isChecked) {
                 cb_mRegion1.setChecked(false);
                 cb_mRegion2.setChecked(false);
                 cb_mRegion3.setChecked(false);
@@ -2565,7 +2578,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             }
         });
         cb_mRegion5.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
+            if (isChecked) {
                 cb_mRegion1.setChecked(false);
                 cb_mRegion2.setChecked(false);
                 cb_mRegion3.setChecked(false);

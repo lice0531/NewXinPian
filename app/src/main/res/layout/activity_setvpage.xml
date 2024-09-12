@@ -128,14 +128,13 @@
             android:divider="@drawable/spacer_medium"
             android:gravity="center"
             android:showDividers="middle">
-
             <Button
-                android:visibility="invisible"
-                android:id="@+id/btn_set_ver"
+                android:id="@+id/btn_set_exit"
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_ver" />
+                android:text="@string/xingbang_set_page_btn_exit" />
+
 
             <Button
                 android:id="@+id/btn_set_system"
@@ -162,11 +161,12 @@
                 android:visibility="invisible" />
 
             <Button
-                android:id="@+id/btn_set_exit"
+                android:visibility="invisible"
+                android:id="@+id/btn_set_ver"
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_exit" />
+                android:text="@string/xingbang_set_page_btn_ver" />
         </LinearLayout>
 
     </LinearLayout>
