@@ -336,13 +336,16 @@ public class  BaseActivity extends AppCompatActivity {
 	 */
 	public void saveHistory(String field, AutoCompleteTextView auto) {
 		String text = auto.getText().toString();
+		if(text.length()==0){
+			return;
+		}
 		SharedPreferences sp = getSharedPreferences("network_url", 0);
 		String longhistory = sp.getString(field, "");
 		String[] hisArrays = longhistory.split("#");
-		boolean contains = Arrays.asList(hisArrays).contains(text + "#");
+		boolean contains = Arrays.asList(hisArrays).contains(text);
 		Log.e("保存", "longhistory: "+longhistory );
 		Log.e("保存", "contains: "+contains );
-		if (!Arrays.asList(hisArrays).contains(text + "#")) {
+		if (!Arrays.asList(hisArrays).contains(text)) {
 			StringBuilder sb = new StringBuilder(longhistory);
 			sb.insert(0, text + "#");
 			sp.edit().putString(field, sb.toString()).commit();

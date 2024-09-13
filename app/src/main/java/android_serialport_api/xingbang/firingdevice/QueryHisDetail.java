@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,6 +57,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
+import android_serialport_api.xingbang.utils.DownloadTest;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
@@ -119,6 +121,7 @@ public class QueryHisDetail extends BaseActivity {
     private Handler mHandler_2 = new Handler();//显示进度条
     private Handler mHandler_tip = new Handler();//显示进度条
     private Handler mHandler_update = new Handler();//更新状态
+    private Handler mHandler_tishi = new Handler();//更新状态
     private LoadingDialog tipDlg = null;
     private int pb_show = 0;
     private ArrayList<Map<String, Object>> hisListData = new ArrayList<>();//错误雷管
@@ -129,6 +132,7 @@ public class QueryHisDetail extends BaseActivity {
     private PropertiesUtil mProp;
     List<String> dateList = new ArrayList<>();//未上传日期
     private int uploadIndex = 0;//还有多少条数据需要一键上传
+    private boolean upload_all = false;//是否为多选上传
     private String TAG = "上传页面";
 
     private static final int STATE_DEFAULT = 0;//默认状态
@@ -140,6 +144,7 @@ public class QueryHisDetail extends BaseActivity {
     private int isDlUploadSuccess = 0;//丹灵是否上传成功 0:未上传  200:上传成功  201:上传失败
     private int isZbUploadSuccess = 0;//中爆是否上传成功 0:未上传  200:上传成功  201:上传失败
     private int isXbUploadSuccess = 0;//煋邦是否上传成功 0:未上传  200:上传成功  201:上传失败
+    Handler openHandler = new Handler();//重新打开串口
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,15 +310,17 @@ public class QueryHisDetail extends BaseActivity {
 
                     Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
                             "--isXbUploadSuccess:" + isXbUploadSuccess);
-                    if (isDlUploadSuccess == 200 && isXbUploadSuccess == 200) {
-                        //准备丹灵和煋邦都传成功,再更新按钮颜色(未完成)
+                    if (isDlUploadSuccess == 200 ) {
                         uploadIndex ++;
+                        isDlUploadSuccess=0;
+                        isXbUploadSuccess=0;
+                        uploadNext(dateList,uploadIndex);
+                        //准备丹灵和煋邦都传成功,再更新按钮颜色(未完成)//&& isXbUploadSuccess == 200
+
 //                        uploadIndexMoni ++;
 //                        uploadNextMoni(stringList,uploadIndexMoni);
                     }
-                    isDlUploadSuccess=0;
-                    isXbUploadSuccess=0;
-                    uploadNext(dateList,uploadIndex);
+
                     break;
                 case 7:
                     String res = (String) msg.obj;
@@ -322,6 +329,15 @@ public class QueryHisDetail extends BaseActivity {
             }
             return false;
         });
+        mHandler_tishi = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg) {
+                Log.e(TAG, "错误信息: 3" );
+                show_Toast("错误信息:" + msg.obj);
+                return false;
+            }
+        });
+
 
         mHandler_2 = new Handler(this.getMainLooper()) {
             @SuppressLint("HandlerLeak")
@@ -882,6 +898,7 @@ public class QueryHisDetail extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
+                isDlUploadSuccess=200;
                 try {
                     if (!server_type2.equals("2")) {
                         pb_show = 0;
@@ -889,8 +906,10 @@ public class QueryHisDetail extends BaseActivity {
                     object = new JSONObject(response.body().string());
                     Log.e("上传", "丹灵返回: " + object.toString());
                     String success = object.getString("success");
+
                     if (success.equals("true")) {
-                        isDlUploadSuccess=200;
+
+
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
@@ -903,12 +922,12 @@ public class QueryHisDetail extends BaseActivity {
 
                     } else if (success.equals("fail")) {
                         String cwxx = object.getString("cwxx");
+                        Log.e(TAG, "cwxx: "+cwxx);
                         if (cwxx.equals("1")) {
                             Message msg = new Message();
                             msg.what = 3;
-                            msg.obj = object.getString("cwxxms");
+                            msg.obj = Utils.getDanlingCWXX(Integer.parseInt(cwxx));
                             mHandler_tip.sendMessage(msg);
-
                         } else if (cwxx.equals("2")) {
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
 
@@ -919,6 +938,18 @@ public class QueryHisDetail extends BaseActivity {
                             mHandler_tip.sendMessage(msg);
 
                         }
+                    }
+
+                    if(upload_all){
+                        //等待一段时间
+                        // 延时3秒后执行的操作
+                        openHandler.postDelayed(() -> {
+                            Message msg = new Message();
+                            msg.what = 6;
+                            UploadResult result = new UploadResult();
+                            msg.obj = result;
+                            mHandler_tip.sendMessage(msg);
+                        }, 100);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -931,8 +962,8 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-//        String url = Utils.httpurl_xb_his;//公司服务器上传
-        String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//公司服务器上传
+        String url = Utils.httpurl_xb_his;//公司服务器上传
+//        String url = "https://xbmonitor1.xingbangtech.com:553/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -1015,7 +1046,7 @@ public class QueryHisDetail extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_del_return, R.id.btn_del_all, R.id.tv_check_all, R.id.tv_upload})
+    @OnClick({R.id.btn_del_return, R.id.btn_del_all, R.id.tv_upload})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_del_return:
@@ -1024,9 +1055,7 @@ public class QueryHisDetail extends BaseActivity {
                 setResult(1, intentTemp);
                 finish();
                 break;
-            case R.id.tv_check_all:
-                setAllItemChecked();
-                break;
+
             case R.id.tv_upload:
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(QueryHisDetail.this);
                 builder2.setTitle("上传提示");//"请输入用户名和密码"
@@ -1053,7 +1082,7 @@ public class QueryHisDetail extends BaseActivity {
                             }
                         }
                         updateEditState();
-
+                        upload_all=true;
 //                        for (DenatorHis_Main his:list) {
 //                            if(his.getUploadStatus().equals("未上传")){
 //                                dateList.add(his.getBlastdate());
@@ -1065,7 +1094,7 @@ public class QueryHisDetail extends BaseActivity {
                         } else {
                             show_Toast("当前没有需要上传的数据");
                         }
-                        show_Toast("已上传所有未上传记录");
+//                        show_Toast("已上传所有未上传记录");
                     } else {
                         show_Toast("密码错误");
                     }
@@ -1177,8 +1206,9 @@ public class QueryHisDetail extends BaseActivity {
     // 递归方法，逐个上传数据
     private void uploadNext(List<String> dateList, int index) {
         if (index >= dateList.size()) {
+            upload_all=false;
             Log.e("一键上传", "一键上传--所有数据已全部上传");
-//            show_Toast("上传已结束");
+            show_Toast("上传已结束");
             uploadIndex=0;//重置上传下标
             pb_show = 0;
             mHandler_2.sendMessage(mHandler_2.obtainMessage());
@@ -1188,12 +1218,7 @@ public class QueryHisDetail extends BaseActivity {
         String data = dateList.get(index);
         uploadQbData(Integer.parseInt(dateList.get(index)));
         Log.e(TAG, "dateList.size(): "+dateList.size() );
-//        for (int i = 0; i < dateList.size(); i++) {
-//            if (data.equals(dateList.get(i))) {
-//                Log.e("一键上传", "一键上传的数据下标是:" + i + "--日期是:" + dateList.get(i));
-//                uploadQbData(i);
-//            }
-//        }
+
     }
 
     private void uploadQbData(int position) {
@@ -1235,9 +1260,11 @@ public class QueryHisDetail extends BaseActivity {
             show_Toast("设备当前未设置上传网址,请先设置上传网址");
         }
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
-        pb_show = 1;
-        mHandler_2.sendMessage(mHandler_2.obtainMessage());
-        runPbDialog();//loading画面
+        //跟单独上传重复,下周再调
+//        pb_show = 1;
+//        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+//        runPbDialog();//loading画面
+
         if (server_type1.equals("1")) {
             upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
         }
@@ -1246,18 +1273,8 @@ public class QueryHisDetail extends BaseActivity {
         }
         upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
 
-        //等待一段时间
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Message msg = new Message();
-        msg.what = 6;
-        UploadResult result = new UploadResult();
-        isDlUploadSuccess=200;
-        msg.obj = result;
-        mHandler_tip.sendMessage(msg);
+
+
     }
 
 

@@ -119,13 +119,14 @@ public class Utils {
         return a;
     }
 
-    public static String addZero(String str, int lenght){
-        String shell=str;
-        for (int i=0;i<(lenght-str.length());i++){
-            shell="0"+shell;
+    public static String addZero(String str, int lenght) {
+        String shell = str;
+        for (int i = 0; i < (lenght - str.length()); i++) {
+            shell = "0" + shell;
         }
         return shell;
     }
+
     //管壳码转换雷管序号Id
     public static String DetonatorShellToSerialNo(String shellStr) {
 
@@ -178,9 +179,9 @@ public class Utils {
     public static String DetonatorShellToSerialNo_newXinPian(String shellStr) {
         //A621407FFFDE5
         //StringIndexOutOfBoundsException: length=4; index=5(直接注册会出现这个问题)
-        if(shellStr.length()==8){
+        if (shellStr.length() == 8) {
             return shellStr;
-        }else {
+        } else {
             return shellStr.substring(5);
         }
 
@@ -197,6 +198,7 @@ public class Utils {
 
     /**
      * 得到管壳码的字节
+     *
      * @param shellStr
      * @return
      */
@@ -388,17 +390,18 @@ public class Utils {
 
     /**
      * 新 芯片
+     *
      * @param facode
      * @param feature
      * @param denatorId
      */
-    public static String GetShellNoById_newXinPian(String facode,String feature,String denatorId){
+    public static String GetShellNoById_newXinPian(String facode, String feature, String denatorId) {
         //C0AA51170C090009003204E5FDFF0641A600330000E5FDFF064D96F5ECC0
-        Log.e("ID转换", "facode: "+facode+",feature: "+feature+",denatorId: " +denatorId);
-        String a=feature.substring(0,1);
-        String b=feature.substring(1);
+        Log.e("ID转换", "facode: " + facode + ",feature: " + feature + ",denatorId: " + denatorId);
+        String a = feature.substring(0, 1);
+        String b = feature.substring(1);
         //从20年开始为2,到30年要改为3
-        return facode + "2"+b+a+denatorId;
+        return facode + "2" + b + a + denatorId;
     }
 
 
@@ -748,6 +751,7 @@ public class Utils {
 
         return dateString;
     }
+
     public static String getDate_4Y(Date date) {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -797,8 +801,8 @@ public class Utils {
 
             if (!file.exists()) {
                 File dir = new File(file.getParent());
-                boolean a=dir.mkdirs();
-                boolean b=file.createNewFile();
+                boolean a = dir.mkdirs();
+                boolean b = file.createNewFile();
                 //把文件名存入到数据库中
 //                SysLog sysLog = new SysLog();
 //                sysLog.setFilename(Utils.getDate(new Date()));
@@ -873,8 +877,8 @@ public class Utils {
 
             if (!file.exists()) {
                 File dir = new File(file.getParent());
-                boolean a=dir.mkdirs();
-                boolean b=file.createNewFile();
+                boolean a = dir.mkdirs();
+                boolean b = file.createNewFile();
                 //把文件名存入到数据库中
                 SysLog sysLog = new SysLog();
                 sysLog.setFilename(Utils.getDate(new Date()));
@@ -1061,6 +1065,7 @@ public class Utils {
         }
         return "0";
     }
+
     /**
      * 读入TXT文件
      */
@@ -1080,7 +1085,7 @@ public class Utils {
             //网友推荐更加简洁的写法
             while ((line = br.readLine()) != null) {
                 // 一次读入一行数据
-                sb.append(line+ ",");
+                sb.append(line + ",");
             }
             return sb.toString();
         } catch (IOException e) {
@@ -1284,7 +1289,7 @@ public class Utils {
         if ((server_type != null && "2".equals(server_type.trim()))) {//中爆网
             String rev = netParamCheck(1, pro_bprysfz, pro_htid, pro_xmbh, pro_coordxy, server_type, equ_no, serverIpStr, server_portStr, server_httpStr, hisInsertFireDate);
             if (rev != null) {
-                showToast(context, "上传数据设置错误！1-"+rev, 3000);
+                showToast(context, "上传数据设置错误！1-" + rev, 3000);
                 return "1";
             } else {
                 String[] xy = pro_coordxy.split(",");
@@ -1714,12 +1719,12 @@ public class Utils {
      * 煤许 重新排序段号
      */
     public static void deleteData(String mRegion) {
-        for (int m = 1; m < 6; m++){
-            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().getDuanNoList(mRegion,m+"");
+        for (int m = 1; m < 6; m++) {
+            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().getDuanNoList(mRegion, m + "");
             Log.e("排序雷管", "list_lg: " + list_lg.size());
             for (int i = 0; i < list_lg.size(); i++) {
                 DenatorBaseinfo denatorBaseinfo = list_lg.get(i);
-                denatorBaseinfo.setDuanNo(list_lg.get(i).getDuan()+"-"+(i + 1));
+                denatorBaseinfo.setDuanNo(list_lg.get(i).getDuan() + "-" + (i + 1));
                 getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
             }
         }
@@ -1736,8 +1741,8 @@ public class Utils {
         List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
         for (int i = 0; i < list_lg.size(); i++) {
             DenatorBaseinfo denatorBaseinfo = list_lg.get(i);
-            denatorBaseinfo.setBlastserial(i+1);
-            denatorBaseinfo.setSithole((i+1)+"");
+            denatorBaseinfo.setBlastserial(i + 1);
+            denatorBaseinfo.setSithole((i + 1) + "");
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
         }
         Utils.saveFile();//把软存中的数据存入磁盘中
@@ -1909,7 +1914,9 @@ public class Utils {
         }
     }
 
-    /** byte[]转Int */
+    /**
+     * byte[]转Int
+     */
     public static int bytesToInt(byte[] bytes) {
         int addr = bytes[0] & 0xFF;
         addr |= ((bytes[1] << 8) & 0xFF00);
@@ -1950,7 +1957,7 @@ public class Utils {
     }
 
     //新规则得到的管壳码转换雷管序号Id
-    public static String  ShellNo_NewDanLing(String shellStr) {
+    public static String ShellNo_NewDanLing(String shellStr) {
         String changjia = shellStr.substring(0, 2);
         String yearStr = shellStr.substring(2, 3);
         String monthStr = shellStr.substring(3, 5);
@@ -1958,15 +1965,15 @@ public class Utils {
         String teStr = shellStr.substring(7, 8);
         String noStr = shellStr.substring(8, 13);
         int day = Integer.parseInt(dayStr);
-        if(monthStr.equals("11")){
-            monthStr="12";
-        }else if(monthStr.equals("12")){
-            monthStr="13";
+        if (monthStr.equals("11")) {
+            monthStr = "12";
+        } else if (monthStr.equals("12")) {
+            monthStr = "13";
         }
         int t = Integer.parseInt(monthStr);
         char a = HEX_CHAR[t];
-        Log.e("转换", "shellStr: "+changjia+"2"+yearStr+a+dayStr+teStr+noStr );
-        return changjia+"2"+yearStr+a+dayStr+teStr+noStr;
+        Log.e("转换", "shellStr: " + changjia + "2" + yearStr + a + dayStr + teStr + noStr);
+        return changjia + "2" + yearStr + a + dayStr + teStr + noStr;
     }
 
     /**
@@ -2007,6 +2014,7 @@ public class Utils {
         }
         return destination;
     }
+
     public static String HeHao(String data) {
         String endNo = null;
         switch (data) {
@@ -2333,7 +2341,8 @@ public class Utils {
     }
 
     private static SimpleDateFormat simpleDateFormat = null;
-    public  static String formatDateTime(long time, String strPattern) {
+
+    public static String formatDateTime(long time, String strPattern) {
         if (TextUtils.isEmpty(strPattern)) {
             strPattern = "yyyy-MM-dd HH:mm:ss";
         }
@@ -2347,6 +2356,7 @@ public class Utils {
         }
         return simpleDateFormat == null ? "NULL" : simpleDateFormat.format(time);
     }
+
     public static String getLocationStr(BDLocation location, LocationClient locationClient) {
         if (null == location) {
             return null;
@@ -2398,7 +2408,7 @@ public class Utils {
         if (location.getPoiList() != null && !location.getPoiList().isEmpty()) {
             for (int i = 0; i < location.getPoiList().size(); i++) {
                 Poi poi = (Poi) location.getPoiList().get(i);
-                sb.append("\n"+" POI名称 : ");
+                sb.append("\n" + " POI名称 : ");
                 sb.append(poi.getName() + ", ");
                 sb.append("POI类型 : ");
                 sb.append(poi.getTags());
@@ -2418,7 +2428,7 @@ public class Utils {
             sb.append(version);
         }
 
-        return  sb.toString();
+        return sb.toString();
     }
 
 
@@ -2445,13 +2455,12 @@ public class Utils {
         String filePath;
         boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
         if (hasSDCard) {
-            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + str ;
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + str;
         } else {
-            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + str ;
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + str;
         }
-        Log.e("删除数据", "deleteDirWihtFile: 1" );
+        Log.e("删除数据", "deleteDirWihtFile: 1");
         File dir = new File(filePath);
-
 
 
         if (dir == null || !dir.exists() || !dir.isDirectory())
@@ -2463,17 +2472,17 @@ public class Utils {
                 deleteDirWihtFile(str); // 递规的方式删除文件夹
         }
         dir.delete();// 删除目录本身
-        Log.e("删除数据", "deleteDirWihtFile: 2" );
+        Log.e("删除数据", "deleteDirWihtFile: 2");
     }
 
-    public static  void deleteFile(File file) {
-        Log.e("删除数据", "deleteDirWihtFile: 1" );
+    public static void deleteFile(File file) {
+        Log.e("删除数据", "deleteDirWihtFile: 1");
         if (file.isFile()) {
             file.delete();
             return;
         }
-        Log.e("删除数据", "deleteDirWihtFile: 2" );
-        if(file.isDirectory()){
+        Log.e("删除数据", "deleteDirWihtFile: 2");
+        if (file.isDirectory()) {
             File[] childFiles = file.listFiles();
             if (childFiles == null || childFiles.length == 0) {
                 file.delete();
@@ -2481,7 +2490,7 @@ public class Utils {
             }
 
             for (int i = 0; i < childFiles.length; i++) {
-                Log.e("删除数据", "i" +i);
+                Log.e("删除数据", "i" + i);
                 deleteFile(childFiles[i]);
             }
             file.delete();
@@ -2527,20 +2536,20 @@ public class Utils {
         return "当前日志为空";
     }
 
-    public static  void deleteRiZhi(File file) {
+    public static void deleteRiZhi(File file) {
         if (file.isFile()) {
             file.delete();
             return;
         }
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             File[] childFiles = file.listFiles();
             if (childFiles == null || childFiles.length == 0) {
                 file.delete();
                 return;
             }
-            if(childFiles.length>60){
-                for (int i = 0; i < childFiles.length-5; i++) {
-                    Log.e("删除数据", "childFiles[i].getName()" +childFiles[i].getName());
+            if (childFiles.length > 60) {
+                for (int i = 0; i < childFiles.length - 5; i++) {
+                    Log.e("删除数据", "childFiles[i].getName()" + childFiles[i].getName());
                     deleteRiZhi(childFiles[i]);
                 }
             }
@@ -2554,7 +2563,7 @@ public class Utils {
 
 
     public static int duibi(String str1, String str2) {
-        int a =0;
+        int a = 0;
 
         // 比较两个字符串的长度
         if (str1.length() == str2.length()) {
@@ -2565,8 +2574,59 @@ public class Utils {
                 }
             }
         }
-        Log.e("对比UID", "相同字符个数: "+a );
+        Log.e("对比UID", "相同字符个数: " + a);
         return a;
+    }
+
+    public static String getDanlingCWXX(int a) {
+        String tip = "";
+        switch (a) {
+            case 0:
+                tip = "成功";
+                break;
+            case 1:
+                tip = "非法的申请信息";
+                break;
+            case 2:
+                tip = "未找到该起爆器设备信息或起爆器未设置作业任务";
+                break;
+            case 3:
+                tip = "该起爆器未设置作业任务";
+                break;
+            case 4:
+                tip = "起爆器在黑名单中";
+                break;
+            case 5:
+                tip ="起爆位置不在起爆区域内";
+                break;
+            case 6:
+                tip ="起爆位置在禁爆区域内";
+                break;
+            case 7:
+                tip ="该起爆器已注销 / 报废";
+                break;
+            case 8:
+                tip ="禁爆任务";
+                break;
+            case 9:
+                tip ="作业合同存在项目";
+                break;
+            case 10:
+                tip ="作业任务未设置准爆区域";
+                break;
+            case 11:
+                tip ="离线下载不支持生产厂家试爆";
+                break;
+            case 12:
+                tip ="营业性单位必须设置合同或者项目";
+                break;
+            case 99:
+                tip ="网络连接失败";
+                break;
+
+
+        }
+        return tip;
     }
 
 }

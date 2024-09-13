@@ -1945,27 +1945,25 @@ public class FiringMainActivity extends SerialPortActivity {
                 eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
+                    if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
+                        saveFireResult();
+                    }
 
                     AlertDialog dialog = new Builder(this)
                             .setTitle(getString(R.string.text_firing_tip15))//设置对话框的标题//"成功起爆"
                             .setMessage(getString(R.string.text_firing_tip16))//设置对话框的内容"本次任务成功起爆！"
                             //设置对话框的按钮
-                            .setNeutralButton(getString(R.string.text_test_exit), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
+                            .setNeutralButton(getString(R.string.text_test_exit), (dialog14, which) -> {
+                                dialog14.dismiss();
+                                finish();
                             })
-                            .setPositiveButton(getString(R.string.text_firing_tip17), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(FiringMainActivity.this, QueryHisDetail.class);
-                                    startActivityForResult(intent, 1);
-                                    dialog.dismiss();
-                                    closeThread();
-                                    closeForm();
-                                }
+                            .setPositiveButton(getString(R.string.text_firing_tip17), (dialog13, which) -> {
+
+                                Intent intent = new Intent(FiringMainActivity.this, QueryHisDetail.class);
+                                startActivityForResult(intent, 1);
+                                dialog13.dismiss();
+                                closeThread();
+                                closeForm();
                             }).create();
                     dialog.show();
                 }
@@ -3008,5 +3006,21 @@ public class FiringMainActivity extends SerialPortActivity {
         }
     }
 
+    /**
+     * 检查重复的历史记录
+     * @param time
+     * @return
+     */
+    public boolean checkRepeatHis(String time) {
+        Log.e(TAG, "判断是否生成历史记录 time: "+time );
+        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
 
+        if (denatorHis_Main != null) {
+            Log.e(TAG, "判断是否生成历史记录 his: "+true );
+            return true;
+        } else {
+            Log.e(TAG, "判断是否生成历史记录 his: "+false );
+            return false;
+        }
+    }
 }

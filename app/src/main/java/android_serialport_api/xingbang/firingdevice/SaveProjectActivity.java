@@ -277,21 +277,33 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 mAdapter.notifyDataSetChanged();
                 break;
             case R.id.btn_clear_htid:
+                at_htid.setText("");
+                at_htid.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_htid", at_htid);
                 break;
             case R.id.btn_clear_xmbh:
+                at_xmbh.setText("");
+                at_xmbh.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_xmbh", at_xmbh);
                 break;
             case R.id.btn_location:
+                at_coordxy.setText("");
+                at_coordxy.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_coordxy", at_coordxy);
                 break;
             case R.id.btn_clear_sfz:
+                at_bprysfz.setText("");
+                at_bprysfz.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_bprysfz", at_bprysfz);
                 break;
             case R.id.btn_clear_project_name:
+                at_projectName.setText("");
+                at_projectName.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_projectName", at_projectName);
                 break;
             case R.id.btn_clear_dwdm:
+                at_dwdm.setText("");
+                at_dwdm.setBackground(getResources().getDrawable(R.drawable.translucent));
                 deleteHistory("history_dwdm", at_dwdm);
                 break;
             case R.id.sv_sp:
