@@ -224,7 +224,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private final int cankaodianliu = 15;
     private boolean kaiguan = true;
     private List<DenatorBaseinfo> errlist = new ArrayList<>();
-    private String deviceStatus = "01";//显示设备状态:01（在线） 02（等待检测） 03（检测结束） 04（正在充电） 05（起爆结束）
+    private String deviceStatus = "01";//显示设备状态:01（在线） 02（等待检测） 03（检测结束） 04（正在充电） 05（等待起爆） 06（起爆结束）07（起爆结失败）
     private String cPeak = "0";//主控要显示的子机电流信息
     private String qbResult = "";//给主控更新起爆信息
     private boolean isSendWaitQb = false;//是否收到主控切换模式指令
@@ -1589,7 +1589,6 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e(TAG, "33指令已返回,充电倒计时值twoCount:" + twoCount);
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
 //            EventBus.getDefault().post(new FirstEvent("qbjg", "01"));//旧的命令
-            deviceStatus = "05";//起爆结束
             isGetQbResult = true;
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             //C000340100ABCDC0
@@ -1611,10 +1610,6 @@ public class FiringMainActivity extends SerialPortActivity {
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
 //            saveFireResult_All();
-            EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
-                    deviceStatus + qbResult));
-            Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
-                    deviceStatus + qbResult);
             if (!qbxm_id.equals("-1")) {
                 updataState(qbxm_id);
             }
@@ -1624,7 +1619,17 @@ public class FiringMainActivity extends SerialPortActivity {
                     msg.what = 3;
                     msg.obj = qbzt;
                     Handler_tip.sendMessage(msg);
+                    deviceStatus = "07";//起爆失败
+                    EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult));
+                    Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult);
                 } else {
+                    deviceStatus = "06";//起爆结束
+                    EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult));
+                    Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult);
                     increase(11);//跳到第9阶段
                     Log.e("increase", "9");
                 }
@@ -2441,6 +2446,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e(TAG, "twoCount_panduan: "+twoCount_panduan );
                                 if(twoCount_panduan>5){
                                     Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
+                                    deviceStatus = "05";
                                     if (sixCmdSerial == 3) {
                                         //跳转到1+5倒数计时5分钟阶段
                                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
