@@ -174,7 +174,6 @@ public class SyncActivity extends BaseActivity {
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         } else {
                             Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity.class);//四川大带载
-//                            Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity_hf.class);//华丰
                             intent5.putExtra("dataSend", str5);
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
