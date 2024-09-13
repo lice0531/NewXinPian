@@ -1058,26 +1058,28 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                                 showErrorDialog("当前电流疑似断路，请退出当前页面,重新进行级联");
                                             }
                                         }
-                                    } else if (Float.parseFloat(bean4.getCurrentPeak()) < (mListData.size() * 15 * 0.7)
-                                            && Float.parseFloat(bean4.getCurrentPeak()) > 8) {
-                                        long currentTime = System.currentTimeMillis();
-                                        // 记录第一次检测到异常的时间
-                                        if (!lastCheckTimes.containsKey("isDlgx")) {
-                                            lastCheckTimes.put("isDlgx", currentTime);
-                                        } else {
-                                            long firstTime = lastCheckTimes.get("isDlgx");
-                                            // 检查是否超过了 10 秒且尚未显示对话框
-                                            if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog6) {
-                                                Log.e(TAG, "电流过小开启A7线程--倒计时后:" + bean4.getCurrentPeak());
-                                                isShowError = true;
-                                                closeLx();
-                                                exitRemotePage();
-                                                showDialog6 = true;
-                                                Utils.writeRecord("级联页面" + bean4.getInfo() + "电流过小");
-                                                showErrorDialog("当前电流过小,请排查线路后,重新进行级联");
-                                            }
-                                        }
                                     }
+                                    //暂时先不加电流过小的判断
+//                                    else if (Float.parseFloat(bean4.getCurrentPeak()) < (mListData.size() * 15 * 0.7)
+//                                            && Float.parseFloat(bean4.getCurrentPeak()) > 8) {
+//                                        long currentTime = System.currentTimeMillis();
+//                                        // 记录第一次检测到异常的时间
+//                                        if (!lastCheckTimes.containsKey("isDlgx")) {
+//                                            lastCheckTimes.put("isDlgx", currentTime);
+//                                        } else {
+//                                            long firstTime = lastCheckTimes.get("isDlgx");
+//                                            // 检查是否超过了 10 秒且尚未显示对话框
+//                                            if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog6) {
+//                                                Log.e(TAG, "电流过小开启A7线程--倒计时后:" + bean4.getCurrentPeak());
+//                                                isShowError = true;
+//                                                closeLx();
+//                                                exitRemotePage();
+//                                                showDialog6 = true;
+//                                                Utils.writeRecord("级联页面" + bean4.getInfo() + "电流过小");
+//                                                showErrorDialog("当前电流过小,请排查线路后,重新进行级联");
+//                                            }
+//                                        }
+//                                    }
                                     if ("升高压中".equals(bean4.getInfo())) {
                                         if (Float.parseFloat(bean4.getCurrentPeak()) > 30000) {
                                             long currentTime = System.currentTimeMillis();

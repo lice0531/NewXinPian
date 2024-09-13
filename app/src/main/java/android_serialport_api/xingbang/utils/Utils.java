@@ -2290,121 +2290,6 @@ public class Utils {
         return destination;
     }
 
-    public static String XiangHao(String data) {
-        String endNo = null;
-        switch (data) {
-            case "01":
-                endNo = "04";
-                break;
-            case "02":
-                endNo = "09";
-                break;
-            case "03":
-                endNo = "14";
-                break;
-            case "04":
-                endNo = "19";
-                break;
-            case "05":
-                endNo = "24";
-                break;
-            case "06":
-                endNo = "29";
-                break;
-            case "07":
-                endNo = "34";
-                break;
-            case "08":
-                endNo = "39";
-                break;
-            case "09":
-                endNo = "44";
-                break;
-            case "10":
-                endNo = "49";
-                break;
-            case "11":
-                endNo = "54";
-                break;
-            case "12":
-                endNo = "59";
-                break;
-            case "13":
-                endNo = "64";
-                break;
-            case "14":
-                endNo = "69";
-                break;
-            case "15":
-                endNo = "74";
-                break;
-            case "16":
-                endNo = "79";
-                break;
-            case "17":
-                endNo = "84";
-                break;
-            case "18":
-                endNo = "89";
-                break;
-            case "19":
-                endNo = "94";
-                break;
-            case "20":
-                endNo = "99";
-                break;
-            case "A1":
-                endNo = "00";
-                break;
-            case "A2":
-                endNo = "01";
-                break;
-            case "A3":
-                endNo = "02";
-                break;
-            case "A4":
-                endNo = "03";
-                break;
-            case "A6":
-                endNo = "05";
-                break;
-            case "A7":
-                endNo = "06";
-                break;
-            case "A8":
-                endNo = "07";
-                break;
-            case "A9":
-                endNo = "08";
-                break;
-            case "B1":
-                endNo = "10";
-                break;
-            case "B2":
-                endNo = "11";
-                break;
-            case "B3":
-                endNo = "12";
-                break;
-            case "B4":
-                endNo = "13";
-                break;
-            case "B6":
-                endNo = "15";
-                break;
-            case "B7":
-                endNo = "16";
-                break;
-            case "B8":
-                endNo = "17";
-                break;
-            case "B9":
-                endNo = "18";
-                break;
-        }
-        return endNo;
-    }
-
 
     /**
      * 存储单位.
@@ -2689,5 +2574,236 @@ public class Utils {
             Log.e("对比UID", "相同字符个数: "+a );
             return a;
         }
+
+    public static String HeHao(String data) {
+        String endNo = null;
+        switch (data) {
+            case "01":
+                endNo = "04";
+                break;
+            case "02":
+                endNo = "09";
+                break;
+            case "03":
+                endNo = "14";
+                break;
+            case "04":
+                endNo = "19";
+                break;
+            case "05":
+                endNo = "24";
+                break;
+            case "06":
+                endNo = "29";
+                break;
+            case "07":
+                endNo = "34";
+                break;
+            case "08":
+                endNo = "39";
+                break;
+            case "09":
+                endNo = "44";
+                break;
+            case "10":
+                endNo = "49";
+                break;
+            case "11":
+                endNo = "54";
+                break;
+            case "12":
+                endNo = "59";
+                break;
+            case "13":
+                endNo = "64";
+                break;
+            case "14":
+                endNo = "69";
+                break;
+            case "15":
+                endNo = "74";
+                break;
+            case "16":
+                endNo = "79";
+                break;
+            case "17":
+                endNo = "84";
+                break;
+            case "18":
+                endNo = "89";
+                break;
+            case "19":
+                endNo = "94";
+                break;
+            case "20":
+                endNo = "99";
+                break;
+            case "A1":
+                endNo = "00";
+                break;
+            case "A2":
+                endNo = "01";
+                break;
+            case "A3":
+                endNo = "02";
+                break;
+            case "A4":
+                endNo = "03";
+                break;
+            case "A6":
+                endNo = "05";
+                break;
+            case "A7":
+                endNo = "06";
+                break;
+            case "A8":
+                endNo = "07";
+                break;
+            case "A9":
+                endNo = "08";
+                break;
+            case "B1":
+                endNo = "10";
+                break;
+            case "B2":
+                endNo = "11";
+                break;
+            case "B3":
+                endNo = "12";
+                break;
+            case "B4":
+                endNo = "13";
+                break;
+            case "B6":
+                endNo = "15";
+                break;
+            case "B7":
+                endNo = "16";
+                break;
+            case "B8":
+                endNo = "17";
+                break;
+            case "B9":
+                endNo = "18";
+                break;
+        }
+        return endNo;
+    }
+
+    public static int XiangHao(String data) {
+        int endNo = 0;
+        switch (data) {
+            case "1":
+                endNo = 5;
+                break;
+            case "2":
+                endNo = 10;
+                break;
+            case "3":
+                endNo = 15;
+                break;
+            case "4":
+                endNo = 20;
+                break;
+            case "5":
+                endNo = 25;
+                break;
+            case "6":
+                endNo = 30;
+                break;
+            case "7":
+                endNo = 35;
+                break;
+            case "8":
+                endNo = 40;
+                break;
+            case "9":
+                endNo = 45;
+                break;
+            case "A":
+                endNo = 50;
+                break;
+            case "B":
+                endNo = 55;
+                break;
+            case "C":
+                endNo = 60;
+                break;
+            case "D":
+                endNo = 65;
+                break;
+            case "E":
+                endNo = 70;
+                break;
+            case "F":
+                endNo = 75;
+                break;
+            case "G":
+                endNo = 80;
+                break;
+            case "H":
+                endNo = 85;
+                break;
+            case "I":
+                endNo = 90;
+                break;
+            case "J":
+                endNo = 95;
+                break;
+            case "K":
+                endNo = 100;
+                break;
+            case "L":
+                endNo = 1;
+                break;
+            case "M":
+                endNo = 2;
+                break;
+            case "N":
+                endNo = 3;
+                break;
+            case "P":
+                endNo = 4;
+                break;
+            case "Q":
+                endNo = 6;
+                break;
+            case "R":
+                endNo = 7;
+                break;
+            case "S":
+                endNo = 8;
+                break;
+            case "T":
+                endNo = 9;
+                break;
+            case "U":
+                endNo = 11;
+                break;
+            case "V":
+                endNo = 12;
+                break;
+            case "W":
+                endNo = 13;
+                break;
+            case "X":
+                endNo = 14;
+                break;
+            case "Y":
+                endNo = 16;
+                break;
+            case "Z":
+                endNo = 17;
+                break;
+            case "a":
+                endNo = 18;
+                break;
+            case "b":
+                endNo = 19;
+                break;
+
+        }
+        return endNo;
+    }
 
 }

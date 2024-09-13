@@ -219,18 +219,18 @@ public class SetDelayTime extends BaseActivity {
         btn_OK = findViewById(R.id.btn_setDelayTime_inputOK);
         btn_OK.setOnClickListener(v -> {
             if(startNoTxt.getText().length()==0){
-                show_Toast("请输入开始序号");
+                show_Toast(getResources().getString(R.string.text_ksxh));
                 return;
             }
             if(endNoTxt.getText().length()==0){
-                show_Toast("请输入结束序号");
+                show_Toast(getResources().getString(R.string.text_jsxh));
                 return;
             }
             AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
-                    .setTitle("是否修改延时")//设置对话框的标题//"成功起爆"
-                    .setMessage("当前正在进行修改延时操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
+                    .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
+                    .setMessage(getResources().getString(R.string.text_setDelay_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton("继续", (dialog13, which) -> {
+                    .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog13, which) -> {
                         dialog13.dismiss();
                         hideInputKeyboard();
 
@@ -257,7 +257,7 @@ public class SetDelayTime extends BaseActivity {
                         Log.e("同孔", "b: "+b);
                         Log.e("同孔", "list_duanNo: "+list_duanNo);
                         if(hasDuplicates(list_duanNo)||(a>1||b>1)){
-                            show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
+                            show_Toast(getResources().getString(R.string.text_setDelay_dialog3));
                             return;
                         }
 
@@ -274,7 +274,7 @@ public class SetDelayTime extends BaseActivity {
                             cursor6.close();
                         }
                         if(list_fanzhuan.size()>1){
-                            show_Toast("批量修改延时的雷管中有已翻转的雷管,请翻转后再重新修改");
+                            show_Toast(getResources().getString(R.string.text_setDelay_dialog4));
                             return;
                         }
 
@@ -284,7 +284,7 @@ public class SetDelayTime extends BaseActivity {
                             Log.e("延时1", "maxDelay: " + maxDelay);//9010
                             Log.e("延时2", "maxSecond: " + maxSecond);//5000
                             if (maxSecond > 0  &&  maxSecond < maxDelay) {
-                                show_Toast("当前设置延时已超出最大值"+maxSecond+"限制,请重新设置延时");
+                                show_Toast(getResources().getString(R.string.text_setDelay_dialog5)+maxSecond+getResources().getString(R.string.text_setDelay_dialog6));
                                 return;
                             }
                             pb_show = 1;
@@ -295,7 +295,7 @@ public class SetDelayTime extends BaseActivity {
                             show_Toast(checstr);
                         }
                     })
-                    .setNeutralButton("退出", (dialog2, which) -> {
+                    .setNeutralButton(getResources().getString(R.string.text_tc), (dialog2, which) -> {
                         dialog2.dismiss();
                         finish();
                     })
@@ -457,8 +457,8 @@ public class SetDelayTime extends BaseActivity {
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(getResources().getString(R.string.text_dialog_sc), (dialog, which) -> {
             dialog.dismiss();
 
             // TODO 开启进度条
@@ -474,19 +474,19 @@ public class SetDelayTime extends BaseActivity {
             }).start();
 
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
             } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "延时为空或大于最大设定延时，修改失败! "));
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip8)));
             } else {
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
                 Utils.saveFile();
             }
             dialog.dismiss();
@@ -526,56 +526,56 @@ public class SetDelayTime extends BaseActivity {
 //            }
 //
 //        });
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        builder.setNeutralButton(getResources().getString(R.string.xingbang_main_page_btn_del), (dialog, which) -> {
             dialog.dismiss();
             AlertDialog dialog2 = new AlertDialog.Builder(this)
-                    .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                    .setMessage("是否删除选中雷管")//设置对话框的内容"本次任务成功起爆！"
+                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton("取消", (dialog1, which1) -> dialog1.dismiss())
-                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                                // TODO 开启进度条
-                                runPbDialog();
-                                new Thread(() -> {
-                                    // 删除某一发雷管
-                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
-                                    Utils.writeRecord("--删除雷管:" + shellBlastNo);
-                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
-                                    // 区域 更新视图
-                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                                    pb_show = 0;
-                                }).start();
+                            // TODO 开启进度条
+                            runPbDialog();
+                            new Thread(() -> {
+                                // 删除某一发雷管
+                                new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                                Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                                Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
+                                // 区域 更新视图
+                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                                pb_show = 0;
+                            }).start();
 
                         }
                     }).create();
             dialog2.show();
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
             int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
 //            Log.e(TAG, "a: "+a );
             if (a > 1) {
-                show_Toast("同孔雷管不许修改延时,请删除后重新注册!");
+                show_Toast(getResources().getString(R.string.text_setDelay_dialog3));
                 return;
             }
             if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") ) {
-                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+                show_Toast(getResources().getString(R.string.text_lgfz));
                 return;
             }
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
-            } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "延时为空或大于最大设定延时，修改失败! "));
-            } else {
+            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip8)));
+            }else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
+            }  else {
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + "\n修改成功");
+                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -669,10 +669,10 @@ public class SetDelayTime extends BaseActivity {
         InputMethodManager imm = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!hasFocus) {
-            //隐藏 软键盘  
+            //隐藏 软键盘
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         } else {
-            //显示 软键盘  
+            //显示 软键盘
             imm.showSoftInput(v, 0);
         }
     }
@@ -881,7 +881,7 @@ public class SetDelayTime extends BaseActivity {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast( getResources().getString(R.string.text_show_1) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -899,9 +899,9 @@ public class SetDelayTime extends BaseActivity {
     private void setTitleRegion(String region,int size) {
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_list_piace) + region;
         } else {
-            str = " 区域" + region + "(数量: " + size + ")";
+            str = getString(R.string.text_list_piace) + region + "(" + getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

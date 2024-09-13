@@ -246,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="连续注册个数" />
+                        android:text="@string/text_scan_lxzcgs" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -262,7 +262,7 @@
                             android:layout_marginRight="2dp"
                             android:background="@drawable/translucent"
                             android:gravity="center"
-                            android:hint="连续个数"
+                            android:hint="@string/text_scan_lxgs"
                             android:maxLength="5"
                             android:numeric="integer"
                             android:selectAllOnFocus="true" />
@@ -273,7 +273,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:gravity="center"
-                            android:text="/个数" />
+                            android:text="@string/text_scan_gs" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -342,7 +342,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:text="孔间延时" />
+                                android:text="@string/text_scan_f1" />
 
                             <EditText
                                 android:id="@+id/re_et_f1"
@@ -352,13 +352,21 @@
                                 android:layout_weight="1.5"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
-                                android:hint="孔间延时"
+                                android:hint="@string/text_scan_f1"
                                 android:maxLength="6"
                                 android:numeric="integer"
                                 android:padding="5dp"
                                 android:textColor="@color/rangle_fc_base"
                                 android:textSize="@dimen/fireChildPageLabelFontSize" />
-
+                            <Button
+                                android:id="@+id/btn_JH_F1"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:layout_height="wrap_content"
+                                android:text="@string/text_jh"
+                                android:textSize="18sp"
+                                style="@style/allbtntstyle"
+                                />
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.5"
@@ -371,7 +379,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="0.5"
                                 android:layout_height="wrap_content"
-                                android:text="同孔"
+                                android:text="@string/text_tk"
                                 android:textSize="18sp"
                                 style="@style/allbtntstyle"
                                 />
@@ -390,7 +398,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:text="排间延时" />
+                                android:text="@string/text_scan_f2" />
 
                             <EditText
                                 android:id="@+id/re_et_f2"
@@ -400,12 +408,21 @@
                                 android:layout_weight="1.5"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
-                                android:hint="排间延时"
+                                android:hint="@string/text_scan_f2"
                                 android:maxLength="6"
                                 android:numeric="integer"
                                 android:padding="5dp"
                                 android:textColor="@color/rangle_fc_base"
                                 android:textSize="@dimen/fireChildPageLabelFontSize" />
+                            <Button
+                                android:id="@+id/btn_JH_F2"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:layout_height="wrap_content"
+                                android:text="@string/text_jh"
+                                android:textSize="18sp"
+                                style="@style/allbtntstyle"
+                                />
 
                             <TextView
                                 android:visibility="gone"
@@ -421,8 +438,7 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="0.5"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="2dp"
-                                android:hint="跳孔"
+                                android:hint="@string/text_tiaok"
                                 android:inputType="number"
                                 />
                             <Button
@@ -431,7 +447,7 @@
                                 android:layout_weight="0.5"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="2dp"
-                                android:text="跳孔"
+                                android:text="@string/text_tiaok"
                                 android:textSize="18sp"
                                 style="@style/allbtntstyle"
                                 />
@@ -467,7 +483,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="单发"
+                        android:text="@string/text_scan_df"
                         android:textSize="@dimen/childReisterPageLabelFontSize"
 
                         />
@@ -534,7 +550,7 @@
                             android:layout_weight="2"
                             android:background="@drawable/translucent"
                             android:gravity="center"
-                            android:hint="2位"
+                            android:hint="@string/text_reister_2b"
                             android:maxLength="2"
                             android:numeric="integer"
                             android:selectAllOnFocus="true" />
@@ -549,7 +565,7 @@
                             android:layout_weight="3"
                             android:background="@drawable/translucent"
                             android:gravity="center"
-                            android:hint="3位"
+                            android:hint="@string/text_reister_3b"
                             android:maxLength="3"
                             android:numeric="integer"
                             android:selectAllOnFocus="true" />
@@ -607,7 +623,7 @@
                         style="@style/allbtntstyle"
                         android:layout_width="100dp"
                         android:layout_height="50dp"
-                        android:text="手动输入"
+                        android:text="@string/text_scan_sdsr"
                         android:visibility="gone" />
 
 
@@ -617,7 +633,7 @@
                         android:layout_width="85dp"
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
-                        android:text="修改延时"
+                        android:text="@string/text_scan_xgys"
                         android:textSize="20sp" />
 
                     <Button
@@ -627,7 +643,7 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
                         android:background="@drawable/bt_mainpage_style"
-                        android:text="手动输入"
+                        android:text="@string/text_scan_sdsr"
                         android:textSize="20sp" />
 
                     <Button
@@ -648,7 +664,7 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
                         android:background="@drawable/bt_mainpage_style"
-                        android:text="选择段位"
+                        android:text="@string/text_scan_xzdw"
                         android:textSize="20sp"/>
                 </LinearLayout>
 
@@ -679,7 +695,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="1段" />
+                                android:text="@string/text_line_duan2" />
 
                             <TextView
                                 android:id="@+id/re_num_f1"
@@ -715,7 +731,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="2段" />
+                                android:text="@string/text_line_duan3" />
 
                             <TextView
                                 android:id="@+id/re_num_f2"
@@ -754,7 +770,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="3段" />
+                                android:text="@string/text_line_duan4" />
 
                             <TextView
                                 android:id="@+id/re_num_f3"
@@ -793,7 +809,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="4段" />
+                                android:text="@string/text_line_duan5" />
 
                             <TextView
                                 android:id="@+id/re_num_f4"
@@ -833,7 +849,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="5段" />
+                                android:text="@string/text_line_duan6" />
 
                             <TextView
                                 android:id="@+id/re_num_f5"
@@ -873,7 +889,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="6段" />
+                                android:text="@string/text_line_duan7" />
 
                             <TextView
                                 android:id="@+id/re_num_f6"
@@ -913,7 +929,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="7段" />
+                                android:text="@string/text_line_duan8" />
 
                             <TextView
                                 android:id="@+id/re_num_f7"
@@ -953,7 +969,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="8段" />
+                                android:text="@string/text_line_duan9" />
 
                             <TextView
                                 android:id="@+id/re_num_f8"
@@ -993,7 +1009,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="9段" />
+                                android:text="@string/text_line_duan10" />
 
                             <TextView
                                 android:id="@+id/re_num_f9"
@@ -1033,7 +1049,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="10段" />
+                                android:text="@string/text_line_duan11" />
 
                             <TextView
                                 android:id="@+id/re_num_f10"
@@ -1073,7 +1089,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="11段" />
+                                android:text="@string/text_line_duan12" />
 
                             <TextView
                                 android:id="@+id/re_num_f11"
@@ -1113,7 +1129,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="12段" />
+                                android:text="@string/text_line_duan13" />
 
                             <TextView
                                 android:id="@+id/re_num_f12"
@@ -1153,7 +1169,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="13段" />
+                                android:text="@string/text_line_duan14" />
 
                             <TextView
                                 android:id="@+id/re_num_f13"
@@ -1193,7 +1209,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="14段" />
+                                android:text="@string/text_line_duan15" />
 
                             <TextView
                                 android:id="@+id/re_num_f14"
@@ -1233,7 +1249,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="15段" />
+                                android:text="@string/text_line_duan16" />
 
                             <TextView
                                 android:id="@+id/re_num_f15"
@@ -1273,7 +1289,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="16段" />
+                                android:text="@string/text_line_duan17" />
 
                             <TextView
                                 android:id="@+id/re_num_f16"
@@ -1313,7 +1329,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="17段" />
+                                android:text="@string/text_line_duan18" />
 
                             <TextView
                                 android:id="@+id/re_num_f17"
@@ -1353,7 +1369,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="18段" />
+                                android:text="@string/text_line_duan19" />
 
                             <TextView
                                 android:id="@+id/re_num_f18"
@@ -1393,7 +1409,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="19段" />
+                                android:text="@string/text_line_duan20" />
 
                             <TextView
                                 android:id="@+id/re_num_f19"
@@ -1433,7 +1449,7 @@
                                 android:layout_height="35dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/bt_mainpage_style"
-                                android:text="20段" />
+                                android:text="@string/text_line_duan21" />
 
                             <TextView
                                 android:id="@+id/re_num_f20"
@@ -1499,7 +1515,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="已注册:"
+                        android:text="@string/text_reister_tip1"
                         android:textSize="18sp"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -1537,7 +1553,7 @@
                             android:layout_width="70dp"
                             android:layout_height="30dp"
                             android:background="@drawable/textview_border"
-                            android:text="延时" />
+                            android:text="@string/text_list_delay" />
 
                         <LinearLayout
                             android:id="@+id/re_gkm"
@@ -1552,7 +1568,7 @@
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
                                 android:gravity="right"
-                                android:text="管壳码" />
+                                android:text="@string/text_gkm" />
 
                             <TextView
                                 android:id="@+id/text_gkm2"

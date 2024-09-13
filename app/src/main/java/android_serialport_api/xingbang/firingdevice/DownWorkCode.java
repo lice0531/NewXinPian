@@ -581,56 +581,56 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mHandler_1 = new Handler(msg -> {
             switch (msg.what) {
                 case 0:
-                    show_Toast("项目下载成功");
+                    show_Toast(getResources().getString(R.string.text_xxcg));
                     break;
                 case 1:
                 case 99:
                     show_Toast(String.valueOf(msg.obj));
                     break;
                 case 2:
-                    show_Toast("未找到该起爆器设备信息或起爆器未设置作业任务");
+                    show_Toast(getResources().getString(R.string.text_xzsb1));
                     break;
                 case 3:
-                    show_Toast("该起爆器未设置作业任务");
+                    show_Toast(getResources().getString(R.string.text_xzsb2));
                     break;
                 case 4:
-                    show_Toast("起爆器在黑名单中");
+                    show_Toast(getResources().getString(R.string.text_xzsb3));
                     break;
                 case 5:
-                    show_Toast("起爆位置不在起爆区域内");
+                    show_Toast(getResources().getString(R.string.text_xzsb4));
                     break;
                 case 6:
-                    show_Toast("起爆位置在禁爆区域内");
+                    show_Toast(getResources().getString(R.string.text_xzsb5));
                     break;
                 case 7:
-                    show_Toast("该起爆器已注销/报废");
+                    show_Toast(getResources().getString(R.string.text_xzsb6));
                     break;
                 case 8:
-                    show_Toast("禁爆任务");
+                    show_Toast(getResources().getString(R.string.text_xzsb7));
                     break;
                 case 9:
-                    show_Toast("作业合同存在项目");
+                    show_Toast(getResources().getString(R.string.text_xzsb8));
                     break;
                 case 10:
-                    show_Toast("作业任务未设置准爆区域");
+                    show_Toast(getResources().getString(R.string.text_xzsb9));
                     break;
                 case 11:
-                    show_Toast("离线下载不支持生产厂家试爆");
+                    show_Toast(getResources().getString(R.string.text_xzsb10));
                     break;
                 case 12:
-                    show_Toast("营业性单位必须设置合同或者项目");
+                    show_Toast(getResources().getString(R.string.text_xzsb11));
                     break;
                 case 13:
-                    show_Toast("网络请求失败,请检查网络后再次尝试");
+                    show_Toast(getResources().getString(R.string.text_xzsb12));
                     break;
                 case 14:
-                    show_Toast("丹灵系统异常，请与丹灵管理员联系后再尝试下载");
+                    show_Toast(getResources().getString(R.string.text_xzsb13));
                     break;
                 case 15:
-                    show_Toast("网络异常，请确认网络正常后再尝试下载");
+                    show_Toast(getResources().getString(R.string.text_xzsb14));
                     break;
                 case 89:
-                    show_Toast("输入的管壳码重复");
+                    show_Toast(getResources().getString(R.string.text_xzsb15));
                     break;
 
 
@@ -659,13 +659,15 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 show_Toast(getResources().getString(R.string.text_error_tip2));
             } else if (isCorrectReisterFea == 3) {
                 SoundPlayUtils.play(3);
-                show_Toast("已达到最大延时限制");
+                show_Toast(getResources().getString(R.string.text_reister_tip5));
             } else if (isCorrectReisterFea == 4) {
                 SoundPlayUtils.play(3);
-                show_Toast("与第" + lg_No + "发" + singleShellNo + "重复");
+                show_Toast(getResources().getString(R.string.text_error_tip69) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
+//                show_Toast("与第" + lg_No + "发" + singleShellNo + "重复");
             } else {
                 SoundPlayUtils.play(3);
-                show_Toast("注册失败");
+
+                show_Toast(getResources().getString(R.string.text_line_tip9));
             }
             isCorrectReisterFea = 0;
             return false;
@@ -829,62 +831,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     };
 
 
-    /**
-     * 扫码注册方法
-     */
-    private void scan() {
-        scanDecode = new ScanDecode(this);
-        scanDecode.initService("true");//初始化扫描服务
 
-        scanDecode.getBarCode(new ScanInterface.OnScanListener() {
-            @Override
-            public void getBarcode(String data) {
-                // scanInfo = data;
-                if (data.length() == 19) {
-                    Log.e("箱号", "getBarcode: " + data);
-                    addXiangHao(data);//扫描箱号
-                }
-                if (sanButtonFlag > 0) {
-                    scanDecode.stopScan();
-                    decodeBar(data);
-                } else {
-                    if (continueScanFlag == 1) {
-                        String barCode = getContinueScanBlastNo(data);
-                        if (barCode == null) return;
-                        if (checkRepeatShellNo(barCode) == 1) {
-                            singleShellNo = barCode;
-                            isCorrectReisterFea = 4;
-                            mHandler_3.sendMessage(mHandler_3.obtainMessage());
-                            return;
-                        } else {
-                            show_Toast(getResources().getString(R.string.text_error_tip10) + barCode);
-                        }
-                        SoundPlayUtils.play(1);
-                        insertSingleDenator(barCode);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * 停止扫码
-     */
-    private void stopScan() {
-        continueScanFlag = 0;
-        btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
-        btnSetdelay.setEnabled(true);
-        scanDecode.stopScan();//停止扫描
-        if (scanBarThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
 
     /***
      * 单发注册
@@ -1021,22 +968,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         sanButtonFlag = 0;
     }
 
-    /**
-     * 扫描箱号
-     */
-    private void addXiangHao(String data) {
-        char[] xh = data.toCharArray();
-        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
-        final String strNo = "00";
-        String a = xh[5] + "" + xh[6];
-        String endNo = Utils.XiangHao(a);
-        final String prex = String.valueOf(strNo1);
-        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
-        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo);//添加
-        }).start();
-    }
+
 
 //    private void initAutoComplete(String field, AutoCompleteTextView auto) {
 //        SharedPreferences sp = getSharedPreferences("network_url", 0);
@@ -1479,10 +1411,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         //获取系统 IMM
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!hasFocus) {
-            //隐藏 软键盘  
+            //隐藏 软键盘
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         } else {
-            //显示 软键盘  
+            //显示 软键盘
             imm.showSoftInput(v, 0);
         }
     }
@@ -1536,7 +1468,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String coordxy = at_coordxy.getText().toString().replace("\n", "").replace("，", ",").replace(" ", "");
         String[] a = coordxy.split("\\.");
         if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5 || a.length != 3) {
-            tipStr = "经度纬度设置不正确，具体格式为如:116.585989,36.663456";
+            tipStr = getResources().getString(R.string.text_down_tip11);
             return tipStr;
         }
         String xy[] = coordxy.split(",");
@@ -1568,9 +1500,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         wd_5.setText(wd.substring(0, 6));
         wd_4.setText(wd.substring(6));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("经纬度说明");//"说明"
+        builder.setTitle(getResources().getString(R.string.text_down_tip12));//"说明"
         builder.setView(view);
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
             at_coordxy.setText(jd_5.getText().toString() + jd_4.getText().toString() + "," + wd_5.getText().toString() + wd_4.getText().toString() + "");
             dialog.dismiss();
         });
@@ -1800,7 +1732,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String addNum = etNum.getText().toString();
         String duan = etDuan.getText().toString();
         if (!StringUtils.isNotBlank(duan)) {
-            tipStr = "段位不能为空";
+            tipStr = getResources().getString(R.string.text_down_tip18);
             return tipStr;
         }
         if (!StringUtils.isNotBlank(st2Bit)) {
@@ -1832,7 +1764,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             return tipStr;
         }
         if (!StringUtils.isNotBlank(edsno) && !StringUtils.isNotBlank(addNum)) {
-            tipStr = "结束序列号和连续注册个数不能同时为空";//  "结束序列号不能为空";
+            tipStr = getResources().getString(R.string.text_scan_cuowu1);//  "结束序列号不能为空";
             return tipStr;
         }
         if (!st2Bit.equals(ed2Bit)) {
@@ -1886,13 +1818,13 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 TextView textview = new TextView(this);
                 textview.setTextSize(25);
                 textview.setTextColor(Color.RED);
-                textview.setText("请确认是否删除所选授权信息,点击确认删除!");
+                textview.setText( getResources().getString(R.string.text_down_tip19));
                 textview.setTypeface(null, Typeface.BOLD);
                 AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题
+                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题
                         .setView(textview)
                         //设置对话框的按钮
-                        .setPositiveButton("确认", (dialog3, which) -> {
+                        .setPositiveButton(getResources().getString(R.string.text_verify), (dialog3, which) -> {
                             dialog3.dismiss();
                             delShouQuan(map_dl.get(position).get("id").toString());//删除方法
                             GreenDaoMaster master = new GreenDaoMaster();
@@ -1902,7 +1834,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             }
                             mAdapter_sq.notifyDataSetChanged();
                         })
-                        .setNeutralButton("取消", (dialog3, which) -> {
+                        .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog3, which) -> {
                             dialog3.dismiss();
                         })
                         .create();
@@ -2034,7 +1966,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             this.currentPage++;
         }
         if (list_all == null) {
-            show_Toast("请注册雷管!");
+            show_Toast(getResources().getString(R.string.text_down_tip20));
         }
         list_uid.clear();
         for (int i = 0; i < list_all.size(); i++) {
@@ -2144,7 +2076,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String selection = "id = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {id + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         db.delete(DatabaseHelper.TABLE_NAME_SHOUQUAN, selection, selectionArgs);
-        show_Toast("删除成功");
+        show_Toast(getResources().getString(R.string.text_del_ok));
         return 0;
     }
 
@@ -2405,37 +2337,37 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         String tv_dwdm = at_dwdm.getText().toString().trim();//单位代码 13位
         if (list_uid.size() < 1) {
             Log.e("长度", "" + list_uid.size());
-            show_Toast("当前雷管为空,请先注册雷管");
+            show_Toast(getResources().getString(R.string.text_down_err1));
             return false;
         }
         if (equ_no.length() < 1) {
-            show_Toast("当前设备编号为空,请先设置设备编号");
+            show_Toast(getResources().getString(R.string.text_down_err2));
             return false;
         }
         if (at_coordxy.getText().toString().trim().length() < 1) {
-            show_Toast("经纬度不能为空!");
+            show_Toast(getResources().getString(R.string.text_down_err3));
             return false;
         }
         if (sfz.length() < 18) {
-            show_Toast("人员证号格式不对!");
+            show_Toast(getResources().getString(R.string.text_down_err5));
             return false;
         }
         if (!at_coordxy.getText().toString().trim().contains(",")) {
-            show_Toast("经纬度格式不对");
+            show_Toast(getResources().getString(R.string.text_down_err6));
             return false;
         }
         if (at_coordxy.getText().toString().trim().contains("4.9E-")) {
-            show_Toast("经纬度格式不对，请按照例如116.38,39.90格式输入");
+            show_Toast(getResources().getString(R.string.text_down_err7));
             return false;
         }
         if (StringUtils.isBlank(tx_htid) && StringUtils.isBlank(tv_xmbh) && StringUtils.isBlank(tv_dwdm)) {
-            show_Toast("合同编号,项目编号,单位代码不能同时为空");
+            show_Toast(getResources().getString(R.string.text_down_err8));
             return false;
         }
         if (tx_htid.length() != 0 && tx_htid.length() < 15) {
             Log.e("验证", "tx_htid.length(): " + tx_htid.length());
             Log.e("验证", "tx_htid: " + tx_htid);
-            show_Toast("合同编号小于15位,请重新核对");
+            show_Toast(getResources().getString(R.string.text_down_err9));
             return false;
         }
         return true;
@@ -2456,11 +2388,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                    btnDownReturn.setText("添加项目");
 //                }
                 AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle("清空提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("请确认是否清空所有下载信息,点击确认清空")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_down_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_down_dialog2))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
-                        .setPositiveButton("确认", (dialog, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss())
+                        .setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
                             dialog.dismiss();
                             GreenDaoMaster.delAllMessage();//清空数据
                             GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
@@ -2482,11 +2414,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 saveData();
                 hideInputKeyboard();//隐藏键盘,取消焦点
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("下载提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("请确认项目编号,地理位置等信息输入无误后,点击确认下载")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_down_dialog4))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_down_dialog5))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("再次确认", (dialog1, which) -> dialog1.dismiss())
-                        .setPositiveButton("确认下载", (dialog12, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_down_dialog6), (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton(getResources().getString(R.string.text_down_dialog7), (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
                                 upload();
@@ -2497,20 +2429,20 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 break;
             case R.id.btn_inputGKM://输入管壳码
                 if (lyInput.getVisibility() == View.GONE) {
-                    btnInputGKM.setText("隐藏内容");
+                    btnInputGKM.setText(getResources().getString(R.string.text_ycnr));
                     lyInput.setVisibility(View.VISIBLE);
                     lvShouquan.setVisibility(View.GONE);
                 } else {
                     lyInput.setVisibility(View.GONE);
                     lvShouquan.setVisibility(View.VISIBLE);
-                    btnInputGKM.setText("输入管壳码");
+                    btnInputGKM.setText(getResources().getString(R.string.text_down_srgkm));
                 }
 //                Intent intent = new Intent(this,ReisterMainPage_scan.class);
 //                startActivity(intent);
                 break;
             case R.id.btn_location://启动定位
                 if (jd.equals("")) {
-                    show_Toast("定位中,请稍等");
+                    show_Toast(getResources().getString(R.string.text_down_show1));
                     break;
                 }
                 createHelpDialog();
@@ -2532,11 +2464,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     runPbDialog();
                     if (addNum.length() > 0) {
                         if (Integer.parseInt(addNum) > 500) {
-                            show_Toast("单次最大注册不能超过500发");
+                            show_Toast(getResources().getString(R.string.text_scan_cuowu8));
                             return;
                         }
                         if (edsno.length() > 1) {
-                            show_Toast("终止序号和连续注册个数不能同时输入");
+                            show_Toast(getResources().getString(R.string.text_scan_bntssr));
                             return;
                         }
                         final int num = Integer.parseInt(addNum);//连续注册个数
@@ -2552,7 +2484,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             return;
                         }
                         if (edsno.length() < 5) {
-                            show_Toast("结束序号必须为5位");//  "结束序号不能小于开始序号";
+                            show_Toast(getResources().getString(R.string.text_js5));//  "结束序号不能小于开始序号";
                             return;
                         }
                         if (start < 0 || end > 99999) {
@@ -2637,7 +2569,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         SharedPreferences sp = getSharedPreferences("network_url", 0);
         sp.edit().putString(field, "").apply();
         initAutoComplete(field, auto);
-        show_Toast("清空历史成功");
+        show_Toast(getResources().getString(R.string.text_down_show2));
     }
 
     @OnClick(R.id.btn_clear_project_name)
@@ -2774,7 +2706,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast("已选择 区域" + mRegion);
+                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
                 // 延时选择重置
 //                resetView();
 //                delay_set = "0";
@@ -2793,9 +2725,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         String str;
         if (size == -1) {
-            str = " 区域" + region;
+            str = getString(R.string.text_list_piace) + region;
         } else {
-            str = " 区域" + region + "(共:" + size + ")";
+            str = getString(R.string.text_list_piace) + region + getString(R.string.text_gong) + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
@@ -2850,7 +2782,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
             } else {
-                show_Toast("请至少选择一个区域");
+                show_Toast(getString(R.string.text_suidao_tip));
             }
 
         });

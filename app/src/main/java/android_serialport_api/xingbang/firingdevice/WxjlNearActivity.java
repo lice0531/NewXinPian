@@ -747,7 +747,6 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
         if (!(dataLength > 1)) {
             handler_msg.sendMessage(handler_msg.obtainMessage(1));
-//            EventBus.getDefault().post(new FirstEvent("is81End", "Y"));
             receive81 = true;
             Log.e(TAG, "81已结束");
             return;
@@ -800,6 +799,18 @@ public class WxjlNearActivity extends SerialPortActivity {
             case R.id.btn_register:
                 if (!isOpened) {
                     show_Toast("正在打开串口，打开后您再操作");
+                    return;
+                }
+                boolean isExitJl = false;
+                for (DenatorBaseinfo baseinfo : mListData) {
+                    if (baseinfo.getDenatorId() == null || baseinfo.getDenatorId().length() < 8) {
+                        isExitJl = true;
+                        Log.e(TAG, "雷管信息不完整,需退出级联");
+                        break;
+                    }
+                }
+                if (isExitJl) {
+                    show_littleTextToast(getResources().getString(R.string.text_text_msg1));
                     return;
                 }
                 if (receive80) {
