@@ -949,7 +949,7 @@ public class QueryHisDetail extends BaseActivity {
                             UploadResult result = new UploadResult();
                             msg.obj = result;
                             mHandler_tip.sendMessage(msg);
-                        }, 100);
+                        }, 500);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -962,8 +962,8 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-        String url = Utils.httpurl_xb_his;//公司服务器上传
-//        String url = "https://xbmonitor1.xingbangtech.com:553/XB/DataUpload";//公司服务器上传
+//        String url = Utils.httpurl_xb_his;//公司服务器上传
+        String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -1205,6 +1205,9 @@ public class QueryHisDetail extends BaseActivity {
 
     // 递归方法，逐个上传数据
     private void uploadNext(List<String> dateList, int index) {
+//        if(index>0){
+//            show_Toast("第"+index+"条上传成功");
+//        }
         if (index >= dateList.size()) {
             upload_all=false;
             Log.e("一键上传", "一键上传--所有数据已全部上传");
@@ -1271,9 +1274,13 @@ public class QueryHisDetail extends BaseActivity {
         if (server_type2.equals("2")) {
             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
         }
-        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
-
-
+        String finalBlastdate = blastdate;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                upload_xingbang(finalBlastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+            }
+        }).start();
 
     }
 
