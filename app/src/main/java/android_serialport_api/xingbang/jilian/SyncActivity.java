@@ -156,7 +156,7 @@ public class SyncActivity extends BaseActivity {
                         show_Toast(getString(R.string.text_sync_tip1));
                         break;
                     }
-                    if (response.contains("A001" + MyTools.getACode())) {
+                    if (response.contains("A001")) {
                         //同步成功
                         //收到服务器的同步确认指令
                         isTongBu = true;
@@ -544,7 +544,8 @@ public class SyncActivity extends BaseActivity {
 //                closeSocket();
                 finish();
 //                String a = "0002" + "D0000005" + "," + "1" + "," + "100" + "," + "0" + "," + "200" + "," + "300" + "," + "";
-////                writeData(a);
+//                writeData(a);
+                writeData("0005" + MyTools.getACode());
                 break;
             case R.id.btn_tongbu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
