@@ -1595,9 +1595,9 @@ public class FiringMainActivity extends SerialPortActivity {
             //C000340100ABCDC0
             String qbzt = fromCommad.substring(8, 10);
             //
-            if (!isJL) {
+//            if (!isJL) {
                 MmkvUtils.savecode("endTime", System.currentTimeMillis());//起爆完成也更新一下结束时间
-            }
+//            }
 //            if (qibaoNoFlag < 5) {
 //                Utils.writeRecord("第" + (qibaoNoFlag + 1) + "次发送起爆指令--");
 ////                Log.e("起爆", "第" + qibaoNoFlag + "次发送起爆指令: ");
@@ -1611,11 +1611,14 @@ public class FiringMainActivity extends SerialPortActivity {
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
 //            saveFireResult_All();
-
+            EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
+                    deviceStatus + qbResult));
+            Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                    deviceStatus + qbResult);
             if (!qbxm_id.equals("-1")) {
                 updataState(qbxm_id);
             }
-            if (!isJL) {
+//            if (!isJL) {
                 if (!"FF".equals(qbzt) && fromCommad.length() == 16) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.what = 3;
@@ -1625,14 +1628,14 @@ public class FiringMainActivity extends SerialPortActivity {
                     increase(11);//跳到第9阶段
                     Log.e("increase", "9");
                 }
-            } else {
-                EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
-                        deviceStatus + qbResult));
-                Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
-                        deviceStatus + qbResult);
-                increase(11);//跳到第9阶段
-                Log.e("increase", "9");
-            }
+//            } else {
+//                EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
+//                        deviceStatus + qbResult));
+//                Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+//                        deviceStatus + qbResult);
+//                increase(11);//跳到第9阶段
+//                Log.e("increase", "9");
+//            }
 //                try {
 //                    Thread.sleep(50);
 //                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
@@ -1735,7 +1738,7 @@ public class FiringMainActivity extends SerialPortActivity {
             } else {
                 Utils.writeRecord("busHandler为空");
             }
-            if (!isJL) {
+//            if (!isJL) {
                 if (stage == 8 && eightCount != Qibaotime) {
                     Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu +
                             "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
@@ -1780,7 +1783,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 befor_dianliu = busInfo.getBusCurrentIa();
                 befor_dianya = busInfo.getBusVoltage();
-            }
+//            }
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
@@ -2492,9 +2495,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 increase(8);
                                 Log.e("increase", "8");
                                 keyFireCmd = 0;
-                                if (isJL) {
+//                                if (isJL) {
                                     eightCmdExchangePower = 1;
-                                }
+//                                }
                             }
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;

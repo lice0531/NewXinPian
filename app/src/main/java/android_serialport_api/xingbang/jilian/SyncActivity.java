@@ -93,6 +93,7 @@ public class SyncActivity extends BaseActivity {
     private boolean isExit = false;
     private int delay = 0;
     private String Yanzheng = "";//是否验证地理位置
+    private String TAG = "热点级联页面";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +124,7 @@ public class SyncActivity extends BaseActivity {
 
     private void getPropertiesData() {
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
-        Log.e("级联", "Yanzheng: "+Yanzheng );
+        Log.e(TAG + "级联", "Yanzheng: "+Yanzheng );
     }
 
 
@@ -425,7 +426,7 @@ public class SyncActivity extends BaseActivity {
 //                        socket = new Socket(aEt.getText().toString().trim(), 9002);
                     socket = new Socket(getWifiRouteIPAddress(), 9002);
 //                        socket = new Socket("192.168.43.109", 9002);
-                    Log.e("socket输出",socket.isConnected() + " " + getWifiRouteIPAddress());
+                    Log.e(TAG + "socket输出",socket.isConnected() + " " + getWifiRouteIPAddress());
                     if (socket == null) {
                     } else {
                         socketStatus = true;
@@ -448,6 +449,7 @@ public class SyncActivity extends BaseActivity {
                         while (!isExit && (response = br.readLine()) != null) {
                             // 步骤4:通知主线程,将接收的消息显示到界面
 //                                log.e(response + "--");
+                            Log.e(TAG,"返回指令:" + response);
                             if (response.startsWith("A0")) {
                                 Message msg = Message.obtain();
                                 msg.what = 0;
@@ -477,7 +479,7 @@ public class SyncActivity extends BaseActivity {
         //        System.out.println("DHCP info netmask----->" + Formatter.formatIpAddress(dhcpInfo.netmask));
         //DhcpInfo中的ipAddress是一个int型的变量，通过Formatter将其转化为字符串IP地址
         String routeIp = Formatter.formatIpAddress(dhcpInfo.gateway);
-        Log.e("网络route ip", "wifi route ip：" + routeIp);
+        Log.e(TAG + "网络route ip", "wifi route ip：" + routeIp);
 
         return routeIp;
     }
@@ -660,7 +662,7 @@ public class SyncActivity extends BaseActivity {
                     outputStream.write(data.getBytes());
                     // 步骤3：发送数据到服务端
                     outputStream.flush();
-                    Log.e("级联", "发送数据: "+data);
+                    Log.e(TAG + "级联", "发送数据: "+data);
                     handler.sendEmptyMessage(2);
                 } catch (IOException e) {
                     e.printStackTrace();
