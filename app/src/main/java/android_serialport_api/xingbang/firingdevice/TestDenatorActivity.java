@@ -130,7 +130,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否发送41
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private final int cankaodianliu = 15;
+    private  int cankaodianliu = 15;
     private List<DenatorBaseinfo> errlist;
     private String Yanzheng = "";//是否验证地理位置
     private String changjia = "TY";
@@ -174,6 +174,12 @@ public class TestDenatorActivity extends SerialPortActivity {
         setContentView(R.layout.activity_writedelay_denator);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        if(changjia.equals("CQ")){
+            cankaodianliu=15;
+        }else {
+            cankaodianliu=17;
+        }
         //获取区号
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
@@ -204,7 +210,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         sendOpenThread = new SendOpenPower();
         sendOpenThread.start();
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+
     }
 
     private void initHandler() {
