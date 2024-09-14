@@ -101,7 +101,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private TextView ll_firing_deAmount_4;//雷管数
     private TextView ll_firing_deAmount_2;//雷管数
     private TextView ll_firing_errorAmount_4;//错误数
-    private TextView ll_firing_tureNum;
+    private TextView ll_firing_tureNum;//正确数量
+    private TextView ll_firing_tureNum_2;//正确数量
     private TextView ll_firing_errorAmount_2;//错误数
     private TextView tv__qb_dianliu_1;//参考电流
     private TextView tv__qb_dianliu_2;//参考电流
@@ -298,6 +299,7 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_errorAmount_2 = findViewById(R.id.ll_firing_errorAmount_2);//错误数
         ll_firing_errorAmount_4 = findViewById(R.id.ll_firing_errorAmount_4);//错误数
         ll_firing_tureNum = findViewById(R.id.ll_firing_tureNum);
+        ll_firing_tureNum_2 = findViewById(R.id.ll_firing_tureNum_2);
         tv__qb_dianliu_1 = findViewById(R.id.tv__qb_dianliu_1);//错误数
         tv__qb_dianliu_2 = findViewById(R.id.tv__qb_dianliu_2);//错误数
         ll_firing_Volt_6 = findViewById(R.id.ll_firing_Volt_6);
@@ -513,6 +515,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 tureNumStr = "0";
             }
             ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            ll_firing_tureNum_2.setText("" + (Integer.parseInt(tureNumStr) + 1));
             totaltureNum = Integer.parseInt(tureNumStr) + 1;
 //            ll_firing_tureNum.setTextColor(Color.GREEN);
             return false;
@@ -1433,6 +1436,9 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if ("02".equals(fromData.getCommicationStatus())) {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
             Utils.writeRecord("--起爆检测错误:" + fromData.toString());
+        }else {
+            Log.e(TAG, "updateDenator: 更新雷管正确数量" );
+            tureHandler.sendMessage(tureHandler.obtainMessage());
         }
 
         Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
