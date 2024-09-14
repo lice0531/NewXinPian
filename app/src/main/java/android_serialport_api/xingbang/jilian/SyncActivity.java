@@ -38,6 +38,7 @@ import android_serialport_api.xingbang.firingdevice.FiringMainActivity_hf;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
 import android_serialport_api.xingbang.firingdevice.VerificationActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -193,6 +194,7 @@ public class SyncActivity extends BaseActivity {
 //                        }
 //                        startActivityForResult(intent, REQUEST_CODE_QIBAO);
                     } else if (response.contains("A005")) {
+                        writeData("B005" + MyTools.getACode());
                         EventBus.getDefault().post(new FirstEvent("finish"));
 //                        show_Toast("收到退出指令");
                         finish();
@@ -223,7 +225,7 @@ public class SyncActivity extends BaseActivity {
                 case 6:
                     btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
-                    final String data2 = "0001" + MyTools.getACode() + "\n";
+                    final String data2 = "0001" + MyTools.getACode();
                     writeData(data2);
                     break;
                 case 10:
@@ -354,7 +356,6 @@ public class SyncActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         IntentBean item = new IntentBean();
         item.setRequestCode(requestCode);
         item.setResultCode(resultCode);
@@ -532,7 +533,7 @@ public class SyncActivity extends BaseActivity {
                 } else {
                     btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
-                    final String data = "0001" + MyTools.getACode() + "\n";
+                    final String data = "0001" + MyTools.getACode();
                     writeData(data);
                 }
 
@@ -663,7 +664,7 @@ public class SyncActivity extends BaseActivity {
                     // 步骤3：发送数据到服务端
                     outputStream.flush();
                     Log.e(TAG + "级联", "发送数据: "+data);
-                    handler.sendEmptyMessage(2);
+//                    handler.sendEmptyMessage(2);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -677,6 +678,37 @@ public class SyncActivity extends BaseActivity {
         if (msg.equals("qibao")) {
             String a = "0006";
             writeData(a);
+        } else if (msg.equals("ddjc")) {//等待检测
+            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
+            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
+            Log.e("热点级联页面返回ddjc测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B007" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+        } else if (msg.equals("jcjg")) {//返回测试结果
+            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
+            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
+            Log.e("热点级联页面返回jcjg测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B008" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+        } else if (msg.equals("zzcd")) {//正在充电
+            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
+            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
+            Log.e("热点级联页面返回zzcd测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B009" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+        } else if (msg.equals("ddqb")) {//等待起爆（1+5或1+3按触发起爆）
+            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
+            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
+            Log.e("热点级联页面返回ddqb测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B010" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+        } else if (msg.equals("qbjg")) {//返回起爆结果
+            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
+            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
+            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
+            String status = event.getData();
+            Log.e("热点级联页面返回qbjg测试结果", "status:" + status + "--tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B011" + MmkvUtils.getcode("ACode", "") + status + tureNum + errNum + currentPeak);
         }
     }
 

@@ -25,7 +25,7 @@ public class FirstEvent {
         this.data = data;
         mMsg = msg;
     }
-    public FirstEvent(String msg, String data,String currentPeak) {
+    public FirstEvent(String msg, String data, String currentPeak) {
         this.data = data;
         mMsg = msg;
         this.currentPeak = currentPeak;
@@ -33,14 +33,21 @@ public class FirstEvent {
 //    public FirstEvent(String msg, String data, String position) {
 //        this.position = position;
 //    }
-    public FirstEvent(String msg, String data, String position,String tureNum,String errNum) {
+    public FirstEvent(String msg, String tureNum, String errNum, String currentPeak) {
+        this.mMsg = msg;
+        this.tureNum = tureNum;
+        this.errNum = errNum;
+        this.currentPeak = currentPeak;
+    }
+
+    public FirstEvent(String msg, String data, String currentPeak, String tureNum, String errNum) {
         this.mMsg = msg;
         this.data = data;
-        this.position = position;
+        this.currentPeak = currentPeak;
         this.tureNum = tureNum;
         this.errNum = errNum;
     }
-    public FirstEvent(String msg, String data, String position,String tureNum,String errNum,String currentPeak) {
+    public FirstEvent(String msg, String data, String position, String tureNum, String errNum, String currentPeak) {
         this.mMsg = msg;
         this.data = data;
         this.position = position;
@@ -48,6 +55,7 @@ public class FirstEvent {
         this.errNum = errNum;
         this.currentPeak = currentPeak;
     }
+
     public String getMsg() {
         return mMsg;
     }
