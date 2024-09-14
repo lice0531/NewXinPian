@@ -22,7 +22,7 @@
             android:layout_weight="1"
             style="@style/alltextstyle"
             android:background="@color/green"
-            android:text="起爆测试" />
+            android:text="检测" />
 
         <Button
             android:id="@+id/btn_prepare_charge"
@@ -32,7 +32,7 @@
             android:layout_weight="1"
             style="@style/alltextstyle"
             android:background="@color/result_point_color"
-            android:text="准备充电" />
+            android:text="充电" />
     </LinearLayout>
 
     <LinearLayout
@@ -57,7 +57,7 @@
             android:layout_marginLeft="40dp"
             android:layout_weight="1"
             style="@style/alltextstyle"
-            android:text="退出级联" />
+            android:text="退出" />
     </LinearLayout>
     <TextView
         android:id="@+id/tv_msg"

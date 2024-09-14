@@ -96,6 +96,7 @@ public class WxjlNearActivity extends SerialPortActivity {
     private boolean receiveAB = false;//发出AB命令是否返回
     private boolean isReSendAB = true;//是否是切换信道，如果是切换信道，需要先发送AB设置无线驱动指令，再依次发送F9,AB
     private SetZJQThread setZjqThread;
+//    private SetNormalXinadaoThread setXindaoThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,15 +111,13 @@ public class WxjlNearActivity extends SerialPortActivity {
 
     @Override
     protected void onRestart() {
-//        isRestarted = true;
         super.onRestart();
         openHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                openSerial();
                 initSerialPort();
                 show_Toast("串口已打开");
-                Log.e(TAG,"onresume打开串口了");
+                Log.e(TAG,"onrestart打开串口了");
                 isOpened = true;
             }
         }, 2000);
@@ -132,6 +131,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 isOpened = true;
                 show_Toast("串口已打开");
                 Log.e(TAG,"init打开串口了");
+//                resetXindao();
             }
         }, 2000);
         mListData = new GreenDaoMaster().queryDetonatorRegionAsc();
@@ -163,11 +163,14 @@ public class WxjlNearActivity extends SerialPortActivity {
                         String jcmsResult = (String) msg.obj;
                         close82Thread();
                         if ("true".equals(jcmsResult)) {
-                            if (xinDaoId == 27) {
-                                Utils.writeRecord("近距离页面已经是27信道，直接进入级联页面");
+//                            if (xinDaoId == 27) {
+                            if (xinDaoId == 37) {
+//                                Utils.writeRecord("近距离页面已经是27信道，直接进入级联页面");
+                                Utils.writeRecord("近距离页面已经是37信道，直接进入级联页面");
                                 enterRemotePage();
                             } else {
-                                Utils.writeRecord("近距离页面信道不是27，开始发送AB指令");
+//                                Utils.writeRecord("近距离页面信道不是27，开始发送AB指令");
+                                Utils.writeRecord("近距离页面信道不是37，开始发送AB指令");
                                 setZjqThread = new SetZJQThread();
                                 setZjqThread.start();
                                 Log.e(TAG,"启动AB线程了");
@@ -226,7 +229,8 @@ public class WxjlNearActivity extends SerialPortActivity {
                                 receiveAB = false;
                                 isReSendAB = false;
                             } else {
-                                Utils.writeRecord("近距离页面成功切换到27信道，进入级联页面");
+//                                Utils.writeRecord("近距离页面成功切换到27信道，进入级联页面");
+                                Utils.writeRecord("近距离页面成功切换到37信道，进入级联页面");
                                 enterRemotePage();
                             }
                         } else {
@@ -235,11 +239,84 @@ public class WxjlNearActivity extends SerialPortActivity {
                             show_Toast("数据检测失败，请退出APP后再重新检测");
                         }
                         break;
+//                    case 10:
+//                        String qbResult = (String) msg.obj;
+//                        if ("true".equals(qbResult)) {
+//                            setXindaoThread = new SetNormalXinadaoThread();
+//                            setXindaoThread.start();
+//                            Utils.writeRecord("近距离页面F9指令接收成功");
+//                            Log.e(TAG,"查看错误雷管--信道已配置:" + xinDaoId + "--启动AB线程了");
+//                        } else {
+//                            Utils.writeRecord("近距离页面切换信道先发送AB指令接收失败");
+//                            show_Toast("切换信道F9指令失败");
+//                            Log.e(TAG,"F9指令无返回");
+//                        }
+//                        break;
+//                    case 11:
+//                        String zqResult = (String) msg.obj;
+//                        closeABThread();
+//                        if ("true".equals(zqResult)) {
+//                            if (isReSendAB) {
+//                                Utils.writeRecord("近距离页面第一次发送AB指令接收成功，开始发F9指令");
+//                                sendResetF9();
+//                                zeroCountAB = 0;
+//                                receiveAB = false;
+//                                isReSendAB = false;
+//                            } else {
+//                                Utils.writeRecord("近距离页面成功切换到1信道");
+//                                xinDaoValue = "CH37-2.4kbps-2";
+//                                MmkvUtils.savecode("xinDaoValue",xinDaoValue);
+//                                MmkvUtils.savecode("xinDao",37);
+//                                isOpened = true;
+//                                show_Toast("串口已打开");
+//                            }
+//                        } else {
+//                            Utils.writeRecord("级联页面AB指令无响应");
+//                            show_Toast("切换信道AB指令无返回");
+//                            Log.e(TAG,"AB指令无返回");
+//                        }
+//                        break;
                 }
                 return false;
             }
         });
     }
+
+//    private void resetXindao() {
+//        if (xinDaoId != 1) {
+//            setXindaoThread = new SetNormalXinadaoThread();
+//            setXindaoThread.start();
+//            Log.e(TAG,"进入近距离页面重置信道--启动AB线程了");
+//        }
+//    }
+
+//    private int zeroCountAB = 0;
+//    private class SetNormalXinadaoThread extends Thread {
+//        public volatile boolean exit = false;
+//        public void run() {
+//            while (!exit) {
+//                try {
+//                    Log.e(TAG,"AB指令发送次数:" + zeroCountAB);
+//                    if (zeroCountAB <= 1 && !receiveAB) {
+//                        sendResetAB();
+//                        Log.e(TAG, "发送AB设置无线中继器信道指令了");
+//                        Thread.sleep(1500);
+//                    } else if (zeroCountAB > 1){
+//                        Log.e(TAG,"AB指令未返回已发送1次，停止发送AB指令");
+//                        exit = true;
+//                        Message message = new Message();
+//                        message.what = 11;
+//                        message.obj = "error";
+//                        handler_msg.sendMessage(message);
+//                        break;
+//                    }
+//                    zeroCount++;
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     protected void onResume() {
@@ -248,15 +325,6 @@ public class WxjlNearActivity extends SerialPortActivity {
         xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
         Log.e(TAG,"当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
         Utils.writeRecord("近距离页面当前信道id:" + xinDaoId + "--信道value:" + xinDaoValue);
-    }
-
-    private void openSerial(){
-        if (isRestarted) {
-            initSerialPort();
-            show_Toast("串口已打开");
-            Log.e(TAG,"onresume打开串口了");
-            isOpened = true;
-        }
     }
 
     private void sendAB() {
@@ -270,12 +338,53 @@ public class WxjlNearActivity extends SerialPortActivity {
          * 回复CRC:不包含包头和包尾
          * 进入级联页面，直接将信道切为27
          */
-        xinDaoId = 27;
+//        xinDaoId = 27;
+        xinDaoId = 37;
         String b1 = Utils.intToHex(xinDaoId);
         String xdId1 = Utils.addZero(b1, 2);
 //        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
 //        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
         sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
+    }
+
+    private void sendResetAB() {
+        /**
+         * 给中继 KKF23WS00000001 设置信道 6 指令及回复如下：
+         * 指令：C5C5 12   AB   4B4B46323357533030303030303031    06      07   F9  E5E5
+         *      包头 长度 指令码 中继卡序列号(KKF23WS00000001)     主卡信道 固定不变  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复：C5C5  02   AB     00  8F  E5E5
+         *      包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         * 进入级联页面，直接将信道切为27
+         */
+//        xinDaoId = 27;
+        xinDaoId = 1;
+        String b1 = Utils.intToHex(xinDaoId);
+        String xdId1 = Utils.addZero(b1, 2);
+//        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
+    }
+
+    private void sendResetF9(){
+        /**
+         * 将起爆卡信道设置为 1 的指令及回复如下：
+         * 指令： C5C5  02  F9    01  AE  E5E5
+         *      包头  长度 指令码 信道  CRC 包尾
+         * 发送CRC:不包含包头、指令长度和包尾
+         * 回复： C5C5  02   F9    00   A9  E5E5
+         *       包头 长度 指令码 回复数据 CRC 包尾
+         * 回复CRC:不包含包头和包尾
+         */
+//        xinDaoId = 27;
+        xinDaoId = 1;
+        String b = Utils.intToHex(xinDaoId);
+        String xdId = Utils.addZero(b, 2);
+//        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
+//        sendCmd(CRC16.hexStringToByte(qbzXdCmd));
+        sendCmd(ThreeFiringCmd.sendWx_Qbk_F9(xdId));
+        Log.e(TAG,"发送F9指令了");
     }
 
     private void sendF9(){
@@ -288,7 +397,8 @@ public class WxjlNearActivity extends SerialPortActivity {
          *       包头 长度 指令码 回复数据 CRC 包尾
          * 回复CRC:不包含包头和包尾
          */
-        xinDaoId = 27;
+//        xinDaoId = 27;
+        xinDaoId = 37;
         String b = Utils.intToHex(xinDaoId);
         String xdId = Utils.addZero(b, 2);
 //        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
@@ -313,9 +423,11 @@ public class WxjlNearActivity extends SerialPortActivity {
     private void enterRemotePage() {
         tvEnterJcms.setText("3.进入级联页面");
         show_Toast("数据检测结束,进入级联页面");
-        xinDaoValue = "CH27-9.6kbps-2";
+//        xinDaoValue = "CH27-9.6kbps-2";
+//        MmkvUtils.savecode("xinDao",27);
+        xinDaoValue = "CH37-2.4kbps-2";
         MmkvUtils.savecode("xinDaoValue",xinDaoValue);
-        MmkvUtils.savecode("xinDao",27);
+        MmkvUtils.savecode("xinDao",37);
         xinDaoId = -1;
         closeSerial();
         try {

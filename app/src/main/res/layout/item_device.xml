@@ -11,7 +11,7 @@
 <!--        android:background="@color/colorAccent" />-->
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="80dp"
         android:layout_marginTop="2dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -81,9 +81,8 @@
             <TextView
                 android:id="@+id/tv_state"
                 style="@style/alltextstyle"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:textSize="18sp"
+                android:maxLines="2"
+                android:textSize="15sp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -93,7 +92,7 @@
                 style="@style/alltextstyle"
                 android:singleLine="true"
                 android:maxLines="1"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"

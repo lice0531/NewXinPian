@@ -153,6 +153,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private boolean showDialog7;
     private boolean showDialog8;
     private boolean showDialog9;
+    private boolean showDialog10;
     private int errorNum;//错误雷管数量
     private int currentCount;//当前A8发送的次数
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
@@ -306,7 +307,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         Log.e(TAG, "A1指令未返回已发送5次，停止发送A1指令");
                         Message message = new Message();
                         message.what = 16;
-                        message.obj = "起爆测试失败，请退出APP重新级联";
+                        message.obj = "检测失败，请退出APP重新级联";
                         handler_msg.sendMessage(message);
                         exit = true;
                         break;
@@ -632,11 +633,11 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             qh = true;
             // 充电
             msg.what = 9;
-            msg.obj = receiveMsg(res, "正在充电");
+            msg.obj = receiveMsg(res, "充电");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B3)) {
             // 充电升高压
             msg.what = 9;
-            msg.obj = receiveMsg(res, "升高压中");
+            msg.obj = receiveMsg(res, "高压充电");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B4)) {
             fuwei();
             // 单个设备起爆
@@ -778,8 +779,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //                    Log.e(TAG,"得到的B5消息中拿到检测状态了" + value.substring(value.length() - 3));
                     /**
                      * 001：同步      100：检测中      101：检测结束
-                     * 200：正在充电   201：充电结束    202：充电失败
-                     * 300：升高压中   301：升高压结束  302：升高压失败
+                     * 200：充电   201：充电结束    202：充电失败
+                     * 300：高压充电   301：高压充电结束  302：高压充电失败
                      * 400：起爆中     401：起爆结束   402：起爆失败
                      */
                     switch (value.substring(value.length() - 3)) {
@@ -793,7 +794,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             bean.setInfo("检测结束");
                             break;
                         case "200":
-                            bean.setInfo("正在充电");
+                            bean.setInfo("充电");
                             break;
                         case "201":
                             bean.setInfo("充电结束");
@@ -802,13 +803,13 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             bean.setInfo("充电失败");
                             break;
                         case "300":
-                            bean.setInfo("升高压中");
+                            bean.setInfo("高压充电");
                             break;
                         case "301":
-                            bean.setInfo("升压结束");
+                            bean.setInfo("高压充电结束");
                             break;
                         case "302":
-                            bean.setInfo("升压失败");
+                            bean.setInfo("高压充电失败");
                             break;
                         case "400":
                             bean.setInfo("起爆中");
@@ -941,8 +942,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         server.heart();//心跳监听
     }
 
-    private static final long MINIMUM_EXCESS_TIME_MS = 10000; // 10秒
-
+    private static final long DIYA_TIME_MS = 15000; // 低压暂定15秒
+    private static final long GAOYA_TIME_MS = 20000; // 高压暂定20秒
     private Map<String, Long> lastCheckTimes = new HashMap<>();
     private Handler handler_msg = new Handler(new Handler.Callback() {
         @Override
@@ -1039,8 +1040,30 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                             "查看错误雷管", "继续");
                                 }
                             }
-                            if ("检测中".equals(bean4.getInfo()) || "正在充电".equals(bean4.getInfo()) ||
-                                    "升高压中".equals(bean4.getInfo())) {
+//                            if ("检测中".equals(bean4.getInfo()) || "正在充电".equals(bean4.getInfo()) ||
+//                                    "升高压中".equals(bean4.getInfo())) {
+
+                            if ("检测中".equals(bean4.getInfo()) || "高压充电".equals(bean4.getInfo())) {
+                                int pdTime = "检测中".equals(bean4.getInfo()) ? 15000 : 25000;
+                                if (!TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage()))) {
+                                    if (bean4.getBusVoltage() < 6) {
+                                        long currentTime = System.currentTimeMillis();
+                                        if (!lastCheckTimes.containsKey("isDyyc")) {
+                                            lastCheckTimes.put("isDyyc", currentTime);
+                                        } else {
+                                            long firstTime = lastCheckTimes.get("isDyyc");
+                                            if ((currentTime - firstTime) >= pdTime && !showDialog1 && !showDialog3 && !showDialog4) {
+                                                Log.e(TAG, "电压异常开启A7线程--倒计时后:" + bean4.getBusVoltage());
+                                                isShowError = true;
+                                                exitRemotePage();
+                                                closeLx();
+                                                showDialog1 = true;
+                                                Utils.writeRecord("级联页面" + bean4.getInfo() + "电压异常");
+                                                showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
+                                            }
+                                        }
+                                    }
+                                }
                                 if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
                                     if (Float.parseFloat(bean4.getCurrentPeak()) < 8) {
                                         long currentTime = System.currentTimeMillis();
@@ -1048,7 +1071,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                             lastCheckTimes.put("isDl", currentTime);
                                         } else {
                                             long firstTime = lastCheckTimes.get("isDl");
-                                            if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog3) {
+                                            if ((currentTime - firstTime) >= pdTime && !showDialog3) {
                                                 Log.e(TAG, "断路开启A7线程--倒计时后:" + bean4.getCurrentPeak());
                                                 isShowError = true;
                                                 closeLx();
@@ -1080,14 +1103,14 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //                                            }
 //                                        }
 //                                    }
-                                    if ("升高压中".equals(bean4.getInfo())) {
+                                    if ("高压充电".equals(bean4.getInfo())) {
                                         if (Float.parseFloat(bean4.getCurrentPeak()) > 30000) {
                                             long currentTime = System.currentTimeMillis();
                                             if (!lastCheckTimes.containsKey("isSgyDuanLu")) {
                                                 lastCheckTimes.put("isSgyDuanLu", currentTime);
                                             } else {
                                                 long firstTime = lastCheckTimes.get("isSgyDuanLu");
-                                                if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog7) {
+                                                if ((currentTime - firstTime) >= pdTime && !showDialog7) {
                                                     Log.e(TAG, "升高压短路开启A7线程--倒计时后:" + bean4.getCurrentPeak());
                                                     isShowError = true;
                                                     closeLx();
@@ -1095,6 +1118,22 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                                     showDialog7 = true;
                                                     Utils.writeRecord("级联页面" + bean4.getInfo() + "电流短路");
                                                     showErrorDialog("当前电流疑似短路,请退出当前页面,重新进行级联");
+                                                }
+                                            }
+                                        } else {
+                                            if (Float.parseFloat(bean4.getCurrentPeak()) > (mListData.size() * 15 * 2)) {
+                                                long currentTime = System.currentTimeMillis();
+                                                if (!lastCheckTimes.containsKey("isGyDlgd")) {
+                                                    lastCheckTimes.put("isGyDlgd", currentTime);
+                                                } else {
+                                                    long firstTime = lastCheckTimes.get("isGyDlgd");
+                                                    if ((currentTime - firstTime) >= pdTime && !showDialog10) {
+                                                        Log.e(TAG, "高压充电电流过大显示dialog--倒计时后:" + bean4.getCurrentPeak());
+                                                        showDialog10 = true;
+                                                        Utils.writeRecord("级联页面" + bean4.getInfo() + "电流过大");
+                                                        showAlertDialog("当前电流过大,建议先排查线路,是否继续进行?",
+                                                                "退出", "继续");
+                                                    }
                                                 }
                                             }
                                         }
@@ -1105,7 +1144,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                                 lastCheckTimes.put("isPtDuanLu", currentTime);
                                             } else {
                                                 long firstTime = lastCheckTimes.get("isPtDuanLu");
-                                                if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog4) {
+                                                if ((currentTime - firstTime) >= pdTime && !showDialog4) {
                                                     Log.e(TAG, "检测或充电短路开启A7线程--倒计时后:" + bean4.getCurrentPeak());
                                                     isShowError = true;
                                                     closeLx();
@@ -1122,7 +1161,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                                     lastCheckTimes.put("isDlgd", currentTime);
                                                 } else {
                                                     long firstTime = lastCheckTimes.get("isDlgd");
-                                                    if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog5) {
+                                                    if ((currentTime - firstTime) >= pdTime && !showDialog5) {
                                                         Log.e(TAG, "检测或充电电流过大显示dialog--倒计时后:" + bean4.getCurrentPeak());
                                                         showDialog5 = true;
                                                         Utils.writeRecord("级联页面" + bean4.getInfo() + "电流过大");
@@ -1135,27 +1174,27 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                     }
                                 }
                             }
-                            if (!"起爆结束".equals(bean4.getInfo())) {
-                                if (!TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage()))) {
-                                    if (bean4.getBusVoltage() < 6) {
-                                        long currentTime = System.currentTimeMillis();
-                                        if (!lastCheckTimes.containsKey("isDyyc")) {
-                                            lastCheckTimes.put("isDyyc", currentTime);
-                                        } else {
-                                            long firstTime = lastCheckTimes.get("isDyyc");
-                                            if ((currentTime - firstTime) >= MINIMUM_EXCESS_TIME_MS && !showDialog1 && !showDialog3 && !showDialog4) {
-                                                Log.e(TAG, "电压异常开启A7线程--倒计时后:" + bean4.getBusVoltage());
-                                                isShowError = true;
-                                                exitRemotePage();
-                                                closeLx();
-                                                showDialog1 = true;
-                                                Utils.writeRecord("级联页面" + bean4.getInfo() + "电压异常");
-                                                showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+//                            if (!"起爆结束".equals(bean4.getInfo()) || !"充电".equals(bean4.getInfo())) {
+//                                if (!TextUtils.isEmpty(String.valueOf(bean4.getBusVoltage()))) {
+//                                    if (bean4.getBusVoltage() < 6) {
+//                                        long currentTime = System.currentTimeMillis();
+//                                        if (!lastCheckTimes.containsKey("isDyyc")) {
+//                                            lastCheckTimes.put("isDyyc", currentTime);
+//                                        } else {
+//                                            long firstTime = lastCheckTimes.get("isDyyc");
+//                                            if ((currentTime - firstTime) >= pdTime && !showDialog1 && !showDialog3 && !showDialog4) {
+//                                                Log.e(TAG, "电压异常开启A7线程--倒计时后:" + bean4.getBusVoltage());
+//                                                isShowError = true;
+//                                                exitRemotePage();
+//                                                closeLx();
+//                                                showDialog1 = true;
+//                                                Utils.writeRecord("级联页面" + bean4.getInfo() + "电压异常");
+//                                                showErrorDialog("当前起爆器电压异常,可能会导致总线短路,请并退出当前页面,检查线路后重新进行级联");
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
                             if ("升压失败".equals(bean4.getInfo())) {
                                 if (!showDialog8) {
                                     showDialog8 = true;
@@ -1626,10 +1665,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         String tip = "";
         switch (data) {
             case "A1":
-                tip = "起爆测试";
+                tip = "检测";
                 break;
             case "A2":
-                tip = "准备充电";
+                tip = "充电";
                 break;
             case "A4":
                 tip = "起爆";
@@ -1638,7 +1677,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                 tip = "起爆";
                 break;
             case "A7":
-                tip = "退出级联";
+                tip = "退出";
                 break;
         }
         String content = tip.equals("A7") ? "确定要" + tip : "确定进行" + tip;
@@ -1760,7 +1799,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     private void setTipText(String data) {
         switch (data) {
             case "A1":
-                tvTip.setText("正在起爆测试...");
+                tvTip.setText("正在检测...");
                 sendA1Cmd = new SendA1Cmd();
                 sendA1Cmd.start();
                 break;
