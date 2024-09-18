@@ -530,8 +530,10 @@
     <string name="text_sync_tip1">数据为空</string>
     <string name="text_sync_tip2">同步成功</string>
     <string name="text_sync_tip3">已连接</string>
-    <string name="text_sync_tip4">收到起爆测试指令</string>
-    <string name="text_sync_tip5">收到准备充电指令</string>
+<!--    <string name="text_sync_tip4">收到起爆测试指令</string>-->
+<!--    <string name="text_sync_tip5">收到准备充电指令</string>-->
+    <string name="text_sync_tip4">收到检测指令</string>
+    <string name="text_sync_tip5">收到充电指令</string>
     <string name="text_sync_tip6">收到起爆指令</string>
     <string name="text_sync_tip7">数据发送成功</string>
     <string name="text_sync_tip8">连接中...</string>

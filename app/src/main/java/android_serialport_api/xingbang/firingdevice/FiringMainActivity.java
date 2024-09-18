@@ -283,6 +283,14 @@ public class FiringMainActivity extends SerialPortActivity {
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        if (isJL) {
+            // 获取原始label
+            String originalTitle = getResources().getString(R.string.title_activity_firingpage); // 从资源中获取
+            String newTitle = originalTitle + "      子机: " + MmkvUtils.getcode("ACode", "");
+
+            // 设置Toolbar标题
+            getSupportActionBar().setTitle(newTitle);
+        }
         ll_1 = findViewById(R.id.ll_firing_1);
         ll_2 = findViewById(R.id.ll_firing_2);
         ll_4 = findViewById(R.id.ll_firing_4);
@@ -1540,9 +1548,8 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
             deviceStatus = "02";//等待检测
             int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-            int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
             String stureNum = Utils.strPaddingZero(allNum, 3);
-            String serrNum = Utils.strPaddingZero(errNum, 3);
+            String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
             String currentPeak = Utils.strPaddingZero(cPeak, 6);
             //热点级联发送等待检测
             EventBus.getDefault().post(new FirstEvent("ddjc", stureNum,serrNum,currentPeak));
@@ -1579,9 +1586,8 @@ public class FiringMainActivity extends SerialPortActivity {
             sixCmdSerial = 2;
             deviceStatus = "04";//正在充电
             int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-            int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
-            String stureNum = Utils.strPaddingZero(allNum, 3);
-            String serrNum = Utils.strPaddingZero(errNum, 3);
+            String stureNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+            String serrNum = Utils.strPaddingZero(totalerrorNum, 3);
             String currentPeak = Utils.strPaddingZero(cPeak, 6);
             //热点级联发送准备充电
             EventBus.getDefault().post(new FirstEvent("zzcd", stureNum,serrNum,currentPeak));
@@ -1615,46 +1621,27 @@ public class FiringMainActivity extends SerialPortActivity {
             if (!qbxm_id.equals("-1")) {
                 updataState(qbxm_id);
             }
-//            if (!isJL) {
-                if (!"FF".equals(qbzt) && fromCommad.length() == 16) {
-                    Message msg = Handler_tip.obtainMessage();
-                    msg.what = 3;
-                    msg.obj = qbzt;
-                    Handler_tip.sendMessage(msg);
-                    deviceStatus = "07";//起爆失败
-                } else {
-                    deviceStatus = "06";//起爆结束
-                    increase(11);//跳到第9阶段
-                    Log.e("increase", "9");
-                }
+            if (!"FF".equals(qbzt) && fromCommad.length() == 16) {
+                Message msg = Handler_tip.obtainMessage();
+                msg.what = 3;
+                msg.obj = qbzt;
+                Handler_tip.sendMessage(msg);
+                deviceStatus = "07";//起爆失败
+            } else {
+                deviceStatus = "06";//起爆结束
+                increase(11);//跳到第9阶段
+                Log.e("increase", "9");
+            }
             EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
                     deviceStatus + qbResult));
             Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
                     deviceStatus + qbResult);
             int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-            int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
             String stureNum = Utils.strPaddingZero(allNum, 3);
-            String serrNum = Utils.strPaddingZero(errNum, 3);
+            String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
             String currentPeak = Utils.strPaddingZero(cPeak, 6);
             //热点级联发送起爆结果
             EventBus.getDefault().post(new FirstEvent("qbjg", deviceStatus,currentPeak,stureNum,serrNum));
-//            } else {
-//                EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
-//                        deviceStatus + qbResult));
-//                Log.e("起爆结束了", "去重新打开485接口" + "起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
-//                        deviceStatus + qbResult);
-//                increase(11);//跳到第9阶段
-//                Log.e("increase", "9");
-//            }
-//                try {
-//                    Thread.sleep(50);
-//                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
-//                    sendCmd(reCmd);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
         } else if (DefCommand.CMD_3_DETONATE_6.equals(cmd)) {//35 退出起爆模式
             //发出关闭获取得到电压电流
 //            byte[] powerCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");//40
@@ -1890,9 +1877,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (dengdai) {
                     deviceStatus = "03";//检测结束
                     int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-                    int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
                     String stureNum = Utils.strPaddingZero(allNum, 3);
-                    String serrNum = Utils.strPaddingZero(errNum, 3);
+                    String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
                     String currentPeak = Utils.strPaddingZero(cPeak, 6);
                     //热点级联发送检测结果
                     EventBus.getDefault().post(new FirstEvent("jcjg", stureNum, serrNum, currentPeak));
@@ -2449,9 +2435,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                     Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
                                     deviceStatus = "05";
                                     int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-                                    int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
                                     String stureNum = Utils.strPaddingZero(allNum, 3);
-                                    String serrNum = Utils.strPaddingZero(errNum, 3);
+                                    String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
                                     String currentPeak = Utils.strPaddingZero(cPeak, 6);
                                     //热点级联发送等待起爆
                                     EventBus.getDefault().post(new FirstEvent("ddqb", stureNum, serrNum, currentPeak));
@@ -2462,9 +2447,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                         increase(7);
                                         deviceStatus = "05";
                                         int aNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-                                        int eNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
                                         String tureNum = Utils.strPaddingZero(aNum, 3);
-                                        String seNum = Utils.strPaddingZero(eNum, 3);
+                                        String seNum = Utils.strPaddingZero(Math.min(totalerrorNum, aNum), 3);
                                         String peak = Utils.strPaddingZero(cPeak, 6);
                                         //热点级联发送等待起爆
                                         EventBus.getDefault().post(new FirstEvent("ddqb", tureNum, seNum, peak));
@@ -2488,9 +2472,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                    Log.e("第7阶段-increase", "7");
                                     deviceStatus = "05";
                                     int aNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-                                    int eNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
                                     String tureNum = Utils.strPaddingZero(aNum, 3);
-                                    String seNum = Utils.strPaddingZero(eNum, 3);
+                                    String seNum = Utils.strPaddingZero(Math.min(totalerrorNum, aNum), 3);
                                     String peak = Utils.strPaddingZero(cPeak, 6);
                                     //热点级联发送等待起爆
                                     EventBus.getDefault().post(new FirstEvent("ddqb", tureNum, seNum, peak));
@@ -3520,9 +3503,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 //总是出现给主控发多次消息情况  所以检查是否距离上次处理超过 1 秒，优化为：1秒内只发送一次数据给主控
                 //收到主控轮巡的消息了  将实时的电流及设备状态发送给串口进行同步
                 int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-                int errNum = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
                 String stureNum = Utils.strPaddingZero(allNum, 3);
-                String serrNum = Utils.strPaddingZero(errNum, 3);
+                String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
                 String currentPeak = Utils.strPaddingZero(cPeak, 6);
                 EventBus.getDefault().post(new FirstEvent("ssjc", deviceStatus, "", stureNum, serrNum, currentPeak));
                 lastProcessedTime = currentTime; // 更新上次处理时间

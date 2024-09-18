@@ -524,8 +524,10 @@
     <string name="text_sync_tip1">Data is empty</string>
     <string name="text_sync_tip2">Sync successful</string>
     <string name="text_sync_tip3">Connected</string>
-    <string name="text_sync_tip4">Received detonation test command</string>
-    <string name="text_sync_tip5">Received command to prepare for charging</string>
+<!--    <string name="text_sync_tip4">Received detonation test command</string>-->
+<!--    <string name="text_sync_tip5">Received command to prepare for charging</string>-->
+    <string name="text_sync_tip4">Received test command</string>
+    <string name="text_sync_tip5">Receive charging command</string>
     <string name="text_sync_tip6">Received detonation command</string>
     <string name="text_sync_tip7">Data sent successfully</string>
     <string name="text_sync_tip8">Connecting…</string>
