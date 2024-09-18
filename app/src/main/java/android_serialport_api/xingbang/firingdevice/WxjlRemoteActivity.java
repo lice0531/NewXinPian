@@ -1065,7 +1065,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                     }
                                 }
                                 if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
-                                    if (Float.parseFloat(bean4.getCurrentPeak()) < 8) {
+                                    if (Float.parseFloat(bean4.getCurrentPeak()) <= 8) {
                                         long currentTime = System.currentTimeMillis();
                                         if (!lastCheckTimes.containsKey("isDl")) {
                                             lastCheckTimes.put("isDl", currentTime);
@@ -1289,9 +1289,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             } else {
                                 Utils.writeRecord("级联页面成功切换到1信道");
                                 enterNearPage();
-                                if (isHideDialog) {
-                                    dialog.dismiss();
-                                }
+                                dialog.dismiss();
                             }
                         } else {
                             Utils.writeRecord("级联页面AB指令无响应");
@@ -1713,7 +1711,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
     AlertDialog dialog;
-    boolean isHideDialog = false;
     public void showAlertDialog(String content, String cancleText, String sureText) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
             dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
@@ -1730,7 +1727,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 enterNearPage();
                                 dialog1.dismiss();
                             } else {
-                                isHideDialog = true;
                                 setZjqThread = new SetZJQThread();
                                 setZjqThread.start();
                                 Log.e(TAG,"启动AB线程了");
@@ -1796,14 +1792,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //        } else {
 //            Log.e(TAG, "A7线程已开启，不再重复开启");
 //        }
-//        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
-        if (xinDaoId == 1) {
-            enterNearPage();
-        } else {
-            setZjqThread = new SetZJQThread();
-            setZjqThread.start();
-            Log.e(TAG,"启动AB线程了");
-        }
+        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
     }
 
     private boolean isA7 = false;
@@ -1902,7 +1891,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        closeSerial();
         try {
             if (server != null) {
                 server.stopServerAsync();

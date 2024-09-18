@@ -84,7 +84,6 @@ public class DeviceAdapter extends BaseAdapter {
         holder.tv_currentPeak.setText(list.get(position).getCurrentPeak());
         if (list.get(position).getTrueNum() != null){
             holder.tv_tureNum.setText(list.get(position).getTrueNum());
-//            holder.tv_tureNum.setTextColor(Color.GREEN);
             holder.tv_errNum.setTextColor(Color.RED);
             holder.tv_errNum.setText(list.get(position).getErrNum());
         }
