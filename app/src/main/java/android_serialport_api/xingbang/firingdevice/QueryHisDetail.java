@@ -45,6 +45,8 @@ import java.util.Map;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.HisAdapter;
 import android_serialport_api.xingbang.custom.LoadHisDetailRecyclerAdapter;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
@@ -52,6 +54,8 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.QueryHisData;
 import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -725,59 +729,68 @@ public class QueryHisDetail extends BaseActivity {
      * 保存起爆结果
      */
     public synchronized void saveFireResult(String fireDate) {
-
-        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO, null);
-        int totalNum = cursor.getCount();//得到数据的总条数
-        if (totalNum < 1) return;
-
-        ContentValues values = new ContentValues();
+//        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
+//        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
+//        if (denatorCount < 1) return;
+        //如果总数大于60,删除第一个数据
+        int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
+//        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
+//        if (hisTotalNum > 80) {
+//            String time = loadHisMainData();
+//            Message message = new Message();
+//            message.obj = time;
+//            mHandler_tip.sendMessage(message);
+//
+//        }
+        String mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        String xy[] = pro_coordxy.split(",");//经纬度
         int maxNo = getHisMaxNumberNo();
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
         maxNo++;
 
-        //hisInsertFireDate = fireDate;
-
-        values.put("blastdate", fireDate);
-        values.put("uploadStatus", "0");
-        values.put("longitude", "0");
-        values.put("latitude", "0");
-        values.put("remark", "");
-        values.put("userid", pro_bprysfz);
-        values.put("equ_no", equ_no);
-        values.put("serialNo", "" + maxNo);
-        db.insert("denatorHis_Main", null, values);
-        QueryHisData item = new QueryHisData();
-        item.setBlastdate(fireDate);
-        item.setFiredNo(equ_no);
-        item.setLatitude("0");
-        item.setLongitude("0");
-        item.setRemark("");
-        item.setSerialNo("" + maxNo);
-        item.setUploadStatus(getString(R.string.text_query_up));//"未上传"
-        item.setUserid(pro_bprysfz);
-        item.setId("0");
-        list_savedate.add(item);
-        cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null, null, null, null, " blastserial asc");
-        if (cursor != null) {  //cursor不位空,可以移动到第一行
-            while (cursor.moveToNext()) {
-                values.clear();
-                values.put("blastserial", cursor.getInt(1));
-                values.put("sithole", cursor.getInt(2));
-                values.put("shellBlastNo", cursor.getString(3));
-                values.put("denatorId", cursor.getString(4));
-                values.put("delay", cursor.getInt(5));
-                values.put("statusCode", cursor.getString(6));
-                values.put("statusName", cursor.getString(7));
-                values.put("errorName", cursor.getString(8));
-                values.put("errorCode", cursor.getString(9));
-                values.put("authorization", cursor.getString(10));
-                values.put("remark", cursor.getString(11));
-                values.put("blastdate", fireDate);
-                db.insert("denatorHis_Detail", null, values);
-            }
-            cursor.close();
+        DenatorHis_Main his = new DenatorHis_Main();
+        his.setBlastdate(fireDate);
+        his.setUploadStatus("未传");
+        his.setRemark("已起爆");
+        his.setEqu_no(equ_no);
+//        his.setUserid(qbxm_name);
+        his.setPro_htid(pro_htid);
+        his.setPro_xmbh(pro_xmbh);
+        his.setPro_dwdm(pro_dwdm);
+        his.setSerialNo(-1);
+        his.setLog(Utils.readLog(Utils.getDate(new Date())));
+        his.setSum(list.size());
+        if (pro_coordxy.length() > 4) {
+            his.setLongitude(xy[0]);
+            his.setLatitude(xy[1]);
         }
-        Utils.saveFile();//把闪存中的数据存入磁盘中
-        // db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO,null,null);
+        getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
+        Utils.deleteRecord();//删除日志
+
+
+
+        GreenDaoMaster master = new GreenDaoMaster();
+        for (DenatorBaseinfo dbf : list) {
+            master.updateDetonatorTypezt(dbf.getShellBlastNo(),"已起爆");//更新授权库中状态
+
+            DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
+            denatorHis_detail.setBlastserial(dbf.getBlastserial());
+            denatorHis_detail.setSithole(dbf.getSithole());
+            denatorHis_detail.setShellBlastNo(dbf.getShellBlastNo());
+            denatorHis_detail.setDenatorId(dbf.getDenatorId());
+            denatorHis_detail.setDelay(dbf.getDelay());
+            denatorHis_detail.setStatusName(dbf.getStatusName());
+            denatorHis_detail.setStatusCode(dbf.getStatusCode());
+            denatorHis_detail.setErrorName(dbf.getErrorName());
+            denatorHis_detail.setErrorCode(dbf.getErrorCode());
+            denatorHis_detail.setAuthorization(dbf.getAuthorization());
+            denatorHis_detail.setRemark(dbf.getRemark());
+            denatorHis_detail.setBlastdate(fireDate);
+            denatorHis_detail.setPiece(dbf.getPiece());
+            getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
+        }
+
+        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**
@@ -822,8 +835,8 @@ public class QueryHisDetail extends BaseActivity {
      */
     private void upload(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
-//        String url = Utils.httpurl_upload_dl;//丹灵上传
-        String url = Utils.httpurl_upload_test;//丹灵测试上传网址
+        String url = Utils.httpurl_upload_dl;//丹灵上传
+//        String url = Utils.httpurl_upload_test;//丹灵测试上传网址
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -962,8 +975,8 @@ public class QueryHisDetail extends BaseActivity {
     private void upload_xingbang(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
-//        String url = Utils.httpurl_xb_his;//公司服务器上传
-        String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//公司服务器上传
+        String url = Utils.httpurl_xb_his;//公司服务器上传
+//        String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//公司服务器上传
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
@@ -1050,10 +1063,13 @@ public class QueryHisDetail extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_del_return:
-                Intent intentTemp = new Intent();
-                intentTemp.putExtra("backString", "");
-                setResult(1, intentTemp);
-                finish();
+
+                String fireDate = Utils.getDateFormatLong(new Date());
+                saveFireResult(fireDate);
+//                Intent intentTemp = new Intent();
+//                intentTemp.putExtra("backString", "");
+//                setResult(1, intentTemp);
+//                finish();
                 break;
 
             case R.id.tv_upload:
