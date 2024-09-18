@@ -1289,7 +1289,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                             } else {
                                 Utils.writeRecord("级联页面成功切换到1信道");
                                 enterNearPage();
-                                dialog.dismiss();
+                                if (isHideDialog) {
+                                    dialog.dismiss();
+                                }
                             }
                         } else {
                             Utils.writeRecord("级联页面AB指令无响应");
@@ -1660,9 +1662,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     }
 
     AlertDialog cmdDialog;
-
+    String tip = "";
     private void writeData(final String data) {
-        String tip = "";
         switch (data) {
             case "A1":
                 tip = "检测";
@@ -1687,7 +1688,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                     .setMessage(content + "吗？")
                     .setPositiveButton("确定", (dialog1, which) -> {
                         if (!"A7".equals(data)) {
-                            show_Toast("正在执行" + data);
+                            show_Toast("正在执行" + tip);
+                            Utils.writeRecord("级联页面正在执行" + data + "指令");
                             dialog1.dismiss();
                         }
                         switch (Build.DEVICE) {
@@ -1711,6 +1713,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         }
     }
     AlertDialog dialog;
+    boolean isHideDialog = false;
     public void showAlertDialog(String content, String cancleText, String sureText) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
             dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
@@ -1727,6 +1730,7 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                                 enterNearPage();
                                 dialog1.dismiss();
                             } else {
+                                isHideDialog = true;
                                 setZjqThread = new SetZJQThread();
                                 setZjqThread.start();
                                 Log.e(TAG,"启动AB线程了");
@@ -1742,9 +1746,10 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     }
 
 
+    AlertDialog errorAialog;
     private void showErrorDialog(String tip) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
-            AlertDialog dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
+            errorAialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
                     .setTitle("系统提示")//设置对话框的标题
                     .setMessage(tip)//设置对话框的内容
                     .setCancelable(false)
@@ -1759,8 +1764,8 @@ public class WxjlRemoteActivity extends SerialPortActivity {
                         setResult(Activity.RESULT_OK, intent);
                         finish();
                     }).create();
-            dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
-            dialog.show();
+            errorAialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
+            errorAialog.show();
         }
     }
 
@@ -1791,7 +1796,14 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 //        } else {
 //            Log.e(TAG, "A7线程已开启，不再重复开启");
 //        }
-        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
+//        sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
+        if (xinDaoId == 1) {
+            enterNearPage();
+        } else {
+            setZjqThread = new SetZJQThread();
+            setZjqThread.start();
+            Log.e(TAG,"启动AB线程了");
+        }
     }
 
     private boolean isA7 = false;
@@ -1890,7 +1902,6 @@ public class WxjlRemoteActivity extends SerialPortActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        sendCmd(ThreeFiringCmd.setWxjlA7("01"));
 //        closeSerial();
         try {
             if (server != null) {
@@ -1899,12 +1910,17 @@ public class WxjlRemoteActivity extends SerialPortActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        closeLx();
         closeA0Thread();
         closeA1Thread();
         closeA7Thread();
         closeA8Thread();
         closeABThread();
+        if (errorAialog != null && errorAialog.isShowing()) {
+            errorAialog.dismiss();
+        }
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
         openHandler.removeCallbacksAndMessages(null);
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
