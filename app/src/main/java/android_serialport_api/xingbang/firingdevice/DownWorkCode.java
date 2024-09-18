@@ -2452,6 +2452,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // 保存区域参数
+        mRegion = String.valueOf(item.getOrder());
+        // 保存区域参数(单选的时候要放开,多选关闭)
         SPUtils.put(this, Constants_SP.RegionCode, mRegion);
         switch (item.getItemId()) {
             case R.id.item_1:

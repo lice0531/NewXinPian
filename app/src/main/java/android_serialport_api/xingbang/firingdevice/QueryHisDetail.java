@@ -1073,55 +1073,93 @@ public class QueryHisDetail extends BaseActivity {
                 break;
 
             case R.id.tv_upload:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(QueryHisDetail.this);
-                builder2.setTitle("上传提示");//"请输入用户名和密码"
-                View view2 = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_upload, null);
-                builder2.setView(view2);
-                final EditText password2 = view2.findViewById(R.id.password);
-                builder2.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+                AlertDialog dialog2 = new AlertDialog.Builder(this)
+                        .setTitle("上传提示")//设置对话框的标题//"成功起爆"
+                        .setMessage("是否上传选中的起爆记录?")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNeutralButton("取消", (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton("确认", (dialog12, which) -> {
+                            dialog12.dismiss();
+                            dateList.clear();
+                            List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+                            for (int i = list_savedate.size() - 1; i >= 0; i--) {
 
-                    String b = password2.getText().toString().trim();
-                    if (b == null || b.trim().length() < 1) {
-                        show_Toast(getString(R.string.text_alert_password));
-                        return;
-                    }
-                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
-                    if ( b.equals("123")) {
-                        dateList.clear();
-                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
-                        for (int i = list_savedate.size() - 1; i >= 0; i--) {
-
-                            if (list_savedate.get(i).isSelect()) {
-                                Log.e(TAG, "选中的id: "+i );
-                                Log.e(TAG, "list_savedate.get(i).getBlastdate(): "+list_savedate.get(i).getBlastdate() );
-                                dateList.add(i+"");
+                                if (list_savedate.get(i).isSelect()) {
+                                    Log.e(TAG, "选中的id: "+i );
+                                    Log.e(TAG, "list_savedate.get(i).getBlastdate(): "+list_savedate.get(i).getBlastdate() );
+                                    dateList.add(i+"");
+                                }
                             }
-                        }
-                        updateEditState();
-                        upload_all=true;
+                            updateEditState();
+                            upload_all=true;
 //                        for (DenatorHis_Main his:list) {
 //                            if(his.getUploadStatus().equals("未上传")){
 //                                dateList.add(his.getBlastdate());
 //                            }
 //                        }
-                        if (dateList.size() > 0) {
-                            Log.e("一键上传","未上传的date集合:" + dateList.toString());
-                            uploadNext(dateList,uploadIndex);
-                        } else {
-                            show_Toast("当前没有需要上传的数据");
-                        }
-//                        show_Toast("已上传所有未上传记录");
-                    } else {
-                        show_Toast("密码错误");
-                    }
-                    loadMoreData(currentPage);//读取数据
-                    showLoadMore();
-                    dialog.dismiss();
-                });
-                builder2.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+                            if (dateList.size() > 0) {
+                                Log.e("一键上传","未上传的date集合:" + dateList.toString());
+                                uploadNext(dateList,uploadIndex);
+                            } else {
+                                show_Toast("当前没有需要上传的数据");
+                            }
+
+                            loadMoreData(currentPage);//读取数据
+                            showLoadMore();
+                        }).create();
+                dialog2.show();
 
 
-                builder2.show();
+
+//                AlertDialog.Builder builder2 = new AlertDialog.Builder(QueryHisDetail.this);
+//                builder2.setTitle("上传提示");//"请输入用户名和密码"
+//                View view2 = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_upload, null);
+//                builder2.setView(view2);
+//                final EditText password2 = view2.findViewById(R.id.password);
+//                builder2.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+//
+//                    String b = password2.getText().toString().trim();
+//                    if (b == null || b.trim().length() < 1) {
+//                        show_Toast(getString(R.string.text_alert_password));
+//                        return;
+//                    }
+//                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
+//                    if ( b.equals("123")) {
+//                        dateList.clear();
+//                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+//                        for (int i = list_savedate.size() - 1; i >= 0; i--) {
+//
+//                            if (list_savedate.get(i).isSelect()) {
+//                                Log.e(TAG, "选中的id: "+i );
+//                                Log.e(TAG, "list_savedate.get(i).getBlastdate(): "+list_savedate.get(i).getBlastdate() );
+//                                dateList.add(i+"");
+//                            }
+//                        }
+//                        updateEditState();
+//                        upload_all=true;
+////                        for (DenatorHis_Main his:list) {
+////                            if(his.getUploadStatus().equals("未上传")){
+////                                dateList.add(his.getBlastdate());
+////                            }
+////                        }
+//                        if (dateList.size() > 0) {
+//                            Log.e("一键上传","未上传的date集合:" + dateList.toString());
+//                            uploadNext(dateList,uploadIndex);
+//                        } else {
+//                            show_Toast("当前没有需要上传的数据");
+//                        }
+////                        show_Toast("已上传所有未上传记录");
+//                    } else {
+//                        show_Toast("密码错误");
+//                    }
+//                    loadMoreData(currentPage);//读取数据
+//                    showLoadMore();
+//                    dialog.dismiss();
+//                });
+//                builder2.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+//
+//
+//                builder2.show();
                 break;
             case R.id.btn_del_all:
                 AlertDialog dialog = new AlertDialog.Builder(this)
