@@ -672,6 +672,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                }
                 if(duanlu_sun>1){
                     isshow2 = 1;
+                    Utils.writeRecord("---电流过大弹窗---");
                     AlertDialog dialog = new Builder(FiringMainActivity.this)
                             .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                             .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
@@ -692,6 +693,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            firstThread = new ThreadFirst(allBlastQu);
 //                            firstThread.exit = false;
 //                            firstThread.start();
+                                Utils.writeRecord("---电流过大弹窗--继续---");
                                 dialog15.dismiss();
                             })
                             .create();
@@ -717,6 +719,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                }
                 if(duanlu_sun>1){
                     isshow2 = 1;
+                    Utils.writeRecord("---电流过大弹窗---");
                     AlertDialog dialog = new Builder(FiringMainActivity.this)
                             .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                             .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
@@ -737,6 +740,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            firstThread = new ThreadFirst(allBlastQu);
 //                            firstThread.exit = false;
 //                            firstThread.start();
+                                Utils.writeRecord("---电流过大弹窗--继续---");
                                 dialog15.dismiss();
                             })
                             .create();
@@ -763,6 +767,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 float displayIc = busInfo.getBusCurrentIa();
                 if (displayIc > 30000) {
                     if (!chongfu) {
+                        Utils.writeRecord("---电流短路弹窗---");
                         initDialog_zanting_stop(getResources().getString(R.string.text_dlyc4));//弹出框
                     }
                 }
@@ -770,7 +775,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
             if (oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
                 Log.e(TAG, secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());
-                Utils.writeRecord("--起爆测试--:总线短路");
+                Utils.writeRecord("--起爆阶段--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_fir_dialog7))//设置对话框的标题//"成功起爆"
@@ -812,6 +817,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
+                Utils.writeRecord("---电流波动弹窗---");
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                         .setMessage(getResources().getString(R.string.text_dlyc5))//设置对话框的内容"本次任务成功起爆！"
@@ -828,6 +834,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                firstThread = new ThreadFirst(allBlastQu);
 //                                firstThread.exit = false;
 //                                firstThread.start();
+                            Utils.writeRecord("---电流波动弹窗--继续---");
                             dialog16.dismiss();
                         })
                         .create();
@@ -1030,7 +1037,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             dialog.dismiss();
         });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
             dialog.dismiss();
             closeThread();
             closeForm();
@@ -2219,6 +2226,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             MmkvUtils.savecode("isTestDenator", "N");
                         })
                         .setNegativeButton(getResources().getString(R.string.text_dialog_jxqb), (dialog15, which) -> {
+                            Utils.writeRecord("---1+5阶段电流不稳定强制起爆---");
                             dialog15.dismiss();
                             //发出34 起爆命令
                             byte[] qbCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
@@ -3287,7 +3295,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNegativeButton(getResources().getString(R.string.text_tc), (dialog, id) -> {
+                .setNeutralButton(getResources().getString(R.string.text_tc), (dialog, id) -> {
                     dialog.cancel();
                     mOffTime.cancel();
                     closeThread();
