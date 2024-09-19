@@ -3562,7 +3562,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             str = getString(R.string.text_dfzc_qy) + region + getString(R.string.text_dfzc_sl) + size + ")";
         }
         // 设置标题
-        getSupportActionBar().setTitle(mOldTitle +" 当前:"+ str);
+        getSupportActionBar().setTitle(mOldTitle + str);
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, region);
 

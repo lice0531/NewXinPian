@@ -249,7 +249,7 @@ public class QueryHisDetail extends BaseActivity {
                                 return;
                             }
                             if (b.equals("123")) {
-                                String t = (String) view.getTag(R.id.bt_delete);
+                                String t = list_savedate.get(position).getBlastdate();
                                 if (delHisInfo(t) == 0) {
                                     show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
                                 }
