@@ -139,7 +139,6 @@ public class WxjlSettingActivity extends SerialPortActivity {
         xdlist.add("CH38-2.4kbps-3");
         xdlist.add("CH39-2.4kbps-4");
         nsXd.attachDataSource(xdlist);
-        Utils.writeLog("设置的信道是:" + xinDaoId);
         nsXd.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
