@@ -775,7 +775,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
             if (isshow3&&oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
-                isshow3=false;
+
                 Log.e(TAG, secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());
                 Utils.writeRecord("--起爆阶段--:总线短路");
                 closeThread();
@@ -784,6 +784,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setMessage(getResources().getString(R.string.text_fir_dialog8))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                            isshow3=false;
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                             sendCmd(reCmd);
                             dialog12.dismiss();
