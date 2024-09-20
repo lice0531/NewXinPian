@@ -1358,14 +1358,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                zhuceThread.interrupt();
 //            Log.e("关闭线程", "关闭线程: ");
         }
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                mApplication.closeSerialPort();
-//                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                mSerialPort = null;
-//            }
-//        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
@@ -1775,55 +1775,51 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     protected void onDataReceived(byte[] buffer, int size) {
-        // ignore incoming data
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        //String crs16 = CRC16.bytesToHexString(cmdBuf);
-        //System.out.println(crs16);
 
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-        //Utils.writeLog("Firing recTemp:"+fromCommad);
-        sendOpenThread = new SendOpenPower();
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-            //	System.out.println("fromCommad="+fromCommad);
-//            Utils.writeLog("reister recFrom:" + fromCommad);
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd(fromCommad);
-                if (cmd != null) {
-                    doWithReceivData(cmd, cmdBuf);
-                }
-            }
-        } else {
-            String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
-            Utils.writeLog("扫码结果:" + data);
-            //扫码注册
-            if (data.length() == 19) {//扫描箱号
-                addXiangHao(data);
-            }
-            if (sanButtonFlag > 0 && data.length() == 13) {
-//                optGpio_down(PIN_TRACKER_EN);//扫描头下电
-                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
-
-//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1004, data));
-
-            } else {
-                String barCode = getContinueScanBlastNo(data);
-                if (barCode == null) return;
-                if (checkRepeatShellNo(barCode)) {
-                    singleShellNo = barCode;
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-                    return;
-                }
-                insertSingleDenator(barCode);
-            }
-
-        }
+        Utils.writeLog("扫码页面收到:"+fromCommad);
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            //	System.out.println("fromCommad="+fromCommad);
+////            Utils.writeLog("reister recFrom:" + fromCommad);
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    doWithReceivData(cmd, cmdBuf);
+//                }
+//            }
+//        } else {
+//            String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
+//            Utils.writeLog("扫码结果:" + data);
+//            //扫码注册
+//            if (data.length() == 19) {//扫描箱号
+//                addXiangHao(data);
+//            }
+//            if (sanButtonFlag > 0 && data.length() == 13) {
+////                optGpio_down(PIN_TRACKER_EN);//扫描头下电
+//                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+//
+////                mHandler_0.sendMessage(mHandler_0.obtainMessage(1004, data));
+//
+//            } else {
+//                String barCode = getContinueScanBlastNo(data);
+//                if (barCode == null) return;
+//                if (checkRepeatShellNo(barCode)) {
+//                    singleShellNo = barCode;
+//                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+//                    return;
+//                }
+//                insertSingleDenator(barCode);
+//            }
+//
+//        }
     }
 
     /**
