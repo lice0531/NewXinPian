@@ -975,6 +975,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
+
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));

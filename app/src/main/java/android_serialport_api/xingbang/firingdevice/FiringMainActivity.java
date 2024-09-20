@@ -208,6 +208,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_name = "";
     private int isshow = 0;
     private int isshow2 = 0;//电流过大弹窗
+    private boolean isshow3 = true;//电压过低弹窗
     private int duanlu_sun=0;//电流过大次数
     private float cankao_ic_gaoya = 0;
     private float cankao_ic_diya = 0;
@@ -221,7 +222,7 @@ public class FiringMainActivity extends SerialPortActivity {
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
     private boolean dengdai = true;
-    private final int cankaodianliu = 15;
+    private  int cankaodianliu = 15;
     private boolean kaiguan = true;
     private List<DenatorBaseinfo> errlist = new ArrayList<>();
     private String deviceStatus = "01";//显示设备状态:01（在线） 02（等待检测） 03（检测结束） 04（正在充电） 05（起爆结束）
@@ -247,7 +248,13 @@ public class FiringMainActivity extends SerialPortActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();//获取用户信息
-
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
+        if(changjia.equals("CQ")){
+            cankaodianliu=15;
+        }else {
+            cankaodianliu=16;
+        }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         qbxm_id = (String) bundle.get("qbxm_id");
@@ -274,8 +281,6 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         //给主机发消息告知已进入起爆页面
         EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
 
     }
 
@@ -570,11 +575,19 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * cankaodianliu * 1.3) && displayIc < (denatorCount * cankaodianliu *2) && displayIc > 10 && stage != 6 && stage != 7) {// "电流偏大";
+                } else if (displayIc > (denatorCount * cankaodianliu +1000) && displayIc < (denatorCount * cankaodianliu +4000) && displayIc > 10 && stage != 6 && stage != 7) {// "电流偏大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
-                } else if (displayIc > (denatorCount * cankaodianliu * 2) && displayIc > 10 && stage != 6 && stage != 7) {// "电流过大";
+                } else if (displayIc > (denatorCount * cankaodianliu*1.3 +2400) && displayIc < (denatorCount * cankaodianliu*1.3 +8000) && displayIc > 10 && (stage == 6||stage == 7) ) {// "电流偏大";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
+                } else if (displayIc > (denatorCount * cankaodianliu +4000) && displayIc > 10 && stage != 6 && stage != 7) {// "电流过大";
+                    displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
+                    setIcView(Color.RED);//设置颜色
+                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
+                }else if (displayIc > (denatorCount * cankaodianliu*1.3 +8000) && displayIc > 10 && (stage == 6||stage == 7) ) {// "电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
@@ -620,7 +633,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if ((sixExchangeCount - twoCount) <= 10 && busInfo.getBusVoltage() < 14) {
+            if (isshow3&&(sixExchangeCount - twoCount) <= 10 && busInfo.getBusVoltage() < 14) {
+                isshow3=false;
                 Log.e(TAG, "高压充电失败: 1");
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
@@ -645,7 +659,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
             Log.e(TAG, "stage: "+stage );
-            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2  ) {// "电流过大";
+            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu +4000) && busInfo.getBusCurrentIa() > 10 && stage == 2  ) {// "电流过大";
                 Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
                 Log.e(TAG, "stage: "+stage );
                 Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
@@ -690,7 +704,7 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
 
-            if (isshow2 == 0 && twoCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 &&  stage == 6 ) {// "电流过大";
+            if (isshow2 == 0 && twoCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 1.3+8000) && busInfo.getBusCurrentIa() > 10 &&  stage == 6 ) {// "电流过大";
                 Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
                 Log.e(TAG, "stage: "+stage );
                 Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
@@ -733,6 +747,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
 
             }
+
 
 
             //电流大于4000,重启检测阶段
@@ -755,7 +770,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
+            if (isshow3&&oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
+                isshow3=false;
                 Log.e(TAG, secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
@@ -771,6 +787,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             closeForm();
                             finish();
                             MmkvUtils.savecode("isTestDenator", "N");
+
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
@@ -821,6 +838,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                 dialog.show();
             }
+
             if(busInfo.getPowerStatus().equals("01")){
                 Utils.writeRecord("电流状态低压异常");
                 closeThread();
@@ -2541,16 +2559,16 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e(TAG, "twoCount_panduan: "+twoCount_panduan );
                                 if(twoCount_panduan>5){
                                     Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
-                                    if (sixCmdSerial == 3) {
-                                        //跳转到1+5倒数计时5分钟阶段
-                                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                                    if (sixCmdSerial == 3) {
+                                    //跳转到1+5倒数计时5分钟阶段
+                                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                                    Thread.sleep(1000);
-                                        increase(7);
+                                    increase(7);
 //                                    Log.e("第7阶段-increase", "7");
-                                        MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
-                                        zanting();
-                                        break;
-                                    }
+                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                    zanting();
+//                                        break;
+//                                    }
                                 }
 
                             }
