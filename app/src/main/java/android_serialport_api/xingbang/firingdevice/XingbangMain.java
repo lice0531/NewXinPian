@@ -229,6 +229,17 @@ public class XingbangMain extends SerialPortActivity {
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
 
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        Log.e(TAG, "changjia: " + changjia);
+        if(changjia.equals("XJ")){
+            app_version_name =getString(R.string.app_version_name2);
+        }else if(changjia.equals("CQ")){
+            app_version_name =getString(R.string.app_version_name3);
+        }else {
+            app_version_name =getString(R.string.app_version_name);
+        }
 
 
         initPower();                // 初始化上电方式()
@@ -256,22 +267,25 @@ public class XingbangMain extends SerialPortActivity {
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
-        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        if(changjia.equals("XJ")){
-            app_version_name =getString(R.string.app_version_name2);
-        }else if(changjia.equals("CQ")){
-            app_version_name =getString(R.string.app_version_name3);
-        }else {
-            app_version_name =getString(R.string.app_version_name);
-        }
 
         getleveup();
 
         busHandler = new Handler(msg -> {
             txt_Volt.setText(getResources().getString(R.string.text_reister_vol)+ busInfo.getBusVoltage() + "V");
             txt_IC.setText(getResources().getString(R.string.text_reister_ele) + (int)busInfo.getBusCurrentIa() + "μA");
+            String displayIcStr = (int) busInfo.getBusCurrentIa() + "μA";//保留两位小数
+            float displayIc = busInfo.getBusCurrentIa();
+
+            if (displayIc > 21000 ) {
+//                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr + getString(R.string.text_text_ysdl);
+                txt_IC.setTextColor(Color.RED);//设置颜色
+//                txt_IC.setText(displayIcStr);
+                Utils.writeRecord("--主页--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+            }else {
+//                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr;
+                txt_IC.setTextColor(Color.WHITE);//设置颜色
+//                txt_IC.setText(displayIcStr);
+            }
             if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
                 isshow1=false;
@@ -332,9 +346,16 @@ public class XingbangMain extends SerialPortActivity {
         });
         openPower = new OpenPower();
         openPower.start();
-        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        Log.e(TAG, "changjia: " + changjia);
+
 //        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+
+//        15:55:02:883 ->:C0003400CD05C0
+//        15:55:03:039 <-:C000170A000039087E0338088203ADFFC0
+//        15:55:03:091 <-:C0003401FF64B0C0
+//        String cmd = "C0003401FF64B0C0";//
+//        Log.e(TAG, "completeValidCmd(cmd): "+completeValidCmd(cmd) );
+//        Log.e(TAG, "DefCommand.getCmd2(fromCommad): "+DefCommand.getCmd2(cmd) );
+//        Log.e(TAG, "DefCommand.decodeCommand(fromCommad): "+DefCommand.decodeCommand(cmd) );
 
     }
     @Override
@@ -1270,6 +1291,7 @@ public class XingbangMain extends SerialPortActivity {
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             close();//停止访问电流
+
             finish();
             if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);

@@ -400,6 +400,7 @@
     <string name="text_zone5">Zone 5</string>
     <string name="text_dialog_choice">Please select a region</string>
     <string name="text_tk">Homopore</string>
+    <string name="text_jh">-</string>
     <string name="text_tiaok">Jump hole</string>
     <string name="text_scan_xzdw">Select segment</string>
     <string name="text_scan_f1">F1 delay</string>
@@ -971,4 +972,6 @@
     <string name="text_dk">port</string>
     <string name="text_toastts">Tosat Tips</string>
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
+    <string name="app_version_name2">M900_PT_XJ_V2.1_240903</string>
+    <string name="app_version_name3">M900_PT_CQ_V2.1_240903</string>
 </resources>

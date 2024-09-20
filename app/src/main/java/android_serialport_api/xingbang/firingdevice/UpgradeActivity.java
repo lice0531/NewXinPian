@@ -117,6 +117,7 @@ public class UpgradeActivity extends SerialPortActivity {
     String appname;
     // 通用
     public DialogPlus mDialogPlus;
+    Handler openHandler = new Handler();//重新打开串口
     @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -124,6 +125,11 @@ public class UpgradeActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
 
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         String shengji = (String) bundle.get("dataSend");
@@ -135,9 +141,20 @@ public class UpgradeActivity extends SerialPortActivity {
         Log.e("下载地址", "wangzhi: " + wangzhi);
         downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
         query = new DownloadManager.Query();
-        mDownloadTest = new DownloadTest(this);
 
-        mDownloadId = mDownloadTest.downloadAPK(wangzhi, downloadManager, appname);
+        // 延时3秒后执行的操作
+        openHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                openSerial();
+                mDownloadTest = new DownloadTest(UpgradeActivity.this);
+                mDownloadId = mDownloadTest.downloadAPK(wangzhi, downloadManager, appname);
+            }
+        }, 2500);
+
+
+
+
         mPath_Local = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/" + appname;
         mDownLoadFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/" + appname;
         mContext = this;
@@ -164,7 +181,10 @@ public class UpgradeActivity extends SerialPortActivity {
         registerReceiver(receiver, intentfilter);
 
     }
-
+    private void openSerial(){
+            initSerialPort();
+            Log.e(TAG,"开启串口");
+    }
     // 进度条
     public void showDialog() {
         mDialogPlus = LoadingUtils.loadDialog(mContext);

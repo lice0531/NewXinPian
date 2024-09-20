@@ -565,11 +565,11 @@ public class SetDelayTime extends BaseActivity {
             }
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
-            } else if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip8)));
-            } else {
+            }else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
+            }  else {
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
                 // 区域 更新视图

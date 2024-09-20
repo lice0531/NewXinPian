@@ -238,7 +238,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
     List<Float> list_dianliu = new ArrayList();
-    private String isJl;//接收有线级联进来起爆页面的flag
+    private String jlFlag;//接收有线级联进来起爆页面的flag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,9 +258,9 @@ public class FiringMainActivity extends SerialPortActivity {
             qbxm_id = "-1";
             qbxm_name = " ";
         }
-        isJl = !TextUtils.isEmpty(intent.getStringExtra("isJl")) ?
+        jlFlag = !TextUtils.isEmpty(intent.getStringExtra("isJl")) ?
                 intent.getStringExtra("isJl") : "";
-        isJL = !TextUtils.isEmpty(isJl) ? true : false;
+        isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
         initParam();//重置参数
