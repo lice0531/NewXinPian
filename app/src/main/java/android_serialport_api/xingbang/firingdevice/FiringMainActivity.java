@@ -208,6 +208,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String qbxm_name = "";
     private int isshow = 0;
     private int isshow2 = 0;//电流过大弹窗
+    private boolean isshow3 = true;//电压过低弹窗
     private int duanlu_sun=0;//电流过大次数
     private float cankao_ic_gaoya = 0;
     private float cankao_ic_diya = 0;
@@ -632,7 +633,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
             }
 
-            if ((sixExchangeCount - twoCount) <= 10 && busInfo.getBusVoltage() < 14) {
+            if (isshow3&&(sixExchangeCount - twoCount) <= 10 && busInfo.getBusVoltage() < 14) {
+                isshow3=false;
                 Log.e(TAG, "高压充电失败: 1");
                 Utils.writeRecord("--起爆测试--:高压充电失败");
                 Log.e("总线电压", "busInfo.getBusVoltage()" + busInfo.getBusVoltage());
@@ -768,7 +770,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-            if (oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
+            if (isshow3&&oneCount > gaoya_cankaoSun * 0.5 && busInfo.getBusVoltage() < 6) {
+                isshow3=false;
                 Log.e(TAG, secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());
                 Utils.writeRecord("--起爆测试--:总线短路");
                 closeThread();
@@ -784,6 +787,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             closeForm();
                             finish();
                             MmkvUtils.savecode("isTestDenator", "N");
+
                         })
                         .create();
                 dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
@@ -2554,7 +2558,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 Log.e(TAG, "twoCount_panduan: "+twoCount_panduan );
                                 if(twoCount_panduan>5){
                                     Log.e("第7阶段-increase", "sixCmdSerial:" + sixCmdSerial);
-                                    if (sixCmdSerial == 3) {
+//                                    if (sixCmdSerial == 3) {
                                         //跳转到1+5倒数计时5分钟阶段
                                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                                    Thread.sleep(1000);
@@ -2562,8 +2566,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                    Log.e("第7阶段-increase", "7");
                                         MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                                         zanting();
-                                        break;
-                                    }
+//                                        break;
+//                                    }
                                 }
 
                             }

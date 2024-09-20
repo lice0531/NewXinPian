@@ -329,9 +329,18 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "id=?", new String[]{"" + id});
         return 1;
     }
-
+    //全局定义
+    private long lastClickTime = 0L;
+    private static final int FAST_CLICK_DELAY_TIME = 2000;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //防止快速点击
+        if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+            Log.e("验证", "多次点击: " );
+            return;
+        }
+        lastClickTime = System.currentTimeMillis();
+
         String sqrq = map_dl.get(position).get("spare2").toString();
         List<DetonatorTypeNew> mListData = new GreenDaoMaster().queryDetonatorShouQuanForSqrq(sqrq);
         ArrayList<String> list_lg_down = new ArrayList<>();

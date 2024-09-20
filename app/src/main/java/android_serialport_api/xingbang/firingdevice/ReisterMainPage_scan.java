@@ -1358,14 +1358,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                zhuceThread.interrupt();
 //            Log.e("关闭线程", "关闭线程: ");
         }
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                mApplication.closeSerialPort();
-//                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                mSerialPort = null;
-//            }
-//        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
