@@ -303,7 +303,7 @@ public class XingbangMain extends SerialPortActivity {
                             dialog12.dismiss();
                             finish();
                         })
-                        .setNegativeButton("继续", (dialog1, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog1, which) -> {
                             isshow1=true;
                             dialog1.dismiss();
                         })
@@ -1291,7 +1291,6 @@ public class XingbangMain extends SerialPortActivity {
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             close();//停止访问电流
-
             finish();
             if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);
@@ -1602,12 +1601,12 @@ public class XingbangMain extends SerialPortActivity {
 
             while (!exit) {
 //                try {
-                    //发送获取电源信息
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastProcessedTime > 1000){
-                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
-                        lastProcessedTime = currentTime;
-                    }
+                //发送获取电源信息
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastProcessedTime > 1000){
+                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
+                    lastProcessedTime = currentTime;
+                }
 //                    Thread.sleep(1000);
 //                } catch (InterruptedException e) {
 //                    // TODO Auto-generated catch block
@@ -1650,7 +1649,7 @@ public class XingbangMain extends SerialPortActivity {
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
 //            try {
-                openPower.interrupt();
+            openPower.interrupt();
 //            } catch (InterruptedException e) {
 //                // TODO Auto-generated catch block
 //                e.printStackTrace();

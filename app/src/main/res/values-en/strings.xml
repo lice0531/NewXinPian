@@ -974,4 +974,12 @@
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
     <string name="app_version_name2">M900_PT_XJ_V2.1_240903</string>
     <string name="app_version_name3">M900_PT_CQ_V2.1_240903</string>
+    <string name="text_dyyc">Bus low voltage exception</string>
+    <string name="dialog_dyyc">The current line low voltage is abnormal, please check the line and start the detonation process again</string>
+    <string name="text_gyyc">Bus high voltage exception</string>
+    <string name="dialog_gyyc">If the current status is abnormally high voltage, check the circuit and start the detonation process again</string>
+    <string name="text_czdl">Bus short circuit</string>
+    <string name="dialog_czdl">The current line is short circuited, please check the line and start the detonation process again to detonate</string>
+    <string name="text_gy">A total of</string>
+    <string name="text_hcf">Box duplication</string>
 </resources>

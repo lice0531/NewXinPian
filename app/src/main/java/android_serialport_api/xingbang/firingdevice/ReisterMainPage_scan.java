@@ -750,7 +750,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast(getString(R.string.text_mx_zcsb));
             }else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
-                show_Toast("共有"+xiangHao_errNum+"盒重复");
+                show_Toast(getResources().getString(R.string.text_gy)+xiangHao_errNum+getResources().getString(R.string.text_hcf));
                 xiangHao_errNum=0;
             } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
