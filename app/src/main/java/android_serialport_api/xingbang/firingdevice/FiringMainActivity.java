@@ -133,6 +133,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private Handler checkHandler = null;//更正错误
     private static Handler mHandler_1 = null;//更新视图
     private static Handler noReisterHandler = null;//没有注册的雷管
+    private static Handler errorLgHandler = null;//级联出错的雷管
     private To52Test writeVo;
     private static volatile int stage;//0: 发送13指令 1:阶段1 2:阶段2,充电 3:检测阶段 4: 5:38指令 6:高压充电
     private static volatile int startFlag = 0;
@@ -217,6 +218,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean chongfu = false;//是否已经检测了一次
     private int totalerrorNum;//错误雷管数量
     private int totalerrorCDNum;//充电错误雷管数量
+    private int errorNumJl;//错误雷管数量
     private String TAG = "起爆页面";
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
@@ -236,7 +238,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
     List<Float> list_dianliu = new ArrayList();
-    private String isYxjl;//接收有线级联进来起爆页面的flag
+    private String isJl;//接收有线级联进来起爆页面的flag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,9 +258,9 @@ public class FiringMainActivity extends SerialPortActivity {
             qbxm_id = "-1";
             qbxm_name = " ";
         }
-        isYxjl = !TextUtils.isEmpty(intent.getStringExtra("isYxjl")) ?
-                intent.getStringExtra("isYxjl") : "";
-        isJL = !TextUtils.isEmpty(isYxjl) ? true : false;
+        isJl = !TextUtils.isEmpty(intent.getStringExtra("isJl")) ?
+                intent.getStringExtra("isJl") : "";
+        isJL = !TextUtils.isEmpty(isJl) ? true : false;
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
         initParam();//重置参数
@@ -531,6 +533,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 ll_firing_errorAmount_2.setText("0");
                 ll_firing_errorAmount_4.setText("0");
                 totalerrorNum = 0;
+                errorNumJl = 0;
             } else if (msg.what == 7) {
                 initDialog_chongdian(getResources().getString(R.string.cdsv1));
             }else if (msg.what == 8) {
@@ -567,7 +570,12 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             return false;
         });
-
+        errorLgHandler = new Handler(msg -> {
+            String err = ll_firing_errorAmount_2.getText().toString();
+            if (err.length() < 1) err = "0";
+            errorNumJl = Integer.parseInt(err);
+            return false;
+        });
         busHandler = new Handler(msg -> {
             if (busInfo != null) {
                 ll_firing_Volt_2.setText("" + busInfo.getBusVoltage() + "V");
@@ -885,7 +893,7 @@ public class FiringMainActivity extends SerialPortActivity {
         isshow = 0;//弹窗标志
         reThirdWriteCount = 0;
         totalerrorNum = 0;
-
+        errorNumJl = 0;
     }
 
     private void getUserMessage() {
@@ -1358,6 +1366,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+            errorLgHandler.sendMessage(errorLgHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
         } else if ("02".equals(fromData.getCommicationStatus())) {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
@@ -1549,7 +1558,7 @@ public class FiringMainActivity extends SerialPortActivity {
             deviceStatus = "02";//等待检测
             int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
             String stureNum = Utils.strPaddingZero(allNum, 3);
-            String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+            String serrNum = Utils.strPaddingZero(errorNumJl, 3);
             String currentPeak = Utils.strPaddingZero(cPeak, 6);
             //热点级联发送等待检测
             EventBus.getDefault().post(new FirstEvent("ddjc", stureNum,serrNum,currentPeak));
@@ -1586,10 +1595,11 @@ public class FiringMainActivity extends SerialPortActivity {
             sixCmdSerial = 2;
             deviceStatus = "04";//正在充电
             int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-            String stureNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+            String stureNum = Utils.strPaddingZero(errorNumJl, 3);
             String serrNum = Utils.strPaddingZero(totalerrorNum, 3);
             String currentPeak = Utils.strPaddingZero(cPeak, 6);
             //热点级联发送准备充电
+            Log.e(TAG,"正在充电错误数量:" + totalerrorNum);
             EventBus.getDefault().post(new FirstEvent("zzcd", stureNum,serrNum,currentPeak));
         } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
             //收到高压充电完成命令
@@ -1638,7 +1648,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     deviceStatus + qbResult);
             int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
             String stureNum = Utils.strPaddingZero(allNum, 3);
-            String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+            String serrNum = Utils.strPaddingZero(errorNumJl, 3);
             String currentPeak = Utils.strPaddingZero(cPeak, 6);
             //热点级联发送起爆结果
             EventBus.getDefault().post(new FirstEvent("qbjg", deviceStatus,currentPeak,stureNum,serrNum));
@@ -1878,7 +1888,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     deviceStatus = "03";//检测结束
                     int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                     String stureNum = Utils.strPaddingZero(allNum, 3);
-                    String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+                    String serrNum = Utils.strPaddingZero(errorNumJl, 3);
                     String currentPeak = Utils.strPaddingZero(cPeak, 6);
                     //热点级联发送检测结果
                     EventBus.getDefault().post(new FirstEvent("jcjg", stureNum, serrNum, currentPeak));
@@ -2436,7 +2446,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     deviceStatus = "05";
                                     int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                                     String stureNum = Utils.strPaddingZero(allNum, 3);
-                                    String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+                                    String serrNum = Utils.strPaddingZero(errorNumJl, 3);
                                     String currentPeak = Utils.strPaddingZero(cPeak, 6);
                                     //热点级联发送等待起爆
                                     EventBus.getDefault().post(new FirstEvent("ddqb", stureNum, serrNum, currentPeak));
@@ -2448,7 +2458,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                         deviceStatus = "05";
                                         int aNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                                         String tureNum = Utils.strPaddingZero(aNum, 3);
-                                        String seNum = Utils.strPaddingZero(Math.min(totalerrorNum, aNum), 3);
+                                        String seNum = Utils.strPaddingZero(errorNumJl, 3);
                                         String peak = Utils.strPaddingZero(cPeak, 6);
                                         //热点级联发送等待起爆
                                         EventBus.getDefault().post(new FirstEvent("ddqb", tureNum, seNum, peak));
@@ -2473,7 +2483,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     deviceStatus = "05";
                                     int aNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                                     String tureNum = Utils.strPaddingZero(aNum, 3);
-                                    String seNum = Utils.strPaddingZero(Math.min(totalerrorNum, aNum), 3);
+                                    String seNum = Utils.strPaddingZero(errorNumJl, 3);
                                     String peak = Utils.strPaddingZero(cPeak, 6);
                                     //热点级联发送等待起爆
                                     EventBus.getDefault().post(new FirstEvent("ddqb", tureNum, seNum, peak));
@@ -3504,12 +3514,12 @@ public class FiringMainActivity extends SerialPortActivity {
                 //收到主控轮巡的消息了  将实时的电流及设备状态发送给串口进行同步
                 int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                 String stureNum = Utils.strPaddingZero(allNum, 3);
-                String serrNum = Utils.strPaddingZero(Math.min(totalerrorNum, allNum), 3);
+                String serrNum = Utils.strPaddingZero(errorNumJl, 3);
                 String currentPeak = Utils.strPaddingZero(cPeak, 6);
                 EventBus.getDefault().post(new FirstEvent("ssjc", deviceStatus, "", stureNum, serrNum, currentPeak));
                 lastProcessedTime = currentTime; // 更新上次处理时间
                 qbResult = stureNum + serrNum + currentPeak;
-                Log.e("多次接收到消息", "只处理一次，起爆信息：" + qbResult);
+                Log.e(TAG + "子机发送轮询消息", "错误数量:" + errorNumJl + "--B3指令:" + qbResult);
             }
         } else if (msg.equals("sendCmd83")) {
             // 此时进入时钟同步模式  向核心板发送指令  让核心板决定谁起爆

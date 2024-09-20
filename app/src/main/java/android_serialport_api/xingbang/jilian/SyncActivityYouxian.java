@@ -108,6 +108,7 @@ public class SyncActivityYouxian extends BaseActivity {
     private boolean A002 = true;
     private boolean A003 = true;
     private boolean A004 = true;
+    private String TAG = "子机有线级联同步页面";
 
 
     @Override
@@ -211,7 +212,7 @@ public class SyncActivityYouxian extends BaseActivity {
                             } else {
                                 Intent intent5 = new Intent(SyncActivityYouxian.this, FiringMainActivity.class);//金建华
                                 intent5.putExtra("dataSend", str5);
-                                intent5.putExtra("isYxjl","Y");
+                                intent5.putExtra("isJl","Y");
                                 startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                             }
                             A002 = false;
@@ -282,6 +283,12 @@ public class SyncActivityYouxian extends BaseActivity {
 
 //                        show_Toast("收到退出指令");
                         finish();
+                    } else if (response.startsWith("A8") && response.endsWith("B8")) {
+                        Log.e(TAG,"接收到A8子设备掉线消息了");
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
+                            send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
+                            Log.e(TAG,MmkvUtils.getcode("ACode", "") + "子设备已掉线");
+                        }
                     } else if (response.contains("A006")) {
 //                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
                     } else if (response.contains("A008")) {
@@ -703,6 +710,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     case "T-QBZD-Z6":
                     case "M900":
                         send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
+                        Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备发起退出级联0005指令");
                         break;
                     default:
                         closeSocket();
@@ -860,36 +868,28 @@ public class SyncActivityYouxian extends BaseActivity {
             String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
             String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
             String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("有线级联页面返回jcjg测试结果", "tureNum: " + tureNum);
-            Log.e("有线级联页面返回jcjg测试结果", "errNum: " + errNum);
-            Log.e("有线级联页面返回jcjg测试结果", "currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回jcjg测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
             send485Cmd("B007" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
 //            send485Cmd("B007"+ MmkvUtils.getcode("ACode", "")+tureNum+errNum);
         } else if (msg.equals("ddjc")) {//等待检测
             String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
             String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
             String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("有线级联页面ddjc返回测试结果", "tureNum: " + tureNum);
-            Log.e("有线级联页面ddjc返回测试结果", "errNum: " + errNum);
-            Log.e("有线级联页面ddjc返回测试结果", "currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回ddjc测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
             send485Cmd("B008" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
 //            send485Cmd("B008"+ MmkvUtils.getcode("ACode", "")+event.getD4ata());
         } else if (msg.equals("zzcd")) {//正在充电
             String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
             String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
             String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("有线级联页面zzcd返回测试结果", "tureNum: " + tureNum);
-            Log.e("有线级联页面zzcd返回测试结果", "errNum: "+errNum);
-            Log.e("有线级联页面zzcd返回测试结果", "currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回zzcd测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
             send485Cmd("B009" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
 //            send485Cmd("B009"+ MmkvUtils.getcode("ACode", "")+event.getData());
         } else if (msg.equals("qbjg")) {//返回起爆结果
             String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
             String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
             String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("有线级联页面返回qbjg测试结果", "tureNum: " + tureNum);
-            Log.e("有线级联页面返回qbjg测试结果", "errNum: " + errNum);
-            Log.e("有线级联页面返回qbjg测试结果", "currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回qbjg测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
             send485Cmd("B010" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
 //            send485Cmd("B010"+ MmkvUtils.getcode("ACode", "")+event.getData());
         } else if (msg.contains("B2")) {
@@ -929,10 +929,10 @@ public class SyncActivityYouxian extends BaseActivity {
                 e.printStackTrace();
             }
             if (event.getData().startsWith("B4") && event.getData().length() == 18) {
-                Log.e("收到充电指令后发送的数据正常",event.getData());
+                Log.e(TAG + "收到充电指令后发送的数据正常",event.getData());
                 send485Cmd(event.getData());
             } else {
-                Log.e("收到充电指令后发送的数据有误",event.getData());
+                Log.e(TAG + "收到充电指令后发送的数据有误",event.getData());
             }
         }
     }
@@ -994,10 +994,10 @@ public class SyncActivityYouxian extends BaseActivity {
             e.printStackTrace();
         }
         if (qbResult.startsWith("B005") && qbResult.length() == 20) {
-            Log.e("起爆结束后发送的数据正常",qbResult);
+            Log.e(TAG + "起爆结束后发送的数据正常",qbResult);
             send485Cmd(qbResult);
         } else {
-            Log.e("起爆结束后发送的数据有误",qbResult);
+            Log.e(TAG + "起爆结束后发送的数据有误",qbResult);
         }
     }
 

@@ -176,6 +176,7 @@ public class SyncActivity extends BaseActivity {
                         } else {
                             Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity.class);//四川大带载
                             intent5.putExtra("dataSend", str5);
+                            intent5.putExtra("isJl","Y");
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
                     } else if (response.contains("A003")) {
