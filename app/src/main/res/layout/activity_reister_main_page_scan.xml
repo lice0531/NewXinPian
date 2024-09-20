@@ -342,7 +342,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:text="@string/text_delay_kong_2" />
+                                android:text="@string/text_scan_f1" />
 
                             <EditText
                                 android:id="@+id/re_et_f1"
@@ -352,13 +352,21 @@
                                 android:layout_weight="1.5"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
-                                android:hint="@string/text_delay_kong_2"
+                                android:hint="@string/text_scan_f1"
                                 android:maxLength="6"
                                 android:numeric="integer"
                                 android:padding="5dp"
                                 android:textColor="@color/rangle_fc_base"
                                 android:textSize="@dimen/fireChildPageLabelFontSize" />
-
+                            <Button
+                                android:id="@+id/btn_JH_F1"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:layout_height="wrap_content"
+                                android:text="@string/text_jh"
+                                android:textSize="18sp"
+                                style="@style/allbtntstyle"
+                                />
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_weight="0.5"
@@ -390,7 +398,7 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:text="@string/text_delay_pai" />
+                                android:text="@string/text_scan_f2" />
 
                             <EditText
                                 android:id="@+id/re_et_f2"
@@ -400,12 +408,21 @@
                                 android:layout_weight="1.5"
                                 android:background="@drawable/translucent"
                                 android:gravity="left"
-                                android:hint="@string/text_delay_pai"
+                                android:hint="@string/text_scan_f2"
                                 android:maxLength="6"
                                 android:numeric="integer"
                                 android:padding="5dp"
                                 android:textColor="@color/rangle_fc_base"
                                 android:textSize="@dimen/fireChildPageLabelFontSize" />
+                            <Button
+                                android:id="@+id/btn_JH_F2"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:layout_height="wrap_content"
+                                android:text="@string/text_jh"
+                                android:textSize="18sp"
+                                style="@style/allbtntstyle"
+                                />
 
                             <TextView
                                 android:visibility="gone"
@@ -421,7 +438,6 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="0.5"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="2dp"
                                 android:hint="@string/text_tiaok"
                                 android:inputType="number"
                                 />
