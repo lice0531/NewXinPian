@@ -1483,6 +1483,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (!"FF".equals(fromData.getCommicationStatus()) || (writeDelay != fromData.getDelayTime())) {
             twoErrorDenatorFlag = 1;
             noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
+            errorLgHandler.sendMessage(errorLgHandler.obtainMessage());
 //            Log.e("更新雷管状态", "雷管错误状态" + fromData.getCommicationStatus() + "--writeDelay:" + writeDelay + "--fromData.getDelayTime()" + fromData.getDelayTime());
         } else if ("02".equals(fromData.getCommicationStatus())) {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
@@ -1511,7 +1512,6 @@ public class FiringMainActivity extends SerialPortActivity {
 
         twoErrorDenatorFlag = 1;
         noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
-
 //        }
         Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus());
     }
