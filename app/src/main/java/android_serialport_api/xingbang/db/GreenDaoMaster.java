@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
@@ -1010,7 +1011,7 @@ public class GreenDaoMaster {
             Denator_type message = new Denator_type();
             message.setDeTypeName("scyb");
             message.setDeTypeSecond("10000");
-            message.setIsSelected("是");
+            message.setIsSelected(Application.getContext().getResources().getString(R.string.text_yes));
             getDaoSession().getDenator_typeDao().insert(message);
         }
 
