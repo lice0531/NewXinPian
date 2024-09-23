@@ -88,11 +88,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
+                android:maxLines="2"
                 android:text="0μA"
                 android:textColor="@color/label_color"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"
-                android:textSize="@dimen/MainPage_FontSize" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -424,7 +424,7 @@
     <string name="text_delay_sdsz">Tunnel Setup</string>
     <string name="text_test_ckdl">Reference current</string>
     <string name="text_dialog_err">Errors</string>
-    <string name="text_test_dlgd">(Excessive current)</string>
+    <string name="text_test_dlgd">(Overcurrent)</string>
     <string name="text_test_dlpd">(Excessive current)</string>
     <string name="text_text_ysdl">(Suspected short circuit)</string>
     <string name="text_test_ysdl">(Suspected open circuit)</string>
@@ -883,8 +883,8 @@
     <string name="text_jilianset_tip5">Exit</string>
     <string name="text_user_err1">User name cannot be empty</string>
     <string name="text_user_err2">Password cannot be empty</string>
-    <string name="text_user_err3">delete</string>
-    <string name="text_user_err4">modify</string>
+    <string name="text_user_err3">Delete</string>
+    <string name="text_user_err4">Modify</string>
     <string name="text_user_err5">\"User name: \"</string>
     <string name="text_user_err6">repeat</string>
     <string name="text_user_err7">Change password information</string>

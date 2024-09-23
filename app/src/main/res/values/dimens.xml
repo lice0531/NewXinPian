@@ -46,7 +46,7 @@
     <dimen name="downworkcode_pg_left">60dp</dimen>
 
     <dimen name="fire_pg_Left">100dp</dimen>
-    <dimen name="fire_pg_middle">80dp</dimen>
+    <dimen name="fire_pg_middle">100dp</dimen>
 
     <dimen name="pb_progressBar">50dp</dimen>
     <dimen name="text_margin">16dp</dimen>
