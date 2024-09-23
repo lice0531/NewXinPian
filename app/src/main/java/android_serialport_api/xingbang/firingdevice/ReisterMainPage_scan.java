@@ -1193,7 +1193,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void getFactoryCode() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<Defactory> list = master.queryDefactoryToIsSelected("是");
+        List<Defactory> list = master.queryDefactoryToIsSelected(getResources().getString(R.string.text_yes));
         if (list.size() > 0) {
             factoryCode = list.get(0).getDeEntCode();
             factoryFeature = list.get(0).getDeFeatureCode();
@@ -1206,7 +1206,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     private void getFactoryType() {
         String selection = " isSelected = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {"是"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+        String[] selectionArgs = {getResources().getString(R.string.text_yes)};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOR_TYPE, null, selection, selectionArgs, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             deTypeName = cursor.getString(1);

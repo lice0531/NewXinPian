@@ -1563,7 +1563,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
      */
     private void getFactoryCode() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<Defactory> list = master.queryDefactoryToIsSelected("是");
+        List<Defactory> list = master.queryDefactoryToIsSelected(getResources().getString(R.string.text_yes));
         if (list.size() > 0) {
             factoryCode = list.get(0).getDeEntCode();
             factoryFeature = list.get(0).getDeFeatureCode();
@@ -1576,7 +1576,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
      */
     private void getFactoryType() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<Denator_type> list = master.queryDefactoryTypeToIsSelected("是");
+        List<Denator_type> list = master.queryDefactoryTypeToIsSelected(getResources().getString(R.string.text_yes));
         if (list.size() > 0) {
             deTypeName = list.get(0).getDeTypeName();
             deTypeSecond = list.get(0).getDeTypeSecond();
