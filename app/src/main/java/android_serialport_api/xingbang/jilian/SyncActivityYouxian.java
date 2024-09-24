@@ -191,7 +191,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         break;
                     }
 //                    if (response.contains("A001" + MmkvUtils.getcode("ACode", ""))) {
-                    if (response.contains("A1" + MmkvUtils.getcode("ACode", ""))) {
+                    if (response.startsWith("A1" + MmkvUtils.getcode("ACode", ""))) {
                         //同步成功
                         //收到服务器的同步确认指令
                         isTongBu = true;
@@ -200,7 +200,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         btnTest.setEnabled(false);
                         btnTest.setText(R.string.text_sync_tip3);
 //                    } else if (response.contains("A002")) {
-                    } else if (response.contains("A2")) {
+                    } else if (response.startsWith("A2")) {
                         if (A002) {
                             show_Toast(getString(R.string.text_sync_tip4));
                             String str5 = "级联起爆";
@@ -219,14 +219,39 @@ public class SyncActivityYouxian extends BaseActivity {
                         } else {
                             show_Toast("正在起爆流程中");
                         }
-                    } else if (response.contains("A3")) {
+                    } else if (response.startsWith("ABA2")) {
+                        Log.e(TAG,"收到重新检测指令了" + response + "--" + response.substring(response.length() - 2));
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
+                            if (A002) {
+                                show_Toast(getString(R.string.text_sync_tip4));
+                                String str5 = "级联起爆";
+                                if (Yanzheng.equals("验证")) {
+                                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                                    Intent intent5 = new Intent(SyncActivityYouxian.this, VerificationActivity.class);//验证爆破范围页面
+                                    intent5.putExtra("dataSend", str5);
+                                    startActivityForResult(intent5, REQUEST_CODE_QIBAO);
+                                } else {
+                                    Intent intent5 = new Intent(SyncActivityYouxian.this, FiringMainActivity.class);//金建华
+                                    intent5.putExtra("dataSend", str5);
+                                    intent5.putExtra("isJl","Y");
+                                    intent5.putExtra("isResJc","Y");
+                                    startActivityForResult(intent5, REQUEST_CODE_QIBAO);
+                                }
+                                A002 = false;
+                            } else {
+                                show_Toast("正在起爆流程中");
+                            }
+                        } else {
+                            Log.e(TAG,response + "--重新检测指令不是当前子设备的");
+                        }
+                    } else if (response.startsWith("A3")) {
                         //收到主控轮询的命令
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                             EventBus.getDefault().post(new FirstEvent("pollMsg"));
                         }
 //                    } else if (response.contains("A003")) {
                         //收到主控的充电指令
-                    } else if (response.contains("A4")) {
+                    } else if (response.startsWith("A4")) {
 //                        if (getStringAfterA4(response).equals(MmkvUtils.getcode("ACode", ""))) {
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                         show_Toast(getString(R.string.text_sync_tip5));
@@ -236,7 +261,17 @@ public class SyncActivityYouxian extends BaseActivity {
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
 //                    } else if (response.contains("A004")) {
-                    } else if (response.contains("A5")) {
+                    } else if (response.startsWith("ABA4")) {
+                        Log.e(TAG,"收到重新充电指令了" + response + "--" + response.substring(response.length() - 2));
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
+                            send485Cmd("BBA4" + MmkvUtils.getcode("ACode", ""));
+                            show_Toast(getString(R.string.text_sync_tip5));
+                            EventBus.getDefault().post(new FirstEvent("rejixu"));
+                        } else {
+                            Log.e(TAG,response + "--重新充电指令不是当前子设备的");
+                        }
+//                    } else if (response.contains("A004")) {
+                    } else if (response.startsWith("A5")) {
                         Log.e("接收到A5指令了",response);
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
@@ -262,7 +297,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
 //                    } else if (response.contains("A003")) {
                         //收到主控的充电指令
-                    } else if (response.contains("A6")) {
+                    } else if (response.startsWith("A6")) {
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                         show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
@@ -277,7 +312,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //                        startActivityForResult(intent, REQUEST_CODE_QIBAO);
                         //收到主控的退出指令
 //                    } else if (response.contains("A005")) {
-                    } else if (response.contains("A7")) {
+                    } else if (response.startsWith("A7")) {
                         EventBus.getDefault().post(new FirstEvent("finish"));
                         send485Cmd("B7" + MmkvUtils.getcode("ACode", ""));
 
@@ -895,6 +930,9 @@ public class SyncActivityYouxian extends BaseActivity {
         } else if (msg.contains("B2")) {
             //说明子机已进入起爆页面  此时需给主控发消息告知
             send485Cmd("B2" + MmkvUtils.getcode("ACode", ""));
+        } else if (msg.contains("BBA2")) {
+            //说明子机已进入起爆页面  此时需给主控发消息告知
+            send485Cmd("BBA2" + MmkvUtils.getcode("ACode", ""));
         } else if (msg.equals("ssjc")) {
             //说明子机已接到轮询指令  此时需给主控发消息告知
 //            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
@@ -929,6 +967,19 @@ public class SyncActivityYouxian extends BaseActivity {
                 e.printStackTrace();
             }
             if (event.getData().startsWith("B4") && event.getData().length() == 18) {
+                Log.e(TAG + "收到充电指令后发送的数据正常",event.getData());
+                send485Cmd(event.getData());
+            } else {
+                Log.e(TAG + "收到充电指令后发送的数据有误",event.getData());
+            }
+        } else if (msg.equals("reSendA4Data")) {
+            int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
+            try {
+                Thread.sleep(delay * 50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (event.getData().startsWith("BBA4") && event.getData().length() == 20) {
                 Log.e(TAG + "收到充电指令后发送的数据正常",event.getData());
                 send485Cmd(event.getData());
             } else {

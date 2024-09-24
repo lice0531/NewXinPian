@@ -240,6 +240,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
     List<Float> list_dianliu = new ArrayList();
     private String jlFlag;//接收有线级联进来起爆页面的flag
+    private String isResJc;//是否是掉线的子设备接到了重新检测指令
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +268,8 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         jlFlag = !TextUtils.isEmpty(intent.getStringExtra("isJl")) ?
                 intent.getStringExtra("isJl") : "";
+        isResJc = !TextUtils.isEmpty(intent.getStringExtra("isResJc")) ?
+                intent.getStringExtra("isResJc") : "";
         isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
@@ -282,12 +285,15 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "elevenCount: " + elevenCount);
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         //给主机发消息告知已进入起爆页面
-        EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
-
+        if (TextUtils.isEmpty(isResJc)) {
+            EventBus.getDefault().post(new FirstEvent("B2" + MmkvUtils.getcode("ACode", "")));
+        } else {
+            EventBus.getDefault().post(new FirstEvent("BBA2" + MmkvUtils.getcode("ACode", "")));
+        }
     }
 
     private void initView() {
-// 标题栏
+        // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         if (isJL) {
@@ -3603,6 +3609,13 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("-------------------开始充电-------------------");
             }
             EventBus.getDefault().post(new FirstEvent("sendA4Data", "B4" + MmkvUtils.getcode("ACode", "") +
+                    deviceStatus + qbResult));
+        } else  if (msg.equals("rejixu")) {
+            if (stage == 4) {
+                increase(6);
+                Utils.writeRecord("-------------------开始充电-------------------");
+            }
+            EventBus.getDefault().post(new FirstEvent("reSendA4Data", "BBA4" + MmkvUtils.getcode("ACode", "") +
                     deviceStatus + qbResult));
         } else if (msg.equals("qibao")) {
             Log.e("起爆页面", "收到级联起爆指令 ");
