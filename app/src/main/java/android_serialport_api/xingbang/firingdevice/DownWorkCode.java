@@ -1667,7 +1667,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         Log.e("点击项目", "position: " + position);
         Log.e("点击项目", "id: " + map_dl.get(position).get("id").toString());
 //        Intent intent = new Intent(DownWorkCode.this, ShouQuanLegActivity.class);
-        Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
+//        Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
+        Intent intent = new Intent(DownWorkCode.this, SouSuoSQActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("position", Integer.parseInt(map_dl.get(position).get("id").toString()));
         bundle.putString("sqrq", map_dl.get(position).get("spare2").toString());//申请日期
@@ -1718,7 +1719,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             case R.id.tv_chakan_sq:
                 Log.e("点击项目", "position: " + position);
                 Log.e("点击项目", "id: " + map_dl.get(position).get("id").toString());
-                Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
+//                Intent intent = new Intent(DownWorkCode.this, ShouQuanActivity.class);
+                Intent intent = new Intent(DownWorkCode.this, SouSuoSQActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("sqrq", map_dl.get(position).get("spare2").toString());//申请日期
                 bundle.putInt("position", Integer.parseInt(map_dl.get(position).get("id").toString()));

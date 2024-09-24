@@ -714,38 +714,38 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e(TAG, "记录参考电流: " + cankao_ic);
             }
 
-            if (secondCount < Preparation_time * 0.2 && isshow2==0&& busInfo.getBusCurrentIa() > (denatorCount * ic_cankao * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2 ) {// "电流过大";
-                isshow2 = 1;
-
-                firstThread.exit = true;
-                firstThread.interrupt();
-                try {
-                    firstThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
-                        .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
-                        .setMessage("当前起爆器电流过大,总线线路异常,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
-                        //设置对话框的按钮
-                        .setNeutralButton("退出", (dialog1, which) -> {
-                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
-                            sendCmd(reCmd);
-                            dialog1.dismiss();
-                            closeThread();
-                            closeForm();
-                            finish();
-                        })
-                        .setPositiveButton("确定", (dialog15, i) -> {
-                            firstThread = new ThreadFirst(allBlastQu);
-                            firstThread.exit = false;
-                            firstThread.start();
-                            dialog15.dismiss();
-                        })
-                        .create();
-                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
-            }
+//            if (secondCount < Preparation_time * 0.2 && isshow2==0&& busInfo.getBusCurrentIa() > (denatorCount * ic_cankao * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2 ) {// "电流过大";
+//                isshow2 = 1;
+//
+//                firstThread.exit = true;
+//                firstThread.interrupt();
+//                try {
+//                    firstThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                AlertDialog dialog = new Builder(FiringMainActivity.this)
+//                        .setTitle("总线电流异常")//设置对话框的标题//"成功起爆"
+//                        .setMessage("当前起爆器电流过大,总线线路异常,请检查线路,确认无误后可进行起爆。")//设置对话框的内容"本次任务成功起爆！"
+//                        //设置对话框的按钮
+//                        .setNeutralButton("退出", (dialog1, which) -> {
+//                            byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
+//                            sendCmd(reCmd);
+//                            dialog1.dismiss();
+//                            closeThread();
+//                            closeForm();
+//                            finish();
+//                        })
+//                        .setPositiveButton("确定", (dialog15, i) -> {
+//                            firstThread = new ThreadFirst(allBlastQu);
+//                            firstThread.exit = false;
+//                            firstThread.start();
+//                            dialog15.dismiss();
+//                        })
+//                        .create();
+//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+//                dialog.show();
+//            }
 
 
 

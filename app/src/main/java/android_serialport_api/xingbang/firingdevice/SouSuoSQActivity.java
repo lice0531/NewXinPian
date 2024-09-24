@@ -82,6 +82,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private int mEditMode = STATE_DEFAULT;
     private boolean editorStatus = false;//是否为编辑状态
     private int index = 0;//当前选中的item数
+    private int errNum = 0;//错误数量
     private String mRegion;     // 区域
 
     @Override
@@ -104,10 +105,9 @@ public class SouSuoSQActivity extends BaseActivity {
 //        String format1 = simpleDateFormat.format(format2+ time);
 //        Log.e("获取到有效期为", "format1: "+format1 );
         // 适配器
-        linearLayoutManager = new LinearLayoutManager(this);
-        mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
-        re_ss.setLayoutManager(linearLayoutManager);
-        re_ss.setAdapter(mAdapter2);
+        initUI();
+
+
         if(sqrq.equals("")){
             mListData = new GreenDaoMaster().queryDetonatorShouQuan();
             mList.clear();
@@ -126,15 +126,43 @@ public class SouSuoSQActivity extends BaseActivity {
                     mList.add(shouQuanData);
                 }
             }
-            mAdapter2.setNewData(mList);
-            mAdapter2.notifyDataSetChanged();
+        }else {
+            mListData = new GreenDaoMaster().queryDetonatorShouQuan(sqrq);
+            mList.clear();
+            Log.e("加载", "mListData.size(): " + mListData.size());
+            for (DetonatorTypeNew item : mListData) {
+                ShouQuanData shouQuanData = new ShouQuanData();
+                shouQuanData.setId(item.getId());
+                shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                shouQuanData.setDetonatorId(item.getDetonatorId());
+                shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                shouQuanData.setCong_yscs(item.getCong_yscs());
+                shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                shouQuanData.setQibao(item.getQibao());
+                shouQuanData.setTime(item.getTime());
+                if (!mList.contains(shouQuanData)) {
+                    mList.add(shouQuanData);
+                }
+            }
         }
+        mAdapter2.setNewData(mList);
+        mAdapter2.notifyDataSetChanged();
+
+    }
+
+    private void initUI() {
+        linearLayoutManager = new LinearLayoutManager(this);
+        mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
+        re_ss.setLayoutManager(linearLayoutManager);
+        re_ss.setAdapter(mAdapter2);
+
 
         mHandler_UI = new Handler(msg -> {
             switch (msg.what) {
                 // 区域 更新视图
                 case 1:
-                    Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
+                    mList.clear();
+//                    Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
                     if(sqrq.equals("")){
                         mListData = new GreenDaoMaster().queryDetonatorShouQuan();
                     }else {
@@ -145,7 +173,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     if (mListData.size() == 0) {
                         show_Toast("未找到当前雷管");
                     }
-                    mList.clear();
+
                     Log.e("加载单个项目", "mListData.size(): " + mListData.size());
                     for (DetonatorTypeNew item : mListData) {
                         ShouQuanData shouQuanData = new ShouQuanData();
@@ -181,9 +209,10 @@ public class SouSuoSQActivity extends BaseActivity {
                     }
                     break;
                 case 5:
+                    mListData.clear();
                     Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
                     if(sqrq.equals("")){
-                        mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString());
                     }else {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
                     }
@@ -239,6 +268,9 @@ public class SouSuoSQActivity extends BaseActivity {
                     break;
                 case 7:
                     show_Toast("数据异常,请检查雷管厂家是否正确");
+                    break;
+                case 9:
+                    show_Toast("数据异常,请检查雷管状态是否正确");
                     break;
                 default:
                     break;
@@ -343,11 +375,7 @@ public class SouSuoSQActivity extends BaseActivity {
                 String gkm = edit_gkm.getText().toString();
                 Message msg = new Message();
                 msg.obj = gkm;
-                if(sqrq.equals("")){
-                    msg.what = 5;//全局搜索
-                }else {
-                    msg.what = 1;//单个项目搜索
-                }
+                msg.what = 5;
                 mHandler_UI.sendMessage(msg);
                 break;
             case R.id.ss_btn_px:
@@ -357,6 +385,7 @@ public class SouSuoSQActivity extends BaseActivity {
                 setAllItemChecked();
                 break;
             case R.id.tv_input:
+//                showDialog();
                 inputLeiGuan();
                 break;
             case R.id.tv_ture:
@@ -425,13 +454,15 @@ public class SouSuoSQActivity extends BaseActivity {
             }
         }
         updateEditState();
-        show_Toast("注册结束");
+        show_Toast("注册结束,共"+errNum+"发注册失败");
 //        String gkm = edit_gkm.getText().toString();
 //        Message msg = new Message();
 //        msg.what=1;
 //        msg.obj=gkm;
 //        mHandler_UI.sendMessage(msg);
         mAdapter2.notifyDataSetChanged();
+//        hideDialog();
+        errNum=0;
     }
 
 
@@ -443,25 +474,29 @@ public class SouSuoSQActivity extends BaseActivity {
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
-            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
+            errNum++;
+//            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
             return;
         }
         if (!db.getQibao().equals("雷管正常")) {
-            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
+            errNum++;
+//            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(9));
             return;
         }
         if (db.getShellBlastNo().length() > 13) {
-
-            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
+            errNum++;
+//            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
             return;
         }
         //检查芯片码重复数据
         if (db.getDetonatorId() != null && db.getDetonatorId().length() == 13 && checkRepeatDenatorId(db.getDetonatorId())) {
-            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
+            errNum++;
+//            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
             return;
         }
         if (checkRepeatShellNo(db.getShellBlastNo())) {//检查管壳码重复数据
-            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
+            errNum++;
+//            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
             return;
         }
 

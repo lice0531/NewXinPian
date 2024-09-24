@@ -232,6 +232,9 @@ public class ShouQuanActivity extends BaseActivity {
                 case 7:
                     show_Toast("数据异常,请检查雷管厂家是否正确");
                     break;
+                case 9:
+                    show_Toast("数据异常,请检查雷管状态是否正确");
+                    break;
                 case 8:
                     GreenDaoMaster master2 = new GreenDaoMaster();
                     mListData = master2.queryDetonatorShouQuan("雷管正常", sqrq);
@@ -452,6 +455,10 @@ public class ShouQuanActivity extends BaseActivity {
         Log.e("授权导入注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
+            return;
+        }
+        if (!db.getQibao().equals("雷管正常")) {
+            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(9));
             return;
         }
         if (db.getShellBlastNo().length() > 13) {

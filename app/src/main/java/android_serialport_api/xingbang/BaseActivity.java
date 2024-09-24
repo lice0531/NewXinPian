@@ -55,11 +55,7 @@ public class  BaseActivity extends AppCompatActivity {
 		addActivity();// 调用添加方法
 	}
 
-	// 进度条
-	public void showDialog() {
-		mDialogPlus = LoadingUtils.loadDialog(mContext);
-		mDialogPlus.show();
-	}
+
 
 	// 添加Activity方法
 	public void addActivity() {
@@ -396,4 +392,13 @@ public class  BaseActivity extends AppCompatActivity {
 			Manifest.permission.READ_PHONE_STATE
 	};
 
+	// 进度条
+	public void showDialog() {
+		mDialogPlus = LoadingUtils.loadDialog(mContext);
+		mDialogPlus.show();
+	}
+	//关闭进度条
+	public void hideDialog() {
+		mDialogPlus.dismiss();
+	}
 }
