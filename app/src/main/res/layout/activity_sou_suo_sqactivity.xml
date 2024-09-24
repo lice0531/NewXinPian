@@ -134,6 +134,7 @@
             android:layout_marginBottom="12dp"
             android:background="@color/app_bg_color" />
         <TextView
+            android:visibility="gone"
             android:id="@+id/tv_ture"
             android:layout_width="0dp"
             android:layout_height="match_parent"

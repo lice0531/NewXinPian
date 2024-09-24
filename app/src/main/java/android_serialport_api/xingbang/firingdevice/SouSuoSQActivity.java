@@ -135,7 +135,12 @@ public class SouSuoSQActivity extends BaseActivity {
                 // 区域 更新视图
                 case 1:
                     Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
+                    if(sqrq.equals("")){
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+                    }else {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
+                    }
+
                     Log.e("查询", "mListData: " + mListData.toString());
                     if (mListData.size() == 0) {
                         show_Toast("未找到当前雷管");
@@ -177,7 +182,37 @@ public class SouSuoSQActivity extends BaseActivity {
                     break;
                 case 5:
                     Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString());
+                    if(sqrq.equals("")){
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+                    }else {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
+                    }
+                    Log.e("查询", "mListData: " + mListData.toString());
+                    if (mListData.size() == 0) {
+                        show_Toast("未找到当前雷管");
+                    }
+                    mList.clear();
+                    Log.e("加载全部项目", "mListData.size(): " + mListData.size());
+                    for (DetonatorTypeNew item : mListData) {
+                        ShouQuanData shouQuanData = new ShouQuanData();
+                        shouQuanData.setId(item.getId());
+                        shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                        shouQuanData.setDetonatorId(item.getDetonatorId());
+                        shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                        shouQuanData.setCong_yscs(item.getCong_yscs());
+                        shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                        shouQuanData.setQibao(item.getQibao());
+                        shouQuanData.setTime(item.getTime());
+                        if (!mList.contains(shouQuanData)) {
+                            mList.add(shouQuanData);
+                        }
+                    }
+                    mAdapter2.setNewData(mList);
+                    mAdapter2.notifyDataSetChanged();
+                    hideInputKeyboard();//隐藏键盘,取消焦点
+                    break;
+                case 6:
+                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2();
                     Log.e("查询", "mListData: " + mListData.toString());
                     if (mListData.size() == 0) {
                         show_Toast("未找到当前雷管");
@@ -248,6 +283,10 @@ public class SouSuoSQActivity extends BaseActivity {
 
             case R.id.item_1:
                 updateEditState();
+                return true;
+            case R.id.item_2:
+                mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -386,7 +425,7 @@ public class SouSuoSQActivity extends BaseActivity {
             }
         }
         updateEditState();
-        show_Toast("注册成功");
+        show_Toast("注册结束");
 //        String gkm = edit_gkm.getText().toString();
 //        Message msg = new Message();
 //        msg.what=1;
@@ -404,8 +443,11 @@ public class SouSuoSQActivity extends BaseActivity {
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
-
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
+            return;
+        }
+        if (!db.getQibao().equals("雷管正常")) {
+            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
             return;
         }
         if (db.getShellBlastNo().length() > 13) {
