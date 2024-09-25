@@ -1013,14 +1013,14 @@ public class QueryHisDetail extends BaseActivity {
     }
 
 
-    /**
-     * 创建菜单
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_hisdelete, menu);
-        return true;
-    }
+//    /**
+//     * 创建菜单  因为出口版本没有上传功能，所以屏蔽删除所有已上传记录功能
+//     */
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_hisdelete, menu);
+//        return true;
+//    }
 
     /**
      * 打开菜单

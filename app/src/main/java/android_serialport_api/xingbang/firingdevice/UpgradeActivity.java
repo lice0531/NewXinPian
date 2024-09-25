@@ -594,7 +594,7 @@ public class UpgradeActivity extends SerialPortActivity {
                 .setCancelable(false)
                 .setMessage(getResources().getString(R.string.text_sjerror20))//设置对话框的内容"本次任务成功起爆！"
                 //设置对话框的按钮
-                .setNegativeButton("确认", (dialog13, which) -> {
+                .setNegativeButton(getResources().getString(R.string.text_verify), (dialog13, which) -> {
                     dialog13.dismiss();
                     if (XbUtils.isExists(mPath_Local)) {
                         // 删除本次下载的bin文件
