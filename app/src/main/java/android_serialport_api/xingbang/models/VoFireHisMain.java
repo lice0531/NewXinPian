@@ -17,7 +17,6 @@ public class VoFireHisMain {
 	private String dwdm;//单位代码
 	private String xmbh;//项目编号
 	private String log;//日志
-	private Integer sum;//雷管数量
 
 	public String getId() {
 		return id;
@@ -100,13 +99,7 @@ public class VoFireHisMain {
 		this.log = log;
 	}
 
-	public Integer getSum() {
-		return sum;
-	}
 
-	public void setSum(Integer sum) {
-		this.sum = sum;
-	}
 
 	@Override
 	public String toString() {
@@ -124,7 +117,6 @@ public class VoFireHisMain {
 				", dwdm='" + dwdm + '\'' +
 				", xmbh='" + xmbh + '\'' +
 				", log='" + log + '\'' +
-				", sum='" + sum + '\'' +
 				'}';
 	}
 }

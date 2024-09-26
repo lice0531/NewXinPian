@@ -1,5 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -35,6 +40,7 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.ChaKan_SQAdapter;
 import android_serialport_api.xingbang.custom.DataAdapter;
+import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
@@ -81,9 +87,15 @@ public class SouSuoSQActivity extends BaseActivity {
     private static final int STATE_EDIT = 1;//编辑状态
     private int mEditMode = STATE_DEFAULT;
     private boolean editorStatus = false;//是否为编辑状态
+    private boolean zhuceStatus = false;//是否为注册状态
     private int index = 0;//当前选中的item数
     private int errNum = 0;//错误数量
     private String mRegion;     // 区域
+    private int pb_show = 0;
+    private Handler mHandler_2 = new Handler();//显示进度条
+    private LoadingDialog tipDlg = null;
+    //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +160,29 @@ public class SouSuoSQActivity extends BaseActivity {
         mAdapter2.setNewData(mList);
         mAdapter2.notifyDataSetChanged();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("destroy", "onDestroy: " );
+        threadPoolExecutor.shutdown();
+        super.onDestroy();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断当点击的是返回键
+        if (keyCode == event.KEYCODE_BACK) {
+            //如果在两秒大于2秒
+            if (zhuceStatus) {
+                //获得当前的时间
+
+                show_Toast("正在注册请稍等");
+            } else {
+                finish();
+            }
+
+        }
+        return true;
     }
 
     private void initUI() {
@@ -272,9 +307,27 @@ public class SouSuoSQActivity extends BaseActivity {
                 case 9:
                     show_Toast("数据异常,请检查雷管状态是否正确");
                     break;
+                case 10:
+                    runPbDialog();
+                    threadPoolExecutor.execute(this::inputLeiGuan);
+
+                    break;
+                case 11:
+
+                    updateEditState();
+                    show_Toast("注册结束,共"+errNum+"发注册失败");
+                    errNum=0;
+                    mAdapter2.notifyDataSetChanged();
+                    break;
                 default:
                     break;
             }
+            return false;
+        });
+
+        mHandler_2 = new Handler(message -> {
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
             return false;
         });
     }
@@ -385,14 +438,42 @@ public class SouSuoSQActivity extends BaseActivity {
                 setAllItemChecked();
                 break;
             case R.id.tv_input:
-//                showDialog();
-                inputLeiGuan();
+                zhuceStatus=true;
+                mHandler_UI.sendMessage(mHandler_UI.obtainMessage(10));
+
+
                 break;
             case R.id.tv_ture:
                 deleteCheckItem();
                 break;
         }
     }
+
+    private void runPbDialog() {
+        pb_show = 1;
+        //  builder = showPbDialog();
+        tipDlg = new LoadingDialog(SouSuoSQActivity.this);
+        Context context = tipDlg.getContext();
+//        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
+//        View divider = tipDlg.findViewById(divierId);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
+        //tipDlg.setMessage("正在操作,请等待...").show();
+        new Thread(() -> {
+            //mHandler_2
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            //builder.show();
+            try {
+                while (pb_show == 1) {
+                    Thread.sleep(100);
+                }
+                //builder.dismiss();
+                mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 
     //删除选中的item
     private void deleteCheckItem() {
@@ -453,16 +534,18 @@ public class SouSuoSQActivity extends BaseActivity {
                 registerDetonator(mList.get(i));
             }
         }
-        updateEditState();
-        show_Toast("注册结束,共"+errNum+"发注册失败");
+
+        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(11));
+
 //        String gkm = edit_gkm.getText().toString();
 //        Message msg = new Message();
 //        msg.what=1;
 //        msg.obj=gkm;
 //        mHandler_UI.sendMessage(msg);
-        mAdapter2.notifyDataSetChanged();
+
 //        hideDialog();
-        errNum=0;
+        zhuceStatus=false;
+        pb_show = 0;
     }
 
 

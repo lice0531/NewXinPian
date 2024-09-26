@@ -2,7 +2,7 @@
 <litepal>
     <dbname value="denatorSys" />
 
-    <version value="25" />
+    <version value="24" />
 
     <list>
         <mapping class="com.android_serialport_api.xingbang.db.denatorBaseinfo"/>

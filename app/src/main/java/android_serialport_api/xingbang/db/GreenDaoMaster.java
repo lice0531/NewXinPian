@@ -1171,4 +1171,25 @@ public class GreenDaoMaster {
                 .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
                 .unique();
     }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public int queryHis(String blastdate,String shuangchuan) {
+        if(shuangchuan.equals("否")){
+            return denatorHis_detailDao
+                    .queryBuilder()
+                    .where(DenatorHis_DetailDao.Properties.Blastdate.eq(blastdate))
+                    .where(DenatorHis_DetailDao.Properties.ErrorCode.like("F%"))
+                    .list().size();
+        }else {
+            return denatorHis_detailDao
+                    .queryBuilder()
+                    .where(DenatorHis_DetailDao.Properties.Blastdate.eq(blastdate))
+                    .list().size();
+
+        }
+
+    }
+
 }

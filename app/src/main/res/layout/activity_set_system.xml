@@ -183,10 +183,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <Button
                 android:id="@+id/set_languages"
+                android:visibility="gone"
                 style="@style/allbtntstyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -209,7 +210,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bt_mainpage_style"
-                android:text="@string/set_szdy"
+                android:text="设置手势起爆图案"
                 android:textColor="@color/bt_fg_base" />
         </LinearLayout>
 

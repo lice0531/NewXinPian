@@ -10,6 +10,8 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 
 /**
  * 适配器
@@ -18,7 +20,7 @@ public class HisAdapter extends BaseQuickAdapter<QueryHisData, BaseViewHolder> {
 
     private static final int STATE_DEFAULT = 0;//默认状态
     int mEditMode = STATE_DEFAULT;
-
+    private String Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
     public HisAdapter(int layoutResId, @Nullable List<QueryHisData> data) {
         super(layoutResId, data);
     }
@@ -30,7 +32,8 @@ public class HisAdapter extends BaseQuickAdapter<QueryHisData, BaseViewHolder> {
         helper.setText(R.id.serialNo,  (getData().size()- position)+"");//序号
         helper.setText(R.id.fireDate,item.getBlastdate());
         helper.setText(R.id.txtstatus,item.getBlastdate());
-        helper.setText(R.id.txtsum,item.getSum()+"");
+        helper.setText(R.id.txtsum,new GreenDaoMaster().queryHis(item.getBlastdate(),Shangchuan)+"");
+
         if("未传".equals(item.getUploadStatus())){
             helper.setText(R.id.txtstatus,mContext.getString(R.string.text_query_up));	//"未上传"
             helper.setText(R.id.bt_upload,mContext.getString(R.string.text_query_uploda));//"上传"

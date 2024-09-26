@@ -2453,17 +2453,17 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // 保存区域参数
-        mRegion = String.valueOf(item.getOrder());
-        // 保存区域参数(单选的时候要放开,多选关闭)
-        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
+
         switch (item.getItemId()) {
             case R.id.item_1:
             case R.id.item_2:
             case R.id.item_3:
             case R.id.item_4:
             case R.id.item_5:
+                // 保存区域参数
                 mRegion = String.valueOf(item.getOrder());
+                // 保存区域参数(单选的时候要放开,多选关闭)
+                SPUtils.put(this, Constants_SP.RegionCode, mRegion);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示

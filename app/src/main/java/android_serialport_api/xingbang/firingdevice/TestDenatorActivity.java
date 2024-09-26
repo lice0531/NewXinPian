@@ -53,6 +53,7 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.CommonDialog;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
@@ -341,9 +342,22 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         btn_return_complete.setOnClickListener(v -> {
             closeThread();
-            Intent intentTemp = new Intent();
-            intentTemp.putExtra("backString", "");
-            setResult(1, intentTemp);
+//            Intent intentTemp = new Intent();
+//            intentTemp.putExtra("backString", "");
+//            setResult(1, intentTemp);
+            String Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");//是否验证地理位置
+            Intent intent5;//金建华
+
+                Log.e("验证2", "Yanzheng: " + Yanzheng);
+                if (Yanzheng.equals("验证")) {
+                    intent5 = new Intent(this, VerificationActivity.class);
+                } else {
+                    intent5 = new Intent(this, FiringMainActivity.class);
+                }
+
+            intent5.putExtra("dataSend", "起爆");
+            startActivity(intent5);
+
             finish();
         });
 

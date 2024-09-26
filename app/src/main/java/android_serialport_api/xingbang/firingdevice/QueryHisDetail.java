@@ -479,7 +479,6 @@ public class QueryHisDetail extends BaseActivity {
             item.setDwdm(list.get(i).getPro_dwdm());
             item.setXmbh(list.get(i).getPro_xmbh());
             item.setLog(list.get(i).getLog());
-            item.setSum(list.get(i).getSum());
             list_savedate.add(item);
         }
     }
@@ -759,7 +758,6 @@ public class QueryHisDetail extends BaseActivity {
         his.setPro_dwdm(pro_dwdm);
         his.setSerialNo(-1);
         his.setLog(Utils.readLog(Utils.getDate(new Date())));
-        his.setSum(list.size());
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);

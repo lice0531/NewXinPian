@@ -1285,7 +1285,6 @@ public class FiringMainActivity extends SerialPortActivity {
         his.setPro_dwdm(pro_dwdm);
         his.setSerialNo(Integer.parseInt(qbxm_id));
         his.setLog(Utils.readLog(Utils.getDate(new Date())));
-        his.setSum(denatorCount);
         if (pro_coordxy.length() > 4) {
             his.setLongitude(xy[0]);
             his.setLatitude(xy[1]);
@@ -1953,6 +1952,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     eightCmdFlag = 0;
                     if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
                         saveFireResult();
+                        Utils.writeRecord("--生成历史记录");
                     }
 
                     AlertDialog dialog = new Builder(this)

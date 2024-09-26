@@ -112,14 +112,15 @@
                 android:textSize="@dimen/mainpageFontSize"
                 android:visibility="gone"/>
             <Button
-                android:id="@+id/btn_main_del"
+                android:id="@+id/btn_main_reister"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="@string/text_main_sc"
+                android:text="@string/text_main_zc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
+
 
 
 
@@ -133,15 +134,6 @@
             android:divider="@drawable/spacer_medium"
             android:gravity="center"
             android:showDividers="middle">
-            <Button
-                android:id="@+id/btn_main_reister"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_zc"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
 
             <Button
                 android:id="@+id/btn_main_test"
@@ -153,6 +145,15 @@
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
+            <Button
+                android:id="@+id/btn_main_blast"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_qb"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
 
         </LinearLayout>
 
@@ -165,15 +166,6 @@
             android:gravity="center"
             android:showDividers="middle">
 
-            <Button
-                android:id="@+id/btn_main_blast"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_qb"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
 
             <Button
                 android:id="@+id/btn_main_query"
@@ -185,6 +177,15 @@
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
+            <Button
+                android:id="@+id/btn_main_del"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_sc"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
 
 
         </LinearLayout>

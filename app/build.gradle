@@ -109,8 +109,8 @@ dependencies {
     implementation "io.github.vincent-series:smart-toast:4.0.6"
     compileOnly 'com.google.zxing:core:3.3.0'
 //    异常捕获
-//    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
-    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
+    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
+//    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
 
     //androidx项目(UI框架)
@@ -125,7 +125,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 25 //数据库版本号
+    schemaVersion 24 //数据库版本号
     targetGenDir 'src/main/java'
     // 设置DaoMaster、DaoSession、Dao 包名
     daoPackage 'android_serialport_api.xingbang.db.greenDao'
