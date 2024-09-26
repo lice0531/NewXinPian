@@ -254,7 +254,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.startsWith("A4")) {
 //                        if (getStringAfterA4(response).equals(MmkvUtils.getcode("ACode", ""))) {
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
-                        show_Toast(getString(R.string.text_sync_tip5));
+//                        show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));
 //                            send485Cmd("B4" + MmkvUtils.getcode("ACode", ""));
 //                        }
@@ -264,8 +264,8 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.startsWith("ABA4")) {
                         Log.e(TAG,"收到重新充电指令了" + response + "--" + response.substring(response.length() - 2));
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
-                            send485Cmd("BBA4" + MmkvUtils.getcode("ACode", ""));
-                            show_Toast(getString(R.string.text_sync_tip5));
+//                            send485Cmd("BBA4" + MmkvUtils.getcode("ACode", ""));
+//                            show_Toast(getString(R.string.text_sync_tip5));
                             EventBus.getDefault().post(new FirstEvent("rejixu"));
                         } else {
                             Log.e(TAG,response + "--重新充电指令不是当前子设备的");
@@ -276,7 +276,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
                             //主的子设备
-                            show_Toast(getString(R.string.text_sync_tip6));
+//                            show_Toast(getString(R.string.text_sync_tip6));
                             Log.e("主的子设备已接收到切换模式指令",response);
                             try {
                                 Thread.sleep(1000);
@@ -288,7 +288,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         } else {
                             //其他子设备
                             Log.e("接收到A5指令了","开始关闭485");
-                            show_Toast(getString(R.string.text_sync_tip6));
+//                            show_Toast(getString(R.string.text_sync_tip6));
                             Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
                             Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + response);
                             closeM900Rs485(response);
@@ -296,7 +296,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
                         EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
 //                    } else if (response.contains("A003")) {
-                        //收到主控的充电指令
+                        //收到主控的起爆指令
                     } else if (response.startsWith("A6")) {
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
                         show_Toast(getString(R.string.text_sync_tip6));
@@ -318,12 +318,6 @@ public class SyncActivityYouxian extends BaseActivity {
 
 //                        show_Toast("收到退出指令");
                         finish();
-                    } else if (response.startsWith("A8") && response.endsWith("B8")) {
-                        Log.e(TAG,"接收到A8子设备掉线消息了");
-                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
-                            send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
-                            Log.e(TAG,MmkvUtils.getcode("ACode", "") + "子设备已掉线");
-                        }
                     } else if (response.contains("A006")) {
 //                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
                     } else if (response.contains("A008")) {
@@ -899,45 +893,17 @@ public class SyncActivityYouxian extends BaseActivity {
         if (msg.equals("qibao")) {
             String a = "0006";
             writeData(a);
-        } else if (msg.equals("jcjg")) {//返回测试结果
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e(TAG + "返回jcjg测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
-            send485Cmd("B007" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
-//            send485Cmd("B007"+ MmkvUtils.getcode("ACode", "")+tureNum+errNum);
-        } else if (msg.equals("ddjc")) {//等待检测
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e(TAG + "返回ddjc测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
-            send485Cmd("B008" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
-//            send485Cmd("B008"+ MmkvUtils.getcode("ACode", "")+event.getD4ata());
-        } else if (msg.equals("zzcd")) {//正在充电
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e(TAG + "返回zzcd测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
-            send485Cmd("B009" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
-//            send485Cmd("B009"+ MmkvUtils.getcode("ACode", "")+event.getData());
-        } else if (msg.equals("qbjg")) {//返回起爆结果
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e(TAG + "返回qbjg测试结果", "tureNum: " + tureNum + "--errNum:" + errNum + "--currentPeak: " + event.getCurrentPeak());
-            send485Cmd("B010" + MmkvUtils.getcode("ACode", "") + event.getData() + currentPeak);
-//            send485Cmd("B010"+ MmkvUtils.getcode("ACode", "")+event.getData());
-        } else if (msg.contains("B2")) {
+        } else if (msg.equals("B2")) {
             //说明子机已进入起爆页面  此时需给主控发消息告知
             send485Cmd("B2" + MmkvUtils.getcode("ACode", ""));
-        } else if (msg.contains("BBA2")) {
+        } else if (msg.equals("B8")) {
+            //说明子机出现了不同异常情况的弹窗  此时通知主控
+            send485Cmd("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        } else if (msg.equals("BBA2")) {
             //说明子机已进入起爆页面  此时需给主控发消息告知
             send485Cmd("BBA2" + MmkvUtils.getcode("ACode", ""));
         } else if (msg.equals("ssjc")) {
             //说明子机已接到轮询指令  此时需给主控发消息告知
-//            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-//            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-//            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
             String pollData = "B3" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum()
                     + event.getErrNum() + event.getCurrentPeak();
             if (pollData.startsWith("B3") && pollData.length() == 18) {
@@ -987,12 +953,6 @@ public class SyncActivityYouxian extends BaseActivity {
             }
         }
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//
-//    }
 
     private void openM900Rs485(String qbResult){
         mExpDevMgr = new ExpdDevMgr(this);

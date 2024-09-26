@@ -111,7 +111,7 @@ public class SyncActivity extends BaseActivity {
         delay = MyTools.getADelay();
         tvDelay.setText(getString(R.string.text_sync_dqyc) + delay);
 
-        tvCode.setText(MyTools.getACode().equals("")?getString(R.string.text_sync_szbh):(String) MmkvUtils.getcode("ACode", ""));
+        tvCode.setText(MmkvUtils.getcode("ACode", "").equals("")?getString(R.string.text_sync_szbh):(String) MmkvUtils.getcode("ACode", ""));
         getPropertiesData();
     }
 
@@ -120,7 +120,7 @@ public class SyncActivity extends BaseActivity {
         super.onResume();
         delay = MyTools.getADelay();
         tvDelay.setText(getString(R.string.text_sync_dqyc) + delay);
-        tvCode.setText(MyTools.getACode().equals("")?getString(R.string.text_sync_szbh):(String) MmkvUtils.getcode("ACode", ""));
+        tvCode.setText(MmkvUtils.getcode("ACode", "").equals("")?getString(R.string.text_sync_szbh):(String) MmkvUtils.getcode("ACode", ""));
     }
 
     private void getPropertiesData() {
@@ -180,12 +180,12 @@ public class SyncActivity extends BaseActivity {
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
                     } else if (response.contains("A003")) {
-                        show_Toast(getString(R.string.text_sync_tip5));
+//                        show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
                     } else if (response.contains("A004")) {
-                        show_Toast(getString(R.string.text_sync_tip6));
+//                        show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        if (response.length() >= 5) {
@@ -195,7 +195,7 @@ public class SyncActivity extends BaseActivity {
 //                        }
 //                        startActivityForResult(intent, REQUEST_CODE_QIBAO);
                     } else if (response.contains("A005")) {
-                        writeData("B005" + MyTools.getACode());
+                        writeData("B005" + MmkvUtils.getcode("ACode", ""));
                         EventBus.getDefault().post(new FirstEvent("finish"));
 //                        show_Toast("收到退出指令");
                         finish();
@@ -226,7 +226,8 @@ public class SyncActivity extends BaseActivity {
                 case 6:
                     btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
-                    final String data2 = "0001" + MyTools.getACode();
+                    final String data2 = "0001" + MmkvUtils.getcode("ACode", "");
+                    Log.e(TAG,"CASE6--设备号:" + MmkvUtils.getcode("ACode", ""));
                     writeData(data2);
                     break;
                 case 10:
@@ -239,7 +240,7 @@ public class SyncActivity extends BaseActivity {
                     try {
                         Thread.sleep(12);
 
-//                        mOutputStream.write(("0001" + MyTools.getACode()).getBytes());
+//                        mOutputStream.write(("0001" + MmkvUtils.getcode("ACode", "")).getBytes());
 //                        Thread.sleep(12);
 //                        EMgpio.SetGpioDataHigh(94);
                     } catch (Exception e) {
@@ -255,7 +256,7 @@ public class SyncActivity extends BaseActivity {
                             Thread.sleep(12);
 
                             String a = myInfo();
-//                            mOutputStream.write(("0001" + MyTools.getACode() + ",_*").getBytes());
+//                            mOutputStream.write(("0001" + MmkvUtils.getcode("ACode", "") + ",_*").getBytes());
 //                            mOutputStream.write((a + ",_*").getBytes());
                             show_Toast(getString(R.string.text_sync_tip9));
                             Thread.sleep(20);
@@ -279,7 +280,7 @@ public class SyncActivity extends BaseActivity {
                         case REQUEST_CODE_NET:
                             if (resultCode == TestDenatorActivity.RESULT_SUCCESS) {
                                 //网络测试回调
-                                String code = MyTools.getACode();
+                                String code = (String) MmkvUtils.getcode("ACode", "");
                                 String type = data.getStringExtra("type");
                                 String tNum = data.getStringExtra("tNum");
                                 String faultNum = data.getStringExtra("faultNum");
@@ -296,7 +297,7 @@ public class SyncActivity extends BaseActivity {
                         case REQUEST_CODE_CHONGDIAN:
 //                            if (resultCode == TempChongdianActivity.RESULT_SUCCESS) {
 //                                //充电
-//                                String code = MyTools.getACode();
+//                                String code = MmkvUtils.getcode("ACode", "");
 //                                String type = data.getStringExtra("type");
 ////                    String tip = data.getStringExtra("tip");
 //                                String U = data.getStringExtra("U");
@@ -310,7 +311,7 @@ public class SyncActivity extends BaseActivity {
                             if (resultCode == FiringMainActivity.RESULT_SUCCESS) {
 //                            if (resultCode == FiringMainActivity_hf.RESULT_SUCCESS) {
                                 //起爆
-                                String code = MyTools.getACode();
+                                String code = (String) MmkvUtils.getcode("ACode", "");
                                 String type = data.getStringExtra("type");
                                 String tip = data.getStringExtra("tip");
 
@@ -326,7 +327,7 @@ public class SyncActivity extends BaseActivity {
     };
 
     private void toCheck6() {
-        String code = MyTools.getACode();
+        String code = (String) MmkvUtils.getcode("ACode", "");
         String check = MyTools.getCheck() + "";
         String info = "";
         if (check.equals("1")) {
@@ -376,7 +377,7 @@ public class SyncActivity extends BaseActivity {
             case REQUEST_CODE_NET:
                 if (resultCode == TempNetActivity.RESULT_SUCCESS) {
                     //网络测试回调
-                    String code = MyTools.getACode();
+                    String code = MmkvUtils.getcode("ACode", "");
                     String type = data.getStringExtra("type");
                     String tNum = data.getStringExtra("tNum");
                     String faultNum = data.getStringExtra("faultNum");
@@ -393,7 +394,7 @@ public class SyncActivity extends BaseActivity {
             case REQUEST_CODE_CHONGDIAN:
                 if (resultCode == TempChongdianActivity.RESULT_SUCCESS) {
                     //充电
-                    String code = MyTools.getACode();
+                    String code = MmkvUtils.getcode("ACode", "");
                     String type = data.getStringExtra("type");
 //                    String tip = data.getStringExtra("tip");
                     String U = data.getStringExtra("U");
@@ -407,7 +408,7 @@ public class SyncActivity extends BaseActivity {
             case REQUEST_CODE_QIBAO:
                 if (resultCode == TempQiBaoActivity.RESULT_SUCCESS) {
                     //起爆
-                    String code = MyTools.getACode();
+                    String code = MmkvUtils.getcode("ACode", "");
                     String type = data.getStringExtra("type");
                     String tip = data.getStringExtra("tip");
 
@@ -498,7 +499,7 @@ public class SyncActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_test:
-                if (MyTools.getACode().equals("")){
+                if (MmkvUtils.getcode("ACode", "").equals("")){
                     show_Toast(getString(R.string.text_sync_szbh));
                     return;
                 }
@@ -513,7 +514,7 @@ public class SyncActivity extends BaseActivity {
 //
 //                    String a = myInfo();
 //                    Log.e("级联", "a: "+a );
-////                    mOutputStream.write(("0001" + MyTools.getACode() + ",_*").getBytes());
+////                    mOutputStream.write(("0001" + MmkvUtils.getcode("ACode", "") + ",_*").getBytes());
 //                    mOutputStream.write((a + ",_*").getBytes());
 //                    Log.e("级联", "(a + ,_*): "+(a + ",_*"));
 //                    show_Toast("发送了");
@@ -534,7 +535,8 @@ public class SyncActivity extends BaseActivity {
                 } else {
                     btnTest.setText(getString(R.string.text_sync_tip8));
                     btnTest.setEnabled(false);
-                    final String data = "0001" + MyTools.getACode();
+                    Log.e(TAG,"设备号:" + MmkvUtils.getcode("ACode", ""));
+                    final String data = "0001" + MmkvUtils.getcode("ACode", "");
                     writeData(data);
                 }
 
@@ -546,7 +548,7 @@ public class SyncActivity extends BaseActivity {
                 finish();
 //                String a = "0002" + "D0000005" + "," + "1" + "," + "100" + "," + "0" + "," + "200" + "," + "300" + "," + "";
 //                writeData(a);
-                writeData("0005" + MyTools.getACode());
+                writeData("0005" + MmkvUtils.getcode("ACode", ""));
                 break;
             case R.id.btn_tongbu_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
@@ -556,7 +558,7 @@ public class SyncActivity extends BaseActivity {
     }
 
     private String myInfo() {
-        String code = MyTools.getACode();
+        String code = (String) MmkvUtils.getcode("ACode", "");
         String check = MyTools.getCheck() + "";
         String info = "";
         if (check.equals("1")) {
@@ -580,7 +582,6 @@ public class SyncActivity extends BaseActivity {
         } else {
             a = "0001" + code + ",0" + check + "," + info;
         }
-
         return a;
     }
 
@@ -680,36 +681,23 @@ public class SyncActivity extends BaseActivity {
             String a = "0006";
             writeData(a);
         } else if (msg.equals("ddjc")) {//等待检测
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("热点级联页面返回ddjc测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
-            writeData("B007" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+            Log.e("热点级联页面返回ddjc测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B007" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("jcjg")) {//返回测试结果
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("热点级联页面返回jcjg测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
-            writeData("B008" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+            Log.e("热点级联页面返回jcjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B008" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("zzcd")) {//正在充电
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("热点级联页面返回zzcd测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
-            writeData("B009" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+            Log.e("热点级联页面返回zzcd测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B009" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("ddqb")) {//等待起爆（1+5或1+3按触发起爆）
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            Log.e("热点级联页面返回ddqb测试结果", "tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
-            writeData("B010" + MmkvUtils.getcode("ACode", "") + tureNum + errNum + currentPeak);
+            Log.e("热点级联页面返回ddqb测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B010" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("qbjg")) {//返回起爆结果
-            String tureNum = Utils.strPaddingZero(event.getTureNum(), 3);
-            String errNum = Utils.strPaddingZero(event.getErrNum(), 3);
-            String currentPeak = Utils.strPaddingZero(event.getCurrentPeak(), 6);
-            String status = event.getData();
-            Log.e("热点级联页面返回qbjg测试结果", "status:" + status + "--tureNum: " + tureNum + "--errNum: " + errNum + "--currentPeak: " + event.getCurrentPeak());
-            writeData("B011" + MmkvUtils.getcode("ACode", "") + status + tureNum + errNum + currentPeak);
+            Log.e("热点级联页面返回qbjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B011" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        } else if (msg.equals("B8")) {
+            //说明子机出现了不同异常情况的弹窗  此时通知主控
+            writeData("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         }
     }
 
