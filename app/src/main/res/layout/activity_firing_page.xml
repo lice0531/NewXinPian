@@ -382,7 +382,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -642,7 +643,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="30dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -886,20 +888,37 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="130dp"
+            android:layout_height="350dp"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="vertical">
-
             <TextView
                 android:id="@+id/ll_txt_firing_7"
                 style="@style/alltextstyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="80dp"
                 android:text="@string/text_firing_tip5"
                 android:textSize="30sp" />
+            <TextView
+                android:id="@+id/textMsg"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="使用设置的图案起爆"
+                style="@style/alltextstyle"
+                />
+
+            <com.github.ihsg.patternlocker.PatternLockerView
+                android:visibility="gone"
+                android:id="@+id/pattern_lock_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+
 
             <Button
                 android:id="@+id/btn_fir"
@@ -912,9 +931,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_firing_return_7"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:divider="@drawable/spacer_medium"
             android:gravity="center"
             android:showDividers="middle">

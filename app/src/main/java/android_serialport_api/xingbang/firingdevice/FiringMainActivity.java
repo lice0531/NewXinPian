@@ -66,9 +66,16 @@ import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.utils.shoushi.PatternHelper;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import androidx.annotation.NonNull;
+
+import com.github.ihsg.patternlocker.OnPatternChangeListener;
+import com.github.ihsg.patternlocker.PatternLockerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -80,7 +87,12 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class FiringMainActivity extends SerialPortActivity {
-
+    @BindView(R.id.pattern_lock_view)
+    PatternLockerView patternLockView;
+    @BindView(R.id.textMsg)
+    TextView textMsg;
+    @BindView(R.id.ll_firing_return_7)
+    LinearLayout ll_firing_return_7;
     private Button btn_return1;
     private Button btn_return2;
     private Button btn_return4;
@@ -217,6 +229,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean version_2 = true;
     private long time = 0;
     private String Yanzheng_sq = "";//是否验雷管授权
+    private String ShouShi = "";//是否验雷管授权
     private int duan_total=0;
     private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private float befor_dianliu = 0;
@@ -232,7 +245,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private float cankao_IV = 0;
     private int isshow2 = 0;
     private int isshow3 = 0;
-
+    PatternHelper helper = new PatternHelper();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -254,6 +267,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         startFlag = 1;
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        ShouShi = (String) MmkvUtils.getcode("ShouShi", "否");
         initParam();//重置参数
         initView();
         initHandle();
@@ -415,6 +429,46 @@ public class FiringMainActivity extends SerialPortActivity {
             }
 
         });
+        //密码锁
+        patternLockView.setOnPatternChangedListener(new OnPatternChangeListener() {
+            @Override
+            public void onStart(@NonNull PatternLockerView patternLockerView) {
+                //根据需要添加业务逻辑
+            }
+
+            @Override
+            public void onChange(@NonNull PatternLockerView patternLockerView, @NonNull List<Integer> list) {
+                //根据需要添加业务逻辑
+            }
+
+            @Override
+            public void onComplete(@NonNull PatternLockerView patternLockerView, @NonNull List<Integer> list) {
+                //根据需要添加业务逻辑
+                boolean isOk =isPatternOk(list);
+                patternLockerView.updateStatus(!isOk);
+                textMsg.setText(helper.getMessage());
+                if (isOk) {
+                    increase(8);//起爆
+                }
+            }
+
+            @Override
+            public void onClear(@NonNull PatternLockerView patternLockerView) {
+                //根据需要添加业务逻辑
+//                finishIfNeeded();
+            }
+        });
+
+        if(ShouShi.equals("是")){
+            ll_firing_return_7.setVisibility(View.GONE);
+            patternLockView.setVisibility(View.VISIBLE);
+            textMsg.setVisibility(View.VISIBLE);
+        }
+
+    }
+    private boolean isPatternOk(List<Integer> list) {
+        helper.validateForChecking(list);
+        return helper.isOk();
     }
 
     private void dialogExit() {

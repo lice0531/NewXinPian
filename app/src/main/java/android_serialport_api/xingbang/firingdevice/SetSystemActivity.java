@@ -125,7 +125,8 @@ public class SetSystemActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.set_Voltage://设置电压
-                Intent intent = new Intent(SetSystemActivity.this, SetVoltageActivity.class);
+//                Intent intent = new Intent(SetSystemActivity.this, SetVoltageActivity.class);
+                Intent intent = new Intent(SetSystemActivity.this, ShouShiActivity.class);
                 startActivity(intent);
 //                AlertDialog.Builder builder = new AlertDialog.Builder(SetSystemActivity.this);
 //                builder.setTitle("提示");//"请输入用户名和密码"

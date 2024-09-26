@@ -38,11 +38,11 @@
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
-            android:name=".ShouShiActivity"
+            android:name=".firingdevice.ShouShiActivity"
+            android:label="设置起爆图形"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+
         </activity>
         <activity
             android:name=".firingdevice.SouSuoSQActivity"
@@ -108,10 +108,6 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity
-            android:name=".activity.MenuActivity"
-            android:label="通用性起爆APP首页"
-            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".SerialPortPreferences" />
         <activity android:name=".firingdevice.DenatorTotalDelaySet" />
         <activity

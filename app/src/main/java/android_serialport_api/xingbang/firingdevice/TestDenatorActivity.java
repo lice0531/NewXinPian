@@ -341,22 +341,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_return_complete = findViewById(R.id.btn_test_return);
 
         btn_return_complete.setOnClickListener(v -> {
-            closeThread();
-//            Intent intentTemp = new Intent();
-//            intentTemp.putExtra("backString", "");
-//            setResult(1, intentTemp);
-            String Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");//是否验证地理位置
-            Intent intent5;//金建华
-
-                Log.e("验证2", "Yanzheng: " + Yanzheng);
-                if (Yanzheng.equals("验证")) {
-                    intent5 = new Intent(this, VerificationActivity.class);
-                } else {
-                    intent5 = new Intent(this, FiringMainActivity.class);
-                }
-
-            intent5.putExtra("dataSend", "起爆");
-            startActivity(intent5);
+            enterFiringPage();
 
             finish();
         });
@@ -1445,4 +1430,40 @@ public class TestDenatorActivity extends SerialPortActivity {
             e.printStackTrace();
         }
     }
+
+    private void enterFiringPage() {
+        String Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");//是否验证地理位置
+        sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+        closeThread();
+        mHandler_1.removeMessages(0);
+        busHandler_dianliu.removeMessages(0);
+        errHandler.removeMessages(0);
+//        errHandler_update.removeMessages(0);
+        Handler_tip.removeMessages(0);
+        checkHandler.removeMessages(0);
+        if (db != null) db.close();
+        fixInputMethodManagerLeak(TestDenatorActivity.this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+//                isSerialPortClosed = true;
+            }
+        }).start();
+        finish();
+        String str5 = "起爆";
+        Log.e("验证2", "Yanzheng: " + Yanzheng);
+        Intent intent;//金建华
+        if (Yanzheng.equals("验证")) {
+            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
+        } else {
+            intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
+        }
+        intent.putExtra("dataSend", str5);
+        startActivity(intent);
+    }
+
 }

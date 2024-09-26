@@ -561,11 +561,11 @@ public class SouSuoSQActivity extends BaseActivity {
 //            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
             return;
         }
-        if (!db.getQibao().equals("雷管正常")) {
-            errNum++;
-//            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(9));
-            return;
-        }
+//        if (!db.getQibao().equals("雷管正常")) {//侯东升建议不限制注册
+//            errNum++;
+////            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(9));
+//            return;
+//        }
         if (db.getShellBlastNo().length() > 13) {
             errNum++;
 //            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(7));
@@ -584,7 +584,7 @@ public class SouSuoSQActivity extends BaseActivity {
         }
 
         String duan = "1";
-        String version = null;
+        String version = "02";
         String yscs = null;
         if (db.getDetonatorId() != null) {
             duan = db.getCong_yscs();
