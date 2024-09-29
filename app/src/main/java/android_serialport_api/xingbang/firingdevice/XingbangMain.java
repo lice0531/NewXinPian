@@ -259,7 +259,7 @@ public class XingbangMain extends BaseActivity {
 
 //        initFTP();              // 初始化FTP
 
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
         app_version_name=getString(R.string.app_version_name);
         getleveup();
     }
