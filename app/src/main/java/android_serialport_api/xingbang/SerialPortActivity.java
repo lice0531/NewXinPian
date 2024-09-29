@@ -123,7 +123,7 @@ public abstract class SerialPortActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("父页面", "onCreate: " );
+        Log.e("父页面", "打开串口: " );
         try {
             mSerialPort = mApplication.getSerialPort();
             mSerialPort.tcflush();

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.suke.widget.SwitchButton;
 
@@ -55,7 +56,8 @@ public class SetSystemActivity extends BaseActivity {
     EditText etSetJiancetime;
     @BindView(R.id.set_Voltage)
     Button setVoltage;
-
+    @BindView(R.id.sw_shoushi)
+    SwitchButton sw_shoushi;
     private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
     private int JianCe_time;//准备时间
@@ -66,7 +68,7 @@ public class SetSystemActivity extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
-
+    private String ShouShi = "";//是否验雷管授权
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +95,11 @@ public class SetSystemActivity extends BaseActivity {
         }
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
+        }
+        ShouShi = (String) MmkvUtils.getcode("ShouShi", "否");
+
+        if (ShouShi.equals("是")) {
+            sw_shoushi.setChecked(true);
         }
         Handler_tip=new Handler(msg -> {
             Bundle b = msg.getData();
@@ -163,17 +170,18 @@ public class SetSystemActivity extends BaseActivity {
                 } else {
                     MmkvUtils.savecode("Yanzheng", "不验证");
                 }
-                if (swYanzheng_sq.isChecked()) {
-                    MmkvUtils.savecode("Yanzheng_sq", "验证");
-                } else {
-                    MmkvUtils.savecode("Yanzheng_sq", "不验证");
-                }
+
                 if (swShangchuan.isChecked()) {
                     MmkvUtils.savecode("Shangchuan", "是");
                 } else {
                     MmkvUtils.savecode("Shangchuan", "否");
                 }
-
+                //手势解锁
+                if (sw_shoushi.isChecked()) {
+                    MmkvUtils.savecode("ShouShi", "是");
+                } else {
+                    MmkvUtils.savecode("ShouShi", "否");
+                }
                 if (swSetsys.isChecked()) {
                     message.setQiaosi_set("true");
                 } else {
@@ -205,6 +213,55 @@ public class SetSystemActivity extends BaseActivity {
                 getDaoSession().getMessageBeanDao().update(message);
 
                 Utils.saveFile_Message();
+
+                if (swYanzheng_sq.isChecked()) {
+                    MmkvUtils.savecode("Yanzheng_sq", "验证");
+                    if (flag1 == 0 && flag2 == 0 && flag3 == 0) {
+                        Message msg = Handler_tip.obtainMessage();
+                        msg.arg1 = 4;
+                        Handler_tip.sendMessage(msg);
+                    }
+                    Yanzheng_sq="验证";
+                } else if(Yanzheng_sq.equals("验证")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SetSystemActivity.this);
+                    builder.setTitle("修改验证授权提示");//"请输入用户名和密码"
+                    View viewdialog = LayoutInflater.from(SetSystemActivity.this).inflate(R.layout.userlogindialog_upload, null);
+                    final EditText password = viewdialog.findViewById(R.id.password);
+                    builder.setView(viewdialog);
+                    int finalFlag = flag1;
+                    int finalFlag1 = flag2;
+                    int finalFlag2 = flag3;
+                    builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                        String b = password.getText().toString().trim();
+                        if (b == null || b.trim().length() < 1) {
+                            show_Toast(getString(R.string.text_alert_password));
+                            return;
+                        }
+                        if (b.equals("30")) {
+                            MmkvUtils.savecode("Yanzheng_sq", "不验证");
+                            Yanzheng_sq = "不验证";
+
+                            if (finalFlag == 0 && finalFlag1 == 0 && finalFlag2 == 0) {
+                                Message msg = Handler_tip.obtainMessage();
+                                msg.arg1 = 4;
+                                Handler_tip.sendMessage(msg);
+                            }
+                        } else {
+                            show_Toast("密码错误");
+                            swYanzheng_sq.setChecked(true);
+                        }
+                        dialog.dismiss();
+                    });
+                    builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+                    builder.show();
+                }else {
+                    if (flag1 == 0 && flag2 == 0 && flag3 == 0) {
+                        Message msg = Handler_tip.obtainMessage();
+                        msg.arg1 = 4;
+                        Handler_tip.sendMessage(msg);
+                    }
+                }
                 if (flag1 == 1) {
                     Message msg = Handler_tip.obtainMessage();
                     msg.arg1 = 1;
@@ -220,11 +277,7 @@ public class SetSystemActivity extends BaseActivity {
                     msg.arg1 = 3;
                     Handler_tip.sendMessage(msg);
                 }
-                if (flag1 == 0 && flag2 == 0 && flag3 == 0) {
-                    Message msg = Handler_tip.obtainMessage();
-                    msg.arg1 = 4;
-                    Handler_tip.sendMessage(msg);
-                }
+
                 break;
 
         }

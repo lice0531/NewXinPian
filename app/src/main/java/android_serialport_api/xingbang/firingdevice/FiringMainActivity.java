@@ -460,7 +460,7 @@ public class FiringMainActivity extends SerialPortActivity {
         });
 
         if(ShouShi.equals("是")){
-            ll_firing_return_7.setVisibility(View.GONE);
+//            ll_firing_return_7.setVisibility(View.GONE);
             patternLockView.setVisibility(View.VISIBLE);
             textMsg.setVisibility(View.VISIBLE);
         }

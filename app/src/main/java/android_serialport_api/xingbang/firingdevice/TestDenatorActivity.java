@@ -53,6 +53,7 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.utils.CommonDialog;
+import android_serialport_api.xingbang.utils.DownloadTest;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -79,6 +80,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private static int tipInfoFlag = 0;
     private Button btn_return;
     private Button btn_return_complete;
+    private Button btn_return_qibao;
     private Button btn_firing_lookError_4;//查看错误
     private Handler mHandler_1 = null;//总线稳定
     private Handler busHandler_dianliu = null;//电流电压信息
@@ -128,6 +130,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否已经发送了40
     private boolean version_1 = true;//是否发送46
     private List<DenatorBaseinfo> errlist;
+    private Handler sendHandler= new Handler();//重新打开串口
 
     //初始化
     private void initParam() {
@@ -339,11 +342,17 @@ public class TestDenatorActivity extends SerialPortActivity {
         });
 
         btn_return_complete = findViewById(R.id.btn_test_return);
-
         btn_return_complete.setOnClickListener(v -> {
-            enterFiringPage();
-
+            closeThread();
+            Intent intentTemp = new Intent();
+            intentTemp.putExtra("backString", "");
+            setResult(1, intentTemp);
             finish();
+        });
+
+        btn_return_qibao = findViewById(R.id.btn_test_qibao);
+        btn_return_qibao.setOnClickListener(v -> {
+            enterFiringPage();
         });
 
         btn_firing_lookError_4 = (Button) findViewById(R.id.btn_test_lookError);
@@ -1386,7 +1395,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.text_fir_dialog2));//"错误雷管列表"
         builder.setView(getlistview);
-        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             dialogOFF(dialog);
             stopXunHuan();
             dialog.dismiss();
@@ -1398,7 +1407,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            off();//重新检测
 //            dialog.dismiss();
 //        });
-        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+        builder.setNeutralButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
 //            stopXunHuan();
             llview.setVisibility(View.VISIBLE);
             text_tip.setVisibility(View.GONE);
@@ -1463,7 +1472,12 @@ public class TestDenatorActivity extends SerialPortActivity {
             intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
         }
         intent.putExtra("dataSend", str5);
-        startActivity(intent);
+        // 延时3秒后执行的操作
+        sendHandler.postDelayed(() ->{
+            startActivity(intent);
+
+            } , 1000);
+
     }
 
 }

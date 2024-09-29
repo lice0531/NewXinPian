@@ -265,8 +265,8 @@
     <string name="text_firing_jixu">继续</string>
     <string name="text_firing_tip4">正在充电，请稍后</string>
     <string name="text_firing_qibao_vol">起爆电压 :</string>
-    <string name="text_firing_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
-    <string name="text_firing_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
+    <string name="text_firing_tip5">充电完毕 (按1+3组合键起爆)</string>
+    <string name="text_firing_tip5_2">充电完毕 (按1+5组合键起爆)</string>
     <string name="text_firing_tip6">倒计时</string>
     <string name="text_firing_tip7">测试准备阶段 (</string>
     <string name="text_firing_tip8">写入未返回:</string>
@@ -757,7 +757,7 @@
     <string name="text_srmm">请输入密码后,再进行删除历史记录操作</string>
     <string name="text_down">请输入密码后,再进行删除授权操作</string>
     <string name="text_dlyc6">当前线路不稳定,请检查线路,是否强制起爆!</string>
-    <string name="text_uploadAllHis">请输入密码后,再进行上传未上传记录操作</string>
+    <string name="text_uploadAllHis">请输入密码后,再进行关闭授权验证操作</string>
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
 
     <string name="app_version_name" tools:ignore="MissingTranslation">KT50_3.25_MX_240829_14</string>

@@ -33,14 +33,11 @@ public class ShouShiActivity extends BaseActivity {
     PatternLockerView patternLockView;
     @BindView(R.id.textMsg)
     TextView textMsg;
-    @BindView(R.id.sw_shoushi)
-    SwitchButton sw_shoushi;
-    @BindView(R.id.btn_save)
-    Button btnSave;
+
 
     private String TAG = "手势";
     PatternHelper helper = new PatternHelper();
-    private String ShouShi = "";//是否验雷管授权
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +45,7 @@ public class ShouShiActivity extends BaseActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        ShouShi = (String) MmkvUtils.getcode("ShouShi", "否");
 
-        if (ShouShi.equals("是")) {
-            sw_shoushi.setChecked(true);
-        }
 
         patternLockView.setOnPatternChangedListener(new OnPatternChangeListener() {
             @Override
@@ -95,13 +88,5 @@ public class ShouShiActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.btn_save)
-    public void onClick() {
-        if (sw_shoushi.isChecked()) {
-            MmkvUtils.savecode("ShouShi", "是");
-        } else {
-            MmkvUtils.savecode("ShouShi", "否");
-        }
-        show_Toast("保存成功");
-    }
+
 }

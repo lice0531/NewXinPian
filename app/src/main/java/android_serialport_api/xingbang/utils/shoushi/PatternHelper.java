@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.utils.shoushi;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.List;
 
@@ -123,6 +124,9 @@ public class PatternHelper {
     }
 
     private int getRemainTimes() {
-        return (times < 5) ? (MAX_TIMES - times) : 0;
+        Log.e("判断还有几次机会", "MAX_TIMES: "+MAX_TIMES );
+        Log.e("判断还有几次机会", "times: "+times );
+        Log.e("判断还有几次机会", "(MAX_TIMES - times): "+(MAX_TIMES - times) );
+        return (times < 3) ? (MAX_TIMES - times) : 0;
     }
 }

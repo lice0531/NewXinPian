@@ -383,6 +383,7 @@
         android:layout_height="fill_parent"
         android:layout_marginTop="10dp"
         android:orientation="vertical"
+        android:visibility="gone"
         >
 
         <LinearLayout
@@ -644,6 +645,7 @@
         android:layout_height="fill_parent"
         android:layout_marginTop="30dp"
         android:orientation="vertical"
+        android:visibility="gone"
         >
 
         <LinearLayout
@@ -888,18 +890,17 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="350dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
+            android:layout_marginTop="5dp"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/ll_txt_firing_7"
                 style="@style/alltextstyle"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:text="@string/text_firing_tip5"
-                android:textSize="30sp" />
+                android:textSize="28sp" />
             <TextView
                 android:id="@+id/textMsg"
                 android:layout_marginTop="5dp"
@@ -914,8 +915,9 @@
             <com.github.ihsg.patternlocker.PatternLockerView
                 android:visibility="gone"
                 android:id="@+id/pattern_lock_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 />
 
 
@@ -927,36 +929,36 @@
                 android:layout_height="50dp"
                 android:text="起爆"
                 android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/ll_firing_return_7"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="5dp"
+                android:divider="@drawable/spacer_medium"
+                android:gravity="center"
+                android:showDividers="middle">
+
+                <Button
+                    android:id="@+id/btn_firing_return_7"
+                    style="@style/allbtntstyle"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:text="@string/text_test_exit"
+                    android:textSize="@dimen/mainpageFontSize" />
+                <!--  Button
+                   android:id="@+id/btn_firing_pressbt_7"
+                    android:layout_width="80dp"
+                   android:layout_height="50dp"
+                   android:gravity="center"
+                   android:textColor="@color/bt_fg_base"
+                   android:background="@drawable/bt_mainpage_style"
+                   android:textSize="@dimen/mainpageFontSize"
+                   android:text="起爆"
+                    />	      -->
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_firing_return_7"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="5dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_firing_return_7"
-                style="@style/allbtntstyle"
-                android:layout_width="80dp"
-                android:layout_height="50dp"
-                android:text="@string/text_test_exit"
-                android:textSize="@dimen/mainpageFontSize" />
-            <!--  Button
-               android:id="@+id/btn_firing_pressbt_7"
-                android:layout_width="80dp"
-               android:layout_height="50dp"
-               android:gravity="center"
-               android:textColor="@color/bt_fg_base"
-               android:background="@drawable/bt_mainpage_style"
-               android:textSize="@dimen/mainpageFontSize"
-               android:text="起爆"
-                />	      -->
-        </LinearLayout>
     </LinearLayout>
 
     <!-- 第8步 -->
