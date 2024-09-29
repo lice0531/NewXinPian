@@ -445,7 +445,7 @@ public class FiringMainActivity extends SerialPortActivity {
         mHandler_tip = new Handler(msg -> {
             String time = (String) msg.obj;
             delHisInfo(time);
-            show_Toast("起爆记录条数最大30条,已删除" + time + "记录");
+            show_Toast("起爆记录条数最大100条,已删除" + time + "记录");
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -938,7 +938,7 @@ public class FiringMainActivity extends SerialPortActivity {
         //如果总数大于30,删除第一个数据
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
-        if (hisTotalNum > 30) {
+        if (hisTotalNum > 100) {
             String time = loadHisMainData();
             Message message = new Message();
             message.obj = time;

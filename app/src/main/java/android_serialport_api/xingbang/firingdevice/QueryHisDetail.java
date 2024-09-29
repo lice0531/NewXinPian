@@ -18,6 +18,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -950,4 +952,95 @@ public class QueryHisDetail extends BaseActivity {
                 break;
         }
     }
+
+
+    /**
+     * 创建菜单
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_hisdelete, menu);
+        return true;
+    }
+
+    /**
+     * 打开菜单
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 点击item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_1:
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("清空提示")//设置对话框的标题//"成功起爆"
+                        .setMessage("该操作会按清空当前列表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNeutralButton("取消", (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton("确认删除", (dialog12, which) -> {
+                            dialog12.dismiss();
+                            db.delete(DatabaseHelper.TABLE_NAME_HISDETAIL, null, null);
+                            //主表
+                            db.delete(DatabaseHelper.TABLE_NAME_HISMAIN, null, null);
+                            if (list_savedate != null && list_savedate.size() > 0) {
+                                for (int i = list_savedate.size() - 1; i > 0; i--) {
+                                    VoFireHisMain vo = list_savedate.get(i);
+                                    list_savedate.remove(vo);
+                                }
+                            }
+                            loadMoreData(currentPage);//读取数据
+                            showLoadMore();
+                        }).create();
+                dialog.show();
+
+//                AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
+//                builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+//                View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+//                builder.setView(view);
+//                final EditText password = view.findViewById(R.id.password);
+//                builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+//
+//                    String b = password.getText().toString().trim();
+//                    if (b == null || b.trim().length() < 1) {
+//                        show_Toast(getString(R.string.text_alert_password));
+//                        return;
+//                    }
+//                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
+//                    if ( b.equals("123")) {
+//                        List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+//                        GreenDaoMaster master = new GreenDaoMaster();
+//                        for (DenatorHis_Main his:list) {
+//                            if(his.getUploadStatus().equals("已上传")){
+//                                master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
+//                                master.deleteForHis(his.getBlastdate());
+//                                master.deleteForDetail(his.getBlastdate());
+//                            }
+//                        }
+//
+//                        show_Toast(getResources().getString(R.string.text_his_scyscjl));
+//                    } else {
+//                        show_Toast(getResources().getString(R.string.text_mmcw));
+//                    }
+//                    loadMoreData(currentPage);//读取数据
+//                    showLoadMore();
+//                    dialog.dismiss();
+//                });
+//                builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+//
+//
+//                builder.show();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
