@@ -327,7 +327,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="授权起爆"
+                android:text="授时起爆"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/MainPage_FontSize" />
         </LinearLayout>
