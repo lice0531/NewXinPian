@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
@@ -697,9 +698,29 @@ public class SyncActivity extends BaseActivity {
             writeData("B011" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("B8")) {
             //说明子机出现了不同异常情况的弹窗  此时通知主控
+            Log.e(TAG,"发送B8消息了--data:" + event.getData());
             writeData("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断当点击的是返回键
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.e(TAG,"点击返回按键退出热点级联界面");
+            show_Toast(getString(R.string.text_sync_tip11));
+            isTongBu = false;
+            finish();
+//                closeSocket();
+//                String a = "0002" + "D0000005" + "," + "1" + "," + "100" + "," + "0" + "," + "200" + "," + "300" + "," + "";
+//                writeData(a);
+            writeData("0005" + MmkvUtils.getcode("ACode", ""));
+            Utils.writeRecord("---点击返回按键退出热点级联界面---");
+            return true;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onDestroy() {
