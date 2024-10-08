@@ -103,7 +103,6 @@
         android:id="@+id/re_ss"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_shouquan"
         android:layout_below ="@+id/ll_title"
         android:layout_above="@+id/lay_bottom"/>
     <!--底部-->

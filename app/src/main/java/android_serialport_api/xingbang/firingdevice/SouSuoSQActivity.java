@@ -82,7 +82,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
     private List<ShouQuanData> mList = new ArrayList<>();
     private Handler mHandler_UI = new Handler();     // UI处理
-    private String sqrq="";
+    private String sqrq = "";
     private static final int STATE_DEFAULT = 0;//默认状态
     private static final int STATE_EDIT = 1;//编辑状态
     private int mEditMode = STATE_DEFAULT;
@@ -95,7 +95,8 @@ public class SouSuoSQActivity extends BaseActivity {
     private Handler mHandler_2 = new Handler();//显示进度条
     private LoadingDialog tipDlg = null;
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
-    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(2), new ThreadPoolExecutor.CallerRunsPolicy());
+    private String mOldTitle;   // 原标题
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,7 @@ public class SouSuoSQActivity extends BaseActivity {
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if(bundle!= null){
+        if (bundle != null) {
             sqrq = bundle.getString("sqrq");
         }
 
@@ -120,7 +121,7 @@ public class SouSuoSQActivity extends BaseActivity {
         initUI();
 
 
-        if(sqrq.equals("")){
+        if (sqrq.equals("")) {
             mListData = new GreenDaoMaster().queryDetonatorShouQuan();
             mList.clear();
             Log.e("加载", "mListData.size(): " + mListData.size());
@@ -138,7 +139,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     mList.add(shouQuanData);
                 }
             }
-        }else {
+        } else {
             mListData = new GreenDaoMaster().queryDetonatorShouQuan(sqrq);
             mList.clear();
             Log.e("加载", "mListData.size(): " + mListData.size());
@@ -157,6 +158,7 @@ public class SouSuoSQActivity extends BaseActivity {
                 }
             }
         }
+        setmOldTitle();
         mAdapter2.setNewData(mList);
         mAdapter2.notifyDataSetChanged();
 
@@ -164,10 +166,11 @@ public class SouSuoSQActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        Log.e("destroy", "onDestroy: " );
+        Log.e("destroy", "onDestroy: ");
         threadPoolExecutor.shutdown();
         super.onDestroy();
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断当点击的是返回键
@@ -186,6 +189,9 @@ public class SouSuoSQActivity extends BaseActivity {
     }
 
     private void initUI() {
+        // 标题栏
+        setSupportActionBar(findViewById(R.id.toolbar));
+        mOldTitle = getSupportActionBar().getTitle().toString();
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
         re_ss.setLayoutManager(linearLayoutManager);
@@ -198,9 +204,9 @@ public class SouSuoSQActivity extends BaseActivity {
                 case 1:
                     mList.clear();
 //                    Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
-                    if(sqrq.equals("")){
+                    if (sqrq.equals("")) {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuan();
-                    }else {
+                    } else {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
                     }
 
@@ -208,7 +214,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     if (mListData.size() == 0) {
                         show_Toast("未找到当前雷管");
                     }
-
+                    setmOldTitle();
                     Log.e("加载单个项目", "mListData.size(): " + mListData.size());
                     for (DetonatorTypeNew item : mListData) {
                         ShouQuanData shouQuanData = new ShouQuanData();
@@ -246,15 +252,16 @@ public class SouSuoSQActivity extends BaseActivity {
                 case 5:
                     mListData.clear();
                     Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
-                    if(sqrq.equals("")){
+                    if (sqrq.equals("")) {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString());
-                    }else {
+                    } else {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
                     }
                     Log.e("查询", "mListData: " + mListData.toString());
                     if (mListData.size() == 0) {
                         show_Toast("未找到当前雷管");
                     }
+                    setmOldTitle();
                     mList.clear();
                     Log.e("加载全部项目", "mListData.size(): " + mListData.size());
                     for (DetonatorTypeNew item : mListData) {
@@ -276,11 +283,17 @@ public class SouSuoSQActivity extends BaseActivity {
                     hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 6:
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuan2();
+                    mListData.clear();
+                    if (sqrq.equals("")) {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan2();
+                    } else {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan2(sqrq);
+                    }
                     Log.e("查询", "mListData: " + mListData.toString());
                     if (mListData.size() == 0) {
                         show_Toast("未找到当前雷管");
                     }
+                    setmOldTitle();
                     mList.clear();
                     Log.e("加载全部项目", "mListData.size(): " + mListData.size());
                     for (DetonatorTypeNew item : mListData) {
@@ -315,8 +328,8 @@ public class SouSuoSQActivity extends BaseActivity {
                 case 11:
 
                     updateEditState();
-                    show_Toast("注册结束,共"+errNum+"发注册失败");
-                    errNum=0;
+                    show_Toast("注册结束,共" + errNum + "发注册失败");
+                    errNum = 0;
                     mAdapter2.notifyDataSetChanged();
                     break;
                 default:
@@ -332,6 +345,10 @@ public class SouSuoSQActivity extends BaseActivity {
         });
     }
 
+    private void setmOldTitle() {
+        getSupportActionBar().setTitle(mOldTitle + "(共:" + mListData.size() + ")");
+
+    }
 
     //隐藏键盘
     public void hideInputKeyboard() {
@@ -438,7 +455,7 @@ public class SouSuoSQActivity extends BaseActivity {
                 setAllItemChecked();
                 break;
             case R.id.tv_input:
-                zhuceStatus=true;
+                zhuceStatus = true;
                 mHandler_UI.sendMessage(mHandler_UI.obtainMessage(10));
 
 
@@ -544,7 +561,7 @@ public class SouSuoSQActivity extends BaseActivity {
 //        mHandler_UI.sendMessage(msg);
 
 //        hideDialog();
-        zhuceStatus=false;
+        zhuceStatus = false;
         pb_show = 0;
     }
 
@@ -618,7 +635,7 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
         denator.setDelay(Integer.parseInt(delay));
-        if (db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")) {
+        if (db.getQibao().equals("雷管正常") || db.getQibao().equals("已起爆")) {
             denator.setRegdate(db.getTime());
         } else {
             denator.setRegdate(Utils.getDateFormat(new Date()));
@@ -686,7 +703,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private void setAllTureChecked() {
         if (mAdapter2 == null) return;
         for (int i = 0; i < mList.size(); i++) {
-            if(mList.get(i).getQibao().equals("雷管正常")){
+            if (mList.get(i).getQibao().equals("雷管正常")) {
                 mList.get(i).setSelect(true);
             }
         }

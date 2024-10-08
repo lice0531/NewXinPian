@@ -518,7 +518,7 @@
     <string name="text_set_fac_hint1">只能输入数字</string>
     <string name="text_set_fac_hint2">只能输入数字和大写字母</string>
     <string name="text_test_title1">当前雷管信息不完整</string>
-    <string name="text_text_msg1">当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作</string>
+    <string name="text_text_msg1">当前雷管信息不完整，请先进行授权下载更新雷管信息后再进行操作。</string>
     <string name="text_test_tip12">当前电流为0,请检查线路是否正确连接</string>
     <string name="text_test_tip13">当前电压异常,请检查线路是否出现短路等情况</string>
     <string name="text_down_xmmc">项目名称</string>
@@ -588,7 +588,7 @@
     <string name="text_fir_show1">命令错误</string>
     <string name="text_fir_show2">起爆记录条数最大80条,已删除</string>
     <string name="text_fir_dialog19">当前雷管信息不完整</string>
-    <string name="text_fir_dialog20">当前雷管信息不完整,请先进行项目下载更新雷管信息后再进行操作</string>
+    <string name="text_fir_dialog20">当前雷管信息不完整，请先进行授权下载更新雷管信息后再进行操作。</string>
     <string name="text_query_wd">纬度坐标：</string>
     <string name="text_query_jd">经度坐标：</string>
     <string name="text_fir_dialog17">高压充电失败</string>
