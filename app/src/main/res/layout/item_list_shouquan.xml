@@ -58,6 +58,7 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:text="20190101"
+                    android:gravity="left"
                     android:textColor="@color/white" />
             </LinearLayout>
 
