@@ -23,7 +23,7 @@
     <string name="t_xingbang_main_page_btn_reister">注册</string>
     <string name="t_xingbang_main_page_btn_test">网络测试</string>
     <string name="t_xingbang_main_page_btn_delay">延时</string>
-    <string name="t_xingbang_main_page_btn_del">删除</string>
+    <string name="t_xingbang_main_page_btn_del">数据删除</string>
     <string name="t_xingbang_main_page_btn_blast">起爆</string>
     <string name="t_xingbang_main_page_btn_query">查看</string>
     <string name="t_xingbang_main_page_btn_setevn">设置</string>
@@ -56,10 +56,10 @@
     <string name="title_activity_set_page_system">系统设置</string>
     <string name="title_activity_shibie">人脸识别</string>
     <string name="title_activity_shouquan_lg">授权雷管</string>
-    <string name="title_activity_yanzheng">验证起爆范围</string>
+    <string name="title_activity_yanzheng">验证起爆授权</string>
     <string name="title_activity_set_factory_page">厂家管理</string>
     <string name="title_activity_simplecheckReisterMain">注册</string>
-    <string name="title_activity_firingpage">雷管起爆</string>
+    <string name="title_activity_firingpage">授时起爆</string>
     <string name="title_activity_DelDenator">数据删除</string>
     <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
     <string name="button_ok">OK</string>

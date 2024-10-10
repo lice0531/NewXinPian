@@ -25,7 +25,7 @@
                     style="@style/alltextstyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="爆破工程名称："
+                    android:text="授权名称："
                     android:textColor="@color/white" />
 
                 <TextView
