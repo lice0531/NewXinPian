@@ -204,6 +204,12 @@ public class SyncActivity extends BaseActivity {
 //                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
                     } else if (response.contains("A008")) {
 //                        toCheck6();
+                    } else if (response.startsWith("A011")) {
+                        //说明子设备出现异常情况，有继续喝退出按钮，主控来操控子设备是否继续
+                        Log.e(TAG,"收到主控A011消息了" + response);
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(4,6))) {
+                            EventBus.getDefault().post(new FirstEvent("handleJx",response.substring(response.length() - 2)));
+                        }
                     }
 
                     break;

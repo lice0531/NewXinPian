@@ -202,7 +202,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         btnTest.setText(R.string.text_sync_tip3);
 //                    } else if (response.contains("A002")) {
                     } else if (response.startsWith("A2")) {
-                        if (A002) {
+//                        if (A002) {
                             show_Toast(getString(R.string.text_sync_tip4));
                             String str5 = "级联起爆";
                             if (Yanzheng.equals("验证")) {
@@ -216,10 +216,10 @@ public class SyncActivityYouxian extends BaseActivity {
                                 intent5.putExtra("isJl","Y");
                                 startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                             }
-                            A002 = false;
-                        } else {
-                            show_Toast("正在起爆流程中");
-                        }
+//                            A002 = false;
+//                        } else {
+//                            show_Toast("正在起爆流程中");
+//                        }
                     } else if (response.startsWith("ABA2")) {
                         Log.e(TAG,"收到重新检测指令了" + response + "--" + response.substring(response.length() - 2));
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
@@ -241,7 +241,6 @@ public class SyncActivityYouxian extends BaseActivity {
                                 A002 = false;
                             } else {
                                 send485Cmd("EEA2" + MmkvUtils.getcode("ACode", ""));
-//                                show_Toast("正在起爆流程中");
                             }
                         } else {
                             Log.e(TAG,response + "--重新检测指令不是当前子设备的");
@@ -320,6 +319,15 @@ public class SyncActivityYouxian extends BaseActivity {
 
 //                        show_Toast("收到退出指令");
                         finish();
+                    } else if (response.startsWith("A8")) {
+                        EventBus.getDefault().post(new FirstEvent("exitPage"));
+                        //收到主控退到有线级联页面指令
+                    } else if (response.startsWith("A011")) {
+                        //说明子设备出现异常情况，有继续喝退出按钮，主控来操控子设备是否继续
+                        Log.e(TAG,"收到主控A011消息了" + response);
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(4,6))) {
+                            EventBus.getDefault().post(new FirstEvent("handleJx",response.substring(response.length() - 2)));
+                        }
                     } else if (response.contains("A006")) {
 //                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
                     } else if (response.contains("A008")) {
@@ -910,9 +918,15 @@ public class SyncActivityYouxian extends BaseActivity {
             send485Cmd("B2" + MmkvUtils.getcode("ACode", ""));
         } else if (msg.equals("B8")) {
             //说明子机出现了不同异常情况的弹窗  此时通知主控
+            sendDelay();
             send485Cmd("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        }  else if (msg.equals("B9")) {
+            //说明子机出现了限制起爆情况的弹窗  此时通知主控
+            sendDelay();
+            send485Cmd("B9" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("BBA2")) {
             //说明子机已进入起爆页面  此时需给主控发消息告知
+            sendDelay();
             send485Cmd("BBA2" + MmkvUtils.getcode("ACode", ""));
         } else if (msg.equals("ssjc")) {
             //说明子机已接到轮询指令  此时需给主控发消息告知
