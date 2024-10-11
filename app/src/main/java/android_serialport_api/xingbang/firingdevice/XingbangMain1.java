@@ -92,25 +92,35 @@ public class XingbangMain1 extends BaseActivity {
     @BindView(R.id.tv_main_no)
     TextView tvMainNo;
     @BindView(R.id.btn_main_reister)//注册
-    RelativeLayout btnMainReister;
+//    RelativeLayout btnMainReister;
+    Button btnMainReister;
     @BindView(R.id.btn_main_test)//测试
-    LinearLayout btnMainTest;
+//    LinearLayout btnMainTest;
+    Button btnMainTest;
     @BindView(R.id.btn_main_delayTime)//延时
-    RelativeLayout btnMainDelayTime;
+//    RelativeLayout btnMainDelayTime;
+    Button btnMainDelayTime;
     @BindView(R.id.btn_main_del)//删除
-    RelativeLayout btnMainDel;
+//    RelativeLayout btnMainDel;
+    Button btnMainDel;
     @BindView(R.id.btn_main_blast)//起爆
-    LinearLayout btnMainBlast;
+//    LinearLayout btnMainBlast;
+    Button btnMainBlast;
     @BindView(R.id.btn_main_query)//查询
-    RelativeLayout btnMainQuery;
+//    RelativeLayout btnMainQuery;
+    Button btnMainQuery;
     @BindView(R.id.btn_main_setevn)//设置
-    RelativeLayout btnMainSetevn;
+//    RelativeLayout btnMainSetevn;
+    Button btnMainSetevn;
     @BindView(R.id.btn_main_help)//帮助
-    RelativeLayout btnMainHelp;
+//    RelativeLayout btnMainHelp;
+    Button btnMainHelp;
     @BindView(R.id.btn_main_downWorkCode)//项目管理
-    RelativeLayout btnMainDownWorkCode;
+//    RelativeLayout btnMainDownWorkCode;
+    Button btnMainDownWorkCode;
     @BindView(R.id.btn_main_exit)//退出
-    RelativeLayout btnMainExit;
+//    RelativeLayout btnMainExit;
+    Button btnMainExit;
     @BindView(R.id.btn_main_exit2)
     Button btnMainExit2;
     @BindView(R.id.container)
@@ -120,7 +130,8 @@ public class XingbangMain1 extends BaseActivity {
     @BindView(R.id.btn_main_lianxi)
     Button btnMainLianxi;
     @BindView(R.id.btn_wxjl)
-    RelativeLayout btnWxjl;
+//    RelativeLayout btnWxjl;
+    Button btnWxjl;
     private long time = 0;
     private ArrayList<Map<String, Object>> helpData = new ArrayList<Map<String, Object>>();//错误雷管
     private SQLiteDatabase db;
@@ -174,7 +185,7 @@ public class XingbangMain1 extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_xingbang_main1);
+        setContentView(R.layout.activity_xingbang_main);
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
 
