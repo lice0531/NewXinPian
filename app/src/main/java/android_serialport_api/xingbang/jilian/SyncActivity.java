@@ -158,7 +158,8 @@ public class SyncActivity extends BaseActivity {
                         show_Toast(getString(R.string.text_sync_tip1));
                         break;
                     }
-                    if (response.contains("A001")) {
+                    Log.e(TAG,"收到指令:" + response);
+                    if (response.startsWith("A001")) {
                         //同步成功
                         //收到服务器的同步确认指令
                         isTongBu = true;
@@ -166,7 +167,7 @@ public class SyncActivity extends BaseActivity {
                         show_Toast(getString(R.string.text_sync_tip2));
                         btnTest.setEnabled(false);
                         btnTest.setText(getString(R.string.text_sync_tip3));
-                    } else if (response.contains("A002")) {
+                    } else if (response.startsWith("A002")) {
                         show_Toast(getString(R.string.text_sync_tip4));
                         String str5 = "级联起爆";
                         if (Yanzheng.equals("验证")) {
@@ -180,12 +181,12 @@ public class SyncActivity extends BaseActivity {
                             intent5.putExtra("isJl","Y");
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         }
-                    } else if (response.contains("A003")) {
+                    } else if (response.startsWith("A003")) {
 //                        show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
-                    } else if (response.contains("A004")) {
+                    } else if (response.startsWith("A004")) {
 //                        show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
@@ -195,18 +196,22 @@ public class SyncActivity extends BaseActivity {
 //                            intent.putExtra("itemId", "");
 //                        }
 //                        startActivityForResult(intent, REQUEST_CODE_QIBAO);
-                    } else if (response.contains("A005")) {
+                    } else if (response.startsWith("A005")) {
                         writeData("B005" + MmkvUtils.getcode("ACode", ""));
                         EventBus.getDefault().post(new FirstEvent("finish"));
 //                        show_Toast("收到退出指令");
                         finish();
-                    } else if (response.contains("A006")) {
+                    } else if (response.startsWith("A8")) {
+                        Log.e(TAG,"收到主控A8退出起爆页面指令了");
+                        EventBus.getDefault().post(new FirstEvent("exitPage"));
+                        //收到主控退到有线级联页面指令
+                    } else if (response.startsWith("A006")) {
 //                        EventBus.getDefault().post(new FirstEvent("qibaoTag"));
-                    } else if (response.contains("A008")) {
+                    } else if (response.startsWith("A008")) {
 //                        toCheck6();
-                    } else if (response.startsWith("A011")) {
+                    } else if (response.startsWith("A012")) {
                         //说明子设备出现异常情况，有继续喝退出按钮，主控来操控子设备是否继续
-                        Log.e(TAG,"收到主控A011消息了" + response);
+                        Log.e(TAG,"收到主控A012消息了" + response);
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(4,6))) {
                             EventBus.getDefault().post(new FirstEvent("handleJx",response.substring(response.length() - 2)));
                         }
@@ -459,7 +464,7 @@ public class SyncActivity extends BaseActivity {
                             // 步骤4:通知主线程,将接收的消息显示到界面
 //                                log.e(response + "--");
                             Log.e(TAG,"返回指令:" + response);
-                            if (response.startsWith("A0")) {
+                            if (response.startsWith("A")) {
                                 Message msg = Message.obtain();
                                 msg.what = 0;
                                 msg.obj = response;
@@ -688,24 +693,46 @@ public class SyncActivity extends BaseActivity {
             String a = "0006";
             writeData(a);
         } else if (msg.equals("ddjc")) {//等待检测
-            Log.e("热点级联页面返回ddjc测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回ddjc测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
             writeData("B007" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("jcjg")) {//返回测试结果
-            Log.e("热点级联页面返回jcjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回jcjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
             writeData("B008" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("zzcd")) {//正在充电
-            Log.e("热点级联页面返回zzcd测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回zzcd测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
             writeData("B009" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("ddqb")) {//等待起爆（1+5或1+3按触发起爆）
-            Log.e("热点级联页面返回ddqb测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回ddqb测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
             writeData("B010" + MmkvUtils.getcode("ACode", "") + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("qbjg")) {//返回起爆结果
-            Log.e("热点级联页面返回qbjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            Log.e(TAG + "返回qbjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
             writeData("B011" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        } else if (msg.equals("clycjg")) {
+            Log.e(TAG + "返回clycjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            writeData("B012" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("B8")) {
             //说明子机出现了不同异常情况的弹窗  此时通知主控
             Log.e(TAG,"发送B8消息了--data:" + event.getData());
+            sendDelay();
             writeData("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        } else if (msg.equals("B9")) {
+            //说明子机出现了限制起爆情况的弹窗  此时通知主控
+            Log.e(TAG,"发送B9消息了--data:" + event.getData());
+            sendDelay();
+            writeData("B9" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        } else if (msg.equals("B2")) {
+            //说明子机已进入起爆页面  此时需给主控发消息告知
+            sendDelay();
+            writeData("B2" + MmkvUtils.getcode("ACode", ""));
+        }
+    }
+
+    private void sendDelay() {
+        int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
+        try {
+            Thread.sleep(delay * 50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

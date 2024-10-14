@@ -322,9 +322,9 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.startsWith("A8")) {
                         EventBus.getDefault().post(new FirstEvent("exitPage"));
                         //收到主控退到有线级联页面指令
-                    } else if (response.startsWith("A011")) {
+                    } else if (response.startsWith("A012")) {
                         //说明子设备出现异常情况，有继续喝退出按钮，主控来操控子设备是否继续
-                        Log.e(TAG,"收到主控A011消息了" + response);
+                        Log.e(TAG,"收到主控A012消息了" + response);
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(4,6))) {
                             EventBus.getDefault().post(new FirstEvent("handleJx",response.substring(response.length() - 2)));
                         }
@@ -920,10 +920,14 @@ public class SyncActivityYouxian extends BaseActivity {
             //说明子机出现了不同异常情况的弹窗  此时通知主控
             sendDelay();
             send485Cmd("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
-        }  else if (msg.equals("B9")) {
+        } else if (msg.equals("B9")) {
             //说明子机出现了限制起爆情况的弹窗  此时通知主控
             sendDelay();
             send485Cmd("B9" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+        }  else if (msg.equals("clycjg")) {
+            Log.e(TAG + "返回clycjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
+            sendDelay();
+            send485Cmd("B012" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
         } else if (msg.equals("BBA2")) {
             //说明子机已进入起爆页面  此时需给主控发消息告知
             sendDelay();
