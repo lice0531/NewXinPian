@@ -34,13 +34,14 @@
 -keep class butterknife.internal.** { *; }
 
 # MMKV
--keep class com.tencent.mmkv.** { *; }
--dontwarn com.tencent.mmkv.**
-
+-keep class com.tencent.** {*;}
+-keep class com.tencent.mmkv.** {*;}
 # GreenDao
--keep class org.greenrobot.greendao.** { *; }
--dontwarn org.greenrobot.greendao.**
-
+-keep class org.greenrobot.greendao.**{*;}
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+  public static java.lang.String TABLENAME;
+ }
+-keep class **$Properties{*;}
 # DialogPlus
 -keep class com.orhanobut.dialogplus.** { *; }
 -dontwarn com.orhanobut.dialogplus.**
@@ -80,3 +81,30 @@
 # GreenDaoUpgradeHelper
 -keep class io.github.yuweiguocn.GreenDaoUpgradeHelper.** { *; }
 -dontwarn io.github.yuweiguocn.GreenDaoUpgradeHelper.**
+#Bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+#百度地图
+-keep class com.baidu.** {*;}
+-keep class vi.com.** {*;}
+-keep class com.baidu.vi.** {*;}
+-dontwarn com.baidu.**
+# 保留所有JNI相关的类和方法
+-keepclasseswithmembernames class * {
+   native <methods>;
+}
+
+# 保留所有的Activity
+-keep public class * extends android.app.Activity
+#继承activity,application,service,broadcastReceiver,contentprovider....不进行混淆
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+#-keep public class * extends androidx.support.multidex.MultiDexApplication
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.view.View
+-keep class android.support.** {*;}
+-keep class android_serialport_api.** {*;}
