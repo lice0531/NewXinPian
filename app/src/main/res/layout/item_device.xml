@@ -18,6 +18,7 @@
 
         <TextView
             android:id="@+id/tv_name"
+            android:visibility="gone"
             style="@style/alltextstyle"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -34,33 +35,26 @@
             android:background="@drawable/textview_border"
             android:text="设备编号" />
 
-        <LinearLayout
-
-            android:orientation="vertical"
+        <TextView
+            style="@style/alltextstyle"
+            android:id="@+id/tv_tureNum"
+            android:background="@drawable/textview_border"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
+            android:textSize="18sp"
+            android:text="000"
+            />
+        <TextView
+            style="@style/alltextstyle"
+            android:id="@+id/tv_errNum"
             android:background="@drawable/textview_border"
-             >
-            <TextView
-                style="@style/alltextstyle"
-                android:id="@+id/tv_tureNum"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:textSize="18sp"
-                android:text="000"
-                />
-            <TextView
-                style="@style/alltextstyle"
-                android:id="@+id/tv_errNum"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:textSize="18sp"
-                android:text="000"
-                />
-        </LinearLayout>
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textSize="18sp"
+            android:text="000"
+            />
         <TextView
             android:id="@+id/tv_status"
             style="@style/alltextstyle"
