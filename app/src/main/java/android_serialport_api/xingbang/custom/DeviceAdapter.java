@@ -22,12 +22,20 @@ public class DeviceAdapter extends BaseAdapter {
     private List<DeviceBean> list = new ArrayList<>();
     private Context context;
     private boolean isShowCPeak;//是否显示电流view
+    private LoadHisFireAdapter_all.InnerItemOnclickListener mListener;
 
     public DeviceAdapter(Context context, List<DeviceBean> list, boolean isShow) {
         this.context = context;
         this.list = list;
         this.isShowCPeak = isShow;
         inflater = LayoutInflater.from(context);
+    }
+
+    public interface InnerItemOnclickListener {
+        void itemClick(View v);
+    }
+    public void setOnInnerItemOnClickListener(LoadHisFireAdapter_all.InnerItemOnclickListener listener){
+        this.mListener=listener;
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -53,6 +54,7 @@ import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.DeviceAdapter;
 import android_serialport_api.xingbang.custom.ListViewForScrollView;
+import android_serialport_api.xingbang.custom.LoadHisFireAdapter_all;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DenatorHis_Detail;
@@ -74,7 +76,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class WxjlRemoteActivity extends SerialPortActivity {
+public class WxjlRemoteActivity extends SerialPortActivity implements AdapterView.OnItemClickListener, LoadHisFireAdapter_all.InnerItemOnclickListener {
 
     @BindView(R.id.lv)
     ListViewForScrollView lv;
@@ -255,6 +257,9 @@ public class WxjlRemoteActivity extends SerialPortActivity {
             }
         }
     }
+
+
+
 
     private class SyncDevices extends Thread {
         public volatile boolean exit = false;
@@ -930,9 +935,28 @@ public class WxjlRemoteActivity extends SerialPortActivity {
 
     private void initView() {
         adapter = new DeviceAdapter(this, list_device, true);
+        adapter.setOnInnerItemOnClickListener(this);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(this);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void itemClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.bt_delete:
+
+                break;
+            default:
+                break;
+        }
+
+    }
     private void initSocket() {
         WebConfig webConfig = new WebConfig();
         webConfig.setPort(9002);
