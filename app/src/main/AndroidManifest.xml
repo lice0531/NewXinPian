@@ -33,6 +33,8 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:screenOrientation="portrait"
         tools:remove="android:appComponentFactory"
+        android:largeHeap="true"
+        android:hardwareAccelerated="true"
         tools:targetApi="p">
         <activity
             android:name=".activity.UploadDataActivity"

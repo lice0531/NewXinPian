@@ -540,15 +540,63 @@ public class ReisterMainPage_scan extends SerialPortActivity {
                 showDenatorSum();
             }
             if (tipInfoFlag == 3) {//未收到关闭电源命令
-                show_Toast(getResources().getString(R.string.text_error_tip5));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip5));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 4) {//未收到打开电源命令
-                show_Toast(getResources().getString(R.string.text_error_tip6));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip6));
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 5) {//桥丝不正常
-                show_Toast(getResources().getString(R.string.text_error_tip7));
+                show_centerToast_long(getResources().getString(R.string.text_error_tip7));
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 6) {//延时不正常
+                show_centerToast_long("请先设置延时");
+            }
+            if (tipInfoFlag == 7) {//桥丝不正常
+                show_centerToast_long("当前注册雷管电流过大,请检查雷管");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 8){
+                show_centerToast_long("当前雷管有异常,请检测后重新注册");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 9) {
+                show_centerToast_long("当前雷管读码异常,请检查该雷管编码规则");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 10) {
+                show_centerToast_long("当前雷管为煤许产品,请用煤许版本进行注册");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 11) {
+                SoundPlayUtils.play(4);
+                show_centerToast_long(getResources().getString(R.string.text_error_tip1));
+                //"雷管信息有误，管厂码不正确，请检查"
+            }
+            if (tipInfoFlag == 12) {
+                SoundPlayUtils.play(4);
+                show_centerToast_long(getResources().getString(R.string.text_error_tip2));
+            }
+            if (tipInfoFlag == 13) {
+                SoundPlayUtils.play(4);
+                show_centerToast_long("已达到最大延时限制" + maxSecond + "ms");
+            }
+            if (tipInfoFlag == 14) {//重复的时候跳到对应的条目
+                SoundPlayUtils.play(4);
+                show_centerToast_long("与第" + lg_No + "发" + singleShellNo + "重复");
+            }
+            if (tipInfoFlag == 16) {
+                SoundPlayUtils.play(4);
+                show_centerToast_long("当前管壳码不等于13位,请检查雷管或系统版本是否符合后,再次注册");
+            }
+            if (tipInfoFlag == 17) {
+                show_centerToast_long("芯片异常");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 18) {
+                show_centerToast_long("电容异常");
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 88) {//刷新界面
@@ -561,7 +609,7 @@ public class ReisterMainPage_scan extends SerialPortActivity {
                 mAdapter.notifyDataSetChanged();
             }
             if (tipInfoFlag == 89) {//刷新界面
-                show_Toast("输入的管壳码重复");
+                show_centerToast_long("输入的管壳码重复");
                 showDenatorSum();
             }
             return false;
@@ -820,7 +868,9 @@ public class ReisterMainPage_scan extends SerialPortActivity {
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay = delaytimeTxt.getText().toString().trim();
             if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {//
-                mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
+                tipInfoFlag = 13;
+                Log.e(TAG,"超过最大延时了");
+                mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 dialog.dismiss();
             } else if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
                 show_Toast(getString(R.string.text_error_tip37));

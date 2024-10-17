@@ -1190,9 +1190,11 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         case 11://暂停阶段
                             Thread.sleep(1000);
                             elevenCount--;
+                            Log.e(TAG,"elevenCount:" + elevenCount);
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             if (elevenCount <= 0) {
                                 increase(9);
+                                Log.e(TAG,"进入case9了--elevenCount:" + elevenCount);
                             }
                             break;
 
@@ -1422,7 +1424,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
 //                            deviceStatus + qbResult);
 //                }
                 increase(11);//跳到第9阶段
-                Log.e(TAG, "increase" + "9");
+                Log.e(TAG, "increase:11");
 //                try {
 //                    Thread.sleep(50);
 //                    byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
@@ -2620,7 +2622,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
         // 清空消息
         mDemoHandler.removeCallbacksAndMessages(null);
         mDemoHandler = null;
-
+        mHandler_1.removeCallbacksAndMessages(null);
         // moveViewToAnimated 移动到某个点，有内存泄漏，暂未修复，希望网友可以指着
         mLineChart.clearAllViewportJobs();
         mLineChart.removeAllViewsInLayout();

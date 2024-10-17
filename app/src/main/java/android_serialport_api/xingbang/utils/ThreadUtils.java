@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.utils;
 
+import android.util.Log;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,7 +19,11 @@ public class ThreadUtils {
      */
     public static ExecutorService getThreadPool_Instance() {
         if (executorService == null) {
-            executorService = Executors.newFixedThreadPool(4);
+//            executorService = Executors.newFixedThreadPool(4);
+//        }
+//        return executorService;
+//        if (executorService == null || executorService.isShutdown()) {
+            executorService = Executors.newFixedThreadPool(8); // 调整线程数
         }
         return executorService;
     }
@@ -46,6 +52,10 @@ public class ThreadUtils {
             singleService.shutdown();
         }
     }
-
-
+    public static void closeThreadPool() {
+        if (executorService != null && !executorService.isShutdown()) {
+            Log.e("线程池页面","关闭线程池了");
+            executorService.shutdown(); // 优雅关闭线程池
+        }
+    }
 }

@@ -153,7 +153,8 @@ public class DelDenatorMainPage extends BaseActivity implements LoadListView.OnL
      */
     private void loadMoreData() {
 //        list_lg.clear();
-        list_lg = Application.getDaoSession().getDenatorBaseinfoDao().loadAll();
+        list_lg = new GreenDaoMaster().queryDetonatorRegionDesc();
+//        list_lg = Application.getDaoSession().getDenatorBaseinfoDao().loadAll();
     }
 
     @Override
