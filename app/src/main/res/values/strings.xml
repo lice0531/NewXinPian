@@ -195,7 +195,8 @@
     <string name="text_error_tip60">类别名不能为空</string>
     <string name="text_error_tip61">秒数不能为空</string>
     <string name="text_error_tip62">网络没有连接，请到设置进行网络设置！</string>
-
+    <string name="text_error_tip63">延时不能为0</string>
+    <string name="text_error_tip65">延时不能为空</string>
     <string name="text_uploda_tip1">上传成功</string>
     <string name="text_uploda_tip2">非法申请信息</string>
     <string name="text_uploda_tip3">起爆器未备案或未设置作业任务</string>

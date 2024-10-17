@@ -193,7 +193,8 @@
     <string name="text_error_tip60">Category name cannot be empty</string>
     <string name="text_error_tip61">Seconds cannot be empty</string>
     <string name="text_error_tip62">The network is not connected. Please go to Settings to set up the network.！</string>
-
+    <string name="text_error_tip63">The delay cannot be 0</string>
+    <string name="text_error_tip65">The delay cannot be empty</string>
     <string name="text_uploda_tip1">Upload success</string>
     <string name="text_uploda_tip2">Illegal application information</string>
     <string name="text_uploda_tip3">Initiator not filed or set up operation task</string>

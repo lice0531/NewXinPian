@@ -226,6 +226,16 @@ public class SetDelayTime extends BaseActivity {
                 show_Toast(getResources().getString(R.string.text_jsxh));
                 return;
             }
+            int start = Integer.parseInt(startNoTxt.getText().toString().trim());
+            int end = Integer.parseInt(endNoTxt.getText().toString().trim());
+            if (end < start) {
+                show_Toast(getString(R.string.text_error_tip27));//"结束序号不能小于开始序号";
+                return;
+            }
+            if (start <= 0 || end > 10000) {
+                show_Toast(getString(R.string.text_error_tip40));//"起始/结束序号不符合要求";
+                return;
+            }
             AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
                     .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
                     .setMessage(getResources().getString(R.string.text_setDelay_dialog2))//设置对话框的内容"本次任务成功起爆！"

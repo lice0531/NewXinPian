@@ -292,7 +292,7 @@ public class SyncActivityYouxian extends BaseActivity {
                             EventBus.getDefault().post(new FirstEvent("otherA5"));
                             //其他子设备
                             Log.e(TAG,"其他子设备接收到A5指令了");
-                            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
                         }
                         //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
                         EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
@@ -972,7 +972,7 @@ public class SyncActivityYouxian extends BaseActivity {
                 Log.e(TAG + "收到充电指令后发送的数据有误",event.getData());
             }
         } else if (msg.equals("otherClose")) {
-            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
             Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + MmkvUtils.getcode("ACode", ""));
             closeM900Rs485((String)MmkvUtils.getcode("ACode", ""));
         }
@@ -1039,7 +1039,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     mExpDevMgr.closeRs485();
                     mExpDevMgr.set12VEnable(false);
                     Log.e("关闭485，设备是",code);
-                    Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
+                    Utils.writeRecord("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
                 }
                 break;
             default:
@@ -1076,7 +1076,7 @@ public class SyncActivityYouxian extends BaseActivity {
         super.onDestroy();
 //        EMgpio.SetGpioDataLow(94);//下电
         closeM900Rs485("页面销毁时正常关闭485");
-        Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "页面退出时开始关闭485指令");
+        Utils.writeRecord("子设备：" + MmkvUtils.getcode("ACode", "") + "页面退出时开始关闭485指令");
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

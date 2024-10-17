@@ -229,8 +229,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private List<DenatorBaseinfo> errlist = new ArrayList<>();
     /**
      * 显示设备状态:
-     * 01（在线） 02（等待检测） 03（检测结束） 04（正在充电） 05（等待起爆） 06（起爆结束）07（起爆失败） 08退出起爆
-     * 11电流异常  12电流过大  13短路 14电流异常波动 15有充电失败雷管 16有复检失败雷管
+     * 01在线 02等待检测 03检测结束 04正在充电 05等待起爆 06起爆结束07起爆失败 08退出起爆 09雷管信息不完整
+     * 11电流异常  12电流过大  13短路 14电流异常波动 15有充电失败雷管 16有复检失败雷管 17请检查雷管总数 18请先注册雷管
      * 21存在错误雷管,限制起爆 22（高压充电失败,限制起爆 ）23（电压异常,限制起爆） 24（总线低压异常,限制起爆）
      * 25（总线高压异常,限制起爆） 26（总线存在短路,限制起爆） 27（长时间高压,限制起爆）
      */
@@ -534,6 +534,8 @@ public class FiringMainActivity extends SerialPortActivity {
             if (msg.what == 1) {
                 show_Toast(getResources().getString(R.string.text_qberr3) + shellStr + getResources().getString(R.string.text_qberr4));
             } else if (msg.what == 2) {
+                deviceStatus = "09";
+                sendXzqbData("09");
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_test_title1))//设置对话框的标题
                         .setMessage(getResources().getString(R.string.text_text_msg1))//设置对话框的内容
@@ -580,10 +582,12 @@ public class FiringMainActivity extends SerialPortActivity {
                         .create();
                 dialog.show();
             } else if (msg.what == 4) {
-                //电流异常显示弹窗  有线级联通知主控
-                sendErrorData("01");
-                deviceStatus = "11";
-                isDlycShow = true;
+                if (isJL) {
+                    //电流异常显示弹窗  有线级联通知主控
+                    sendErrorData("01");
+                    deviceStatus = "11";
+                    isDlycShow = true;
+                }
                 dlycDialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_dlyc))//设置对话框的标题
                         .setMessage(getResources().getString(R.string.text_jcyc1))//设置对话框的内容
@@ -606,10 +610,13 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }  else if (isDlShow) {
                                     sendErrorData("03");
                                     deviceStatus = "13";
-                                } else if (isdlycbdShow) {
+                                } else if (isDlycbdShow) {
                                     sendErrorData("04");
                                     deviceStatus = "14";
-                                } else {
+                                } else if (isCheckLgNumShow) {
+                                    sendErrorData("07");
+                                    deviceStatus = "17";
+                                }  else {
                                     isInterunptQb = false;
                                     isHaveError = false;
                                     deviceStatus = "05";
@@ -805,7 +812,10 @@ public class FiringMainActivity extends SerialPortActivity {
                             sendErrorData("02");
                             deviceStatus = "12";
                             showDlgdDialog();
+                            Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
                         }
+                    } else {
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
                     }
                 } else {
                     duanlu_sun++;
@@ -815,7 +825,10 @@ public class FiringMainActivity extends SerialPortActivity {
                         sendErrorData("02");
                         deviceStatus = "12";
                         showDlgdDialog();
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
                     }
+                    Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
+
                 }
             }
 
@@ -833,7 +846,10 @@ public class FiringMainActivity extends SerialPortActivity {
                             sendErrorData("02");
                             deviceStatus = "12";
                             showDlgdDialog();
+                            Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压电流过大了");
                         }
+                    } else {
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压电流过大了");
                     }
                 } else {
                     duanlu_sun++;
@@ -843,6 +859,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         sendErrorData("02");
                         deviceStatus = "12";
                         showDlgdDialog();
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压电流过大了");
                     }
                 }
             }
@@ -861,8 +878,12 @@ public class FiringMainActivity extends SerialPortActivity {
                                 deviceStatus = "13";
                                 sendErrorData("03");
                                 initDialog_zanting_stop(getResources().getString(R.string.text_dlyc3));//弹出框
+                            } else {
+                                Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压检测中短路了");
                             }
                         }
+                    } else {
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压检测中短路了");
                     }
                 } else {
                     Log.e(TAG, "busInfo: " + busInfo.toString());
@@ -874,6 +895,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             deviceStatus = "13";
                             sendErrorData("03");
                             initDialog_zanting_stop(getResources().getString(R.string.text_dlyc3));//弹出框
+                            Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压检测中短路了");
                         }
                     }
                 }
@@ -890,8 +912,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                 deviceStatus = "13";
                                 sendErrorData("03");
                                 initDialog_zanting_stop(getResources().getString(R.string.text_dlyc4));//弹出框
+                                Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压短路了");
                             }
                         }
+                    } else {
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压短路了");
                     }
                 } else {
                     Log.e(TAG, "busInfo: " + busInfo.toString());
@@ -903,6 +928,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             deviceStatus = "13";
                             sendErrorData("03");
                             initDialog_zanting_stop(getResources().getString(R.string.text_dlyc4));//弹出框
+                        } else {
+                            Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压短路了");
                         }
                     }
                 }
@@ -959,10 +986,12 @@ public class FiringMainActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-                //电流异常波动显示弹窗
-                sendErrorData("04");
-                deviceStatus = "14";
-                isdlycbdShow = true;
+                if (isJL) {
+                    //电流异常波动显示弹窗
+                    sendErrorData("04");
+                    deviceStatus = "14";
+                    isDlycbdShow = true;
+                }
 //                AlertDialog dialog = new Builder(FiringMainActivity.this)
                 dlycbdDialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
@@ -983,19 +1012,22 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                firstThread.start();
                             dialog16.dismiss();
                             if (isJL) {
-                                isdlycbdShow = false;
-                                if (isDlycShow) {
-                                    sendErrorData("01");
-                                    deviceStatus = "11";
+                                isDlycbdShow = false;
+                                if (isDlycbdShow) {
+                                    sendErrorData("04");
+                                    deviceStatus = "14";
                                 } else if (isDlgdShow) {
                                     sendErrorData("02");
                                     deviceStatus = "12";
-                                } else if (isDlgdShow) {
+                                } else if (isDlShow) {
                                     sendErrorData("03");
                                     deviceStatus = "13";
-                                } else if (isdlycbdShow) {
-                                    sendErrorData("04");
-                                    deviceStatus = "14";
+                                } else if (isDlycShow) {
+                                    sendErrorData("01");
+                                    deviceStatus = "11";
+                                }  else if (isCheckLgNumShow) {
+                                    sendErrorData("07");
+                                    deviceStatus = "17";
                                 } else {
                                     isInterunptQb = false;
                                     isHaveError = false;
@@ -1123,10 +1155,13 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     AlertDialog dlDialog,dlgdDialog,dlycbdDialog,cdfailDialog,dlycDialog;
-    boolean isDlShow = false,isDlgdShow = false,isdlycbdShow = false,isDlycShow = false,isCdFailShow = false;
+    boolean isDlShow = false,isDlgdShow = false,isDlycbdShow = false,isDlycShow = false,
+            isCheckLgNumShow = false;
 
     private void showDlgdDialog() {
-        isDlgdShow = true;
+        if (isJL) {
+            isDlgdShow = true;
+        }
         dlgdDialog = new Builder(FiringMainActivity.this)
                 .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                 .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
@@ -1150,19 +1185,22 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            firstThread.start();
                     if (isJL) {
                         isDlgdShow = false;
-                        if (isDlycShow) {
-                            sendErrorData("01");
-                            deviceStatus = "11";
-                        } else if (isDlgdShow) {
+                        if (isDlgdShow) {
                             sendErrorData("02");
                             deviceStatus = "12";
+                        } else if (isDlycShow) {
+                            sendErrorData("01");
+                            deviceStatus = "11";
                         }  else if (isDlShow) {
                             sendErrorData("03");
                             deviceStatus = "13";
-                        } else if (isdlycbdShow) {
+                        } else if (isDlycbdShow) {
                             sendErrorData("04");
                             deviceStatus = "14";
-                        } else {
+                        } else if (isCheckLgNumShow) {
+                            sendErrorData("07");
+                            deviceStatus = "17";
+                        }  else {
                             updateJlStatus();
                         }
                         sendClycjg();
@@ -1175,6 +1213,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
     private void sendErrorData(String errMsgStatus) {
         isHaveError = true;
+        isInterunptQb = true;
         int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
         String stureNum = Utils.strPaddingZero(allNum, 3);
         String serrNum = Utils.strPaddingZero(errorNumJl, 3);
@@ -1275,32 +1314,61 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e("JianCe_time", JianCe_time + "");
     }
 
-
+    AlertDialog checkLgNumDialog;
+    int checkLgNumFlag;
     //提示对话框,提示有未注册雷管或者未处理雷管
     public void disPlayNoReisterDenator(final int flag) {
-        Builder builder = new Builder(FiringMainActivity.this);
-        builder.setTitle(getString(R.string.text_alert_tip));
-        builder.setMessage(getString(R.string.text_alert_tip2));//"总线上有未处理的雷管，是否继续起爆？"
-        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-            if (flag == 1) {
-            } else {
-                fourOnlineDenatorFlag = 3;
-            }
-            dialog.dismiss();
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
-            exitJl();
-            dialog.dismiss();
-            closeThread();
-            closeForm();
-        });
-        builder.show();
+        if (isJL) {
+            sendErrorData("07");
+            deviceStatus = "17";
+            isCheckLgNumShow = true;
+        }
+        this.checkLgNumFlag = flag;
+        checkLgNumDialog = new Builder(FiringMainActivity.this)
+                .setTitle(getString(R.string.text_alert_tip))
+                .setMessage(getString(R.string.text_alert_tip2))//"总线上有未处理的雷管，是否继续起爆？"
+                .setPositiveButton(getString(R.string.text_firing_jixu), (dialog, which) -> {
+                    if (isJL) {
+                        isCheckLgNumShow = false;
+                        if (isCheckLgNumShow) {
+                            sendErrorData("07");
+                            deviceStatus = "17";
+                        } else if (isDlgdShow) {
+                            sendErrorData("02");
+                            deviceStatus = "12";
+                        }  else if (isDlShow) {
+                            sendErrorData("03");
+                            deviceStatus = "13";
+                        } else if (isDlycbdShow) {
+                            sendErrorData("04");
+                            deviceStatus = "14";
+                        } else if (isDlycShow) {
+                            sendErrorData("01");
+                            deviceStatus = "11";
+                        } else {
+                            updateJlStatus();
+                        }
+                        sendClycjg();
+                    }
+                    if (flag == 1) {
+                    } else {
+                        fourOnlineDenatorFlag = 3;
+                    }
+                    dialog.dismiss();
+                })
+                .setNegativeButton(getResources().getString(R.string.text_test_exit), (dialog, which) -> {
+                    exitJl();
+                    dialog.dismiss();
+                    closeThread();
+                    closeForm();
+                }).create();
+        checkLgNumDialog.setCanceledOnTouchOutside(false);
+        checkLgNumDialog.show();
         if (flag == 1) {
             increase(6);//第六阶段
         } else {
             fourOnlineDenatorFlag = 3;
         }
-
     }
 
 
@@ -1771,6 +1839,7 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
 
+    AlertDialog registDialog;
     @Override
     protected void onStart() {
         Log.e(TAG, "denatorCount: " + denatorCount);
@@ -1782,8 +1851,11 @@ public class FiringMainActivity extends SerialPortActivity {
         //发送初始化命令
         if (!firstThread.isAlive()) {
             if (denatorCount == 0) {
-//                xzqb();
-                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                if (isJL) {
+                    sendErrorData("08");
+                    deviceStatus = "18";
+                }
+                registDialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_fir_dialog23))//设置对话框的标题//"成功起爆"
                         .setMessage(getResources().getString(R.string.text_fir_dialog24))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
@@ -1794,12 +1866,18 @@ public class FiringMainActivity extends SerialPortActivity {
                             MmkvUtils.savecode("isTestDenator", "N");
                         })
                         .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog2, which) -> {
+                            if (isJL) {
+                                isHaveError = false;
+                                isInterunptQb = false;
+                                deviceStatus = "01";
+                                sendClycjg();
+                            }
                             dialog2.dismiss();
                             firstThread.start();
                         })
                         .create();
-                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-                dialog.show();
+                registDialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                registDialog.show();
             } else {
                 if (!firstThread.exit) {//级联改成暂停后,出现的问题
                     firstThread.start();
@@ -3726,6 +3804,9 @@ public class FiringMainActivity extends SerialPortActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if (isJL) {
+                isDlShow = true;
+            }
             chongfu = true;//已经检测了一次
 //            AlertDialog dialog = new Builder(FiringMainActivity.this)
             dlDialog = new Builder(FiringMainActivity.this)
@@ -3750,18 +3831,21 @@ public class FiringMainActivity extends SerialPortActivity {
                         dialog12.cancel();
                         if (isJL) {
                             isDlShow = false;
-                            if (isDlycShow) {
-                                sendErrorData("01");
-                                deviceStatus = "11";
+                            if (isDlShow) {
+                                sendErrorData("03");
+                                deviceStatus = "13";
                             } else if (isDlgdShow) {
                                 sendErrorData("02");
                                 deviceStatus = "12";
-                            } else if (isDlShow) {
-                                sendErrorData("03");
-                                deviceStatus = "13";
-                            } else if (isdlycbdShow) {
+                            } else if (isDlycShow) {
+                                sendErrorData("01");
+                                deviceStatus = "11";
+                            } else if (isDlycbdShow) {
                                 sendErrorData("04");
                                 deviceStatus = "14";
+                            } else if (isCheckLgNumShow) {
+                                sendErrorData("07");
+                                deviceStatus = "17";
                             } else {
                                 updateJlStatus();
                             }
@@ -3773,7 +3857,6 @@ public class FiringMainActivity extends SerialPortActivity {
             dlDialog.show();
 //            dialog.setCancelable(false);
 //            dialog.show();
-            isDlShow = true;
         }
     }
 
@@ -3905,7 +3988,6 @@ public class FiringMainActivity extends SerialPortActivity {
 //                dialogOn(dialog);
 //            });
 //            builder.create().show();
-            isCdFailShow = true;
         }
     }
 
@@ -3995,6 +4077,10 @@ public class FiringMainActivity extends SerialPortActivity {
             isInterunptQb = false;
             isHaveError = false;
             deviceStatus = "04";
+        } else if (stage == 7) {
+            isInterunptQb = false;
+            isHaveError = false;
+            deviceStatus = "05";
         }
     }
     /**
@@ -4114,10 +4200,13 @@ public class FiringMainActivity extends SerialPortActivity {
                 }  else if (isDlShow) {
                     sendErrorData("03");
                     deviceStatus = "13";
-                } else if (isdlycbdShow) {
+                } else if (isDlycbdShow) {
                     sendErrorData("04");
                     deviceStatus = "14";
-                } else {
+                } else if (isCheckLgNumShow) {
+                    sendErrorData("07");
+                    deviceStatus = "17";
+                }  else {
                     isInterunptQb = false;
                     isHaveError = false;
                     deviceStatus = "05";
@@ -4127,18 +4216,21 @@ public class FiringMainActivity extends SerialPortActivity {
                     dlgdDialog.dismiss();
                     isDlgdShow = false;
                 }
-                if (isDlycShow) {
-                    sendErrorData("01");
-                    deviceStatus = "11";
-                } else if (isDlgdShow) {
+                if (isDlgdShow) {
                     sendErrorData("02");
                     deviceStatus = "12";
+                } else if (isDlycShow) {
+                    sendErrorData("01");
+                    deviceStatus = "11";
                 }  else if (isDlShow) {
                     sendErrorData("03");
                     deviceStatus = "13";
-                } else if (isdlycbdShow) {
+                } else if (isDlycbdShow) {
                     sendErrorData("04");
                     deviceStatus = "14";
+                } else if (isCheckLgNumShow) {
+                    sendErrorData("07");
+                    deviceStatus = "17";
                 } else {
                     updateJlStatus();
                 }
@@ -4150,39 +4242,45 @@ public class FiringMainActivity extends SerialPortActivity {
                     dlDialog.cancel();
                     isDlShow = false;
                 }
-                if (isDlycShow) {
+                if (isDlShow) {
+                    sendErrorData("03");
+                    deviceStatus = "13";
+                } else if (isDlgdShow) {
+                    sendErrorData("02");
+                    deviceStatus = "12";
+                } else if (isDlycShow) {
                     sendErrorData("01");
                     deviceStatus = "11";
+                } else if (isDlycbdShow) {
+                    sendErrorData("04");
+                    deviceStatus = "14";
+                } else if (isCheckLgNumShow) {
+                    sendErrorData("07");
+                    deviceStatus = "17";
+                }  else {
+                    updateJlStatus();
+                }
+            } else if ("04".equals(event.getData())) {
+                if (dlycbdDialog != null && dlycbdDialog.isShowing()) {
+                    dlycbdDialog.dismiss();
+                    isDlycbdShow = false;
+                }
+                if (isDlycbdShow) {
+                    sendErrorData("04");
+                    deviceStatus = "14";
                 } else if (isDlgdShow) {
                     sendErrorData("02");
                     deviceStatus = "12";
                 } else if (isDlShow) {
                     sendErrorData("03");
                     deviceStatus = "13";
-                } else if (isdlycbdShow) {
-                    sendErrorData("04");
-                    deviceStatus = "14";
-                } else {
-                    updateJlStatus();
-                }
-            } else if ("04".equals(event.getData())) {
-                if (dlycbdDialog != null && dlycbdDialog.isShowing()) {
-                    dlycbdDialog.dismiss();
-                    isdlycbdShow = false;
-                }
-                if (isDlycShow) {
+                } else if (isDlycShow) {
                     sendErrorData("01");
                     deviceStatus = "11";
-                } else if (isDlgdShow) {
-                    sendErrorData("02");
-                    deviceStatus = "12";
-                } else if (isDlgdShow) {
-                    sendErrorData("03");
-                    deviceStatus = "13";
-                } else if (isdlycbdShow) {
-                    sendErrorData("04");
-                    deviceStatus = "14";
-                }  else {
+                } else if (isCheckLgNumShow) {
+                    sendErrorData("07");
+                    deviceStatus = "17";
+                } else {
                     isInterunptQb = false;
                     isHaveError = false;
                     deviceStatus = "05";
@@ -4198,6 +4296,41 @@ public class FiringMainActivity extends SerialPortActivity {
                 isInterunptQb = false;
                 isHaveError = false;
                 deviceStatus = "04";
+            } else if ("07".equals(event.getData())) {
+                if (checkLgNumDialog != null && checkLgNumDialog.isShowing()) {
+                    if (checkLgNumFlag == 1) {
+                    } else {
+                        fourOnlineDenatorFlag = 3;
+                    }
+                    checkLgNumDialog.dismiss();
+                    isCheckLgNumShow = false;
+                }
+                if (isCheckLgNumShow) {
+                    sendErrorData("07");
+                    deviceStatus = "17";
+                } else if (isDlgdShow) {
+                    sendErrorData("02");
+                    deviceStatus = "12";
+                }  else if (isDlShow) {
+                    sendErrorData("03");
+                    deviceStatus = "13";
+                } else if (isDlycbdShow) {
+                    sendErrorData("04");
+                    deviceStatus = "14";
+                } else if (isDlycShow) {
+                    sendErrorData("01");
+                    deviceStatus = "11";
+                } else {
+                    updateJlStatus();
+                }
+            } else if ("08".equals(event.getData())) {
+                if (registDialog != null && registDialog.isShowing()) {
+                    isHaveError = false;
+                    isInterunptQb = false;
+                    deviceStatus = "01";
+                    registDialog.dismiss();
+                    firstThread.start();
+                }
             }
             sendClycjg();
         }
