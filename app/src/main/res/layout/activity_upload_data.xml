@@ -58,7 +58,7 @@
             android:background="@drawable/btn_deepgray"
             android:onClick="onClick"
             android:text="上传测试"
-            android:visibility="visible"
+            android:visibility="gone"
             android:textColor="@color/black"
             android:textSize="20sp" />
 

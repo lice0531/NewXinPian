@@ -867,13 +867,12 @@ public class ReisterMainPage_scan extends SerialPortActivity {
         delaytimeTxt.setText(info.getDelay() + "");
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay = delaytimeTxt.getText().toString().trim();
-            if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {//
+            if (delay == null || delay.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay) > maxSecond) {
+                show_Toast(getResources().getString(R.string.text_error_tip37));
+            } else if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {
                 tipInfoFlag = 13;
-                Log.e(TAG,"超过最大延时了");
+                Log.e(TAG, "超过最大延时了");
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                dialog.dismiss();
-            } else if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
-                show_Toast(getString(R.string.text_error_tip37));
                 dialog.dismiss();
             } else {
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + info.getShellBlastNo() + "-延时:" + delay);
@@ -1070,22 +1069,7 @@ public class ReisterMainPage_scan extends SerialPortActivity {
             tipDlg.dismiss();
             tipDlg = null;
         }
-        if(mScaner!=null){
-            mScaner.unregisterScanCb();
-        }
-        if(scanDecode!=null){
-            scanDecode.stopScan();//停止扫描
-            scanDecode.onDestroy();//回复初始状态
-        }
-        if (scanBarThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        closeScan();
         if (zhuceThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {
@@ -2170,10 +2154,30 @@ public class ReisterMainPage_scan extends SerialPortActivity {
         int no = serchFristLGINdenatorHis(shellBlastNo);
         if (no > 0) {
             showAlertDialog();
-            scanDecode.stopScan();
+//            scanDecode.stopScan();
+            closeScan();
             return true;
         }
         return false;
+    }
+
+    private void closeScan() {
+        if(mScaner!=null){
+            mScaner.unregisterScanCb();
+        }
+        if(scanDecode!=null){
+            scanDecode.stopScan();//停止扫描
+            scanDecode.onDestroy();//回复初始状态
+        }
+        if (scanBarThread != null) {
+            scanBarThread.exit = true;  // 终止线程thread
+            try {
+                scanBarThread.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     private void kaishiScan() {

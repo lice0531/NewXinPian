@@ -285,7 +285,14 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
 				if (factoryselected.isChecked()) {
 					d = "是";
 				}
-
+				if (b.length() == 0) {
+					show_Toast(getResources().getString(R.string.text_error_tip65));
+					return;
+				}
+				if (b.equals("0")) {
+					show_Toast(getResources().getString(R.string.text_error_tip63));
+					return;
+				}
 				modifyDenatorType(typeId, a, b, d);
 				getLoaderManager().restartLoader(1, null, SetDenatorTypeActivity.this);
 				//    将输入的用户名和密码打印出来

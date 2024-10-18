@@ -315,7 +315,9 @@ public class SetDelayTime extends BaseActivity implements LoaderCallbacks<Cursor
                 String b = delaytimeTxt.getText().toString().trim();
                 if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
                     show_Toast(getString(R.string.text_error_tip37));
-                } else {
+                } else if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {
+                    show_Toast(getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms");
+                }  else {
                     modifyDelayTime(selectDenatorId, b);
                     getLoaderManager().restartLoader(1, null, SetDelayTime.this);
                     //    将输入的用户名和密码打印出来

@@ -255,23 +255,23 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             showMyToast("模拟上传已结束");
             uploadIndexMoni = 0;//重置上传下标
             pb_show = 0;
-//            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
             return;
         }
         String data = stringList.get(index);
         ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
             @Override
             public void run() {
-                for (String s : stringList) {
-                    if (data.equals(s)) {
+//                for (String s : stringList) {
+//                    if (data.equals(s)) {
                         try {
                             // 执行具体任务，例如上传数据
                             uploadMoniQbData(dateTimeList.get(uploadIndexMoni));
                         } catch (Exception e) {
                             Log.e(TAG, "threadpool error", e);
                         }
-                    }
-                }
+//                    }
+//                }
             }
         });
     }
@@ -284,9 +284,9 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (server_type2.equals("0") && server_type1.equals("0")) {
             showMyToast("设备当前未设置上传网址,请先设置上传网址");
         }
-        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
-            @Override
-            public void run() {
+//        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
+//            @Override
+//            public void run() {
                 try {
                     pb_show = 1;
 //                    runPbDialog();//loading画面
@@ -322,8 +322,8 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     Log.e(TAG, "起爆数据上传异常--异常信息为：" + e.getMessage());
                     e.printStackTrace();
                 }
-            }
-        });
+//            }
+//        });
     }
 
     public void getMoniCsTimeData(List<VoFireHisMain> originalData) {
@@ -468,11 +468,14 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                if (pb_show == 0 && tipDlg != null) {
-                    tipDlg.hide();
-                    mAdapter.setListData(list_savedate,7);
-                }
+//                if (!UploadDataActivity.this.isFinishing()) {
+                    if (pb_show == 1 && tipDlg != null) tipDlg.show();
+                    if (pb_show == 0 && tipDlg != null) {
+                        tipDlg.hide();
+                        mAdapter.setListData(list_savedate,7);
+                        mAdapter.notifyDataSetChanged();
+                    }
+//                }
             }
         };
         mHandler_tip = new Handler(msg -> {
@@ -516,8 +519,8 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                         isDlUploadSuccess = 0;
                         isXbUploadSuccess = 0;
                         uploadIndex ++;
+                        Log.e(TAG,"当前第" + uploadIndex + "条已上传成功");
                         uploadNext(dateList,uploadIndex);
-                        Log.e(TAG,"当前第" + uploadIndexMoni + "条已上传成功");
                     }
                     break;
             }
@@ -926,12 +929,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     dateList.add(his.getBlastdate());
                 }
             }
-            if (dateList.size() > 0) {
-                Log.e(TAG,"未上传的date集合:" + dateList.toString());
-                uploadNext(dateList,uploadIndex);
-            } else {
-                showMyToast("当前没有需要上传的数据");
-            }
+            Log.e(TAG,"未上传的date集合:" + dateList.toString());
+            uploadNext(dateList,uploadIndex);
+//            if (dateList.size() > 0) {
+//            } else {
+//                showMyToast("当前没有需要上传的数据");
+//            }
         } else if (v.getId() == R.id.btn_csdata) {
             showMyToast("正在生成测试数据，请稍等...");
             getCsData();
@@ -945,21 +948,17 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             show_Toast("上传已结束");
             pb_show = 0;
             mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            uploadIndex = 0;//重置上传下标
             return;
         }
         Log.e(TAG,"isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
         String data = dateList.get(index);
-//        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
-//            @Override
-//            public void run() {
-                for (int i = 0; i < list_savedate.size(); i++) {
-                    if (data.equals(list_savedate.get(i).getBlastdate())) {
-                        Log.e(TAG,"一键上传的数据下标是:" + i + "--日期是:" + list_savedate.get(i).getBlastdate());
-                        uploadQbData(i);
-                    }
-                }
-//            }
-//        });
+        for (int i = 0; i < list_savedate.size(); i++) {
+            if (data.equals(list_savedate.get(i).getBlastdate())) {
+                Log.e(TAG, "一键上传的数据下标是:" + i + "--日期是:" + list_savedate.get(i).getBlastdate());
+                uploadQbData(i);
+            }
+        }
     }
 
     /**
@@ -1426,6 +1425,10 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
                 pb_show = 0;
                 isXbUploadSuccess = 200;
+                Message message = new Message();
+                message.obj = blastdate;
+                message.arg1 = pos;
+                mHandler_update.sendMessage(message);
             }
         });
     }
@@ -1468,7 +1471,6 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             tipDlg.dismiss();
             tipDlg = null;
         }
-        ThreadUtils.closeThreadPool();
         super.onDestroy();
     }
 }

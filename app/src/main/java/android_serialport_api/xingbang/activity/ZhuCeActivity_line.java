@@ -510,13 +510,20 @@ public class ZhuCeActivity_line extends SerialPortActivity implements View.OnCli
         delaytimeTxt.setText(info.getDelay() + "");
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay = delaytimeTxt.getText().toString().trim();
-            if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {//
+            if (delay == null || delay.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay) > maxSecond) {
+                show_Toast(getResources().getString(R.string.text_error_tip37));
+            } else if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {
+                Log.e(TAG, "超过最大延时了");
                 mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
                 dialog.dismiss();
-            } else if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
-                show_Toast(getString(R.string.text_error_tip37));
-                dialog.dismiss();
             } else {
+//            if (maxSecond != 0 && Integer.parseInt(delay) > maxSecond) {//
+//                mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
+//                dialog.dismiss();
+//            } else if (delay.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(delay) > maxSecond)) {
+//                show_Toast(getString(R.string.text_error_tip37));
+//                dialog.dismiss();
+//            } else {
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + info.getShellBlastNo() + "-延时:" + delay);
                 modifyDelayTime(info, delay);
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));

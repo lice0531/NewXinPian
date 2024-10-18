@@ -289,12 +289,12 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
                         .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog13, which) -> {
+                        .setNeutralButton("退出", (dialog13, which) -> {
                             dialog13.dismiss();
                             finish();
                             MmkvUtils.savecode("isTestDenator", "N");
                         })
-                        .setNeutralButton("继续", (dialog2, which) -> {
+                        .setPositiveButton("继续", (dialog2, which) -> {
                             dialog2.dismiss();
                             firstThread.start();
                         })
@@ -1865,7 +1865,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                         .setTitle("总线电流偏低")//设置对话框的标题//"成功起爆"
                         .setMessage("当前起爆器电流异常,可能是总线短路导致,请检查线路后再次启动起爆流程,进行起爆")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("退出", (dialog1, which) -> {
+                        .setNeutralButton("退出", (dialog1, which) -> {
                             byte[] reCmd = ThreeFiringCmd.send_35("00");//35退出起爆
                             sendCmd(reCmd);
                             dialog1.dismiss();
@@ -1873,7 +1873,7 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                             closeForm();
                             finish();
                         })
-                        .setNeutralButton("继续", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("继续", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
                                 firstThread = new ThreadFirst(allBlastQu);

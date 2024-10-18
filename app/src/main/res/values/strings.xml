@@ -157,6 +157,7 @@
     <string name="text_error_tip35">延时设置超限</string>
     <string name="text_error_tip36">设置成功</string>
     <string name="text_error_tip37">延时为空或大于最大设定延时，修改失败！</string>
+    <string name="text_reister_tip9">已达到最大延时限制</string>
     <string name="text_error_tip38">修改成功</string>
     <string name="text_error_tip39">延时设置超限</string>
     <string name="text_error_tip40">起始/结束序号不符合要求</string>
@@ -467,4 +468,6 @@
     <string name="text_zccg">注册成功</string>
     <string name="text_sqsj">授权数据</string>
     <string name="text_sssqxx">搜索授权信息</string>
+    <string name="text_error_tip63">延时不能为0</string>
+    <string name="text_error_tip65">延时不能为空</string>
 </resources>

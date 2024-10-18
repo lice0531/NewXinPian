@@ -383,7 +383,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
                     dialog.cancel();
                     mOffTime.cancel();
                 })
-                .setNegativeButton("继续", (dialog2, which) -> {
+                .setPositiveButton("继续", (dialog2, which) -> {
                     dialog2.dismiss();
                     Intent intent5;//金建华
                     if (str5.equals("组网")) {

@@ -155,6 +155,7 @@
     <string name="text_error_tip35">Delay Setting Out of Limit</string>
     <string name="text_error_tip36">Set up successfully</string>
     <string name="text_error_tip37">Delay is empty or greater than the maximum set delay, modification failure！</string>
+    <string name="text_reister_tip9">The maximum delay limit has been reached</string>
     <string name="text_error_tip38">Modified success</string>
     <string name="text_error_tip39">Delay Setting Out of Limit</string>
     <string name="text_error_tip40">Incompatible start/end serial number</string>
@@ -457,4 +458,6 @@
     <string name="text_zccg">Registered successfully</string>
     <string name="text_sqsj">Authorization data</string>
     <string name="text_sssqxx">Search authorization information</string>
+    <string name="text_error_tip63">The delay cannot be 0</string>
+    <string name="text_error_tip65">The delay cannot be empty</string>
 </resources>

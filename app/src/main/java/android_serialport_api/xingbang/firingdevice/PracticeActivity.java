@@ -670,12 +670,12 @@ public class PracticeActivity extends SerialPortActivity {
                             .setTitle("当前雷管数量为0")//设置对话框的标题
                             .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容
                             //设置对话框的按钮
-                            .setNegativeButton("退出", (dialog13, which) -> {
+                            .setNeutralButton("退出", (dialog13, which) -> {
                                 dialog13.dismiss();
                                 finish();
                                 MmkvUtils.savecode("isTestDenator", "N");
                             })
-                            .setNeutralButton("继续", (dialog2, which) -> {
+                            .setPositiveButton("继续", (dialog2, which) -> {
                                 dialog2.dismiss();
                                 Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
                                 startActivity(intent9);

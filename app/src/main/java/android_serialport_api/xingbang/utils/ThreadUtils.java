@@ -19,11 +19,7 @@ public class ThreadUtils {
      */
     public static ExecutorService getThreadPool_Instance() {
         if (executorService == null) {
-//            executorService = Executors.newFixedThreadPool(4);
-//        }
-//        return executorService;
-//        if (executorService == null || executorService.isShutdown()) {
-            executorService = Executors.newFixedThreadPool(8); // 调整线程数
+            executorService = Executors.newFixedThreadPool(4); // 调整线程数
         }
         return executorService;
     }
