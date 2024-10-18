@@ -4129,6 +4129,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         } else if (msg.equals("finish")) {
+            sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
             closeThread();
             closeForm();
             finish();
