@@ -366,6 +366,7 @@
                                 android:text="@string/text_jh"
                                 android:textSize="18sp"
                                 style="@style/allbtntstyle"
+                                android:visibility="gone"
                                 />
                             <TextView
                                 android:layout_width="0dp"
@@ -422,6 +423,7 @@
                                 android:text="@string/text_jh"
                                 android:textSize="18sp"
                                 style="@style/allbtntstyle"
+                                android:visibility="gone"
                                 />
 
                             <TextView

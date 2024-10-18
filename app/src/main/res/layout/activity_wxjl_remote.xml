@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="horizontal"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="10dp">
 
         <Button
             android:id="@+id/btn_qibao"
@@ -59,6 +59,31 @@
             style="@style/alltextstyle"
             android:text="退出" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btn_err"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/alltextstyle"
+            android:textSize="18sp"
+            android:text="查看错误雷管" />
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_weight="1"
+            style="@style/alltextstyle"
+            android:text="退出" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_msg"
         android:layout_width="match_parent"
@@ -121,7 +146,8 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:background="@drawable/textview_border"
-                    android:text="序号" />
+                    android:text="序号"
+                    android:visibility="visible"/>
 
                 <TextView
                     style="@style/alltextstyle"
@@ -129,7 +155,7 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:background="@drawable/textview_border"
-                    android:text="设备编号"
+                    android:text="编号"
                     android:textSize="20sp"/>
 
                 <LinearLayout
@@ -141,17 +167,19 @@
                     <TextView
                         style="@style/alltextstyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
                         android:background="@drawable/textview_border"
                         android:text="全部数量"
-                        android:textSize="18sp"/>
+                        android:textSize="15sp"/>
                     <TextView
                         style="@style/alltextstyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
                         android:background="@drawable/textview_border"
                         android:text="错误数量"
-                        android:textSize="18sp"/>
+                        android:textSize="15sp"/>
                 </LinearLayout>
                 <TextView
                     android:id="@+id/tvStatus"
@@ -177,7 +205,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/textview_border"
-                        android:text="状态"
+                        android:text="电压"
                         android:textSize="18sp" />
 
                     <TextView
@@ -188,7 +216,14 @@
                         android:text="电流"
                         android:textSize="18sp" />
                 </LinearLayout>
-
+                <TextView
+                    style="@style/alltextstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/textview_border"
+                    android:text="状态"
+                    android:textSize="18sp" />
                 <TextView
                     style="@style/alltextstyle"
                     android:layout_width="0dp"

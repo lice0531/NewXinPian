@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,6 +55,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.DeviceAdapter;
+import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.custom.ListViewForScrollView;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter_all;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -87,6 +90,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     Button btnPrepareCharge;
     @BindView(R.id.btn_qibao)
     Button btnQibao;
+    @BindView(R.id.btn_err)
+    Button btnErr;
     @BindView(R.id.btn_exit)
     Button btnExit;
     @BindView(R.id.lv_net)
@@ -122,6 +127,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private SendA1Cmd sendA1Cmd;
     private ExitJl exitJl;
     private QueryError queryError;
+    private QueryError2 queryError2;
     private boolean reciveB0 = false;//发出同步命令是否返回
     private boolean reciveB1 = false;//发出起爆测试命令是否返回
     private boolean reciveB5 = false;//发出A5命令是否返回
@@ -164,6 +170,10 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private boolean receiveAB = false;//发出AB命令是否返回
     private boolean isReSendAB = true;//是否是切换信道，如果是切换信道，需要先发送AB设置无线驱动指令，再依次发送F9,AB
     private SetZJQThread setZjqThread;
+    private boolean end84 = false;//84命令是否结束
+    private ArrayList<Map<String, Object>> errDeData = new ArrayList<>();//错误雷管
+    private int errorTotalNum;//错误雷管总数
+
 
     @Override
     protected void onStart() {
@@ -235,7 +245,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private void initData() {
         xinDaoValue = (String) MmkvUtils.getcode("xinDaoValue", "");
         xinDaoId = (int) MmkvUtils.getcode("xinDao", -1);
-        Log.e(TAG,"当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
+        Log.e(TAG, "当前信道Id: " + xinDaoId + "--信道值:" + xinDaoValue);
         Utils.writeRecord("级联页面当前信道id:" + xinDaoId + "--信道value:" + xinDaoValue);
         wxjlDeviceId = !TextUtils.isEmpty(getIntent().getStringExtra("wxjlDeviceId")) ?
                 getIntent().getStringExtra("wxjlDeviceId") : "01";
@@ -257,8 +267,6 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             }
         }
     }
-
-
 
 
     private class SyncDevices extends Thread {
@@ -389,18 +397,20 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     }
 
     private int zeroCountAB = 0;
+
     private class SetZJQThread extends Thread {
         public volatile boolean exit = false;
+
         public void run() {
             while (!exit) {
                 try {
-                    Log.e(TAG,"AB指令发送次数:" + zeroCountAB);
+                    Log.e(TAG, "AB指令发送次数:" + zeroCountAB);
                     if (zeroCountAB <= 1 && !receiveAB) {
                         sendAB();
                         Log.e(TAG, "发送AB设置无线中继器信道指令了");
                         Thread.sleep(1500);
-                    } else if (zeroCountAB > 1){
-                        Log.e(TAG,"AB指令未返回已发送1次，停止发送AB指令");
+                    } else if (zeroCountAB > 1) {
+                        Log.e(TAG, "AB指令未返回已发送1次，停止发送AB指令");
                         exit = true;
                         Message message = new Message();
                         message.what = 11;
@@ -432,10 +442,10 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         String xdId1 = Utils.addZero(b1, 2);
 //        String zjqXdCmd = "C5C512AB4B4B46323357533030303030303031" + xdId1 + "07AEE5E5";
 //        sendCmd(CRC16.hexStringToByte(zjqXdCmd));
-        sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031",xdId1));
+        sendCmd(ThreeFiringCmd.sendWx_Zjq_AB("4B4B46323357533030303030303031", xdId1));
     }
 
-    private void sendF9(){
+    private void sendF9() {
         /**
          * 将起爆卡信道设置为 1 的指令及回复如下：
          * 指令： C5C5  02  F9    01  AE  E5E5
@@ -451,7 +461,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 //        String qbzXdCmd = "C5C502F9" + xdId + "AEE5E5";
 //        sendCmd(CRC16.hexStringToByte(qbzXdCmd));
         sendCmd(ThreeFiringCmd.sendWx_Qbk_F9(xdId));
-        Log.e(TAG,"发送F9指令了");
+        Log.e(TAG, "发送F9指令了");
     }
 
     private String mAfter = "";
@@ -518,7 +528,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             doWithReceivData(fromCommad);//处理cmd命令
         } else if (fromCommad.startsWith("C5C5") && fromCommad.endsWith("E5E5")) {
             String cmd = DefCommand.getWxSDKCmd(fromCommad);
-            Log.e(TAG,"无线配置返回命令正常--具体命令:" + cmd);
+            Log.e(TAG, "无线配置返回命令正常--具体命令:" + cmd);
             byte[] localBuf = Utils.hexStringToBytes(fromCommad);
             doWithWxpzReceivData(cmd, localBuf);//处理cmd命令
         } else {
@@ -580,11 +590,11 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         }
     }
 
-    private void closeABThread(){
+    private void closeABThread() {
         if (setZjqThread != null) {
             setZjqThread.exit = true;
             setZjqThread.interrupt();
-            Log.e(TAG,"AB线程已关闭");
+            Log.e(TAG, "AB线程已关闭");
         }
     }
 
@@ -687,6 +697,18 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             if (isCanSendA8) {
                 doWithReceivB8(res);
             }
+        } else if (res.startsWith(DefCommand.CMD_5_TRANSLATE_84)) {//84 无线级联：读取错误雷管
+            if (currentCount == 0) {
+                updateLgErrorStatus();
+                receive84 = true;
+                Message message = new Message();
+                message.what = 5;
+                message.obj = "true";
+                handler_msg.sendMessage(message);
+            }
+            if (isCanSend84) {
+                doWith84(res);
+            }
         } else {
             Log.e(TAG, "无线级联远距离页面-没有匹配对应的命令-cmd:" + res);
         }
@@ -721,11 +743,16 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         int maxCount = 4;//芯片一次最多返回20条错误雷管
         int sendCount = (errorNum % maxCount) > 0 ? (errorNum / maxCount) + 1 : errorNum / maxCount;
         if (currentCount >= sendCount) {
+            Message message = new Message();
+            message.what = 18;
+            message.obj="错误";
+            handler_msg.sendMessage(message);
             Log.e(TAG, "错误雷管数量小于4，不需要发A8了，重新开启轮训");
             Utils.writeRecord("级联页面错误雷管查询结束，错误数量:" + errorNum + "--A8发送次数:" + sendCount);
             sendCmd(ThreeFiringCmd.sendWxjlA5(wxjlDeviceId, "122130"));
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
+
             return;
         }
         sendA8();
@@ -830,6 +857,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                 case "2":
                     //电压数据
                     String dy = value.substring(value.length() - 3);
+                    Log.e(TAG, "dy: "+dy);
                     String bv = Utils.addZero(dy, 4);
                     bean.setBusVoltage(calateBv(bv));
                     Log.e(TAG, "B5消息中电压信息:" + calateBv(bv));
@@ -957,6 +985,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         }
 
     }
+
     private void initSocket() {
         WebConfig webConfig = new WebConfig();
         webConfig.setPort(9002);
@@ -1036,6 +1065,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             if (list_device.get(a).getCode().equals(bean4.getCode())) {
                                 list_device.get(a).setRes(bean4.getRes());
                                 list_device.get(a).setInfo(bean4.getInfo());
+                                list_device.get(a).setBusVoltage(bean4.getBusVoltage());
                                 if ("起爆结束".equals(bean4.getInfo())) {
                                     list_device.get(a).setCurrentPeak("");
                                 } else {
@@ -1270,21 +1300,21 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 }
                             }
                             adapter.notifyDataSetChanged();
-                            if (db.getRes().startsWith("B2")) {
-                                Log.e(TAG, "收到B2了开始判断是否发送A8--错误数量:" + errorNum);
-                                if (errorNum > 0) {
-                                    Utils.writeRecord("级联页面有错误雷管开始发送A8查询错误雷管");
-                                    Log.e(TAG, "正在充电有错误雷管--先关闭轮询发送A8指令了,等A8结束了再开启轮询");
-                                    //发送A8指令去修改通信失败雷管状态
-                                    PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
-                                    queryError = new QueryError();
-                                    queryError.start();
-                                } else {
-                                    updateLgStatus(false);
-                                    Log.e(TAG, "无错误雷管，不需要发A8,同时修改数据库错误雷管状态为FF");
-                                    Utils.writeRecord("级联页面无错误雷管");
-                                }
-                            }
+//                            if (db.getRes().startsWith("B2")) {
+//                                Log.e(TAG, "收到B2了开始判断是否发送A8--错误数量:" + errorNum);
+//                                if (errorNum > 0) {
+//                                    Utils.writeRecord("级联页面有错误雷管开始发送A8查询错误雷管");
+//                                    Log.e(TAG, "正在充电有错误雷管--先关闭轮询发送A8指令了,等A8结束了再开启轮询");
+//                                    //发送A8指令去修改通信失败雷管状态
+//                                    PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
+//                                    queryError = new QueryError();
+//                                    queryError.start();
+//                                } else {
+//                                    updateLgStatus(false);
+//                                    Log.e(TAG, "无错误雷管，不需要发A8,同时修改数据库错误雷管状态为FF");
+//                                    Utils.writeRecord("级联页面无错误雷管");
+//                                }
+//                            }
                         }
                         break;
                     case 10:
@@ -1293,11 +1323,11 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             setZjqThread = new SetZJQThread();
                             setZjqThread.start();
                             Utils.writeRecord("级联页面F9指令接收成功");
-                            Log.e(TAG,"查看错误雷管--信道已配置:" + xinDaoId + "--启动AB线程了");
+                            Log.e(TAG, "查看错误雷管--信道已配置:" + xinDaoId + "--启动AB线程了");
                         } else {
                             Utils.writeRecord("级联页面切换信道先发送AB指令接收失败");
                             show_Toast("切换信道F9指令失败");
-                            Log.e(TAG,"F9指令无返回");
+                            Log.e(TAG, "F9指令无返回");
                         }
                         break;
                     case 11:
@@ -1318,7 +1348,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                         } else {
                             Utils.writeRecord("级联页面AB指令无响应");
                             show_Toast("切换信道AB指令无返回");
-                            Log.e(TAG,"AB指令无返回");
+                            Log.e(TAG, "AB指令无返回");
                         }
                         break;
                     case 99:
@@ -1480,6 +1510,18 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             }
                         }
                         break;
+                    case 3:
+//                        tvLookError.setText("4.点击查看错误雷管列表");
+                        show_Toast("错误雷管读取已结束");
+                        break;
+                    case 18:
+                        Log.e(TAG, "弹出框: " );
+                        //弹出框
+                        loadErrorBlastModel();
+                        if (errDeData.size() > 0) {
+                            showErrorLgList();
+                        }
+                        break;
                 }
             }
             return false;
@@ -1637,7 +1679,12 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
-    @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_exit})
+    private boolean isSend80 = true;//防止用户多次点击频发80
+    private boolean isSend81 = true;//防止用户多次点击频发81
+    private boolean isSend82 = true;//防止用户多次点击频发82
+    private boolean isSend84 = true;//防止用户多次点击频发84
+
+    @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_err, R.id.btn_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_net_test:
@@ -1680,11 +1727,51 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             case R.id.btn_exit:
                 writeData("A7");//准备退出指令
                 break;
+            case R.id.btn_err:
+                //发送84指令查看错误雷管信息
+//                if (end84) {
+////                    tvLookError.setText("4.点击查看错误雷管列表");
+//                    loadErrorBlastModel();
+//                    if (errDeData.size() > 0) {
+//                        showErrorLgList();
+//                    } else {
+//                        show_Toast("暂无错误雷管");
+//                    }
+//                } else {
+//                    tvLookError.setText("4.读取错误雷管中请稍等...");
+
+//                    if (isCanSendA8) {
+//                        isCanSendA8 = false;
+//                        queryError = new QueryError();
+//                        queryError.start();
+//                    } else {
+//                        show_Toast("数据传输中，请勿重复点击...");
+//                        return;
+//                    }
+                    Log.e(TAG, "errorNum: "+errorNum );
+                    if (errorNum > 0&&!reciveB8) {
+                        show_Toast("读取错误雷管中，请勿重复点击...");
+                        Utils.writeRecord("级联页面有错误雷管开始发送A8查询错误雷管");
+                        Log.e(TAG, "正在充电有错误雷管--先关闭轮询发送A8指令了,等A8结束了再开启轮询");
+                        Log.e(TAG, "reciveB8"+reciveB8);
+                        //发送A8指令去修改通信失败雷管状态
+                        PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
+                        queryError = new QueryError();
+                        queryError.start();
+                    }else {
+                        loadErrorBlastModel();
+                        if (errDeData.size() > 0) {
+                            showErrorLgList();
+                        }
+                    }
+//                }
+                break;
         }
     }
 
     AlertDialog cmdDialog;
     String tip = "";
+
     private void writeData(final String data) {
         switch (data) {
             case "A1":
@@ -1734,7 +1821,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             cmdDialog.show();
         }
     }
+
     AlertDialog dialog;
+
     public void showAlertDialog(String content, String cancleText, String sureText) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
             dialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
@@ -1746,19 +1835,24 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                     })
                     //设置对话框的按钮
                     .setNeutralButton(cancleText, (dialog1, which) -> {
-                        if (content.contains("错误雷管")) {
-                            if (xinDaoId == 1) {
-                                enterNearPage();
-                                dialog1.dismiss();
-                            } else {
-                                setZjqThread = new SetZJQThread();
-                                setZjqThread.start();
-                                Log.e(TAG,"启动AB线程了");
-                            }
-                        } else {
-                            exitRemotePage();
-                            dialog1.dismiss();
-                        }
+//                        if (content.contains("错误雷管")) {
+//                            if (xinDaoId == 1) {
+////                                enterNearPage();
+//                                dialog1.dismiss();
+//                            } else {
+//                                setZjqThread = new SetZJQThread();
+//                                setZjqThread.start();
+//                                Log.e(TAG,"启动AB线程了");
+//                            }
+//                        } else {
+//                            isShowError = true;
+//                            closeLx();
+////                            exitRemotePage();
+//                            dialog1.dismiss();
+//                        }
+                        isShowError = true;
+                        closeLx();
+                        dialog1.dismiss();
                     }).create();
             dialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
             dialog.show();
@@ -1767,6 +1861,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 
 
     AlertDialog errorAialog;
+
     private void showErrorDialog(String tip) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
             errorAialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
@@ -1790,12 +1885,13 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     }
 
     private boolean isEnterNear = false;
+
     private void enterNearPage() {
         isEnterNear = true;
         sendCmd(ThreeFiringCmd.sendWxjlA7("01"));
         xinDaoValue = "CH1-19.2kbps-1FEC";
-        MmkvUtils.savecode("xinDaoValue",xinDaoValue);
-        MmkvUtils.savecode("xinDao",1);
+        MmkvUtils.savecode("xinDaoValue", xinDaoValue);
+        MmkvUtils.savecode("xinDao", 1);
         closeLx();
         closeSerial();
         //跳转到近距离页面
@@ -1807,6 +1903,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
+
     private void exitRemotePage() {
 //        if (!threadStarted) {
 //            exitJl = new ExitJl();
@@ -1820,6 +1917,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     }
 
     private boolean isA7 = false;
+    private int num = 0;
 
     private void setTipText(String data) {
         switch (data) {
@@ -1937,5 +2035,161 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+    }
+
+    /***
+     * 加载错误雷管
+     */
+    private void loadErrorBlastModel() {
+        errDeData.clear();
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        for (DenatorBaseinfo d : list) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("serialNo", d.getBlastserial());
+            item.put("konghao", d.getDuan() + "-" + d.getDuanNo());
+            item.put("shellNo", d.getShellBlastNo());
+            item.put("errorName", d.getErrorName());
+            item.put("delay", d.getDelay());
+            item.put("piece", d.getPiece());
+            errDeData.add(item);
+        }
+        Log.e(TAG, "数据库查询错误雷管总数: " + errDeData.size());
+    }
+
+    private void showErrorLgList() {
+        if (!WxjlRemoteActivity.this.isFinishing()) {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View getlistview = inflater.inflate(R.layout.firing_error_listview, null);
+            LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+            llview.setVisibility(View.GONE);
+            // 给ListView绑定内容
+            ListView errlistview = getlistview.findViewById(R.id.X_listview);
+            ErrListAdapter mAdapter = new ErrListAdapter(this, errDeData, R.layout.firing_error_item);
+            errlistview.setAdapter(mAdapter);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("错误雷管列表");
+            builder.setView(getlistview);
+            builder.setNegativeButton("确定", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            builder.create().show();
+        }
+    }
+
+    private boolean receive84 = false;//发出84命令是否返回
+
+    private class QueryError2 extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+            while (!exit) {
+                try {
+                    if (receive84) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount > 0 && zeroCount <= 5 && !receive84) {
+                        send84();
+                        Log.e(TAG, "发送84查询错误雷管指令");
+                        Thread.sleep(1500);
+                    } else if (zeroCount > 5) {
+                        Log.e(TAG, "84指令未返回已发送5次，停止发送84指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 5;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void send84() {
+        //发送84指令查看错误雷管信息
+        String b = Utils.intToHex(currentCount + 1);
+        String serId = Utils.addZero(b, 2);
+        sendCmd(ThreeFiringCmd.sendWxjl84("01", serId));
+    }
+
+    private boolean isCanSend84 = false;
+
+    private void updateLgErrorStatus() {
+        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao()
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+        int index = 0;
+        for (DenatorBaseinfo baseinfo : list) {
+            updateLgStatus(baseinfo, 1);
+            index++;
+        }
+        if (index == list.size()) {
+            isCanSend84 = true;
+            Log.e(TAG, "可以发84了");
+        }
+    }
+
+    private void doWith84(String completeCmd) {
+        /**
+         * 芯片84指令一次最多给返回10条错误雷管数据，如超过10，则需要再次发送84指令获取剩下的错误雷管
+         * 84指令：84后面:错误数量  序号(发送84的次数) 错误雷管编号)  错误雷管：C00184 0B 01 0D001500200046004F0051005400560059005A005C00 0642C0
+         * 截取出错误雷管的序号，0300 0500 0D00（转化时，低位在前，高位在后）就是发84指令时候的雷管顺序
+         * 得通过这个序号找到对应的雷管id给错误雷管更新状态
+         * 同时在当前页面展示出错误雷管列表
+         */
+        currentCount++;
+        Log.e(TAG, "收到84了:" + completeCmd + "--当前发送84次数：" + currentCount);
+        String errorLgCmd = completeCmd.substring(10, completeCmd.length() - 6);
+        //取到错误雷管cmd后  4个一组  每个都只取前两位  将其转为十进制就可以知道是错误芯片的81发送顺序  然后再找到对应的雷管id 再改变通信状态
+        int aa = errorLgCmd.length() / 4;
+        for (int i = 0; i < aa; i++) {
+            String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
+            String idCmd = value.substring(0, 4);
+//            int id = Integer.parseInt(idCmd, 16);
+            int id = hexToDecimalLowHigh(idCmd);
+            for (int j = 0; j < mListData.size(); j++) {
+                if (id == j + 1) {
+                    //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
+                    String blastNo = mListData.get(j).getShellBlastNo();
+                    Log.e(TAG, "错误雷管编号:" + id + "--错误雷管id:" + blastNo + "-现在去更新数据库的状态了");
+                    updateLgStatus(mListData.get(j), 2);
+                }
+            }
+        }
+        int maxCount = 10;//芯片一次最多返回20条错误雷管
+        int sendCount = (errorTotalNum % maxCount) > 0 ? (errorTotalNum / maxCount) + 1 : errorTotalNum / maxCount;
+        if (currentCount >= sendCount) {
+            end84 = true;
+            Log.e(TAG, "错误雷管数量小于20，不需要发84命令了");
+            Message message = new Message();
+            message.what = 3;
+            handler_msg.sendMessage(message);
+            return;
+        }
+        send84();
+        Log.e(TAG, "错误数量>20，发84了--错误总数量:" + errorTotalNum + "--需要发送84的次数是:" + sendCount);
+    }
+
+    // 转换方法
+    private int hexToDecimalLowHigh(String hexStr) {
+        // 确保输入是有效的16进制字符串并且长度是4
+        if (hexStr.length() != 4 || !hexStr.matches("[0-9A-Fa-f]{4}")) {
+            throw new IllegalArgumentException("输入必须是一个4位的有效16进制字符串");
+        }
+        // 分割低位和高位
+        String lowByte = hexStr.substring(0, 2);
+        String highByte = hexStr.substring(2);
+        // 合并低位和高位
+        String combinedHexStr = highByte + lowByte;
+        // 转换为十进制
+        return Integer.parseInt(combinedHexStr, 16);
     }
 }

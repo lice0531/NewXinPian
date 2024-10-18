@@ -166,6 +166,7 @@ public class DeviceBean implements Parcelable {
 //                '}';
 //    }
 
+
     @Override
     public String toString() {
         return "DeviceBean{" +
@@ -176,8 +177,9 @@ public class DeviceBean implements Parcelable {
                 ", trueNum='" + trueNum + '\'' +
                 ", errNum='" + errNum + '\'' +
                 ", currentPeak='" + currentPeak + '\'' +
-                ", isSend='" + isSend + '\'' +
                 ", socket=" + socket +
+                ", busVoltage=" + busVoltage +
+                ", isSend='" + isSend + '\'' +
                 '}';
     }
 }

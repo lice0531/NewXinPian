@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.custom;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,15 +81,17 @@ public class DeviceAdapter extends BaseAdapter {
         }
         if (isShowCPeak) {
             holder.ll_currentPeak.setVisibility(View.VISIBLE);
-            holder.tv_status.setVisibility(View.GONE);
+//            holder.tv_status.setVisibility(View.GONE);
         } else {
             holder.ll_currentPeak.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
         }
+        Log.e("adapter", "bean: "+list.get(position).toString() );
         holder.tv_name.setText((position+1) + "");
         holder.tv_code.setText(list.get(position).getCode());
-        holder.tv_state.setText(list.get(position).getInfo());
+        holder.tv_state.setText(list.get(position).getBusVoltage()+"V");//电压
         holder.tv_status.setText(list.get(position).getInfo());
+        holder.tv_currentPeak.setText(list.get(position).getCurrentPeak());
         holder.tv_currentPeak.setText(list.get(position).getCurrentPeak());
         if (list.get(position).getTrueNum() != null){
             holder.tv_tureNum.setText(list.get(position).getTrueNum());

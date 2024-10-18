@@ -187,7 +187,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     TextView text_gkm;
     @BindView(R.id.text_gkm2)
     TextView text_uid;
-
     @BindView(R.id.tr_1)
     TableRow tr1;
     @BindView(R.id.re_num_f1)
@@ -348,7 +347,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     Button btnDuan20;
     @BindView(R.id.re_et_nei20)
     Button btnFan20;
-
     @BindView(R.id.btn_addDelay)
     Button btnAddDelay;
     @BindView(R.id.btn_tk_F1)
@@ -357,7 +355,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     Button btnJHF1;
     @BindView(R.id.btn_JH_F2)
     Button btnJHF2;
-
     @BindView(R.id.btn_tk)
     Button btnTk;
     @BindView(R.id.et_tk)
