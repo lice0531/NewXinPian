@@ -151,6 +151,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     RecyclerView mListView;
     @BindView(R.id.ly_showData)
     LinearLayout lyShowData;
+    @BindView(R.id.ly_showIc)
+    LinearLayout lyShowIc;
     @BindView(R.id.container)
     LinearLayout container;
     @BindView(R.id.container1)
@@ -435,7 +437,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private Boolean charu = false;
     private DenatorBaseinfo db_charu;
     private ScanQrControl mScaner = null;
-    private int xiangHao_errNum=0;//箱码重复数量
+    private int xiangHao_errNum = 0;//箱码重复数量
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -593,7 +596,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         if (data.length() == 19) {//扫描盒号
             addHeHao(data);
-        }if (data.length() == 18) {//扫描箱号
+        }
+        if (data.length() == 18) {//扫描箱号
             addXiangHao(data);
         }
         if (sanButtonFlag > 0) {//扫码结果设置到输入框里
@@ -750,10 +754,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast(getString(R.string.text_error_tip66));
             } else if (msg.what == 12) {
                 show_Toast(getString(R.string.text_mx_zcsb));
-            }else if (msg.what == 20) {
+            } else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
-                show_Toast("共有"+xiangHao_errNum+"盒重复");
-                xiangHao_errNum=0;
+                show_Toast("共有" + xiangHao_errNum + "盒重复");
+                xiangHao_errNum = 0;
             } else if (msg.what == 2001) {
                 show_Toast(msg.obj.toString());
                 SoundPlayUtils.play(4);
@@ -870,7 +874,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.e("点击按键", "keyCode: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_THUMBS_DOWN || keyCode == KeyEvent.KEYCODE_PROFILE_SWITCH || keyCode == 289) {//287
-            if (Build.DEVICE.equals("M900")||Build.DEVICE.equals("T-QBZD-Z6")) {
+            if (Build.DEVICE.equals("M900") || Build.DEVICE.equals("T-QBZD-Z6")) {
                 mScaner.startScan();
             }
 
@@ -955,7 +959,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return;
         }
         new Thread(() -> {
-            insertDenator(prex, finalStrNo, finalEndNo,true);//添加
+            insertDenator(prex, finalStrNo, finalEndNo, true);//添加
         }).start();
     }
 
@@ -977,9 +981,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
         final String strNo = "00";
         //                            1            0
-        int a = Integer.parseInt(xh[5] + "" + xh[6]) ;//代表几盒 10
+        int a = Integer.parseInt(xh[5] + "" + xh[6]);//代表几盒 10
         //                                 S
-        int endNo = Utils.XiangHao(xh[7]+"");//判断每盒几发   8
+        int endNo = Utils.XiangHao(xh[7] + "");//判断每盒几发   8
         final String prex = String.valueOf(strNo1);
         //5630921A
         //53904151
@@ -991,15 +995,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return;
         }
         new Thread(() -> {
-            for (int b =0;b<a;b++){
-                String xuhao=xh[15] + "" + xh[16]+b+"00";
-                Log.e(TAG, "第"+b+"盒序号: "+xuhao );
-                int finalStrNo =Integer.parseInt(xuhao);
-                insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1),false);//添加
+            for (int b = 0; b < a; b++) {
+                String xuhao = xh[15] + "" + xh[16] + b + "00";
+                Log.e(TAG, "第" + b + "盒序号: " + xuhao);
+                int finalStrNo = Integer.parseInt(xuhao);
+                insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1), false);//添加
             }
 
         }).start();
-        if(xiangHao_errNum!=0){
+        if (xiangHao_errNum != 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(20));
 
         }
@@ -1240,7 +1244,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //					mOutputStream.write(mBuffer);
                 String str = Utils.bytesToHexFun(mBuffer);
 //                Utils.writeLog("Reister sendTo:" + str);
-                Log.e("发送命令", "sendCmd: " + str);
+                Log.e("发送命令",  str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -1626,7 +1630,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Log.e("单发修改", "delay1: " + delay1);
             Log.e("单发修改", "maxSecond: " + maxSecond);
-            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+            if (delay1 == null || delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 show_Toast(getResources().getString(R.string.text_reister_tip8));
 
             } else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
@@ -1638,7 +1642,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
-                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg) );
+                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -1785,15 +1789,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
             else this.revCmd = "";
-            //	System.out.println("fromCommad="+fromCommad);
-//            Utils.writeLog("reister recFrom:" + fromCommad);
+//            Utils.writeLog("Firing reFrom:" + fromCommad);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
                 return;
             } else {
                 String cmd = DefCommand.getCmd(fromCommad);
                 if (cmd != null) {
-                    doWithReceivData(cmd, cmdBuf);
+                    int localSize = fromCommad.length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+                    doWithReceivData(cmd, localBuf);//处理cmd命令
                 }
             }
         } else {
@@ -1877,9 +1882,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
 
 
-        } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//进入自动注册模式
+        } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
             //发送获取电源信息
-            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");
+            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40
             sendCmd(reCmd);
 
         } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//有雷管接入
@@ -1967,7 +1972,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e("扫码", "delay_set: " + delay_set);
 
         //判断延时是否超出范围
-        if(!flag_jh_f1||!flag_jh_f2){
+        if (!flag_jh_f1 || !flag_jh_f2) {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -1979,7 +1984,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     return -1;
                 }
             }
-        }else {
+        } else {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && delay + f1 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -1997,10 +2002,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        if(!flag_jh_f1||!flag_jh_f2){
+        if (!flag_jh_f1 || !flag_jh_f2) {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
-                    delay =start_delay - delay;
+                    delay = start_delay - delay;
                 } else {
                     if (flag_tk) {
                         delay = delay - f1 * (tk_num + 1);
@@ -2020,7 +2025,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
             }
-        }else {
+        } else {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
@@ -2178,7 +2183,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delay_start = delay;
         Log.e("扫码", "delay_set: " + delay_set);
         //判断延时是否超出范围
-        if(!flag_jh_f1||!flag_jh_f2){
+        if (!flag_jh_f1 || !flag_jh_f2) {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -2190,7 +2195,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     return -1;
                 }
             }
-        }else {
+        } else {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && delay + f1 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -2209,10 +2214,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        if(!flag_jh_f1||!flag_jh_f2){
+        if (!flag_jh_f1 || !flag_jh_f2) {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
-                    delay =start_delay - delay;
+                    delay = start_delay - delay;
                 } else {
                     if (flag_tk) {
                         delay = delay - f1 * (tk_num + 1);
@@ -2232,7 +2237,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
             }
-        }else {
+        } else {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
@@ -2362,7 +2367,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 注册方法
      * 手动输入注册(通过开始管壳码和截止管壳码计算出所有管壳码)
      */
-    private int insertDenator(String prex, int start, int end ,boolean x) {
+    private int insertDenator(String prex, int start, int end, boolean x) {
         Log.e("扫码", "单发注册方法3: ");
         if (end < start) return -1;
         if (start < 0 || end > 99999) return -1;
@@ -2382,7 +2387,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         int delay_start = delay;
 
-        if(!flag_jh_f1||!flag_jh_f2){
+        if (!flag_jh_f1 || !flag_jh_f2) {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -2394,7 +2399,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     return -1;
                 }
             }
-        }else {
+        } else {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && delay + f1 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -2423,10 +2428,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo)) {
                 singleShellNo = shellNo;
-                if(x){
+                if (x) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
                 }
-                if(!x){
+                if (!x) {
                     xiangHao_errNum++;
                 }
                 break;
@@ -2442,10 +2447,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
 
-            if(!flag_jh_f1||!flag_jh_f2){
+            if (!flag_jh_f1 || !flag_jh_f2) {
                 if (delay_set.equals("f1")) {//孔间延时
                     if (maxNo == 0) {
-                        delay =start_delay - delay;
+                        delay = start_delay - delay;
                     } else {
                         if (flag_tk) {
                             delay = delay - f1 * (tk_num + 1);
@@ -2465,7 +2470,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                     }
                 }
-            }else {
+            } else {
                 if (delay_set.equals("f1")) {//孔间延时
                     if (maxNo == 0) {
                         delay = delay + start_delay;
@@ -2713,7 +2718,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     boolean flag_jh_f2 = true;//减号标志
     boolean flag_tk = false;//跳孔标志
 
-    @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1,R.id.btn_JH_F1,R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
+    @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_JH_F1, R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
             R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay,
             R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3,
@@ -2889,7 +2894,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 startActivityForResult(intent3, 1);
                 break;
             case R.id.btn_single:
-                if(btnSingle.getText().toString().equals(getResources().getString(R.string.text_scan_sdsr))){
+                if (btnSingle.getText().toString().equals(getResources().getString(R.string.text_scan_sdsr))) {
                     int b = getFan(duan_new);
                     if (b == 1) {
                         show_Toast(getResources().getString(R.string.text_queryHis_dialog7));
@@ -2971,7 +2976,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
-                            insertDenator(prex, start, start + (num - 1),true);
+                            insertDenator(prex, start, start + (num - 1), true);
                             Log.e("手动输入", "厂号日期: " + prex);
                             Log.e("手动输入", "start: " + start);
                             pb_show = 0;
@@ -3002,7 +3007,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
-                            insertDenator(prex, start, end,true);
+                            insertDenator(prex, start, end, true);
                             Log.e("手动输入", "prex: " + prex);
                             Log.e("手动输入", "start: " + start);
                             Log.e("手动输入", "end: " + end);
@@ -3026,34 +3031,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 setResult(1, intentTemp);
                 finish();
                 break;
-            case R.id.btn_singleReister:
-                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
-                    break;
-                }
-                if (isSingleReisher == 0) {
-                    btnScanReister.setEnabled(false);
-                    btnInputOk.setEnabled(false);
-                    btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));//"停止注册"
-                    isSingleReisher = 1;
-                    closeThread();
-                    closeOpenThread = new CloseOpenPower();
-                    closeOpenThread.start();
 
-                } else {
-                    btnScanReister.setEnabled(true);
-                    btnInputOk.setEnabled(true);
-                    btnSingleReister.setText(getResources().getString(R.string.text_singleReister));//"单发注册"
-                    isSingleReisher = 0;
-                    initCloseCmdReFlag = 0;
-                    initOpenCmdReFlag = 0;
-                    revCloseCmdReFlag = 0;
-                    revOpenCmdReFlag = 0;
-
-                    byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");
-                    sendCmd(powerCmd);
-                }
-                break;
             case R.id.btn_ReisterScanStart_st:
                 hideInputKeyboard();
                 if (continueScanFlag == 0) {
@@ -3083,6 +3061,49 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 Intent intent = new Intent(this, ChoseDuanActivity.class);
                 intentActivityResultLauncher.launch(intent);
+                break;
+            case R.id.btn_singleReister:
+                int e = getFan(duan_new);
+                if (e == 1) {
+                    show_Toast("当前段位雷管已翻转,请恢复后再注册新的雷管");
+                    return;
+                }
+                hideInputKeyboard();
+                if (checkDelay()) return;
+//                if (delay_set.equals("0")) {
+//                    show_Toast("请设置延时");
+//                    break;
+//                }
+//                if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
+//                    show_Toast("有延时为空,请先设置延时");
+//                    break;
+//                }
+                if (isSingleReisher == 0 ) {
+                    show_Toast("请等待电流电压显示出来后，再连接雷管!");
+                    btnInputOk.setEnabled(false);
+                    btnSingleReister.setText("停止注册");
+                    isSingleReisher = 1;
+                    lyShowIc.setVisibility(View.VISIBLE);
+                    closeThread();
+//                    closeOpenThread = new CloseOpenPower();
+//                    closeOpenThread.start();
+                    sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+
+                } else {
+                    lyShowIc.setVisibility(View.GONE);
+                    btnInputOk.setEnabled(true);
+                    btnSingleReister.setText("单发注册");
+                    txtCurrentVolt.setText("当前电压:");
+                    txtCurrentIC.setText("当前电流:");
+                    txtCurrentIC.setTextColor(Color.BLACK);
+                    isSingleReisher = 0;
+                    initCloseCmdReFlag = 0;
+                    initOpenCmdReFlag = 0;
+                    revCloseCmdReFlag = 0;
+                    revOpenCmdReFlag = 0;
+                    // 13 退出注册模式
+                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+                }
                 break;
             case R.id.re_btn_f1:
                 hideInputKeyboard();
@@ -3374,7 +3395,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         public void run() {
             while (exit) {
 
-                insertDenator(prex, start, start + (num - 1),true);
+                insertDenator(prex, start, start + (num - 1), true);
 
             }
 
@@ -3917,7 +3938,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_scan, menu);
         return true;
     }
 
@@ -3934,7 +3955,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mRegion = String.valueOf(item.getOrder());
+
 
         switch (item.getItemId()) {
 
@@ -3943,6 +3964,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.item_3:
             case R.id.item_4:
             case R.id.item_5:
+                mRegion = String.valueOf(item.getOrder());
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
@@ -3961,7 +3983,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 MmkvUtils.savecode("duan", 1);
                 btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
                 return true;
-
+            case R.id.item_6:
+                Intent intent = new Intent(this, ChoseDuanActivity.class);
+                intentActivityResultLauncher.launch(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -4104,7 +4129,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan1.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n1", n1);
+                MmkvUtils.savecode(mRegion + "n1", n1);
                 break;
             case 2:
                 if (n2 == 1) {
@@ -4112,7 +4137,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n2", n2);
+                MmkvUtils.savecode(mRegion + "n2", n2);
                 break;
             case 3:
                 if (n3 == 1) {
@@ -4120,7 +4145,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan3.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n3", n3);
+                MmkvUtils.savecode(mRegion + "n3", n3);
                 break;
             case 4:
                 if (n4 == 1) {
@@ -4128,7 +4153,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan4.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n4", n4);
+                MmkvUtils.savecode(mRegion + "n4", n4);
                 break;
             case 5:
                 if (n5 == 1) {
@@ -4136,7 +4161,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan5.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n5", n5);
+                MmkvUtils.savecode(mRegion + "n5", n5);
                 break;
             case 6:
                 if (n6 == 1) {
@@ -4144,7 +4169,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan6.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n6", n6);
+                MmkvUtils.savecode(mRegion + "n6", n6);
                 break;
             case 7:
                 if (n7 == 1) {
@@ -4152,7 +4177,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan7.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n7", n7);
+                MmkvUtils.savecode(mRegion + "n7", n7);
                 break;
             case 8:
                 if (n8 == 1) {
@@ -4160,7 +4185,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan8.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n8", n8);
+                MmkvUtils.savecode(mRegion + "n8", n8);
                 break;
             case 9:
                 if (n9 == 1) {
@@ -4168,7 +4193,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan9.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n9", n9);
+                MmkvUtils.savecode(mRegion + "n9", n9);
                 break;
             case 10:
                 if (n10 == 1) {
@@ -4176,7 +4201,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan10.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n10", n10);
+                MmkvUtils.savecode(mRegion + "n10", n10);
                 break;
             case 11:
                 if (n11 == 1) {
@@ -4184,7 +4209,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan11.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n11", n11);
+                MmkvUtils.savecode(mRegion + "n11", n11);
                 break;
             case 12:
                 if (n12 == 1) {
@@ -4192,7 +4217,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan12.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n12", n12);
+                MmkvUtils.savecode(mRegion + "n12", n12);
                 break;
             case 13:
                 if (n13 == 1) {
@@ -4200,7 +4225,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan13.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n13", n13);
+                MmkvUtils.savecode(mRegion + "n13", n13);
                 break;
             case 14:
                 if (n14 == 1) {
@@ -4208,7 +4233,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan14.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n14", n14);
+                MmkvUtils.savecode(mRegion + "n14", n14);
                 break;
             case 15:
                 if (n15 == 1) {
@@ -4216,7 +4241,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan15.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n15", n15);
+                MmkvUtils.savecode(mRegion + "n15", n15);
                 break;
             case 16:
                 if (n16 == 1) {
@@ -4224,7 +4249,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan16.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n16", n16);
+                MmkvUtils.savecode(mRegion + "n16", n16);
                 break;
             case 17:
                 if (n17 == 1) {
@@ -4232,7 +4257,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan17.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n17", n17);
+                MmkvUtils.savecode(mRegion + "n17", n17);
                 break;
             case 18:
                 if (n18 == 1) {
@@ -4240,7 +4265,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan18.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n18", n18);
+                MmkvUtils.savecode(mRegion + "n18", n18);
                 break;
             case 19:
                 if (n19 == 1) {
@@ -4248,7 +4273,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan9.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n19", n19);
+                MmkvUtils.savecode(mRegion + "n19", n19);
                 break;
             case 20:
                 if (n20 == 1) {
@@ -4256,56 +4281,57 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnFan20.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n20", n20);
+                MmkvUtils.savecode(mRegion + "n20", n20);
                 break;
         }
     }
 
     private void setFan() {
-        n1 = (int) MmkvUtils.getcode(mRegion+"n1", 0);
-        n2 = (int) MmkvUtils.getcode(mRegion+"n2", 0);
-        n3 = (int) MmkvUtils.getcode(mRegion+"n3", 0);
-        n4 = (int) MmkvUtils.getcode(mRegion+"n4", 0);
-        n5 = (int) MmkvUtils.getcode(mRegion+"n5", 0);
-        n6 = (int) MmkvUtils.getcode(mRegion+"n6", 0);
-        n7 = (int) MmkvUtils.getcode(mRegion+"n7", 0);
-        n8 = (int) MmkvUtils.getcode(mRegion+"n8", 0);
-        n9 = (int) MmkvUtils.getcode(mRegion+"n9", 0);
-        n10 = (int) MmkvUtils.getcode(mRegion+"n10", 0);
-        n11 = (int) MmkvUtils.getcode(mRegion+"n11", 0);
-        n12 = (int) MmkvUtils.getcode(mRegion+"n12", 0);
-        n13 = (int) MmkvUtils.getcode(mRegion+"n13", 0);
-        n14 = (int) MmkvUtils.getcode(mRegion+"n14", 0);
-        n15 = (int) MmkvUtils.getcode(mRegion+"n15", 0);
-        n16 = (int) MmkvUtils.getcode(mRegion+"n16", 0);
-        n17 = (int) MmkvUtils.getcode(mRegion+"n17", 0);
-        n18 = (int) MmkvUtils.getcode(mRegion+"n18", 0);
-        n19 = (int) MmkvUtils.getcode(mRegion+"n19", 0);
-        n20 = (int) MmkvUtils.getcode(mRegion+"n20", 0);
-        n21 = (int) MmkvUtils.getcode(mRegion+"n21", 0);
-        n22 = (int) MmkvUtils.getcode(mRegion+"n22", 0);
-        n23 = (int) MmkvUtils.getcode(mRegion+"n23", 0);
-        n24 = (int) MmkvUtils.getcode(mRegion+"n24", 0);
-        n25 = (int) MmkvUtils.getcode(mRegion+"n25", 0);
-        n26 = (int) MmkvUtils.getcode(mRegion+"n26", 0);
-        n27 = (int) MmkvUtils.getcode(mRegion+"n27", 0);
-        n28 = (int) MmkvUtils.getcode(mRegion+"n28", 0);
-        n29 = (int) MmkvUtils.getcode(mRegion+"n29", 0);
-        n30 = (int) MmkvUtils.getcode(mRegion+"n30", 0);
-        n31 = (int) MmkvUtils.getcode(mRegion+"n31", 0);
-        n32 = (int) MmkvUtils.getcode(mRegion+"n32", 0);
-        n33 = (int) MmkvUtils.getcode(mRegion+"n33", 0);
-        n34 = (int) MmkvUtils.getcode(mRegion+"n34", 0);
-        n35 = (int) MmkvUtils.getcode(mRegion+"n35", 0);
-        n36 = (int) MmkvUtils.getcode(mRegion+"n36", 0);
-        n37 = (int) MmkvUtils.getcode(mRegion+"n37", 0);
-        n38 = (int) MmkvUtils.getcode(mRegion+"n38", 0);
-        n39 = (int) MmkvUtils.getcode(mRegion+"n39", 0);
-        n40 = (int) MmkvUtils.getcode(mRegion+"n40", 0);
+        n1 = (int) MmkvUtils.getcode(mRegion + "n1", 0);
+        n2 = (int) MmkvUtils.getcode(mRegion + "n2", 0);
+        n3 = (int) MmkvUtils.getcode(mRegion + "n3", 0);
+        n4 = (int) MmkvUtils.getcode(mRegion + "n4", 0);
+        n5 = (int) MmkvUtils.getcode(mRegion + "n5", 0);
+        n6 = (int) MmkvUtils.getcode(mRegion + "n6", 0);
+        n7 = (int) MmkvUtils.getcode(mRegion + "n7", 0);
+        n8 = (int) MmkvUtils.getcode(mRegion + "n8", 0);
+        n9 = (int) MmkvUtils.getcode(mRegion + "n9", 0);
+        n10 = (int) MmkvUtils.getcode(mRegion + "n10", 0);
+        n11 = (int) MmkvUtils.getcode(mRegion + "n11", 0);
+        n12 = (int) MmkvUtils.getcode(mRegion + "n12", 0);
+        n13 = (int) MmkvUtils.getcode(mRegion + "n13", 0);
+        n14 = (int) MmkvUtils.getcode(mRegion + "n14", 0);
+        n15 = (int) MmkvUtils.getcode(mRegion + "n15", 0);
+        n16 = (int) MmkvUtils.getcode(mRegion + "n16", 0);
+        n17 = (int) MmkvUtils.getcode(mRegion + "n17", 0);
+        n18 = (int) MmkvUtils.getcode(mRegion + "n18", 0);
+        n19 = (int) MmkvUtils.getcode(mRegion + "n19", 0);
+        n20 = (int) MmkvUtils.getcode(mRegion + "n20", 0);
+        n21 = (int) MmkvUtils.getcode(mRegion + "n21", 0);
+        n22 = (int) MmkvUtils.getcode(mRegion + "n22", 0);
+        n23 = (int) MmkvUtils.getcode(mRegion + "n23", 0);
+        n24 = (int) MmkvUtils.getcode(mRegion + "n24", 0);
+        n25 = (int) MmkvUtils.getcode(mRegion + "n25", 0);
+        n26 = (int) MmkvUtils.getcode(mRegion + "n26", 0);
+        n27 = (int) MmkvUtils.getcode(mRegion + "n27", 0);
+        n28 = (int) MmkvUtils.getcode(mRegion + "n28", 0);
+        n29 = (int) MmkvUtils.getcode(mRegion + "n29", 0);
+        n30 = (int) MmkvUtils.getcode(mRegion + "n30", 0);
+        n31 = (int) MmkvUtils.getcode(mRegion + "n31", 0);
+        n32 = (int) MmkvUtils.getcode(mRegion + "n32", 0);
+        n33 = (int) MmkvUtils.getcode(mRegion + "n33", 0);
+        n34 = (int) MmkvUtils.getcode(mRegion + "n34", 0);
+        n35 = (int) MmkvUtils.getcode(mRegion + "n35", 0);
+        n36 = (int) MmkvUtils.getcode(mRegion + "n36", 0);
+        n37 = (int) MmkvUtils.getcode(mRegion + "n37", 0);
+        n38 = (int) MmkvUtils.getcode(mRegion + "n38", 0);
+        n39 = (int) MmkvUtils.getcode(mRegion + "n39", 0);
+        n40 = (int) MmkvUtils.getcode(mRegion + "n40", 0);
     }
+
     /**
      * 获取对应段位翻转值
-     * */
+     */
     public int getFan(int duan) {
         setFan();
         switch (duan) {

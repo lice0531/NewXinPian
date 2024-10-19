@@ -602,14 +602,14 @@
 
                     <Button
                         android:id="@+id/btn_singleReister"
+                        style="@style/allbtntstyle"
                         android:layout_width="85dp"
                         android:layout_height="50dp"
                         android:layout_marginRight="4dp"
                         android:background="@drawable/bt_mainpage_style"
                         android:text="@string/text_singleReister"
-                        android:textColor="@color/bt_fg_base"
-                        android:textSize="@dimen/childReisterPageBtnFontSize"
-                        android:visibility="gone" />
+                        android:textSize="20sp"
+                        android:visibility="visible" />
 
                     <Button
                         android:id="@+id/btn_scanReister"
@@ -660,6 +660,7 @@
                         android:visibility="gone" />
 
                     <Button
+                        android:visibility="gone"
                         android:id="@+id/btn_addDelay"
                         style="@style/allbtntstyle"
                         android:layout_width="85dp"
@@ -668,6 +669,7 @@
                         android:background="@drawable/bt_mainpage_style"
                         android:text="@string/text_scan_xzdw"
                         android:textSize="20sp"/>
+
                 </LinearLayout>
 
 
@@ -1491,6 +1493,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/ly_showIc"
                     android:layout_width="fill_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
