@@ -550,7 +550,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
                                 .setTitle("线路短路")//设置对话框的标题//"成功起爆"
-                                .setMessage("电压过低，检查铆接线路是否正常")//设置对话框的内容"本次任务成功起爆！"
+                                .setMessage("电压过低，检查铆接等线路是否正常")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
                                 .setNeutralButton("退出", (dialog12, which) -> {
                                     close();
@@ -571,7 +571,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
                                 .setTitle("线路短路")//设置对话框的标题//"成功起爆"
-                                .setMessage("电流过大，检查铆接线路是否正常")//设置对话框的内容"本次任务成功起爆！"
+                                .setMessage("电流过大，检查铆接等线路是否正常")//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
                                 .setNeutralButton("退出", (dialog12, which) -> {
                                     close();
@@ -625,7 +625,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             if (tipInfoFlag == 10) {//断路
                 AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
                         .setTitle("线路断路")//设置对话框的标题//"成功起爆"
-                        .setMessage("电流为0，请检查铆接线路是否正常")//设置对话框的内容"本次任务成功起爆！"
+                        .setMessage("电流为0，请检查铆接等线路是否正常")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNeutralButton("退出", (dialog12, which) -> {
                             close();
