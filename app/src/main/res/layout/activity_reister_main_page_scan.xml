@@ -1505,7 +1505,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/text_reister_vol"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/txt_currentIC"
@@ -1513,7 +1514,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/text_reister_ele"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/txt_reisteramount"

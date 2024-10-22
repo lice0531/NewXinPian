@@ -53,6 +53,7 @@ import java.util.List;
 
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.cmd.vo.From12Reister;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -372,7 +373,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     //是否单发注册
     private int isSingleReisher;
     //单发注册
-
+    private From12Reister zhuce_form = null;
+    private volatile int zhuce_Flag = 0;//单发检测时发送40的标识
     private int sanButtonFlag = 0;//1s是起始按钮，2是终止按钮
     private Handler mHandler_tip = new Handler();//错误提示
     private Handler mHandler_1 = new Handler();//提示电源信息
@@ -1882,32 +1884,60 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
 
 
-        } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
+        }else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
             //发送获取电源信息
             byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40
             sendCmd(reCmd);
 
-        } else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//有雷管接入
+        }else if (DefCommand.CMD_1_REISTER_3.equals(cmd)) {//12 有雷管接入
+            //C0001208 FF 00 B6E6FF00 41 A6 1503 C0  普通雷管
+            //C000120C FF 00 B6E6FF00 41 A6 B6E6FF00 1503 C0
+            //C000120A FF 00 67D0FA00 03 A6 1704 7F24 C0
 
-        } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//退出自动注册模式
-            if (initCloseCmdReFlag == 1) {//打开电源
-                revCloseCmdReFlag = 1;
-                closeOpenThread.exit = true;
-//                sendOpenThread = new SendOpenPower();
-                sendOpenThread.start();
-            } else {
-                //发送停止获取电源信息
-                byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");
-                sendCmd(reCmd);
+//            zhuce_form = OneReisterCmd.decodeFromReceiveAutoDenatorCommand14("00", cmdBuf, qiaosi_set);//桥丝检测
+            zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
+            if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
+                tipInfoFlag = 5;//提示类型桥丝不正常
+                mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+                Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
             }
-        } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//总线电流电压
-            From42Power fromData = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);
-            busInfo = fromData;
+            zhuce_Flag = 1;
+
+            try {
+                Thread.sleep(500);//
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //2  连续发三次询问电流指令
+            byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00");//40获取电源信息
+            sendCmd(reCmd);
+        } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
+
+        }else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
+            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
             tipInfoFlag = 1;
             mHandler_1.sendMessage(mHandler_1.obtainMessage());
 
-        } else {
+            if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
+                String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
+                if (busInfo.getBusCurrentIa() > 60) {//判断当前电流是否偏大//20221019(范总说取消掉单发注册电流判断)
+                    tipInfoFlag = 7;
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                    SoundPlayUtils.play(4);
+                    zhuce_Flag = 0;
+                    Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
+                }
+//                else {
+                if (zhuce_form != null) {//管厂码,特征码,雷管id
+//                        // 获取 管壳码
+//                        String shellNo = new GreenDaoMaster().getShellNo(detonatorId);
+                    insertSingleDenator(detonatorId, zhuce_form);//单发注册
+                    zhuce_Flag = 0;
+                }
 
+//                }
+            }
         }
 
     }
@@ -2595,6 +2625,246 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         return reCount;
     }
+
+    /**
+     * 单发注册(存储桥丝状态) 单发注册方法
+     */
+    private int insertSingleDenator(String detonatorId, From12Reister zhuce_form) {
+        if (checkDelay()) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+            return -1;
+        }
+        // 管厂码
+        String facCode = Utils.getDetonatorShellToFactoryCodeStr(detonatorId);
+        // 特征码
+        String facFea = Utils.getDetonatorShellToFeatureStr(detonatorId);
+
+        //352841778FDE5
+        //A62141778FDE5
+        Log.e("注册", "detonatorId: " + detonatorId);
+        Log.e("注册", "zhuce_form.getZhu_yscs(): " + zhuce_form.getZhu_yscs());
+//        String shellBlastNo = serchShellBlastNo(detonatorId);
+        DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
+//        if (detonatorTypeNew == null) {//考虑到可以直接注册A6
+//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(10));
+//            return -1;
+//        }
+
+        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
+        //判断管壳码
+        if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13 && checkRepeatShellNo(detonatorTypeNew.getShellBlastNo())) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
+        if (detonatorId.startsWith("00000", 2)) {//判断芯片码开头是否全为0
+            tipInfoFlag = 8;
+            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            return -1;
+        }
+        if (detonatorId.length() != 13) {//判断芯片码是否为13位
+            tipInfoFlag = 9;
+            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            return -1;
+        }
+        if (detonatorTypeNew != null) {//考虑到可以直接注册A6
+            facCode = Utils.getDetonatorShellToFactoryCodeStr(detonatorTypeNew.getShellBlastNo());
+        }
+        Log.e("查询生产数据库查管壳码", "factoryCode: " + factoryCode);
+        Log.e("查询生产数据库查管壳码", "facCode: " + facCode);
+//        Log.e("查询生产数据库查管壳码", "ShellBlastNo: " + detonatorTypeNew.getShellBlastNo());
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(facCode) && !facCode.equals("A6")) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return -1;
+        }
+        //验证特征码
+//        if (factoryFeature != null && factoryFeature.trim().length() > 0 && !factoryFeature.contains(facFea)) {
+//            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+//            return -1;
+//        }
+        Log.e("查询生产数据库查管壳码", "detonatorId: " + detonatorId);
+        if (et_startDelay.getText().length() == 0 && reEtF1.getText().length() == 0 && reEtF2.getText().length() == 0) {
+            tipInfoFlag = 6;
+            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+            Log.e("验证是否输入延时", "tipInfoFlag: ");
+            return -1;
+        }
+//        int maxNo = getMaxNumberNo();
+        int start = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
+        int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
+        int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
+//        int delay = getMaxDelay(maxNo);//获取最大延时
+        // 获取 该区域 最大序号
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
+        // 获取 该区域 最大序号的延时
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
+        int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
+        if (delay == 0 && duanNo2 == 0) {
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
+        int delay_start = delay;
+        if (delay_set.equals("f1")) {
+            if (maxSecond != 0 && delay + f1 > maxSecond) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                return -1;
+            }
+        } else if (delay_set.equals("f2")) {
+            if (maxSecond != 0 && delay + f2 > maxSecond) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                return -1;
+            }
+        }
+        if (maxSecond != 0 && start > maxSecond) {//开始延时超出最大范围
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+            return -1;
+        }
+
+        if (maxSecond != 0 && f1 > maxSecond) {//
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+            return -1;
+        }
+        if (maxSecond != 0 && f2 > maxSecond) {//
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+            return -1;
+        }
+
+        int tk_num = 0;
+        if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
+            tk_num = Integer.parseInt(etTk.getText().toString());
+        }
+
+        if (delay_set.equals("f1")) {//获取最大延时有问题
+            if (maxNo == 0) {
+                delay = delay + start;
+            } else {
+                if (flag_tk) {
+                    delay = delay + f1 * (tk_num + 1);
+                } else {
+                    delay = delay + f1;
+                }
+
+            }
+        } else if (delay_set.equals("f2")) {
+            if (maxNo == 0) {
+                delay = delay + start;
+            } else {
+                if (flag_tk) {
+                    delay = delay_minNum + f2 * (tk_num + 1);
+                } else {
+                    delay = delay_minNum + f2;
+                }
+            }
+        }
+
+        int duanNUM = getDuanNo(duan_new, mRegion);//也得做区域区分
+
+        if (!zhuce_form.getWire().equals("无")) {//说明没有空余的序号可用
+            maxNo++;
+            //从绑码库中获取到的数据
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+
+            if (detonatorTypeNew != null && detonatorTypeNew.getShellBlastNo().length() == 13) {
+                denatorBaseinfo.setShellBlastNo(detonatorTypeNew.getShellBlastNo());
+                denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+                denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
+                Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
+            } else {
+                denatorBaseinfo.setShellBlastNo(detonatorId);
+                denatorBaseinfo.setZhu_yscs(zhuce_form.getZhu_yscs());
+                denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
+                Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
+            }
+
+            if (zhuce_form.getDenaIdSup() != null) {
+                String detonatorId_Sup = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaIdSup());
+                denatorBaseinfo.setDenatorIdSup(detonatorId_Sup);//从芯片
+                denatorBaseinfo.setCong_yscs(detonatorTypeNew.getCong_yscs());
+                Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
+            }
+            denatorBaseinfo.setBlastserial(maxNo);
+            denatorBaseinfo.setSithole(maxNo + "");
+            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setDenatorId(detonatorId);
+            denatorBaseinfo.setStatusCode("02");
+            denatorBaseinfo.setStatusName("已注册");
+            denatorBaseinfo.setErrorCode("00");
+            denatorBaseinfo.setErrorName("");
+            denatorBaseinfo.setWire(zhuce_form.getWire());//桥丝状态
+            denatorBaseinfo.setPiece(mRegion);
+            denatorBaseinfo.setDuan(duan_new);
+            denatorBaseinfo.setDuanNo((duanNo2 + 1));
+            if (!flag_t1) {//同孔
+                denatorBaseinfo.setDuanNo((duanNo2));
+                denatorBaseinfo.setDelay(delay_start);
+            }
+            int delay_add = 0;
+            if (charu) {
+                if (!flag_t1) {//同孔
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
+                    denatorBaseinfo.setDelay(db_charu.getDelay());
+                } else {
+
+                    delay = db_charu.getDelay();
+                    if (delay_set.equals("f1")) {//获取最大延时有问题
+                        delay_add = f1;
+                        if (maxNo == 0) {
+                            delay = delay + start;
+                        } else {
+                            if (flag_tk) {
+                                delay = delay + f1 * (tk_num + 1);
+                            } else {
+                                delay = delay + f1;
+                            }
+                        }
+                    } else if (delay_set.equals("f2")) {
+                        delay_add = f2;
+                        if (maxNo == 0) {
+                            delay = delay + start;
+                        } else {
+                            if (flag_tk) {
+                                delay = delay_minNum + f2 * (tk_num + 1);
+                            } else {
+                                delay = delay_minNum + f2;
+                            }
+                        }
+                    }
+
+//                    if(flag_t1&&delay==db_charu.getDelay()){
+//                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
+//                        return -1;
+//                    }
+                    denatorBaseinfo.setDelay(delay);
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                }
+
+                Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getDuan());//插入雷管的后面所有雷管序号+1
+                int xuhao = db_charu.getBlastserial() + 1;
+                int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
+                denatorBaseinfo.setBlastserial(xuhao);
+                denatorBaseinfo.setSithole(konghao + "");
+                denatorBaseinfo.setDuan(db_charu.getDuan());
+
+                charu = false;
+            }
+            //向数据库插入数据
+            getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
+            //向数据库插入数据
+        }
+
+
+        //更新每段雷管数量
+        Message msg = new Message();
+        msg.arg1 = duan_new;
+        mHandler_showNum.sendMessage(msg);
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        SoundPlayUtils.play(1);
+        return 0;
+    }
+
 
     /***
      * 得到最大序号
@@ -4631,5 +4901,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return 3;
     }
 
-
+    /**
+     * 查询生产表中对应的管壳码
+     */
+    private String serchShellBlastNo(String denatorId) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        return master.queryDetonatorTypeNew(denatorId);
+    }
 }
