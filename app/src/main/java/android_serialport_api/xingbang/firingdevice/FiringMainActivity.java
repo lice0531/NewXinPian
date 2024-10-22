@@ -285,6 +285,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 intent.getStringExtra("isResJc") : "";
         isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
+        initSerialPort();
         startFlag = 1;
         initParam();//重置参数
         initView();
@@ -297,11 +298,13 @@ public class FiringMainActivity extends SerialPortActivity {
         elevenCount = getMaxDelay() / 1000 + 1;
         Log.e(TAG, "elevenCount: " + elevenCount);
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
-        //给主机发消息告知已进入起爆页面
-        if (TextUtils.isEmpty(isResJc)) {
-            EventBus.getDefault().post(new FirstEvent("B2"));
-        } else {
-            EventBus.getDefault().post(new FirstEvent("BBA2"));
+        if (isJL) {
+            //给主机发消息告知已进入起爆页面
+            if (TextUtils.isEmpty(isResJc)) {
+                EventBus.getDefault().post(new FirstEvent("B2"));
+            } else {
+                EventBus.getDefault().post(new FirstEvent("BBA2"));
+            }
         }
     }
 
@@ -2312,21 +2315,41 @@ public class FiringMainActivity extends SerialPortActivity {
             case 1:
                 firstTxt.setText((oneCount) + "s");
                 secondTxt.setText(getString(R.string.text_firing_tip7) + (oneCount) + "s)");
-                if (oneCount == 3) {//等待结束
-                    //发出进入起爆模式命令,根据偏好设置,选择是否检测桥丝
-                    //没有桥丝串口返回命令: C000300009C9C0
-                    //  有桥丝串口返回命令: C000300009C9C0
-                    if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
-                        sendCmd(initBuf);
-                    } else {
-                        byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
-                        sendCmd(initBuf);
+                if (isJL) {
+                    if (oneCount >= 3) {//等待结束
+                        //发出进入起爆模式命令,根据偏好设置,选择是否检测桥丝
+                        //没有桥丝串口返回命令: C000300009C9C0
+                        //  有桥丝串口返回命令: C000300009C9C0
+                        if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
+                            byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
+                            sendCmd(initBuf);
+                        } else {
+                            byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
+                            sendCmd(initBuf);
+                        }
+                        if (firstCmdReFlag == 1) {
+                            ctlLinePanel(2);
+                            increase(2);
+                            Log.e("increase", "2");
+                        }
                     }
-                    if (firstCmdReFlag == 1) {
-                        ctlLinePanel(2);
-                        increase(2);
-                        Log.e("increase", "2");
+                } else {
+                    if (oneCount == 3) {//等待结束
+                        //发出进入起爆模式命令,根据偏好设置,选择是否检测桥丝
+                        //没有桥丝串口返回命令: C000300009C9C0
+                        //  有桥丝串口返回命令: C000300009C9C0
+                        if (qiaosi_set.equals("true")) {//0101,起爆检测桥丝有问题,先改成不检测桥丝
+                            byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0101");//30指令进入起爆模式(同时检测桥丝)
+                            sendCmd(initBuf);
+                        } else {
+                            byte[] initBuf = ThreeFiringCmd.setToXbCommon_Firing_Init23_2("0100");//30指令
+                            sendCmd(initBuf);
+                        }
+                        if (firstCmdReFlag == 1) {
+                            ctlLinePanel(2);
+                            increase(2);
+                            Log.e("increase", "2");
+                        }
                     }
                 }
 
