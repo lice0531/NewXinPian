@@ -773,7 +773,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (tipInfoFlag == 1) {
                 if (busInfo != null) {
                     txtCurrentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
-                    txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa() * 1000) + "μA");
+                    txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa()) + "μA");
                 }
             }
             if (tipInfoFlag == 2) {//提示已注册多少发
