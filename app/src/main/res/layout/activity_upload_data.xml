@@ -50,20 +50,36 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
         android:orientation="vertical">
-        <Button
-            android:id="@+id/btn_csdata"
-            android:layout_width="180dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_deepgray"
-            android:onClick="onClick"
-            android:text="上传测试"
+        <LinearLayout
+            android:id="@+id/llCs"
             android:visibility="gone"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/etNum"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:inputType="number"
+                android:layout_height="wrap_content"
+                android:hint="请输入测试条数"/>
+            <Button
+                android:id="@+id/btn_csdata"
+                android:layout_width="180dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_deepgray"
+                android:onClick="onClick"
+                android:text="上传测试"
+                android:visibility="visible"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+        </LinearLayout>
+
 
         <Button
-            android:id="@+id/ud_btn_upload"
+            android:id="@+id/btn_all_upload"
             android:layout_width="180dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"

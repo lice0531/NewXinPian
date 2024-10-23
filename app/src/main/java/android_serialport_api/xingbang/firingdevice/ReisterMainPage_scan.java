@@ -233,7 +233,7 @@ public class ReisterMainPage_scan extends SerialPortActivity {
     private LinearLayoutManager linearLayoutManager;
     private List<DenatorBaseinfo> mListData = new ArrayList<>();//所有雷管列表
     private Handler mHandler_0 = new Handler();     // UI处理
-
+    private int xiangHao_errNum=0;//箱码重复数量
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -405,7 +405,9 @@ public class ReisterMainPage_scan extends SerialPortActivity {
         } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
             updateMessage("02");
         }
-        if (data.length() == 19) {//扫描箱号
+        if (data.length() == 19) {//扫描盒号
+            addHeHao(data);
+        }if (data.length() == 18) {//扫描箱号
             addXiangHao(data);
         }
 //        if (sanButtonFlag > 0) {//扫码结果设置到输入框里
@@ -518,7 +520,17 @@ public class ReisterMainPage_scan extends SerialPortActivity {
                 show_Toast("有延时为空,请先设置延时");
             } else if (isCorrectReisterFea == 9) {
                 decodeBar(msg.obj.toString());
-            } else {
+            } else if (isCorrectReisterFea == 10) {
+                show_Toast("找不到对应的生产数据,请先导入生产数据");
+            } else if (isCorrectReisterFea == 11) {
+                show_Toast("输入的日期格式不对");
+            } else if (isCorrectReisterFea == 12) {
+                show_Toast("当前雷管为煤许产品,注册失败");
+            }else if (isCorrectReisterFea == 20) {
+                SoundPlayUtils.play(4);
+                show_Toast("共有"+xiangHao_errNum+"盒重复");
+                xiangHao_errNum=0;
+            }  else {
                 SoundPlayUtils.play(4);
                 show_Toast("注册失败");
             }
@@ -730,27 +742,90 @@ public class ReisterMainPage_scan extends SerialPortActivity {
                 }).create();
         dialog.show();
     }
+    /**
+     * 扫描盒号
+     */
+    private void addHeHao(String data) {
+        char[] xh = data.toCharArray();
+        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
+        final String strNo = "00";
+        String a = xh[5] + "" + xh[6];
+        String endNo = Utils.HeHao(a);
+        final String prex = String.valueOf(strNo1);
+        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
+        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(prex.substring(0, 2))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return;
+        }
+        new Thread(() -> {
+            insertDenator(prex, finalStrNo, finalEndNo);//添加
+        }).start();
+    }
+    /**
+     * 扫描箱号
+     */
+//    private void addXiangHao(String data) {
+//        char[] xh = data.toCharArray();
+//        char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
+//        final String strNo = "00";
+//        String a = xh[5] + "" + xh[6];
+//        String endNo = Utils.XiangHao(a);
+//        final String prex = String.valueOf(strNo1);
+//        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
+//        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                insertDenator(prex, finalStrNo, finalEndNo);//添加
+//            }
+//        }).start();
+//    }
 
     /**
      * 扫描箱号
      */
     private void addXiangHao(String data) {
+        //J 5 3 z c 1 0 S 1 9 0 4 1 5 1 0 1
+//        （1）J代表产品名称，就是电子毫秒电雷管（也就是我们平常的工业电子雷管）；
+//        （2）53代表企业代号，金建华公司代号；
+//        （3）z代表是段别，电子雷管均采用其它段z表示；
+//        （4）c代表管壳材料为钢质；
+//        （5）10代表箱内盒数，金建华都是每箱10盒。
+//        （6）S代表箱代码，对应上述表1序号5的箱代码；
+//        （7）190415代表生产日期2019年4月15日；
+//        （8）1代表特征号，理解成机台号，1号机；01代表箱号，只能01-99。
         char[] xh = data.toCharArray();
+        //                  5      3      9       0       4       1       5       1
         char[] strNo1 = {xh[1], xh[2], xh[9], xh[10], xh[11], xh[12], xh[13], xh[14]};//箱号数组
         final String strNo = "00";
-        String a = xh[5] + "" + xh[6];
-        String endNo = Utils.XiangHao(a);
+        //                            1            0
+        int a = Integer.parseInt(xh[5] + "" + xh[6]) ;//代表几盒 10
+        //                                 S
+        int endNo = Utils.XiangHao(xh[7]+"");//判断每盒几发   8
         final String prex = String.valueOf(strNo1);
-        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
-        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                insertDenator(prex, finalStrNo, finalEndNo);//添加
+        //5630921A
+        //53904151
+        //01
+//        final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
+//        final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + strNo);//01
+        if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.contains(prex.substring(0, 2))) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+            return;
+        }
+        new Thread(() -> {
+            for (int b =0;b<a;b++){
+                String xuhao=xh[15] + "" + xh[16]+b+"00";
+                Log.e(TAG, "第"+b+"盒序号: "+xuhao );
+                int finalStrNo =Integer.parseInt(xuhao);
+                insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1));//添加
             }
-        }).start();
-    }
 
+        }).start();
+        if(xiangHao_errNum!=0){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(20));
+        }
+    }
     private void init() {
         linearLayoutManager = new LinearLayoutManager(this);
         zclRlLgRv.setLayoutManager(linearLayoutManager);
@@ -909,7 +984,25 @@ public class ReisterMainPage_scan extends SerialPortActivity {
         btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
         btnSetdelay.setEnabled(true);
         btnInput.setEnabled(true);
-        scanDecode.stopScan();//停止扫描
+        switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
+            case "M900": {
+                //M900关闭扫码
+                mScaner.stopScan();
+                break;
+            }
+            case "ST327":
+            case "S337": {
+                //st327扫码下电
+                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+                break;
+            }
+            default: {
+                //kt50停止扫码头方法
+                scanDecode.stopScan();//停止扫描
+            }
+        }
+//        scanDecode.stopScan();//停止扫描
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {
@@ -1676,7 +1769,6 @@ public class ReisterMainPage_scan extends SerialPortActivity {
         for (int i = start; i <= end; i++) {
             shellNo = prex + String.format("%05d", i);
             if (checkRepeatShellNo(shellNo)) {
-                singleShellNo = "";
                 singleShellNo = shellNo;
                 isCorrectReisterFea = 4;
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage());
@@ -1836,17 +1928,17 @@ public class ReisterMainPage_scan extends SerialPortActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scanReister:
-                if (delay_set.equals("0")) {
-                    show_Toast("请设置延时");
-                    break;
-                }
+//                if (delay_set.equals("0")) {
+//                    show_Toast("请设置延时");
+//                    break;
+//                }
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
                 }
                 if (deleteList()) return;
                 container1.requestFocus();//获取焦点,
-                scanDecode.starScan();
+//                scanDecode.starScan();
 
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
@@ -1858,6 +1950,7 @@ public class ReisterMainPage_scan extends SerialPortActivity {
                             e.printStackTrace();
                         }
                     }
+                    kaishiScan();
                     //kt50持续扫码线程
                     scanBarThread = new ScanBar();
                     scanBarThread.start();
@@ -1873,9 +1966,10 @@ public class ReisterMainPage_scan extends SerialPortActivity {
                     btnReisterScanStartEd.setEnabled(true);
                     btnReisterScanStartSt.setEnabled(true);
                     //kt50停止扫码头方法
-                    scanDecode.stopScan();//停止扫描
+                    tingzhiScan();
+//                    scanDecode.stopScan();//停止扫描
                     //st327扫码下电
-                    powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+//                    powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
                         try {
@@ -2312,7 +2406,16 @@ public class ReisterMainPage_scan extends SerialPortActivity {
 
             while (!exit) {
                 try {
-                    scanDecode.starScan();
+                    switch (Build.DEVICE) {
+                        case "T-QBZD-Z6":
+                        case "M900": {
+                            mScaner.startScan();
+                            break;
+                        }
+                        default: {
+                            scanDecode.starScan();
+                        }
+                    }
                     Thread.sleep(1250);
                     //break;
 

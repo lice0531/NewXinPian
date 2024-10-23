@@ -38,6 +38,7 @@ import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
+import android_serialport_api.xingbang.utils.OkhttpClientUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -427,15 +428,7 @@ public class UploadWorker extends Worker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON, object2.toString());
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .addHeader("Content-Type", "application/json; charset=utf-8")//text/plain  application/json  application/x-www-form-urlencoded
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+        OkhttpClientUtils.post(2, url, object2.toString(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
@@ -453,6 +446,32 @@ public class UploadWorker extends Worker {
 //                updateSqlDataStatus(blastdate,pos);
             }
         });
+//        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+//        RequestBody requestBody = FormBody.create(JSON, object2.toString());
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .post(requestBody)
+//                .addHeader("Content-Type", "application/json; charset=utf-8")//text/plain  application/json  application/x-www-form-urlencoded
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
+//                Utils.writeRecord("煋邦网络上传错误-IOException:" + e);
+//                setIsXbUploadSuccess(201);
+//                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
+////                updateSqlDataStatus(blastdate,pos);
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
+//                Utils.writeRecord("煋邦网络上传成功-IOException:" + response.toString());
+//                setIsXbUploadSuccess(200);
+////                updateSqlDataStatus(blastdate,pos);
+//            }
+//        });
     }
 
 
@@ -514,16 +533,7 @@ public class UploadWorker extends Worker {
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
-        RequestBody requestBody = new FormBody.Builder()
-                .add("param", json.replace("\n", ""))
-                .build();
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .addHeader("Content-Type", "text/plain")//text/plain  application/json  application/x-www-form-urlencoded
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+        OkhttpClientUtils.post(1, url, json, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 setIsDlUploadSuccess(201);
@@ -533,6 +543,7 @@ public class UploadWorker extends Worker {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
+                setIsDlUploadSuccess(200);
                 try {
                     object = new JSONObject(response.body().string());
                     String success = object.getString("success");
@@ -551,6 +562,7 @@ public class UploadWorker extends Worker {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e(TAG,"丹灵返回数据解析异常" + e.getMessage().toString());
                 }
             }
         });

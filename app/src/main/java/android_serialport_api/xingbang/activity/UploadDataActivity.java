@@ -4,6 +4,7 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -41,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -61,6 +65,7 @@ import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
+import android_serialport_api.xingbang.utils.OkhttpClientUtils;
 import android_serialport_api.xingbang.utils.ThreadUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import okhttp3.Call;
@@ -111,7 +116,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private int isDlUploadSuccess = 0;//丹灵是否上传成功 0:未上传  200:上传成功  201:上传失败
     private int isZbUploadSuccess = 0;//中爆是否上传成功 0:未上传  200:上传成功  201:上传失败
     private int isXbUploadSuccess = 0;//煋邦是否上传成功 0:未上传  200:上传成功  201:上传失败
-    private boolean isCsDataDone = false;//测试数据是否已生成
+    Handler openHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,15 +159,16 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     ArrayList<Map<String, Object>> csLgData = new ArrayList<>();
     List<String> stringList = new ArrayList<>();
     List<String> dateTimeList = new ArrayList<>();
+    int csTotalCount;// 需要生成的随机字符串数量  目前测试的结果是：300条可以正常上传，可以分成10次上传
     //生成测试数据
-    private void getCsData(){
+    private void getCsData(int csNum){
+        this.csTotalCount = csNum;
         // 2. 生成模拟数据
         getMoniCsTimeData(list_savedate);
         int dateIndex = 0;
         boolean isDateDone = false;
         boolean isLgDone = false;
         String base = "3830422489602";  // 前缀部分
-        int csTotalCount = 3000;// 需要生成的随机字符串数量  目前测试的结果是：300条可以正常上传，可以分成10次上传
         Set<String> uniqueStrings = getUniqueShellIdStrings(base, csTotalCount);
         // 将 Set 转换为 List
         stringList = new ArrayList<>(uniqueStrings);
@@ -184,9 +190,10 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             Log.e(TAG,"生成的随机日期:" + dateTimeList.toString());
             isDateDone = true;
         }
+
         if (isDateDone && isLgDone) {
             showMyToast("已生成" + csTotalCount + "条测试数据，正在上传测试数据，请稍候...");
-            uploadNextMoni(stringList,uploadIndexMoni);
+            uploadNextMoni(stringList, uploadIndexMoni);
         }
     }
 
@@ -247,33 +254,18 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 
     // 递归方法，逐个上传数据
     private void uploadNextMoni(List<String> stringList, int index) {
-        Log.e(TAG, "1111模拟大量数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
+        Log.e(TAG, "模拟3000条数据一键上传--总条数:" + stringList.size() + "--下标:" + index);
         if (index >= stringList.size()) {
             binding.btnCsdata.setText("模拟上传已结束");
-            Log.e(TAG, "模拟大量数据一键上传--所有数据已全部上传");
             binding.btnCsdata.setTextColor(Color.RED);
-            showMyToast("模拟上传已结束");
-            uploadIndexMoni = 0;//重置上传下标
-            pb_show = 0;
-            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            Log.e(TAG, "模拟大量数据一键上传--所有数据已全部上传");
+            showMyToast(csTotalCount + "条数据上传已结束");
+            isCanCs = true;
+            uploadIndexMoni = 0;
             return;
         }
-        String data = stringList.get(index);
-        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
-            @Override
-            public void run() {
-//                for (String s : stringList) {
-//                    if (data.equals(s)) {
-                        try {
-                            // 执行具体任务，例如上传数据
-                            uploadMoniQbData(dateTimeList.get(uploadIndexMoni));
-                        } catch (Exception e) {
-                            Log.e(TAG, "threadpool error", e);
-                        }
-//                    }
-//                }
-            }
-        });
+        // 执行具体任务，例如上传数据
+        uploadMoniQbData(dateTimeList.get(uploadIndexMoni));
     }
 
     private void uploadMoniQbData(String dataTime) {
@@ -284,13 +276,15 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (server_type2.equals("0") && server_type1.equals("0")) {
             showMyToast("设备当前未设置上传网址,请先设置上传网址");
         }
-//        ThreadUtils.getThreadPool_Instance().submit(new Runnable() {
-//            @Override
-//            public void run() {
-                try {
-                    pb_show = 1;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            pb_show = 1;
 //                    runPbDialog();//loading画面
-                    if (server_type1.equals("1")) {
+            if (server_type1.equals("1")) {
 //                        "sbbh", "F60C7002222"//起爆器设备编号XBTS0003
 //                        "jd", "120.498324"//经度
 //                        "wd", "30.354008"//纬度
@@ -298,32 +292,18 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //                        "xmbh", ""//项目编号370101318060006
 //                        "htid", "370101318060045"//合同编号370100X15040027
 //                        "dwdm", ""//单位代码
-                        uploadMoni(dataTime, uploadIndexMoni, "", " 117.0274", "36.6748", "370100X15040027", "");//丹灵上传信息
-                    }
-                    if (server_type2.equals("2")) {
-                        performUp(dataTime, uploadIndexMoni, "", "117.0274", "36.6748");//中爆上传
-                    }
-                    upload_xingbang_moni(dataTime, uploadIndexMoni, "", "", "", "", "", "", "");//我们自己的网址
-                    //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
-                    //等待一段时间
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Message msg = new Message();
-                    msg.what = 6;
-                    UploadResult result = new UploadResult();
-                    isDlUploadSuccess = 200;
-                    msg.obj = result;
-                    mHandler_tip_moni.sendMessage(msg);
-                } catch (
-                        Exception e) {
-                    Log.e(TAG, "起爆数据上传异常--异常信息为：" + e.getMessage());
-                    e.printStackTrace();
-                }
-//            }
-//        });
+                uploadMoni(dataTime, uploadIndexMoni, "", " 117.0274", "36.6748", "370100X15040027", "");//丹灵上传信息
+            }
+            if (server_type2.equals("2")) {
+                performUp(dataTime, uploadIndexMoni, "", "117.0274", "36.6748");//中爆上传
+            }
+            upload_xingbang_moni(dataTime, uploadIndexMoni, "", "", "", "", "", "", "");//我们自己的网址
+//                            //        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+        } catch (
+                Exception e) {
+            Log.e(TAG, "起爆数据上传异常--异常信息为：" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void getMoniCsTimeData(List<VoFireHisMain> originalData) {
@@ -458,7 +438,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                 if (vo != null) {
                     createDialog(vo);//
                 } else {
-                    show_Toast(getString(R.string.text_error_tip54));
+                    showMyToast(getString(R.string.text_error_tip54));
                 }
             }
         });
@@ -468,20 +448,18 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-//                if (!UploadDataActivity.this.isFinishing()) {
-                    if (pb_show == 1 && tipDlg != null) tipDlg.show();
-                    if (pb_show == 0 && tipDlg != null) {
-                        tipDlg.hide();
-                        mAdapter.setListData(list_savedate,7);
-                        mAdapter.notifyDataSetChanged();
-                    }
-//                }
+                if (pb_show == 1 && tipDlg != null) tipDlg.show();
+                if (pb_show == 0 && tipDlg != null && tipDlg.isShowing()) {
+                    tipDlg.dismiss();
+                    mAdapter.setListData(list_savedate, 7);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         };
         mHandler_tip = new Handler(msg -> {
             switch (msg.what){
                 case 1:
-                    showMyToast("第" + uploadIndex + "条丹灵上传出错-网络请求失败");
+                    showMyToast("丹灵网络请求出错，请稍后重新上传");
                     Log.e(TAG,"丹灵上传失败，错误信息:网络请求失败,请检查网络正确连接后,再次上传");
                     break;
                 case 2:
@@ -492,7 +470,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     if (msg.obj == null) {
                         showMyToast("第" + uploadIndex + "条丹灵上传出错");
                     } else {
-                        showMyToast("第" + uploadIndex + "条丹灵上传出错,错误信息:" + msg.obj.toString());
+                        showMyToast("第" + uploadIndex + "条丹灵上传出错,错误信息:" + msg.obj);
                     }
                     break;
                 case 4:
@@ -510,16 +488,14 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     }
                     break;
                 case 6:
-                    UploadResult rt = (UploadResult) msg.obj;
-//                    isDlUploadSuccess = rt.getDlReslut();
-//                    isXbUploadSuccess = rt.getXbResult();
-                    Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
+                    Log.e(TAG,"一键上传上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
                             "--isXbUploadSuccess:" + isXbUploadSuccess);
                     if (isDlUploadSuccess == 200 || isXbUploadSuccess == 200) {
                         isDlUploadSuccess = 0;
                         isXbUploadSuccess = 0;
                         uploadIndex ++;
-                        Log.e(TAG,"当前第" + uploadIndex + "条已上传成功");
+                        showMyToast("第" + uploadIndex + "条已上传成功");
+                        Log.e(TAG,"一键上传case6--当前第" + uploadIndex + "条已上传成功");
                         uploadNext(dateList,uploadIndex);
                     }
                     break;
@@ -529,28 +505,33 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         mHandler_tip_moni = new Handler(msg -> {
             switch (msg.what){
                 case 1:
-                    showMyToast("第" + uploadIndexMoni + "条丹灵上传出错-网络请求失败");
+                    showMyToast("丹灵网络请求出错，本次上传中断，请稍后重新上传");
                     Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传出错-网络请求失败");
                     break;
                 case 2:
-                    showMyToast("第" + uploadIndexMoni + "条丹灵上传成功");
+//                    showMyToast("第" + uploadIndexMoni + "条丹灵上传成功");
                     Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传成功");
                     break;
                 case 3:
                     if (msg.obj == null) {
-                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错");
+                        Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传出错");
+//                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错");
                     } else {
-                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错,错误信息:" + msg.obj.toString());
+                        Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传出错,错误信息:" + msg.obj.toString());
+//                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错,错误信息:" + msg.obj.toString());
                     }
                     break;
                 case 4:
-                    showMyToast("第" + uploadIndexMoni + "条丹灵上传起爆器未备案或未设置作业任务");
+                    Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传起爆器未备案或未设置作业任务");
+//                    showMyToast("第" + uploadIndexMoni + "条丹灵上传起爆器未备案或未设置作业任务");
                     break;
                 case 5:
                     if (msg.obj == null) {
-                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错");
+                        Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传出错");
+//                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错");
                     } else {
-                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错:" + msg.obj.toString());
+                        Log.e(TAG,"第" + uploadIndexMoni + "条丹灵上传出错:" + msg.obj.toString());
+//                        showMyToast("第" + uploadIndexMoni + "条丹灵上传出错:" + msg.obj.toString());
                     }
                     break;
                 case 6:
@@ -560,8 +541,9 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                         isDlUploadSuccess = 0;
                         isXbUploadSuccess = 0;
                         uploadIndexMoni ++;
+                        showMyToast("第" + uploadIndexMoni + "条已上传成功");
                         uploadNextMoni(stringList,uploadIndexMoni);
-                        Log.e(TAG,"当前第" + uploadIndexMoni + "条已上传成功");
+                        Log.e(TAG,"模拟上传case6--当前第" + uploadIndexMoni + "条已上传成功");
                     }
                     break;
             }
@@ -574,9 +556,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             int pos = msg.arg1;
             list_savedate.get(pos).setUploadStatus("已上传");
             mAdapter.setListData(list_savedate,7);
-//            showLoadMore();
             mAdapter.notifyItemChanged(pos);
-//            mAdapter.notifyDataSetChanged();
             return false;
         });
 
@@ -587,9 +567,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     int pos = msg.arg1;
                     showMyToast("第" + (pos + 1) + "条测试数据已上传");
                     mAdapter.setListData(list_savedate,7);
-//            showLoadMore();
                     mAdapter.notifyItemChanged(pos);
-//            mAdapter.notifyDataSetChanged();
                     break;
                 case 2:
                     showMyToast("模拟上传已结束");
@@ -620,6 +598,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         if (blastdate == null || blastdate.trim().length() < 8) {
             int count = getBlastModelCount();
             if (count < 1) {
+                isCanUpload = true;
                 showMyToast("没有数据，不能执行上传");
                 return;
             }
@@ -630,15 +609,16 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         Log.e(TAG + "上传-经纬度", "pro_coordxy: " + pro_coordxy);
         Log.e(TAG + "上传-经纬度", "jd: " + jd);
         if (pro_coordxy.length() < 2 && ((TextUtils.isEmpty(jd) || jd.equals("null")) || (TextUtils.isEmpty(wd) || wd.equals("null")))) {
-            show_Toast("经纬度为空，不能执行上传");
+            showMyToast("经纬度为空，不能执行上传");
+            isCanUpload = true;
             return;
         }
         if (server_type2.equals("0") && server_type1.equals("0")) {
-            show_Toast("设备当前未设置上传网址,请先设置上传网址");
+            showMyToast("设备当前未设置上传网址,请先设置上传网址");
+            isCanUpload = true;
         }
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
         pb_show = 1;
-        mHandler_2.sendMessage(mHandler_2.obtainMessage());
         runPbDialog();//loading画面
         if (server_type1.equals("1")) {
             upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
@@ -647,18 +627,6 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
         }
         upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
-        //等待一段时间
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Message msg = new Message();
-        msg.what = 6;
-        UploadResult result = new UploadResult();
-        isDlUploadSuccess = 200;
-        msg.obj = result;
-        mHandler_tip.sendMessage(msg);
     }
 
     public void hideInputKeyboard() {
@@ -915,10 +883,20 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         Utils.saveFile();//把闪存中的数据存入磁盘中
     }
 
-
+    private boolean isCanCs = true;//上传测试中  不可重复测试
+    private boolean isCanUpload = true;//一键上传中  不可重复上传
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.ud_btn_upload) {
+        if (v.getId() == R.id.btn_all_upload) {
+            if (!isCanUpload) {
+                showMyToast("正在上传，请勿重复点击!");
+                return;
+            }
+            if (pro_coordxy.length() < 2) {
+                showMyToast("经纬度为空，不能执行上传");
+                isCanUpload = true;
+                return;
+            }
             /**
              *  一键上传这里   先查询出所有未上传的数据  然后再使用递归方式上传
              *  递归：第一条上传不管成功失败，都上传下一条，直至数据全部上传完毕
@@ -929,15 +907,38 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     dateList.add(his.getBlastdate());
                 }
             }
+            if (dateList.size() == 0) {
+                showMyToast("当前没有需要上传的数据!");
+                return;
+            }
             Log.e(TAG,"未上传的date集合:" + dateList.toString());
             uploadNext(dateList,uploadIndex);
-//            if (dateList.size() > 0) {
-//            } else {
-//                showMyToast("当前没有需要上传的数据");
-//            }
+            binding.btnAllUpload.setTextColor(Color.BLACK);
+            binding.btnAllUpload.setText("一键上传所有数据");
+            isCanUpload = false;
         } else if (v.getId() == R.id.btn_csdata) {
+            if (TextUtils.isEmpty(binding.etNum.getText().toString().trim())) {
+                showMyToast("请输入上传条数");
+                return;
+            }
+            if (Integer.parseInt(binding.etNum.getText().toString().trim()) == 0) {
+                showMyToast("测试条数不能为0");
+                return;
+            }
+            if (Integer.parseInt(binding.etNum.getText().toString().trim()) > 3000) {
+                showMyToast("测试条数最多支持3000条");
+                return;
+            }
+            if (!isCanCs) {
+                showMyToast("正在上传，请勿重复点击!");
+                return;
+            }
+            uploadIndexMoni = 0;//重置上传下标
             showMyToast("正在生成测试数据，请稍等...");
-            getCsData();
+            binding.btnCsdata.setTextColor(Color.BLACK);
+            binding.btnCsdata.setText("上传测试");
+            getCsData(Integer.parseInt(binding.etNum.getText().toString().trim()));
+            isCanCs = false;
         }
     }
 
@@ -945,9 +946,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private void uploadNext(List<String> dateList, int index) {
         if (index >= dateList.size()) {
             Log.e(TAG,"一键上传--所有数据已全部上传");
-            show_Toast("上传已结束");
+            showMyToast("上传已结束");
             pb_show = 0;
             mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            binding.btnAllUpload.setText("上传已结束");
+            binding.btnAllUpload.setTextColor(Color.RED);
+            isCanUpload = true;
             uploadIndex = 0;//重置上传下标
             return;
         }
@@ -967,7 +971,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private void uploadMoni(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_upload_test;//丹灵上传
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = OkhttpClientUtils.getInstance();
         JSONObject object = new JSONObject();
         String xy[] = pro_coordxy.split(",");//经纬度
         try {
@@ -989,7 +993,13 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             }
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
-            object.put("uid", stringList.get(uploadIndexMoni));//雷管uid
+            String uid = "";
+            if (uploadIndexMoni < stringList.size()) {
+                uid = stringList.get(uploadIndexMoni);
+            } else {
+                uid = "";
+            }
+            object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", xmbh);//项目编号
             Log.e(TAG + "模拟上传--丹灵上传信息", object.toString());
@@ -998,16 +1008,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
-        RequestBody requestBody = new FormBody.Builder()
-                .add("param", json.replace("\n", ""))
-                .build();
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .addHeader("Content-Type", "text/plain")//text/plain  application/json  application/x-www-form-urlencoded
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+        OkhttpClientUtils.post(1, url, json, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG + "模拟上传--丹灵上传失败", "IOException: " + e);
@@ -1017,16 +1018,19 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
+                isDlUploadSuccess = 200;
+                pb_show = 0;
+//                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 try {
                     if (!server_type2.equals("2")) {
                         pb_show = 0;
-                        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+//                        mHandler_2.sendMessage(mHandler_2.obtainMessage());
                     }
                     object = new JSONObject(response.body().string());
                     String success = object.getString("success");
                     if (success.equals("true")) {
-                        Log.e(TAG + "模拟上传--丹灵上传成功", "丹灵返回: " + object.toString());
-                        isDlUploadSuccess=200;
+                        Log.e(TAG ,"第" + uploadIndexMoni + "条模拟上传--丹灵上传成功--丹灵返回: " + object.toString());
+                        isDlUploadSuccess = 200;
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
@@ -1034,31 +1038,35 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                         mHandler_update_moni.sendMessage(message);
                         if (!server_type2.equals("2")) {
                             pb_show = 0;
-                            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+//                            mHandler_2.sendMessage(mHandler_2.obtainMessage());
                         }
                         mHandler_tip_moni.sendMessage(mHandler_tip_moni.obtainMessage(2));
                     } else if (success.equals("fail")) {
-                        Log.e(TAG + "模拟上传--丹灵上传失败", "丹灵返回: " + object.toString());
+                        Log.e(TAG, "第" + uploadIndexMoni + "条模拟上传--丹灵上传失败--返回: " + object.toString());
                         String cwxx = object.getString("cwxx");
                         if (cwxx.equals("1")) {
-                            Log.e(TAG,"模拟上传--丹灵上传错误，handler:3--cwxx:" + cwxx);
+                            Log.e(TAG,"第" + uploadIndexMoni + "条模拟上传--丹灵上传失败--handler:3--cwxx:" + cwxx);
                             Message msg = new Message();
                             msg.what = 3;
-                            msg.obj = cwxx;
+                            msg.obj = Utils.getDanlingCWXX(Integer.parseInt(cwxx));
                             mHandler_tip_moni.sendMessage(mHandler_tip_moni.obtainMessage(3));
                         } else if (cwxx.equals("2")) {
-                            Log.e(TAG,"丹灵上传错误，handler:4--cwxx:" + cwxx);
+                            Log.e(TAG,"第" + uploadIndexMoni + "条模拟上传--丹灵上传失败--handler:4--cwxx:" + cwxx);
                             mHandler_tip_moni.sendMessage(mHandler_tip_moni.obtainMessage(4));
                         } else {
                             Message msg = new Message();
                             msg.what = 5;
                             msg.obj = cwxx;
                             mHandler_tip_moni.sendMessage(mHandler_tip_moni.obtainMessage(5));
-                            Log.e(TAG,"丹灵上传错误，handler:5--cwxx:" + cwxx);
+                            Log.e(TAG,"第" + uploadIndexMoni + "条模拟上传--丹灵上传失败--handler:5--cwxx:" + cwxx);
                         }
                     }
+                    openHandler.postDelayed(() -> {
+                        mHandler_tip_moni.sendMessage(mHandler_tip_moni.obtainMessage(6));
+                    }, 500);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e(TAG,"丹灵返回数据解析异常:" + e.getMessage().toString());
                 }
             }
         });
@@ -1070,7 +1078,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     private void upload(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_upload_test;//丹灵上传
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = OkhttpClientUtils.getInstance();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
         for (int i = 1; i < hisListData.size(); i++) {
@@ -1127,19 +1135,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
-        RequestBody requestBody = new FormBody.Builder()
-                .add("param", json.replace("\n", ""))
-                .build();
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .addHeader("Content-Type", "text/plain")//text/plain  application/json  application/x-www-form-urlencoded
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+        OkhttpClientUtils.post(1, url, json,new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
+//                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Log.e(TAG + "丹灵上传失败", "IOException: " + e);
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             }
@@ -1147,12 +1147,15 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
+                isDlUploadSuccess = 200;
                 try {
                     if (!server_type2.equals("2")) {
-//                        pb_show = 0;
+                        pb_show = 0;
 //                        mHandler_2.sendMessage(mHandler_2.obtainMessage());
                     }
-                    object = new JSONObject(response.body().string());
+                    String body = response.body().string();
+                    Log.e(TAG,"丹灵返回:" + body);
+                    object = new JSONObject(body);
                     String success = object.getString("success");
                     if (success.equals("true")) {
                         isDlUploadSuccess = 200;
@@ -1163,7 +1166,6 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                         mHandler_update.sendMessage(message);
                         if (!server_type2.equals("2")) {
                             pb_show = 0;
-//                            mHandler_2.sendMessage(mHandler_2.obtainMessage());
                         }
                         mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
                     } else if (success.equals("fail")) {
@@ -1173,7 +1175,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                             Log.e(TAG,"丹灵上传错误，handler:3");
                             Message msg = new Message();
                             msg.what = 3;
-                            msg.obj = cwxx;
+                            msg.obj = Utils.getDanlingCWXX(Integer.parseInt(cwxx));;
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                         } else if (cwxx.equals("2")) {
                             Log.e(TAG,"丹灵上传错误，handler:4");
@@ -1186,8 +1188,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                             Log.e(TAG,"丹灵上传错误，handler:5");
                         }
                     }
+                    openHandler.postDelayed(() -> {
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+                    }, 500);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e(TAG,"丹灵返回数据解析异常:" + e.getMessage().toString());
                 }
             }
         });
@@ -1214,7 +1220,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             }
-//            pb_show = 0;
+            pb_show = 0;
 //            mHandler_2.sendMessage(mHandler_2.obtainMessage());
             Looper.loop();
         }).start();
@@ -1267,11 +1273,11 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         final String key = "jadl12345678912345678912";
 //        String url = "http://xbmonitor.xingbangtech.com/XB/DataUpload";//公司服务器上传
 //        String url = "http://xbmonitor.xingbangtech.com:800/XB/DataUpload";//公司服务器上传
-//        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新;//公司服务器上传
+//        String url = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";//新;//公司服务器正式上传地址
 //        String url = "http://111.194.155.18:999/XB/DataUpload";//测试
-        String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//新;//公司服务器上传
-
-        OkHttpClient client = new OkHttpClient();
+//        String url = Utils.httpurl_xb_his;
+        String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//新;//公司服务器测试上传地址
+//        OkHttpClient client = OkhttpClientUtils.getInstance();
         JSONObject object = new JSONObject();
         String xy[] = pro_coordxy.split(",");//经纬度
         String app_version_name = getString(R.string.app_version_name);
@@ -1294,15 +1300,25 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             }
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
-            object.put("uid", stringList.get(uploadIndexMoni));//雷管uid
+            String uid = "";
+            if (uploadIndexMoni < stringList.size()) {
+                uid = stringList.get(uploadIndexMoni);
+            } else {
+                uid = "";
+            }
+            object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/", "-")));//日志
+            object.put("log_cmd", "");//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("rj_version", app_version_name);//软件版本
-            object.put("name", qbxm_name);//项目名称
+            if (qbxm_name != null && qbxm_name.length() > 1) {
+                object.put("name", qbxm_name);//项目名称
+            } else {
+                object.put("name", MmkvUtils.getcode("pro_name", ""));//项目名称
+            }
             Log.e(TAG,"模拟3000条上传测试--煋邦上传信息-项目名称" + qbxm_name);
             Log.e(TAG,"模拟3000条上传测试--加密前的json:" + object.toString());
         } catch (JSONException | PackageManager.NameNotFoundException e) {
@@ -1312,21 +1328,12 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().trim().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
-            object2.put("param", json.trim());
+            object2.put("param", json.replace("\n", ""));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e(TAG,"加密后的json入参:" + json.trim());
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON, object2.toString());
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .addHeader("Content-Type", "application/json; charset=utf-8")//text/plain  application/json  application/x-www-form-urlencoded
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-//        client.newCall(request).enqueue(new Callback() {
+        Log.e(TAG,"加密后的json入参:" + json.replace("\n", ""));
+        OkhttpClientUtils.post(2,url,object2.toString(),new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
@@ -1351,7 +1358,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
 //        String url = "http://111.194.155.18:999/XB/DataUpload";//测试
         String url = "http://xbmonitor1.xingbangtech.com:666/XB/DataUpload";//新;//公司服务器上传
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = OkhttpClientUtils.getInstance();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
         for (int i = 1; i < hisListData.size(); i++) {
@@ -1403,32 +1410,27 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
             e.printStackTrace();
         }
         Log.e(TAG,"加密后的json入参:" + json);
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = FormBody.create(JSON, object2.toString());
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .addHeader("Content-Type", "application/json; charset=utf-8")//text/plain  application/json  application/x-www-form-urlencoded
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+        OkhttpClientUtils.post(2,url,object2.toString(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
 //                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 Log.e(TAG + "煋邦后台上传失败", "IOException: " + e);
-//                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e(TAG + "煋邦上传成功", "返回: " + response.toString());
                 pb_show = 0;
+//                mHandler_2.sendMessage(mHandler_2.obtainMessage());
                 isXbUploadSuccess = 200;
                 Message message = new Message();
                 message.obj = blastdate;
                 message.arg1 = pos;
                 mHandler_update.sendMessage(message);
+                openHandler.postDelayed(() -> {
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(6));
+                }, 1000);
             }
         });
     }
@@ -1467,7 +1469,7 @@ public class UploadDataActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         if (db != null) db.close();
-        if (tipDlg != null) {
+        if (tipDlg != null && tipDlg.isShowing()) {
             tipDlg.dismiss();
             tipDlg = null;
         }

@@ -69,6 +69,8 @@ public class Utils {
     public static String httpurl_upload_test = "http://test.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert";//上传测试
     //王工给的丹灵正式上传地址
     public static String httpurl_upload_dl = "http://qq.mbdzlg.com/mbdzlgtxzx/servlet/DzlgSysbJsonServlert";
+   //煋邦上传地址                            "http://xbmonitor.xingbangtech.com:800/XB/DataUpload"
+    public static String httpurl_xb_his = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";
     public static String httpurl_off = "http://139.129.216.133:8080/mbdzlgtxzx/servlet/DzlgMmlxxzJsonServlert";//离线下载
     public static String httpurl_zbw = "14.23.69.2";
     public static String httpurl_zbw_port = "1088";
@@ -2008,8 +2010,7 @@ public class Utils {
         }
         return destination;
     }
-
-    public static String XiangHao(String data) {
+    public static String HeHao(String data) {
         String endNo = null;
         switch (data) {
             case "01":
@@ -2123,6 +2124,236 @@ public class Utils {
         }
         return endNo;
     }
+    public static int XiangHao(String data) {
+        int endNo = 0;
+        switch (data) {
+            case "1":
+                endNo = 5;
+                break;
+            case "2":
+                endNo = 10;
+                break;
+            case "3":
+                endNo = 15;
+                break;
+            case "4":
+                endNo = 20;
+                break;
+            case "5":
+                endNo = 25;
+                break;
+            case "6":
+                endNo = 30;
+                break;
+            case "7":
+                endNo = 35;
+                break;
+            case "8":
+                endNo = 40;
+                break;
+            case "9":
+                endNo = 45;
+                break;
+            case "A":
+                endNo = 50;
+                break;
+            case "B":
+                endNo = 55;
+                break;
+            case "C":
+                endNo = 60;
+                break;
+            case "D":
+                endNo = 65;
+                break;
+            case "E":
+                endNo = 70;
+                break;
+            case "F":
+                endNo = 75;
+                break;
+            case "G":
+                endNo = 80;
+                break;
+            case "H":
+                endNo = 85;
+                break;
+            case "I":
+                endNo = 90;
+                break;
+            case "J":
+                endNo = 95;
+                break;
+            case "K":
+                endNo = 100;
+                break;
+            case "L":
+                endNo = 1;
+                break;
+            case "M":
+                endNo = 2;
+                break;
+            case "N":
+                endNo = 3;
+                break;
+            case "P":
+                endNo = 4;
+                break;
+            case "Q":
+                endNo = 6;
+                break;
+            case "R":
+                endNo = 7;
+                break;
+            case "S":
+                endNo = 8;
+                break;
+            case "T":
+                endNo = 9;
+                break;
+            case "U":
+                endNo = 11;
+                break;
+            case "V":
+                endNo = 12;
+                break;
+            case "W":
+                endNo = 13;
+                break;
+            case "X":
+                endNo = 14;
+                break;
+            case "Y":
+                endNo = 16;
+                break;
+            case "Z":
+                endNo = 17;
+                break;
+            case "a":
+                endNo = 18;
+                break;
+            case "b":
+                endNo = 19;
+                break;
+
+        }
+        return endNo;
+    }
+
+//    public static String XiangHao(String data) {
+//        String endNo = null;
+//        switch (data) {
+//            case "01":
+//                endNo = "04";
+//                break;
+//            case "02":
+//                endNo = "09";
+//                break;
+//            case "03":
+//                endNo = "14";
+//                break;
+//            case "04":
+//                endNo = "19";
+//                break;
+//            case "05":
+//                endNo = "24";
+//                break;
+//            case "06":
+//                endNo = "29";
+//                break;
+//            case "07":
+//                endNo = "34";
+//                break;
+//            case "08":
+//                endNo = "39";
+//                break;
+//            case "09":
+//                endNo = "44";
+//                break;
+//            case "10":
+//                endNo = "49";
+//                break;
+//            case "11":
+//                endNo = "54";
+//                break;
+//            case "12":
+//                endNo = "59";
+//                break;
+//            case "13":
+//                endNo = "64";
+//                break;
+//            case "14":
+//                endNo = "69";
+//                break;
+//            case "15":
+//                endNo = "74";
+//                break;
+//            case "16":
+//                endNo = "79";
+//                break;
+//            case "17":
+//                endNo = "84";
+//                break;
+//            case "18":
+//                endNo = "89";
+//                break;
+//            case "19":
+//                endNo = "94";
+//                break;
+//            case "20":
+//                endNo = "99";
+//                break;
+//            case "A1":
+//                endNo = "00";
+//                break;
+//            case "A2":
+//                endNo = "01";
+//                break;
+//            case "A3":
+//                endNo = "02";
+//                break;
+//            case "A4":
+//                endNo = "03";
+//                break;
+//            case "A6":
+//                endNo = "05";
+//                break;
+//            case "A7":
+//                endNo = "06";
+//                break;
+//            case "A8":
+//                endNo = "07";
+//                break;
+//            case "A9":
+//                endNo = "08";
+//                break;
+//            case "B1":
+//                endNo = "10";
+//                break;
+//            case "B2":
+//                endNo = "11";
+//                break;
+//            case "B3":
+//                endNo = "12";
+//                break;
+//            case "B4":
+//                endNo = "13";
+//                break;
+//            case "B6":
+//                endNo = "15";
+//                break;
+//            case "B7":
+//                endNo = "16";
+//                break;
+//            case "B8":
+//                endNo = "17";
+//                break;
+//            case "B9":
+//                endNo = "18";
+//                break;
+//        }
+//        return endNo;
+//    }
 
 
     /**
@@ -2385,4 +2616,56 @@ public class Utils {
         }
         return "当前日志为空";
     }
+
+    public static String getDanlingCWXX(int a) {
+        String tip = "";
+        switch (a) {
+            case 0:
+                tip = "成功";
+                break;
+            case 1:
+                tip = "非法的申请信息";
+                break;
+            case 2:
+                tip = "未找到该起爆器设备信息或起爆器未设置作业任务";
+                break;
+            case 3:
+                tip = "该起爆器未设置作业任务";
+                break;
+            case 4:
+                tip = "起爆器在黑名单中";
+                break;
+            case 5:
+                tip ="起爆位置不在起爆区域内";
+                break;
+            case 6:
+                tip ="起爆位置在禁爆区域内";
+                break;
+            case 7:
+                tip ="该起爆器已注销 / 报废";
+                break;
+            case 8:
+                tip ="禁爆任务";
+                break;
+            case 9:
+                tip ="作业合同存在项目";
+                break;
+            case 10:
+                tip ="作业任务未设置准爆区域";
+                break;
+            case 11:
+                tip ="离线下载不支持生产厂家试爆";
+                break;
+            case 12:
+                tip ="营业性单位必须设置合同或者项目";
+                break;
+            case 99:
+                tip ="网络连接失败";
+                break;
+
+
+        }
+        return tip;
+    }
+
 }
