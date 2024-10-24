@@ -92,7 +92,6 @@ public class DeviceAdapter extends BaseAdapter {
         holder.tv_state.setText(list.get(position).getBusVoltage()+"V");//电压
         holder.tv_status.setText(list.get(position).getInfo());
         holder.tv_currentPeak.setText(list.get(position).getCurrentPeak());
-        holder.tv_currentPeak.setText(list.get(position).getCurrentPeak());
         if (list.get(position).getTrueNum() != null){
             holder.tv_tureNum.setText(list.get(position).getTrueNum());
             holder.tv_errNum.setTextColor(Color.RED);

@@ -632,6 +632,11 @@ public class SetDelayTime_suidao extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_setDelayTime_inputOK:
+                //进行清零
+                if (setDelayTimeStartDelaytime1.getText().length()==0) {
+                    show_Toast("起始延时不能为空");
+                    return;
+                }
                 AlertDialog dialog = new AlertDialog.Builder(SetDelayTime_suidao.this)
                         .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
                         .setMessage(getResources().getString(R.string.text_setDelay_dialog2))//设置对话框的内容"本次任务成功起爆！"

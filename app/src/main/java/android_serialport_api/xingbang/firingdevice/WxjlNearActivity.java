@@ -31,6 +31,8 @@ import java.util.Map;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.activity.AddProjectActivity;
+import android_serialport_api.xingbang.activity.DownProjectActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
@@ -994,43 +996,45 @@ public class WxjlNearActivity extends SerialPortActivity {
                 }
                 break;
             case R.id.btn_look_error:
-                if (!isOpened) {
-                    show_Toast("正在打开串口，打开后您再操作");
-                    return;
-                }
-                if (!receive80) {
-                    show_Toast("请先进行设备注册!");
-                    return;
-                }
-                if (!receive81) {
-                    show_Toast("请先进行数据传输!");
-                    return;
-                }
-                if (TextUtils.isEmpty(flag) && errorTotalNum <= 0) {
-                    show_Toast("暂无错误雷管");
-                    return;
-                }
-                //发送84指令查看错误雷管信息
-                if (end84) {
-                    tvLookError.setText("4.点击查看错误雷管列表");
-                    loadErrorBlastModel();
-                    if (errDeData.size() > 0) {
-                        showErrorLgList();
-                    } else {
-                        show_Toast("暂无错误雷管");
-                    }
-                } else {
-                    tvLookError.setText("4.读取错误雷管中请稍等...");
-                    show_Toast("读取错误雷管中，请勿重复点击...");
-                    if (isSend84) {
-                        isSend84 = false;
-                        queryError = new QueryError();
-                        queryError.start();
-                    } else {
-                        show_Toast("数据传输中，请勿重复点击...");
-                        return;
-                    }
-                }
+                Intent intent = new Intent(WxjlNearActivity.this, QueryCurrentDetail.class);
+                startActivity(intent);
+//                if (!isOpened) {
+//                    show_Toast("正在打开串口，打开后您再操作");
+//                    return;
+//                }
+//                if (!receive80) {
+//                    show_Toast("请先进行设备注册!");
+//                    return;
+//                }
+//                if (!receive81) {
+//                    show_Toast("请先进行数据传输!");
+//                    return;
+//                }
+//                if (TextUtils.isEmpty(flag) && errorTotalNum <= 0) {
+//                    show_Toast("暂无错误雷管");
+//                    return;
+//                }
+//                //发送84指令查看错误雷管信息
+//                if (end84) {
+//                    tvLookError.setText("4.点击查看错误雷管列表");
+//                    loadErrorBlastModel();
+//                    if (errDeData.size() > 0) {
+//                        showErrorLgList();
+//                    } else {
+//                        show_Toast("暂无错误雷管");
+//                    }
+//                } else {
+//                    tvLookError.setText("4.读取错误雷管中请稍等...");
+//                    show_Toast("读取错误雷管中，请勿重复点击...");
+//                    if (isSend84) {
+//                        isSend84 = false;
+//                        queryError = new QueryError();
+//                        queryError.start();
+//                    } else {
+//                        show_Toast("数据传输中，请勿重复点击...");
+//                        return;
+//                    }
+//                }
                 break;
             case R.id.btn_exit:
                 exitNear();

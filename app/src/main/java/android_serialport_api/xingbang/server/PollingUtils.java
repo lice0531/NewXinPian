@@ -24,6 +24,7 @@ public class PollingUtils {
         PendingIntent pendingIntent = PendingIntent
                 .getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         long triggerTime = SystemClock.elapsedRealtime();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime+seconds*1000, pendingIntent);
         }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
@@ -40,6 +41,10 @@ public class PollingUtils {
         PendingIntent pendingIntent = PendingIntent
                 .getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         long triggerTime = SystemClock.elapsedRealtime();
+        long triggerTime2 = System.currentTimeMillis();
+        Log.e("轮询PollingUtils", "triggerTime="+triggerTime);//241107415+4000
+        Log.e("轮询PollingUtils", "triggerTime2="+triggerTime2);//241107415+4000
+        Log.e("轮询PollingUtils", "Build.VERSION.SDK_INT="+Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime+seconds*1000, pendingIntent);
         }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
