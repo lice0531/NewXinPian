@@ -284,8 +284,8 @@ public class FiringMainActivity extends SerialPortActivity {
         isResJc = !TextUtils.isEmpty(intent.getStringExtra("isResJc")) ?
                 intent.getStringExtra("isResJc") : "";
         isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
+        Log.e(TAG,"进入起爆页面");
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
-        initSerialPort();
         startFlag = 1;
         initParam();//重置参数
         initView();
@@ -1905,31 +1905,6 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        if (db != null) db.close();
-//        Utils.saveFile();//把软存中的数据存入磁盘中
-        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35
-        closeThread();
-        closeForm();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
-        super.onDestroy();
-        fixInputMethodManagerLeak(this);
-        removeActivity();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-        Utils.writeRecord("---退出起爆页面---");
-    }
-
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断当点击的是返回键
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -2214,7 +2189,7 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) {//40 获取电源状态指令
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
             list_dianliu.add(busInfo.getBusCurrentIa());
-            Log.e(TAG, "list_dianliu: " + list_dianliu.size() + "--" + list_dianliu);
+//            Log.e(TAG, "list_dianliu: " + list_dianliu.size() + "--" + list_dianliu);
             if (busHandler != null) {
                 busHandler.sendMessage(busHandler.obtainMessage());
             } else {
@@ -2282,7 +2257,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Utils.writeRecord("第一次发送起爆指令--");
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
-            Log.e("起爆页面", "成功切换版本");
+            Log.e("起爆页面", "收到46指令成功切换版本");
         } else {
 //            Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
         }
@@ -2677,7 +2652,8 @@ public class FiringMainActivity extends SerialPortActivity {
             sendXzqbData("08");
         }
     }
-
+    private long zeroStartTime = 0;//第1阶段每个雷管返回命令计时器
+    private Handler handler = new Handler(); // Handler to post delayed tasks
     /***
      * 全部
      * @author zenghp
@@ -2702,11 +2678,19 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(100);
                             if (zeroCount == 0) {
                                 //关闭电源
+                                zeroStartTime = System.currentTimeMillis();
                                 byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
                                 sendCmd(powerCmd);
-                                Log.e(TAG, "发送13指令");
+                                Log.e(TAG, "第一次发送13指令");
                             }
-
+                            zeroCount++;
+                            if (System.currentTimeMillis() - zeroStartTime > 1200) {
+                                //13返回未超时  重发13
+                                byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
+                                sendCmd(powerCmd);
+                                zeroStartTime = System.currentTimeMillis();
+                                Log.e(TAG, "1.2秒内没收到芯片回复13,重发13指令");
+                            }
 //                            increase(1);
 //                            Log.e(TAG, "increase: 1");
 //                            zeroCmdReFlag = 1;
@@ -2714,11 +2698,12 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (zeroCmdReFlag == 1) {
                                 break;
                             }
-                            zeroCount++;
                             if (zeroCount > 50) {//等待时间答应5秒，退出
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 exit = true;
                             }
+                            Log.e(TAG,"case0--zeroCount: " + zeroCount);
+
                             break;
                         case 1://等待总线稳定时间
                             Thread.sleep(1000);
@@ -3671,7 +3656,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private String loadHisMainData() {
         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().loadAll();
-        Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
+//        Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
         return list.get(0).getBlastdate();
     }
 
@@ -4110,11 +4095,12 @@ public class FiringMainActivity extends SerialPortActivity {
      * 级联接收命令代码 eventbus
      */
     private long lastProcessedTime = 0;
-
+    private boolean isSend83 = true;//防止起爆时主的子设备重复执行83指令
+    private boolean otherA5 = true;//防止起爆时其他子设备重复关闭串口
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FirstEvent event) {
         String msg = event.getMsg();
-        Log.e("起爆页面接收到的消息", "msg: " + msg);
+//        Log.e("起爆页面接收到的消息", "msg: " + msg);
         if (msg.equals("jixu")) {
             //如果是限制起爆状态  级联指令也不操作
             if (!isQbFail) {
@@ -4152,7 +4138,6 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         } else if (msg.equals("finish")) {
-            sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
             closeThread();
             closeForm();
             finish();
@@ -4176,17 +4161,19 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e(TAG + "子机发送轮询消息", "deviceStatus:" + deviceStatus + "--B3指令:" + qbResult);
             }
         } else if (msg.equals("sendCmd83")) {
-            Log.e(TAG,"sendCmd83--isQbFail:" + isQbFail + "--isInterunptQb:" + isInterunptQb);
             if (!isQbFail && !isInterunptQb) {
-                show_Toast(getString(R.string.text_sync_tip6));
-                // 此时进入时钟同步模式  向核心板发送指令  让核心板决定谁起爆
-                Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "下发83指令");
-                sendCmd(ThreeFiringCmd.setToXbCommon_Translate_83("" + MmkvUtils.getcode("ACode", "")));
-                EventBus.getDefault().post(new FirstEvent("close485"));
+                if (isSend83) {
+                    isSend83 = false;
+                    show_Toast(getString(R.string.text_sync_tip6));
+                    // 此时进入时钟同步模式  向核心板发送指令  让核心板决定谁起爆
+                    Log.e(TAG,"sendCmd83--主的子设备可以起爆了--发83指令");
+                    Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "下发83指令");
+                    sendCmd(ThreeFiringCmd.setToXbCommon_Translate_83("" + MmkvUtils.getcode("ACode", "")));
+                    EventBus.getDefault().post(new FirstEvent("close485"));
+                }
             }
         } else if (msg.equals("sendWaitQb")) {
             //子机展示为起爆中，请稍后状态
-            Log.e(TAG,"A5other--isQbFail:" + isQbFail + "--isInterunptQb:" + isInterunptQb);
             if (!isQbFail && !isInterunptQb) {
                 show_Toast(getString(R.string.text_sync_tip6));
                 isSendWaitQb = true;
@@ -4196,13 +4183,18 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 //此时在页面显示出时钟校验的文字
                 increase(12);
-                Log.e("第5阶段-increase接收到时钟校验消息", "12" + msg);
+                Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
+                Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
             }
         } else if (msg.equals("otherA5")) {
-            Log.e(TAG,"A5other--isQbFail:" + isQbFail + "--isInterunptQb:" + isInterunptQb);
             //A5起爆指令  说明是其他子设备收到了A5指令  此时需要关闭串口
             if (!isQbFail && !isInterunptQb) {
-                EventBus.getDefault().post(new FirstEvent("otherClose"));
+                if (otherA5) {
+                    otherA5 = false;
+                    EventBus.getDefault().post(new FirstEvent("otherClose"));
+                    Log.e(TAG,"其他子设备开始关串口执行起爆");
+                    Utils.writeLog("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
+                }
             }
         } else if (msg.equals("handleJx")) {
             Log.e(TAG,"handleJx的消息内容:" + event.getData() + "--当前阶段:" + stage);
@@ -4358,5 +4350,29 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             sendClycjg();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        if (db != null) db.close();
+//        Utils.saveFile();//把软存中的数据存入磁盘中
+        closeThread();
+        closeForm();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mApplication.closeSerialPort();
+                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                mSerialPort = null;
+            }
+        }).start();
+        super.onDestroy();
+        fixInputMethodManagerLeak(this);
+        removeActivity();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        Utils.writeRecord("---退出起爆页面---");
     }
 }

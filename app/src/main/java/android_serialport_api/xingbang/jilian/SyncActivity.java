@@ -35,7 +35,6 @@ import java.util.concurrent.Executors;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
-import android_serialport_api.xingbang.firingdevice.FiringMainActivity_hf;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
 import android_serialport_api.xingbang.firingdevice.VerificationActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -177,6 +176,7 @@ public class SyncActivity extends BaseActivity {
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                         } else {
                             Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity.class);//四川大带载
+                            intent5.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             intent5.putExtra("dataSend", str5);
                             intent5.putExtra("isJl","Y");
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);

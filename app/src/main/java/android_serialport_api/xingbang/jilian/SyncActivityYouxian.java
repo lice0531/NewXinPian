@@ -43,7 +43,6 @@ import java.util.concurrent.Executors;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
-import android_serialport_api.xingbang.firingdevice.FiringMainActivity_hf;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
 import android_serialport_api.xingbang.firingdevice.VerificationActivity;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -109,6 +108,8 @@ public class SyncActivityYouxian extends BaseActivity {
     private boolean A002 = true;
     private boolean A003 = true;
     private boolean A004 = true;
+    private boolean A5Other = true;//A5起爆指令是否是其他子设备接收起爆指令
+    private boolean A5Main = true;//A5起爆指令是否是主的子设备接收起爆指令
     private String TAG = "子机有线级联同步页面";
 
 
@@ -202,7 +203,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         btnTest.setText(R.string.text_sync_tip3);
 //                    } else if (response.contains("A002")) {
                     } else if (response.startsWith("A2")) {
-//                        if (A002) {
+                        if (A002) {
                             show_Toast(getString(R.string.text_sync_tip4));
                             String str5 = "级联起爆";
                             if (Yanzheng.equals("验证")) {
@@ -212,14 +213,16 @@ public class SyncActivityYouxian extends BaseActivity {
                                 startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                             } else {
                                 Intent intent5 = new Intent(SyncActivityYouxian.this, FiringMainActivity.class);//金建华
+                                intent5.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 intent5.putExtra("dataSend", str5);
                                 intent5.putExtra("isJl","Y");
                                 startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                             }
-//                            A002 = false;
-//                        } else {
+                            A002 = false;
+                        } else {
+                            Log.e(TAG,"A2已经在起爆页面了");
 //                            show_Toast("正在起爆流程中");
-//                        }
+                        }
                     } else if (response.startsWith("ABA2")) {
                         Log.e(TAG,"收到重新检测指令了" + response + "--" + response.substring(response.length() - 2));
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
@@ -233,6 +236,7 @@ public class SyncActivityYouxian extends BaseActivity {
                                     startActivityForResult(intent5, REQUEST_CODE_QIBAO);
                                 } else {
                                     Intent intent5 = new Intent(SyncActivityYouxian.this, FiringMainActivity.class);//金建华
+                                    intent5.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     intent5.putExtra("dataSend", str5);
                                     intent5.putExtra("isJl","Y");
                                     intent5.putExtra("isResJc","Y");
@@ -240,6 +244,8 @@ public class SyncActivityYouxian extends BaseActivity {
                                 }
                                 A002 = false;
                             } else {
+                                Log.e(TAG,"ABA2已经在起爆页面了");
+//                            show_Toast("正在起爆流程中");
                                 send485Cmd("EEA2" + MmkvUtils.getcode("ACode", ""));
                             }
                         } else {
@@ -277,25 +283,38 @@ public class SyncActivityYouxian extends BaseActivity {
                         Log.e("接收到A5指令了",response);
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
-                            //主的子设备
+                            if (A5Main) {
+                                A5Main = false;
+                                //主的子设备
 //                            show_Toast(getString(R.string.text_sync_tip6));
-                            Log.e("主的子设备已接收到切换模式指令",response);
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
+                                Log.e("主的子设备已接收到切换模式指令",response);
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
+                                EventBus.getDefault().post(new FirstEvent("sendCmd83"));
+                                //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
+                                EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+                            } else {
+                                Log.e(TAG,"重复接收到A5起爆主的子设备消息，不处理");
                             }
-                            send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
-                            EventBus.getDefault().post(new FirstEvent("sendCmd83"));
                         } else {
+                            if (A5Other) {
+                                A5Other = false;
 //                            show_Toast(getString(R.string.text_sync_tip6));
-                            EventBus.getDefault().post(new FirstEvent("otherA5"));
-                            //其他子设备
-                            Log.e(TAG,"其他子设备接收到A5指令了");
-                            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                                EventBus.getDefault().post(new FirstEvent("otherA5"));
+                                //其他子设备
+                                Log.e(TAG,"其他子设备接收到A5指令了");
+                                Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                                //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
+                                EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+                            } else {
+                                Log.e(TAG,"重复接收到A5起爆其他设备消息，不处理");
+                            }
                         }
-                        //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
-                        EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+
 //                    } else if (response.contains("A003")) {
                         //收到主控的起爆指令
                     } else if (response.startsWith("A6")) {
@@ -314,12 +333,18 @@ public class SyncActivityYouxian extends BaseActivity {
                         //收到主控的退出指令
 //                    } else if (response.contains("A005")) {
                     } else if (response.startsWith("A7")) {
+                        A002 = true;
+                        A5Other = true;
+                        A5Main = true;
                         EventBus.getDefault().post(new FirstEvent("finish"));
                         send485Cmd("B7" + MmkvUtils.getcode("ACode", ""));
 
 //                        show_Toast("收到退出指令");
                         finish();
                     } else if (response.startsWith("A8")) {
+                        A002 = true;
+                        A5Other = true;
+                        A5Main = true;
                         EventBus.getDefault().post(new FirstEvent("exitPage"));
                         //收到主控退到有线级联页面指令
                     } else if (response.startsWith("A012")) {
@@ -710,14 +735,14 @@ public class SyncActivityYouxian extends BaseActivity {
                                 Log.e("485接口-接收数据", "onDataReceived: " + fromCommad);
 //                                if (fromCommad.startsWith("A0")) {
                                 if (fromCommad.startsWith("A")) {
-                                    if(fromCommad.equals("A6")) {
-                                        EventBus.getDefault().post(new FirstEvent("qibao"));
-                                    } else {
+//                                    if(fromCommad.equals("A6")) {
+//                                        EventBus.getDefault().post(new FirstEvent("qibao"));
+//                                    } else {
                                         Message msg = Message.obtain();
                                         msg.what = 0;
                                         msg.obj = fromCommad;
                                         handler.sendMessage(msg);
-                                    }
+//                                    }
                                 } else if (fromCommad.startsWith("FF")) {
                                     //心跳数据
                                     handler.sendEmptyMessage(3);
@@ -781,7 +806,7 @@ public class SyncActivityYouxian extends BaseActivity {
         byte[] powerCmd = Utils.hexStringToBytes(data);
         mExpDevMgr.sendBytesRs485(powerCmd);
 //        String str = Utils.bytesToHexFun(powerCmd);
-        Log.e("子机485发送-data", data);
+//        Log.e("子机485发送-data", data);
 //        Log.e("485发送-str", str);
     }
 
@@ -899,7 +924,7 @@ public class SyncActivityYouxian extends BaseActivity {
     private void sendDelay() {
         int delay = Integer.parseInt((String) MmkvUtils.getcode("ACode", ""));
         try {
-            Thread.sleep(delay * 50);
+            Thread.sleep(delay * 60);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -908,7 +933,7 @@ public class SyncActivityYouxian extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FirstEvent event) {
         String msg = event.getMsg();
-        Log.e("同步页面收到起爆页面485消息了",msg);
+//        Log.e("同步页面收到起爆页面485消息了",msg);
         if (msg.equals("qibao")) {
             String a = "0006";
             writeData(a);
@@ -997,17 +1022,17 @@ public class SyncActivityYouxian extends BaseActivity {
             @Override
             public void onDataReceived(byte[] bytes) {
                 String fromCommad = Utils.bytesToHexFun(bytes);//将数组转化为16进制字符串
-                Log.e("485接口-接收数据", "onDataReceived: " + fromCommad);
+                Log.e("重新打开485接口-接收数据", "onDataReceived: " + fromCommad);
 //                                if (fromCommad.startsWith("A0")) {
                 if (fromCommad.startsWith("A")) {
-                    if(fromCommad.equals("A6")) {
-                        EventBus.getDefault().post(new FirstEvent("qibao"));
-                    } else {
+//                    if(fromCommad.equals("A6")) {
+//                        EventBus.getDefault().post(new FirstEvent("qibao"));
+//                    } else {
                         Message msg = Message.obtain();
                         msg.what = 0;
                         msg.obj = fromCommad;
                         handler.sendMessage(msg);
-                    }
+//                    }
                 } else if (fromCommad.startsWith("FF")) {
                     //心跳数据
                     handler.sendEmptyMessage(3);

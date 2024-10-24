@@ -165,7 +165,7 @@ public class XingbangMain extends SerialPortActivity {
     private Handler mHandler_updataVersion = new Handler();//更新版本
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
-    private String TAG = "主页";
+    private String TAG = "主页面";
 
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
@@ -1641,6 +1641,7 @@ public class XingbangMain extends SerialPortActivity {
         get41Resp = 0;
         threadPoolExecutor.shutdown();
         Log.e(TAG, "close: 关闭线程池" );
+        Utils.writeLog("首页:关闭获取电流电压线程池");
 //        if (sendPower != null) {
 //            sendPower.exit = true;  // 终止线程thread
 //                sendPower.interrupt();
@@ -1660,6 +1661,7 @@ public class XingbangMain extends SerialPortActivity {
             public void run() {
                 mApplication.closeSerialPort();
                 Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+                Utils.writeLog("首页:关闭串口");
                 mSerialPort = null;
             }
         }).start();
