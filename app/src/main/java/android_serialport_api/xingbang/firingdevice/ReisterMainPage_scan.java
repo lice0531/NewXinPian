@@ -774,6 +774,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 if (busInfo != null) {
                     txtCurrentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
                     txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa()) + "μA");
+                    if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
+                        txtCurrentIC.setTextColor(Color.RED);
+                    } else {
+                        txtCurrentIC.setTextColor(Color.GREEN);
+                    }
                 }
             }
             if (tipInfoFlag == 2) {//提示已注册多少发
@@ -793,6 +798,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             if (tipInfoFlag == 5) {//桥丝不正常
                 show_Toast(getResources().getString(R.string.text_error_tip7));
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 6) {//桥丝不正常
+                show_Toast("请先设置延时");
+            }
+            if (tipInfoFlag == 7) {//桥丝不正常
+                show_Toast("当前注册雷管电流过大,请检查雷管");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 8) {//桥丝不正常
+                show_Toast("当前雷管有异常,请检测后重新注册");
+                SoundPlayUtils.play(4);
+            }
+            if (tipInfoFlag == 9) {//桥丝不正常
+                show_Toast("当前雷管读码异常,请检查该雷管编码规则");
                 SoundPlayUtils.play(4);
             }
             if (tipInfoFlag == 88) {//刷新界面

@@ -691,8 +691,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             // 获取错误雷管信息
             Log.e(TAG, "收到B8命令了res:" + res);
             if (currentCount == 0) {
-                updateLgStatus(true);
                 reciveB8 = true;
+                updateLgStatus(true);
                 Message message = new Message();
                 message.what = 17;
                 message.obj = "true";
@@ -1738,6 +1738,10 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                 }
                 break;
             case R.id.btn_prepare_charge:
+                if (jiance_end) {
+                    show_Toast("请在检测结束后再进行起爆。");
+                    return;
+                }
                 if (cd) {
                     writeData("A2");//准备充电指令
                 } else {
