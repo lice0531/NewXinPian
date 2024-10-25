@@ -2683,7 +2683,6 @@ public class FiringMainActivity extends SerialPortActivity {
                                 sendCmd(powerCmd);
                                 Log.e(TAG, "第一次发送13指令");
                             }
-                            zeroCount++;
                             if (System.currentTimeMillis() - zeroStartTime > 1200) {
                                 //13返回未超时  重发13
                                 byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
@@ -2698,6 +2697,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (zeroCmdReFlag == 1) {
                                 break;
                             }
+                            zeroCount++;
                             if (zeroCount > 50) {//等待时间答应5秒，退出
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 exit = true;
