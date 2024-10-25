@@ -110,6 +110,8 @@ public class SyncActivityYouxian extends BaseActivity {
     private boolean A004 = true;
     private boolean A5Other = true;//A5起爆指令是否是其他子设备接收起爆指令
     private boolean A5Main = true;//A5起爆指令是否是主的子设备接收起爆指令
+    //主的子设备是否已经处理了A5起爆指令  如果已经处理 就算接受到其他子设备的起爆指令也不执行任何操作
+    private boolean isHandleMainQb = false;
     private String TAG = "子机有线级联同步页面";
 
 
@@ -284,6 +286,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
                             if (A5Main) {
+                                isHandleMainQb = true;
                                 A5Main = false;
                                 //主的子设备
 //                            show_Toast(getString(R.string.text_sync_tip6));
@@ -301,17 +304,21 @@ public class SyncActivityYouxian extends BaseActivity {
                                 Log.e(TAG,"重复接收到A5起爆主的子设备消息，不处理");
                             }
                         } else {
-                            if (A5Other) {
-                                A5Other = false;
+                            if (!isHandleMainQb) {
+                                if (A5Other) {
+                                    A5Other = false;
 //                            show_Toast(getString(R.string.text_sync_tip6));
-                                EventBus.getDefault().post(new FirstEvent("otherA5"));
-                                //其他子设备
-                                Log.e(TAG,"其他子设备接收到A5指令了");
-                                Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-                                //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
-                                EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+                                    EventBus.getDefault().post(new FirstEvent("otherA5"));
+                                    //其他子设备
+                                    Log.e(TAG,"其他子设备接收到A5指令了");
+                                    Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                                    //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
+                                    EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+                                } else {
+                                    Log.e(TAG,"重复接收到A5起爆其他设备消息，不处理");
+                                }
                             } else {
-                                Log.e(TAG,"重复接收到A5起爆其他设备消息，不处理");
+                                Log.e(TAG,"主的子设备已经处理了起爆指令，接收到了其他子设备起爆指令也不用执行");
                             }
                         }
 
@@ -336,15 +343,16 @@ public class SyncActivityYouxian extends BaseActivity {
                         A002 = true;
                         A5Other = true;
                         A5Main = true;
+                        isHandleMainQb = false;
                         EventBus.getDefault().post(new FirstEvent("finish"));
                         send485Cmd("B7" + MmkvUtils.getcode("ACode", ""));
-
 //                        show_Toast("收到退出指令");
                         finish();
                     } else if (response.startsWith("A8")) {
                         A002 = true;
                         A5Other = true;
                         A5Main = true;
+                        isHandleMainQb = false;
                         EventBus.getDefault().post(new FirstEvent("exitPage"));
                         //收到主控退到有线级联页面指令
                     } else if (response.startsWith("A012")) {
