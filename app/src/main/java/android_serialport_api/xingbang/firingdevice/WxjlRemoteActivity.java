@@ -728,13 +728,22 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
          */
         currentCount++;
         Log.e(TAG, "收到B8了:" + completeCmd + "--当前发送A8次数：" + currentCount);
-        String errorLgCmd = completeCmd.substring(6);
+        String errorLgCmd = completeCmd.substring(6,completeCmd.length()-2);
+        Log.e(TAG, "errorLgCmd: "+errorLgCmd );
+        Log.e(TAG, "errorLgCmd之前: "+completeCmd.substring(6) );
         //取到错误雷管cmd后  4个一组  将每组数像B5指令获取正确错误雷管一样输出下错误雷管的编号   遍历下全部雷管数据然后再找到对应的雷管id 改变通信状态
         int aa = errorLgCmd.length() / 4;
         for (int i = 0; i < aa; i++) {
             String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
             String idCmd = showLgNum(value);
-            int id = getErrorLgNum(idCmd);
+//            int id = getErrorLgNum(idCmd);
+            int id = Integer.parseInt(value,16);
+
+//            String value = errorLgCmd.substring(4 * i, 4 * (i + 1));
+//            String idCmd = value.substring(0,4);
+//            int id2 = hexToDecimalLowHigh(idCmd);
+            Log.e(TAG, "id: "+id );
+//            Log.e(TAG, "id2: "+id2 );
             for (int j = 0; j < mListData.size(); j++) {
                 if (id == j + 1) {
                     //得到当前的错误雷管index  denatorId即为错误雷管的芯片ID
@@ -899,6 +908,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             return 0;
         }
     }
+
 
     //显示雷管数量
     private String showLgNum(String data) {
@@ -2223,7 +2233,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         send84();
         Log.e(TAG, "错误数量>20，发84了--错误总数量:" + errorTotalNum + "--需要发送84的次数是:" + sendCount);
     }
-
+    //B8 01 04 01010102 01030104 B8
     // 转换方法
     private int hexToDecimalLowHigh(String hexStr) {
         // 确保输入是有效的16进制字符串并且长度是4
