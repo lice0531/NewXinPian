@@ -177,7 +177,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private boolean kaiguan = true;
     private boolean jiance_end = true;
     private boolean chongdian_end = true;
-
+    private boolean huoqu_end = true;
 
     @Override
     protected void onStart() {
@@ -765,7 +765,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             sendCmd(ThreeFiringCmd.sendWxjlA5(wxjlDeviceId, "122130"));
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
-
+            huoqu_end=false;
             return;
         }
         sendA8();

@@ -44,6 +44,7 @@ import com.scandecode.inf.ScanInterface;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -773,7 +774,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (tipInfoFlag == 1) {
                 if (busInfo != null) {
                     txtCurrentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
-                    txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + Math.round(busInfo.getBusCurrentIa()) + "μA");
+                    BigDecimal b = BigDecimal.valueOf((busInfo.getBusCurrentIa() * 1.25 / 1.2));//处理大额数据专用类
+                    float dianliu = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+                    txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + dianliu + "μA");
                     if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前电流是否偏大
                         txtCurrentIC.setTextColor(Color.RED);
                     } else {
@@ -1941,7 +1944,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             if (zhuce_Flag == 1) {//多次单发注册后闪退,busInfo.getBusCurrentIa()为空
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                if (busInfo.getBusCurrentIa() > 60) {//判断当前电流是否偏大//20221019(范总说取消掉单发注册电流判断)
+                if (busInfo.getBusCurrentIa() > 60) {//判断当前电流是否偏大/
                     tipInfoFlag = 7;
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                     SoundPlayUtils.play(4);

@@ -226,11 +226,11 @@ public class SetDelayTime extends BaseActivity {
                 show_Toast(getResources().getString(R.string.text_jsxh));
                 return;
             }
-            if(Integer.parseInt(startNoTxt.getText().toString())!=0){
+            if(Integer.parseInt(startNoTxt.getText().toString())==0){
                 show_Toast("起始序号不能为0");
                 return;
             }
-            if(Integer.parseInt(endNoTxt.getText().toString())!=0){
+            if(Integer.parseInt(endNoTxt.getText().toString())==0){
                 show_Toast("结束序号不能为0");
                 return;
             }
