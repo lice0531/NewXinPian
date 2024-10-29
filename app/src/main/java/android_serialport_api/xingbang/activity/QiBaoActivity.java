@@ -638,8 +638,9 @@ public class QiBaoActivity extends SerialPortActivity implements View.OnClickLis
                                 }
                             })
                             .setPositiveButton(getString(R.string.text_firing_tip17), (dialog1, which) -> {
-                                Intent intent = new Intent(QiBaoActivity.this, QueryHisDetail.class);
-                                startActivityForResult(intent, 1);
+                                startActivity(new Intent(QiBaoActivity.this, UploadDataActivity.class));
+//                                Intent intent = new Intent(QiBaoActivity.this, QueryHisDetail.class);
+//                                startActivityForResult(intent, 1);
                                 dialog1.dismiss();
                                 closeThread();
                                 closeForm();

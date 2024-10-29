@@ -1,5 +1,6 @@
 package android_serialport_api.xingbang.activity;
 
+import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.databinding.ActivityNewMainBinding;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -49,7 +51,7 @@ import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
-public class NewMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class NewMainActivity extends BaseActivity implements View.OnClickListener {
 
     ActivityNewMainBinding binding;
 
@@ -73,7 +75,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
     private String qiaosi_set = "";//是否检测桥丝
     private String TAG = "主页";
     private int pb_show = 0;
-    public ExpdDevMgr mExpDevMgr ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +85,8 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(binding.getRoot());
         SQLiteStudioService.instance().start(this);
         initView();
-        mExpDevMgr= new ExpdDevMgr(this);
+        initPower();                // 初始化上电方式()
+        powerOnDevice(PIN_ADSL);    // 上电
         new Thread() {
             @Override
             public void run() {
@@ -471,5 +474,7 @@ public class NewMainActivity extends AppCompatActivity implements View.OnClickLi
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        powerOffDevice(PIN_ADSL);//主板下电
+        removeALLActivity();//执行移除所以Activity方法
     }
 }
