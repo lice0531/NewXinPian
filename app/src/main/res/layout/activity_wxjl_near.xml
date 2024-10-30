@@ -2,10 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/bg_color"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+
+    tools:context="android_serialport_api.xingbang.firingdevice.WxjlNearActivity"
+    tools:ignore="MergeRootFrame">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -147,7 +151,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/ivle"
-                    android:text="4.查看错误雷管"
+                    android:text="4.查看雷管状态"
                     android:textColor="#333333"
                     android:textSize="22sp"
                     android:textStyle="bold" />

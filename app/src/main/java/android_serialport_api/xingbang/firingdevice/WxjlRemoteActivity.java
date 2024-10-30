@@ -7,11 +7,9 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +27,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,15 +41,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.DeviceAdapter;
 import android_serialport_api.xingbang.custom.ErrListAdapter;
@@ -94,12 +87,12 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     Button btnErr;
     @BindView(R.id.btn_exit)
     Button btnExit;
-    @BindView(R.id.lv_net)
-    ListViewForScrollView lvNet;
-    @BindView(R.id.lv_qibao)
-    ListViewForScrollView lvQibao;
-    @BindView(R.id.lv_chongdian)
-    ListViewForScrollView lvChongdian;
+//    @BindView(R.id.lv_net)
+//    ListViewForScrollView lvNet;
+//    @BindView(R.id.lv_qibao)
+//    ListViewForScrollView lvQibao;
+//    @BindView(R.id.lv_chongdian)
+//    ListViewForScrollView lvChongdian;
     @BindView(R.id.tv_tip)
     TextView tvTip;
     @BindView(R.id.tv_address)
@@ -114,8 +107,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private boolean isDeviceConnet;
     private int qibaoNum = 0;
     public boolean cs = true;
-    public boolean cd = false;
-    public boolean qb = false;
+    public boolean cd_zt = false;//检测结束之后置打开,点充电按钮后关闭
+    public boolean qb_zt = false;//升高压之后置打开,点起爆按钮后关闭
     public boolean qh = false;
     private boolean isStopGetLgNum = false;//充电开始就不再获取雷管数量了，在充电前获取雷管数量并记录下来展示即可
     private ConcurrentHashMap<String, String> lastReceivedMessages = new ConcurrentHashMap<>();
@@ -633,7 +626,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             reciveB1 = true;
             closeA1Thread();
             cs = false;
-            cd = true;
+            cd_zt = true;
             // 起爆检测
             msg.what = 9;
             msg.obj = receiveMsg(res, "在线");
@@ -648,16 +641,19 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             PollingUtils.startPollingService(WxjlRemoteActivity.this, InitConst.POLLING_TIME,
                     PollingReceiver.class, PollingUtils.ACTION);
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B2)) {
-            qb = true;
+
             qh = true;
+            cd_zt = false;
             // 充电
             msg.what = 9;
             msg.obj = receiveMsg(res, "充电");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B3)) {
+
             // 充电升高压
             msg.what = 9;
             msg.obj = receiveMsg(res, "高压充电");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B4)) {
+            qb_zt = false;
             fuwei();
             // 单个设备起爆
             msg.what = 9;
@@ -781,15 +777,15 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
         int index = 0;
-        for (DenatorBaseinfo baseinfo : list) {
-            updateLgStatus(baseinfo, 1);
-            index++;
-        }
+//        for (DenatorBaseinfo baseinfo : list) {
+//            updateLgStatus(baseinfo, 1);
+//            index++;
+//        }
         if (isNeedSendA8) {
-            if (index == list.size()) {
+//            if (index == list.size()) {
                 isCanSendA8 = true;
                 Log.e(TAG, "可以发A8了");
-            }
+//            }
         }
     }
 
@@ -837,6 +833,10 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             break;
                         case "101":
                             bean.setInfo("检测结束");
+                            Message message = new Message();
+                            message.what = 21;
+                            message.obj = "更新状态";
+                            handler_msg.sendMessage(message);
                             break;
                         case "200":
                             bean.setInfo("充电");
@@ -852,6 +852,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             break;
                         case "301":
                             bean.setInfo("高压充电结束");
+                            qb_zt = true;
                             break;
                         case "302":
                             bean.setInfo("高压充电失败");
@@ -930,10 +931,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         String strLow = tempData.substring(2);
         int volthigh = Integer.parseInt(strHigh, 16) * 256;
         int voltLowInt = Integer.parseInt(strLow, 16);
-        //可调电压版本,系数为0.011,不可调为0.006
-//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
         double voltTotal = (volthigh + voltLowInt) * 3.6 * 11 / 4.096 / 1000;//新芯片
-//				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.011;//可调电压
         float busVoltage = (float) voltTotal;
         busVoltage = Utils.getFloatToFormat(busVoltage, 2, 4);
         return busVoltage;
@@ -954,9 +952,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         }
         int ichigh = Integer.parseInt(strHigh, 16) * 256;
         int icLowInt = Integer.parseInt(strLow, 16);
-//				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
         double icTotal = (ichigh + icLowInt) * 3.6 / (4.096 * 0.35);//新芯片
-        float f1 = (float) (icTotal * 1.8 * 2) - 10;//*400//减10是减0带载的电流
+        float f1 = (float) (icTotal * 1.8 * 2);//*400//减10是减0带载的电流
         BigDecimal b = new BigDecimal(f1);
         float busCurrent = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();//保留两位小数
         if (busCurrent < 0) {
@@ -1071,7 +1068,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                     case 8:
                         DeviceBean bean4 = (DeviceBean) msg.obj;
                         if (bean4.getInfo().equals("检测结束")) {
+                            Log.e(TAG, "检测结束: " );
                             jiance_end = false;
+
                         }
                         if (bean4.getInfo().equals("高压充电结束")) {
                             chongdian_end = false;
@@ -1442,8 +1441,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 lastReceivedMessages.clear();
                                 adapter.notifyDataSetChanged();
                                 cs = true;
-                                cd = false;
-                                qb = false;
+                                cd_zt = false;
+                                qb_zt = false;
                                 qh = false;
                                 closeLx();
                                 closeSerial();
@@ -1563,6 +1562,18 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                         tvTip.setText("正在执行起爆...");
                         sendCmd(ThreeFiringCmd.sendWxjlA4("01"));
                         break;
+                    case 21:
+                        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao()
+                                .queryBuilder()
+                                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
+                                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                                .list();
+                        for (DenatorBaseinfo baseinfo : list) {
+                            updateLgStatus(baseinfo, 1);
+                        }
+                        Log.e(TAG, "雷管状态重置 " );
+                        break;
+
                 }
             }
             return false;
@@ -1724,7 +1735,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private boolean isSend81 = true;//防止用户多次点击频发81
     private boolean isSend82 = true;//防止用户多次点击频发82
     private boolean isSend84 = true;//防止用户多次点击频发84
-
+    //全局定义
+    private long lastClickTime = 0L;
+    private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_err, R.id.btn_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -1739,10 +1752,11 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                 break;
             case R.id.btn_prepare_charge:
                 if (jiance_end) {
-                    show_Toast("请在检测结束后再进行起爆。");
+                    show_Toast("请在检测结束后再进行充电。");
                     return;
                 }
-                if (cd) {
+                Log.e(TAG, "充电状态cd_zt: "+cd_zt );
+                if (cd_zt) {
                     writeData("A2");//准备充电指令
                 } else {
                     show_Toast("请按顺序进行操作");
@@ -1753,8 +1767,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                     show_Toast("请在高压充电结束后再进行起爆。");
                     return;
                 }
-
-                if (cd) {
+                Log.e(TAG, "qbFlag: "+qbFlag );
+                Log.e(TAG, "qb_zt: "+qb_zt );
+//                if (cd_zt) {
                     if (qbFlag.equals("qh")) {
                         //切换模式
                         if (qh) {
@@ -1765,21 +1780,27 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                     } else {
 
                         //起爆
-                        if (qb) {
+                        if (qb_zt) {
                             writeData("A4");//准备起爆指令
 
                         } else {
                             show_Toast("请按顺序进行操作");
                         }
                     }
-                } else {
-                    show_Toast("请按顺序进行操作");
-                }
+//                } else {
+//                    show_Toast("请按顺序进行操作");
+//                }
                 break;
             case R.id.btn_exit:
                 writeData("A7");//准备退出指令
                 break;
             case R.id.btn_err:
+                //防止快速点击
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    Log.e("验证", "多次点击: " );
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
                 if (jiance_end) {
                     show_Toast("请在检测结束后再查看错误雷管。");
                     return;
@@ -1905,8 +1926,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             dialog1.dismiss();
                         } else {
                             isShowError = true;
+                            isA7 = true;
                             closeLx();
-//                            exitRemotePage();
+                            exitRemotePage();
                             dialog1.dismiss();
                         }
 
@@ -2010,8 +2032,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 
     private void fuwei() {
         cs = true;
-        cd = false;
-        qb = false;
+        cd_zt = false;
+        qb_zt = false;
         qh = false;
     }
 
