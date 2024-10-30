@@ -1117,7 +1117,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     @Override
     protected void onStart() {
-        Log.e(TAG, "denatorCount: " + denatorCount);
+        Log.e(TAG, "雷管数量denatorCount: " + denatorCount);
 
         long time = System.currentTimeMillis();
         long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
@@ -1125,23 +1125,23 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "endTime: " + endTime);
         //发送初始化命令
 //        if (!firstThread.isAlive()) {
-//            if (denatorCount == 0) {
-//                AlertDialog dialog = new Builder(FiringMainActivity.this)
-//                        .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
-//                        .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
-//                        //设置对话框的按钮
-//                        .setNegativeButton("退出", (dialog13, which) -> {
-//                            dialog13.dismiss();
-//                            finish();
-//                        })
-//                        .setNeutralButton("继续", (dialog2, which) -> {
-//                            dialog2.dismiss();
-//                            firstThread.start();
-//                        })
-//                        .create();
-//                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
-//                dialog.show();
-//            }
+            if (denatorCount == 0) {
+                AlertDialog dialog = new Builder(FiringMainActivity.this)
+                        .setTitle("当前雷管数量为0")//设置对话框的标题//"成功起爆"
+                        .setMessage("当前雷管数量为0,请先注册雷管")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton("退出", (dialog13, which) -> {
+                            dialog13.dismiss();
+                            finish();
+                        })
+                        .setNeutralButton("继续", (dialog2, which) -> {
+                            dialog2.dismiss();
+                            firstThread.start();
+                        })
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
+                dialog.show();
+            }
 //            else {
 //                firstThread.start();
 //            }
@@ -1353,11 +1353,13 @@ public class FiringMainActivity extends SerialPortActivity {
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
                 firstCmdReFlag = 1;
-                if (version.equals("01")) {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
-                } else {
-                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
-                }
+//                if (version.equals("01")) {
+//                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第一代)
+//                } else {
+//                    sendCmd(FourStatusCmd.send46("00", "02"));//20(第二代)
+//                }
+                //目前做的秒量  用46指令来区分是PT还是煤许  发01:PT   02:MX
+                sendCmd(FourStatusCmd.send46("00", "01"));//20(第一代)
             }
             if (FiringMainActivity.stage == 8) {
                 byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
