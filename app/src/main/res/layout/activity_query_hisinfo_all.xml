@@ -93,7 +93,7 @@
 					android:text="删除" />
 			</LinearLayout>
 
-			<android_serialport_api.xingbang.custom.LoadListView
+			<android_serialport_api.mx.xingbang.custom.LoadListView
 				android:id="@+id/denator_query_his_listview"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"

@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android_serialport_api.xingbang.fragment.LogFragment">
+    tools:context="android_serialport_api.mx.xingbang.fragment.LogFragment">
 
-<android_serialport_api.xingbang.custom.MlistView
+<android_serialport_api.mx.xingbang.custom.MlistView
     android:id="@+id/fg_syslog"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</android_serialport_api.xingbang.custom.MlistView>
+</android_serialport_api.mx.xingbang.custom.MlistView>
 </FrameLayout>

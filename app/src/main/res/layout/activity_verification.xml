@@ -79,12 +79,12 @@
             android:text="可以起爆"/>
     </LinearLayout>
 
-    <android_serialport_api.xingbang.custom.LoadListView
+    <android_serialport_api.mx.xingbang.custom.LoadListView
         android:id="@+id/lv_yanzheng"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android_serialport_api.xingbang.custom.LoadListView>
+    </android_serialport_api.mx.xingbang.custom.LoadListView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"

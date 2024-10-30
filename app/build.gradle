@@ -10,7 +10,7 @@ android {
 //        javaMaxHeapSize "4g"
 //    }
     defaultConfig {
-        applicationId "android_serialport_api.xingbang"
+        applicationId "android_serialport_api.mx.xingbang"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 35
@@ -110,7 +110,7 @@ dependencies {
     compileOnly 'com.google.zxing:core:3.3.0'
 //    异常捕获
 //    debugImplementation "com.github.simplepeng.SpiderMan:spiderman:${spider_man}"
-    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:${spider_man}"
+    releaseImplementation "com.github.simplepeng.SpiderMan:spiderman-no-op:1.1.8"
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
 
     //androidx项目(UI框架)
@@ -128,7 +128,7 @@ greendao {
     schemaVersion 24 //数据库版本号
     targetGenDir 'src/main/java'
     // 设置DaoMaster、DaoSession、Dao 包名
-    daoPackage 'android_serialport_api.xingbang.db.greenDao'
+    daoPackage 'android_serialport_api.mx.xingbang.db.greenDao'
     //设置DaoMaster、DaoSession、Dao目录,请注意，这里路径用/不要用.
 //        generateTests false //设置为true以自动生成单元测试。
 //        targetGenDirTests 'src/main/java' //应存储生成的单元测试的基本目录。默认为 src / androidTest / java。

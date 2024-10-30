@@ -1954,7 +1954,7 @@
                         android:text="@string/text_list_guan" />
                 </LinearLayout>
 
-                <android_serialport_api.xingbang.custom.MyRecyclerView
+                <android_serialport_api.mx.xingbang.custom.MyRecyclerView
                     android:id="@+id/setDelayMainlistView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

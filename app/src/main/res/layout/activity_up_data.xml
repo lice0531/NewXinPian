@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="android_serialport_api.xingbang.firingdevice.UploadMessageActivity">
+    tools:context="android_serialport_api.mx.xingbang.firingdevice.UploadMessageActivity">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"

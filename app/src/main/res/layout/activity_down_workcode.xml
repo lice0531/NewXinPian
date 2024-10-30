@@ -626,7 +626,7 @@
                             style="@style/alltextstyle" />
                     </LinearLayout>
 
-                    <android_serialport_api.xingbang.custom.MyRecyclerView
+                    <android_serialport_api.mx.xingbang.custom.MyRecyclerView
                         android:id="@+id/factory_listView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -642,12 +642,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android_serialport_api.xingbang.custom.MlistView
+            <android_serialport_api.mx.xingbang.custom.MlistView
                 android:id="@+id/lv_shouquan"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            </android_serialport_api.xingbang.custom.MlistView>
+            </android_serialport_api.mx.xingbang.custom.MlistView>
         </LinearLayout>
 
 

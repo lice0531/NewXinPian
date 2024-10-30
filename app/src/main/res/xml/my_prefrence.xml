@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android" android:title="Serial port setup">
-	<android_serialport_api.xingbang.BasePreferences
+	<android_serialport_api.mx.xingbang.BasePreferences
             android:key="myBgColor"
             android:title="项目中使用到的自定义ListPreference"
             android:dialogIcon="@android:drawable/ic_menu_more"

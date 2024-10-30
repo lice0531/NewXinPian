@@ -292,11 +292,11 @@
             </LinearLayout>
 
         </LinearLayout>
-        <android_serialport_api.xingbang.custom.MlistView
+        <android_serialport_api.mx.xingbang.custom.MlistView
             android:id="@+id/lv_project"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </android_serialport_api.xingbang.custom.MlistView>
+        </android_serialport_api.mx.xingbang.custom.MlistView>
     </LinearLayout>
 </ScrollView>

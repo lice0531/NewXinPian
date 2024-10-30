@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/child_pg_bg"
     android:orientation="vertical"
-    tools:context="android_serialport_api.xingbang.firingdevice.SetEnvMainActivity"
+    tools:context="android_serialport_api.mx.xingbang.firingdevice.SetEnvMainActivity"
     tools:ignore="MergeRootFrame">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/child_pg_bg"
     android:orientation="vertical"
-    tools:context="android_serialport_api.xingbang.firingdevice.SetSystemActivity"
+    tools:context="android_serialport_api.mx.xingbang.firingdevice.SetSystemActivity"
     tools:ignore="MergeRootFrame">
 
     <LinearLayout

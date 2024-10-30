@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android_serialport_api.xingbang.firingdevice.XingbangMain"
+    tools:context="android_serialport_api.mx.xingbang.firingdevice.XingbangMain"
     tools:ignore="MergeRootFrame"
     android:orientation="vertical"
     android:background="@drawable/bg">

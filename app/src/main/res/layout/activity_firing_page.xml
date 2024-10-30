@@ -21,6 +21,152 @@
                 app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:id="@+id/ll_firing_0"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="设置雷管延时"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="段位:"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/ns_duanwei"
+                android:layout_width="0dp"
+                android:layout_marginLeft="10dp"
+                android:text="1段"
+                android:layout_gravity="center_vertical"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundSelector="@drawable/blue_radius"
+                app:textTint="@color/black" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.8"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:gravity="right"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="当前延时:   " />
+                <TextView
+                    android:id="@+id/tv_set_delay"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.35"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="100" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="设置低压电压6V-12V(初始值为8.5V)"
+            android:textSize="20sp"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/et_set_lowVoltage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="默认8.5V"
+            android:inputType="number|numberDecimal"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_lowVoltage"
+            style="@style/allbtntstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bt_mainpage_style"
+            android:text="设置低压"
+            android:textColor="@color/bt_fg_base"
+            android:visibility="visible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="设置高压电压10V-20V(初始值为16V)"
+            android:textSize="20sp"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/et_set_highVoltage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="默认16V"
+            android:inputType="number|numberDecimal"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_highVoltage"
+            style="@style/allbtntstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bt_mainpage_style"
+            android:text="设置高压"
+            android:textColor="@color/bt_fg_base"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_start"
+            style="@style/allbtntstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bt_mainpage_style"
+            android:text="开始起爆"
+            android:textColor="@color/bt_fg_base" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_firing_1"

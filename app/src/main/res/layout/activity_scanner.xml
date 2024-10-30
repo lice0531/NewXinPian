@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
-        <android_serialport_api.xingbang.zxing.view.ViewfinderView
+        <android_serialport_api.mx.xingbang.zxing.view.ViewfinderView
             android:id="@+id/viewfinder_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

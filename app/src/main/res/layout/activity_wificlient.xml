@@ -7,7 +7,7 @@
      android:focusable="true"
     android:focusableInTouchMode="true"
      android:background="@color/child_pg_bg"
-    tools:context="android_serialport_api.xingbang.firingdevice.SetDelayTime"
+    tools:context="android_serialport_api.mx.xingbang.firingdevice.SetDelayTime"
     tools:ignore="MergeRootFrame" >
 
 	<LinearLayout	    
