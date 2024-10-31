@@ -74,8 +74,8 @@ import butterknife.OnClick;
 
 public class WxjlRemoteActivity extends SerialPortActivity implements AdapterView.OnItemClickListener, LoadHisFireAdapter_all.InnerItemOnclickListener {
 
-    @BindView(R.id.lv)
-    ListViewForScrollView lv;
+    @BindView(R.id.lv_device)
+    ListView lv;
     MySocketServer server;
     @BindView(R.id.btn_net_test)
     Button btnNetTest;
@@ -170,7 +170,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private boolean kaiguan = true;
     private boolean jiance_end = true;
     private boolean chongdian_end = true;
-    private boolean huoqu_end = true;
+    private boolean huoqu_end = false;
 
     @Override
     protected void onStart() {
@@ -653,8 +653,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             msg.what = 9;
             msg.obj = receiveMsg(res, "高压充电");
         } else if (res.startsWith(DefCommand.CMD_MC_SEND_B4)) {
-            qb_zt = false;
-            fuwei();
+
+
             // 单个设备起爆
             msg.what = 9;
             msg.obj = receiveMsg(res, "起爆中");
@@ -696,18 +696,6 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             }
             if (isCanSendA8) {
                 doWithReceivB8(res);
-            }
-        } else if (res.startsWith(DefCommand.CMD_5_TRANSLATE_84)) {//84 无线级联：读取错误雷管
-            if (currentCount == 0) {
-                updateLgErrorStatus();
-                receive84 = true;
-                Message message = new Message();
-                message.what = 5;
-                message.obj = "true";
-                handler_msg.sendMessage(message);
-            }
-            if (isCanSend84) {
-                doWith84(res);
             }
         } else {
             Log.e(TAG, "无线级联远距离页面-没有匹配对应的命令-cmd:" + res);
@@ -777,15 +765,15 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
         int index = 0;
-//        for (DenatorBaseinfo baseinfo : list) {
-//            updateLgStatus(baseinfo, 1);
-//            index++;
-//        }
+        for (DenatorBaseinfo baseinfo : list) {
+            updateLgStatus(baseinfo, 1);
+            index++;
+        }
         if (isNeedSendA8) {
-//            if (index == list.size()) {
+            if (index == list.size()) {
                 isCanSendA8 = true;
                 Log.e(TAG, "可以发A8了");
-//            }
+            }
         }
     }
 
@@ -833,10 +821,10 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             break;
                         case "101":
                             bean.setInfo("检测结束");
-                            Message message = new Message();
-                            message.what = 21;
-                            message.obj = "更新状态";
-                            handler_msg.sendMessage(message);
+//                            Message message = new Message();
+//                            message.what = 21;
+//                            message.obj = "更新状态";
+//                            handler_msg.sendMessage(message);
                             break;
                         case "200":
                             bean.setInfo("充电");
@@ -862,6 +850,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                             break;
                         case "401":
                             bean.setInfo("起爆结束");
+//                            fuwei();
                             break;
                         case "402":
                             bean.setInfo("起爆失败");
@@ -1568,6 +1557,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
                                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                                 .list();
+                        Log.e(TAG, "更新雷管状态2: ");
                         for (DenatorBaseinfo baseinfo : list) {
                             updateLgStatus(baseinfo, 1);
                         }
@@ -1782,7 +1772,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                         //起爆
                         if (qb_zt) {
                             writeData("A4");//准备起爆指令
-
+                            qb_zt=false;
                         } else {
                             show_Toast("请按顺序进行操作");
                         }
@@ -1798,11 +1788,16 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                 //防止快速点击
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     Log.e("验证", "多次点击: " );
+                    show_Toast("正在获取错误雷管,请勿多次点击。");
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
                 if (jiance_end) {
                     show_Toast("请在检测结束后再查看错误雷管。");
+                    return;
+                }
+                if (huoqu_end) {
+                    show_Toast("正在查询请稍等。");
                     return;
                 }
                 //发送84指令查看错误雷管信息
@@ -1826,6 +1821,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 //                        return;
 //                    }
                 Log.e(TAG, "errorNum: " + errorNum);
+                Log.e(TAG, "reciveB8: " + reciveB8);
                 if (errorNum > 0 && !reciveB8) {
                     show_Toast("读取错误雷管中，请勿重复点击...");
                     Utils.writeRecord("级联页面有错误雷管开始发送A8查询错误雷管");
@@ -1835,6 +1831,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                     PollingUtils.stopPollingService(WxjlRemoteActivity.this, PollingReceiver.class, PollingUtils.ACTION);
                     queryError = new QueryError();
                     queryError.start();
+                    huoqu_end=true;
                 } else {
                     loadErrorBlastModel();
                     if (errDeData.size() > 0) {
@@ -2202,22 +2199,6 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 
     private boolean isCanSend84 = false;
 
-    private void updateLgErrorStatus() {
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao()
-                .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.ErrorCode.notEq("FF"))
-                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
-                .list();
-        int index = 0;
-        for (DenatorBaseinfo baseinfo : list) {
-            updateLgStatus(baseinfo, 1);
-            index++;
-        }
-        if (index == list.size()) {
-            isCanSend84 = true;
-            Log.e(TAG, "可以发84了");
-        }
-    }
 
     private void doWith84(String completeCmd) {
         /**

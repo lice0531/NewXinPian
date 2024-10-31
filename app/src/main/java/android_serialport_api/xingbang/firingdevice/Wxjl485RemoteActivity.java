@@ -46,7 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 public class Wxjl485RemoteActivity extends BaseActivity {
 
-    @BindView(R.id.lv)
+    @BindView(R.id.lv_device)
     ListViewForScrollView lv;
     MySocketServer server;
     @BindView(R.id.btn_net_test)
