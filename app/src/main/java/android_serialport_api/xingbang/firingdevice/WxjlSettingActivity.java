@@ -3,6 +3,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import java.util.regex.Pattern;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
+import android_serialport_api.xingbang.cmd.FourStatusCmd;
+import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.custom.WxSearchDevicesAdapter;
 import android_serialport_api.xingbang.models.DeviceBean;
@@ -49,10 +52,16 @@ public class WxjlSettingActivity extends SerialPortActivity {
     Button btnZjqXd;
     @BindView(R.id.btn_exit)
     Button btnExit;
+    @BindView(R.id.btn_translateXd)
+    Button btnTranslateXd;
+    @BindView(R.id.btn_resetXd)
+    Button btnResetXd;
     private boolean receiveF9 = false;//发出F9命令是否返回
     private boolean receiveAB = false;//发出AB命令是否返回
     private boolean isReSendAB = false;//是否是切换信道，如果是切换信道，需要先发送AB设置无线驱动指令，再依次发送F9,AB
     private boolean isSendAB = true;//防止用户多次点击频发AB
+    private boolean isTransLate = true;//防止用户多次点击频发切换信道指令
+    private boolean isReset = true;//防止用户多次点击频发重置信道指令
     private SetZJQThread setZjqThread;
     private Handler handler_msg = new Handler();
     private boolean isOpened = false;//串口是否已打开
@@ -68,12 +77,14 @@ public class WxjlSettingActivity extends SerialPortActivity {
     //      用户修改后的信道Id  已经设置成功的信道Id
     private int xinDaoId = -1,currentXinDaoId = -1;
     private String xinDaoValue = "";//完整信道值
+    private SetqbkThread setqbkThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wxjl_setting);
         ButterKnife.bind(this);
+        Utils.writeRecord("进入无线配置页面");
         initData();
         initHandler();
     }
@@ -92,10 +103,14 @@ public class WxjlSettingActivity extends SerialPortActivity {
     }
 
     private void initData(){
-        String xv = (String) MmkvUtils.getcode("xinDaoValue", "");
-        currentXinDaoId = (int) MmkvUtils.getcode("xinDao", 0);
+        String xv = (String) MmkvUtils.getcode("xinDaoValue", "CH37-2.4kbps-2");
+        currentXinDaoId = (int) MmkvUtils.getcode("xinDao", 37);
         Log.e(TAG, "app信道: " + xv + "--信道Id:" + currentXinDaoId);
-        tvXinDao.setText("当前信道: " + xv);
+        if (TextUtils.isEmpty(xv) && currentXinDaoId == 37) {
+            tvXinDao.setText("当前信道: CH37-2.4kbps-2");
+        } else {
+            tvXinDao.setText("当前信道: " + xv);
+        }
         Utils.writeRecord("无线设置页面当前信道id:" + currentXinDaoId + "--信道value:" + xv);
 //        //这是不同速率的信道
         xdlist.add("CH0-19.2kbps-0FEC");
@@ -139,6 +154,11 @@ public class WxjlSettingActivity extends SerialPortActivity {
         xdlist.add("CH38-2.4kbps-3");
         xdlist.add("CH39-2.4kbps-4");
         nsXd.attachDataSource(xdlist);
+        if (currentXinDaoId == 0) {
+            nsXd.setSelectedIndex(0);
+        } else {
+            nsXd.setSelectedIndex(currentXinDaoId);
+        }
         nsXd.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
@@ -196,6 +216,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
                                         .setNegativeButton("确认", (dialog1, which) -> {
                                             MmkvUtils.savecode("xinDaoValue",xinDaoValue);
                                             MmkvUtils.savecode("xinDao",xinDaoId);
+                                            Log.e(TAG,"配置的信道值: " + xinDaoValue);
                                             dialog1.dismiss();
                                             removeALLActivity();
                                             finish();
@@ -207,6 +228,61 @@ public class WxjlSettingActivity extends SerialPortActivity {
                             show_Toast("无线中继器配置失败，请重新配置");
                             btnZjqXd.setText("2.无线中继器配置");
                             isSendAB = true;
+                        }
+                        break;
+                    case 3:
+                        String f9Result = (String) msg.obj;
+                        closeF9Thread();
+                        if ("true".equals(f9Result)) {
+                            setZjqThread = new SetZJQThread();
+                            setZjqThread.start();
+                            Log.e(TAG,"F9指令已返回--启动AB线程了");
+                        } else {
+                            show_Toast("信道配置失败，请重新配置");
+                            if (cmdtype == 1) {
+                                btnTranslateXd.setText("切换信道失败");
+                            } else if (cmdtype == 2) {
+                                btnZjqXd.setText("重置信道失败");
+                            }
+                        }
+                        break;
+                    case 4:
+                        String xdResult = (String) msg.obj;
+                        closeABThread();
+                        if ("true".equals(xdResult)) {
+                            if (isReSendAB) {
+                                setqbkThread = new SetqbkThread();
+                                setqbkThread.start();
+                                zeroCount = 0;
+                                receiveAB = false;
+                                isReSendAB = false;
+                                Utils.writeRecord("无线设置页面第一次发送AB已返回，开始发送F9");
+                            } else {
+                                Utils.writeRecord("无线设置页面信道切换成功，信道id:" + xinDaoId + "--信道value:" + xinDaoValue);
+                                btnZjqXd.setText("2.无线中继器已配置");
+                                AlertDialog dialog = new AlertDialog.Builder(WxjlSettingActivity.this)
+                                        .setTitle("无线配置成功")//设置对话框的标题//"成功起爆"
+                                        .setCancelable(false)
+                                        .setMessage("无线配置成功,请点击确认后,重新进入程序!")//设置对话框的内容"本次任务成功起爆！"
+                                        //设置对话框的按钮
+                                        .setNegativeButton("确认", (dialog1, which) -> {
+                                            MmkvUtils.savecode("xinDaoValue",xinDaoValue);
+                                            MmkvUtils.savecode("xinDao",xinDaoId);
+                                            Log.e(TAG,"配置的信道值: " + xinDaoValue);
+                                            dialog1.dismiss();
+                                            removeALLActivity();
+                                            finish();
+                                        }).create();
+                                dialog.show();
+                            }
+                        } else {
+                            Utils.writeRecord("无线设置页面AB无返回");
+                            show_Toast("信道配置失败，请重新配置");
+                            if (cmdtype == 1) {
+                                btnTranslateXd.setText("切换信道失败");
+                            } else if (cmdtype == 2) {
+                                btnZjqXd.setText("重置信道失败");
+                            }
                         }
                         break;
                 }
@@ -234,6 +310,36 @@ public class WxjlSettingActivity extends SerialPortActivity {
         return -1;
     }
 
+    private class SetqbkThread extends Thread {
+        public volatile boolean exit = false;
+        public void run() {
+            int count = 0;
+            while (!exit) {
+                try {
+                    Log.e(TAG,"F9发送次数:" + count);
+                    if (count <= 1 && !receiveF9) {
+                        sendF9();
+//                        byte[] reCmd2 = FourStatusCmd.getHardVersion("00");//44
+//                        sendCmd(reCmd2);
+                        Log.e(TAG, "发送F9设置无线起爆卡信道指令了");
+                        Thread.sleep(1500);
+                    } else if (count > 1){
+                        Log.e(TAG,"F9指令未返回已发送1次，停止发送F9指令");
+                        exit = true;
+                        Message message = new Message();
+                        message.what = 3;
+                        message.obj = "error";
+                        handler_msg.sendMessage(message);
+                        break;
+                    }
+                    count++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private int zeroCount = 0;
     private class SetZJQThread extends Thread {
         public volatile boolean exit = false;
@@ -244,13 +350,16 @@ public class WxjlSettingActivity extends SerialPortActivity {
                     Log.e(TAG,"发送次数:" + zeroCount);
                     if (zeroCount <= 1 && !receiveAB) {
                         sendAB();
+//                        byte[] reCmd1 = FourStatusCmd.getSoftVersion("00");//43
+//                        sendCmd(reCmd1);
                         Log.e(TAG, "发送AB设置无线中继器信道指令了");
                         Thread.sleep(1500);
                     } else if (zeroCount > 1){
                         Log.e(TAG,"AB指令未返回已发送1次，停止发送AB指令");
                         exit = true;
                         Message message = new Message();
-                        message.what = 2;
+//                        message.what = 2;
+                        message.what = 4;
                         message.obj = "error";
                         handler_msg.sendMessage(message);
                         break;
@@ -260,6 +369,14 @@ public class WxjlSettingActivity extends SerialPortActivity {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void closeF9Thread(){
+        if (setqbkThread != null) {
+            setqbkThread.exit = true;
+            setqbkThread.interrupt();
+            Log.e(TAG,"F9线程已关闭");
         }
     }
 
@@ -286,24 +403,66 @@ public class WxjlSettingActivity extends SerialPortActivity {
         } else {
             Log.e(TAG,"返回命令出错:" + fromCommad);
         }
+
+
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf);
+//                }
+//            }
+//        }
     }
 
     /***
      * 处理芯片返回命令
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
+//        String fromCommad =  Utils.bytesToHexFun(locatBuf);
+//        String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//        if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
+//            Log.e(TAG, "收到无线中继器设置信道指令了");
+//            receiveAB = true;
+//            Message message = new Message();
+////            message.what = 2;
+//            message.what = 4;
+//            message.obj = "true";
+//            handler_msg.sendMessage(message);
+//        } else if (DefCommand.CMD_4_XBSTATUS_5.equals(cmd)) {//获取硬件版本号 44
+//            Log.e(TAG, "收到起爆卡设置信道指令了");
+//            receiveF9 = true;
+//            Message message = new Message();
+////            message.what = 1;
+//            message.what = 3;
+//            message.obj = "true";
+//            handler_msg.sendMessage(message);
+//        }
         if (DefCommand.CMD_QBK_F9.equals(cmd)) {//F9 无线级联：收到起爆卡设置信道指令了
             Log.e(TAG, "收到起爆卡设置信道指令了");
             receiveF9 = true;
             Message message = new Message();
-            message.what = 1;
+//            message.what = 1;
+            message.what = 3;
             message.obj = "true";
             handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_ZJQ_AB.equals(cmd)) {//AB 无线级联：收到无线中继器设置信道指令了
             Log.e(TAG, "收到无线中继器设置信道指令了");
             receiveAB = true;
             Message message = new Message();
-            message.what = 2;
+//            message.what = 2;
+            message.what = 4;
             message.obj = "true";
             handler_msg.sendMessage(message);
         } else {
@@ -337,7 +496,10 @@ public class WxjlSettingActivity extends SerialPortActivity {
         }).start();
     }
 
-    @OnClick({R.id.rl_search,R.id.btn_qbkXd,R.id.btn_zjqXd,R.id.btn_exit})
+    int cmdtype = 0;//当前是切换信道还是重置信道    切换信道是1    重置信道是2
+    private long startTime = 0;//第1阶段每个雷管返回命令计时器
+    @OnClick({R.id.rl_search,R.id.btn_qbkXd,R.id.btn_zjqXd,R.id.btn_exit,R.id.btn_translateXd,
+            R.id.btn_resetXd})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_search:
@@ -351,6 +513,10 @@ public class WxjlSettingActivity extends SerialPortActivity {
                     show_Toast("正在打开串口，打开后您再操作");
                     return;
                 }
+                if (xinDaoId == -1) {
+                    show_Toast("请先选择信道");
+                    return;
+                }
                 if (xinDaoId != -1) {
                     setZjqThread = new SetZJQThread();
                     setZjqThread.start();
@@ -360,12 +526,16 @@ public class WxjlSettingActivity extends SerialPortActivity {
                 }
                 break;
             case R.id.btn_zjqXd:
-                if (!isOpened) {
-                    show_Toast("正在打开串口，打开后您再操作");
-                    return;
-                }
-                if (!receiveF9) {
-                    show_Toast("请先完成起爆卡配置");
+//                if (!isOpened) {
+//                    show_Toast("正在打开串口，打开后您再操作");
+//                    return;
+//                }
+//                if (!receiveF9) {
+//                    show_Toast("请先完成起爆卡配置");
+//                    return;
+//                }
+                if (xinDaoId == -1) {
+                    show_Toast("请先选择信道");
                     return;
                 }
                 if (isSendAB) {
@@ -378,6 +548,46 @@ public class WxjlSettingActivity extends SerialPortActivity {
                     show_Toast("无线中继器配置中，请勿重复点击...");
                     return;
                 }
+                break;
+            case R.id.btn_translateXd:
+                if (!isOpened) {
+                    show_Toast("正在打开串口，打开后您再操作");
+                    return;
+                }
+                if (xinDaoId == -1) {
+                    show_Toast("请先选择信道");
+                    return;
+                }
+                if (isTransLate) {
+                    setZjqThread = new SetZJQThread();
+                    setZjqThread.start();
+                    isTransLate = false;
+                } else {
+                    show_Toast("切换信道中，请勿重复点击...");
+                    return;
+                }
+                isReSendAB = true;
+                cmdtype = 1;
+                break;
+            case R.id.btn_resetXd:
+                if (!isOpened) {
+                    show_Toast("正在打开串口，打开后您再操作");
+                    return;
+                }
+                if (xinDaoId == -1) {
+                    show_Toast("请先选择信道");
+                    return;
+                }
+                if (isReset) {
+                    setqbkThread = new SetqbkThread();
+                    setqbkThread.start();
+                    isReset = false;
+                } else {
+                    show_Toast("重置信道中，请勿重复点击...");
+                    return;
+                }
+                isReSendAB = false;
+                cmdtype = 2;
                 break;
             case R.id.btn_exit:
                 finish();
@@ -424,6 +634,7 @@ public class WxjlSettingActivity extends SerialPortActivity {
     protected void onDestroy() {
         closeSerial();
         closeABThread();
+        closeF9Thread();
         super.onDestroy();
         openHandler.removeCallbacksAndMessages(null);
     }

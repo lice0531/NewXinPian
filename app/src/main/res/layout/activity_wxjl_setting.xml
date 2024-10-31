@@ -103,9 +103,10 @@
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/ns_xd"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="10dp"
                     android:textSize="15sp"
+                    android:text="请选择信道"
                     android:textStyle="bold"
                     app:backgroundSelector="@color/text_hint"
                     app:textTint="@color/black" />
@@ -189,6 +190,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:text="1.起爆卡配置"
+            android:visibility="gone"
             android:textSize="20sp" />
 
         <Button
@@ -199,6 +201,25 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="2.无线中继器配置"
+            android:visibility="gone"
+            android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_translateXd"
+            style="@style/allbtntstyle"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="切换信道"
+            android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_resetXd"
+            style="@style/allbtntstyle"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="重置信道"
             android:textSize="20sp" />
 
         <Button
@@ -208,7 +229,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="3.退出"
+            android:text="退出"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -228,6 +249,16 @@
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
             android:text="注:  请先点击1、2步骤完成配置"
+            android:textColor="@color/colorRed"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:text="注:  重置信道和切换信道只可操作一个"
             android:textColor="@color/colorRed"
             android:textSize="20sp"
             android:textStyle="bold" />
