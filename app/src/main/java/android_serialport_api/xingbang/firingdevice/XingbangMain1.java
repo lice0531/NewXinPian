@@ -716,6 +716,7 @@ public class XingbangMain1 extends BaseActivity {
             case R.id.btn_wxjl:
                 queryBeian();
                 //验证是否授权
+                Log.e(TAG,"Yanzheng_sq: " + Yanzheng_sq + "--Yanzheng_sq_size: " + Yanzheng_sq_size);
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
                     createDialog();
                     return;
@@ -726,8 +727,8 @@ public class XingbangMain1 extends BaseActivity {
                     int a = (int) (180000 - (tt - et)) / 1000 + 5;
                     if (a < 180000) {
                         initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "无线级联");
+                        return;
                     }
-                    return;
                 }
                 if (Yanzheng.equals("验证")) {
                     //Intent intent = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节

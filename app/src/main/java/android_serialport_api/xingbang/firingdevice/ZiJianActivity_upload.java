@@ -471,7 +471,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        });
         builder.setNegativeButton("进入程序", (dialog, which) -> {
             finish();
-            Intent intent = new Intent(this, XingbangMain.class);
+            Intent intent = new Intent(this, XingbangMain1.class);
             startActivity(intent);
             dialog.dismiss();
         });

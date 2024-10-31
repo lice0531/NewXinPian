@@ -688,7 +688,7 @@ public class XingbangMain extends BaseActivity {
                 mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                 Log.e(TAG,"雷管数量：" + mListData.size());
                 if (mListData.size() > 0) {
-                    Intent itSync = new Intent(this, WxjlActivity.class);
+                    Intent itSync = new Intent(this, WxjlNearActivity.class);
                     startActivity(itSync);
                 } else {
                     show_Toast(getResources().getString(R.string.text_error_tip30));
