@@ -154,23 +154,26 @@ public class WxjlSettingActivity extends SerialPortActivity {
         xdlist.add("CH38-2.4kbps-3");
         xdlist.add("CH39-2.4kbps-4");
         nsXd.attachDataSource(xdlist);
-        if (currentXinDaoId == 0) {
-            nsXd.setSelectedIndex(0);
-        } else {
-            nsXd.setSelectedIndex(currentXinDaoId);
-        }
+//        if (currentXinDaoId == 0) {
+//            nsXd.setSelectedIndex(0);
+//        } else {
+//            nsXd.setSelectedIndex(currentXinDaoId);
+//        }
+        nsXd.setText("请选择信道");
         nsXd.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
 //                xinDaoId = xdlist.get(position);
-                if (getXdId(xdlist.get(position)) == -1) {
-                    show_Toast("信道获取异常");
-                    return;
+                if (position >= 0) {
+                    if (getXdId(xdlist.get(position)) == -1) {
+                        show_Toast("信道获取异常");
+                        return;
+                    }
+                    xinDaoValue = xdlist.get(position);
+                    xinDaoId = getXdId(xdlist.get(position));
+                    Utils.writeLog("无线设置页面下拉框选中的信道是:" + xinDaoId);
+                    Log.e(TAG,"选中的信道是:" + xdlist.get(position) + "截取后的信道id:" + xinDaoId);
                 }
-                xinDaoValue = xdlist.get(position);
-                xinDaoId = getXdId(xdlist.get(position));
-                Utils.writeLog("无线设置页面下拉框选中的信道是:" + xinDaoId);
-                Log.e(TAG,"选中的信道是:" + xdlist.get(position) + "截取后的信道id:" + xinDaoId);
             }
         });
         mAdapter = new WxSearchDevicesAdapter(this,R.layout.item_wx_device);

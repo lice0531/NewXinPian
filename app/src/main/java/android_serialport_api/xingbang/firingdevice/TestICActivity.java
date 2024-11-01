@@ -189,7 +189,7 @@ public class TestICActivity extends SerialPortActivity {
 
 
         } else if ("40".equals(cmd)) {
-            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
+            busInfo = FourStatusCmd.decodeFromReceiveDataPower24_2("00", locatBuf);
 //            Log.e("命令", "busInfo: " + busInfo.toString());
             busHandler.sendMessage(busHandler.obtainMessage());
 
