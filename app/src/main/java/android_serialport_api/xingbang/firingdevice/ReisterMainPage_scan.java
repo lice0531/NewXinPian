@@ -275,7 +275,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     //这是注册了一个观察者模式
     public static final Uri uri = Uri.parse("content://android_serialport_api.xingbang.denatorBaseinfo");
     private String qiaosi_set = "";//是否检测桥丝
-    private String version = "";//版本
 
     // 雷管列表
     private LinearLayoutManager linearLayoutManager;
@@ -331,7 +330,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void getUserMessage() {
         List<MessageBean> list = getDaoSession().getMessageBeanDao().loadAll();
         qiaosi_set = list.get(0).getQiaosi_set();
-        version = list.get(0).getVersion();
 //        String selection = "id = ?"; // 选择条件，给null查询所有
 //        String[] selectionArgs = {"1"};//选择条件参数,会把选择条件中的？替换成这个数组中的值
 //        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_USER_MESSQGE, null, selection, selectionArgs, null, null, null);
@@ -2339,7 +2337,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
                 denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
             } else {
-                denatorBaseinfo.setAuthorization("0" + version);//雷管芯片型号
+                denatorBaseinfo.setAuthorization("02");//雷管芯片型号
             }
 
             //向数据库插入数据

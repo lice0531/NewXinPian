@@ -310,6 +310,7 @@ public class SendMsgActivity extends BaseActivity {
                 a[0]="";
                 a[3]="";
             }
+
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
             denator.setBlastserial(maxNo);
@@ -328,6 +329,15 @@ public class SendMsgActivity extends BaseActivity {
             denator.setDuanNo(a[4]);
             denator.setDuan(a[4].split("-")[0]);
             denator.setAuthorization(a[5]);//导入默认是02版
+
+            DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(a[2]);
+            if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null &&!detonatorTypeNew.getDetonatorId().equals("0")) {
+                denator.setDenatorId(detonatorTypeNew.getDetonatorId());
+                denator.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denator.setRegdate(detonatorTypeNew.getTime());
+                denator.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
+            }
+
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
         }
         pb_show = 0;
@@ -388,11 +398,11 @@ public class SendMsgActivity extends BaseActivity {
                     return;
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
-                    if (list_uid.get(i).getDenatorId() == null) {
-                        show_Toast(getString(R.string.text_send_tip30));
-                        return;
-                    }
-                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
+//                    if (list_uid.get(i).getDenatorId() == null) {
+//                        show_Toast(getString(R.string.text_send_tip30));
+//                        return;
+//                    }
+                    if (list_uid.get(i).getShellBlastNo().length() == 13 ) {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" +
                                 list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getZhu_yscs() + "#" +
                                 list_uid.get(i).getDuanNo()+ "#" +list_uid.get(i).getAuthorization() + ",");
