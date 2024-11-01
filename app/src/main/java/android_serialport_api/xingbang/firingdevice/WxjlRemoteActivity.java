@@ -829,7 +829,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     }
 
     private void receB5Data(DeviceBean bean, String res, int type) {
-//        Log.e(TAG, "处理接收到的B5消息：" + res + "--type : " + type);
+        Log.e(TAG, "处理接收到的B5消息：" + res + "--type : " + type);
         int index;
         if (type == 1) {
             index = 0;
@@ -1155,8 +1155,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                     Log.e(TAG, "检测结束有错误雷管显示dialog--错误雷管个数:" + errorNum);
                                     showDialog2 = true;
                                     Utils.writeRecord("级联页面" + bean4.getInfo() + "展示查看错误雷管dialog");
-                                    showAlertDialog("当前有错误雷管，是否继续进行?",
-                                            "取消", "继续");
+                                    showErrLgAlertDialog("当前有错误雷管，可点击查看错误雷管按钮查看详情",
+                                            "确定");
                                 }
                             }
 //                            if ("检测中".equals(bean4.getInfo()) || "正在充电".equals(bean4.getInfo()) ||
@@ -1371,6 +1371,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 if (list_device.get(a).getCode().equals(db.getCode())) {
                                     list_device.get(a).setRes(db.getRes());
                                     list_device.get(a).setInfo(db.getInfo());
+                                    list_device.get(a).setBusVoltage(db.getBusVoltage());
+                                    list_device.get(a).setCurrentPeak(db.getCurrentPeak());
                                 }
                             }
                             adapter.notifyDataSetChanged();
@@ -1422,6 +1424,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 Utils.writeRecord("级联页面成功切换到1信道");
                                 enterNearPage();
                                 dialog.dismiss();
+                                errlgDialog.dismiss();
                             }
                         } else {
                             Utils.writeRecord("级联页面AB指令无响应");
@@ -1983,7 +1986,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         }
     }
 
-    AlertDialog dialog;
+    AlertDialog dialog,errlgDialog;
 
     public void showAlertDialog(String content, String cancleText, String sureText) {
         if (!WxjlRemoteActivity.this.isFinishing()) {
@@ -2005,7 +2008,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 //                                setZjqThread.start();
 //                                Log.e(TAG,"启动AB线程了");
 //                            }
-                            isShowError = true;
+//                            isShowError = true;
                             closeLx();
                             dialog1.dismiss();
                         } else {
@@ -2023,6 +2026,21 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         }
     }
 
+    public void showErrLgAlertDialog(String content,String sureText) {
+        if (!WxjlRemoteActivity.this.isFinishing()) {
+            errlgDialog = new AlertDialog.Builder(WxjlRemoteActivity.this)
+                    .setTitle("系统提示")
+                    .setMessage(content)
+                    .setCancelable(false)
+                    //设置对话框的按钮
+                    .setNeutralButton(sureText, (dialog1, which) -> {
+                            closeLx();
+                            dialog1.dismiss();
+                    }).create();
+            errlgDialog.setCanceledOnTouchOutside(false);  // 设置点击对话框外部不消失
+            errlgDialog.show();
+        }
+    }
 
     AlertDialog errorAialog;
 
@@ -2033,7 +2051,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                     .setMessage(tip)//设置对话框的内容
                     .setCancelable(false)
                     //设置对话框的按钮
-                    .setNegativeButton("退出", (dialog1, which) -> {
+                    .setNeutralButton("退出", (dialog1, which) -> {
                         closeSerial();
                         dialog1.dismiss();
                         lastCheckTimes.clear();
@@ -2214,6 +2232,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             builder.setNegativeButton("确定", (dialog, which) -> {
                 dialog.dismiss();
             });
+            builder.setCancelable(false);
             builder.create().show();
         }
     }
@@ -2380,6 +2399,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         }
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
+        }
+        if (errlgDialog != null && errlgDialog.isShowing()) {
+            errlgDialog.dismiss();
         }
         openHandler.removeCallbacksAndMessages(null);
         if (EventBus.getDefault().isRegistered(this)) {
