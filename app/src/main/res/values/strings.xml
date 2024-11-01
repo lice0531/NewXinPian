@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">MX_煋邦科技KT50起爆器</string>
+    <string name="app_version_name">KT50_3.25_MXML_V1.3.1C_240929</string>
     <string name="error_configuration">请先配置你的串口.</string>
     <string name="error_security">您没有串行端口的读/写权限.</string>
     <string name="error_unknown">未知原因无法打开串口.</string>

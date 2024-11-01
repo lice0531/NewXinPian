@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">MX_XingBang Detonation software</string>
+    <string name="app_version_name">KT50_3.25_MXML_V1.3.1C_240929</string>
     <string name="error_configuration">Please configure your serial port first.</string>
     <string name="error_security">You do not have read/write permission to the serial
 		port.</string>

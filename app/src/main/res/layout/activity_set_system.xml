@@ -192,6 +192,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="@string/set_language"
                 android:textColor="@color/bt_fg_base" />
 
@@ -205,6 +206,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:background="@drawable/bt_mainpage_style"
                 android:text="@string/set_szdy"
                 android:textColor="@color/bt_fg_base" />
