@@ -562,6 +562,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
             Log.e(TAG, "无线配置返回命令正常--具体命令:" + cmd);
             byte[] localBuf = Utils.hexStringToBytes(fromCommad);
             doWithWxpzReceivData(cmd, localBuf);//处理cmd命令
+        } else if (fromCommad.startsWith("B8") && fromCommad.endsWith("B8")) {
+            doWithReceivData(fromCommad);//处理cmd命令
         } else {
             Log.e(TAG, "-返回命令不完整" + fromCommad);
         }
