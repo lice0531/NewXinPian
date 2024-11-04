@@ -103,6 +103,22 @@ public class  BaseActivity extends AppCompatActivity {
 				.messageBold(true)//设置文本为粗体，默认false
 				.apply()
 				.showLong(text);
+
+//		//自定义时间(SmartToast4.1.9版本方法)
+//		SmartToast.emotion()
+//				.config()
+//				.messageStyle(Color.RED, 30f, true)//设置文本大小，单位sp，默认14sp//设置文本为粗体，默认false
+//				.backgroundColorResource(R.color.toast_bg_color)
+//				.duration(Duration.of(5000))
+//				.commit()
+//				.info(text);
+//		//简单提示
+//		SmartToast.classic()
+//				.config()
+//				.messageStyle(Color.RED, 30f, true)//设置文本大小，单位sp，默认14sp//设置文本为粗体，默认false
+//				.backgroundColorResource(R.color.toast_bg_color)
+//				.commit()
+//				.show(text);
 	}
 
 	@SuppressLint("BlockedPrivateApi")

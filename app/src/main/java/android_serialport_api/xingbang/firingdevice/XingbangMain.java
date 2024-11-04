@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -690,6 +692,23 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                long toatl=queryTotal();
+                if(toatl==0){
+                    TextView view_tip = new TextView(this);
+                    view_tip.setTextSize(25);
+                    view_tip.setTextColor(Color.RED);
+                    view_tip.setText(getString(R.string.text_error_tip30));
+                    view_tip.setTypeface(null, Typeface.BOLD);
+                    AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
+                            .setTitle(R.string.text_fir_dialog2)//设置对话框的标题
+                            .setView(view_tip)
+                            //设置对话框的按钮
+                            .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
+                            })
+                            .create();
+                    dialog.show();
+                    return;
+                }
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -949,68 +968,6 @@ public class XingbangMain extends BaseActivity {
 
     private long queryMessage() {
         return getDaoSession().getMessageBeanDao().count();
-    }
-
-    /***
-     * 手动输入注册
-     */
-    private int insertDenator(String leiguan) {
-        String[] lg = leiguan.split(",");
-        String shellNo;
-        int maxNo = getMaxNumberNo();
-        int reCount = 0;
-        for (int i = lg.length; i > 0; i--) {
-            shellNo = lg[i - 1];
-            Log.e("雷管信息", "shellNo: " + shellNo);
-            String[] a = shellNo.split("#");
-            //检查重复数据
-            if (checkRepeatShellNo(a[0]) == 1) {
-                reCount++;
-                continue;
-            }
-            maxNo++;
-            DenatorBaseinfo baseinfo = new DenatorBaseinfo();
-            baseinfo.setBlastserial(maxNo);
-            baseinfo.setSithole(maxNo + "");
-            baseinfo.setShellBlastNo(a[0]);
-            baseinfo.setDelay(Integer.parseInt(a[1]));
-            baseinfo.setRegdate(Utils.getDateFormat(new Date()));
-            baseinfo.setStatusCode("02");
-            baseinfo.setStatusName("已注册");
-            baseinfo.setErrorCode("");
-            baseinfo.setErrorCode("FF");
-            baseinfo.setWire("");
-            getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
-            reCount++;
-        }
-        return reCount;
-    }
-
-
-    /***
-     * 得到最大序号
-     * @return
-     */
-    private int getMaxNumberNo() {
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().queryBuilder().orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
-        if (list.size() > 0) {
-            return list.get(0).getBlastserial();
-        }
-        return 1;
-    }
-
-    /**
-     * 检查重复的数据
-     *
-     * @param shellBlastNo
-     */
-    public int checkRepeatShellNo(String shellBlastNo) {
-        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shellBlastNo)).list();
-        if (list.size() > 0) {
-            return 1;//重复
-        } else {
-            return 0;
-        }
     }
 
     /**

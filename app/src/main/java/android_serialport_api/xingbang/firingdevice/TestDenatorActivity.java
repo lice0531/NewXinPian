@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -584,7 +585,23 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.5) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
                         ll_firing_Volt_4.setTextColor(Color.RED);
-                        show_Toast(getString(R.string.text_test_tip13));
+
+//                        show_Toast(getString(R.string.text_test_tip13));
+
+                        TextView view_tip = new TextView(this);
+                        view_tip.setTextSize(25);
+                        view_tip.setTextColor(Color.RED);
+                        view_tip.setText(getString(R.string.text_test_tip13));
+                        view_tip.setTypeface(null, Typeface.BOLD);
+                        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
+                                .setTitle(R.string.text_fir_dialog2)//设置对话框的标题
+                                .setView(view_tip)
+                                //设置对话框的按钮
+                                .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
+                                })
+                                .create();
+                        dialog.show();
+
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         stage = 5;
                         Utils.writeRecord("电压异常,电压为" + busInfo.getBusVoltage() + "V");
