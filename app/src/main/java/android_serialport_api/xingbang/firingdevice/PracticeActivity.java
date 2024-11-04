@@ -130,6 +130,8 @@ public class PracticeActivity extends BaseActivity {
     Button butChakan;
     @BindView(R.id.but_shezhi)
     Button butShezhi;
+    @BindView(R.id.but_rizhi)
+    Button butRizhi;
     private DatabaseHelper mMyDatabaseHelper;
     private List<VoBlastModel> list_uid = new ArrayList<>();
     private SQLiteDatabase db;
@@ -167,14 +169,14 @@ public class PracticeActivity extends BaseActivity {
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText("本机IP地址:" + getlocalip());
 
-        initHandle();
-
-        loadMoreData();
+//        initHandle();
+//
+//        loadMoreData();
 //        List<DenatorBaseinfo> denator = LitePal.findAll(DenatorBaseinfo.class);
 //        List<MessageBean> message = LitePal.findAll(MessageBean.class);
 //        Log.e("注册", "denator: " + denator.toString());
@@ -327,7 +329,7 @@ public class PracticeActivity extends BaseActivity {
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
             denator.setBlastserial(maxNo);
-            denator.setSithole(maxNo+"");
+            denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
             if (a.length == 3) {
                 denator.setShellBlastNo(a[2]);
@@ -451,8 +453,6 @@ public class PracticeActivity extends BaseActivity {
     }
 
 
-
-
     /**
      * 处理接收到的cmd命令
      */
@@ -471,10 +471,9 @@ public class PracticeActivity extends BaseActivity {
     }
 
 
-
     @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_write, R.id.btn_read, R.id.btn_read_log,
             R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_xiangmu,
-            R.id.but_test, R.id.but_sendMsg, R.id.but_delete, R.id.but_chakan, R.id.but_shezhi})
+            R.id.but_test, R.id.but_sendMsg, R.id.but_delete, R.id.but_chakan, R.id.but_shezhi, R.id.but_rizhi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -492,6 +491,10 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_sendMsg://进入数据互传页面
                 Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
                 startActivity(intent12);
+                break;
+            case R.id.but_rizhi://进入日志页面
+                Intent intent20 = new Intent(this, RiZhiActivity.class);//日志
+                startActivity(intent20);
                 break;
             case R.id.but_pre://开启测试
 
@@ -609,31 +612,29 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_test:
 //                startActivity(new Intent(this, TestActivity.class));
                 break;
-                case R.id.but_shezhi:
-                    loginToSetEnv();
+            case R.id.but_shezhi:
+                loginToSetEnv();
                 break;
-                case R.id.but_chakan:
+            case R.id.but_chakan:
                 startActivity(new Intent(this, QueryCurrentDetail.class));
                 break;
         }
     }
 
 
-
-
-    private void deleteRiZhi(){
+    private void deleteRiZhi() {
         String filePath;
         String filePath2;
         boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
         if (hasSDCard) {
-            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" ;
+            filePath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/";
         } else {
-            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/" ;
+            filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + "/程序运行日志/";
         }
         if (hasSDCard) {
-            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/" ;
+            filePath2 = Environment.getExternalStorageDirectory().toString() + File.separator + "/XB程序日志/";
         } else {
-            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/" ;
+            filePath2 = Environment.getDownloadCacheDirectory().toString() + File.separator + "/XB程序日志/";
         }
         File dir = new File(filePath);
         Utils.deleteFile(dir);
@@ -681,11 +682,6 @@ public class PracticeActivity extends BaseActivity {
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
     }
-
-
-
-
-
 
 
     /**
@@ -927,7 +923,6 @@ public class PracticeActivity extends BaseActivity {
         }
         return res;
     }
-
 
 
     private Socket socket = null;

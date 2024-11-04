@@ -297,13 +297,29 @@
             android:layout_marginTop="5dp"
             android:background="@color/label_color" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
 
+            <Button
+                android:id="@+id/but_rizhi"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="日志上传"
+                />
+            <Button
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:visibility="invisible" />
 
+        </LinearLayout>
 
-        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"

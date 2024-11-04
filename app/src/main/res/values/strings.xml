@@ -760,7 +760,7 @@
     <string name="text_uploadAllHis">请输入密码后,再进行关闭授权验证操作</string>
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
 
-    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_3.25_MX_240829_14</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_3.25_MX_241101_14</string>
     <string name="sq_item_1">选择雷管</string>
     <string name="sq_item_2">显示正确</string>//通用
 </resources>
