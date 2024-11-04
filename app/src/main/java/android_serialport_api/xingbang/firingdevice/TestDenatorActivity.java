@@ -192,7 +192,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
 
         if (denatorCount < 1) {
-            show_Toast(getResources().getString(R.string.text_error_tip30));
+            show_Toast_long(getResources().getString(R.string.text_error_tip30));
             closeThread();
             Intent intentTemp = new Intent();
             intentTemp.putExtra("backString", "");
