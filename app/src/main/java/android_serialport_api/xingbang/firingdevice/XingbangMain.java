@@ -692,8 +692,8 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
-                long toatl=queryTotal();
-                if(toatl==0){
+                List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);//不分区域
+                if(denatorBaseinfos.size()==0){
                     TextView view_tip = new TextView(this);
                     view_tip.setTextSize(25);
                     view_tip.setTextColor(Color.RED);

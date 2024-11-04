@@ -568,7 +568,10 @@ public class TestDenatorActivity extends SerialPortActivity {
                     ll_firing_IC_4.setText(displayIcStr);
                     if (displayIc == 0 && firstCount < Preparation_time * 0.4) {
                         ll_firing_IC_4.setTextColor(Color.RED);
-                        show_Toast(getString(R.string.text_test_tip12));
+//                        show_Toast(getString(R.string.text_test_tip12));
+                        showtip(getString(R.string.text_test_tip12));
+
+
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -587,20 +590,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_Volt_4.setTextColor(Color.RED);
 
 //                        show_Toast(getString(R.string.text_test_tip13));
+                        showtip(getString(R.string.text_test_tip13));
 
-                        TextView view_tip = new TextView(this);
-                        view_tip.setTextSize(25);
-                        view_tip.setTextColor(Color.RED);
-                        view_tip.setText(getString(R.string.text_test_tip13));
-                        view_tip.setTypeface(null, Typeface.BOLD);
-                        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
-                                .setTitle(R.string.text_fir_dialog2)//设置对话框的标题
-                                .setView(view_tip)
-                                //设置对话框的按钮
-                                .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
-                                })
-                                .create();
-                        dialog.show();
 
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         stage = 5;
@@ -1497,4 +1488,21 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     }
 
+    void showtip(String tip){
+        TextView view_tip = new TextView(this);
+        view_tip.setTextSize(25);
+        view_tip.setTextColor(Color.RED);
+        view_tip.setText(tip);
+        view_tip.setTypeface(null, Typeface.BOLD);
+        AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
+                .setTitle(R.string.text_fir_dialog2)//设置对话框的标题
+                .setView(view_tip)
+                //设置对话框的按钮
+                .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
+                    closeThread();
+                    finish();
+                })
+                .create();
+        dialog.show();
+    }
 }
