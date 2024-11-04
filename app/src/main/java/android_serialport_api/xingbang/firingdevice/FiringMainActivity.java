@@ -2112,6 +2112,10 @@ public class FiringMainActivity extends SerialPortActivity {
             case 9://起爆之后,弹出对话框
                 eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
                 Log.e("起爆成功", "显示出最后的弹窗");
+                if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
+                    saveFireResult();
+                    Utils.writeRecord("--生成历史记录");
+                }
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
 
@@ -3646,6 +3650,24 @@ public class FiringMainActivity extends SerialPortActivity {
             //此时在页面显示出时钟校验的文字
             increase(12);
             Log.e("第5阶段-increase接收到时钟校验消息", "12" + msg);
+        }
+    }
+
+    /**
+     * 检查重复的历史记录
+     * @param time
+     * @return
+     */
+    public boolean checkRepeatHis(String time) {
+        Log.e(TAG, "判断是否生成历史记录 time: "+time );
+        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
+
+        if (denatorHis_Main != null) {
+            Log.e(TAG, "判断是否生成历史记录 his: "+true );
+            return true;
+        } else {
+            Log.e(TAG, "判断是否生成历史记录 his: "+false );
+            return false;
         }
     }
 }

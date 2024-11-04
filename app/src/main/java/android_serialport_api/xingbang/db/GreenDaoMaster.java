@@ -1468,4 +1468,14 @@ public class GreenDaoMaster {
                 .queryBuilder().where(DenatorHis_DetailDao.Properties.Blastdate.eq(time))
                 .buildDelete().executeDeleteWithoutDetachingEntities();
     }
+
+    /**
+     * 检查重复历史记录
+     */
+    public DenatorHis_Main checkRepeatHis(String time) {
+        return denatorHis_mainDao
+                .queryBuilder()
+                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
+                .unique();
+    }
 }
