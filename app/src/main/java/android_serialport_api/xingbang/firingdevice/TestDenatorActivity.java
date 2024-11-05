@@ -1510,9 +1510,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         endTest();
         secondTxt.setText(R.string.text_test_tip4);
         ll_1.setVisibility(View.GONE);
-        ll_2.setVisibility(View.GONE);
-        ll_3.setVisibility(View.VISIBLE);
-        btn_return.setText(R.string.text_firing_ssqb);
+        ll_2.setVisibility(View.VISIBLE);
+//        ll_3.setVisibility(View.VISIBLE);
+//        btn_return.setText(R.string.text_firing_ssqb);
     }
 
     //off()方法 true 获取全部雷管  flase 获取错误雷管

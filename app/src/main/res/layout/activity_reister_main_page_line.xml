@@ -256,7 +256,7 @@
                         android:layout_height="45dp"
                         android:layout_marginTop="8dp">
 
-                        <TextView
+                        <Button
                             android:id="@+id/textView9"
                             style="@style/allbtntstyle"
                             android:layout_width="0dp"
@@ -322,7 +322,15 @@
                             android:padding="5dp"
                             android:textColor="@color/rangle_fc_base"
                             android:textSize="@dimen/fireChildPageLabelFontSize" />
-
+                        <Button
+                            android:id="@+id/btn_JH_F1"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.4"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_jh"
+                            android:textSize="18sp"
+                            style="@style/allbtntstyle"
+                            />
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="0.5"
@@ -371,6 +379,15 @@
                             android:padding="5dp"
                             android:textColor="@color/rangle_fc_base"
                             android:textSize="@dimen/fireChildPageLabelFontSize" />
+                        <Button
+                            android:id="@+id/btn_JH_F2"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.4"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_jh"
+                            android:textSize="18sp"
+                            style="@style/allbtntstyle"
+                            />
 
                         <EditText
                             android:id="@+id/et_tk"

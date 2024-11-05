@@ -333,6 +333,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
     Button btnTk;
     @BindView(R.id.et_tk)
     EditText etTk;
+    @BindView(R.id.btn_JH_F1)
+    Button btnJHF1;
+    @BindView(R.id.btn_JH_F2)
+    Button btnJHF2;
+    @BindView(R.id.btn_start_delay)
+    Button btnStartDelay;
 
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
@@ -692,25 +698,50 @@ public class ReisterMainPage_line extends SerialPortActivity {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        if (delay_set.equals("f1")) {//获取最大延时有问题
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay + f1 * (tk_num + 1);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay =start_delay - delay;
                 } else {
-                    delay = delay + f1;
-                }
+                    if (flag_tk) {
+                        delay = delay - f1 * (tk_num + 1);
+                    } else {
+                        delay = delay - f1;
+                    }
 
-            }
-        } else if (delay_set.equals("f2")) {
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay_minNum + f2 * (tk_num + 1);
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = start_delay - delay;
                 } else {
-                    delay = delay_minNum + f2;
+                    if (flag_tk) {
+                        delay = delay - f2 * (tk_num + 1);
+                    } else {
+                        delay = delay - f2;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f1 * (tk_num + 1);
+                    } else {
+                        delay = delay + f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay + f2;
+                    }
                 }
             }
         }
@@ -1021,24 +1052,50 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
 
-            if (delay_set.equals("f1")) {//获取最大延时有问题
-                if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else {
-                    if (flag_tk) {
-                        delay = delay + f1 * (tk_num + 1);
+            if(!flag_jh_f1||!flag_jh_f2){
+                if (delay_set.equals("f1")) {//孔间延时
+                    if (maxNo == 0) {
+                        delay =start_delay - delay;
                     } else {
-                        delay = delay + f1;
+                        if (flag_tk) {
+                            delay = delay - f1 * (tk_num + 1);
+                        } else {
+                            delay = delay - f1;
+                        }
+
+                    }
+                } else if (delay_set.equals("f2")) {//排间延时
+                    if (maxNo == 0) {
+                        delay = start_delay - delay;
+                    } else {
+                        if (flag_tk) {
+                            delay = delay - f2 * (tk_num + 1);
+                        } else {
+                            delay = delay - f2;
+                        }
                     }
                 }
-            } else if (delay_set.equals("f2")) {
-                if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else {
-                    if (flag_tk) {
-                        delay = delay_minNum + f2 * (tk_num + 1);
+            }else {
+                if (delay_set.equals("f1")) {//孔间延时
+                    if (maxNo == 0) {
+                        delay = delay + start_delay;
                     } else {
-                        delay = delay_minNum + f2;
+                        if (flag_tk) {
+                            delay = delay + f1 * (tk_num + 1);
+                        } else {
+                            delay = delay + f1;
+                        }
+
+                    }
+                } else if (delay_set.equals("f2")) {//排间延时
+                    if (maxNo == 0) {
+                        delay = delay + start_delay;
+                    } else {
+                        if (flag_tk) {
+                            delay = delay + f2 * (tk_num + 1);
+                        } else {
+                            delay = delay + f2;
+                        }
                     }
                 }
             }
@@ -2179,29 +2236,54 @@ public class ReisterMainPage_line extends SerialPortActivity {
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-
-        if (delay_set.equals("f1")) {//孔间延时
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay + f1 * (tk_num + 1);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay =start_delay - delay;
                 } else {
-                    delay = delay + f1;
+                    if (flag_tk) {
+                        delay = delay - f1 * (tk_num + 1);
+                    } else {
+                        delay = delay - f1;
+                    }
+
                 }
-
-            }
-        } else if (delay_set.equals("f2")) {//排间延时
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay_minNum + f2 * (tk_num + 1);
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = start_delay - delay;
                 } else {
-                    delay = delay_minNum + f2;
+                    if (flag_tk) {
+                        delay = delay - f2 * (tk_num + 1);
+                    } else {
+                        delay = delay - f2;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f1 * (tk_num + 1);
+                    } else {
+                        delay = delay + f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay + f2;
+                    }
                 }
             }
         }
+
         int duanNUM = getDuanNo(duan_new, mRegion);//也得做区域区分
 
         Log.e("扫码", "duanNo2: " + duanNo2);
@@ -2361,7 +2443,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             return -1;
         }
 //        int maxNo = getMaxNumberNo();
-        int start = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
+        int start_delay = Integer.parseInt(String.valueOf(et_startDelay.getText()));//开始延时
         int f1 = Integer.parseInt(String.valueOf(reEtF1.getText()));//f1延时
         int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
 //        int delay = getMaxDelay(maxNo);//获取最大延时
@@ -2386,7 +2468,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 return -1;
             }
         }
-        if (maxSecond != 0 && start > maxSecond) {//开始延时超出最大范围
+        if (maxSecond != 0 && start_delay > maxSecond) {//开始延时超出最大范围
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
             return -1;
         }
@@ -2405,28 +2487,54 @@ public class ReisterMainPage_line extends SerialPortActivity {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        if (delay_set.equals("f1")) {//获取最大延时有问题
-            if (maxNo == 0) {
-                delay = delay + start;
-            } else {
-                if (flag_tk) {
-                    delay = delay + f1 * (tk_num + 1);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay =start_delay - delay;
                 } else {
-                    delay = delay + f1;
-                }
+                    if (flag_tk) {
+                        delay = delay - f1 * (tk_num + 1);
+                    } else {
+                        delay = delay - f1;
+                    }
 
-            }
-        } else if (delay_set.equals("f2")) {
-            if (maxNo == 0) {
-                delay = delay + start;
-            } else {
-                if (flag_tk) {
-                    delay = delay_minNum + f2 * (tk_num + 1);
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = start_delay - delay;
                 } else {
-                    delay = delay_minNum + f2;
+                    if (flag_tk) {
+                        delay = delay - f2 * (tk_num + 1);
+                    } else {
+                        delay = delay - f2;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f1 * (tk_num + 1);
+                    } else {
+                        delay = delay + f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay + f2;
+                    }
                 }
             }
         }
+
 
         int duanNUM = getDuanNo(duan_new, mRegion);//也得做区域区分
 
@@ -2481,7 +2589,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     if (delay_set.equals("f1")) {//获取最大延时有问题
                         delay_add = f1;
                         if (maxNo == 0) {
-                            delay = delay + start;
+                            delay = delay + start_delay;
                         } else {
                             if (flag_tk) {
                                 delay = delay + f1 * (tk_num + 1);
@@ -2492,7 +2600,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     } else if (delay_set.equals("f2")) {
                         delay_add = f2;
                         if (maxNo == 0) {
-                            delay = delay + start;
+                            delay = delay + start_delay;
                         } else {
                             if (flag_tk) {
                                 delay = delay_minNum + f2 * (tk_num + 1);
@@ -2738,12 +2846,15 @@ public class ReisterMainPage_line extends SerialPortActivity {
     int flag2 = 0;
     boolean flag_t1 = true;//同孔标志
     boolean flag_tk = false;//跳孔标志
+    boolean flag_jh_f1 = true;//减号标志
+    boolean flag_jh_f2 = true;//减号标志
+    boolean btn_start = false;//开始延时标志
 
     @SuppressLint("NonConstantResourceId")
     @OnClick({R.id.btn_f1, R.id.btn_f2, R.id.btn_singleReister, R.id.btn_LookHistory,
             R.id.btn_setdelay, R.id.btn_ReisterScanStart_st, R.id.btn_ReisterScanStart_ed,
-            R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2,
-            R.id.setDelayTime_startDelaytime, R.id.btn_addDelay, R.id.btn_tk_F1, R.id.btn_tk,
+            R.id.btn_return, R.id.btn_inputOk, R.id.re_et_f1, R.id.re_et_f2,R.id.btn_JH_F1,R.id.btn_JH_F2,
+            R.id.setDelayTime_startDelaytime, R.id.btn_addDelay, R.id.btn_tk_F1, R.id.btn_tk,R.id.btn_start_delay,
             R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3,
             R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.re_btn_f8, R.id.re_btn_f9, R.id.re_btn_f10, R.id.re_btn_f11, R.id.re_btn_f12, R.id.re_btn_f13,
@@ -2781,6 +2892,35 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     flag_t1 = true;
                 }
                 break;
+            case R.id.btn_JH_F1:
+                btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_jh_f1) {
+                    btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_jh_f1 = false;
+                } else {
+                    btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_jh_f1 = true;
+                }
+                break;
+            case R.id.btn_JH_F2:
+                btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_jh_f2) {
+                    btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_jh_f2 = false;
+                } else {
+                    btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_jh_f2 = true;
+                }
+                break;
+            case R.id.btn_start_delay:
+                btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (btn_start) {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    btn_start = false;
+                } else {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    btn_start = true;
+                }
             case R.id.btn_f1:
 
                 hideInputKeyboard();

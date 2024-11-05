@@ -357,6 +357,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     Button btnJHF1;
     @BindView(R.id.btn_JH_F2)
     Button btnJHF2;
+    @BindView(R.id.btn_start_delay)
+    Button btnStartDelay;
 
     @BindView(R.id.btn_tk)
     Button btnTk;
@@ -1963,6 +1965,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
+        if(btn_start){
+            delay_start=start_delay;
+        }
         Log.e("扫码", "delay_set: " + delay_set);
 
         //判断延时是否超出范围
@@ -2175,6 +2180,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
+        if(btn_start){
+            delay_start=start_delay;
+        }
         Log.e("扫码", "delay_set: " + delay_set);
         //判断延时是否超出范围
         if(!flag_jh_f1||!flag_jh_f2){
@@ -2380,7 +2388,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-
+        if(btn_start){
+            delay_start=start_delay;
+        }
         if(!flag_jh_f1||!flag_jh_f2){
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
@@ -2710,11 +2720,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     boolean flag_t1 = true;//同孔标志
     boolean flag_jh_f1 = true;//减号标志
     boolean flag_jh_f2 = true;//减号标志
+    boolean btn_start = false;//减号标志
     boolean flag_tk = false;//跳孔标志
 
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1,R.id.btn_JH_F1,R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
-            R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay,
+            R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay,R.id.btn_start_delay,
             R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3,
             R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.re_btn_f8, R.id.re_btn_f9, R.id.re_btn_f10, R.id.re_btn_f11, R.id.re_btn_f12, R.id.re_btn_f13,
@@ -2779,6 +2790,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 } else {
                     btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                     flag_jh_f2 = true;
+                }
+                break;
+                case R.id.btn_start_delay:
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (btn_start) {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    btn_start = false;
+                } else {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    btn_start = true;
                 }
                 break;
             case R.id.btn_scanReister:
