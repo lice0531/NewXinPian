@@ -354,7 +354,8 @@
                                 android:gravity="left"
                                 android:hint="@string/text_scan_f1"
                                 android:maxLength="6"
-                                android:numeric="integer"
+                                android:digits="1234567890-"
+                                android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@color/rangle_fc_base"
                                 android:textSize="@dimen/fireChildPageLabelFontSize" />
@@ -410,7 +411,8 @@
                                 android:gravity="left"
                                 android:hint="@string/text_scan_f2"
                                 android:maxLength="6"
-                                android:numeric="integer"
+                                android:digits="1234567890-"
+                                android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@color/rangle_fc_base"
                                 android:textSize="@dimen/fireChildPageLabelFontSize" />
