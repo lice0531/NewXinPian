@@ -1000,6 +1000,9 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
         //接收到485消息后处理
         DeviceBean bean = new DeviceBean();
         bean.setRes(res);
+        if ("在线".equals(desc)) {
+            bean.setCurrentPeak("0μA");
+        }
         bean.setCode(res.substring(2));
         bean.setInfo(desc);
         return bean;
@@ -1043,6 +1046,8 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private static final long GAOYA_TIME_MS = 20000; // 高压暂定20秒
     private Map<String, Long> lastCheckTimes = new HashMap<>();
     private boolean isGetErr = true;//检测结束错误总数量获取一次就不再获取
+    boolean isSaveQbResult = true;//保存起爆历史记录一次即可
+    boolean isQbjsCloseLx = true;//起爆结束后轮询关闭一次即可
     private Handler handler_msg = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
@@ -1330,21 +1335,27 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 openHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Log.e(TAG, "起爆结束了.....");
-                                        MmkvUtils.savecode("endTime", System.currentTimeMillis());
-                                        //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
-                                        hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
-                                        saveFireResult();
-                                        if (!qbxm_id.equals("-1")) {
-                                            updataState(qbxm_id);
-                                            Log.e(TAG, "更新起爆状态");
+                                        if (isSaveQbResult) {
+                                            isSaveQbResult = false;
+                                            Log.e(TAG, "起爆结束了.....");
+                                            MmkvUtils.savecode("endTime", System.currentTimeMillis());
+                                            //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
+                                            hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
+                                            saveFireResult();
+                                            if (!qbxm_id.equals("-1")) {
+                                                updataState(qbxm_id);
+                                                Log.e(TAG, "更新起爆状态");
+                                            }
                                         }
                                     }
                                 }, 1000);
                                 openHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        closeLx();
+                                        if (isQbjsCloseLx) {
+                                            isQbjsCloseLx = false;
+                                            closeLx();
+                                        }
                                     }
                                 },8000);
                             } else if ("起爆失败".equals(bean4.getInfo())) {
@@ -1795,6 +1806,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     private boolean isCanQb = true;//是否可以起爆
+    private int stage = 0;//0:初始状态  1:检测   2:充电   3:起爆
     @OnClick({R.id.btn_net_test, R.id.btn_prepare_charge, R.id.btn_qibao, R.id.btn_err, R.id.btn_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -1839,7 +1851,6 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                         if (qb_zt) {
                             if (isCanQb) {
                                 writeData("A4");//准备起爆指令
-
                             } else {
                                 show_Toast("请按顺序进行操作");
                             }
@@ -1978,8 +1989,14 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                         if ("A4".equals(data)) {
                             isCanQb = true;
                         } else if ("A7".equals(data)) {
-                            qb_zt = false;
-                            isCanQb = true;
+                            if (stage == 3) {
+                                qb_zt = false;
+                            } else {
+                                qb_zt = true;
+                                isCanQb = true;
+                                isSaveQbResult = true;
+                                isQbjsCloseLx = true;
+                            }
                             isGetErr = true;
                         }
                     })
@@ -2106,27 +2123,32 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
     private void setTipText(String data) {
         switch (data) {
             case "A1":
+                stage = 1;
                 tvTip.setText("正在检测...");
                 sendA1Cmd = new SendA1Cmd();
                 sendA1Cmd.start();
                 break;
             case "A2":
+                stage = 2;
                 tvTip.setText("正在充电...");
                 isStopGetLgNum = true;
                 sendCmd(ThreeFiringCmd.sendWxjlA2("01"));
                 break;
             case "A4":
+                stage = 3;
                 DaoJiShiThread daoJiShiThread = new DaoJiShiThread();
                 daoJiShiThread.start();
                 isCanQb = false;
                 qb_zt = false;
                 break;
             case "A6":
+                stage = 3;
                 tvTip.setText("正在执行起爆...");
                 sendCmd(ThreeFiringCmd.sendWxjlA6("01", "01"));
                 fuwei();
                 break;
             case "A7":
+                stage = 0;
                 isA7 = true;
                 tvTip.setText("执行退出指令...");
                 exitRemotePage();
