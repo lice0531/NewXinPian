@@ -2831,4 +2831,38 @@ public class Utils {
             e.printStackTrace();
         }
     }
+    private static final String HEX_STR = "0123456789ABCDEF";
+    /**
+     * 16进制字符串转字节数据
+     * @param hexStr  字符串
+     * @return 字节数组
+     */
+    public static byte[] hexToByteArr(String hexStr) {
+        char[] charArr = hexStr.toCharArray();
+        byte[] btArr = new byte[charArr.length / 2];
+        int index = 0;
+        for (int i = 0; i < charArr.length; i++) {
+            int highBit = HEX_STR.indexOf(charArr[i]);
+            int lowBit = HEX_STR.indexOf(charArr[++i]);
+            btArr[index] = (byte) (highBit << 4 | lowBit);
+            index++;
+        }
+        return btArr;
+    }
+
+    public static String bytesToString(byte[] bytes) {
+        final char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[bytes.length * 2];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            int v = bytes[i] & 0xFF;
+            hexChars[i * 2] = hexArray[v >>> 4];
+            hexChars[i * 2 + 1] = hexArray[v & 0x0F];
+
+            sb.append(hexChars[i * 2]);
+            sb.append(hexChars[i * 2 + 1]);
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
 }

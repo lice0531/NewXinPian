@@ -4,13 +4,10 @@ import static android_serialport_api.xingbang.Application.mContext;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.DeviceControl;
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -23,31 +20,30 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.coder.vincent.smart_toast.SmartToast;
 import com.kfree.expd.ExpdDevMgr;
 import com.orhanobut.dialogplus.DialogPlus;
+import com.sdk.devicemanager.ICcon;
 import com.senter.pda.iam.libgpiot.Gpiot1;
 
 import android_serialport_api.xingbang.utils.LoadingUtils;
-import android_serialport_api.xingbang.utils.Utils;
 
 public class  BaseActivity extends AppCompatActivity {
-	
+
 	protected Application mApplication;
 	private BaseActivity oContext;
 	// 通用
 	public DialogPlus mDialogPlus;
 
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);	
+		super.onCreate(savedInstanceState);
 		//禁止横屏
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		if (mApplication == null) {
-		    // 得到Application对象
+			// 得到Application对象
 			mApplication = (Application) getApplication();
 		}
 		oContext = this;// 把当前的上下文对象赋值给BaseActivity
@@ -84,8 +80,8 @@ public class  BaseActivity extends AppCompatActivity {
 				.apply()
 				.show(text);
 	}
-    public void show_Toast_ui(String text) {
-        Looper.prepare();
+	public void show_Toast_ui(String text) {
+		Looper.prepare();
 //		Utils.showToast(this,text,3000);
 		SmartToast.classic()
 				.config()
@@ -95,8 +91,8 @@ public class  BaseActivity extends AppCompatActivity {
 				.messageBold(true)//设置文本为粗体，默认false
 				.apply()
 				.show(text);
-        Looper.loop();
-    }
+		Looper.loop();
+	}
 	public void show_Toast_long(String text) {
 		SmartToast.classic()
 				.config()
@@ -110,39 +106,39 @@ public class  BaseActivity extends AppCompatActivity {
 
 	@SuppressLint("BlockedPrivateApi")
 	public static void fixInputMethodManagerLeak(Context destContext) {
-	    if (destContext == null) {  
-	        return;  
-	    }  
-	      
-	    InputMethodManager imm = (InputMethodManager) destContext.getSystemService(Context.INPUT_METHOD_SERVICE);  
-	    if (imm == null) {  
-	        return;  
-	    }  
-	  
-	    String [] arr = new String[]{"mCurRootView", "mServedView", "mNextServedView"};  
-	    Field f = null;  
-	    Object obj_get = null;  
-	    for (int i = 0;i < arr.length;i ++) {  
-	        String param = arr[i];  
-	        try{  
-	            f = imm.getClass().getDeclaredField(param);  
-	            if (f.isAccessible() == false) {  
-	                f.setAccessible(true);  
-	            } // author: sodino mail:sodino@qq.com  
-	            obj_get = f.get(imm);  
-	            if (obj_get != null && obj_get instanceof View) {  
-	                View v_get = (View) obj_get;  
-	                if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的  
-	                    f.set(imm, null); // 置空，破坏掉path to gc节点  
-	                } else {  
-	                    // 不是想要目标销毁的，即为又进了另一层界面了，不要处理，避免影响原逻辑,也就不用继续for循环了  
-	                    break;
-	                }  
-	            }  
-	        }catch(Throwable t){  
-	            t.printStackTrace();  
-	        }  
-	    }  
+		if (destContext == null) {
+			return;
+		}
+
+		InputMethodManager imm = (InputMethodManager) destContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+		if (imm == null) {
+			return;
+		}
+
+		String [] arr = new String[]{"mCurRootView", "mServedView", "mNextServedView"};
+		Field f = null;
+		Object obj_get = null;
+		for (int i = 0;i < arr.length;i ++) {
+			String param = arr[i];
+			try{
+				f = imm.getClass().getDeclaredField(param);
+				if (f.isAccessible() == false) {
+					f.setAccessible(true);
+				} // author: sodino mail:sodino@qq.com
+				obj_get = f.get(imm);
+				if (obj_get != null && obj_get instanceof View) {
+					View v_get = (View) obj_get;
+					if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
+						f.set(imm, null); // 置空，破坏掉path to gc节点
+					} else {
+						// 不是想要目标销毁的，即为又进了另一层界面了，不要处理，避免影响原逻辑,也就不用继续for循环了
+						break;
+					}
+				}
+			}catch(Throwable t){
+				t.printStackTrace();
+			}
+		}
 	}
 
 
@@ -152,6 +148,7 @@ public class  BaseActivity extends AppCompatActivity {
 	public DeviceControlSpd mDeviceControlSpd ;    // 2: 团标上电
 	public Gpiot1 mGpiot1;                  // 1:Gpio包上电
 	public ExpdDevMgr mExpDevMgr ;
+	public ICcon iCcon;
 	/**
 	 * 实例化上电方式
 	 */
@@ -186,6 +183,9 @@ public class  BaseActivity extends AppCompatActivity {
 			mExpDevMgr = new ExpdDevMgr(this);
 //			mExpDevMgr.setExGpio(108,1);//32 17 19   485通信/11 12 13 14   发送/17 19
 			Log.e("BaseActivity", "M900设备");
+		}else if (mPowerOnMode == 5) {
+			iCcon=  iCcon.getInstance();
+			Log.e("BaseActivity", "LXR设备 实例化");
 		} else {
 			Log.e("BaseActivity", "实例化 空");
 		}
@@ -230,11 +230,26 @@ public class  BaseActivity extends AppCompatActivity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}else if (mPowerOnMode == 4) {// 新款KT50上电
+		}else if (mPowerOnMode == 4) {// M900上电
 			Log.e("BaseActivity", "M900 主板上电");
 			mExpDevMgr.exPowerOn();//办卡供电
 			mExpDevMgr.setPsamReaderPw(true);
 //			mExpDevMgr.setExGpio(1,1);//32 17 19   485通信/11 12 13 14   发送/17 19
+		}else if (mPowerOnMode == 5) {// LXR上电
+			Log.e("BaseActivity", "LXR设备 上电");
+//			iCcon.mcu_powerAndoPenOrCloseSerialPort(1);
+//			iCcon.exPowerOn();
+//			boolean r=iCcon.setPciePwr_EnOn();
+//			int a =iCcon.MCU_interface_power(1);//主板供电
+//			iCcon.setPCIBandrate(115200);
+//			int b =iCcon.mcu_powerAndoPenOrCloseSerialPort(1);
+//			int c =iCcon.oPenOrCloseSerialPort(1,1);
+//			iCcon.setPCIBandrate(115200);
+//			Log.e("BaseActivity", "r "+r);
+//			Log.e("BaseActivity", "a "+a);
+//			Log.e("BaseActivity", "b "+b);
+//			Log.e("BaseActivity", "c "+c);
+
 		}
 
 	}
@@ -287,10 +302,22 @@ public class  BaseActivity extends AppCompatActivity {
 //            optGpio(PIN_ADSL);
 
 		}
-		else if (mPowerOnMode == 4) {// 新款KT50上电
+		else if (mPowerOnMode == 4) {// M900下电
 			Log.e("BaseActivity", "M900 主板下电");
 			mExpDevMgr.exPowerOff();
 			mExpDevMgr.setPsamReaderPw(false);
+		}else if (mPowerOnMode == 5) {// LXR下电
+			Log.e("BaseActivity", "LXR 主板下电");
+			iCcon.mcu_powerAndoPenOrCloseSerialPort(0);
+//			iCcon.exPowerOff();
+//			boolean r=iCcon.setPciePwr_EnOff();
+//			int a =iCcon.MCU_interface_power(0);
+//			int b =iCcon.mcu_powerAndoPenOrCloseSerialPort(0);
+//			int c =iCcon.oPenOrCloseSerialPort(1,0);
+//			Log.e("BaseActivity", "r "+r);
+//			Log.e("BaseActivity", "a "+a);
+//			Log.e("BaseActivity", "b "+b);
+//			Log.e("BaseActivity", "c "+c);
 		}
 	}
 

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/cs_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_1"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="PCIE上电"
+                android:textColor="@color/bt_fg_base"
+                />
+
+            <Button
+                android:id="@+id/btn_2"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="PCIE下电"
+                android:textColor="@color/bt_fg_base"
+                 />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/cs_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_3"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="mcu上电并打开串口"
+                android:textColor="@color/bt_fg_base"
+                />
+
+            <Button
+                android:id="@+id/btn_4"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="mcu下电并关闭串口"
+                android:textColor="@color/bt_fg_base"
+                 />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/cs_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_5"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="mcu上电"
+                android:textColor="@color/bt_fg_base"
+                />
+
+            <Button
+                android:id="@+id/btn_6"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="mcu下电"
+                android:textColor="@color/bt_fg_base"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/cs_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_7"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="打开串口"
+                android:textColor="@color/bt_fg_base"
+                />
+
+            <Button
+                android:id="@+id/btn_8"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="关闭串口"
+                android:textColor="@color/bt_fg_base"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/cs_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_9"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="控制卡上电"
+                android:textColor="@color/bt_fg_base"
+                />
+
+            <Button
+                android:id="@+id/btn_10"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="控制卡下电"
+                android:textColor="@color/bt_fg_base"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/cs_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_11"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="发送测试命令"
+                android:textColor="@color/bt_fg_base"
+                />
+
+            <Button
+                android:id="@+id/btn_12"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="退出"
+                android:textColor="@color/bt_fg_base"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/main_BT_Height"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_1"
+                android:text="返回数据"
+                style="@style/alltextstyle"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

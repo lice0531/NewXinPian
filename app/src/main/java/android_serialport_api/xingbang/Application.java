@@ -84,6 +84,11 @@ public class Application extends MultiDexApplication {
                     mPowerIndex = 4;
                     break;
                 }
+                case "GEXPZ4": {//新设备
+                    mSportName = "/dev/ttyS1";//ttyS0或者ttyS1
+                    mPowerIndex = 5;
+                    break;
+                }
                 default:
                     Log.e("上电", "当前机型为: " + Build.DEVICE + " 该机型没有被适配");
                     break;
