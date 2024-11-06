@@ -545,6 +545,7 @@
     <string name="text_updata_sys_6">检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
-
-    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_240904</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_241105</string>
+    <string name="text_error_tip63">延时不能为0</string>
+    <string name="text_error_tip65">延时不能为空</string>
 </resources>

@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -741,7 +742,13 @@ public class SetDelayTime_suidao extends BaseActivity {
     }
 
     private int getTotalDelay() {
-        int a =Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString())+
+        int startDelay;
+        if (TextUtils.isEmpty(setDelayTimeStartDelaytime1.getText().toString().trim())) {
+            startDelay = 0;
+        } else {
+            startDelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
+        }
+        int a = startDelay +
                 Integer.parseInt(etDuanDelaytime1.getText().toString())+
                 Integer.parseInt(etDuanDelaytime2.getText().toString())+
                 Integer.parseInt(etDuanDelaytime3.getText().toString())+
