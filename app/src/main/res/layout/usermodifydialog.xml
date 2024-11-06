@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
+        android:numeric="integer"
         android:hint="密码"/>
 
 </RelativeLayout>

@@ -592,12 +592,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
         mHandler_1 = new Handler(msg -> {
             if (tipInfoFlag == 1) {
+//                if (busInfo != null) {
+//                    txtCurrentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
+//                    txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
+//                }
                 if (busInfo != null) {
                     txtCurrentVolt.setText(getResources().getString(R.string.text_reister_vol) + busInfo.getBusVoltage() + "V");
                     txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa() + "μA");
+                    if (Math.round(busInfo.getBusCurrentIa()) > 60) {//判断当前
+                        txtCurrentIC.setTextColor(Color.RED);
+//                        txtCurrentIC.setText(getResources().getString(R.string.text_reister_ele) + busInfo.getBusCurrentIa()+ "μA"+getString(R.string.text_line_pd));
+                    } else {
+                        txtCurrentIC.setTextColor(Color.GREEN);
+                    }
                 }
             }
-            if (tipInfoFlag == 2) {//提示已注册多少发
+            if (tipInfoFlag == 2) {//提示已注册多少发电流是否偏大
                 if (busInfo != null) {
                     byte[] reCmd = FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01");
                     sendCmd(reCmd);
