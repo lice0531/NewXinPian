@@ -267,9 +267,19 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <Button
+                android:id="@+id/but_rizhi"
+                style="@style/allbtntstyle"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="90dp"
+                android:text="上传日志" />
+            <Button
+                android:visibility="gone"
                 android:id="@+id/but_upgrade"
                 style="@style/allbtntstyle"
                 android:layout_width="200dp"

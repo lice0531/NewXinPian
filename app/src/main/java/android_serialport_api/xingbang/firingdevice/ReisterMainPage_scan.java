@@ -2140,6 +2140,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
+        resetView_start();
         return 0;
     }
 
@@ -2362,6 +2363,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
+        resetView_start();
         return 0;
     }
 
@@ -2597,6 +2599,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        Utils.saveFile();//把软存中的数据存入磁盘中
+        resetView_start();
         return reCount;
     }
 
@@ -3929,6 +3932,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         reEtF1.clearFocus();
         reEtF2.clearFocus();
+        et_startDelay.clearFocus();
+    }
+    /**
+     * 重置控件
+     */
+    private void resetView_start() {
+        btn_start = false;
+        et_startDelay.setBackgroundResource(R.drawable.translucent);
+        btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
         et_startDelay.clearFocus();
     }
 
