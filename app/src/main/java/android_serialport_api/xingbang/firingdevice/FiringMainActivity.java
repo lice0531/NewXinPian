@@ -2627,10 +2627,11 @@ public class FiringMainActivity extends SerialPortActivity {
                                 increase(8);
                                 Log.e("increase", "8");
                                 keyFireCmd = 0;
-                                if (isJL) {
+//                                if (isJL) {
                                     eightCmdExchangePower = 1;
-                                }
+//                                }
                             }
+                            Log.e(TAG, "eightCmdExchangePower7: "+eightCmdExchangePower);
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://5s倒计时后,发送起爆指令,起爆阶段
@@ -2638,6 +2639,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                sendCmd(reCmd);
 //                            }
+                            Log.e(TAG, "eightCmdFlag: "+eightCmdFlag);
+                            Log.e(TAG, "eightCmdExchangePower8: "+eightCmdExchangePower);
                             if (eightCount >= 1) {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());

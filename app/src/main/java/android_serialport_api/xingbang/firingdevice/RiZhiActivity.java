@@ -239,7 +239,7 @@ public class RiZhiActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e("上传", "返回: " + response.toString());
                 pb_show = 0;
-
+                show_Toast("上传成功");
             }
         });
     }
