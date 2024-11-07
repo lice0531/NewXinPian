@@ -22,13 +22,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,6 +91,7 @@ public class RiZhiActivity extends BaseActivity {
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
     private Handler mHandler_loading = new Handler();//显示进度条
+    private Handler mHandler_tip = new Handler();//显示进度条
     private ArrayList<String> list_uid = new ArrayList<>();
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
     private String mOldTitle;   // 原标题
@@ -105,10 +109,20 @@ public class RiZhiActivity extends BaseActivity {
         getUserMessage();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+        Log.e("查询雷管", "mListData: "+mListData.toString() );
         list_uid.clear();
         for (int i = 0; i < mListData.size(); i++) {
             list_uid.add(mListData.get(i).getShellBlastNo());
         }
+        Log.e("查询雷管", "list_uid: "+list_uid.toString() );
+        mHandler_tip = new Handler(msg -> {
+            switch (msg.what){
+                case 1:
+                    show_Toast("上传成功");
+                    break;
+            }
+            return false;
+        });
     }
 
     private void getUserMessage() {
@@ -124,18 +138,61 @@ public class RiZhiActivity extends BaseActivity {
         server_ip = bean.getServer_ip();
         pro_dwdm = bean.getPro_dwdm();
     }
+    String TAG="日志";
 
     @OnClick({R.id.btn_openFile1, R.id.btn_openFile2, R.id.btn_OK})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_openFile1:
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                    try {
+//                        Intent ine = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//                        ine.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//                        Uri xbFolderUri = Uri.parse("content://com.android.externalstorage.documents/document/primary:程序运行日志");
+//                        ine.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri);
+//
+//                        startActivityForResult(ine, 1);
+//                    } catch (Exception e) {
+//                        Log.e(TAG + "OpenFolder", "Error opening folder picker: ", e);
+//                    }
+//                } else {
+//                    try {
+//                        File xbFolder = new File(Environment.getExternalStorageDirectory(), "程序运行日志");
+//                        if (xbFolder.exists() && xbFolder.isDirectory()) {
+//                            Log.e(TAG + "ExternalFolder", "Found folder: " + xbFolder.getAbsolutePath());
+//                        } else {
+//                            Log.e(TAG + "ExternalFolder", "Folder not found or not a directory.");
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e(TAG + "OpenFolder", "Error accessing external storage: ", e);
+//                    }
+//                    try {
+//                        Intent ii = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//                        ii.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//                        Uri xbFolderUri = Uri.parse("content://com.android.externalstorage.documents/document/primary:程序运行日志");
+//                        ii.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri);
+//
+//                        startActivityForResult(ii, 1);
+//                    } catch (Exception e) {
+//                        Log.e(TAG + "OpenFolder", "Error opening folder picker for Android 9 and below: ", e);
+//                    }
+//                }
+
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Uri xbFolderUri = Uri.parse("content://com.android.externalstorage.documents/document/primary:程序运行日志");
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri);
+
                 intent.setType("text/plain");//txt文件
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
                 break;
             case R.id.btn_openFile2:
+
                 Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
+                Uri xbFolderUri2 = Uri.parse("content://com.android.externalstorage.documents/document/primary:XB程序日志");
+                intent2.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri2);
                 intent2.setType("text/plain");//txt文件
                 intent2.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent2, 2);
@@ -170,11 +227,13 @@ public class RiZhiActivity extends BaseActivity {
         OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
-        for (int i = 1; i < mListData.size(); i++) {
+        for (int i = 0; i < mListData.size(); i++) {//上传页面从1开始,是因为单独添加了个表头,其他从0开始
             list_uid.add(mListData.get(i).getShellBlastNo() + "#" + mListData.get(i).getDelay() + "#" + mListData.get(i).getErrorName());
         }
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);
+        Log.e("上传list_uid", list_uid.toString());
+        Log.e("上传mListData", mListData.toString());
         String xy[] = pro_coordxy.split(",");//经纬度
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
@@ -239,7 +298,8 @@ public class RiZhiActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e("上传", "返回: " + response.toString());
                 pb_show = 0;
-                show_Toast("上传成功");
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+
             }
         });
     }
@@ -265,6 +325,7 @@ public class RiZhiActivity extends BaseActivity {
                 return;
             }
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
+                Log.e(TAG, "uri: "+uri );
                 path = getPath(this, uri);
                 if(requestCode==1){
                     textFilePath1.setText(path);
@@ -431,4 +492,9 @@ public class RiZhiActivity extends BaseActivity {
             }
         }).start();
     }
+
+
+
+
+
 }
