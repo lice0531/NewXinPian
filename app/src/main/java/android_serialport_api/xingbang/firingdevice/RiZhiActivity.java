@@ -209,8 +209,16 @@ public class RiZhiActivity extends BaseActivity {
                     String dwdm = pro_dwdm;//单位代码
                     String xmbh = pro_xmbh;//项目编号
                     String[] xy = pro_coordxy.split(",");//经纬度
-                    String jd = xy[0];//经度
-                    String wd = xy[1];//纬度
+                    String jd ;//经度
+                    String wd ;//纬度
+                    if(pro_coordxy!=null&&pro_coordxy.length()>5){
+                        jd = xy[0];//经度
+                        wd = xy[1];//纬度
+                    }else {
+                        jd = "";//经度
+                        wd = "";//纬度
+                    }
+
                     String qbxm_name = "错误日志";//项目名称
                     String log = Utils.readOffline(textFilePath1.getText().toString());//日志
                     String log_cmd = Utils.readOffline(textFilePath2.getText().toString());//日志
@@ -228,44 +236,8 @@ public class RiZhiActivity extends BaseActivity {
     }
 
     private boolean checkMessage() {
-        String sfz = pro_bprysfz.trim().replace(" ", "");//证件号码
-        String tx_htid = pro_htid;//合同编号 15位
-        String tv_xmbh = pro_xmbh;//项目编号
-        String xy[] = pro_coordxy.replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
-        String tv_dwdm = pro_dwdm;//单位代码 13位
-        if (list_uid.size() < 1) {
-            Log.e("长度", "" + list_uid.size());
-            show_Toast("当前雷管为空,请先注册雷管");
-            return false;
-        }
         if (equ_no.length() < 1) {
             show_Toast("当前设备编号为空,请先设置设备编号");
-            return false;
-        }
-        if (pro_coordxy.trim().length() < 1) {
-            show_Toast("经纬度不能为空!");
-            return false;
-        }
-        if (sfz.length() < 18) {
-            show_Toast("人员证号格式不对!");
-            return false;
-        }
-        if (!pro_coordxy.trim().contains(",")) {
-            show_Toast("经纬度格式不对");
-            return false;
-        }
-        if (pro_coordxy.trim().contains("4.9E-")) {
-            show_Toast("经纬度格式不对，请按照例如116.38,39.90格式输入");
-            return false;
-        }
-        if (StringUtils.isBlank(tx_htid) && StringUtils.isBlank(tv_xmbh) && StringUtils.isBlank(tv_dwdm)) {
-            show_Toast("合同编号,项目编号,单位代码不能同时为空");
-            return false;
-        }
-        if (tx_htid.length() != 0 && tx_htid.length() < 15) {
-            Log.e("验证", "tx_htid.length(): " + tx_htid.length());
-            Log.e("验证", "tx_htid: " + tx_htid);
-            show_Toast("合同编号小于15位,请重新核对");
             return false;
         }
         return true;
