@@ -479,7 +479,6 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_jilian://进入级联页面
                 Intent intent9 = new Intent(this, SyncActivity.class);//热点方式
                 startActivity(intent9);
-                finish();
                 break;
             case R.id.but_version://进入级联页面
                 Intent intent11 = new Intent(this, SystemVersionActivity.class);//版本号
