@@ -450,6 +450,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 textMsg.setText(helper.getMessage());
                 if (isOk) {
                     increase(8);//起爆
+                    Log.e("increase", "8");
+                    keyFireCmd = 0;
+                    eightCmdExchangePower = 1;
                 }
             }
 
@@ -2424,7 +2427,6 @@ public class FiringMainActivity extends SerialPortActivity {
                         case 7:
                             Thread.sleep(1000);
                             sevenCount++;
-                            Log.e(TAG, "1+5 等待阶段sevenCount: " + sevenCount);
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             sevenDisplay = 1;
@@ -2442,7 +2444,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                sendCmd(reCmd);
 //                            }
-
+                            Log.e(TAG,"eightCmdFlag:" + eightCmdFlag);
+                            Log.e(TAG,"eightCmdExchangePower:" + eightCmdExchangePower);
                             if (eightCount >= 1) {
                                 Log.e(TAG, "起爆阶段: --准备保存历史记录" );
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
