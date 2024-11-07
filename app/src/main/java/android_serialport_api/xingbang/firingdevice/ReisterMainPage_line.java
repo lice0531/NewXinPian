@@ -1127,10 +1127,17 @@ public class ReisterMainPage_line extends SerialPortActivity {
     }
 
     private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2) {
-        if (!flag_jh_f1 || !flag_jh_f2) {
+        if(!flag_jh_f1||!flag_jh_f2){
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = start_delay - delay;
+                }else if (btn_start) {
+                    if (flag_tk) {
+                        delay = start_delay - f1 * (tk_num + 1);
+                    } else {
+                        delay = start_delay - f1;
+                    }
+
                 } else {
                     if (flag_tk) {
                         delay = delay - f1 * (tk_num + 1);
@@ -1142,6 +1149,12 @@ public class ReisterMainPage_line extends SerialPortActivity {
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
                     delay = start_delay - delay;
+                }else if (btn_start) {
+                    if (flag_tk) {
+                        delay = start_delay - f2 * (tk_num + 1);
+                    } else {
+                        delay = start_delay - f2;
+                    }
                 } else {
                     if (flag_tk) {
                         delay = delay - f2 * (tk_num + 1);
@@ -1150,10 +1163,17 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     }
                 }
             }
-        } else {
+        }else {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
+                }else if (btn_start) {
+                    if (flag_tk) {
+                        delay = start_delay + f1 * (tk_num + 1);
+                    } else {
+                        delay = start_delay + f1;
+                    }
+
                 } else {
                     if (flag_tk) {
                         delay = delay + f1 * (tk_num + 1);
@@ -1165,6 +1185,13 @@ public class ReisterMainPage_line extends SerialPortActivity {
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
+                }else if (btn_start) {
+                    if (flag_tk) {
+                        delay = start_delay + f2 * (tk_num + 1);
+                    } else {
+                        delay = start_delay + f2;
+                    }
+
                 } else {
                     if (flag_tk) {
                         delay = delay + f2 * (tk_num + 1);
