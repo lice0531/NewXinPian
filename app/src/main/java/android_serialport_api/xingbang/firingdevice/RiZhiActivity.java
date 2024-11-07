@@ -110,14 +110,14 @@ public class RiZhiActivity extends BaseActivity {
         getUserMessage();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
-        Log.e("查询雷管", "mListData: "+mListData.toString() );
+        Log.e("查询雷管", "mListData: " + mListData.toString());
         list_uid.clear();
         for (int i = 0; i < mListData.size(); i++) {
             list_uid.add(mListData.get(i).getShellBlastNo());
         }
-        Log.e("查询雷管", "list_uid: "+list_uid.toString() );
+        Log.e("查询雷管", "list_uid: " + list_uid.toString());
         mHandler_tip = new Handler(msg -> {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     show_Toast("上传成功");
                     break;
@@ -139,7 +139,8 @@ public class RiZhiActivity extends BaseActivity {
         server_ip = bean.getServer_ip();
         pro_dwdm = bean.getPro_dwdm();
     }
-    String TAG="日志";
+
+    String TAG = "日志";
 
     @OnClick({R.id.btn_openFile1, R.id.btn_openFile2, R.id.btn_OK})
     public void onClick(View view) {
@@ -201,28 +202,25 @@ public class RiZhiActivity extends BaseActivity {
                 break;
 
             case R.id.btn_OK:
-                if(checkMessage()){
+                if (checkMessage()) {
 
-                String blastdate = Utils.getDateFormatLong(new Date());//日期
-                String htbh =pro_htid;//合同编号
-                String dwdm = pro_dwdm;//单位代码
-                String xmbh = pro_xmbh;//项目编号
-                String[] xy = pro_coordxy.split(",");//经纬度
-                String jd = xy[0];//经度
-                String wd = xy[1];//纬度
-                String qbxm_name = "错误日志";//项目名称
-                String log = Utils.readOffline(textFilePath1.getText().toString()).replace("\n", "");//日志
-                String log_cmd = Utils.readOffline(textFilePath2.getText().toString()).replace("\n", "");//日志
-                if (pro_coordxy.length() < 2 && jd == null) {
-                    show_Toast("经纬度为空，不能执行上传");
-                    return;
-                }
-                pb_show = 1;
-                runPbDialog();//loading画面
-                Log.e("上传日志", "blastdate: " + blastdate);
-                Log.e("上传日志", "qbxm_name: " + qbxm_name);
-
-                    upload_xingbang(blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log,log_cmd);//我们自己的网址
+                    String blastdate = Utils.getDateFormatLong(new Date());//日期
+                    String htbh = pro_htid;//合同编号
+                    String dwdm = pro_dwdm;//单位代码
+                    String xmbh = pro_xmbh;//项目编号
+                    String[] xy = pro_coordxy.split(",");//经纬度
+                    String jd = xy[0];//经度
+                    String wd = xy[1];//纬度
+                    String qbxm_name = "错误日志";//项目名称
+                    String log = Utils.readOffline(textFilePath1.getText().toString());//日志
+                    String log_cmd = Utils.readOffline(textFilePath2.getText().toString());//日志
+                    if (pro_coordxy.length() < 2 && jd == null) {
+                        show_Toast("经纬度为空，不能执行上传");
+                        return;
+                    }
+                    pb_show = 1;
+                    runPbDialog();//loading画面
+                    upload_xingbang(blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log, log_cmd);//我们自己的网址
                 }
 
                 break;
@@ -231,7 +229,7 @@ public class RiZhiActivity extends BaseActivity {
 
     private boolean checkMessage() {
         String sfz = pro_bprysfz.trim().replace(" ", "");//证件号码
-        String tx_htid =pro_htid;//合同编号 15位
+        String tx_htid = pro_htid;//合同编号 15位
         String tv_xmbh = pro_xmbh;//项目编号
         String xy[] = pro_coordxy.replace("\n", "").replace("，", ",").replace(" ", "").split(",");//经纬度
         String tv_dwdm = pro_dwdm;//单位代码 13位
@@ -304,7 +302,7 @@ public class RiZhiActivity extends BaseActivity {
             } else {
                 object.put("htid", pro_htid);//合同编号
             }
-            String app_verson_name =getString(R.string.app_version_name);
+            String app_verson_name = getString(R.string.app_version_name);
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
@@ -320,7 +318,7 @@ public class RiZhiActivity extends BaseActivity {
                 object.put("name", MmkvUtils.getcode("pro_name", ""));//项目名称
             }
 
-        } catch (JSONException  e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 //3des加密
@@ -358,19 +356,18 @@ public class RiZhiActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("离线下载-结果回调", "requestCode: "+requestCode+"--resultCode: "+resultCode );
+        Log.e("离线下载-结果回调", "requestCode: " + requestCode + "--resultCode: " + resultCode);
 
         if (requestCode != Constant.REQ_QR_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开
                 path = uri.getPath();
-                if(requestCode==1){
+                if (requestCode == 1) {
                     textFilePath1.setText(path);
-                }else {
+                } else {
                     textFilePath2.setText(path);
                 }
 
@@ -378,19 +375,19 @@ public class RiZhiActivity extends BaseActivity {
                 return;
             }
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
-                Log.e(TAG, "uri: "+uri );
+                Log.e(TAG, "uri: " + uri);
                 path = getPath(this, uri);
-                if(requestCode==1){
+                if (requestCode == 1) {
                     textFilePath1.setText(path);
-                }else {
+                } else {
                     textFilePath2.setText(path);
                 }
                 Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
             } else {//4.4以下下系统调用方法
                 path = getRealPathFromURI(uri);
-                if(requestCode==1){
+                if (requestCode == 1) {
                     textFilePath1.setText(path);
-                }else {
+                } else {
                     textFilePath2.setText(path);
                 }
                 Toast.makeText(this, path + "222222", Toast.LENGTH_SHORT).show();
@@ -545,9 +542,6 @@ public class RiZhiActivity extends BaseActivity {
             }
         }).start();
     }
-
-
-
 
 
 }
