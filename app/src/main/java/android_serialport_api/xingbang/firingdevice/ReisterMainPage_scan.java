@@ -755,6 +755,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast(getString(R.string.text_error_tip66));
             } else if (msg.what == 12) {
                 show_Toast(getString(R.string.text_mx_zcsb));
+            } else if (msg.what == 13) {
+                SoundPlayUtils.play(4);
+                show_Toast("延时不能小于0ms");
             }else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
                 show_Toast("共有"+xiangHao_errNum+"盒重复");
@@ -1968,18 +1971,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if(btn_start){
             delay_start=start_delay;
         }
-        Log.e("扫码", "delay_set: " + delay_set);
+        Log.e("单发输入", "delay_start: " + delay_start);
 
         //判断延时是否超出范围
         if(!flag_jh_f1||!flag_jh_f2){
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
                 if (maxSecond != 0 && start_delay - f2 < 0) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             }
@@ -2189,12 +2192,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if(!flag_jh_f1||!flag_jh_f2){
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
                 if (maxSecond != 0 && start_delay - f2 < 0) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             }
@@ -2396,12 +2399,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if(!flag_jh_f1||!flag_jh_f2){
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
                 if (maxSecond != 0 && start_delay - f2 < 0) {//
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             }
