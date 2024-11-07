@@ -206,8 +206,8 @@ public class RiZhiActivity extends BaseActivity {
                 String jd = xy[0];//经度
                 String wd = xy[1];//纬度
                 String qbxm_name = "错误日志";//项目名称
-                String log = Utils.readOffline(textFilePath1.getText().toString()).replace("\n", "");//日志
-                String log_cmd = Utils.readOffline(textFilePath2.getText().toString()).replace("\n", "");//日志
+                String log = Utils.readOffline(textFilePath1.getText().toString());//日志
+                String log_cmd = Utils.readOffline(textFilePath2.getText().toString());//日志
                 if (pro_coordxy.length() < 2 && jd == null) {
                     show_Toast("经纬度为空，不能执行上传");
                     return;
