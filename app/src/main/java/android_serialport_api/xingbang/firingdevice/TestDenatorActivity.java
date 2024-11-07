@@ -22,10 +22,12 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ import android_serialport_api.xingbang.custom.ErrListAdapter;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.models.VoBlastModel;
@@ -193,7 +196,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
 
         if (denatorCount < 1) {
-            show_Toast_long(getResources().getString(R.string.text_error_tip30));
+            show_Toast(getResources().getString(R.string.text_error_tip30));
             closeThread();
             Intent intentTemp = new Intent();
             intentTemp.putExtra("backString", "");
@@ -299,6 +302,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
             }
@@ -568,10 +572,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     ll_firing_IC_4.setText(displayIcStr);
                     if (displayIc == 0 && firstCount < Preparation_time * 0.4) {
                         ll_firing_IC_4.setTextColor(Color.RED);
-//                        show_Toast(getString(R.string.text_test_tip12));
-                        showtip(getString(R.string.text_test_tip12));
-
-
+                        show_Toast(getString(R.string.text_test_tip12));
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -588,11 +589,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     if (busInfo.getBusVoltage() < 6 && firstCount < Preparation_time * 0.5) {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22 退出组网测试
                         ll_firing_Volt_4.setTextColor(Color.RED);
-
-//                        show_Toast(getString(R.string.text_test_tip13));
-                        showtip(getString(R.string.text_test_tip13));
-
-
+                        show_Toast(getString(R.string.text_test_tip13));
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         stage = 5;
                         Utils.writeRecord("电压异常,电压为" + busInfo.getBusVoltage() + "V");
@@ -604,6 +601,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextColor(Color.RED);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
+//                    }else if (displayIc > (denatorCount * ic_cankao * 1.3) &&displayIc < (denatorCount * ic_cankao * 1.5) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
+//                        displayIcStr = displayIcStr + getString(R.string.text_test_dlpd_di);
+//                        ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
+//                        ll_firing_IC_4.setTextSize(20);
+//                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                     } else if (displayIc > (denatorCount * ic_cankao * 1.5) && firstCount < Preparation_time * 0.2) {//5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
@@ -1347,6 +1349,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 })
                 .create();
         if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         }
     }
@@ -1361,11 +1364,12 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    off();//重新检测
 //                    dialog1.dismiss();
 //                })
-                .setNegativeButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
+                .setNeutralButton(R.string.text_setDelay_dialog4, (dialog12, which) -> {
                     stopXunHuan();
                 })
                 .create();
         if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         }
     }
@@ -1415,8 +1419,16 @@ public class TestDenatorActivity extends SerialPortActivity {
             llview.setVisibility(View.VISIBLE);
             text_tip.setVisibility(View.GONE);
             errlistview.setVisibility(View.VISIBLE);
+            // 点击按钮时错误雷管列表展示出来后,“查看错误雷管”按钮没有用了,所以直接隐藏
+            // 获取AlertDialog对象
+            AlertDialog alertDialog = (AlertDialog) dialog;
+            // 获取中立按钮
+            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            // 隐藏按钮
+            neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
             dialogOn(dialog);
         });
+        builder.setCancelable(false);
         builder.create().show();
     }
 
@@ -1444,7 +1456,6 @@ public class TestDenatorActivity extends SerialPortActivity {
     }
 
     private void enterFiringPage() {
-        String Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");//是否验证地理位置
         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
         closeThread();
         mHandler_1.removeMessages(0);
@@ -1464,6 +1475,17 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                isSerialPortClosed = true;
             }
         }).start();
+        GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
+        List<UserMain> userMainList = master.queryAllUser();
+        if (userMainList.size() != 0) {
+            loginToFiring();
+        } else {
+            toFiring();
+        }
+    }
+
+    private void toFiring() {
+        String Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");//是否验证地理位置
         finish();
         String str5 = "起爆";
         Log.e("验证2", "Yanzheng: " + Yanzheng);
@@ -1479,8 +1501,57 @@ public class TestDenatorActivity extends SerialPortActivity {
         sendHandler.postDelayed(() ->{
             startActivity(intent);
 
-            } , 1000);
-
+        } , 1000);
+    }
+    private void loginToFiring() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TestDenatorActivity.this);
+        //  builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("请输入起爆用户名和密码!");//"请输入用户名和密码"
+        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+        View view = LayoutInflater.from(TestDenatorActivity.this).inflate(R.layout.userlogindialog, null);
+        //    设置我们自己定义的布局文件作为弹出框的Content
+        builder.setView(view);
+        final EditText username = (EditText) view.findViewById(R.id.username);
+        final EditText password = (EditText) view.findViewById(R.id.password);
+        username.setInputType(InputType.TYPE_CLASS_TEXT);
+        // username.setText("xingbang");
+        username.setFocusable(true);
+        username.setFocusableInTouchMode(true);
+        username.requestFocus();
+        username.findFocus();
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String a = username.getText().toString().trim();
+            String b = password.getText().toString().trim();
+            if (a.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_username));
+//                    dialogOn(dialog);//取消按钮不可点击
+                return;
+            }
+            if (b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                return;
+            }
+            GreenDaoMaster master = new GreenDaoMaster();
+            List<UserMain> userMainList = master.queryUser(a);
+            if (userMainList.size() == 0) {
+                show_Toast(getString(R.string.text_main_yhmcw));
+            } else {
+                if (b.equals(userMainList.get(0).getUpassword())) {
+                    toFiring();
+                    dialog.dismiss();
+                    dialogOFF(dialog);
+                } else {
+                    show_Toast(getString(R.string.text_main_mmcw));
+                    dialogOn(dialog);
+                }
+            }
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+        });
+        builder.show();
     }
 
     void showtip(String tip){

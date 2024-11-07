@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -635,8 +636,12 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
         denator.setDelay(Integer.parseInt(delay));
-        if (db.getQibao().equals("雷管正常") || db.getQibao().equals("已起爆")) {
-            denator.setRegdate(db.getTime());
+        if (!TextUtils.isEmpty(db.getQibao())) {
+            if (db.getQibao().equals("雷管正常") || db.getQibao().equals("已起爆")) {
+                denator.setRegdate(db.getTime());
+            } else {
+                denator.setRegdate(Utils.getDateFormat(new Date()));
+            }
         } else {
             denator.setRegdate(Utils.getDateFormat(new Date()));
         }

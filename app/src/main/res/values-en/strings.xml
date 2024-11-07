@@ -438,8 +438,8 @@
     <string name="text_fz_kscs">Quick test current</string>
     <string name="text_fz_sjhc">Data exchange</string>
     <string name="text_fz_qchc">Clear Cache</string>
-    <string name="text_test_tip5">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection。</string>
-    <string name="text_test_tip6">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection。</string>
+    <string name="text_test_tip5">Please check whether there is a short circuit, etc., in areas such as the wire clip after testing again.</string>
+    <string name="text_test_tip6">Please check whether the bus is disconnected or the registration data is inconsistent with the actual situation, and then check again.</string>
     <string name="text_test_tip7">Check the list of incorrect detonators. It is suspected that some of the detonator connecting wires are disconnected. Please check if there are any situations such as disconnected detonator connecting wires and incorrect input of the shell code. After checking, click the continue button to proceed with the detection!</string>
     <string name="text_test_tip8">Please replace the incorrect detonator. It is suspected that some detonators may have water ingress or mud ingress. After checking for any errors, click to continue with the detection。</string>
     <string name="text_test_tip9">Suspected that some detonators have entered incorrect detonator numbers. Please check if the detonator numbers are entered correctly!</string>
@@ -666,7 +666,7 @@
     <string name="text_send_tip26">Write successful</string>
     <string name="text_send_tip27">Parsed successfully</string>
     <string name="text_dialog_tip">Executing</string>
-    <string name="text_tip_err1">The current current is too large, please check whether there is water immersion or bus short circuit in the wire clamp and other parts, check and deal with the water immersion, press the continue button, and re-test.</string>
+    <string name="text_tip_err1">Please check whether there is a short circuit in the wire clip and other parts. After troubleshoketing, retest.</string>
     <string name="text_daojishi">countdown：</string>
     <string name="text_updata_sys_1">Upgrade Reminder</string>
     <string name="text_updata_sys_2">A new version of the APP has been detected. Please ensure that your current network environment is stable. It is recommended to update in the WIFI environment or a stable 4G network hotspot. Do you want to proceed with the update?</string>

@@ -425,6 +425,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
                         })
                         .create();
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }
 
@@ -486,6 +487,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 })
                 .setPositiveButton(R.string.text_setDealy_qx, (dialog12, which) -> dialog12.dismiss())
                 .create();
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
@@ -508,6 +510,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                     dialog.show();
                 }
             } else if (msg.what == 3) {
@@ -522,6 +525,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
             }
@@ -584,6 +588,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
+//                } else if (displayIc > (denatorCount * ic_cankao * 1.3) &&displayIc < (denatorCount * ic_cankao * 1.5) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
+//                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd_di);
+//                    setIcView(Color.RED);//设置颜色
+//                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
                 } else if (displayIc >= (denatorCount * ic_cankao * 1.5) && displayIc > 10 && stage != 6 && stage != 33) {// "电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
@@ -673,6 +681,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 closeForm();
                             })
                             .create();
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                     dialog.show();
 //                    }
                 }
@@ -699,6 +708,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 closeForm();
                             })
                             .create();
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                     dialog.show();
 //                    }
                 }
@@ -1811,8 +1821,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    thirteenCmdExchangePower = 1;
 //                }
 //            }
-//            befor_dianliu = busInfo.getBusCurrentIa();
-//            befor_dianya = busInfo.getBusVoltage();
+            befor_dianliu = busInfo.getBusCurrentIa();
+            befor_dianya = busInfo.getBusVoltage();
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
@@ -1973,6 +1983,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 finish();
                             })
                             .create();
+                    dialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消失
                     dialog.show();
                 }
                 break;
@@ -1989,6 +2000,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 finish();
                             })
                             .create();
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
                 break;
@@ -2021,6 +2033,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 closeThread();
                                 closeForm();
                             }).create();
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
                 break;
@@ -2106,6 +2119,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             Log.e("起爆", "第一次发送起爆指令: ");
                             eightCmdFlag = 1;
                         }).create();
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
                 Log.e("case14", "显示起爆电流不稳定dialog");
                 break;

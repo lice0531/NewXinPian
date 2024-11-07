@@ -440,7 +440,7 @@
     <string name="text_fz_kscs">测试电流</string>
     <string name="text_fz_sjhc">数据互传</string>
     <string name="text_fz_qchc">清除缓存</string>
-    <string name="text_test_tip5">请检查线夹等部位是否有短路等情况,确认无误后点继续进行检测。</string>
+    <string name="text_test_tip5">请检查线夹等部位是否有短路等情况,确认无误后重新进行检测。</string>
     <string name="text_test_tip6">请检查总线是否存在断路或注册数据与实际不符等情况，确认无误后重新进行检测。</string>
     <string name="text_test_tip7">查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!</string>
     <string name="text_test_tip8">请更换错误雷管,检查无误后,点击继续进行检测。</string>
@@ -669,7 +669,7 @@
     <string name="text_send_tip26">写入成功</string>
     <string name="text_send_tip27">解析成功</string>
     <string name="text_dialog_tip">正在执行中</string>
-    <string name="text_tip_err1">当前电流过大,请检查线夹等部位是否存在线短路等情况,排查故障后,按继续键,重新进行检测。</string>
+    <string name="text_tip_err1">请检查线夹等部位是否存在线短路等情况,排查故障后,重新进行检测。</string>
     <string name="text_daojishi">放电倒计时：</string>
     <string name="text_updata_sys_1">升级提醒</string>
     <string name="text_updata_sys_2">检测到有新的APP版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
@@ -760,7 +760,7 @@
     <string name="text_uploadAllHis">请输入密码后,再进行关闭授权验证操作</string>
     <string name="text_qkxz">请输入密码后,再进行清空下载授权记录操作</string>
 
-    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_3.25_MX_241101_14</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_3.25_MX_240829_15</string>
     <string name="sq_item_1">选择雷管</string>
     <string name="sq_item_2">显示正确</string>//通用
 </resources>
