@@ -246,6 +246,9 @@ public class FiringMainActivity extends SerialPortActivity {
     private int isshow2 = 0;
     private int isshow3 = 0;
     PatternHelper helper = new PatternHelper();
+    private List<DenatorBaseinfo> errlist;
+    private Handler checkHandler = null;//更正错误
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -550,6 +553,20 @@ public class FiringMainActivity extends SerialPortActivity {
             String time = (String) msg.obj;
             delHisInfo(time);
             show_Toast(getString(R.string.text_fir_show2) + time);
+            return false;
+        });
+        checkHandler = new Handler(msg -> {
+            String errNumStr = ll_firing_errorAmount_4.getText().toString();
+            String tureNumStr = ll_firing_tureNum.getText().toString();
+            if (tureNumStr.trim().length() < 1) {
+                tureNumStr = "0";
+            }
+            ll_firing_errorAmount_4.setText("" + ((Integer.parseInt(errNumStr) - 1)));
+            totalerrorNum = Integer.parseInt(errNumStr) - 1;
+            ll_firing_errorAmount_4.setTextColor(Color.GREEN);
+
+            ll_firing_tureNum.setText("" + (Integer.parseInt(tureNumStr) + 1));
+            totaltureNum = Integer.parseInt(tureNumStr) + 1;
             return false;
         });
         noReisterHandler = new Handler(msg -> {
@@ -1583,6 +1600,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         closeThread();
         closeForm();
+        checkHandler.removeMessages(0);
         super.onDestroy();
         fixInputMethodManagerLeak(this);
         removeActivity();
@@ -1743,6 +1761,28 @@ public class FiringMainActivity extends SerialPortActivity {
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             String noReisterFlag = ThreeFiringCmd.jiexi_36("00", fromCommad);
             Log.e("是否有未注册雷管", "返回结果: " + noReisterFlag);
+            if (!fromCommad.startsWith("00000000", 10)) {//更正错误雷管,先不加
+                if (errlist != null && errlist.size() == 1) {
+                    DenatorBaseinfo denator = Application.getDaoSession().getDenatorBaseinfoDao().queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(errlist.get(0).getShellBlastNo())).unique();
+                    String a = fromCommad.substring(10, 18);
+                    String b = "A6240" + a.substring(6, 8) + a.substring(4, 6) + a.substring(2, 4) + a.substring(0, 2);
+
+                    if (Utils.duibi(denator.getDenatorId().substring(5), b.substring(5)) == 7) {//只有一位不一样的时候更新
+                        denator.setDenatorId(b);
+                        denator.setZhu_yscs(fromCommad.substring(18, 22));
+                        denator.setErrorCode("FF");
+                        denator.setErrorName("通信成功");
+                        Application.getDaoSession().update(denator);
+                        checkHandler.sendMessage(checkHandler.obtainMessage());//错误数-1 正确数 +1
+                    }
+
+                }
+            }
+            //C000360700AB4427007A051BE3C0
+            if(noReisterFlag.equals("00")&&errlist.size() != 0){
+                noReisterFlag="FF";
+            }
+            //在测试流程,返回都是FF
             if ("FF".equals(noReisterFlag)) {
                 fourOnlineDenatorFlag = 3;
 //                increase(6);//0635此处功能为直接跳到第六阶段
@@ -2243,7 +2283,16 @@ public class FiringMainActivity extends SerialPortActivity {
                                     increase(4);//之前是4
                                     Log.e("第4阶段-increase", "4-2");
                                     getblastQueue();
-                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
+                                    //36更正错误雷管
+                                    int a = Integer.parseInt(ll_firing_errorAmount_4.getText().toString());
+                                    GreenDaoMaster master = new GreenDaoMaster();
+                                    errlist = master.queryErrLeiGuan(mRegion);//带参数是查一个区域,不带参数是查所有
+                                    if (a == 1 && errlist != null&& errlist.size()>0) {
+                                        sendCmd(ThreeFiringCmd.send_36("00", errlist.get(0).getZhu_yscs()));//36 在网读ID检测
+                                    } else {
+                                        sendCmd(ThreeFiringCmd.send_36("00", "0000"));//36 在网读ID检测
+                                    }
+//                                    sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00"));//36 在网读ID检测
                                     fourOnlineDenatorFlag = 0;
                                     break;
                                 }
