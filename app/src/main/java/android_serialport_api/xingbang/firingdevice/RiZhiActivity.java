@@ -198,29 +198,45 @@ public class RiZhiActivity extends BaseActivity {
                 startActivityForResult(intent2, 2);
                 break;
             case R.id.btn_OK:
-                String blastdate = Utils.getDateFormatLong(new Date());//日期
-                String htbh =pro_htid;//合同编号
-                String dwdm = pro_dwdm;//单位代码
-                String xmbh = pro_xmbh;//项目编号
-                String[] xy = pro_coordxy.split(",");//经纬度
-                String jd = xy[0];//经度
-                String wd = xy[1];//纬度
-                String qbxm_name = "错误日志";//项目名称
-                String log = Utils.readOffline(textFilePath1.getText().toString());//日志
-                String log_cmd = Utils.readOffline(textFilePath2.getText().toString());//日志
-                if (pro_coordxy.length() < 2 && jd == null) {
-                    show_Toast("经纬度为空，不能执行上传");
-                    return;
+                if (checkMessage()) {
+
+                    String blastdate = Utils.getDateFormatLong(new Date());//日期
+                    String htbh = pro_htid;//合同编号
+                    String dwdm = pro_dwdm;//单位代码
+                    String xmbh = pro_xmbh;//项目编号
+                    String[] xy = pro_coordxy.split(",");//经纬度
+                    String jd ;//经度
+                    String wd ;//纬度
+                    if(pro_coordxy!=null&&pro_coordxy.length()>5){
+                        jd = xy[0];//经度
+                        wd = xy[1];//纬度
+                    }else {
+                        jd = "";//经度
+                        wd = "";//纬度
+                    }
+
+                    String qbxm_name = "错误日志";//项目名称
+                    String log = Utils.readOffline(textFilePath1.getText().toString());//日志
+                    String log_cmd = Utils.readOffline(textFilePath2.getText().toString());//日志
+                    if (pro_coordxy.length() < 2 && jd == null) {
+                        show_Toast("经纬度为空，不能执行上传");
+                        return;
+                    }
+                    pb_show = 1;
+                    runPbDialog();//loading画面
+                    upload_xingbang(blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log, log_cmd);//我们自己的网址
                 }
-                pb_show = 1;
-                runPbDialog();//loading画面
-                Log.e("上传日志", "blastdate: " + blastdate);
-                Log.e("上传日志", "qbxm_name: " + qbxm_name);
-                upload_xingbang(blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log,log_cmd);//我们自己的网址
+
                 break;
         }
     }
-
+    private boolean checkMessage() {
+        if (equ_no.length() < 1) {
+            show_Toast(getResources().getString(R.string.text_down_err2));
+            return false;
+        }
+        return true;
+    }
     private void upload_xingbang(final String blastdate, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log, final String log_cmd) {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_xb_his;//公司服务器上传
@@ -279,7 +295,7 @@ public class RiZhiActivity extends BaseActivity {
         } catch (JSONException  e) {
             e.printStackTrace();
         }
-//3des加密
+        //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
