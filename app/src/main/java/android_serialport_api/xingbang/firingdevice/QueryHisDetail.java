@@ -1001,6 +1001,7 @@ public class QueryHisDetail extends BaseActivity {
             } else {
                 object.put("htid", pro_htid);//合同编号
             }
+            String app_verson_name =getString(R.string.app_version_name);
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
@@ -1011,7 +1012,7 @@ public class QueryHisDetail extends BaseActivity {
 //            Log.e("上传信息-cmd日志", Utils.readLog_cmd(blastdate.split(",")[0].replace("/","-")));
             object.put("yj_version", MmkvUtils.getcode("yj_version", "默认版本"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
-            object.put("rj_version", "KT50_3.25_MX_240724_14");//软件版本
+            object.put("rj_version", app_verson_name);//软件版本
             if (qbxm_name != null && qbxm_name.length() > 1) {
                 object.put("name", qbxm_name);//项目名称
             } else {
