@@ -277,7 +277,7 @@ public class FiringMainActivity extends SerialPortActivity {
         loadBlastModel();
         ctlLinePanel(1);//初始化页面
         firstThread = new ThreadFirst(allBlastQu);//全部线程
-        Utils.writeRecord("---进入起爆页面---");
+        Utils.writeRecord("===========进入起爆页面============");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         elevenCount = getMaxDelay() / 1000 + 1;
         Log.e(TAG, "elevenCount: " + elevenCount);

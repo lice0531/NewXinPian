@@ -306,7 +306,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         String e = delayStr1.substring(2);
         Log.e("低压", "c+b: " + c + b);
         Log.e("高压", "e+d: " + e + d);
-        Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
+//        Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
         byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c + b) + (e + d));//14
         sendCmd(powerCmd);
     }

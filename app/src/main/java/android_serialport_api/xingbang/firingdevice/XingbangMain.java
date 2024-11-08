@@ -257,7 +257,7 @@ public class XingbangMain extends BaseActivity {
         }.start();
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
-        Utils.writeRecord("---进入主页面---");
+        Utils.writeRecord("==========进入主页面============");
 
 //        initFTP();              // 初始化FTP
 

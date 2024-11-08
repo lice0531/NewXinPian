@@ -2001,7 +2001,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        Utils.writeRecord("扫码注册:--管壳码:" + shellNo + "--延时:" + delay);
+        Utils.writeRecord("手动单发注册:--管壳码:" + shellNo + "--延时:" + delay);
         return 0;
     }
 
@@ -2090,80 +2090,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        Utils.writeRecord("扫码注册:--管壳码:" + shellNo + "--延时:" + delay);
+        Utils.writeRecord("扫14位管壳码注册:--管壳码:" + shellNo + "--延时:" + delay);
         return 0;
     }
 
-    /***
-     * 扫码注册方法
-     */
-    private int insertSingleDenator_28(String shellNo, String denatorId, String yscs) {
-        if (shellNo.length() != 13) {
-            return -1;
-        }
-        if (check(shellNo) == -1) {
-            return -1;
-        }
-
-        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
-        Log.e("扫码", "delay_set: " + delay_set);
-
-
-        switch (duan) {
-            case "1":
-                delay = 0;
-                delay_set = "f1";
-                break;
-            case "2":
-                delay = 25;
-                delay_set = "f2";
-                break;
-            case "3":
-                delay = 50;
-                delay_set = "f3";
-                break;
-            case "4":
-                delay = 75;
-                delay_set = "f4";
-                break;
-            case "5":
-                delay = 100;
-                delay_set = "f5";
-                break;
-        }
-        int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
-        maxNo++;
-        DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-        denatorBaseinfo.setBlastserial(maxNo);
-        denatorBaseinfo.setSithole(maxNo + "");
-        denatorBaseinfo.setShellBlastNo(shellNo);
-        denatorBaseinfo.setDelay(delay);
-        denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
-        denatorBaseinfo.setStatusCode("02");
-        denatorBaseinfo.setStatusName("已注册");
-        denatorBaseinfo.setErrorCode("FF");
-        denatorBaseinfo.setErrorName("");
-        denatorBaseinfo.setWire("");//桥丝状态
-        denatorBaseinfo.setPiece(mRegion);
-        denatorBaseinfo.setDenatorId(denatorId);
-        denatorBaseinfo.setZhu_yscs(yscs);
-        denatorBaseinfo.setDuan(duan);//段
-        denatorBaseinfo.setDuanNo(duan + "-" + (duanNUM + 1));//段序号
-        denatorBaseinfo.setAuthorization("02");//雷管芯片型号
-        //向数据库插入数据
-        getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
-        Message msg = new Message();
-        msg.arg1 = Integer.parseInt(duan);
-        msg.obj = delay_set;
-        mHandler_showNum.sendMessage(msg);
-        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-        Utils.saveFile();//把闪存中的数据存入磁盘中
-        SoundPlayUtils.play(1);
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
-        return 0;
-    }
 
     /***
      * 扫码注册方法
@@ -2183,7 +2113,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return -1;
         }
-
 
 //        int maxNo = getMaxNumberNo();
 
@@ -2214,7 +2143,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
         Log.e("扫码", "delay_set: " + delay_set);
-        Utils.writeRecord("扫码注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+
 //        int a=0;
 //        if(duan_scan.equals("0")){//普通雷管按当前页面选择的来
 //            a=duan;
@@ -2257,7 +2186,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         msg.obj = delay_set;
         mHandler_showNum.sendMessage(msg);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-
+        Utils.writeRecord("扫28位码注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);

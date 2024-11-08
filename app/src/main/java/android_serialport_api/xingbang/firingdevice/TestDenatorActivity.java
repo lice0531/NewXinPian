@@ -207,7 +207,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         ll_firing_deAmount_4.setText("" + denatorCount);
         // getDenatorType();
-        Utils.writeRecord("---进入组网测试页面---");
+        Utils.writeRecord("==============进入组网测试页面==============");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
         Log.e(TAG, "stage: " + stage);
 
@@ -613,11 +613,11 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < (denatorCount * ic_cankao * 0.5) && firstCount < Preparation_time * 0.2) {//5
-                        Log.e(TAG, "电流过大: ");
+                        Log.e(TAG, "电流偏低: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流偏低";
                         ll_firing_IC_4.setTextSize(20);
-                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
+                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",电流偏低");
                     }
 //                    else if (displayIc < 4 + denatorCount * ic_cankao && firstCount < Preparation_time * 0.2) {//5
 //                        displayIcStr = displayIcStr + "(疑似断路)";
