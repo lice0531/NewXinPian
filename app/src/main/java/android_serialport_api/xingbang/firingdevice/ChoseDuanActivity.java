@@ -378,8 +378,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
     Button reEtZ6;
     @BindView(R.id.re_et_z7)
     Button reEtZ7;
-    @BindView(R.id.re_et_z81)
-    Button reEtZ81;
+    @BindView(R.id.re_et_z8)
+    Button reEtZ8;
     @BindView(R.id.re_et_z9)
     Button reEtZ9;
     @BindView(R.id.re_et_z10)
@@ -533,7 +533,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
             R.id.re_et_nei28, R.id.re_et_nei29, R.id.re_et_nei30, R.id.re_et_nei31, R.id.re_et_nei32, R.id.re_et_nei33,
             R.id.re_et_nei34, R.id.re_et_nei35, R.id.re_et_nei36, R.id.re_et_nei37, R.id.re_et_nei38, R.id.re_et_nei39,
             R.id.re_et_nei40,R.id.re_et_z1, R.id.re_et_z2, R.id.re_et_z3, R.id.re_et_z4, R.id.re_et_z5, R.id.re_et_z6,
-            R.id.re_et_z7, R.id.re_et_z81, R.id.re_et_z9, R.id.re_et_z10, R.id.re_et_z11, R.id.re_et_z12, R.id.re_et_z13,
+            R.id.re_et_z7, R.id.re_et_z8, R.id.re_et_z9, R.id.re_et_z10, R.id.re_et_z11, R.id.re_et_z12, R.id.re_et_z13,
             R.id.re_et_z14, R.id.re_et_z15, R.id.re_et_z16, R.id.re_et_z17, R.id.re_et_z18, R.id.re_et_z19, R.id.re_et_z20,
             R.id.re_et_z21, R.id.re_et_z22, R.id.re_et_z23, R.id.re_et_z24, R.id.re_et_z25, R.id.re_et_z26, R.id.re_et_z27,
             R.id.re_et_z28, R.id.re_et_z29, R.id.re_et_z30, R.id.re_et_z31, R.id.re_et_z32, R.id.re_et_z33, R.id.re_et_z34,
@@ -1103,84 +1103,364 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.re_et_z1:
+                if (z1 == 1) {
+                    z1 = 0;
+                } else {
+                    z1 = 1;
+                }
+                setBtnColor_zf(1);
+
                 break;
             case R.id.re_et_z2:
+                if (z2 == 1) {
+                    z2 = 0;
+                } else {
+                    z2 = 1;
+                }
+                setBtnColor_zf(2);
+
                 break;
             case R.id.re_et_z3:
+                if (z3 == 1) {
+                    z3 = 0;
+                } else {
+                    z3 = 1;
+                }
+                setBtnColor_zf(3);
+
                 break;
             case R.id.re_et_z4:
+
+                if (z4 == 1) {
+                    z4 = 0;
+                } else {
+                    z4 = 1;
+                }
+                setBtnColor_zf(4);
                 break;
             case R.id.re_et_z5:
+
+                if (z5 == 1) {
+                    z5 = 0;
+                } else {
+                    z5 = 1;
+                }
+                setBtnColor_zf(5);
                 break;
             case R.id.re_et_z6:
+
+                if (z6 == 1) {
+                    z6 = 0;
+                } else {
+                    z6 = 1;
+                }
+                setBtnColor_zf(6);
                 break;
             case R.id.re_et_z7:
+
+                if (z7 == 1) {
+                    z7 = 0;
+                } else {
+                    z7 = 1;
+                }
+                setBtnColor_zf(7);
                 break;
-            case R.id.re_et_z81:
+            case R.id.re_et_z8:
+
+                if (z8 == 1) {
+                    z8 = 0;
+                } else {
+                    z8 = 1;
+                }
+                setBtnColor_zf(8);
                 break;
             case R.id.re_et_z9:
+
+                if (z9 == 1) {
+                    z9 = 0;
+                } else {
+                    z9 = 1;
+                }
+                setBtnColor_zf(9);
                 break;
             case R.id.re_et_z10:
+
+                if (z10 == 1) {
+                    z10 = 0;
+                } else {
+                    z10 = 1;
+                }
+                setBtnColor_zf(10);
                 break;
             case R.id.re_et_z11:
+
+                if (z11 == 1) {
+                    z11 = 0;
+                } else {
+                    z11 = 1;
+                }
+                setBtnColor_zf(11);
                 break;
             case R.id.re_et_z12:
+
+                if (z12 == 1) {
+                    z12 = 0;
+                } else {
+                    z12 = 1;
+                }
+                setBtnColor_zf(12);
                 break;
             case R.id.re_et_z13:
+
+                if (z13 == 1) {
+                    z13 = 0;
+                } else {
+                    z13 = 1;
+                }
+                setBtnColor_zf(13);
                 break;
             case R.id.re_et_z14:
+
+                if (z14 == 1) {
+                    z14 = 0;
+                } else {
+                    z14 = 1;
+                }
+                setBtnColor_zf(14);
                 break;
             case R.id.re_et_z15:
+
+                if (z15 == 1) {
+                    z15 = 0;
+                } else {
+                    z15 = 1;
+                }
+                setBtnColor_zf(15);
                 break;
             case R.id.re_et_z16:
+
+                if (z16 == 1) {
+                    z16 = 0;
+                } else {
+                    z16 = 1;
+                }
+                setBtnColor_zf(16);
                 break;
             case R.id.re_et_z17:
+
+                if (z17 == 1) {
+                    z17 = 0;
+                } else {
+                    z17 = 1;
+                }
+                setBtnColor_zf(17);
                 break;
             case R.id.re_et_z18:
+
+                if (z18 == 1) {
+                    z18 = 0;
+                } else {
+                    z18 = 1;
+                }
+                setBtnColor_zf(18);
                 break;
             case R.id.re_et_z19:
+
+                if (z19 == 1) {
+                    z19 = 0;
+                } else {
+                    z19 = 1;
+                }
+                setBtnColor_zf(19);
                 break;
             case R.id.re_et_z20:
+
+                if (z20 == 1) {
+                    z20 = 0;
+                } else {
+                    z20 = 1;
+                }
+                setBtnColor_zf(20);
                 break;
             case R.id.re_et_z21:
+
+                if (z21 == 1) {
+                    z21 = 0;
+                } else {
+                    z21 = 1;
+                }
+                setBtnColor_zf(21);
                 break;
             case R.id.re_et_z22:
+
+                if (z22 == 1) {
+                    z22 = 0;
+                } else {
+                    z22 = 1;
+                }
+                setBtnColor_zf(22);
                 break;
             case R.id.re_et_z23:
+
+                if (z23 == 1) {
+                    z23 = 0;
+                } else {
+                    z23 = 1;
+                }
+                setBtnColor_zf(23);
                 break;
             case R.id.re_et_z24:
+
+                if (z24 == 1) {
+                    z24 = 0;
+                } else {
+                    z24 = 1;
+                }
+                setBtnColor_zf(24);
                 break;
             case R.id.re_et_z25:
+
+                if (z25 == 1) {
+                    z25 = 0;
+                } else {
+                    z25 = 1;
+                }
+                setBtnColor_zf(25);
                 break;
             case R.id.re_et_z26:
+
+                if (z26 == 1) {
+                    z26 = 0;
+                } else {
+                    z26 = 1;
+                }
+                setBtnColor_zf(26);
                 break;
             case R.id.re_et_z27:
+
+                if (z27 == 1) {
+                    z27 = 0;
+                } else {
+                    z27 = 1;
+                }
+                setBtnColor_zf(27);
                 break;
             case R.id.re_et_z28:
+
+                if (z28 == 1) {
+                    z28 = 0;
+                } else {
+                    z28 = 1;
+                }
+                setBtnColor_zf(28);
                 break;
             case R.id.re_et_z29:
+
+                if (z29 == 1) {
+                    z29 = 0;
+                } else {
+                    z29 = 1;
+                }
+                setBtnColor_zf(29);
                 break;
             case R.id.re_et_z30:
+
+                if (z30 == 1) {
+                    z30 = 0;
+                } else {
+                    z30 = 1;
+                }
+                setBtnColor_zf(30);
                 break;
             case R.id.re_et_z31:
+
+                if (z31 == 1) {
+                    z31 = 0;
+                } else {
+                    z31 = 1;
+                }
+                setBtnColor_zf(31);
                 break;
             case R.id.re_et_z32:
+
+                if (z32 == 1) {
+                    z32 = 0;
+                } else {
+                    z32 = 1;
+                }
+                setBtnColor_zf(32);
                 break;
             case R.id.re_et_z33:
+
+                if (z33 == 1) {
+                    z33 = 0;
+                } else {
+                    z33 = 1;
+                }
+                setBtnColor_zf(33);
                 break;
             case R.id.re_et_z34:
+
+                if (z34 == 1) {
+                    z34 = 0;
+                } else {
+                    z34 = 1;
+                }
+                setBtnColor_zf(34);
                 break;
             case R.id.re_et_z35:
+
+                if (z35 == 1) {
+                    z35 = 0;
+                } else {
+                    z35 = 1;
+                }
+                setBtnColor_zf(35);
                 break;
             case R.id.re_et_z36:
+
+                if (z36 == 1) {
+                    z36 = 0;
+                } else {
+                    z36 = 1;
+                }
+                setBtnColor_zf(36);
                 break;
             case R.id.re_et_z37:
+
+                if (z37 == 1) {
+                    z37 = 0;
+                } else {
+                    z37 = 1;
+                }
+                setBtnColor_zf(37);
                 break;
             case R.id.re_et_z38:
+
+                if (z38 == 1) {
+                    z38 = 0;
+                } else {
+                    z38 = 1;
+                }
+                setBtnColor_zf(38);
                 break;
             case R.id.re_et_z39:
+
+                if (z39 == 1) {
+                    z39 = 0;
+                } else {
+                    z39 = 1;
+                }
+                setBtnColor_zf(39);
                 break;
             case R.id.re_et_z40:
+
+                if (z40 == 1) {
+                    z40 = 0;
+                } else {
+                    z40 = 1;
+                }
+                setBtnColor_zf(40);
                 break;
 
         }
@@ -1850,6 +2130,332 @@ public class ChoseDuanActivity extends AppCompatActivity {
         }
     }
 
+    private void setBtnColor_zf(int duanChose) {
+        switch (duanChose) {
+            case 1:
+                Log.e("注册", "z1: " + z1);
+                if (z1 == 1) {
+                    reEtZ1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z1", z1);
+                break;
+            case 2:
+                if (z2 == 1) {
+                    reEtZ2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z2", z2);
+                break;
+            case 3:
+                if (z3 == 1) {
+                    reEtZ3.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ3.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z3", z3);
+                break;
+            case 4:
+                if (z4 == 1) {
+                    reEtZ4.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ4.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z4", z4);
+                break;
+            case 5:
+                if (z5 == 1) {
+                    reEtZ5.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ5.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z5", z5);
+                break;
+            case 6:
+                if (z6 == 1) {
+                    reEtZ6.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ6.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z6", z6);
+                break;
+            case 7:
+                if (z7 == 1) {
+                    reEtZ7.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ7.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z7", z7);
+                break;
+            case 8:
+                if (z8 == 1) {
+                    reEtZ8.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ8.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z8", z8);
+                break;
+            case 9:
+                if (z9 == 1) {
+                    reEtZ9.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ9.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z9", z9);
+                break;
+            case 10:
+                if (z10 == 1) {
+                    reEtZ10.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ10.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z10", z10);
+                break;
+            case 11:
+                if (z11 == 1) {
+                    reEtZ11.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ11.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z11", z11);
+                break;
+            case 12:
+                if (z12 == 1) {
+                    reEtZ12.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ12.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z12", z12);
+                break;
+            case 13:
+                if (z13 == 1) {
+                    reEtZ13.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ13.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z13", z13);
+                break;
+            case 14:
+                if (z14 == 1) {
+                    reEtZ14.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ14.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z14", z14);
+                break;
+            case 15:
+                if (z15 == 1) {
+                    reEtZ15.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ15.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z15", z15);
+                break;
+            case 16:
+                if (z16 == 1) {
+                    reEtZ16.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ16.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z16", z16);
+                break;
+            case 17:
+                if (z17 == 1) {
+                    reEtZ17.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ17.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z17", z17);
+                break;
+            case 18:
+                if (z18 == 1) {
+                    reEtZ18.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ18.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z18", z18);
+                break;
+            case 19:
+                if (z19 == 1) {
+                    reEtZ19.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ19.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z19", z19);
+                break;
+            case 20:
+                if (z20 == 1) {
+                    reEtZ20.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ20.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z20", z20);
+                break;
+            case 21:
+                if (z21 == 1) {
+                    reEtZ21.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ21.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z21", z21);
+                break;
+            case 22:
+                if (z22 == 1) {
+                    reEtZ22.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ22.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z22", z22);
+                break;
+            case 23:
+                if (z23 == 1) {
+                    reEtZ23.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ23.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z23", z23);
+                break;
+            case 24:
+                if (z24 == 1) {
+                    reEtZ24.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ24.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z24", z24);
+                break;
+            case 25:
+                if (z25 == 1) {
+                    reEtZ25.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ25.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z25", z25);
+                break;
+            case 26:
+                if (z26 == 1) {
+                    reEtZ26.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ26.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z26", z26);
+                break;
+            case 27:
+                if (z27 == 1) {
+                    reEtZ27.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ27.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z27", z27);
+                break;
+            case 28:
+                if (z28 == 1) {
+                    reEtZ28.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ28.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z28", z28);
+                break;
+            case 29:
+                if (z29 == 1) {
+                    reEtZ29.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ29.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z29", z29);
+                break;
+            case 30:
+                if (z30 == 1) {
+                    reEtZ30.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ30.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z30", z30);
+                break;
+            case 31:
+                if (z31 == 1) {
+                    reEtZ31.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ31.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z31", z31);
+                break;
+            case 32:
+                if (z32 == 1) {
+                    reEtZ32.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ32.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z32", z32);
+                break;
+            case 33:
+                if (z33 == 1) {
+                    reEtZ33.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ33.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z33", z33);
+                break;
+            case 34:
+                if (z34 == 1) {
+                    reEtZ34.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ34.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z34", z34);
+                break;
+            case 35:
+                if (z35 == 1) {
+                    reEtZ35.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ35.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z35", z35);
+                break;
+            case 36:
+                if (z36 == 1) {
+                    reEtZ36.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ36.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z36", z36);
+                break;
+            case 37:
+                if (z37 == 1) {
+                    reEtZ37.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ37.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z37", z37);
+                break;
+            case 38:
+                if (z38 == 1) {
+                    reEtZ38.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ38.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z38", z38);
+                break;
+            case 39:
+                if (z39 == 1) {
+                    reEtZ39.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ39.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z39", z39);
+                break;
+            case 40:
+                if (z40 == 1) {
+                    reEtZ40.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                } else {
+                    reEtZ40.setBackgroundResource(R.drawable.bt_mainpage_style);
+                }
+                MmkvUtils.savecode(mRegion + "z40", z40);
+                break;
+        }
+    }
+
     private void setFan() {
         n1 = (int) MmkvUtils.getcode(mRegion + "n1", 0);
         n2 = (int) MmkvUtils.getcode(mRegion + "n2", 0);
@@ -1893,6 +2499,51 @@ public class ChoseDuanActivity extends AppCompatActivity {
         n40 = (int) MmkvUtils.getcode(mRegion + "n40", 0);
         for (int i = 1; i < 41; i++) {
             setBtnColor(i);
+        }
+
+        z1 = (int) MmkvUtils.getcode(mRegion + "z1", 0);
+        z2 = (int) MmkvUtils.getcode(mRegion + "z2", 0);
+        z3 = (int) MmkvUtils.getcode(mRegion + "z3", 0);
+        z4 = (int) MmkvUtils.getcode(mRegion + "z4", 0);
+        z5 = (int) MmkvUtils.getcode(mRegion + "z5", 0);
+        z6 = (int) MmkvUtils.getcode(mRegion + "z6", 0);
+        z7 = (int) MmkvUtils.getcode(mRegion + "z7", 0);
+        z8 = (int) MmkvUtils.getcode(mRegion + "z8", 0);
+        z9 = (int) MmkvUtils.getcode(mRegion + "z9", 0);
+        z10 = (int) MmkvUtils.getcode(mRegion + "z10", 0);
+        z11 = (int) MmkvUtils.getcode(mRegion + "z11", 0);
+        z12 = (int) MmkvUtils.getcode(mRegion + "z12", 0);
+        z13 = (int) MmkvUtils.getcode(mRegion + "z13", 0);
+        z14 = (int) MmkvUtils.getcode(mRegion + "z14", 0);
+        z15 = (int) MmkvUtils.getcode(mRegion + "z15", 0);
+        z16 = (int) MmkvUtils.getcode(mRegion + "z16", 0);
+        z17 = (int) MmkvUtils.getcode(mRegion + "z17", 0);
+        z18 = (int) MmkvUtils.getcode(mRegion + "z18", 0);
+        z19 = (int) MmkvUtils.getcode(mRegion + "z19", 0);
+        z20 = (int) MmkvUtils.getcode(mRegion + "z20", 0);
+        z21 = (int) MmkvUtils.getcode(mRegion + "z21", 0);
+        z22 = (int) MmkvUtils.getcode(mRegion + "z22", 0);
+        z23 = (int) MmkvUtils.getcode(mRegion + "z23", 0);
+        z24 = (int) MmkvUtils.getcode(mRegion + "z24", 0);
+        z25 = (int) MmkvUtils.getcode(mRegion + "z25", 0);
+        z26 = (int) MmkvUtils.getcode(mRegion + "z26", 0);
+        z27 = (int) MmkvUtils.getcode(mRegion + "z27", 0);
+        z28 = (int) MmkvUtils.getcode(mRegion + "z28", 0);
+        z29 = (int) MmkvUtils.getcode(mRegion + "z29", 0);
+        z30 = (int) MmkvUtils.getcode(mRegion + "z30", 0);
+        z31 = (int) MmkvUtils.getcode(mRegion + "z31", 0);
+        z32 = (int) MmkvUtils.getcode(mRegion + "z32", 0);
+        z33 = (int) MmkvUtils.getcode(mRegion + "z33", 0);
+        z34 = (int) MmkvUtils.getcode(mRegion + "z34", 0);
+        z35 = (int) MmkvUtils.getcode(mRegion + "z35", 0);
+        z36 = (int) MmkvUtils.getcode(mRegion + "z36", 0);
+        z37 = (int) MmkvUtils.getcode(mRegion + "z37", 0);
+        z38 = (int) MmkvUtils.getcode(mRegion + "z38", 0);
+        z39 = (int) MmkvUtils.getcode(mRegion + "z39", 0);
+        z40 = (int) MmkvUtils.getcode(mRegion + "z40", 0);
+
+        for (int i = 1; i < 41; i++) {
+            setBtnColor_zf(i);
         }
     }
 

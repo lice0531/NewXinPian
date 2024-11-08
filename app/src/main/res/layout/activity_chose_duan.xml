@@ -49,7 +49,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="0.8"
             android:background="@color/colorPrimary"
-            android:text="正/反"
+            android:text="反向"
             android:textSize="18sp" />
     </LinearLayout>
     <ScrollView
@@ -453,7 +453,7 @@
 
                     />
                 <Button
-                    android:id="@+id/re_et_z81"
+                    android:id="@+id/re_et_z8"
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

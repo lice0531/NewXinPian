@@ -2004,7 +2004,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2);
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum);
         if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2176,7 +2176,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
         if (delay < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2369,7 +2369,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
-            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2);
+            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
             if (delay < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
@@ -2477,8 +2477,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return reCount;
     }
 
-    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2) {
-        if(!flag_jh_f1||!flag_jh_f2){
+    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum) {
+        if(!flag_jh_f1){
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = start_delay - delay;
@@ -2496,22 +2496,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         delay = delay - f1;
                     }
 
-                }
-            } else if (delay_set.equals("f2")) {//排间延时
-                if (maxNo == 0) {
-                    delay = start_delay - delay;
-                }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay - f2 * (tk_num + 1);
-                    } else {
-                        delay = start_delay - f2;
-                    }
-                } else {
-                    if (flag_tk) {
-                        delay = delay - f2 * (tk_num + 1);
-                    } else {
-                        delay = delay - f2;
-                    }
                 }
             }
         }else {
@@ -2545,9 +2529,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 } else {
                     if (flag_tk) {
-                        delay = delay + f2 * (tk_num + 1);
+                        delay = delay_minNum + f2 * (tk_num + 1);
                     } else {
-                        delay = delay + f2;
+                        delay = delay_minNum + f2;
                     }
                 }
             }

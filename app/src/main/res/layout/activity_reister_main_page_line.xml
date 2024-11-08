@@ -306,6 +306,7 @@
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
+                            android:textSize="20sp"
                             android:text="@string/text_scan_f1" />
 
                         <EditText
@@ -363,6 +364,7 @@
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/bt_mainpage_style"
+                            android:textSize="20sp"
                             android:text="@string/text_scan_f2" />
 
                         <EditText
@@ -380,6 +382,7 @@
                             android:textColor="@color/rangle_fc_base"
                             android:textSize="@dimen/fireChildPageLabelFontSize" />
                         <Button
+                            android:visibility="invisible"
                             android:id="@+id/btn_JH_F2"
                             android:layout_width="0dp"
                             android:layout_weight="0.4"

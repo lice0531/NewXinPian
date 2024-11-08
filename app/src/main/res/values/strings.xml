@@ -408,8 +408,8 @@
     <string name="text_jh">减</string>
     <string name="text_tiaok">跳孔</string>
     <string name="text_gkm">管壳码</string>
-    <string name="text_scan_f1">F1延时</string>
-    <string name="text_scan_f2">F2延时</string>
+    <string name="text_scan_f1">孔间延时</string>
+    <string name="text_scan_f2">排间延时</string>
     <string name="text_scan_df">单发</string>
     <string name="text_scan_xgys">修改延时</string>
     <string name="text_scan_sdsr">手动输入</string>

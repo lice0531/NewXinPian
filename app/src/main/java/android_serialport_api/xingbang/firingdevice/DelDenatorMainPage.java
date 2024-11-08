@@ -171,31 +171,16 @@ public class DelDenatorMainPage extends BaseActivity  {
 
 
     public void tipALLDelDenator() {
-        Builder builder = new Builder(DelDenatorMainPage.this);
-        builder.setTitle(getString(R.string.text_alert_tip));//"提示"
-        builder.setMessage(getString(R.string.text_alert_del_all));//是否全部删除注册雷管数
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                GreenDaoMaster master = new GreenDaoMaster();
-                Log.e(TAG, "全部删除:mRegion "+mRegion );
-                master.deleteLeiGuanFroPiace(mRegion);
+        GreenDaoMaster master = new GreenDaoMaster();
+        Log.e(TAG, "全部删除:mRegion "+mRegion );
+        master.deleteLeiGuanFroPiace(mRegion);
 //                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null);
-                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
-                refreshData();
-                dialog.dismiss();
-                chongZhiFan();//重置所有翻转标记
-                Utils.saveFile();//把软存中的数据存入磁盘中
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-            }
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
+        refreshData();
+
+        chongZhiFan();//重置所有翻转标记
+        Utils.saveFile();//把软存中的数据存入磁盘中
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
     }
 
     public void Del_Err_Denator() {
@@ -512,6 +497,47 @@ public class DelDenatorMainPage extends BaseActivity  {
         MmkvUtils.savecode(mRegion+"n38", 0);
         MmkvUtils.savecode(mRegion+"n39", 0);
         MmkvUtils.savecode(mRegion+"n40", 0);
+
+        MmkvUtils.savecode(mRegion+"z1", 0);
+        MmkvUtils.savecode(mRegion+"z2", 0);
+        MmkvUtils.savecode(mRegion+"z3", 0);
+        MmkvUtils.savecode(mRegion+"z4", 0);
+        MmkvUtils.savecode(mRegion+"z5", 0);
+        MmkvUtils.savecode(mRegion+"z6", 0);
+        MmkvUtils.savecode(mRegion+"z7", 0);
+        MmkvUtils.savecode(mRegion+"z8", 0);
+        MmkvUtils.savecode(mRegion+"z9", 0);
+        MmkvUtils.savecode(mRegion+"z10", 0);
+        MmkvUtils.savecode(mRegion+"z11", 0);
+        MmkvUtils.savecode(mRegion+"z12", 0);
+        MmkvUtils.savecode(mRegion+"z13", 0);
+        MmkvUtils.savecode(mRegion+"z14", 0);
+        MmkvUtils.savecode(mRegion+"z15", 0);
+        MmkvUtils.savecode(mRegion+"z16", 0);
+        MmkvUtils.savecode(mRegion+"z17", 0);
+        MmkvUtils.savecode(mRegion+"z18", 0);
+        MmkvUtils.savecode(mRegion+"z19", 0);
+        MmkvUtils.savecode(mRegion+"z20", 0);
+        MmkvUtils.savecode(mRegion+"z21", 0);
+        MmkvUtils.savecode(mRegion+"z22", 0);
+        MmkvUtils.savecode(mRegion+"z23", 0);
+        MmkvUtils.savecode(mRegion+"z24", 0);
+        MmkvUtils.savecode(mRegion+"z25", 0);
+        MmkvUtils.savecode(mRegion+"z26", 0);
+        MmkvUtils.savecode(mRegion+"z27", 0);
+        MmkvUtils.savecode(mRegion+"z28", 0);
+        MmkvUtils.savecode(mRegion+"z29", 0);
+        MmkvUtils.savecode(mRegion+"z30", 0);
+        MmkvUtils.savecode(mRegion+"z31", 0);
+        MmkvUtils.savecode(mRegion+"z32", 0);
+        MmkvUtils.savecode(mRegion+"z33", 0);
+        MmkvUtils.savecode(mRegion+"z34", 0);
+        MmkvUtils.savecode(mRegion+"z35", 0);
+        MmkvUtils.savecode(mRegion+"z36", 0);
+        MmkvUtils.savecode(mRegion+"z37", 0);
+        MmkvUtils.savecode(mRegion+"z38", 0);
+        MmkvUtils.savecode(mRegion+"z39", 0);
+        MmkvUtils.savecode(mRegion+"z40", 0);
     }
 
 }
