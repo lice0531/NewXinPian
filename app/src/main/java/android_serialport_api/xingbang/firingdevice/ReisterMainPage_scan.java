@@ -1968,7 +1968,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay_max;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
         Log.e("单发输入", "delay_start: " + delay_start);
@@ -2141,7 +2141,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
@@ -2307,7 +2307,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
         if(!flag_jh_f1||!flag_jh_f2){
@@ -2478,10 +2478,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum) {
+        Log.e(TAG, "flag_jh_f1: "+flag_jh_f1 );
+        Log.e(TAG, "delay_set: "+delay_set );
         if(!flag_jh_f1){
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = start_delay - delay;
+                    Log.e(TAG, "start_delay: "+start_delay );
+                    Log.e(TAG, "delay: "+delay );
                 }else if (btn_start) {
                     if (flag_tk) {
                         delay = start_delay - f1 * (tk_num + 1);
@@ -2737,7 +2741,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                     flag_jh_f1 = true;
                 }
-                delay_set = "0";//是f1还是f2
+                delay_set = "f1";//是f1还是f2
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 reEtF2.setBackgroundResource(R.drawable.translucent);
                 flag2 = 0;

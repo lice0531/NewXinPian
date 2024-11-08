@@ -683,7 +683,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
@@ -969,7 +969,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
         if (delay_set.equals("f1")) {
@@ -2226,7 +2226,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
@@ -2424,7 +2424,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
         int delay_start = delay;
-        if(btn_start){
+        if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
 
@@ -2845,7 +2845,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                     flag_jh_f1 = true;
                 }
-                delay_set = "0";//是f1还是f2
+                delay_set = "f1";//是f1还是f2
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 reEtF2.setBackgroundResource(R.drawable.translucent);
                 flag2 = 0;
