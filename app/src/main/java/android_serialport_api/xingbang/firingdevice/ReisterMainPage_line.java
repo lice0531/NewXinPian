@@ -397,11 +397,16 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     if (data.charAt(0) == 'Y') {
                         barCode = data.substring(1, 14);
                         String a = data.substring(14, 24);
-                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+
+                        barCode = data.substring(1, 14);
+                        denatorId = "A6210" + data.substring(14, 22);
+                        String yscs = data.substring(22, 26);
+                        String version = data.substring(26, 27);
+                        String duan = data.substring(27, 28);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
                         Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                        insertSingleDenator_2(barCode, denatorId,yscs,version, duan);//同时注册管壳码和芯片码
                     } else {
                         //1530924217014 000FA546C F203 1 0
                         barCode = data.substring(0, 13);
@@ -409,12 +414,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         String yscs = data.substring(22, 26);
                         version = "0" + data.substring(26, 27);
                         denatorId = "A621" + a;
+                        String duan = data.substring(27, 28);
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
                         Log.e("扫码", "yscs: " + yscs);
                         Log.e("扫码", "version: " + version);
-                        insertSingleDenator_2(barCode, denatorId, yscs);//同时注册管壳码和芯片码
+                        insertSingleDenator_2(barCode, denatorId, yscs,version, duan);//同时注册管壳码和芯片码
                     }
 
                 }
@@ -1644,7 +1650,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     /***
      * 扫码注册方法
      */
-    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
         Log.e("检查管厂码", "factoryCode: " + factoryCode);
         Log.e("检查管厂码", "shellNo.substring(0,2): " + shellNo.substring(0, 2));
         if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0, 2))) {
@@ -1678,6 +1684,26 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+
+        switch (duan_scan) {
+            default:
+            case "1":
+                delay = 0;
+                break;
+            case "2":
+                delay = 25;
+                break;
+            case "3":
+                delay = 50;
+                break;
+            case "4":
+                delay = 75;
+                break;
+            case "5":
+                delay = 100;
+                break;
+
+        }
         Log.e("扫码", "delay_set: " + delay_set);
 
         Utils.writeRecord("扫码注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
