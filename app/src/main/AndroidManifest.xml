@@ -305,6 +305,16 @@
             android:label="APP升级"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".zxing.activity.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/text_sm"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".firingdevice.ChoseDuanActivity"
+            android:exported="false"
+            android:label="@string/text_scan_xzdw"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

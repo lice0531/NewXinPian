@@ -382,6 +382,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
 //                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }else if(msg.what == 3){
                 String tip ="";
@@ -414,6 +415,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         })
                         .create();
                 if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
             }else if(msg.what == 4){
@@ -428,6 +430,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         .setPositiveButton("继续起爆", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
             }else if (msg.what == 5) {
@@ -1797,6 +1800,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             })
                             .create();
                     if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                        dialog.setCanceledOnTouchOutside(false);
                         dialog.show();
                     }
                 }
@@ -1815,6 +1819,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             })
                             .create();
                     if (!FiringMainActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                        dialog.setCanceledOnTouchOutside(false);
                         dialog.show();
                     }
                 }
@@ -1850,6 +1855,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 }
                             })
                             .create();
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
                 break;
@@ -1943,6 +1949,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             MmkvUtils.savecode("isTestDenator","N");
                         })
                         .create();
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
                 Log.e("case14","显示起爆电流不稳定dialog");
                 break;
@@ -2813,6 +2820,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         dialog12.cancel();
                     })
                     .create();
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         }
     }
@@ -2836,6 +2844,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        dialog12.cancel();
 //                    })
                     .create();
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         }
     }
@@ -2894,6 +2903,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 errlistview.setVisibility(View.VISIBLE);
                 dialogOn(dialog);
             });
+            builder.setCancelable(false);
             builder.create().show();
         }
     }

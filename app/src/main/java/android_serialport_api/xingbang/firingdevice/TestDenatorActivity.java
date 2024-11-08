@@ -1573,6 +1573,13 @@ public class TestDenatorActivity extends SerialPortActivity {
                 llview.setVisibility(View.VISIBLE);
                 text_tip.setVisibility(View.GONE);
                 errlistview.setVisibility(View.VISIBLE);
+                // 点击按钮时错误雷管列表展示出来后,“查看错误雷管”按钮没有用了,所以直接隐藏
+                // 获取AlertDialog对象
+                AlertDialog alertDialog = (AlertDialog) dialog;
+                // 获取中立按钮
+                Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                // 隐藏按钮
+                neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
                 dialogOn(dialog);
             });
             builder.create().show();

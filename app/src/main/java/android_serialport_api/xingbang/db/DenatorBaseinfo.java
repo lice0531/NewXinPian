@@ -55,15 +55,22 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     private String cong_yscs;//
     @Property(nameInDb = "piece")
     private String piece;           // 区域
+    @Property(nameInDb = "duan")
+    private int duan;
+    @Property(nameInDb = "duanNo")
+    private int duanNo;
+    @Property(nameInDb = "fanzhuan")
+    private String fanzhuan;
 
 
 
-    @Generated(hash = 228066582)
+
+    @Generated(hash = 2002378901)
     public DenatorBaseinfo(Long id, int blastserial, String sithole, String shellBlastNo,
-            String denatorId, int delay, String statusCode, String statusName,
-            String errorName, String errorCode, String authorization, String remark,
-            String regdate, String wire, String name, String denatorIdSup, String zhu_yscs,
-            String cong_yscs, String piece) {
+                           String denatorId, int delay, String statusCode, String statusName,
+                           String errorName, String errorCode, String authorization, String remark,
+                           String regdate, String wire, String name, String denatorIdSup, String zhu_yscs,
+                           String cong_yscs, String piece, int duan, int duanNo, String fanzhuan) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -83,6 +90,9 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
         this.zhu_yscs = zhu_yscs;
         this.cong_yscs = cong_yscs;
         this.piece = piece;
+        this.duan = duan;
+        this.duanNo = duanNo;
+        this.fanzhuan = fanzhuan;
     }
 
     @Generated(hash = 1775503899)
@@ -91,12 +101,13 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
 
 
 
+
     @Override
     public String toString() {
         return "DenatorBaseinfo{" +
                 "id=" + id +
                 ", blastserial=" + blastserial +
-                ", sithole=" + sithole +
+                ", sithole='" + sithole + '\'' +
                 ", shellBlastNo='" + shellBlastNo + '\'' +
                 ", denatorId='" + denatorId + '\'' +
                 ", delay=" + delay +
@@ -113,6 +124,9 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
                 ", piece='" + piece + '\'' +
+                ", duan=" + duan +
+                ", duanNo='" + duanNo + '\'' +
+                ", fanzhuan='" + fanzhuan + '\'' +
                 '}';
     }
 
@@ -135,9 +149,8 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
             e.printStackTrace();
         }
 
-        int liushui1 = Integer.parseInt(shellBlastNo.substring(9));
-        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(9));
-
+        int liushui1 = Integer.parseInt(shellBlastNo.substring(8));
+        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(8));
         if (date1.before(date2)) {
             return 1;
         } else if (date1.after(date2)) {
@@ -152,12 +165,6 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
             }
         }
 
-    }
-    public String getPiece() {
-        return this.piece;
-    }
-    public void setPiece(String piece) {
-        this.piece = piece;
     }
 
     public Long getId() {
@@ -303,4 +310,37 @@ public class DenatorBaseinfo extends LitePalSupport implements Comparable<Denato
     public void setCong_yscs(String cong_yscs) {
         this.cong_yscs = cong_yscs;
     }
+
+    public String getPiece() {
+        return this.piece;
+    }
+
+    public void setPiece(String piece) {
+        this.piece = piece;
+    }
+
+    public int getDuan() {
+        return this.duan;
+    }
+
+    public void setDuan(int duan) {
+        this.duan = duan;
+    }
+
+    public int getDuanNo() {
+        return this.duanNo;
+    }
+
+    public void setDuanNo(int duanNo) {
+        this.duanNo = duanNo;
+    }
+
+    public String getFanzhuan() {
+        return this.fanzhuan;
+    }
+
+    public void setFanzhuan(String fanzhuan) {
+        this.fanzhuan = fanzhuan;
+    }
+
 }

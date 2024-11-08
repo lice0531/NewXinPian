@@ -1460,6 +1460,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         values.put("dl_state", "未上传");
         values.put("zb_state", "未上传");
         values.put("spare1", name);
+        values.put("total", list_uid.size());//总数
         values.put("bprysfz", at_bprysfz.getText().toString().trim());//身份证号
         values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (at_dwdm.getText().toString().trim().length() < 1) {//单位代码
@@ -1601,6 +1602,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             item.put("errNum", sq.getErrNum());
             item.put("coordxy", sq.getCoordxy());
             item.put("spare1", sq.getSpare1());
+            item.put("total", sq.getTotal());
             item.put("danLingBean", danLingBean);
             map_dl.add(item);
         }

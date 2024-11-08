@@ -2,12 +2,16 @@ package android_serialport_api.xingbang.db;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import android.database.Cursor;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.litepal.LitePal;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
@@ -20,7 +24,9 @@ import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
+import android_serialport_api.xingbang.models.DanLingOffLinBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -38,6 +44,7 @@ public class GreenDaoMaster {
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
+    private UserMainDao mUserDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -47,6 +54,7 @@ public class GreenDaoMaster {
         this.mProjectDao = Application.getDaoSession().getProjectDao();
         this.mDenatorType = Application.getDaoSession().getDenator_typeDao();
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
+        this.mUserDao = Application.getDaoSession().getUserMainDao();
     }
 
 
@@ -723,5 +731,395 @@ public class GreenDaoMaster {
         } else {
             return false;
         }
+    }
+
+    public static void updateLgState_lixian(DanLingOffLinBean.Lgs.Lg lgBean, String yxq) {
+        //94242214050
+        //F42F1C 2E0A 2 5
+        if ( !lgBean.getUid().startsWith("00000")) {
+            String uid = null;
+            String yscs = null;
+            String duan = null;
+            String version = null;
+            if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+                yscs = lgBean.getGzm().substring(6, 10);
+            }
+            if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                duan = lgBean.getGzm().substring(11, 12);
+                version = lgBean.getGzm().substring(10, 11);
+            }
+            DenatorBaseinfo db_sc= new DenatorBaseinfo();
+            db_sc.setShellBlastNo(lgBean.getUid());
+            db_sc.setDenatorId(uid);
+            if(version!=null){
+                db_sc.setAuthorization("0"+version);
+            }
+
+            db_sc.setZhu_yscs(yscs);
+            db_sc.setCong_yscs(duan);
+
+            db_sc.setRegdate(lgBean.getYxq());//原来是截取到日,现在改到小时
+            if (lgBean.getGzmcwxx().equals("0")){
+                db_sc.setErrorName("雷管正常");
+            }else if(lgBean.getGzmcwxx().equals("1")){
+                db_sc.setErrorName("雷管在黑名单中");
+            }else if(lgBean.getGzmcwxx().equals("2")){
+                db_sc.setErrorName("雷管已使用");
+            }else if(lgBean.getGzmcwxx().equals("3")){
+                db_sc.setErrorName("申请的雷管UID不存在");
+            }
+            //小于0x0600的就是快速
+            //0x09C1就是慢速的
+            //0x04C1就是快速的
+//            String yscs2=yscs.substring(2)+yscs.substring(0,2);
+//            BigInteger one = new BigInteger(yscs2,16);
+//            BigInteger two = new BigInteger("0699",16);
+//            Log.e("判断产品型号-lgBean.getGzm()",lgBean.getGzm());
+//            Log.e("判断产品型号-version",version);
+//            Log.e("判断产品型号-比较",one.compareTo(two)+"");
+//            if(one.compareTo(two) > 0&&!version.equals("2")){
+//                db_sc.setAuthorization("02");
+//                Log.e("判断产品型号","02");
+//            }else if(one.compareTo(two) < 0&&!version.equals("1")){
+//                Log.e("判断产品型号","01");
+//                db_sc.setAuthorization("01");
+//            }
+            registerDetonator_typeNew(db_sc,yxq);//更新到生产数据库中
+
+
+            SimpleDateFormat sd2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format2 = sd2.format(new Date(System.currentTimeMillis() ));
+//            Utils.writeRecord("format2: " + format2);
+            QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+            DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
+            if (db != null) {
+                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+//                Utils.writeRecord("db: " + db.toString());
+//                Utils.writeRecord("uid: " + uid);
+                db.setDenatorId(uid);
+                db.setRegdate(lgBean.getYxq());
+                if(lgBean.getGzm().length()>=10){
+                    db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                }
+
+                if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                    int delay=0;
+                    switch (duan){
+                        case "1":
+                            break;
+                        case "2":
+                            delay=25;
+                            break;
+                        case "3":
+                            delay=50;
+                            break;
+                        case "4":
+                            delay=75;
+                            break;
+                        case "5":
+                            delay=100;
+                            break;
+                    }
+                    if(!duan.equals("0")){
+                        db.setDelay(delay);
+                    }
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                    db.setAuthorization("0"+version);
+//                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                }
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String format1 = sd.format(new Date(System.currentTimeMillis() ));
+                try {
+                    Date date1 = sd.parse(format1);//当前日期
+                    Date date2 = sd.parse(db.getRegdate());//有效期
+                    if (date1.compareTo(date2) <= 0) {
+                        getDaoSession().getDenatorBaseinfoDao().update(db);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 读取输入注册
+     */
+    private static void registerDetonator_typeNew(DenatorBaseinfo leiguan,String yxq) {
+//        getDaoSession().getDetonatorTypeNewDao().deleteAll();//读取生产数据前先清空旧的数据
+        // 检查重复数据
+
+        Log.e("typeNew", "yxq: "+yxq  );
+        Log.e("typeNew", "leiguan.getAuthorization(): "+leiguan.getAuthorization()  );
+        // 雷管类型_新
+        DetonatorTypeNew detonatorTypeNew = new DetonatorTypeNew();
+        detonatorTypeNew.setShellBlastNo(leiguan.getShellBlastNo());
+        detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
+        detonatorTypeNew.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
+        detonatorTypeNew.setZhu_yscs(leiguan.getZhu_yscs());
+        detonatorTypeNew.setCong_yscs(leiguan.getCong_yscs());//放得段号
+        detonatorTypeNew.setTime(yxq);//2023-06-15 17:20:40  leiguan.getRegdate().substring(0, 10)
+        detonatorTypeNew.setQibao(leiguan.getErrorName());//先根据丹灵返回是否正常
+
+        //对比时间
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = sd.format(new Date(System.currentTimeMillis() ));//当前时间
+
+        if(leiguan.getErrorName().equals("雷管正常")){
+
+            try {
+                Date date1 = sd.parse(format1);//当前日期
+
+                Date date2 = sd.parse(yxq);//有效期
+                Log.e("日期", "date1: "+date1 );
+                Log.e("日期", "date2: "+date2 );
+                Log.e("日期", "date1.compareTo(date2): "+date1.compareTo(date2) );
+                if(date1.compareTo(date2)>0){
+                    detonatorTypeNew.setQibao("雷管过期");
+                    detonatorTypeNew.setDetonatorId(null);
+                }else {
+                    detonatorTypeNew.setDetonatorId(leiguan.getDenatorId());
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        //检查在授权表中是否重复
+        if (checkRepeatShellBlastNo_typeNew(leiguan.getShellBlastNo())) {
+            GreenDaoMaster master = new GreenDaoMaster();
+            DetonatorTypeNew detonatorType2 = master.queryShellBlastNoTypeNew(detonatorTypeNew.getShellBlastNo());
+            String time_bf=detonatorType2.getTime();//更新前的时间
+            detonatorType2.setDetonatorId(leiguan.getDenatorId());
+            detonatorType2.setDetonatorIdSup(leiguan.getAuthorization());//放得版本号
+            detonatorType2.setZhu_yscs(leiguan.getZhu_yscs());
+            detonatorType2.setCong_yscs(leiguan.getCong_yscs());//放得段号
+            detonatorType2.setTime(yxq);
+            detonatorType2.setQibao(leiguan.getErrorName());
+            if(detonatorType2.getQibao().equals("雷管正常")){
+                try {
+                    Date date1 = sd.parse(format1);//当前日期
+                    Date date2 = sd.parse(leiguan.getRegdate());//有效期
+                    if(date1.compareTo(date2)>0){
+                        detonatorType2.setQibao("雷管过期");
+                        detonatorType2.setDetonatorId(null);
+                    }else {
+                        detonatorType2.setDetonatorId(leiguan.getDenatorId());
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            getDaoSession().getDetonatorTypeNewDao().update(detonatorType2);
+
+//            master.updataShouQuan(time_bf);//更新授权数量(在页面更新了,这里应该不用了)
+            Log.e("更新生产库中的雷管信息",": " );
+//
+            return;
+        }
+        Log.e("插入新生产库中的雷管信息", ": ");
+        getDaoSession().getDetonatorTypeNewDao().insert(detonatorTypeNew);
+        Log.e("第3步", "结束: --------------" );
+    }
+
+    /***
+     * @param duan
+     * @return
+     */
+    public List<DenatorBaseinfo> queryLeiguanDuan(int duan, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
+
+    public List<DenatorBaseinfo> queryLeiguanDuanDesc(int duan, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
+
+    /***
+     * @param duan
+     * @return
+     */
+    public List<DenatorBaseinfo> queryLeiguanDuan(int duan, String mRegion,String fz) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        Log.e("查询", "段位雷管: ");
+        return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .where(DenatorBaseinfoDao.Properties.Fanzhuan.eq(fz))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
+
+    /**
+     * 查询所有雷管
+     *
+     * @return
+     */
+    public DenatorBaseinfo querylg(String gkm) {
+        return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm)).unique();
+    }
+
+    /**
+     * 查询雷管 区域正序(序号)
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionAndDUanAsc(String piece, int duan) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 获取 该区域 最小序号 的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxDuan(String piece) {
+        int duan;
+        String sql = "select max(duan) from denatorBaseinfo where piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            duan = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取当前区域最大段号: "+duan);
+            return duan;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 1");
+            return 1;
+        }
+
+    }
+
+    /**
+     * 获取 该区域 最大序号 的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxNumDelay(int duan , String piece) {
+//        int delay;
+//        String sql = "select max(delay) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+//        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+//
+//        if (cursor != null && cursor.moveToNext()) {
+//            delay = cursor.getInt(0);
+//            cursor.close();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: "+delay);
+//            return delay;
+//        }else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
+
+        // 倒叙查询
+        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据 该区域 最大序号 的延时
+            int delay = mList.get(0).getDelay();
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+            return delay;
+            // 如果没数据
+        } else {
+            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+            return 0;
+        }
+
+    }
+
+    /**
+     * 查询雷管 区域倒序(序号)
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionDesc(int duan,String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 获取 该区域 最小序号 的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMinNumDelay(int duan , String piece) {
+        int delay;
+        String sql = "select min(delay) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 0");
+            return 0;
+        }
+
+    }
+
+    /**
+     * 获取 该段 最大序号 的段序号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMaxDuanNo(int duan ,String piece) {
+        int duanNo;
+        String sql = "select max(duanNo) from denatorBaseinfo where duan = "+duan + " and piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            duanNo = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取最大序号1: "+duanNo);
+            return duanNo;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最大序号2 的延时: 1");
+            return 1;
+        }
+//        // 倒叙查询
+//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(duan,piece);
+//
+//        // 如果有数据
+//        if (mList.size() > 0) {
+//            // 第一个雷管数据 该区域 最大序号 的延时
+//            String duanNo = mList.get(0).getDuanNo();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + duanNo);
+//            return Integer.parseInt(duanNo);
+//            // 如果没数据
+//        } else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
+    }
+
+    public List<UserMain> queryUser(String name) {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        result = result.where(UserMainDao.Properties.Uname.eq(name));
+        return result.list();
+    }
+
+    public List<UserMain> queryAllUser() {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        return result.list();
     }
 }

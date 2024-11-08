@@ -5,6 +5,10 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @ClassName: DetonatorTypeNew
  * @Description: 雷管类型_新
@@ -12,7 +16,7 @@ import org.greenrobot.greendao.annotation.Property;
  * @Author: kalinaji
  */
 @Entity(nameInDb = "DetonatorTypeNew")
-public class DetonatorTypeNew {
+public class DetonatorTypeNew implements Comparable<DetonatorTypeNew>{
 
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
@@ -29,10 +33,13 @@ public class DetonatorTypeNew {
     private String cong_yscs;//从芯片延时参数
     @Property(nameInDb = "time")
     private String time;//从芯片延时参数
+    @Property(nameInDb = "qibao")
+    private String qibao;//是否起爆
 
-    @Generated(hash = 350380064)
+@Generated(hash = 1535113931)
     public DetonatorTypeNew(Long Id, String shellBlastNo, String detonatorId,
-            String detonatorIdSup, String zhu_yscs, String cong_yscs, String time) {
+            String detonatorIdSup, String zhu_yscs, String cong_yscs, String time,
+            String qibao) {
         this.Id = Id;
         this.shellBlastNo = shellBlastNo;
         this.detonatorId = detonatorId;
@@ -40,6 +47,7 @@ public class DetonatorTypeNew {
         this.zhu_yscs = zhu_yscs;
         this.cong_yscs = cong_yscs;
         this.time = time;
+        this.qibao = qibao;
     }
     @Generated(hash = 1791749386)
     public DetonatorTypeNew() {
@@ -87,6 +95,14 @@ public class DetonatorTypeNew {
         this.time = time;
     }
 
+    public String getQibao() {
+        return qibao;
+    }
+
+    public void setQibao(String qibao) {
+        this.qibao = qibao;
+    }
+
     @Override
     public String toString() {
         return "DetonatorTypeNew{" +
@@ -96,7 +112,50 @@ public class DetonatorTypeNew {
                 ", detonatorIdSup='" + detonatorIdSup + '\'' +
                 ", zhu_yscs='" + zhu_yscs + '\'' +
                 ", cong_yscs='" + cong_yscs + '\'' +
+                ", time='" + time + '\'' +
+                ", qibao='" + qibao + '\'' +
                 '}';
     }
 
+    @Override
+    public int compareTo(DetonatorTypeNew denator) {//5390418012345
+        // 返回值0代表相等，1表示大于，-1表示小于；
+        if(denator.getShellBlastNo().contains("A6")){
+            return -1;
+        }
+        if(shellBlastNo.contains("A6")){
+            return -1;
+        }
+        if(shellBlastNo.length()!=13){
+            return 1;
+        }
+        if(denator.getShellBlastNo().length()!=13){
+            return 1;
+        }
+        SimpleDateFormat md = new SimpleDateFormat("MMdd");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = md.parse(shellBlastNo.substring(3, 7));
+            date2 = md.parse(denator.getShellBlastNo().substring(3, 7));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int liushui1 = Integer.parseInt(shellBlastNo.substring(8));
+        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(8));
+        if (date1.before(date2)) {
+            return -1;
+        } else if (date1.after(date2)) {
+            return 1;
+        } else {
+            if (liushui1 > liushui2) {
+                return 1;
+            } else if (liushui1 < liushui2) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
 }

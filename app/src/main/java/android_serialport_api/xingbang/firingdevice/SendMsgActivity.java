@@ -630,11 +630,12 @@ public class SendMsgActivity extends BaseActivity {
                 } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
+                Uri mediaUri = Uri.withAppendedPath(contentUri, docId); // 拼接成完整的媒体 URI
 
                 final String selection = "_id=?";
                 final String[] selectionArgs = new String[]{split[1]};
 
-                return getDataColumn(context, contentUri, selection, selectionArgs);
+                return getDataColumn(context, mediaUri, selection, selectionArgs);
             }
         }
         // MediaStore (and general)

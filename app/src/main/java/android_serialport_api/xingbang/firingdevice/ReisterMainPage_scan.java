@@ -4,6 +4,7 @@ package android_serialport_api.xingbang.firingdevice;
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -37,6 +38,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +83,10 @@ import butterknife.OnClick;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -190,7 +196,170 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     TextView text_gkm;
     @BindView(R.id.text_gkm2)
     TextView text_uid;
-
+    @BindView(R.id.tr_1)
+    TableRow tr1;
+    @BindView(R.id.re_num_f1)
+    TextView reNumF1;
+    @BindView(R.id.re_et_nei1)
+    Button btnFan1;
+    @BindView(R.id.btn_f1)
+    Button btnDuan1;
+    @BindView(R.id.tr_2)
+    TableRow tr2;
+    @BindView(R.id.re_num_f2)
+    TextView reNumF2;
+    @BindView(R.id.btn_f2)
+    Button btnDuan2;
+    @BindView(R.id.re_et_nei2)
+    Button btnFan2;
+    @BindView(R.id.tr_3)
+    TableRow tr3;
+    @BindView(R.id.re_num_f3)
+    TextView reNumF3;
+    @BindView(R.id.re_btn_f3)
+    Button btnDuan3;
+    @BindView(R.id.re_et_nei3)
+    Button btnFan3;
+    @BindView(R.id.tr_4)
+    TableRow tr4;
+    @BindView(R.id.re_num_f4)
+    TextView reNumF4;
+    @BindView(R.id.re_btn_f4)
+    Button btnDuan4;
+    @BindView(R.id.re_et_nei4)
+    Button btnFan4;
+    @BindView(R.id.tr_5)
+    TableRow tr5;
+    @BindView(R.id.re_num_f5)
+    TextView reNumF5;
+    @BindView(R.id.re_btn_f5)
+    Button btnDuan5;
+    @BindView(R.id.re_et_nei5)
+    Button btnFan5;
+    @BindView(R.id.tr_6)
+    TableRow tr6;
+    @BindView(R.id.re_num_f6)
+    TextView reNumF6;
+    @BindView(R.id.re_btn_f6)
+    Button btnDuan6;
+    @BindView(R.id.re_et_nei6)
+    Button btnFan6;
+    @BindView(R.id.tr_7)
+    TableRow tr7;
+    @BindView(R.id.re_num_f7)
+    TextView reNumF7;
+    @BindView(R.id.re_btn_f7)
+    Button btnDuan7;
+    @BindView(R.id.re_et_nei7)
+    Button btnFan7;
+    @BindView(R.id.tr_8)
+    TableRow tr8;
+    @BindView(R.id.re_num_f8)
+    TextView reNumF8;
+    @BindView(R.id.re_et_nei8)
+    Button btnFan8;
+    @BindView(R.id.re_btn_f8)
+    Button btnDuan8;
+    @BindView(R.id.tr_9)
+    TableRow tr9;
+    @BindView(R.id.re_num_f9)
+    TextView reNumF9;
+    @BindView(R.id.re_btn_f9)
+    Button btnDuan9;
+    @BindView(R.id.re_et_nei9)
+    Button btnFan9;
+    @BindView(R.id.tr_10)
+    TableRow tr10;
+    @BindView(R.id.re_num_f10)
+    TextView reNumF10;
+    @BindView(R.id.re_btn_f10)
+    Button btnDuan10;
+    @BindView(R.id.re_et_nei10)
+    Button btnFan10;
+    @BindView(R.id.tr_11)
+    TableRow tr11;
+    @BindView(R.id.re_num_f11)
+    TextView reNumF11;
+    @BindView(R.id.re_btn_f11)
+    Button btnDuan11;
+    @BindView(R.id.re_et_nei11)
+    Button btnFan11;
+    @BindView(R.id.tr_12)
+    TableRow tr12;
+    @BindView(R.id.re_num_f12)
+    TextView reNumF12;
+    @BindView(R.id.re_btn_f12)
+    Button btnDuan12;
+    @BindView(R.id.re_et_nei12)
+    Button btnFan12;
+    @BindView(R.id.tr_13)
+    TableRow tr13;
+    @BindView(R.id.re_num_f13)
+    TextView reNumF13;
+    @BindView(R.id.re_btn_f13)
+    Button btnDuan13;
+    @BindView(R.id.re_et_nei13)
+    Button btnFan13;
+    @BindView(R.id.tr_14)
+    TableRow tr14;
+    @BindView(R.id.re_num_f14)
+    TextView reNumF14;
+    @BindView(R.id.re_btn_f14)
+    Button btnDuan14;
+    @BindView(R.id.re_et_nei14)
+    Button btnFan14;
+    @BindView(R.id.tr_15)
+    TableRow tr15;
+    @BindView(R.id.re_num_f15)
+    TextView reNumF15;
+    @BindView(R.id.re_btn_f15)
+    Button btnDuan15;
+    @BindView(R.id.re_et_nei15)
+    Button btnFan15;
+    @BindView(R.id.tr_16)
+    TableRow tr16;
+    @BindView(R.id.re_num_f16)
+    TextView reNumF16;
+    @BindView(R.id.re_btn_f16)
+    Button btnDuan16;
+    @BindView(R.id.re_et_nei16)
+    Button btnFan16;
+    @BindView(R.id.tr_17)
+    TableRow tr17;
+    @BindView(R.id.re_num_f17)
+    TextView reNumF17;
+    @BindView(R.id.re_btn_f17)
+    Button btnDuan17;
+    @BindView(R.id.re_et_nei17)
+    Button btnFan17;
+    @BindView(R.id.tr_18)
+    TableRow tr18;
+    @BindView(R.id.re_num_f18)
+    TextView reNumF18;
+    @BindView(R.id.re_btn_f18)
+    Button btnDuan18;
+    @BindView(R.id.re_et_nei18)
+    Button btnFan18;
+    @BindView(R.id.tr_19)
+    TableRow tr19;
+    @BindView(R.id.re_num_f19)
+    TextView reNumF19;
+    @BindView(R.id.re_btn_f19)
+    Button btnDuan19;
+    @BindView(R.id.re_et_nei19)
+    Button btnFan19;
+    @BindView(R.id.tr_20)
+    TableRow tr20;
+    @BindView(R.id.re_num_f20)
+    TextView reNumF20;
+    @BindView(R.id.re_btn_f20)
+    Button btnDuan20;
+    @BindView(R.id.re_et_nei20)
+    Button btnFan20;
+    @BindView(R.id.btn_addDelay)
+    Button btnAddDelay;
+    @BindView(R.id.btn_start_delay)
+    Button btnStartDelay;
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -256,6 +425,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private ScanQrControl mScaner = null;
     private int xiangHao_errNum=0;//箱码重复数量
     // 雷管列表
+    private ActivityResultLauncher<Intent> intentActivityResultLauncher;
+    private String TAG = "扫码注册";
+    //段属性
+    private int duan_new = 1;//duan
+    private int duan_old = 1;//duan
+    private int maxDuanNo = 3;
+    private String duan_set = "0";//是duan1还是duan2
+    private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;//翻转
+    private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;//翻转
+    boolean btn_start = false;//减号标志
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,6 +458,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.writeRecord("---进入手动输入和扫码注册页面---");
         showDenatorSum();//显示雷管总数,要放在初始化区号后
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        MmkvUtils.savecode("duan", 1);//每次进入都重置段位参数
+        intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                //此处是跳转的result回调方法
+                if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+                    String a = result.getData().getStringExtra("data_return");
+                    Log.e(TAG, "选择页面返回数据: " + a);
+                }
+            }
+        });
     }
 
     private void getUserMessage() {
@@ -355,6 +545,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             updateMessage("01");
         } else if (data.length() == 28) {//P53904180500005390418050000
             updateMessage("02");
+        } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+            updateMessage("02");
         }
 
         if (data.length() == 19) {//扫描盒号
@@ -374,11 +566,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else {
                 String barCode;
                 String denatorId;
-                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-                    barCode = data.substring(0, 13);
-                    denatorId = data.substring(13, 26);
-                    insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
-                } else if (data.length() == 28) {
+//                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
+//                    barCode = data.substring(0, 13);
+//                    denatorId = data.substring(13, 26);
+//                    insertSingleDenator_2(barCode, denatorId, data.substring(26));//同时注册管壳码和芯片码
+//                } else
+                    if (data.length() == 28) {
                     Log.e("扫码", "data: " + data);
                     //5620302H00001A62F400FFF20AB603
                     //5420302H00001A6F4FFF20AB603
@@ -388,20 +581,24 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         barCode = data.substring(1, 14);
                         String a = data.substring(14, 24);
                         denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                        String yscs = data.substring(24);
                         Log.e("扫码", "barCode: " + barCode);
                         Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId, data.substring(24));//同时注册管壳码和芯片码
+                        Log.e("扫码", "yscs: " + yscs);
+                        insertSingleDenator_2(barCode, denatorId, yscs, "1", "0");//因为四川二维码不带段位和版本号,所以写个固定的
                     }else {//其他规则
                         barCode = data.substring(0, 13);
                         denatorId = "A621" + data.substring(13, 22);
                         String yscs = data.substring(22, 26);
-                        Log.e("扫码", "barCode: " + barCode);
-                        Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId, yscs);//同时注册管壳码和芯片码
+                        String version = data.substring(26, 27);
+                        String duan = data.substring(27, 28);
+
+                        insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                     }
 
+                } else if (data.length() == 13) {
+                    barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
+                    insertSingleDenator(barCode);
                 }
 //                    else if{
 //                        barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
@@ -427,6 +624,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
+                    showDuanSum(duan_new);
                     break;
 
                 // 重新排序 更新视图
@@ -462,8 +660,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     break;
-
-
+                case 1006:
+                    MmkvUtils.savecode("duan", 1);
+                    duan_new = 1;
+                    btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
+                    break;
                 default:
                     break;
             }
@@ -1043,6 +1244,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        duan_old = new GreenDaoMaster().getPieceMaxDuan(mRegion);
+        duan_new = (int) MmkvUtils.getcode("duan", 1);
+        Log.e(TAG, "返回当前页面-更新段位-duan_new: " + duan_new);
+        Log.e(TAG, "返回当前页面-更新段位-duan_old: " + duan_old);
+        btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
+    }
+
+    @Override
     protected void onResume() {
         //         获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -1074,9 +1285,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-
-
-
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
@@ -1087,9 +1295,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (et_startDelay.getText().length() > 0) {
             MmkvUtils.savecode("start", et_startDelay.getText().toString());
         }
-
-
-
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
@@ -1582,11 +1787,156 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return master.queryDetonatorForTypeNew(denatorId);
     }
 
+    private void setFan() {
+        n1 = (int) MmkvUtils.getcode(mRegion+"n1", 0);
+        n2 = (int) MmkvUtils.getcode(mRegion+"n2", 0);
+        n3 = (int) MmkvUtils.getcode(mRegion+"n3", 0);
+        n4 = (int) MmkvUtils.getcode(mRegion+"n4", 0);
+        n5 = (int) MmkvUtils.getcode(mRegion+"n5", 0);
+        n6 = (int) MmkvUtils.getcode(mRegion+"n6", 0);
+        n7 = (int) MmkvUtils.getcode(mRegion+"n7", 0);
+        n8 = (int) MmkvUtils.getcode(mRegion+"n8", 0);
+        n9 = (int) MmkvUtils.getcode(mRegion+"n9", 0);
+        n10 = (int) MmkvUtils.getcode(mRegion+"n10", 0);
+        n11 = (int) MmkvUtils.getcode(mRegion+"n11", 0);
+        n12 = (int) MmkvUtils.getcode(mRegion+"n12", 0);
+        n13 = (int) MmkvUtils.getcode(mRegion+"n13", 0);
+        n14 = (int) MmkvUtils.getcode(mRegion+"n14", 0);
+        n15 = (int) MmkvUtils.getcode(mRegion+"n15", 0);
+        n16 = (int) MmkvUtils.getcode(mRegion+"n16", 0);
+        n17 = (int) MmkvUtils.getcode(mRegion+"n17", 0);
+        n18 = (int) MmkvUtils.getcode(mRegion+"n18", 0);
+        n19 = (int) MmkvUtils.getcode(mRegion+"n19", 0);
+        n20 = (int) MmkvUtils.getcode(mRegion+"n20", 0);
+        n21 = (int) MmkvUtils.getcode(mRegion+"n21", 0);
+        n22 = (int) MmkvUtils.getcode(mRegion+"n22", 0);
+        n23 = (int) MmkvUtils.getcode(mRegion+"n23", 0);
+        n24 = (int) MmkvUtils.getcode(mRegion+"n24", 0);
+        n25 = (int) MmkvUtils.getcode(mRegion+"n25", 0);
+        n26 = (int) MmkvUtils.getcode(mRegion+"n26", 0);
+        n27 = (int) MmkvUtils.getcode(mRegion+"n27", 0);
+        n28 = (int) MmkvUtils.getcode(mRegion+"n28", 0);
+        n29 = (int) MmkvUtils.getcode(mRegion+"n29", 0);
+        n30 = (int) MmkvUtils.getcode(mRegion+"n30", 0);
+        n31 = (int) MmkvUtils.getcode(mRegion+"n31", 0);
+        n32 = (int) MmkvUtils.getcode(mRegion+"n32", 0);
+        n33 = (int) MmkvUtils.getcode(mRegion+"n33", 0);
+        n34 = (int) MmkvUtils.getcode(mRegion+"n34", 0);
+        n35 = (int) MmkvUtils.getcode(mRegion+"n35", 0);
+        n36 = (int) MmkvUtils.getcode(mRegion+"n36", 0);
+        n37 = (int) MmkvUtils.getcode(mRegion+"n37", 0);
+        n38 = (int) MmkvUtils.getcode(mRegion+"n38", 0);
+        n39 = (int) MmkvUtils.getcode(mRegion+"n39", 0);
+        n40 = (int) MmkvUtils.getcode(mRegion+"n40", 0);
+    }
+
+    /**
+     * 获取对应段位翻转值
+     * */
+    public int getFan(int duan) {
+        setFan();
+        switch (duan) {
+            case 1:
+                return n1;
+            case 2:
+                return n2;
+            case 3:
+                return n3;
+            case 4:
+                return n4;
+            case 5:
+                return n5;
+            case 6:
+                return n6;
+            case 7:
+                return n7;
+            case 8:
+                return n8;
+            case 9:
+                return n9;
+            case 10:
+                return n10;
+            case 11:
+                return n11;
+            case 12:
+                return n12;
+            case 13:
+                return n13;
+            case 14:
+                return n14;
+            case 15:
+                return n15;
+            case 16:
+                return n16;
+            case 17:
+                return n17;
+            case 18:
+                return n18;
+            case 19:
+                return n19;
+            case 20:
+                return n20;
+            case 21:
+                return n21;
+            case 22:
+                return n22;
+            case 23:
+                return n23;
+            case 24:
+                return n24;
+            case 25:
+                return n25;
+            case 26:
+                return n26;
+            case 27:
+                return n27;
+            case 28:
+                return n28;
+            case 29:
+                return n29;
+            case 30:
+                return n30;
+            case 31:
+                return n31;
+            case 32:
+                return n32;
+            case 33:
+                return n33;
+            case 34:
+                return n34;
+            case 35:
+                return n35;
+            case 36:
+                return n36;
+            case 37:
+                return n37;
+            case 38:
+                return n38;
+            case 39:
+                return n39;
+            case 40:
+                return n40;
+
+        }
+        return 0;
+    }
+
+
     /***
      * 单发注册方法(扫码注册,单发输入会用到)
      */
     private int insertSingleDenator(String shellNo) {
+        int f = getFan(duan_new);
+        if (f == 1) {
+            show_Toast(getResources().getString(R.string.text_queryHis_dialog8));
+            return -1;
+        }
+        Log.e("扫码", "单发注册方法1: ");
         if (shellNo.length() != 13) {
+            return -1;
+        }
+        if (et_startDelay.getText().length() == 0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
         if (check(shellNo) == -1) {
@@ -1612,8 +1962,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         // 获取 该区域 最大序号
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
+        int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        Log.e(TAG, "当前段最小序号延时: " + delay_minNum);
+        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
+        if (delay == 0 && duanNo2 == 0) {
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
+        int delay_start = delay;
+        if(btn_start){
+            delay_start=start_delay;
+        }
+//        // 获取 该区域 最大序号的延时
+//        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         Log.e("扫码", "delay_set: " + delay_set);
+        //判断延时是否超出范围
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -1638,7 +2001,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 delay = delay + f2;
             }
         }
-
+        Log.e("扫码", "duanNo2: " + duanNo2);
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
@@ -1652,9 +2015,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setErrorName("");
         denatorBaseinfo.setWire("");//桥丝状态
         denatorBaseinfo.setPiece(mRegion);
+        denatorBaseinfo.setDuan(duan_new);
+        denatorBaseinfo.setDuanNo((duanNo2 + 1));
         if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
             denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
             denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+            denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+            denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
         }
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
@@ -1663,13 +2030,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
+        resetView_start();
         return 0;
     }
 
     /***
      * 扫码注册方法
      */
-    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs) {
+    private void insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
         Log.e("检查管厂码", "factoryCode: "+factoryCode );
         Log.e("检查管厂码", "shellNo.substring(0,2): "+shellNo.substring(0,2) );
         if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0,2)) ) {
@@ -1684,7 +2052,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (shellNo.length() != 13) {
             return ;
         }
+        if (!duan_scan.equals("0")) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(12));
+            return ;
+        }
+        if (et_startDelay.getText().length() == 0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+            return ;
+        }
         if (check(shellNo) == -1) {
+            return ;
+        }
+        if (checkRepeatdenatorId(denatorId)) {//芯片码查重
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
             return ;
         }
 //        int maxNo = getMaxNumberNo();
@@ -1694,7 +2074,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int delay = getMaxDelay(maxNo);//获取最大延时
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_new, mRegion);
+        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
+        if (delay == 0 && duanNo2 == 0) {
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
+        int delay_start = delay;
+        if(btn_start){
+            delay_start=start_delay;
+        }
         Log.e("扫码", "delay_set: " + delay_set);
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
@@ -1721,7 +2110,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
-
+        int a = 0;
+        if (duan_scan.equals("0")) {//普通雷管按当前页面选择的来
+            a = duan_new;
+        } else {
+            a = Integer.parseInt(duan_scan);//煤许雷管按二维码设置的来
+        }
+        int duanNUM = getDuanNo(a, mRegion);//也得做区域区分
+        Log.e("扫码", "duanNo2: " + duanNo2);
         maxNo++;
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
@@ -1737,12 +2133,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setPiece(mRegion);
         denatorBaseinfo.setDenatorId(denatorId);
         denatorBaseinfo.setZhu_yscs(yscs);
+        denatorBaseinfo.setDuan(a);
+        denatorBaseinfo.setDuanNo((duanNo2 + 1));
+        DetonatorTypeNew detonatorTypeNew = new GreenDaoMaster().serchDenatorId(shellNo);
+        if (detonatorTypeNew != null && detonatorTypeNew.getDetonatorId() != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
+            denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+            denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
+        }
+        denatorBaseinfo.setAuthorization(version);//雷管芯片型号
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
+        resetView_start();
         return ;
     }
 
@@ -1750,7 +2155,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 手动输入注册(通过开始管壳码和截止管壳码计算出所有管壳码)
      */
     private int insertDenator(String prex, int start, int end ,boolean x) {
-
+        Log.e("扫码", "单发注册方法3: ");
         if (end < start) return -1;
         if (start < 0 || end > 99999) return -1;
         String shellNo = "";
@@ -1761,7 +2166,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int maxNo = getMaxNumberNo();
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);//获取该区域 最大序号的延时
+        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
+        if (delay == 0 && duanNo2 == 0) {
+            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        }
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -1819,6 +2229,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 break;
             }
+            duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
+//            int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
+            Log.e("手动输入3", "duanNo2: " + duanNo2);
+            Log.e("手动输入3", "duan: " + duan_new);
             maxNo++;
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setBlastserial(maxNo);
@@ -1832,9 +2246,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setErrorName("");
             denatorBaseinfo.setWire("");//桥丝状态
             denatorBaseinfo.setPiece(mRegion);
+            denatorBaseinfo.setDuan(duan_new);
+            denatorBaseinfo.setDuanNo((duanNo2 + 1));
             if (detonatorTypeNew != null && !detonatorTypeNew.getDetonatorId().equals("0")) {
                 denatorBaseinfo.setDenatorId(detonatorTypeNew.getDetonatorId());
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
+                denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
+                denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
             }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
@@ -1845,8 +2263,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         pb_show = 0;
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
+        resetView_start();
         Utils.saveFile();//把软存中的数据存入磁盘中
         return reCount;
+    }
+
+    /***
+     * 得到某段的总数
+     * @return
+     */
+    private int getDuanNo(int duan, String piece) {
+        Cursor cursor = db.rawQuery(DatabaseHelper.SELECT_ALL_DENATOBASEINFO + " where duan =? and piece = ? ", new String[]{duan + "", piece});
+        int totalNum = cursor.getCount();//得到数据的总条数
+        cursor.close();
+        return totalNum;
     }
 
     /***
@@ -1964,9 +2394,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     int flag1 = 0;
     int flag2 = 0;
 
-    @OnClick({R.id.btn_scanReister, R.id.re_btn_f1, R.id.re_btn_f2, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
+    @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
-            R.id.btn_ReisterScanStart_ed})
+            R.id.btn_ReisterScanStart_ed,R.id.btn_addDelay,R.id.btn_start_delay})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scanReister:
@@ -1974,6 +2404,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    show_Toast("请设置延时");
 //                    break;
 //                }
+                int d = getFan(duan_new);
+                if (d == 1) {
+                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
+                    return;
+                }
+                Log.e(TAG, "是否翻转: " + d);
+                if (checkDelay()) return;
                 if (reEtF1.getText().length() < 1 || reEtF2.getText().length() < 1 || et_startDelay.getText().length() < 1) {
                     show_Toast("有延时为空,请先设置延时");
                     break;
@@ -2021,22 +2458,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
                 break;
-            case R.id.re_btn_f1:
+            case R.id.btn_start_delay:
+                btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (btn_start) {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    btn_start = false;
+                } else {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    btn_start = true;
+                }
+                break;
+            case R.id.btn_f1:
                 hideInputKeyboard();
-                if (reEtF1.getText().equals("")) {
-                    show_Toast("当前设置延时为空,请重新设置");
-                    return;
-                }
-                if (maxSecond != 0) {
-                    if (Integer.parseInt(reEtF1.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                    if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
-                        show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                }
+                if (checkDelay()) return;
                 delay_set = "f1";
                 flag2 = 0;
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2055,23 +2489,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
                 break;
-            case R.id.re_btn_f2:
+            case R.id.btn_f2:
                 hideInputKeyboard();
-                if (reEtF2.getText().toString().equals("")) {
-                    show_Toast("当前设置延时为空,请重新设置");
-                    Log.e("f1", reEtF2.getText().toString());
-                    return;
-                }
-                if (maxSecond != 0) {
-                    if (Integer.parseInt(reEtF2.getText().toString()) > maxSecond) {
-                        show_Toast("当前设置延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                    if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
-                        show_Toast("当前开始延时已超过最大延时" + maxSecond + "ms,请重新设置");
-                        return;
-                    }
-                }
+                if (checkDelay()) return;
                 delay_set = "f2";
                 flag1 = 0;
                 reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2091,12 +2511,25 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reEtF2.clearFocus();
                 break;
             case R.id.btn_setdelay:
+                int a = getFan(duan_new);
+                if (a == 1) {
+                    show_Toast(getResources().getString(R.string.text_queryHis_dialog7));
+                    return;
+                }
                 String str3 = "设置延时";//"当前雷管信息"
                 Intent intent3 = new Intent(this, SetDelayTime.class);
                 intent3.putExtra("dataSend", str3);
                 startActivityForResult(intent3, 1);
                 break;
             case R.id.btn_single:
+                if(btnSingle.getText().toString().equals(getResources().getString(R.string.text_scan_sdsr))){
+                    int b = getFan(duan_new);
+                    if (b == 1) {
+                        show_Toast(getResources().getString(R.string.text_queryHis_dialog7));
+                        return;
+                    }
+                }
+                if (checkDelay()) return;
                 if (llStart.getVisibility() == View.GONE) {
                     lySetDelay.setVisibility(View.GONE);
                     llSingle.setVisibility(View.GONE);
@@ -2104,6 +2537,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.VISIBLE);
                     llNum.setVisibility(View.VISIBLE);
                     btnInputOk.setVisibility(View.VISIBLE);
+                    btnScanReister.setVisibility(View.GONE);
                     btnSingle.setText(R.string.text_scan_back);
                 } else {
                     lySetDelay.setVisibility(View.VISIBLE);
@@ -2112,6 +2546,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.GONE);
                     llNum.setVisibility(View.GONE);
                     btnInputOk.setVisibility(View.GONE);
+                    btnScanReister.setVisibility(View.VISIBLE);
                     btnSingle.setText(getString(R.string.text_scan_sdsr));
                 }
 
@@ -2275,7 +2710,190 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 sanButtonFlag = 2;
                 break;
+            case R.id.btn_addDelay:
+//                maxDuanNo = maxDuanNo + 1;
+//                setView(maxDuanNo);
+
+                Intent intent = new Intent(this, ChoseDuanActivity.class);
+                intentActivityResultLauncher.launch(intent);
+                break;
+            case R.id.re_btn_f1:
+                hideInputKeyboard();
+                duan_new = 1;
+                initUI();
+                reNumF1.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f2:
+                hideInputKeyboard();
+                duan_new = 2;
+                initUI();
+                reNumF2.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f3:
+                hideInputKeyboard();
+                duan_new = 3;
+                initUI();
+                reNumF3.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f4:
+                hideInputKeyboard();
+                duan_new = 4;
+                initUI();
+                reNumF4.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f5:
+                hideInputKeyboard();
+                duan_new = 5;
+                initUI();
+                reNumF5.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f6:
+                hideInputKeyboard();
+                duan_new = 6;
+                initUI();
+                reNumF6.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f7:
+                hideInputKeyboard();
+                duan_new = 7;
+                initUI();
+                reNumF7.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f8:
+                hideInputKeyboard();
+                duan_new = 8;
+                initUI();
+                reNumF8.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f9:
+                hideInputKeyboard();
+                duan_new = 9;
+                initUI();
+                reNumF9.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f10:
+                hideInputKeyboard();
+                duan_new = 10;
+                initUI();
+                reNumF10.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f11:
+                hideInputKeyboard();
+                duan_new = 11;
+                initUI();
+                reNumF11.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f12:
+                hideInputKeyboard();
+                duan_new = 12;
+                initUI();
+                reNumF12.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f13:
+                hideInputKeyboard();
+                duan_new = 13;
+                initUI();
+                reNumF13.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f14:
+                hideInputKeyboard();
+                duan_new = 14;
+                initUI();
+                reNumF14.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f15:
+                hideInputKeyboard();
+                duan_new = 15;
+                initUI();
+                reNumF15.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f16:
+                hideInputKeyboard();
+                duan_new = 16;
+                initUI();
+                reNumF16.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f17:
+                hideInputKeyboard();
+                duan_new = 17;
+                initUI();
+                reNumF17.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f18:
+                hideInputKeyboard();
+                duan_new = 18;
+                initUI();
+                reNumF18.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f19:
+                hideInputKeyboard();
+                duan_new = 19;
+                initUI();
+                reNumF19.setBackgroundResource(R.drawable.textview_border_green);
+                break;
+            case R.id.re_btn_f20:
+                hideInputKeyboard();
+                duan_new = 20;
+                initUI();
+                reNumF20.setBackgroundResource(R.drawable.textview_border_green);
+                break;
         }
+    }
+
+    public void initUI() {
+        reNumF1.setBackgroundResource(R.drawable.translucent);
+        reNumF2.setBackgroundResource(R.drawable.translucent);
+        reNumF3.setBackgroundResource(R.drawable.translucent);
+        reNumF4.setBackgroundResource(R.drawable.translucent);
+        reNumF5.setBackgroundResource(R.drawable.translucent);
+        reNumF6.setBackgroundResource(R.drawable.translucent);
+        reNumF7.setBackgroundResource(R.drawable.translucent);
+        reNumF8.setBackgroundResource(R.drawable.translucent);
+        reNumF9.setBackgroundResource(R.drawable.translucent);
+        reNumF10.setBackgroundResource(R.drawable.translucent);
+        reNumF11.setBackgroundResource(R.drawable.translucent);
+        reNumF12.setBackgroundResource(R.drawable.translucent);
+        reNumF13.setBackgroundResource(R.drawable.translucent);
+        reNumF14.setBackgroundResource(R.drawable.translucent);
+        reNumF15.setBackgroundResource(R.drawable.translucent);
+        reNumF16.setBackgroundResource(R.drawable.translucent);
+        reNumF17.setBackgroundResource(R.drawable.translucent);
+        reNumF18.setBackgroundResource(R.drawable.translucent);
+        reNumF19.setBackgroundResource(R.drawable.translucent);
+        reNumF20.setBackgroundResource(R.drawable.translucent);
+
+//        lySetDelay.setFocusable(true);
+//        lySetDelay.setFocusableInTouchMode(true);
+//        lySetDelay.requestFocus();
+
+    }
+
+    private boolean checkDelay() {
+        if (reEtF1.getText().toString().equals("")) {
+            show_Toast(getResources().getString(R.string.text_line_tip2));
+            Log.e("f2", reEtF2.getText().toString());
+            return true;
+        }
+        if (reEtF2.getText().toString().equals("")) {
+            show_Toast(getResources().getString(R.string.text_line_tip2));
+            Log.e("f2", reEtF2.getText().toString());
+            return true;
+        }
+        if (et_startDelay.getText().length() == 0) {
+            show_Toast(getResources().getString(R.string.text_line_tip18));
+            return true;
+        }
+        if (maxSecond != 0) {
+            if (Integer.parseInt(reEtF2.getText().toString()) > maxSecond) {
+                show_Toast(getResources().getString(R.string.text_line_tip3) + maxSecond + getResources().getString(R.string.text_line_tip4));
+                return true;
+            }
+            if (Integer.parseInt(et_startDelay.getText().toString()) > maxSecond) {
+                show_Toast(getResources().getString(R.string.text_line_tip3) + maxSecond + getResources().getString(R.string.text_line_tip4));
+                return true;
+            }
+        }
+        return false;
     }
 
     private void kaishiScan() {
@@ -3023,6 +3641,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     /**
+     * 重置控件
+     */
+    private void resetView_start() {
+        btn_start = false;
+        et_startDelay.setBackgroundResource(R.drawable.translucent);
+        btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+        et_startDelay.clearFocus();
+    }
+
+    /**
      * 创建菜单
      */
     @Override
@@ -3060,12 +3688,151 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 延时选择重置
                 resetView();
                 delay_set = "0";
+                //初始化雷管数量
+                for (int i = 1; i < 41; i++) {
+                    showDuanSum(i);
+                }
+                duan_new = 1;
+                duan_old = 1;
+                MmkvUtils.savecode("duan", 1);
+                btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    /**
+     * 显示雷管数量
+     */
+    private void showDuanSum(int a) {
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
+        int totalNum = list.size();//得到数据的总条数
+        Log.e(TAG, "当前区域段数totalNum: " + totalNum);
+        switch (a) {
+            case 1:
+                reNumF1.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n1", 0);
+                }
+                break;
+            case 2:
+                reNumF2.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n2", 0);
+                }
+                break;
+            case 3:
+                reNumF3.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n3", 0);
+                }
+                break;
+            case 4:
+                reNumF4.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n4", 0);
+                }
+                break;
+            case 5:
+                reNumF5.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n5", 0);
+                }
+                break;
+            case 6:
+                reNumF6.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n6", 0);
+                }
+                break;
+            case 7:
+                reNumF7.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n7", 0);
+                }
+                break;
+            case 8:
+                reNumF8.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n8", 0);
+                }
+                break;
+            case 9:
+                reNumF9.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n9", 0);
+                }
+                break;
+            case 10:
+                reNumF10.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n10", 0);
+                }
+                break;
+            case 11:
+                reNumF11.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n11", 0);
+                }
+                break;
+            case 12:
+                reNumF12.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n12", 0);
+                }
+                break;
+            case 13:
+                reNumF13.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n13", 0);
+                }
+                break;
+            case 14:
+                reNumF14.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n14", 0);
+                }
+                break;
+            case 15:
+                reNumF15.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n15", 0);
+                }
+                break;
+            case 16:
+                reNumF16.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n16", 0);
+                }
+                break;
+            case 17:
+                reNumF17.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n17", 0);
+                }
+                break;
+            case 18:
+                reNumF18.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n18", 0);
+                }
+                break;
+            case 19:
+                reNumF19.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n19", 0);
+                }
+                break;
+            case 20:
+                reNumF20.setText(totalNum + "");
+                if (totalNum == 0) {
+                    MmkvUtils.savecode("n20", 0);
+                }
+                break;
+        }
     }
 
     /**

@@ -112,6 +112,7 @@ dependencies {
 //    debugImplementation 'com.glance.guolindev:glance:1.1.0-alpha01'//查看程序的数据库
     // Spinner(下拉列表)
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
+    compileOnly 'com.google.zxing:core:3.3.0'
 
     //androidx项目(UI框架)
 //    implementation 'com.github.xuexiangjys:XUI:1.1.8'
@@ -120,7 +121,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 23 //数据库版本号
+    schemaVersion 24 //数据库版本号
     targetGenDir 'src/main/java'
     // 设置DaoMaster、DaoSession、Dao 包名
     daoPackage 'android_serialport_api.xingbang.db.greenDao'
