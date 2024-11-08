@@ -2497,6 +2497,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
 
                 }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                }else if (btn_start) {
+                    if (flag_tk) {
+                        delay = start_delay + f2 * (tk_num + 1);
+                    } else {
+                        delay = start_delay + f2;
+                    }
+
+                } else {
+                    if (flag_tk) {
+                        delay = delay_minNum + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay_minNum + f2;
+                    }
+                }
             }
         }else {
             if (delay_set.equals("f1")) {//孔间延时
@@ -2720,6 +2737,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                     flag_jh_f1 = true;
                 }
+                delay_set = "0";//是f1还是f2
+                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                reEtF2.setBackgroundResource(R.drawable.translucent);
+                flag2 = 0;
                 break;
             case R.id.btn_JH_F2:
                 btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2835,6 +2856,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reEtF2.setBackgroundResource(R.drawable.textview_border_green);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
+
+                btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                flag_jh_f1 = true;
+
                 break;
             case R.id.btn_setdelay:
                 int a = getFan(duan_new);

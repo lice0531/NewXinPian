@@ -749,7 +749,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         }
         int delay_add = 0;
         if (charu) {
-            Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
             if (!flag_t1) {//同孔
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
@@ -1056,7 +1055,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
             }
             int delay_add = 0;
             if (charu) {
-                Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
                 if (!flag_t1) {//同孔
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                     denatorBaseinfo.setDelay(db_charu.getDelay());
@@ -1146,6 +1144,23 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     }
 
                 }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                }else if (btn_start) {
+                    if (flag_tk) {
+                        delay = start_delay + f2 * (tk_num + 1);
+                    } else {
+                        delay = start_delay + f2;
+                    }
+
+                } else {
+                    if (flag_tk) {
+                        delay = delay_minNum + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay_minNum + f2;
+                    }
+                }
             }
         }else {
             if (delay_set.equals("f1")) {//孔间延时
@@ -1178,9 +1193,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
                 } else {
                     if (flag_tk) {
-                        delay = delay + f2 * (tk_num + 1);
+                        delay = delay_minNum + f2 * (tk_num + 1);
                     } else {
-                        delay = delay + f2;
+                        delay = delay_minNum + f2;
                     }
                 }
             }
@@ -2262,7 +2277,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         }
         int delay_add = 0;
         if (charu) {
-            Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
             if (!flag_t1) {//同孔
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
@@ -2831,6 +2845,10 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                     flag_jh_f1 = true;
                 }
+                delay_set = "0";//是f1还是f2
+                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                reEtF2.setBackgroundResource(R.drawable.translucent);
+                flag2 = 0;
                 break;
             case R.id.btn_JH_F2:
                 btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2875,6 +2893,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
+                btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                flag_jh_f1 = true;
                 break;
 
             case R.id.btn_singleReister:
