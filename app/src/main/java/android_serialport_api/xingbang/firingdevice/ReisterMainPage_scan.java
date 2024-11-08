@@ -796,6 +796,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         final String prex = String.valueOf(strNo1);
         final int finalEndNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + endNo);
         final int finalStrNo = Integer.parseInt(xh[15] + "" + xh[16] + "" + xh[17] + strNo);
+        Utils.writeRecord("--扫盒码注册--前8位:" + prex + "--开始后5位:" + finalStrNo + "--结束后5位:" +finalEndNo);
+
         new Thread(() -> {
             insertDenator(prex, finalStrNo, finalEndNo,true);//添加
         }).start();
@@ -857,6 +859,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 String xuhao=xh[15] + "" + xh[16]+b+"00";
                 Log.e("箱号", "第"+b+"盒序号: "+xuhao );
                 int finalStrNo =Integer.parseInt(xuhao);
+                Utils.writeRecord("--扫箱码注册--前8位:" + prex + "--开始后5位:" + xuhao + "--结束位:" +(finalStrNo + (endNo - 1)));
+
                 insertDenator(prex, finalStrNo, finalStrNo + (endNo - 1),false);//添加
             }
 
@@ -2219,7 +2223,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
 
-        Utils.writeRecord("--手动输入注册--前8位:" + prex + "--开始后5位:" + start + "--结束后5位:" + end);
+
         int reCount = 0;//统计注册了多少发雷管
         for (int i = start; i <= end; i++) {
             shellNo = prex + String.format("%05d", i);
@@ -2623,6 +2627,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             show_Toast(getString(R.string.text_scan_cuowu8));
                             return;
                         }
+                        Utils.writeRecord("--手动输入,按个数注册--前8位:" + prex + "--开始后5位:" + stsno + "--连续注册个数:" + addNum);
                         num = Integer.parseInt(addNum);//连续注册个数
                         pb_show = 1;
                         runPbDialog();
@@ -2654,6 +2659,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             show_Toast(getResources().getString(R.string.text_error_tip29));//  "每一次注册数量不能大于1000";
                             return;
                         }
+                        Utils.writeRecord("--手动输入注册--前8位:" + prex + "--开始后5位:" + stsno + "--结束后5位:" + ed_xh + ed_ls);
                         pb_show = 1;
                         runPbDialog();
                         new Thread(() -> {
@@ -2664,11 +2670,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             pb_show = 0;
                         }).start();
                     }
-                    // int reCount = insertDenator(prex,start,end);
-                    //tipDlg.dismiss();
-                    // pb_show = 0;
-
-                    // Toast.makeText(ReisterMainPage_scan.this, "本次注册雷管数量为:"+reCount, Toast.LENGTH_LONG).show();
                 } else {
                     show_Toast(checstr);
                 }
