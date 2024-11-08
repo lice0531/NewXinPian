@@ -109,7 +109,7 @@ public class RiZhiActivity extends BaseActivity {
 
         getUserMessage();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-        mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+        mListData = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
         Log.e("查询雷管", "mListData: " + mListData.toString());
         list_uid.clear();
         for (int i = 0; i < mListData.size(); i++) {
