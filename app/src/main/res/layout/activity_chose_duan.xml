@@ -38,9 +38,18 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:text="@string/text_ysfz"
+            android:textSize="18sp" />
+        <TextView
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="0.8"
+            android:background="@color/colorPrimary"
+            android:text="正/反"
             android:textSize="18sp" />
     </LinearLayout>
     <ScrollView
@@ -89,9 +98,22 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z1"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
@@ -125,13 +147,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z2"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -164,12 +196,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
+                <Button
+                    android:id="@+id/re_et_z3"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -203,13 +246,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z4"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -243,13 +296,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z5"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -283,13 +346,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z6"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -323,13 +396,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z7"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -363,13 +446,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z81"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -403,13 +496,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z9"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -443,13 +546,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z10"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -483,13 +596,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z11"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -523,13 +646,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z12"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -563,13 +696,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z13"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -603,13 +746,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z14"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -643,13 +796,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z15"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -683,13 +846,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z16"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -723,13 +896,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z17"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -763,13 +946,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z18"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -803,13 +996,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z19"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -843,13 +1046,23 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
                     android:textSize="@dimen/fanzhuan"
 
                     />
-
+                <Button
+                    android:id="@+id/re_et_z20"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -882,9 +1095,20 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z21"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
@@ -918,12 +1142,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z22"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -957,12 +1190,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z23"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -996,13 +1238,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
-
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z24"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -1036,13 +1286,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
-
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z25"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -1076,12 +1334,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z26"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1116,12 +1383,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z27"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1156,12 +1432,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z28"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1196,12 +1481,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z29"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1236,12 +1530,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z30"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1276,12 +1579,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z31"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1316,12 +1628,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z32"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1356,12 +1677,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z33"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1396,12 +1726,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z34"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1436,13 +1775,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
-
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z35"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
             </TableRow>
 
             <TableRow
@@ -1476,12 +1823,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z36"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1516,12 +1872,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z37"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1556,12 +1921,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z38"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1596,12 +1970,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z39"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
 
@@ -1636,12 +2019,21 @@
                     style="@style/allbtntstyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:maxLength="6"
                     android:text="@string/resiter_line_fanzhuan"
-                    android:textSize="@dimen/fanzhuan"
-
-                    />
+                    android:textSize="@dimen/fanzhuan" />
+                <Button
+                    android:id="@+id/re_et_z40"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:maxLength="6"
+                    android:text="@string/btn_fan"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:textSize="@dimen/fanzhuan" />
 
             </TableRow>
         </TableLayout>

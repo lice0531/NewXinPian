@@ -426,7 +426,7 @@
     <string name="text_dialog_sc">删除</string>
     <string name="text_dialog_qd">确定</string>
     <string name="text_dialog_xgcg">\n修改成功</string>
-    <string name="text_delay_sdsz">隧道设置</string>
+    <string name="text_delay_sdsz">隧道</string>
     <string name="text_test_ckdl">参考电流</string>
     <string name="text_dialog_err">错误</string>
     <string name="text_test_dlgd">(电流过大)</string>
@@ -980,4 +980,5 @@
     <string name="text_toastts">Tosat提示</string>
     <string name="text_his_sclsjl">请输入密码后,再进行删除历史记录操作</string>
     <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
+    <string name="btn_fan">反</string>
 </resources>

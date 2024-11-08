@@ -973,4 +973,5 @@
     <string name="app_version_name2">M900_PT_XJ_V2.1_240903</string>
     <string name="app_version_name3">M900_PT_CQ_V2.1_240903</string>
     <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
+    <string name="btn_fan">反</string>
 </resources>

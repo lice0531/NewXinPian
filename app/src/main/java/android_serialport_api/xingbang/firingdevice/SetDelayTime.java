@@ -93,6 +93,7 @@ public class SetDelayTime extends BaseActivity {
     private Button btn_return;
     private String selectDenatorId;
     private Button btn_OK;
+    private Button btn_dijian;
     private Button btn_suidao;
     private int maxSecond = 0;//最大秒数
     private int pb_show = 0;
@@ -216,6 +217,34 @@ public class SetDelayTime extends BaseActivity {
             startActivity(intent3);
             finish();
         });
+        btn_dijian= findViewById(R.id.btn_dijian);
+        btn_dijian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(startNoTxt.getText().length()==0){
+                    show_Toast(getResources().getString(R.string.text_ksxh));
+                    return;
+                }
+                if(endNoTxt.getText().length()==0){
+                    show_Toast(getResources().getString(R.string.text_jsxh));
+                    return;
+                }
+                AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
+                        .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage("当前正在进行延时递减操作,请确认是否修改延时!")//设置对话框的内容"本次任务成功起爆！"
+                        //设置对话框的按钮
+                        .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog13, which) -> {
+                            dialog13.dismiss();
+                            setDalay(false);
+                        })
+                        .setNeutralButton(getResources().getString(R.string.text_tc), (dialog2, which) -> {
+                            dialog2.dismiss();
+                            finish();
+                        })
+                        .create();
+                dialog.show();
+            }
+        });
         btn_OK = findViewById(R.id.btn_setDelayTime_inputOK);
         btn_OK.setOnClickListener(v -> {
             if(startNoTxt.getText().length()==0){
@@ -232,68 +261,7 @@ public class SetDelayTime extends BaseActivity {
                     //设置对话框的按钮
                     .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog13, which) -> {
                         dialog13.dismiss();
-                        hideInputKeyboard();
-
-                        //同孔不许改延时
-                        String sql = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" order by blastserial";//+" order by htbh "
-                        Log.e("语句", "sql: "+sql );
-                        List<String> list_duanNo = new ArrayList<>();//
-                        Cursor cursor5 = getDaoSession().getDatabase().rawQuery(sql, null);
-                        if (cursor5 != null) {
-                            while (cursor5.moveToNext()) {
-                                int duanNo = cursor5.getInt(0);
-                                String duan = cursor5.getString(1);
-                                list_duanNo.add(duan+"-"+duanNo);
-                            }
-                            cursor5.close();
-                        }
-                        GreenDaoMaster master = new GreenDaoMaster();
-                        DenatorBaseinfo db_start =master.querylgForXh(startNoTxt.getText().toString(),mRegion);
-                        DenatorBaseinfo db_end =master.querylgForXh(endNoTxt.getText().toString(),mRegion);
-                        Log.e("末尾雷管", "db_end: "+db_end.toString());
-                        int a = new GreenDaoMaster().querylgNum(db_start.getDuanNo(), db_start.getDuan(), mRegion);
-                        int b = new GreenDaoMaster().querylgNum(db_end.getDuanNo(), db_end.getDuan(), mRegion);
-                        Log.e("同孔", "a: "+a);
-                        Log.e("同孔", "b: "+b);
-                        Log.e("同孔", "list_duanNo: "+list_duanNo);
-                        if(hasDuplicates(list_duanNo)||(a>1||b>1)){
-                            show_Toast(getResources().getString(R.string.text_setDelay_dialog3));
-                            return;
-                        }
-
-                        //同孔不许改延时
-                        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
-                        Log.e("语句", "sql: "+sql );
-                        List<String> list_fanzhuan = new ArrayList<>();//
-                        Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
-                        if (cursor6 != null) {
-                            while (cursor6.moveToNext()) {
-                                String fanzhuan = cursor6.getString(0);
-                                list_fanzhuan.add(fanzhuan);
-                            }
-                            cursor6.close();
-                        }
-                        if(list_fanzhuan.size()>1){
-                            show_Toast(getResources().getString(R.string.text_setDelay_dialog4));
-                            return;
-                        }
-
-                        String checstr = checkData();
-                        if (checstr == null || checstr.trim().length() < 1) {
-                            int maxDelay = getComputerDenDelay();
-                            Log.e("延时1", "maxDelay: " + maxDelay);//9010
-                            Log.e("延时2", "maxSecond: " + maxSecond);//5000
-                            if (maxSecond > 0  &&  maxSecond < maxDelay) {
-                                show_Toast(getResources().getString(R.string.text_setDelay_dialog5)+maxSecond+getResources().getString(R.string.text_setDelay_dialog6));
-                                return;
-                            }
-                            pb_show = 1;
-                            runPbDialog();
-                            new Thread(() -> setDenatorDelay()).start();
-                            show_Toast(getString(R.string.text_error_tip36));
-                        } else {
-                            show_Toast(checstr);
-                        }
+                        setDalay(true);
                     })
                     .setNeutralButton(getResources().getString(R.string.text_tc), (dialog2, which) -> {
                         dialog2.dismiss();
@@ -369,6 +337,75 @@ public class SetDelayTime extends BaseActivity {
             });
         });
 
+    }
+
+    private void setDalay( boolean dijia) {
+        hideInputKeyboard();
+
+        //同孔不许改延时
+        String sql = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" order by blastserial";//+" order by htbh "
+        Log.e("语句", "sql: "+sql );
+        List<String> list_duanNo = new ArrayList<>();//
+        Cursor cursor5 = getDaoSession().getDatabase().rawQuery(sql, null);
+        if (cursor5 != null) {
+            while (cursor5.moveToNext()) {
+                int duanNo = cursor5.getInt(0);
+                String duan = cursor5.getString(1);
+                list_duanNo.add(duan+"-"+duanNo);
+            }
+            cursor5.close();
+        }
+        GreenDaoMaster master = new GreenDaoMaster();
+        DenatorBaseinfo db_start =master.querylgForXh(startNoTxt.getText().toString(),mRegion);
+        DenatorBaseinfo db_end =master.querylgForXh(endNoTxt.getText().toString(),mRegion);
+        Log.e("末尾雷管", "db_end: "+db_end.toString());
+        int a = new GreenDaoMaster().querylgNum(db_start.getDuanNo(), db_start.getDuan(), mRegion);
+        int b = new GreenDaoMaster().querylgNum(db_end.getDuanNo(), db_end.getDuan(), mRegion);
+        Log.e("同孔", "a: "+a);
+        Log.e("同孔", "b: "+b);
+        Log.e("同孔", "list_duanNo: "+list_duanNo);
+        if(hasDuplicates(list_duanNo)||(a>1||b>1)){
+            show_Toast(getResources().getString(R.string.text_setDelay_dialog3));
+            return;
+        }
+
+        //同孔不许改延时
+        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
+        Log.e("语句", "sql: "+sql );
+        List<String> list_fanzhuan = new ArrayList<>();//
+        Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
+        if (cursor6 != null) {
+            while (cursor6.moveToNext()) {
+                String fanzhuan = cursor6.getString(0);
+                list_fanzhuan.add(fanzhuan);
+            }
+            cursor6.close();
+        }
+        if(list_fanzhuan.size()>1){
+            show_Toast(getResources().getString(R.string.text_setDelay_dialog4));
+            return;
+        }
+
+        String checstr = checkData();
+        if (checstr == null || checstr.trim().length() < 1) {
+            int maxDelay = getComputerDenDelay(dijia);
+            Log.e("延时1", "maxDelay: " + maxDelay);//9010
+            Log.e("延时2", "maxSecond: " + maxSecond);//5000
+            if (maxSecond >= 0  &&  maxSecond < maxDelay) {
+                show_Toast(getResources().getString(R.string.text_setDelay_dialog5)+maxSecond+getResources().getString(R.string.text_setDelay_dialog6));
+                return;
+            }
+            if (maxDelay < 0  ) {
+                show_Toast("延时不能小于0ms");
+                return;
+            }
+            pb_show = 1;
+            runPbDialog();
+            new Thread(() -> setDenatorDelay(dijia)).start();
+            show_Toast(getString(R.string.text_error_tip36));
+        } else {
+            show_Toast(checstr);
+        }
     }
 
     private int getDenatorMaxDelay() {
@@ -680,7 +717,7 @@ public class SetDelayTime extends BaseActivity {
     /**
      * 获取总延时值
      */
-    private int getComputerDenDelay() {
+    private int getComputerDenDelay(boolean dijia) {
 
         //起始序号
         String startNoStr = startNoTxt.getText().toString();
@@ -708,20 +745,32 @@ public class SetDelayTime extends BaseActivity {
             //int isExist = isDel(""+iLoop);
 
             for (int i = 1; i <= holeDeAmo; i++) {
-
-                if (i < holeDeAmo) {
-                    delayCount += holeinDelay;
-                    iLoop++;
+                if(dijia){
+                    if (i < holeDeAmo) {
+                        delayCount += holeinDelay;
+                        iLoop++;
+                    }
+                }else {
+                    if (i < holeDeAmo) {
+                        delayCount -= holeinDelay;
+                        iLoop++;
+                    }
                 }
+
                 if (iLoop > end) break;
             }
             holeLoop++;
-            delayCount += holeBetweent;
+            if(dijia){
+                delayCount += holeBetweent;
+            }else {
+                delayCount -= holeBetweent;
+            }
+
         }
         return delayCount;
     }
 
-    private void setDenatorDelay() {
+    private void setDenatorDelay(boolean dijia) {
 
         //起始序号
         String startNoStr = startNoTxt.getText().toString();
@@ -754,14 +803,27 @@ public class SetDelayTime extends BaseActivity {
                 values.put("delay", delayCount);
 
                 db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? ", new String[]{String.valueOf(iLoop),mRegion});
-                if (i < holeDeAmo) {
-                    delayCount += holeinDelay;
-                    iLoop++;
+                if(dijia){
+                    if (i < holeDeAmo) {
+                        delayCount += holeinDelay;
+                        iLoop++;
+                    }
+                }else {
+                    if (i < holeDeAmo) {
+                        delayCount -= holeinDelay;
+                        iLoop++;
+                    }
                 }
+
                 if (iLoop > end) break;
             }
             holeLoop++;
-            delayCount += holeBetweent;
+            if(dijia){
+                delayCount += holeBetweent;
+            }else {
+                delayCount -= holeBetweent;
+            }
+
         }
         pb_show = 0;
         mHandler_loading.sendMessage(mHandler_loading.obtainMessage());

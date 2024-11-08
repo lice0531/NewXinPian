@@ -2,8 +2,6 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,8 +16,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.coder.vincent.smart_toast.SmartToast;
 
@@ -31,8 +33,6 @@ import java.util.Map;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
-import android_serialport_api.xingbang.cmd.FourStatusCmd;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
@@ -362,6 +362,94 @@ public class ChoseDuanActivity extends AppCompatActivity {
     Button btnDuan40;
     @BindView(R.id.re_et_nei40)
     Button btnFan40;
+    @BindView(R.id.textView12)
+    TextView textView12;
+    @BindView(R.id.re_et_z1)
+    Button reEtZ1;
+    @BindView(R.id.re_et_z2)
+    Button reEtZ2;
+    @BindView(R.id.re_et_z3)
+    Button reEtZ3;
+    @BindView(R.id.re_et_z4)
+    Button reEtZ4;
+    @BindView(R.id.re_et_z5)
+    Button reEtZ5;
+    @BindView(R.id.re_et_z6)
+    Button reEtZ6;
+    @BindView(R.id.re_et_z7)
+    Button reEtZ7;
+    @BindView(R.id.re_et_z81)
+    Button reEtZ81;
+    @BindView(R.id.re_et_z9)
+    Button reEtZ9;
+    @BindView(R.id.re_et_z10)
+    Button reEtZ10;
+    @BindView(R.id.re_et_z11)
+    Button reEtZ11;
+    @BindView(R.id.re_et_z12)
+    Button reEtZ12;
+    @BindView(R.id.re_et_z13)
+    Button reEtZ13;
+    @BindView(R.id.re_et_z14)
+    Button reEtZ14;
+    @BindView(R.id.re_et_z15)
+    Button reEtZ15;
+    @BindView(R.id.re_et_z16)
+    Button reEtZ16;
+    @BindView(R.id.re_et_z17)
+    Button reEtZ17;
+    @BindView(R.id.re_et_z18)
+    Button reEtZ18;
+    @BindView(R.id.re_et_z19)
+    Button reEtZ19;
+    @BindView(R.id.re_et_z20)
+    Button reEtZ20;
+    @BindView(R.id.re_et_z21)
+    Button reEtZ21;
+    @BindView(R.id.tr_21)
+    TableRow tr21;
+    @BindView(R.id.re_et_z22)
+    Button reEtZ22;
+    @BindView(R.id.re_et_z23)
+    Button reEtZ23;
+    @BindView(R.id.re_et_z24)
+    Button reEtZ24;
+    @BindView(R.id.re_et_z25)
+    Button reEtZ25;
+    @BindView(R.id.re_et_z26)
+    Button reEtZ26;
+    @BindView(R.id.re_et_z27)
+    Button reEtZ27;
+    @BindView(R.id.re_et_z28)
+    Button reEtZ28;
+    @BindView(R.id.re_et_z29)
+    Button reEtZ29;
+    @BindView(R.id.re_et_z30)
+    Button reEtZ30;
+    @BindView(R.id.re_et_z31)
+    Button reEtZ31;
+    @BindView(R.id.re_et_z32)
+    Button reEtZ32;
+    @BindView(R.id.re_et_z33)
+    Button reEtZ33;
+    @BindView(R.id.re_et_z34)
+    Button reEtZ34;
+    @BindView(R.id.re_et_z35)
+    Button reEtZ35;
+    @BindView(R.id.re_et_z36)
+    Button reEtZ36;
+    @BindView(R.id.re_et_z37)
+    Button reEtZ37;
+    @BindView(R.id.re_et_z38)
+    Button reEtZ38;
+    @BindView(R.id.re_et_z39)
+    Button reEtZ39;
+    @BindView(R.id.re_et_z40)
+    Button reEtZ40;
+    @BindView(R.id.tl_delay)
+    TableLayout tlDelay;
+    @BindView(R.id.ly_setDuanDelay)
+    LinearLayout lySetDuanDelay;
 
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
@@ -377,6 +465,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
     private int f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;//0是未翻转，1是已翻转
     private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;
+
+    private int z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15, z16, z17, z18, z19, z20 = 0;//0是未翻转，1是已翻转
+    private int z21, z22, z23, z24, z25, z26, z27, z28, z29, z30, z31, z32, z33, z34, z35, z36, z37, z38, z39, z40 = 0;
     private String TAG = "选择段位页面";
 
     @Override
@@ -441,7 +532,12 @@ public class ChoseDuanActivity extends AppCompatActivity {
             R.id.re_et_nei24, R.id.re_et_nei25, R.id.re_et_nei26, R.id.re_et_nei27,
             R.id.re_et_nei28, R.id.re_et_nei29, R.id.re_et_nei30, R.id.re_et_nei31, R.id.re_et_nei32, R.id.re_et_nei33,
             R.id.re_et_nei34, R.id.re_et_nei35, R.id.re_et_nei36, R.id.re_et_nei37, R.id.re_et_nei38, R.id.re_et_nei39,
-            R.id.re_et_nei40})
+            R.id.re_et_nei40,R.id.re_et_z1, R.id.re_et_z2, R.id.re_et_z3, R.id.re_et_z4, R.id.re_et_z5, R.id.re_et_z6,
+            R.id.re_et_z7, R.id.re_et_z81, R.id.re_et_z9, R.id.re_et_z10, R.id.re_et_z11, R.id.re_et_z12, R.id.re_et_z13,
+            R.id.re_et_z14, R.id.re_et_z15, R.id.re_et_z16, R.id.re_et_z17, R.id.re_et_z18, R.id.re_et_z19, R.id.re_et_z20,
+            R.id.re_et_z21, R.id.re_et_z22, R.id.re_et_z23, R.id.re_et_z24, R.id.re_et_z25, R.id.re_et_z26, R.id.re_et_z27,
+            R.id.re_et_z28, R.id.re_et_z29, R.id.re_et_z30, R.id.re_et_z31, R.id.re_et_z32, R.id.re_et_z33, R.id.re_et_z34,
+            R.id.re_et_z35, R.id.re_et_z36, R.id.re_et_z37, R.id.re_et_z38, R.id.re_et_z39, R.id.re_et_z40})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -1006,6 +1102,86 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     n40 = 1;
                 }
                 break;
+            case R.id.re_et_z1:
+                break;
+            case R.id.re_et_z2:
+                break;
+            case R.id.re_et_z3:
+                break;
+            case R.id.re_et_z4:
+                break;
+            case R.id.re_et_z5:
+                break;
+            case R.id.re_et_z6:
+                break;
+            case R.id.re_et_z7:
+                break;
+            case R.id.re_et_z81:
+                break;
+            case R.id.re_et_z9:
+                break;
+            case R.id.re_et_z10:
+                break;
+            case R.id.re_et_z11:
+                break;
+            case R.id.re_et_z12:
+                break;
+            case R.id.re_et_z13:
+                break;
+            case R.id.re_et_z14:
+                break;
+            case R.id.re_et_z15:
+                break;
+            case R.id.re_et_z16:
+                break;
+            case R.id.re_et_z17:
+                break;
+            case R.id.re_et_z18:
+                break;
+            case R.id.re_et_z19:
+                break;
+            case R.id.re_et_z20:
+                break;
+            case R.id.re_et_z21:
+                break;
+            case R.id.re_et_z22:
+                break;
+            case R.id.re_et_z23:
+                break;
+            case R.id.re_et_z24:
+                break;
+            case R.id.re_et_z25:
+                break;
+            case R.id.re_et_z26:
+                break;
+            case R.id.re_et_z27:
+                break;
+            case R.id.re_et_z28:
+                break;
+            case R.id.re_et_z29:
+                break;
+            case R.id.re_et_z30:
+                break;
+            case R.id.re_et_z31:
+                break;
+            case R.id.re_et_z32:
+                break;
+            case R.id.re_et_z33:
+                break;
+            case R.id.re_et_z34:
+                break;
+            case R.id.re_et_z35:
+                break;
+            case R.id.re_et_z36:
+                break;
+            case R.id.re_et_z37:
+                break;
+            case R.id.re_et_z38:
+                break;
+            case R.id.re_et_z39:
+                break;
+            case R.id.re_et_z40:
+                break;
 
         }
     }
@@ -1113,25 +1289,25 @@ public class ChoseDuanActivity extends AppCompatActivity {
                     String strSql3;//所有不重复延时
                     String strSql4;//所有不重复孔号
                     String sql;//所有延时列表
-                    Log.e(TAG, "fz: "+fz);
-                    if(fz==0){//翻转
+                    Log.e(TAG, "fz: " + fz);
+                    if (fz == 0) {//翻转
                         list_up = master.queryLeiguanDuan(duan, mRegion);
                         list2 = master.queryLeiguanDuan(duan, mRegion);
                         list5 = master.queryLeiguanDuanDesc(duan, mRegion);
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +  " and piece = "+mRegion +" group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
-                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion +" order by blastserial";//+" order by htbh "
-                        strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+" group by duanNo order by duanNo desc";//所有不重复孔号
-                    }else {//复位
-                        list_up = master.queryLeiguanDuan(duan, mRegion,"0");
-                        list2 = master.queryLeiguanDuan(duan, mRegion,"0");
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " and piece = " + mRegion + " group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
+                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
+                        strSql4 = "SELECT  duanNo FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " group by duanNo order by duanNo desc";//所有不重复孔号
+                    } else {//复位
+                        list_up = master.queryLeiguanDuan(duan, mRegion, "0");
+                        list2 = master.queryLeiguanDuan(duan, mRegion, "0");
                         list5 = master.queryLeiguanDuan(duan, mRegion);
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan +" and piece = "+mRegion+ " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = "+duan+" and piece = "+mRegion+" GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan +" and piece = "+mRegion+ " and fanzhuan = 0 group by delay order by blastserial asc";
-                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan +" and piece = "+mRegion +" order by blastserial" ;//+" order by htbh "
-                        strSql4="SELECT  duanNo FROM denatorBaseinfo where duan = "+duan +" and piece = "+mRegion+ " and fanzhuan = 0  group by duanNo order by duanNo desc";//所有不重复孔号
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + duan + " and piece = " + mRegion + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + duan + " and piece = " + mRegion + " and fanzhuan = 0 group by delay order by blastserial asc";
+                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + duan + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
+                        strSql4 = "SELECT  duanNo FROM denatorBaseinfo where duan = " + duan + " and piece = " + mRegion + " and fanzhuan = 0  group by duanNo order by duanNo desc";//所有不重复孔号
                     }
 //                    list_delay.clear();
 //                    Cursor cursor = session.getDatabase().rawQuery(sql, null);
@@ -1182,8 +1358,8 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         cursor5.close();
                     }
 
-                    Log.e(TAG, "list_alldelay: "+list_alldelay.toString() );
-                    if(!isIncreasing(list_alldelay)&&! isDecreasing(list_alldelay)){
+                    Log.e(TAG, "list_alldelay: " + list_alldelay.toString());
+                    if (!isIncreasing(list_alldelay) && !isDecreasing(list_alldelay)) {
                         show_Toast(getResources().getString(R.string.text_xgys));
                         return;
                     }
@@ -1222,9 +1398,9 @@ public class ChoseDuanActivity extends AppCompatActivity {
                         Log.e(TAG, "最大序号的(i-1)=" + (i - 1));
                         if (contains) {//包含在 除了序号最小的所有重复雷管  list2
                             DenatorBaseinfo lg2;
-                            if(i==0){
+                            if (i == 0) {
                                 lg2 = master.querylg(list2.get(i).getShellBlastNo());
-                            }else {
+                            } else {
                                 Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getShellBlastNo());
                                 Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getDuanNo());
                                 lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
@@ -1236,10 +1412,10 @@ public class ChoseDuanActivity extends AppCompatActivity {
                             Log.e(TAG, "最大序号的lg2.getDuanNo()" + lg2.getDuanNo());
                             lg.setDelay(lg2.getDelay());
 
-                            if(i!=0&&list2.get(i - 1).getDuanNo()==list2.get(i).getDuanNo()){//同孔,获取前一发孔号
+                            if (i != 0 && list2.get(i - 1).getDuanNo() == list2.get(i).getDuanNo()) {//同孔,获取前一发孔号
                                 lg.setDuanNo(lg2.getDuanNo());
                                 Log.e(TAG, "翻转最终孔号1:" + lg2.getDuanNo());
-                            }else {//不同孔,在前一发的基础上加1
+                            } else {//不同孔,在前一发的基础上加1
                                 lg.setDuanNo(list_duanNo.get(0));
                                 Log.e(TAG, "翻转最终孔号2:" + list_duanNo.get(0));
                                 list_duanNo.remove(0);
@@ -1260,21 +1436,21 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
                         lg.setFanzhuan(fz + "");
 
-                        int delay=0;
-                        if(i>0){
-                            int delau_up=master.querylg(list2.get(i-1).getShellBlastNo()).getDelay();//前一发雷管的延时
-                            int delay_1=list2.get(i-1).getDelay();
-                            int delay_2=list2.get(i).getDelay();
-                            delay= delau_up+(delay_1-delay_2);
-                            Log.e(TAG, "新方法 翻转后,前一发的管壳码: "+list2.get(i-1).getShellBlastNo() +"--delay="+list2.get(i-1).getDelay());
-                            Log.e(TAG, "新方法 翻转后,前一发的延时delau_up: "+delau_up );
-                            Log.e(TAG, "新方法 翻转前,前一发延时delay_1: "+list2.get(i-1).getShellBlastNo()+"-delay="+list2.get(i-1).getDelay() );
-                            Log.e(TAG, "新方法 翻转前,当前延时delay_2: "+list2.get(i).getShellBlastNo()+"-delay="+list2.get(i).getDelay()  );
-                        }else {
-                            delay= list_up.get(list_up.size()-1).getDelay();
+                        int delay = 0;
+                        if (i > 0) {
+                            int delau_up = master.querylg(list2.get(i - 1).getShellBlastNo()).getDelay();//前一发雷管的延时
+                            int delay_1 = list2.get(i - 1).getDelay();
+                            int delay_2 = list2.get(i).getDelay();
+                            delay = delau_up + (delay_1 - delay_2);
+                            Log.e(TAG, "新方法 翻转后,前一发的管壳码: " + list2.get(i - 1).getShellBlastNo() + "--delay=" + list2.get(i - 1).getDelay());
+                            Log.e(TAG, "新方法 翻转后,前一发的延时delau_up: " + delau_up);
+                            Log.e(TAG, "新方法 翻转前,前一发延时delay_1: " + list2.get(i - 1).getShellBlastNo() + "-delay=" + list2.get(i - 1).getDelay());
+                            Log.e(TAG, "新方法 翻转前,当前延时delay_2: " + list2.get(i).getShellBlastNo() + "-delay=" + list2.get(i).getDelay());
+                        } else {
+                            delay = list_up.get(list_up.size() - 1).getDelay();
 
                         }
-                        Log.e(TAG, "新方法获取的第"+i+"发"+lg.getShellBlastNo()+"--delay: "+delay );
+                        Log.e(TAG, "新方法获取的第" + i + "发" + lg.getShellBlastNo() + "--delay: " + delay);
                         lg.setDelay(delay);
                         getDaoSession().getDenatorBaseinfoDao().update(lg);
 
@@ -1357,7 +1533,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan1.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n1", n1);
+                MmkvUtils.savecode(mRegion + "n1", n1);
                 break;
             case 2:
                 if (n2 == 1) {
@@ -1365,7 +1541,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n2", n2);
+                MmkvUtils.savecode(mRegion + "n2", n2);
                 break;
             case 3:
                 if (n3 == 1) {
@@ -1373,7 +1549,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan3.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n3", n3);
+                MmkvUtils.savecode(mRegion + "n3", n3);
                 break;
             case 4:
                 if (n4 == 1) {
@@ -1381,7 +1557,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan4.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n4", n4);
+                MmkvUtils.savecode(mRegion + "n4", n4);
                 break;
             case 5:
                 if (n5 == 1) {
@@ -1389,7 +1565,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan5.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n5", n5);
+                MmkvUtils.savecode(mRegion + "n5", n5);
                 break;
             case 6:
                 if (n6 == 1) {
@@ -1397,7 +1573,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan6.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n6", n6);
+                MmkvUtils.savecode(mRegion + "n6", n6);
                 break;
             case 7:
                 if (n7 == 1) {
@@ -1405,7 +1581,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan7.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n7", n7);
+                MmkvUtils.savecode(mRegion + "n7", n7);
                 break;
             case 8:
                 if (n8 == 1) {
@@ -1413,7 +1589,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan8.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n8", n8);
+                MmkvUtils.savecode(mRegion + "n8", n8);
                 break;
             case 9:
                 if (n9 == 1) {
@@ -1421,7 +1597,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan9.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n9", n9);
+                MmkvUtils.savecode(mRegion + "n9", n9);
                 break;
             case 10:
                 if (n10 == 1) {
@@ -1429,7 +1605,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan10.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n10", n10);
+                MmkvUtils.savecode(mRegion + "n10", n10);
                 break;
             case 11:
                 if (n11 == 1) {
@@ -1437,7 +1613,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan11.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n11", n11);
+                MmkvUtils.savecode(mRegion + "n11", n11);
                 break;
             case 12:
                 if (n12 == 1) {
@@ -1445,7 +1621,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan12.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n12", n12);
+                MmkvUtils.savecode(mRegion + "n12", n12);
                 break;
             case 13:
                 if (n13 == 1) {
@@ -1453,7 +1629,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan13.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n13", n13);
+                MmkvUtils.savecode(mRegion + "n13", n13);
                 break;
             case 14:
                 if (n14 == 1) {
@@ -1461,7 +1637,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan14.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n14", n14);
+                MmkvUtils.savecode(mRegion + "n14", n14);
                 break;
             case 15:
                 if (n15 == 1) {
@@ -1469,7 +1645,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan15.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n15", n15);
+                MmkvUtils.savecode(mRegion + "n15", n15);
                 break;
             case 16:
                 if (n16 == 1) {
@@ -1477,7 +1653,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan16.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n16", n16);
+                MmkvUtils.savecode(mRegion + "n16", n16);
                 break;
             case 17:
                 if (n17 == 1) {
@@ -1485,7 +1661,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan17.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n17", n17);
+                MmkvUtils.savecode(mRegion + "n17", n17);
                 break;
             case 18:
                 if (n18 == 1) {
@@ -1493,7 +1669,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan18.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n18", n18);
+                MmkvUtils.savecode(mRegion + "n18", n18);
                 break;
             case 19:
                 if (n19 == 1) {
@@ -1501,7 +1677,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan19.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n19", n19);
+                MmkvUtils.savecode(mRegion + "n19", n19);
                 break;
             case 20:
                 if (n20 == 1) {
@@ -1509,7 +1685,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan20.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n20", n20);
+                MmkvUtils.savecode(mRegion + "n20", n20);
                 break;
             case 21:
                 if (n21 == 1) {
@@ -1517,7 +1693,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan21.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n21", n21);
+                MmkvUtils.savecode(mRegion + "n21", n21);
                 break;
             case 22:
                 if (n22 == 1) {
@@ -1525,7 +1701,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan22.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n22", n22);
+                MmkvUtils.savecode(mRegion + "n22", n22);
                 break;
             case 23:
                 if (n23 == 1) {
@@ -1533,7 +1709,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan23.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n23", n23);
+                MmkvUtils.savecode(mRegion + "n23", n23);
                 break;
             case 24:
                 if (n24 == 1) {
@@ -1541,7 +1717,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan24.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n24", n24);
+                MmkvUtils.savecode(mRegion + "n24", n24);
                 break;
             case 25:
                 if (n25 == 1) {
@@ -1549,7 +1725,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan25.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n25", n25);
+                MmkvUtils.savecode(mRegion + "n25", n25);
                 break;
             case 26:
                 if (n26 == 1) {
@@ -1557,7 +1733,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan26.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n26", n26);
+                MmkvUtils.savecode(mRegion + "n26", n26);
                 break;
             case 27:
                 if (n27 == 1) {
@@ -1565,7 +1741,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan27.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n27", n27);
+                MmkvUtils.savecode(mRegion + "n27", n27);
                 break;
             case 28:
                 if (n28 == 1) {
@@ -1573,7 +1749,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan28.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n28", n28);
+                MmkvUtils.savecode(mRegion + "n28", n28);
                 break;
             case 29:
                 if (n29 == 1) {
@@ -1581,7 +1757,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan29.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n29", n29);
+                MmkvUtils.savecode(mRegion + "n29", n29);
                 break;
             case 30:
                 if (n30 == 1) {
@@ -1589,7 +1765,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan30.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n30", n30);
+                MmkvUtils.savecode(mRegion + "n30", n30);
                 break;
             case 31:
                 if (n31 == 1) {
@@ -1597,7 +1773,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan31.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n31", n31);
+                MmkvUtils.savecode(mRegion + "n31", n31);
                 break;
             case 32:
                 if (n32 == 1) {
@@ -1605,7 +1781,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan32.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n32", n32);
+                MmkvUtils.savecode(mRegion + "n32", n32);
                 break;
             case 33:
                 if (n33 == 1) {
@@ -1613,7 +1789,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan33.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n33", n33);
+                MmkvUtils.savecode(mRegion + "n33", n33);
                 break;
             case 34:
                 if (n34 == 1) {
@@ -1621,7 +1797,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan34.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n34", n34);
+                MmkvUtils.savecode(mRegion + "n34", n34);
                 break;
             case 35:
                 if (n35 == 1) {
@@ -1629,7 +1805,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan35.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n35", n35);
+                MmkvUtils.savecode(mRegion + "n35", n35);
                 break;
             case 36:
                 if (n36 == 1) {
@@ -1637,7 +1813,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan36.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n36", n36);
+                MmkvUtils.savecode(mRegion + "n36", n36);
                 break;
             case 37:
                 if (n37 == 1) {
@@ -1645,7 +1821,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan37.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n37", n37);
+                MmkvUtils.savecode(mRegion + "n37", n37);
                 break;
             case 38:
                 if (n38 == 1) {
@@ -1653,7 +1829,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan38.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n38", n38);
+                MmkvUtils.savecode(mRegion + "n38", n38);
                 break;
             case 39:
                 if (n39 == 1) {
@@ -1661,7 +1837,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan39.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n39", n39);
+                MmkvUtils.savecode(mRegion + "n39", n39);
                 break;
             case 40:
                 if (n40 == 1) {
@@ -1669,52 +1845,52 @@ public class ChoseDuanActivity extends AppCompatActivity {
                 } else {
                     btnFan40.setBackgroundResource(R.drawable.bt_mainpage_style);
                 }
-                MmkvUtils.savecode(mRegion+"n40", n40);
+                MmkvUtils.savecode(mRegion + "n40", n40);
                 break;
         }
     }
 
     private void setFan() {
-        n1 = (int) MmkvUtils.getcode(mRegion+"n1", 0);
-        n2 = (int) MmkvUtils.getcode(mRegion+"n2", 0);
-        n3 = (int) MmkvUtils.getcode(mRegion+"n3", 0);
-        n4 = (int) MmkvUtils.getcode(mRegion+"n4", 0);
-        n5 = (int) MmkvUtils.getcode(mRegion+"n5", 0);
-        n6 = (int) MmkvUtils.getcode(mRegion+"n6", 0);
-        n7 = (int) MmkvUtils.getcode(mRegion+"n7", 0);
-        n8 = (int) MmkvUtils.getcode(mRegion+"n8", 0);
-        n9 = (int) MmkvUtils.getcode(mRegion+"n9", 0);
-        n10 = (int) MmkvUtils.getcode(mRegion+"n10", 0);
-        n11 = (int) MmkvUtils.getcode(mRegion+"n11", 0);
-        n12 = (int) MmkvUtils.getcode(mRegion+"n12", 0);
-        n13 = (int) MmkvUtils.getcode(mRegion+"n13", 0);
-        n14 = (int) MmkvUtils.getcode(mRegion+"n14", 0);
-        n15 = (int) MmkvUtils.getcode(mRegion+"n15", 0);
-        n16 = (int) MmkvUtils.getcode(mRegion+"n16", 0);
-        n17 = (int) MmkvUtils.getcode(mRegion+"n17", 0);
-        n18 = (int) MmkvUtils.getcode(mRegion+"n18", 0);
-        n19 = (int) MmkvUtils.getcode(mRegion+"n19", 0);
-        n20 = (int) MmkvUtils.getcode(mRegion+"n20", 0);
-        n21 = (int) MmkvUtils.getcode(mRegion+"n21", 0);
-        n22 = (int) MmkvUtils.getcode(mRegion+"n22", 0);
-        n23 = (int) MmkvUtils.getcode(mRegion+"n23", 0);
-        n24 = (int) MmkvUtils.getcode(mRegion+"n24", 0);
-        n25 = (int) MmkvUtils.getcode(mRegion+"n25", 0);
-        n26 = (int) MmkvUtils.getcode(mRegion+"n26", 0);
-        n27 = (int) MmkvUtils.getcode(mRegion+"n27", 0);
-        n28 = (int) MmkvUtils.getcode(mRegion+"n28", 0);
-        n29 = (int) MmkvUtils.getcode(mRegion+"n29", 0);
-        n30 = (int) MmkvUtils.getcode(mRegion+"n30", 0);
-        n31 = (int) MmkvUtils.getcode(mRegion+"n31", 0);
-        n32 = (int) MmkvUtils.getcode(mRegion+"n32", 0);
-        n33 = (int) MmkvUtils.getcode(mRegion+"n33", 0);
-        n34 = (int) MmkvUtils.getcode(mRegion+"n34", 0);
-        n35 = (int) MmkvUtils.getcode(mRegion+"n35", 0);
-        n36 = (int) MmkvUtils.getcode(mRegion+"n36", 0);
-        n37 = (int) MmkvUtils.getcode(mRegion+"n37", 0);
-        n38 = (int) MmkvUtils.getcode(mRegion+"n38", 0);
-        n39 = (int) MmkvUtils.getcode(mRegion+"n39", 0);
-        n40 = (int) MmkvUtils.getcode(mRegion+"n40", 0);
+        n1 = (int) MmkvUtils.getcode(mRegion + "n1", 0);
+        n2 = (int) MmkvUtils.getcode(mRegion + "n2", 0);
+        n3 = (int) MmkvUtils.getcode(mRegion + "n3", 0);
+        n4 = (int) MmkvUtils.getcode(mRegion + "n4", 0);
+        n5 = (int) MmkvUtils.getcode(mRegion + "n5", 0);
+        n6 = (int) MmkvUtils.getcode(mRegion + "n6", 0);
+        n7 = (int) MmkvUtils.getcode(mRegion + "n7", 0);
+        n8 = (int) MmkvUtils.getcode(mRegion + "n8", 0);
+        n9 = (int) MmkvUtils.getcode(mRegion + "n9", 0);
+        n10 = (int) MmkvUtils.getcode(mRegion + "n10", 0);
+        n11 = (int) MmkvUtils.getcode(mRegion + "n11", 0);
+        n12 = (int) MmkvUtils.getcode(mRegion + "n12", 0);
+        n13 = (int) MmkvUtils.getcode(mRegion + "n13", 0);
+        n14 = (int) MmkvUtils.getcode(mRegion + "n14", 0);
+        n15 = (int) MmkvUtils.getcode(mRegion + "n15", 0);
+        n16 = (int) MmkvUtils.getcode(mRegion + "n16", 0);
+        n17 = (int) MmkvUtils.getcode(mRegion + "n17", 0);
+        n18 = (int) MmkvUtils.getcode(mRegion + "n18", 0);
+        n19 = (int) MmkvUtils.getcode(mRegion + "n19", 0);
+        n20 = (int) MmkvUtils.getcode(mRegion + "n20", 0);
+        n21 = (int) MmkvUtils.getcode(mRegion + "n21", 0);
+        n22 = (int) MmkvUtils.getcode(mRegion + "n22", 0);
+        n23 = (int) MmkvUtils.getcode(mRegion + "n23", 0);
+        n24 = (int) MmkvUtils.getcode(mRegion + "n24", 0);
+        n25 = (int) MmkvUtils.getcode(mRegion + "n25", 0);
+        n26 = (int) MmkvUtils.getcode(mRegion + "n26", 0);
+        n27 = (int) MmkvUtils.getcode(mRegion + "n27", 0);
+        n28 = (int) MmkvUtils.getcode(mRegion + "n28", 0);
+        n29 = (int) MmkvUtils.getcode(mRegion + "n29", 0);
+        n30 = (int) MmkvUtils.getcode(mRegion + "n30", 0);
+        n31 = (int) MmkvUtils.getcode(mRegion + "n31", 0);
+        n32 = (int) MmkvUtils.getcode(mRegion + "n32", 0);
+        n33 = (int) MmkvUtils.getcode(mRegion + "n33", 0);
+        n34 = (int) MmkvUtils.getcode(mRegion + "n34", 0);
+        n35 = (int) MmkvUtils.getcode(mRegion + "n35", 0);
+        n36 = (int) MmkvUtils.getcode(mRegion + "n36", 0);
+        n37 = (int) MmkvUtils.getcode(mRegion + "n37", 0);
+        n38 = (int) MmkvUtils.getcode(mRegion + "n38", 0);
+        n39 = (int) MmkvUtils.getcode(mRegion + "n39", 0);
+        n40 = (int) MmkvUtils.getcode(mRegion + "n40", 0);
         for (int i = 1; i < 41; i++) {
             setBtnColor(i);
         }
@@ -1816,7 +1992,7 @@ public class ChoseDuanActivity extends AppCompatActivity {
         List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, a);
         int totalNum = list.size();//得到数据的总条数
         Log.e(TAG, "当前区域段数totalNum: " + totalNum);
-        if(totalNum==0){
+        if (totalNum == 0) {
             setBtnColor(a);
         }
         switch (a) {
@@ -2093,33 +2269,40 @@ public class ChoseDuanActivity extends AppCompatActivity {
 
     /**
      * 判断是否递增
-     * */
+     */
     public static boolean isIncreasing(List<Integer> list) {
         for (int i = 1; i < list.size(); i++) {
             if (list.get(i) < list.get(i - 1)) {
-                Log.e("递增", "false: " );
+                Log.e("递增", "false: ");
                 return false;
             }
         }
-        Log.e("递增", "true: " );
+        Log.e("递增", "true: ");
         return true;
     }
+
     /**
      * 判断是否递减
-     * */
+     */
     public static boolean isDecreasing(List<Integer> list) {
         for (int i = 1; i < list.size(); i++) {
-            Log.e("递减", "list.get(i): " +list.get(i));
-            Log.e("递减", "list.get(i - 1): " +list.get(i - 1));
-            Log.e("递减", "list.get(i) >= list.get(i - 1): " +(list.get(i) >= list.get(i - 1)));
+            Log.e("递减", "list.get(i): " + list.get(i));
+            Log.e("递减", "list.get(i - 1): " + list.get(i - 1));
+            Log.e("递减", "list.get(i) >= list.get(i - 1): " + (list.get(i) >= list.get(i - 1)));
             if (list.get(i) > list.get(i - 1)) {
-                Log.e("递减", "false: " );
+                Log.e("递减", "false: ");
                 return false;
             }
         }
-        Log.e("递减", "true: " );
+        Log.e("递减", "true: ");
         return true;
     }
 
 
+    @OnClick({})
+    public void onClick(View view) {
+        switch (view.getId()) {
+
+        }
+    }
 }
