@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -108,15 +109,15 @@ public class RiZhiActivity extends BaseActivity {
 
         getUserMessage();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-        mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
-        Log.e("查询雷管", "mListData: "+mListData.toString() );
+        mListData = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        Log.e("查询雷管", "mListData: " + mListData.toString());
         list_uid.clear();
         for (int i = 0; i < mListData.size(); i++) {
             list_uid.add(mListData.get(i).getShellBlastNo());
         }
-        Log.e("查询雷管", "list_uid: "+list_uid.toString() );
+        Log.e("查询雷管", "list_uid: " + list_uid.toString());
         mHandler_tip = new Handler(msg -> {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     show_Toast("上传成功");
                     break;
@@ -138,11 +139,22 @@ public class RiZhiActivity extends BaseActivity {
         server_ip = bean.getServer_ip();
         pro_dwdm = bean.getPro_dwdm();
     }
-    String TAG="日志";
+
+    String TAG = "日志";
 
     @OnClick({R.id.btn_openFile1, R.id.btn_openFile2, R.id.btn_OK})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_openFile2:
+
+                Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
+                Uri xbFolderUri2 = Uri.parse("content://com.android.externalstorage.documents/document/primary:XB程序日志");
+                intent2.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri2);
+                intent2.setType("text/plain");//txt文件
+                intent2.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent2, 2);
+                break;
+
             case R.id.btn_openFile1:
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 //                    try {
@@ -188,15 +200,7 @@ public class RiZhiActivity extends BaseActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
                 break;
-            case R.id.btn_openFile2:
 
-                Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
-                Uri xbFolderUri2 = Uri.parse("content://com.android.externalstorage.documents/document/primary:XB程序日志");
-                intent2.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri2);
-                intent2.setType("text/plain");//txt文件
-                intent2.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(intent2, 2);
-                break;
             case R.id.btn_OK:
                 if (checkMessage()) {
 
@@ -230,13 +234,15 @@ public class RiZhiActivity extends BaseActivity {
                 break;
         }
     }
+
     private boolean checkMessage() {
         if (equ_no.length() < 1) {
-            show_Toast(getResources().getString(R.string.text_down_err2));
+            show_Toast("当前设备编号为空,请先设置设备编号");
             return false;
         }
         return true;
     }
+
     private void upload_xingbang(final String blastdate, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log, final String log_cmd) {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_xb_his;//公司服务器上传
@@ -268,15 +274,7 @@ public class RiZhiActivity extends BaseActivity {
             } else {
                 object.put("htid", pro_htid);//合同编号
             }
-            String app_verson_name ;
-            String changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-            if(changjia.equals("XJ")){
-                app_verson_name =getString(R.string.app_version_name2);
-            }else if(changjia.equals("CQ")){
-                app_verson_name =getString(R.string.app_version_name3);
-            }else {
-                app_verson_name =getString(R.string.app_version_name);
-            }
+            String app_verson_name = getString(R.string.app_version_name);
             object.put("bpsj", blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
@@ -292,10 +290,10 @@ public class RiZhiActivity extends BaseActivity {
                 object.put("name", MmkvUtils.getcode("pro_name", ""));//项目名称
             }
 
-        } catch (JSONException  e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        //3des加密
+//3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
@@ -330,19 +328,18 @@ public class RiZhiActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("离线下载-结果回调", "requestCode: "+requestCode+"--resultCode: "+resultCode );
+        Log.e("离线下载-结果回调", "requestCode: " + requestCode + "--resultCode: " + resultCode);
 
         if (requestCode != Constant.REQ_QR_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             if ("file".equalsIgnoreCase(uri.getScheme())) {//使用第三方应用打开
                 path = uri.getPath();
-                if(requestCode==1){
+                if (requestCode == 1) {
                     textFilePath1.setText(path);
-                }else {
+                } else {
                     textFilePath2.setText(path);
                 }
 
@@ -350,19 +347,19 @@ public class RiZhiActivity extends BaseActivity {
                 return;
             }
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
-                Log.e(TAG, "uri: "+uri );
+                Log.e(TAG, "uri: " + uri);
                 path = getPath(this, uri);
-                if(requestCode==1){
+                if (requestCode == 1) {
                     textFilePath1.setText(path);
-                }else {
+                } else {
                     textFilePath2.setText(path);
                 }
                 Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
             } else {//4.4以下下系统调用方法
                 path = getRealPathFromURI(uri);
-                if(requestCode==1){
+                if (requestCode == 1) {
                     textFilePath1.setText(path);
-                }else {
+                } else {
                     textFilePath2.setText(path);
                 }
                 Toast.makeText(this, path + "222222", Toast.LENGTH_SHORT).show();
@@ -517,9 +514,6 @@ public class RiZhiActivity extends BaseActivity {
             }
         }).start();
     }
-
-
-
 
 
 }
