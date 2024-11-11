@@ -703,7 +703,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
         if (delay < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -1017,7 +1017,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
 
-            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
+            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
             if (delay < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
@@ -1124,7 +1124,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         return reCount;
     }
 
-    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum) {
+    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum, int duanNo2) {
         if(!flag_jh_f1){
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
@@ -1187,6 +1187,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 }else if (btn_start) {
                     if (flag_tk) {
                         delay = start_delay + f2 * (tk_num + 1);
+                    }else if(duanNo2==0){
+                        delay = start_delay;
                     } else {
                         delay = start_delay + f2;
                     }
@@ -2245,7 +2247,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
         if (delay < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2472,7 +2474,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
         if (delay < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;

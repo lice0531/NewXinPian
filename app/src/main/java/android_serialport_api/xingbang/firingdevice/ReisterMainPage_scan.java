@@ -2004,7 +2004,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum);
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
         if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2176,7 +2176,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
         if (delay < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2369,7 +2369,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
-            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum);
+            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
             if (delay < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
@@ -2477,7 +2477,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return reCount;
     }
 
-    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum) {
+    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum, int duanNo2) {
         Log.e(TAG, "flag_jh_f1: "+flag_jh_f1 );
         Log.e(TAG, "delay_set: "+delay_set );
         if(!flag_jh_f1){
@@ -2544,6 +2544,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }else if (btn_start) {
                     if (flag_tk) {
                         delay = start_delay + f2 * (tk_num + 1);
+                    }else if(duanNo2==0){
+                        delay = start_delay;
                     } else {
                         delay = start_delay + f2;
                     }

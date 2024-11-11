@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -338,50 +339,47 @@ public class DelDenatorMainPage extends BaseActivity  {
                 builder.show();
                 break;
             case R.id.btn_error_del://删除错误雷管
-                pb_show = 1;
-                runPbDialog();
-                Del_Err_Denator();
 
-//                loadMoreData();//获取数据保存到list
-//                refreshData();
-                pb_show = 0;
-                tipDlg.dismiss();
+                AlertDialog.Builder builder3 = new AlertDialog.Builder(DelDenatorMainPage.this);
+                builder3.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+                View view3 = LayoutInflater.from(DelDenatorMainPage.this).inflate(R.layout.userlogindialog_deletelg, null);
+                builder3.setView(view3);
+                final EditText password3 = view3.findViewById(R.id.password);
+                final TextView tv_tip = view3.findViewById(R.id.txt_tip);
+                tv_tip.setText("请输入密码后,再进行删除错误雷管操作");
+                builder3.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+                    String b = password3.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    if ( b.equals("123")) {
+                        pb_show = 1;
+                        runPbDialog();
+
+                        GreenDaoMaster master = new GreenDaoMaster();
+                        master.deleteErrLeiGuan(mRegion);
+                        Utils.deleteData(mRegion);//重新排序雷管
+                        refreshData();
+                        Utils.saveFile();//把软存中的数据存入磁盘中
+
+                        pb_show = 0;
+                        tipDlg.dismiss();
+                    } else {
+                        show_Toast(getResources().getString(R.string.text_mmcw));
+                    }
+                    dialog.dismiss();
+                });
+                builder3.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+                builder3.show();
 
                 break;
             case R.id.btn_serialNo_del://按序号删除
                 hideInputKeyboard();
-                AlertDialog dialog = new Builder(this)
-                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
-                        .setMessage(getResources().getString(R.string.text_delete_tip12))//设置对话框的内容"本次任务成功起爆！"
-                        //设置对话框的按钮
-                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
-                        .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog1, which) -> {
-                            pb_show = 1;
-                            runPbDialog();
-                            String checstr = checkData();
-                            if (checstr == null || checstr.trim().length() < 1) {
-                                //起始序号
-                                String startNoStr = setDelayTimeFirstNo.getText().toString();
-                                //终点序号
-                                String endNoStr = setDelayTimeEndNo.getText().toString();
-                                deleteDenatorforNo(startNoStr, endNoStr);
+                xuhaosc();
 
-                                //(之前是屏蔽的,因为华丰翻转后再按序号删除会报错,所以屏蔽的,但是不排序的话,400发雷管,按序号删除200到300中间部分雷管,这样设置延时会报错)
-                                Utils.deleteData(mRegion);//重新排序雷管
-//                                loadMoreData();//获取数据保存到list
-                                //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)
-//                                    mAdapter = new LoadAdapter(DelDenatorMainPage.this, list_lg, R.layout.item_deldenator, 0);//(手动输入管壳码之后,错误码为空,会报空指针)
-//                                    denatorDelListview.setAdapter(mAdapter);
-                                refreshData();//刷新列表
-                                tipDlg.dismiss();
-                                show_Toast(getString(R.string.text_del_ok));
-                                pb_show = 0;
-                            } else {
-                                show_Toast(checstr);
-                            }
-                            dialog1.dismiss();
-                        }).create();
-                dialog.show();
 
 
                 break;
@@ -392,6 +390,54 @@ public class DelDenatorMainPage extends BaseActivity  {
                 finish();
                 break;
         }
+    }
+
+    private void xuhaosc(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(DelDenatorMainPage.this);
+        builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+        View view2 = LayoutInflater.from(DelDenatorMainPage.this).inflate(R.layout.userlogindialog_deletelg, null);
+        builder.setView(view2);
+        final EditText password = view2.findViewById(R.id.password);
+        final TextView tv_tip = view2.findViewById(R.id.txt_tip);
+        tv_tip.setText("请输入密码后,再进行按序号删除雷管操作");
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+
+            String b = password.getText().toString().trim();
+            if (b == null || b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+                return;
+            }
+            if ( b.equals("123")) {
+                pb_show = 1;
+                runPbDialog();
+                String checstr = checkData();
+                if (checstr == null || checstr.trim().length() < 1) {
+                    //起始序号
+                    String startNoStr = setDelayTimeFirstNo.getText().toString();
+                    //终点序号
+                    String endNoStr = setDelayTimeEndNo.getText().toString();
+                    deleteDenatorforNo(startNoStr, endNoStr);
+
+                    //(之前是屏蔽的,因为华丰翻转后再按序号删除会报错,所以屏蔽的,但是不排序的话,400发雷管,按序号删除200到300中间部分雷管,这样设置延时会报错)
+                    Utils.deleteData(mRegion);//重新排序雷管
+
+                    refreshData();//刷新列表
+                    tipDlg.dismiss();
+                    show_Toast(getString(R.string.text_del_ok));
+                    pb_show = 0;
+                } else {
+                    show_Toast(checstr);
+                }
+            } else {
+                show_Toast(getResources().getString(R.string.text_mmcw));
+            }
+            dialog.dismiss();
+        });
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
+
+
+        builder.show();
     }
     /**
      * 创建菜单
