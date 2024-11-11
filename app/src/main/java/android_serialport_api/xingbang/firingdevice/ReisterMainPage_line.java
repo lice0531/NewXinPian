@@ -148,8 +148,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     LinearLayout container;
     @BindView(R.id.container1)
     LinearLayout container1;
-    @BindView(R.id.textView9)
-    TextView textView9;
+//    @BindView(R.id.textView9)
+//    TextView textView9;
     @BindView(R.id.re_gkm)
     LinearLayout regkm;
     @BindView(R.id.text_gkm1)
