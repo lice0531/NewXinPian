@@ -2135,7 +2135,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
-        int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_new, mRegion);
+        int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay == 0 && duanNo2 == 0) {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
@@ -2487,12 +2487,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e(TAG, "start_delay: "+start_delay );
                     Log.e(TAG, "delay: "+delay );
                 }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay - f1 * (tk_num + 1);
-                    } else {
-                        delay = start_delay - f1;
-                    }
-
+                    delay = start_delay;
                 } else {
                     if (flag_tk) {
                         delay = delay - f1 * (tk_num + 1);
@@ -2504,13 +2499,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
-                }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay + f2 * (tk_num + 1);
-                    } else {
-                        delay = start_delay + f2;
-                    }
-
                 } else {
                     if (flag_tk) {
                         delay = delay_minNum + f2 * (tk_num + 1);
@@ -2521,15 +2509,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }else {
             if (delay_set.equals("f1")) {//孔间延时
+                Log.e(TAG, "maxNo: "+maxNo);
+                Log.e(TAG, "flag_tk: "+flag_tk );
+                Log.e(TAG, "duanNo2: "+duanNo2 );
                 if (maxNo == 0) {
                     delay = delay + start_delay;
                 }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay + f1 * (tk_num + 1);
-                    } else {
-                        delay = start_delay + f1;
-                    }
-
+                    delay = start_delay;
                 } else {
                     if (flag_tk) {
                         delay = delay + f1 * (tk_num + 1);
@@ -2539,17 +2525,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 }
             } else if (delay_set.equals("f2")) {//排间延时
+
                 if (maxNo == 0) {
                     delay = delay + start_delay;
-                }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay + f2 * (tk_num + 1);
-                    }else if(duanNo2==0){
-                        delay = start_delay;
-                    } else {
-                        delay = start_delay + f2;
-                    }
-
                 } else {
                     if (flag_tk) {
                         delay = delay_minNum + f2 * (tk_num + 1);
@@ -2557,8 +2535,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         delay = delay_minNum + f2;
                     }
                 }
+            }else {
+                delay = start_delay;
             }
         }
+        Log.e(TAG, "delay: "+delay );
         return delay;
     }
 
@@ -2826,18 +2807,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 if (checkDelay()) return;
                 delay_set = "f1";
                 flag2 = 0;
-                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 switch (flag1) {
                     case 0:
                         reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                        reEtF1.setBackgroundResource(R.drawable.textview_border_green);
                         flag1 = 1;
                         break;
                     case 1:
                         reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                        reEtF1.setBackgroundResource(R.drawable.translucent);
                         flag1 = 0;
                         break;
                 }
-                reEtF1.setBackgroundResource(R.drawable.textview_border_green);
+                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 reEtF2.setBackgroundResource(R.drawable.translucent);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
@@ -2851,15 +2833,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 switch (flag2) {
                     case 0:
                         reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                        reEtF2.setBackgroundResource(R.drawable.textview_border_green);
                         flag2 = 1;
                         break;
                     case 1:
                         reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                        reEtF2.setBackgroundResource(R.drawable.translucent);
                         flag2 = 0;
                         break;
                 }
                 reEtF1.setBackgroundResource(R.drawable.translucent);
-                reEtF2.setBackgroundResource(R.drawable.textview_border_green);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
 

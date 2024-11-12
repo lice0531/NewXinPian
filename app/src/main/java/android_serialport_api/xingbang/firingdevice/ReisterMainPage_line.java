@@ -1130,12 +1130,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 if (maxNo == 0) {
                     delay = start_delay - delay;
                 }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay - f1 * (tk_num + 1);
-                    } else {
-                        delay = start_delay - f1;
-                    }
-
+                    delay = start_delay;
                 } else {
                     if (flag_tk) {
                         delay = delay - f1 * (tk_num + 1);
@@ -1147,32 +1142,22 @@ public class ReisterMainPage_line extends SerialPortActivity {
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
-                }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay + f2 * (tk_num + 1);
-                    } else {
-                        delay = start_delay + f2;
-                    }
-
-                } else {
+                }else {
                     if (flag_tk) {
                         delay = delay_minNum + f2 * (tk_num + 1);
                     } else {
                         delay = delay_minNum + f2;
                     }
                 }
+            }else {
+                delay = start_delay;
             }
         }else {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
                 }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay + f1 * (tk_num + 1);
-                    } else {
-                        delay = start_delay + f1;
-                    }
-
+                    delay = start_delay;
                 } else {
                     if (flag_tk) {
                         delay = delay + f1 * (tk_num + 1);
@@ -1184,15 +1169,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
-                }else if (btn_start) {
-                    if (flag_tk) {
-                        delay = start_delay + f2 * (tk_num + 1);
-                    }else if(duanNo2==0){
-                        delay = start_delay;
-                    } else {
-                        delay = start_delay + f2;
-                    }
-
                 } else {
                     if (flag_tk) {
                         delay = delay_minNum + f2 * (tk_num + 1);
@@ -1200,6 +1176,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
                         delay = delay_minNum + f2;
                     }
                 }
+            }else {
+                delay = start_delay;
             }
         }
         return delay;
@@ -2840,17 +2818,27 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 break;
             case R.id.btn_JH_F1:
                 btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                delay_set = "f1";//是f1还是f2
+                flag2 = 0;
                 if (flag_jh_f1) {
                     btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                     flag_jh_f1 = false;
+                    reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    reEtF1.setBackgroundResource(R.drawable.textview_border_green);
+                    flag1 = 1;
                 } else {
                     btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                     flag_jh_f1 = true;
+                    reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    reEtF1.setBackgroundResource(R.drawable.translucent);
+                    flag1 = 0;
                 }
-                delay_set = "f1";//是f1还是f2
+
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 reEtF2.setBackgroundResource(R.drawable.translucent);
-                flag2 = 0;
+
+                reEtF1.clearFocus();
+                reEtF2.clearFocus();
                 break;
             case R.id.btn_JH_F2:
                 btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
@@ -2877,10 +2865,21 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 hideInputKeyboard();
                 if (checkDelay()) return;
                 delay_set = "f1";
-                reEtF1.setBackgroundResource(R.drawable.textview_border_green);
-                reEtF2.setBackgroundResource(R.drawable.translucent);
-                reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                flag2 = 0;
+                switch (flag1) {
+                    case 0:
+                        reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                        reEtF1.setBackgroundResource(R.drawable.textview_border_green);
+                        flag1 = 1;
+                        break;
+                    case 1:
+                        reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                        reEtF1.setBackgroundResource(R.drawable.translucent);
+                        flag1 = 0;
+                        break;
+                }
                 reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                reEtF2.setBackgroundResource(R.drawable.translucent);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
                 break;
@@ -2889,10 +2888,21 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 hideInputKeyboard();
                 if (checkDelay()) return;
                 delay_set = "f2";
-                reEtF1.setBackgroundResource(R.drawable.translucent);
-                reEtF2.setBackgroundResource(R.drawable.textview_border_green);
+                flag1 = 0;
                 reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
-                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                switch (flag2) {
+                    case 0:
+                        reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                        reEtF2.setBackgroundResource(R.drawable.textview_border_green);
+                        flag2 = 1;
+                        break;
+                    case 1:
+                        reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                        reEtF2.setBackgroundResource(R.drawable.translucent);
+                        flag2 = 0;
+                        break;
+                }
+                reEtF1.setBackgroundResource(R.drawable.translucent);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
                 btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
