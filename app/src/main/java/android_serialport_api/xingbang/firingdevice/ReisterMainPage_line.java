@@ -753,36 +753,17 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
-
-                delay = db_charu.getDelay();
-                if (delay_set.equals("f1")) {//获取最大延时有问题
-                    delay_add = f1;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay + f1 * (tk_num + 1);
-                        } else {
-                            delay = delay + f1;
-                        }
+                if(!flag_jh_f1){
+                    if(delay_set.equals("f1")){
+                        delay_add=-f1;
                     }
-                } else if (delay_set.equals("f2")) {
-                    delay_add = f2;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay_minNum + f2 * (tk_num + 1);
-                        } else {
-                            delay = delay_minNum + f2;
-                        }
+                }else {
+                    if(delay_set.equals("f1")){
+                        delay_add=f1;
                     }
                 }
 
-//                if(flag_t1&&delay==db_charu.getDelay()){
-//                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                    return -1;
-//                }
+                delay = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
                 denatorBaseinfo.setDelay(delay);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
             }
@@ -1059,36 +1040,16 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                     denatorBaseinfo.setDelay(db_charu.getDelay());
                 } else {
-
-                    delay = db_charu.getDelay();
-                    if (delay_set.equals("f1")) {//获取最大延时有问题
-                        delay_add = f1;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay + f1 * (tk_num + 1);
-                            } else {
-                                delay = delay + f1;
-                            }
+                    if(!flag_jh_f1){
+                        if(delay_set.equals("f1")){
+                            delay_add=-f1;
                         }
-                    } else if (delay_set.equals("f2")) {
-                        delay_add = f2;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay_minNum + f2 * (tk_num + 1);
-                            } else {
-                                delay = delay_minNum + f2;
-                            }
+                    }else {
+                        if(delay_set.equals("f1")){
+                            delay_add=f1;
                         }
                     }
-
-//                    if(flag_t1&&delay==db_charu.getDelay()){
-//                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                        return -1;
-//                    }
+                    delay = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
                     denatorBaseinfo.setDelay(delay);
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
                 }
@@ -1169,6 +1130,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
                     delay = delay + start_delay;
+                }else if (btn_start) {
+                    delay = start_delay;
                 } else {
                     if (flag_tk) {
                         delay = delay_minNum + f2 * (tk_num + 1);
@@ -1182,6 +1145,45 @@ public class ReisterMainPage_line extends SerialPortActivity {
         }
         return delay;
     }
+
+    private int getDelay_charu(int start_delay, int f1, int f2, int maxNo, int delay_minNum, int tk_num) {
+        int delay_max;
+        delay_max = db_charu.getDelay();
+
+        if(!flag_jh_f1){
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+
+                if (maxNo == 0) {
+                    delay_max = start_delay - delay_max;
+                }else if (btn_start) {
+                    delay_max = start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max - f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max - f1;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+
+                if (maxNo == 0) {
+                    delay_max = delay_max + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max + f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max + f1;
+                    }
+                }
+            }
+        }
+
+
+        return delay_max;
+    }
+
 
     private void updateMessage(String version) {
         MessageBean bean = GreenDaoMaster.getAllFromInfo_bean();
@@ -2261,36 +2263,16 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
-
-                delay = db_charu.getDelay();
-                if (delay_set.equals("f1")) {//获取最大延时有问题
-                    delay_add = f1;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay + f1 * (tk_num + 1);
-                        } else {
-                            delay = delay + f1;
-                        }
+                if(!flag_jh_f1){
+                    if(delay_set.equals("f1")){
+                        delay_add=-f1;
                     }
-                } else if (delay_set.equals("f2")) {
-                    delay_add = f2;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay_minNum + f2 * (tk_num + 1);
-                        } else {
-                            delay = delay_minNum + f2;
-                        }
+                }else {
+                    if(delay_set.equals("f1")){
+                        delay_add=f1;
                     }
                 }
-
-//                if(flag_t1&&delay==db_charu.getDelay()){
-//                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                    return -1;
-//                }
+                delay = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
                 denatorBaseinfo.setDelay(delay);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
             }
@@ -2506,36 +2488,16 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                     denatorBaseinfo.setDelay(db_charu.getDelay());
                 } else {
-
-                    delay = db_charu.getDelay();
-                    if (delay_set.equals("f1")) {//获取最大延时有问题
-                        delay_add = f1;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay + f1 * (tk_num + 1);
-                            } else {
-                                delay = delay + f1;
-                            }
+                    if(!flag_jh_f1){
+                        if(delay_set.equals("f1")){
+                            delay_add=-f1;
                         }
-                    } else if (delay_set.equals("f2")) {
-                        delay_add = f2;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay_minNum + f2 * (tk_num + 1);
-                            } else {
-                                delay = delay_minNum + f2;
-                            }
+                    }else {
+                        if(delay_set.equals("f1")){
+                            delay_add=f1;
                         }
                     }
-
-//                    if(flag_t1&&delay==db_charu.getDelay()){
-//                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                        return -1;
-//                    }
+                    delay = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
                     denatorBaseinfo.setDelay(delay);
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
                 }

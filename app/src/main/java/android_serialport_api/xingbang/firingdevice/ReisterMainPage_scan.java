@@ -2041,32 +2041,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
-
-                delay_max = db_charu.getDelay();
-                if (delay_set.equals("f1")) {//获取最大延时有问题
-                    delay_add = f1;
-                    if (maxNo == 0) {
-                        delay_max = delay_max + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay_max = delay_max + f1 * (tk_num + 1);
-                        } else {
-                            delay_max = delay_max + f1;
-                        }
+                if(!flag_jh_f1){
+                    if(delay_set.equals("f1")){
+                        delay_add=-f1;
                     }
-                } else if (delay_set.equals("f2")) {
-                    delay_add = f2;
-                    if (maxNo == 0) {
-                        delay_max = delay_max + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay_max = delay_minNum + f2 * (tk_num + 1);
-                        } else {
-                            delay_max = delay_minNum + f2;
-                        }
+                }else {
+                    if(delay_set.equals("f1")){
+                        delay_add=f1;
                     }
                 }
-
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
+                Log.e("单发输入--插入延时", "delay_max: " + delay_max);
+                Log.e("单发输入--插入延时", "delay_add: " + delay_add);
 //                if(flag_t1&&delay==db_charu.getDelay()){
 //                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
 //                    return -1;
@@ -2104,6 +2090,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return 0;
     }
 
+
+
     /***
      * 扫码注册方法
      */
@@ -2134,13 +2122,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int delay = getMaxDelay(maxNo);//获取最大延时
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
-        if (delay == 0 && duanNo2 == 0) {
-            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        if (delay_max == 0 && duanNo2 == 0) {
+            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
-        int delay_start = delay;
+        int delay_start = delay_max;
         if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
@@ -2160,12 +2148,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }else {
             if (delay_set.equals("f1")) {
-                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                if (maxSecond != 0 && delay_max + f1 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
-                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                if (maxSecond != 0 && delay_max + f2 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                     return -1;
                 }
@@ -2176,13 +2164,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
-        if (delay < 0) {//
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
         }
 
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay_max);
         int a = 0;
         if (duan_scan.equals("0")) {//普通雷管按当前页面选择的来
             a = duan_new;
@@ -2196,7 +2184,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setBlastserial(maxNo);
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
-        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setDelay(delay_max);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
@@ -2228,37 +2216,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
-
-                delay = db_charu.getDelay();
-                if (delay_set.equals("f1")) {//获取最大延时有问题
-                    delay_add = f1;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay + f1 * (tk_num + 1);
-                        } else {
-                            delay = delay + f1;
-                        }
+                if(!flag_jh_f1){
+                    if(delay_set.equals("f1")){
+                        delay_add=-f1;
                     }
-                } else if (delay_set.equals("f2")) {
-                    delay_add = f2;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay_minNum + f2 * (tk_num + 1);
-                        } else {
-                            delay = delay_minNum + f2;
-                        }
+                }else {
+                    if(delay_set.equals("f1")){
+                        delay_add=f1;
                     }
                 }
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
 
-//                if(flag_t1&&delay==db_charu.getDelay()){
-//                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                    return -1;
-//                }
-                denatorBaseinfo.setDelay(delay);
+                denatorBaseinfo.setDelay(delay_max);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
             }
 
@@ -2300,13 +2269,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int maxNo = getMaxNumberNo();
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
-        if (delay == 0 && duanNo2 == 0) {
-            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        if (delay_max == 0 && duanNo2 == 0) {
+            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
-        int delay_start = delay;
+        int delay_start = delay_max;
         if(btn_start||maxNo==0){
             delay_start=start_delay;
         }
@@ -2324,12 +2293,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }else {
             if (delay_set.equals("f1")) {
-                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                if (maxSecond != 0 && delay_max + f1 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
-                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                if (maxSecond != 0 && delay_max + f2 > maxSecond) {//
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                     return -1;
                 }
@@ -2369,12 +2338,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
-            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
-            if (delay < 0) {
+            delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+            if (delay_max < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
             }
-            if (maxSecond != 0 && delay > maxSecond) {
+            if (maxSecond != 0 && delay_max > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 break;
             }
@@ -2387,7 +2356,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setBlastserial(maxNo);
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setShellBlastNo(shellNo);
-            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setDelay(delay_max);
             denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("FF");
             denatorBaseinfo.setStatusName("已注册");
@@ -2412,37 +2381,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                     denatorBaseinfo.setDelay(db_charu.getDelay());
                 } else {
-
-                    delay = db_charu.getDelay();
-                    if (delay_set.equals("f1")) {//获取最大延时有问题
-                        delay_add = f1;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay + f1 * (tk_num + 1);
-                            } else {
-                                delay = delay + f1;
-                            }
+                    if(!flag_jh_f1){
+                        if(delay_set.equals("f1")){
+                            delay_add=-f1;
                         }
-                    } else if (delay_set.equals("f2")) {
-                        delay_add = f2;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay_minNum + f2 * (tk_num + 1);
-                            } else {
-                                delay = delay_minNum + f2;
-                            }
+                    }else {
+                        if(delay_set.equals("f1")){
+                            delay_add=f1;
                         }
                     }
+                    delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
 
-//                    if(flag_t1&&delay==db_charu.getDelay()){
-//                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                        return -1;
-//                    }
-                    denatorBaseinfo.setDelay(delay);
+                    denatorBaseinfo.setDelay(delay_max);
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
                 }
 
@@ -2509,9 +2459,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }else {
             if (delay_set.equals("f1")) {//孔间延时
-                Log.e(TAG, "maxNo: "+maxNo);
-                Log.e(TAG, "flag_tk: "+flag_tk );
-                Log.e(TAG, "duanNo2: "+duanNo2 );
                 if (maxNo == 0) {
                     delay = delay + start_delay;
                 }else if (btn_start) {
@@ -2528,6 +2475,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 if (maxNo == 0) {
                     delay = delay + start_delay;
+                }else if (btn_start) {
+                    delay = start_delay;
                 } else {
                     if (flag_tk) {
                         delay = delay_minNum + f2 * (tk_num + 1);
@@ -2541,6 +2490,44 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         Log.e(TAG, "delay: "+delay );
         return delay;
+    }
+
+    private int getDelay_charu(int start_delay, int f1, int f2, int maxNo, int delay_minNum, int tk_num) {
+        int delay_max;
+        delay_max = db_charu.getDelay();
+
+        if(!flag_jh_f1){
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+
+                if (maxNo == 0) {
+                    delay_max = start_delay - delay_max;
+                }else if (btn_start) {
+                    delay_max = start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max - f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max - f1;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+
+                if (maxNo == 0) {
+                    delay_max = delay_max + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max + f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max + f1;
+                    }
+                }
+            }
+        }
+
+
+        return delay_max;
     }
 
     /***
