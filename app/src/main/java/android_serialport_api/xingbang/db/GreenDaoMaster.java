@@ -349,7 +349,97 @@ public class GreenDaoMaster {
         }
         return str;
     }
+    //丹灵下载后更新雷管芯片码//在线下载,离线下载
+    public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean,String yxq) {
 
+        //94242214050
+        //F42F1C 2E0A 2 5
+        Log.e("雷管下载", "lgBean.getUid(): "+lgBean.getUid() );
+        if ( !lgBean.getUid().startsWith("00000")) {
+            String uid = null;
+            String yscs = null;
+            String duan = null;
+            String version = null;
+
+            Log.e("第2-1步", "更正注册列表中雷管的芯片码,授权日期,延时参数,延时: --------------" );
+            QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+            DenatorBaseinfo db = result.where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(lgBean.getUid())).unique();
+            if (db != null) {
+//                Log.e("查询数据库中是否有对应的数据", "db: " + db);
+                if(lgBean.getGzm().length()>=10){//雷管已使用下载下来是8个0
+                    uid = "A62F400" + lgBean.getGzm().substring(0, 6);
+                    yscs = lgBean.getGzm().substring(6, 10);
+                    db.setDenatorId(uid);
+                }
+
+                if(lgBean.getGzm().length()>=10){
+                    db.setZhu_yscs(yscs);//有延时参数就更新延时参数
+                    db.setRegdate(yxq);
+                }
+                Log.e("雷管下载", "lgBean.getGzm(): "+lgBean.getGzm() );
+                if (lgBean.getGzm().length() == 12) {//煤许下载更新延时,非煤许不更新延时
+                    duan = lgBean.getGzm().substring(11,12);
+                    version = lgBean.getGzm().substring(10,11);
+                    int delay=0;
+                    switch (duan){
+                        case "1":
+                            break;
+                        case "2":
+                            delay=25;
+                            break;
+                        case "3":
+                            delay=50;
+                            break;
+                        case "4":
+                            delay=75;
+                            break;
+                        case "5":
+                            delay=100;
+                            break;
+                    }
+                    if(!duan.equals("0")){//更新煤许段位
+                        db.setDelay(delay);
+                    }
+                    db.setCong_yscs(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                    db.setAuthorization("0"+version);
+
+                    //小于0x0600的就是快速
+                    //0x09C1就是慢速的
+                    //0x04C1就是快速的
+//                    String yscs2=yscs.substring(2)+yscs.substring(0,2);
+//                    BigInteger one = new BigInteger(yscs2,16);
+//                    BigInteger two = new BigInteger("0699",16);
+//                    Log.e("判断产品型号-lgBean.getGzm()",lgBean.getGzm());
+//                    Log.e("判断产品型号-version",version);
+//                    Log.e("判断产品型号-比较",one.compareTo(two)+"");
+//                    if(one.compareTo(two) > 0&&!version.equals("2")){
+//                        db.setAuthorization("02");
+//                        Log.e("判断产品型号","02");
+//                    }else if(one.compareTo(two) < 0&&!version.equals("1")){
+//                        Log.e("判断产品型号","01");
+//                        db.setAuthorization("01");
+//                    }
+
+//                    db.setDuan(duan);//因为以后用不到从延时参数,就放成煤许段位了
+                }
+                getDaoSession().getDenatorBaseinfoDao().update(db);
+                Log.e("第2-1步", "结束: --------------" );
+                if (lgBean.getGzmcwxx().equals("0")){
+                    db.setErrorName("雷管正常");
+                }else if(lgBean.getGzmcwxx().equals("1")){
+                    db.setErrorName("雷管在黑名单中");
+                }else if(lgBean.getGzmcwxx().equals("2")){
+                    db.setErrorName("雷管已使用");
+                }else if(lgBean.getGzmcwxx().equals("3")){
+                    db.setErrorName("申请的雷管UID不存在");
+                }
+                Log.e("第3步", "把雷管信息更新到生产数据库中: --------------" );
+                registerDetonator_typeNew(db,yxq);//更新到生产数据库中
+            }
+
+        }
+
+    }
     //丹灵下载后更新雷管芯片码
     public static void updateLgState(DanLingBean.LgsBean.LgBean lgBean) {
         Log.e("插入数据", "lgBean: " );
@@ -1121,5 +1211,138 @@ public class GreenDaoMaster {
     public List<UserMain> queryAllUser() {
         QueryBuilder<UserMain> result = mUserDao.queryBuilder();
         return result.list();
+    }
+
+    /**
+     * 根据申请日期查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForSqrq(String sqrq) {
+        return detonatorTypeNewDao.queryBuilder().
+                where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt,String sqrq) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Qibao.eq(zt))
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm,String sqrq) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public void deleteDetonatorShouQuan(String gkm) {
+        detonatorTypeNewDao
+                .queryBuilder().where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(gkm))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 更新授权数量
+     */
+    public  void updataShouQuan(String time,int total) {
+        QueryBuilder<ShouQuan> result = mShouquanDao.queryBuilder();
+        ShouQuan shouQuan =result.where(ShouQuanDao.Properties.Spare2.eq(time)).unique();
+        shouQuan.setTotal(total);
+        mShouquanDao.update(shouQuan);
+    }
+
+    public int getDuanNo(String piece,String duan ) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list().size();
+    }
+
+    /**
+     * 检查重复雷管
+     */
+    public int getDuan(String shellBlastNo) {
+        DenatorBaseinfo a = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shellBlastNo))
+                .unique();
+        if (a != null) {
+            return a.getDuan();
+        } else {
+            return 1;
+        }
+
+    }
+
+    /**
+     * 查询X区域,X段最大序号雷管
+     *
+     * @return
+     */
+    public DenatorBaseinfo querylgMaxduanNo(int duanNo,int duan,String piece) {
+        List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
+        return list_lg.get(0);
+    }
+
+    /**
+     * 查询X区域,X段最大序号雷管
+     *
+     * @return
+     */
+    public int querylgNum(int duanNo,int duan,String piece) {
+        List<DenatorBaseinfo> list_lg=mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.DuanNo.eq(duanNo))
+                .where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial).list();
+        return list_lg.size();
+    }
+
+    /**
+     * 修改雷管延时
+     *
+     * @param shell 管壳号
+     * @param delay 延时
+     */
+    public void updateDetonatorDelay(String shell, int delay,int duanNo) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .build()
+                .unique();
+        entity.setDelay(delay);
+        entity.setDuanNo(duanNo);
+        mDeantorBaseDao.update(entity);
+    }
+
+    /**
+     * 查询超时的雷管
+     */
+    public  List<DenatorBaseinfo> queryLeiGuan(String time,String mRegion) {
+        Log.e("查询超时的雷管", "time: "+time );
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .where(DenatorBaseinfoDao.Properties.Regdate.lt(time)).list();
     }
 }

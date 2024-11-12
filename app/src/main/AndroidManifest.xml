@@ -315,6 +315,16 @@
             android:exported="false"
             android:label="@string/text_scan_xzdw"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".firingdevice.SouSuoSQActivity"
+            android:exported="false"
+            android:label="@string/text_sssqxx"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".firingdevice.ShouQuanActivity"
+            android:exported="false"
+            android:label="@string/text_sqsj"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

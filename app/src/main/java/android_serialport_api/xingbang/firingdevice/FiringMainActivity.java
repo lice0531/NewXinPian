@@ -12,10 +12,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -222,7 +224,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private int cuowuSun = 0;//电流异常错误次数
     private float cankao_ic_gaoya = 0;
     private float cankao_ic_diya = 0;
-
+    private String Shangchuan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -297,7 +299,8 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_Hv_7 = findViewById(R.id.ll_firing_Hv_7);//起爆电压
         ll_firing_Hv_6 = findViewById(R.id.ll_firing_Hv_6);//起爆电压
         ll_txt_firing_7 = findViewById(R.id.ll_txt_firing_7);//起爆提示
-
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","是");
+        Log.e(TAG,"是否上传错误雷管: " + Shangchuan);//是否上传错误雷管:为是（有错误雷管不继续）
         String device = Build.DEVICE;
         switch (device) {
             case "KT50":
@@ -359,9 +362,20 @@ public class FiringMainActivity extends SerialPortActivity {
         //继续起爆
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
         btn_continueOk_4.setOnClickListener(v ->{
-            increase(6);
-            list_dianya.clear();
-        } );
+            String err = ll_firing_errorAmount_4.getText().toString();
+            //有错误雷管不能继续起爆
+            if (Shangchuan.equals("是")) {
+                if (err.equals("0")) {
+                    increase(6);
+                    list_dianya.clear();
+                } else {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
+                }
+            } else {
+                increase(6);
+                list_dianya.clear();
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -798,6 +812,34 @@ public class FiringMainActivity extends SerialPortActivity {
             Application.getDaoSession().update(denator);
             return false;
         });
+    }
+
+    private void showErrorLgDialog(String content, int type) {
+        TextView view = new TextView(this);
+        view.setTextSize(25);
+        view.setTextColor(Color.RED);
+        view.setText(content);
+        view.setTypeface(null, Typeface.BOLD);
+        AlertDialog dialog = new Builder(FiringMainActivity.this)
+                .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
+                .setView(view)
+                //设置对话框的按钮
+//                        .setPositiveButton("继续", (dialog2, which) -> {
+//                            //检测两次
+////                          increase(33);//之前是4
+//                            increase(6);//充电阶段
+////                            version_1 = true;
+//                        })
+                .setPositiveButton(R.string.text_qd, (dialog2, which) -> {
+                    //这里明确下需求后再确定要不要退出当前页面
+//                    dialog2.dismiss();
+//                    if (type == 1) {
+//                        MmkvUtils.savecode("isTestDenator","N");
+//                        finish();
+//                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void zhanting() {
@@ -1395,7 +1437,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             closeThread();
             closeForm();
-            Utils.writeRecord("---点击返回按键退出界面---");
+            Utils.writeRecord("---点击返回按键退出起爆界面---");
             return true;
         }
         return true;

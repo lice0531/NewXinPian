@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,11 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,9 +65,9 @@ public class DelDenatorMainPage extends BaseActivity  {
     @BindView(R.id.btn_del_return)
     Button btnDelReturn;
     @BindView(R.id.setDelayTime_FirstNo)//起始序号
-            EditText setDelayTimeFirstNo;
+    EditText setDelayTimeFirstNo;
     @BindView(R.id.setDelayTime_EndNo)//终点序号
-            EditText setDelayTimeEndNo;
+    EditText setDelayTimeEndNo;
     @BindView(R.id.denator_del_func)
     LinearLayout denatorDelFunc;
     @BindView(R.id.denator_del_listview)
@@ -109,25 +105,21 @@ public class DelDenatorMainPage extends BaseActivity  {
         //db实例化
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
-
         loadMoreData();//获取数据保存到list
-
         initView();
-
         initHandle();
-
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
     }
 
     private void initView() {
-        //         获取 区域参数
-        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+//         获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
-
-
+        // 设置标题区域
+        setTitleRegion(mRegion, -1);
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new DetonatorAdapter_Paper<>(this, 5);
@@ -146,22 +138,8 @@ public class DelDenatorMainPage extends BaseActivity  {
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
-//                    StringBuilder a = new StringBuilder();
-//                    if (mRegion1) {
-//                        a.append("1");
-//                    }if (mRegion2) {
-//                        a.append(",2");
-//                    }if (mRegion3) {
-//                        a.append(",3");
-//                    }if (mRegion4) {
-//                        a.append(",4");
-//                    }if (mRegion5) {
-//                        a.append(",5");
-//                    }
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
-                    // 显示提示
-//                    show_Toast("已选择 " + a);
                     break;
 
                 // 重新排序 更新视图
@@ -193,17 +171,20 @@ public class DelDenatorMainPage extends BaseActivity  {
         Builder builder = new Builder(DelDenatorMainPage.this);
         builder.setTitle(getString(R.string.text_alert_tip));//"提示"
         builder.setMessage(getString(R.string.text_alert_del_all));//是否全部删除注册雷管数
-        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-            GreenDaoMaster master = new GreenDaoMaster();
-            Log.e(TAG, "全部删除:mRegion "+mRegion );
-            master.deleteLeiGuanFroPiace(mRegion);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                GreenDaoMaster master = new GreenDaoMaster();
+                Log.e(TAG, "全部删除:mRegion "+mRegion );
+                master.deleteLeiGuanFroPiace(mRegion);
 //                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, null);
-            db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
-            list_lg.clear();
-            refreshData();
-            dialog.dismiss();
-            Utils.saveFile();//把软存中的数据存入磁盘中
-            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO_ALL, null, null);
+                refreshData();
+                dialog.dismiss();
+                chongZhiFan();//重置所有翻转标记
+                Utils.saveFile();//把软存中的数据存入磁盘中
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+            }
         });
         builder.setNeutralButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
             @Override
@@ -227,11 +208,9 @@ public class DelDenatorMainPage extends BaseActivity  {
                 deleteListErrorDel();
 
                 Utils.deleteData(mRegion);//重新排序雷管
-
                 loadMoreData();//获取数据保存到list
 
                 refreshData();
-
                 dialog.dismiss();
                 Utils.saveFile();//把软存中的数据存入磁盘中
             }
@@ -248,7 +227,6 @@ public class DelDenatorMainPage extends BaseActivity  {
 //        list_lg.clear();
         list_lg = Application.getDaoSession().getDenatorBaseinfoDao().loadAll();
     }
-
 
     private void refreshData() {
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
@@ -418,11 +396,13 @@ public class DelDenatorMainPage extends BaseActivity  {
             case R.id.btn_serialNo_del://按序号删除
                 hideInputKeyboard();
                 AlertDialog dialog = new Builder(this)
-                        .setTitle("删除提示")//设置对话框的标题//"成功起爆"
-                        .setMessage("该操作会按序号删除表里的数据,是否删除?")//设置对话框的内容"本次任务成功起爆！"
+                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                        .setMessage(getResources().getString(R.string.text_delete_tip12))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNeutralButton("取消", (dialog12, which) -> dialog12.dismiss())
-                        .setPositiveButton("确认删除", (dialog1, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
+                        .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog1, which) -> {
+                            pb_show = 1;
+                            runPbDialog();
                             String checstr = checkData();
                             if (checstr == null || checstr.trim().length() < 1) {
                                 //起始序号
@@ -430,10 +410,10 @@ public class DelDenatorMainPage extends BaseActivity  {
                                 //终点序号
                                 String endNoStr = setDelayTimeEndNo.getText().toString();
                                 deleteDenatorforNo(startNoStr, endNoStr);
-                                pb_show = 1;
-                                runPbDialog();
+
+                                //(之前是屏蔽的,因为华丰翻转后再按序号删除会报错,所以屏蔽的,但是不排序的话,400发雷管,按序号删除200到300中间部分雷管,这样设置延时会报错)
                                 Utils.deleteData(mRegion);//重新排序雷管
-                                loadMoreData();//获取数据保存到list
+//                                loadMoreData();//获取数据保存到list
                                 //加上后就立刻更新(暂时不加上的原因是按序号删除后,序号没变的话,感觉没删除,怕再次点击)
 //                                    mAdapter = new LoadAdapter(DelDenatorMainPage.this, list_lg, R.layout.item_deldenator, 0);//(手动输入管壳码之后,错误码为空,会报空指针)
 //                                    denatorDelListview.setAdapter(mAdapter);
@@ -492,7 +472,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 // 显示提示
-                show_Toast(getString(R.string.text_show_1) + mRegion);
+                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -506,16 +486,62 @@ public class DelDenatorMainPage extends BaseActivity  {
 
         String str;
         if (size == -1) {
-            str = getString(R.string.text_dfzc_qy)  + region;
+            str = getResources().getString(R.string.text_list_piace) + region;
         } else {
-            str = getString(R.string.text_dfzc_qy)  + region + getString(R.string.text_dfzc_sl) + size + ")";
+            str = getResources().getString(R.string.text_list_piace) + region + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
-//        // 保存区域参数
-//        SPUtils.put(this, Constants_SP.RegionCode, region);
+        // 保存区域参数
+        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
+    }
+
+    /**
+     * 重置所有翻转标记
+     * */
+    private void chongZhiFan() {
+        MmkvUtils.savecode(mRegion+"n1", 0);
+        MmkvUtils.savecode(mRegion+"n2", 0);
+        MmkvUtils.savecode(mRegion+"n3", 0);
+        MmkvUtils.savecode(mRegion+"n4", 0);
+        MmkvUtils.savecode(mRegion+"n5", 0);
+        MmkvUtils.savecode(mRegion+"n6", 0);
+        MmkvUtils.savecode(mRegion+"n7", 0);
+        MmkvUtils.savecode(mRegion+"n8", 0);
+        MmkvUtils.savecode(mRegion+"n9", 0);
+        MmkvUtils.savecode(mRegion+"n10", 0);
+        MmkvUtils.savecode(mRegion+"n11", 0);
+        MmkvUtils.savecode(mRegion+"n12", 0);
+        MmkvUtils.savecode(mRegion+"n13", 0);
+        MmkvUtils.savecode(mRegion+"n14", 0);
+        MmkvUtils.savecode(mRegion+"n15", 0);
+        MmkvUtils.savecode(mRegion+"n16", 0);
+        MmkvUtils.savecode(mRegion+"n17", 0);
+        MmkvUtils.savecode(mRegion+"n18", 0);
+        MmkvUtils.savecode(mRegion+"n19", 0);
+        MmkvUtils.savecode(mRegion+"n20", 0);
+        MmkvUtils.savecode(mRegion+"n21", 0);
+        MmkvUtils.savecode(mRegion+"n22", 0);
+        MmkvUtils.savecode(mRegion+"n23", 0);
+        MmkvUtils.savecode(mRegion+"n24", 0);
+        MmkvUtils.savecode(mRegion+"n25", 0);
+        MmkvUtils.savecode(mRegion+"n26", 0);
+        MmkvUtils.savecode(mRegion+"n27", 0);
+        MmkvUtils.savecode(mRegion+"n28", 0);
+        MmkvUtils.savecode(mRegion+"n29", 0);
+        MmkvUtils.savecode(mRegion+"n30", 0);
+        MmkvUtils.savecode(mRegion+"n31", 0);
+        MmkvUtils.savecode(mRegion+"n32", 0);
+        MmkvUtils.savecode(mRegion+"n33", 0);
+        MmkvUtils.savecode(mRegion+"n34", 0);
+        MmkvUtils.savecode(mRegion+"n35", 0);
+        MmkvUtils.savecode(mRegion+"n36", 0);
+        MmkvUtils.savecode(mRegion+"n37", 0);
+        MmkvUtils.savecode(mRegion+"n38", 0);
+        MmkvUtils.savecode(mRegion+"n39", 0);
+        MmkvUtils.savecode(mRegion+"n40", 0);
     }
 
 }

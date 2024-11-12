@@ -74,6 +74,24 @@
             android:layout_gravity="center_vertical"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/set_shouquan"
+            android:textSize="20sp" />
+
+        <com.suke.widget.SwitchButton
+            android:id="@+id/sw_yanzheng_sq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

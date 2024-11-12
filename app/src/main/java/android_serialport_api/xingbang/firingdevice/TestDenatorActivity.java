@@ -136,7 +136,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         tipInfoFlag = 0;
 
         writeDenator = null;
-        busInfo = null;
+//        busInfo = null;
         thirdWriteErrorDenator = null;
         errDeData.clear();
         errorList.clear();
@@ -155,17 +155,6 @@ public class TestDenatorActivity extends SerialPortActivity {
     @Override
     protected void onStart() {
         super.onStart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (db != null) db.close();
-        closeThread();
-        closeForm();
-//        Utils.saveFile();//把软存中的数据存入磁盘中
-        Log.e(TAG, "onDestroy: ==========");
-        super.onDestroy();
-        fixInputMethodManagerLeak(this);
     }
 
     @Override
@@ -291,6 +280,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        .setNegativeButton("确定", (dialog12, which) -> dialog12.dismiss())
                         .create();
                 if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
             }else if (msg.what == 3) {
@@ -387,6 +377,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             closeForm();
             //  builder.
         });
+        builder.setCancelable(false);
         builder.show();
         if (flag != 1) {
             fourOnlineDenatorFlag = 3;
@@ -462,6 +453,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         builder.setTitle(getString(R.string.text_alert_tablename1));//"错误雷管列表"
         builder.setView(getlistview);
         builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> dialog.dismiss());
+        builder.setCancelable(false);
         builder.create().show();
     }
 
@@ -1035,6 +1027,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 //发送命令21写入延时时间，检测结果看雷管是否正常
                                 initBuf = SecondNetTestCmd.send21("00", data);//
                                 sendCmd(initBuf);//后面的shellStr没用上
+                                revCmd = "";//清空缓存
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
@@ -1061,6 +1054,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         Log.e("当前雷管写入延时", "超时了，开始errHandler_update");
                                     }
                                     tempBaseInfo = null;
+                                    revCmd = "";//清空缓存
                                     reThirdWriteCount++;
                                 } else {
                                     Thread.sleep(50);
@@ -1496,6 +1490,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         stopXunHuan();
                     }).create();
             if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }
         }
@@ -1515,6 +1510,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         secondTxt.setText(R.string.text_test_tip4);
                     }).create();
             if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }
         }
@@ -1532,6 +1528,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     }).setNeutralButton("退出", (dialog12, which) -> {
                         stopXunHuan();
                     }).create();
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         }
     }
@@ -1582,6 +1579,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
                 dialogOn(dialog);
             });
+            builder.setCancelable(false);
             builder.create().show();
         }
 
@@ -1608,5 +1606,16 @@ public class TestDenatorActivity extends SerialPortActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (db != null) db.close();
+        closeThread();
+        closeForm();
+//        Utils.saveFile();//把软存中的数据存入磁盘中
+        Log.e(TAG, "onDestroy: ==========");
+        super.onDestroy();
+        fixInputMethodManagerLeak(this);
     }
 }

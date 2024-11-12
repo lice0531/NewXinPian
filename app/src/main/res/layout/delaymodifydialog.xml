@@ -17,7 +17,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="@string/text_dialog_xh"
+            android:text="@string/text_list_Serial"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -27,8 +27,55 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="@string/text_dialog_xh"
+            android:hint="@string/text_list_Serial"
             android:maxLength="20"
+            android:focusable="false"
+            android:padding="5dp"
+            style="@style/alltextstyle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="@dimen/childReisterPageLabelFontSize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dm_ll_4"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/dm_ll_1"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="@dimen/delaytime_pg_left"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/text_list_kong"
+            style="@style/alltextstyle"/>
+        <TextView
+            android:id="@+id/tv_duan"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="left|center_vertical"
+            android:text="@string/text_list_d"
+            style="@style/alltextstyle"
+            />
+        <EditText
+            android:visibility="gone"
+            android:id="@+id/et_duanNo"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/translucent"
+            android:gravity="left"
+            android:hint="段号"
+            android:maxLength="5"
             android:numeric="integer"
             android:padding="5dp"
             android:enabled="false"
@@ -47,7 +94,7 @@
         android:id="@+id/dm_ll_2"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_below="@id/dm_ll_1"
+        android:layout_below="@id/dm_ll_4"
         android:layout_marginTop="5dp">
 
         <TextView
@@ -56,7 +103,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="@string/text_dialog_gkm"
+            android:text="@string/text_list_guan"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -66,11 +113,10 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="管壳码"
+            android:hint="@string/text_list_guan"
             android:maxLength="13"
-            android:numeric="integer"
+            android:focusable="false"
             android:padding="5dp"
-            android:enabled="false"
             style="@style/alltextstyle" />
 
         <TextView
@@ -81,8 +127,9 @@
             android:text=""
             android:textSize="@dimen/childReisterPageLabelFontSize" />
     </LinearLayout>
+
     <LinearLayout
-        android:id="@+id/dm_ll_4"
+        android:id="@+id/dm_ll_3"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_below="@id/dm_ll_2"
@@ -94,45 +141,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="UID"
-            style="@style/alltextstyle"/>
-
-        <EditText
-            android:id="@+id/UIDNo"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:background="@drawable/translucent"
-            android:gravity="left"
-            android:hint="UID"
-            android:maxLength="13"
-            android:numeric="integer"
-            android:padding="5dp"
-            android:enabled="false"
-            style="@style/alltextstyle" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:text=""
-            android:textSize="@dimen/childReisterPageLabelFontSize" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/dm_ll_3"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/dm_ll_4"
-        android:layout_marginTop="5dp">
-
-        <TextView
-            android:layout_width="@dimen/delaytime_pg_left"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="@string/xingbang_main_page_btn_delay"
+            android:text="@string/text_list_delay"
             style="@style/alltextstyle"/>
 
         <EditText
@@ -142,7 +151,7 @@
             android:layout_weight="3"
             android:background="@drawable/translucent"
             android:gravity="left"
-            android:hint="@string/xingbang_main_page_btn_delay"
+            android:hint="@string/text_list_delay"
             android:maxLength="6"
             android:numeric="integer"
             android:padding="5dp"

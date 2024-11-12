@@ -31,6 +31,8 @@ import static android_serialport_api.xingbang.Application.getDaoSession;
 
 public class SetSystemActivity extends BaseActivity {
 
+    @BindView(R.id.sw_yanzheng_sq)
+    SwitchButton swYanzheng_sq;
     @BindView(R.id.sw_setsys)
     SwitchButton swSetsys;
     @BindView(R.id.sw_yanzheng)
@@ -59,6 +61,7 @@ public class SetSystemActivity extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
+    private String Yanzheng_sq = "";//是否验雷管已经授权
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +74,11 @@ public class SetSystemActivity extends BaseActivity {
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
+        Log.e("设置页面", "Yanzheng_sq: " + Yanzheng_sq);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -82,6 +87,9 @@ public class SetSystemActivity extends BaseActivity {
         }
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
+        }
+        if (Yanzheng_sq.equals("验证")) {
+            swYanzheng_sq.setChecked(true);
         }
         Handler_tip = new Handler() {
             @SuppressLint("HandlerLeak")
@@ -136,7 +144,12 @@ public class SetSystemActivity extends BaseActivity {
                 } else {
                     MmkvUtils.savecode("Shangchuan", "否");
                 }
-
+                if (swYanzheng_sq.isChecked()) {
+                    MmkvUtils.savecode("Yanzheng_sq", "验证");
+                    Log.e("设置页面", "Yanzheng_sq: " + "验证");
+                } else {
+                    MmkvUtils.savecode("Yanzheng_sq", "不验证");
+                }
                 if (swSetsys.isChecked()) {
                     message.setQiaosi_set("true");
                 } else {

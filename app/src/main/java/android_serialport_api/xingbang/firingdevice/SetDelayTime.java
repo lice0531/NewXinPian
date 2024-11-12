@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -256,7 +258,21 @@ public class SetDelayTime extends BaseActivity {
                         dialog13.dismiss();
 
                         hideInputKeyboard();
-
+                        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
+                        Log.e("语句", "sql: "+ sql2);
+                        List<String> list_fanzhuan = new ArrayList<>();//
+                        Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
+                        if (cursor6 != null) {
+                            while (cursor6.moveToNext()) {
+                                String fanzhuan = cursor6.getString(0);
+                                list_fanzhuan.add(fanzhuan);
+                            }
+                            cursor6.close();
+                        }
+                        if(list_fanzhuan.size()>1){
+                            show_Toast(getResources().getString(R.string.text_setDelay_dialog4));
+                            return;
+                        }
                         String checstr = checkData();
                         if (checstr == null || checstr.trim().length() < 1) {
                             int maxDelay = getComputerDenDelay();
@@ -297,9 +313,12 @@ public class SetDelayTime extends BaseActivity {
             int no = info.getBlastserial();
             int delay = info.getDelay();
             String shellBlastNo = info.getShellBlastNo();
+            String denatorId = info.getDenatorId();
+            int duan = info.getDuan();
+            int duanNo = info.getDuanNo();
 
             // 序号 延时 管壳码
-            modifyBlastBaseInfo(no, delay, shellBlastNo,info.getDenatorId());
+            modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo, info);
         });
 
 //        GreenDaoMaster master = new GreenDaoMaster();
@@ -388,10 +407,7 @@ public class SetDelayTime extends BaseActivity {
         }).start();
     }
 
-    /**
-     * 修改雷管延期 弹窗
-     */
-    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo,final String uid) {
+    private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String denatorId, final int duan, final int duanNo, DenatorBaseinfo info) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -399,49 +415,90 @@ public class SetDelayTime extends BaseActivity {
         EditText et_no = view.findViewById(R.id.serialNo);
         EditText et_shell = view.findViewById(R.id.denatorNo);
         EditText et_delay = view.findViewById(R.id.delaytime);
-        EditText et_uid = view.findViewById(R.id.UIDNo);
+        EditText et_duanNo = view.findViewById(R.id.et_duanNo);
+        TextView tv_duan = view.findViewById(R.id.tv_duan);
 
         et_no.setText(String.valueOf(no));
         et_delay.setText(String.valueOf(delay));
         et_shell.setText(shellBlastNo);
-        et_uid.setText(uid);
-        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("删除", (dialog, which) -> {
+        tv_duan.setText(duan + "-" + duanNo);
+        et_duanNo.setText(duanNo + "");
+//        int d = getFan(info.getDuan());
+//        Log.e(TAG, "是否翻转: " + d);
+//        builder.setNegativeButton("插入孔", (dialog, which) -> {
+//            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
+//                show_Toast("当前雷管已翻转,请恢复后再插入新的雷管");
+//            } else {
+//                //插入方法
+//                getSupportActionBar().setTitle("正在插入孔");
+//                GreenDaoMaster master = new GreenDaoMaster();
+//                db_charu = master.querylgMaxduanNo(info.getDuanNo(), info.getDuan(), mRegion);
+//                Log.e(TAG, "选中插入的雷管: " + info.getShellBlastNo() + " 延时:" + info.getDelay());
+//                Log.e(TAG, "选中插入的雷管: " + db_charu.getShellBlastNo() + " 延时:" + db_charu.getDelay());
+//                charu = true;
+//            }
+//
+//        });
+        builder.setNeutralButton(getResources().getString(R.string.xingbang_main_page_btn_del), (dialog, which) -> {
             dialog.dismiss();
+            AlertDialog dialog2 = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO 开启进度条
+                            runPbDialog();
+                            new Thread(() -> {
+                                // 删除某一发雷管
+                                new GreenDaoMaster().deleteDetonator(shellBlastNo);
+                                Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                                Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
+                                // 区域 更新视图
+                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                                pb_show = 0;
+                            }).start();
 
-            // TODO 开启进度条
-
-            new Thread(() -> {
-                // 删除某一发雷管
-                new GreenDaoMaster().deleteDetonator(shellBlastNo);
-                Utils.deleteData(mRegion);//重新排序雷管
-                Utils.writeRecord("--删除雷管:" + shellBlastNo);
-                // 区域 更新视图
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
-
-            }).start();
-
+                        }
+                    }).create();
+            dialog2.show();
         });
-        builder.setPositiveButton("确定", (dialog, which) -> {
+        builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
+            int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
+//            Log.e(TAG, "a: "+a );
+            if (a > 1) {
+                show_Toast(getResources().getString(R.string.text_setDelay_dialog3));
+                return;
+            }
+            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") ) {
+                show_Toast(getResources().getString(R.string.text_lgfz));
+                return;
+            }
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "延时为空或大于最大设定延时，修改失败! "));
-            } else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, "已达到最大延时限制" + maxSecond + "ms"));
-            } else {
+            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip8)));
+            }else if (maxSecond != 0 && Integer.parseInt(delay1) > maxSecond) {
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
+            }  else {
                 // 修改雷管延时
-                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));
+                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                show_Toast(shellBlastNo + "\n修改成功");
+
+                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
+
                 Utils.saveFile();
             }
             dialog.dismiss();
+
         });
+
+
         builder.show();
     }
-
     public int isDel(String id) {
         Cursor cursor = db.rawQuery("Select * from denatorBaseinfo where statusCode =? and blastserial=?", new String[]{"02", id});
         if (cursor != null) {

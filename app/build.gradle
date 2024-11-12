@@ -113,7 +113,10 @@ dependencies {
     // Spinner(下拉列表)
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
     compileOnly 'com.google.zxing:core:3.3.0'
-
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+    //RecyclerView适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
     //androidx项目(UI框架)
 //    implementation 'com.github.xuexiangjys:XUI:1.1.8'
 //    implementation 'com.google.android.material:material:1.4.0'

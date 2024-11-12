@@ -213,18 +213,43 @@
     <string name="text_reister_scaning">正在扫码</string>
     <string name="text_reister_vol">当前电压:</string>
     <string name="text_reister_ele">当前电流:</string>
-
+    <string name="text_crk">插入孔</string>
+    <string name="text_lgfz">当前雷管已翻转,请恢复后再插入新的雷管</string>
+    <string name="text_zzcrk">正在插入孔</string>
+    <string name="text_queryHis_dialog1">删除提示</string>
+    <string name="text_queryHis_dialog2">是否删除选中雷管</string>
+    <string name="text_list_d">段</string>
     <string name="text_list_Serial">序号</string>
     <string name="text_list_kong">孔号</string>
     <string name="text_list_guan">管壳码</string>
     <string name="text_list_delay">延时</string>
     <string name="text_list_state">状态</string>
+    <string name="text_wsy">未使用:</string>
+    <string name="text_ysy">已使用:</string>
+    <string name="text_yxq">有效期</string>
+    <string name="text_gzm">工作码</string>
+    <string name="text_lgzt">雷管状态</string>
+    <string name="text_rq">日期</string>
+    <string name="text_yqb">已起爆:</string>
     <string name="text_list_qibao_data">起爆日期</string>
     <string name="text_list_factory_name">厂家名</string>
     <string name="text_list_fac_num">厂家代码</string>
     <string name="text_list_fac_code">特征码</string>
     <string name="text_list_check">是否选中</string>
-
+    <string name="text_xzqy">选中雷管注册到区域</string>
+    <string name="text_z">中</string>
+    <string name="text_send_tip26">数据异常,请检查雷管厂家是否正确</string>
+    <string name="text_send_tip28">导入成功,有数据注册重复</string>
+    <string name="text_send_tip29">数据不完整</string>
+    <string name="text_zccg">注册成功</string>
+    <string name="text_srrq">可输入日期或部分管壳码</string>
+    <string name="text_ss">搜索</string>
+    <string name="text_qx">全选</string>
+    <string name="text_qxzq">全选正确</string>
+    <string name="text_wzd">未找到当前雷管</string>
+    <string name="text_lgvf">雷管重复</string>
+    <string name="text_cdcw">雷管管壳码长度错误</string>
+    <string name="text_pxsb">排序失败!</string>
     <string name="text_test_vol">总线电压:</string>
     <string name="text_test_ele">总线电流:</string>
     <string name="text_test_num">雷管数量:</string>
@@ -401,6 +426,8 @@
     <string name="text_scan_xgys">修改延时</string>
     <string name="text_scan_sdsr">手动输入</string>
     <string name="text_scan_xzdw">选择段位</string>
+    <string name="text_sqsj" tools:ignore="ExtraTranslation">授权数据</string>
+    <string name="text_sssqxx" tools:ignore="ExtraTranslation">搜索授权信息</string>
     <string name="text_line_db">段别</string>
     <string name="text_line_num">数量</string>
     <string name="text_suidao_jiange">间隔</string>
@@ -501,7 +528,7 @@
     <string name="text_fz_sjhc">数据互传</string>
     <string name="text_fz_qchc">清除缓存</string>
     <string name="text_test_tip5">请检查线夹等部位是否有短路,漏电等情况,确认无误后点继续进行检测。</string>
-    <string name="text_test_tip6">请检查线夹等部位是否有短路,漏电等情况,确认无误后点继续进行检测。</string>
+    <string name="text_test_tip6">请检查线夹等部位是否有断路,漏电等情况,确认无误后点继续进行检测。</string>
     <string name="text_test_tip7">查看错误雷管列表,疑似部分雷管连接线断开,请检查是否存在雷管连接线断开,管壳码输入错误等情况,检查完毕后点击继续按钮进行检测!</string>
     <string name="text_test_tip8">请更换错误雷管,疑似部分雷管出现有短路,漏电等情况,检查无误后,点击继续进行检测。</string>
     <string name="text_test_tip9">疑似部分雷管雷管号输入有误,请检查雷管号是否输入正确!</string>
@@ -569,6 +596,16 @@
     <string name="text_sync_tip12">正在回传数据</string>
     <string name="set_cwlg">是否上传错误雷管</string>
     <string name="set_zxxz">是否在线下载</string>
+    <string name="set_shouquan">是否验证雷管已经授权</string>
+    <string name="text_alert_tip_wsqtx">有未授权的雷管,请进行授权后再进行起爆!</string>
+    <string name="text_alert_tip_wsq">未授权提醒</string>
+    <string name="text_fir_dialog5">查看错误雷管</string>
+    <string name="text_qberr2">存在错误雷管,不能进行起爆</string>
+    <string name="text_setDelay_dialog3">同孔雷管不许修改延时,请删除后重新注册!</string>
+    <string name="text_scan_cuowu11">当前二维码不符合规范,请检查后再扫</string>
+    <string name="text_scan_cuowu12">不正确的编码，请扫描选择正确的编码</string>
+    <string name="text_scan_cuowu13">不正确的编码，请扫描选择正确的编码</string>
+    <string name="txt_duan">段号</string>
     <string name="set_cdsj">设置充电时间/s</string>
     <string name="text_sys_1">起爆程序版本号:</string>
     <string name="text_sys_kz">控制模块软件版本号</string>
@@ -608,6 +645,12 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_241108</string>
+    <string name="text_main_tip1">当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测</string>
+    <string name="text_queryHis_dialog10">确认删除</string>
+    <string name="text_list_piace">区域</string>
+    <string name="text_main_sl"> 数量</string>
+    <string name="text_setDelay_dialog4">批量修改延时的雷管中有已翻转的雷管,请翻转后再重新修改</string>
+    <string name="text_delete_tip12">该操作会按序号删除表里的数据,是否删除?</string>
     <string name="text_error_tip63">延时不能为0</string>
     <string name="text_error_tip65">延时不能为空</string>
     <string name="text_down_tip11">经度纬度设置不正确，具体格式为如:116.585989,36.663456</string>
