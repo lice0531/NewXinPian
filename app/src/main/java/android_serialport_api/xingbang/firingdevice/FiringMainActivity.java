@@ -224,7 +224,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private int cuowuSun = 0;//电流异常错误次数
     private float cankao_ic_gaoya = 0;
     private float cankao_ic_diya = 0;
-    private String Shangchuan;
+    private String Yanzheng_jxqb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -299,8 +299,8 @@ public class FiringMainActivity extends SerialPortActivity {
         ll_firing_Hv_7 = findViewById(R.id.ll_firing_Hv_7);//起爆电压
         ll_firing_Hv_6 = findViewById(R.id.ll_firing_Hv_6);//起爆电压
         ll_txt_firing_7 = findViewById(R.id.ll_txt_firing_7);//起爆提示
-        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","是");
-        Log.e(TAG,"是否上传错误雷管: " + Shangchuan);//是否上传错误雷管:为是（有错误雷管不继续）
+        Yanzheng_jxqb = (String) MmkvUtils.getcode("Yanzheng_jxqb","否");
+        Log.e(TAG,"有错误雷管是否继续起爆: " + Yanzheng_jxqb);//有错误雷管是否继续起爆:为是（有错误雷管不继续）
         String device = Build.DEVICE;
         switch (device) {
             case "KT50":
@@ -363,17 +363,18 @@ public class FiringMainActivity extends SerialPortActivity {
         btn_continueOk_4 = findViewById(R.id.btn_firing_continue_4);
         btn_continueOk_4.setOnClickListener(v ->{
             String err = ll_firing_errorAmount_4.getText().toString();
-            //有错误雷管不能继续起爆
-            if (Shangchuan.equals("是")) {
+            if (Yanzheng_jxqb.equals("是")) {
+                //有错误雷管可以继续起爆
+                increase(6);
+                list_dianya.clear();
+            } else {
+                //有错误雷管不能继续起爆
                 if (err.equals("0")) {
                     increase(6);
                     list_dianya.clear();
                 } else {
                     showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
                 }
-            } else {
-                increase(6);
-                list_dianya.clear();
             }
         });
     }
@@ -1431,17 +1432,17 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("---退出起爆页面---");
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //判断当点击的是返回键
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            closeThread();
-            closeForm();
-            Utils.writeRecord("---点击返回按键退出起爆界面---");
-            return true;
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        //判断当点击的是返回键
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            closeThread();
+//            closeForm();
+//            Utils.writeRecord("---点击返回按键退出起爆界面---");
+//            return true;
+//        }
+//        return true;
+//    }
 
     @Override
     public void sendInterruptCmd() {

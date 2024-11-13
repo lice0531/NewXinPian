@@ -595,6 +595,7 @@
     <string name="set_cwlg">Whether to upload incorrect detonators</string>
     <string name="set_zxxz">Whether to download online</string>
     <string name="set_shouquan">Have you verified that the detonator has been authorized</string>
+    <string name="set_jxqb">There is an error whether the detonator continues to detonate</string>
     <string name="text_alert_tip_wsqtx">Unauthorized detonators, please authorize before detonating!</string>
     <string name="text_alert_tip_wsq">Unauthorized reminder</string>
     <string name="text_fir_dialog5">Check for incorrect detonators</string>

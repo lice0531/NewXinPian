@@ -30,7 +30,8 @@ import butterknife.OnClick;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 public class SetSystemActivity extends BaseActivity {
-
+    @BindView(R.id.sw_yanzheng_jxqb)
+    SwitchButton swYanzheng_jxqb;
     @BindView(R.id.sw_yanzheng_sq)
     SwitchButton swYanzheng_sq;
     @BindView(R.id.sw_setsys)
@@ -62,7 +63,7 @@ public class SetSystemActivity extends BaseActivity {
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
     private String Yanzheng_sq = "";//是否验雷管已经授权
-
+    private String Yanzheng_jxqb = "";//有错误雷管是否继续起爆
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +76,12 @@ public class SetSystemActivity extends BaseActivity {
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "是");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_jxqb = (String) MmkvUtils.getcode("Yanzheng_jxqb", "否");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
         Log.e("设置页面", "Yanzheng_sq: " + Yanzheng_sq);
+        Log.e("设置页面", "Yanzheng_jxqb: " + Yanzheng_jxqb);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -90,6 +93,9 @@ public class SetSystemActivity extends BaseActivity {
         }
         if (Yanzheng_sq.equals("验证")) {
             swYanzheng_sq.setChecked(true);
+        }
+        if (Yanzheng_jxqb.equals("是")) {
+            swYanzheng_jxqb.setChecked(true);
         }
         Handler_tip = new Handler() {
             @SuppressLint("HandlerLeak")
@@ -149,6 +155,12 @@ public class SetSystemActivity extends BaseActivity {
                     Log.e("设置页面", "Yanzheng_sq: " + "验证");
                 } else {
                     MmkvUtils.savecode("Yanzheng_sq", "不验证");
+                }
+                if (swYanzheng_jxqb.isChecked()) {
+                    MmkvUtils.savecode("Yanzheng_jxqb", "是");
+                    Log.e("设置页面", "Yanzheng_jxqb: " + "是");
+                } else {
+                    MmkvUtils.savecode("Yanzheng_jxqb", "否");
                 }
                 if (swSetsys.isChecked()) {
                     message.setQiaosi_set("true");

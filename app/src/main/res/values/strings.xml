@@ -597,6 +597,7 @@
     <string name="set_cwlg">是否上传错误雷管</string>
     <string name="set_zxxz">是否在线下载</string>
     <string name="set_shouquan">是否验证雷管已经授权</string>
+    <string name="set_jxqb">有错误雷管是否继续起爆</string>
     <string name="text_alert_tip_wsqtx">有未授权的雷管,请进行授权后再进行起爆!</string>
     <string name="text_alert_tip_wsq">未授权提醒</string>
     <string name="text_fir_dialog5">查看错误雷管</string>
