@@ -588,7 +588,9 @@ public class XingbangMain extends BaseActivity {
         context.startActivity(intent);
     }
 
-
+    //全局定义
+    private long lastClickTime = 0L;
+    private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
 
@@ -602,6 +604,11 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                //2次点击
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -636,6 +643,10 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
                 queryBeian();
                 time = System.currentTimeMillis();
                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);

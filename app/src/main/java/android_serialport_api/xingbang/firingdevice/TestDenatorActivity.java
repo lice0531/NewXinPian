@@ -136,7 +136,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         tipInfoFlag = 0;
 
         writeDenator = null;
-//        busInfo = null;
+        busInfo = null;
         thirdWriteErrorDenator = null;
         errDeData.clear();
         errorList.clear();
@@ -1027,7 +1027,6 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 //发送命令21写入延时时间，检测结果看雷管是否正常
                                 initBuf = SecondNetTestCmd.send21("00", data);//
                                 sendCmd(initBuf);//后面的shellStr没用上
-                                revCmd = "";//清空缓存
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
                                 thirdWriteCount++;
@@ -1051,10 +1050,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         Message message = new Message();
                                         message.obj = errorDe;
                                         errHandler_update.sendMessage(message);
-                                        Log.e("当前雷管写入延时", "超时了，开始errHandler_update");
+                                        Log.e("当前雷管写入延时", "超时了，开始errHandler_update--" + errorDe);
                                     }
                                     tempBaseInfo = null;
-                                    revCmd = "";//清空缓存
                                     reThirdWriteCount++;
                                 } else {
                                     Thread.sleep(50);
@@ -1128,7 +1126,6 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                                Log.e("测试21延时", "data  " + denatorId + "--" + delayStr);
                                 //发送命令21写入延时时间，检测结果看雷管是否正常
                                 initBuf = SecondNetTestCmd.send21("00", data);//
-                                revCmd = "";//清空缓存
                                 sendCmd(initBuf);//后面的shellStr没用上
                                 thirdStartTime = System.currentTimeMillis();
                                 writeDenator = write;
@@ -1154,7 +1151,6 @@ public class TestDenatorActivity extends SerialPortActivity {
                                         errHandler_update.sendMessage(message);
                                     }
                                     tempBaseInfo = null;
-                                    revCmd = "";//清空缓存
                                     reThirdWriteCount++;
                                 } else {
                                     Thread.sleep(50);
