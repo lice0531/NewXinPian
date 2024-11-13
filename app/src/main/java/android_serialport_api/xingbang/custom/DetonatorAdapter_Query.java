@@ -77,7 +77,7 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
         holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
         if (mIndex == 1) {
 
-            if (position != 0) {
+            if (position != 0&&!detonatorBaseInfo.getShellBlastNo().startsWith("A6")) {
                 DenatorBaseinfo detonatorBaseInfo2 = list_detonatorBaseInfo.get(position - 1);
                 int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(12));//5340821A00001
                 int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(12));//5340821A00001
