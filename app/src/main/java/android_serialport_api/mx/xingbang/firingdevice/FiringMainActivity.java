@@ -2296,8 +2296,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
                         case 9:
                             if (neightCount == 0) {
-                                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
-                                sendCmd(reCmd);
+//                                byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
+//                                sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             }
                             neightCount++;
