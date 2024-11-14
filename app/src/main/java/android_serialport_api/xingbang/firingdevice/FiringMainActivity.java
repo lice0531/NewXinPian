@@ -962,7 +962,19 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         builder.show();
         if (flag == 1) {
-            increase(6);//第六阶段
+            String err = ll_firing_errorAmount_4.getText().toString();
+            if (Yanzheng_jxqb.equals("是")) {
+                //有错误雷管可以继续起爆
+                increase(6);//第六阶段
+            } else {
+                //有错误雷管不能继续起爆
+                if (err.equals("0")) {
+                    increase(6);
+                } else {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
+                }
+            }
+//            increase(6);//第六阶段
         } else {
             fourOnlineDenatorFlag = 3;
         }
@@ -3015,16 +3027,44 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e("起爆页面接收到的消息", "sixExchangeCount: " + sixExchangeCount);
         if (msg.equals("jixu")) {
             if (Wait_Count == 1) {
-                increase(6);
+                String err = ll_firing_errorAmount_4.getText().toString();
+                if (Yanzheng_jxqb.equals("是")) {
+                    //有错误雷管可以继续起爆
+                    increase(6);//第六阶段
+                } else {
+                    //有错误雷管不能继续起爆
+                    if (err.equals("0")) {
+                        increase(6);
+                    } else {
+                        showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
+                    }
+                }
+//                increase(6);
                 Utils.writeRecord("-------------------开始充电-------------------");
             }
 
         } else if (msg.equals("qibao")) {
             Log.e("起爆页面", "收到级联起爆指令 ");
-            if (sixExchangeCount == 0) {
-                if (stage == 7) {
-                    keyFireCmd = 1;
-                    Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+            String err = ll_firing_errorAmount_4.getText().toString();
+            if (Yanzheng_jxqb.equals("是")) {
+                //有错误雷管可以继续起爆
+                if (sixExchangeCount == 0) {
+                    if (stage == 7) {
+                        keyFireCmd = 1;
+                        Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                    }
+                }
+            } else {
+                //有错误雷管不能继续起爆
+                if (err.equals("0")) {
+                    if (sixExchangeCount == 0) {
+                        if (stage == 7) {
+                            keyFireCmd = 1;
+                            Log.e("起爆页面", "keyFireCmd: " + keyFireCmd);
+                        }
+                    }
+                } else {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
                 }
             }
 
