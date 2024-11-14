@@ -840,8 +840,7 @@
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
     <string name="app_version_name">M900_PT_JL_TY_V2.1_240923</string>
     <string name="app_version_name2">M900_PT_JL_XJ_V2.1_240923</string>
-    <string name="app_version_name3">M900_PT_JL_CQ_V2.1_240923</string>
-    <string name="text_xpwfh">The chip write command did not return</string>
+    <string name="app_version_name3">M900_PT_JL_CQ_V2.1_240923</string>    <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
     <string name="text_fld">detonator</string>
@@ -975,6 +974,8 @@
     <string name="text_dk">port</string>
     <string name="text_toastts">Tosat Tips</string>
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
+    <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
+    <string name="btn_fan">反</string>
     <string name="text_dyyc">Bus low voltage exception</string>
     <string name="dialog_dyyc">The current line low voltage is abnormal, please check the line and start the detonation process again</string>
     <string name="text_gyyc">Bus high voltage exception</string>

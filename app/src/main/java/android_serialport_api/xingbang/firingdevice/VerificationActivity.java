@@ -329,9 +329,10 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "id=?", new String[]{"" + id});
         return 1;
     }
+
     //全局定义
     private long lastClickTime = 0L;
-    private static final int FAST_CLICK_DELAY_TIME = 2000;
+    private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //防止快速点击

@@ -406,11 +406,11 @@
     <string name="text_dialog_choice">请选择区域</string>
     <string name="text_scan_xzdw">选择段位</string>
     <string name="text_tk">同孔</string>
-    <string name="text_jh">减号</string>
+    <string name="text_jh">减</string>
     <string name="text_tiaok">跳孔</string>
     <string name="text_gkm">管壳码</string>
-    <string name="text_scan_f1">F1延时</string>
-    <string name="text_scan_f2">F2延时</string>
+    <string name="text_scan_f1">孔间延时</string>
+    <string name="text_scan_f2">排间延时</string>
     <string name="text_scan_df">单发</string>
     <string name="text_scan_xgys">修改延时</string>
     <string name="text_scan_sdsr">手动输入</string>
@@ -427,7 +427,7 @@
     <string name="text_dialog_sc">删除</string>
     <string name="text_dialog_qd">确定</string>
     <string name="text_dialog_xgcg">\n修改成功</string>
-    <string name="text_delay_sdsz">隧道设置</string>
+    <string name="text_delay_sdsz">隧道</string>
     <string name="text_test_ckdl">参考电流</string>
     <string name="text_dialog_err">错误</string>
     <string name="text_test_dlgd">(电流过大)</string>
@@ -589,9 +589,9 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_JL_TY_V2.1_240923</string>//通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_JL_XJ_V2.1_240923</string>//华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_JL_CQ_V2.1_240923</string>//重庆
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_JL_TY_V2.1_241106</string>//通用
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_JL_XJ_V2.1_241106</string>//华丰/金建华(新疆客户)
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_JL_CQ_V2.1_241106</string>//重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
     <string name="text_main_dfzc">1.单发检测</string>
@@ -642,7 +642,7 @@
     <string name="text_fir_dialog7">总线电压过低</string>
     <string name="text_fir_dialog8">当前起爆器电压异常,可能会导致总线短路,请检查线路后再次启动起爆流程,进行起爆</string>
     <string name="text_fir_dlgd">总线电流过大</string>
-    <string name="text_fir_dlyc">当前起爆器电流异常,可能会导致总线短路,请检查线路后再次启动程序</string>
+    <string name="text_fir_dlyc">线路电流异常,可能会导致总线短路,请检查线路后再次启动程序</string>
     <string name="text_main_yhmcw">用户名错误</string>
     <string name="text_main_mmcw">密码错误</string>
     <string name="text_main_tip1">当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测</string>
@@ -990,4 +990,6 @@
     <string name="dialog_czdl">当前线路短路,请检查线路后再次启动起爆流程,进行起爆</string>
     <string name="text_gy">共有</string>
     <string name="text_hcf">盒重复</string>
+    <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
+    <string name="btn_fan">反</string>
 </resources>

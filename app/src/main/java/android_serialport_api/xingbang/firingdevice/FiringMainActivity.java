@@ -269,7 +269,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if(changjia.equals("CQ")){
             cankaodianliu=15;
         }else {
-            cankaodianliu=16;
+            cankaodianliu=17;
         }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -708,15 +708,17 @@ public class FiringMainActivity extends SerialPortActivity {
                     displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
-                } else if (displayIc > (denatorCount * cankaodianliu +1000) && displayIc < (denatorCount * cankaodianliu +4000) && displayIc > 10 && stage != 6 && stage != 7) {// "电流偏大";
-                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
-                    setIcView(Color.RED);//设置颜色
-                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
-                } else if (displayIc > (denatorCount * cankaodianliu*1.3 +2400) && displayIc < (denatorCount * cankaodianliu*1.3 +8000) && displayIc > 10 && (stage == 6||stage == 7) ) {// "电流偏大";
-                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
-                    setIcView(Color.RED);//设置颜色
-                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
-                } else if (displayIc > (denatorCount * cankaodianliu +4000) && displayIc > 10 && stage != 6 && stage != 7) {// "电流过大";
+                }
+//                else if (displayIc > (denatorCount * cankaodianliu +1000) && displayIc < (denatorCount * cankaodianliu +4000) && displayIc > 10 && stage != 6 && stage != 7) {// "电流偏大";
+//                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
+//                    setIcView(Color.RED);//设置颜色
+//                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
+//                } else if (displayIc > (denatorCount * cankaodianliu*1.3 +2400) && displayIc < (denatorCount * cankaodianliu*1.3 +8000) && displayIc > 10 && (stage == 6||stage == 7) ) {// "电流偏大";
+//                    displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
+//                    setIcView(Color.RED);//设置颜色
+//                    Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
+//                }
+                else if (displayIc > (denatorCount * cankaodianliu +4000) && displayIc > 10 && stage != 6 && stage != 7) {// "电流过大";
                     displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                     setIcView(Color.RED);//设置颜色
                     Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流过大");
@@ -946,7 +948,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 deviceStatus = "23";
                 isshow3=false;
                 Log.e(TAG, secondCount + "----" + JianCe_time * 0.4 + "当前电流：" + busInfo.getBusVoltage());
-                Utils.writeRecord("--起爆测试--:总线短路");
+                Utils.writeRecord("--起爆阶段--:总线短路");
                 closeThread();
                 AlertDialog dialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_fir_dialog7))//设置对话框的标题//"成功起爆"
@@ -954,6 +956,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         //设置对话框的按钮
                         .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
                             exitJl();
+                            isshow3=false;
                             byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                             sendCmd(reCmd);
                             dialog12.dismiss();
@@ -989,6 +992,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
+                Utils.writeRecord("---电流波动弹窗---");
                 if (isJL) {
                     //电流异常波动显示弹窗
                     sendErrorData("04");
@@ -1013,6 +1017,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                firstThread = new ThreadFirst(allBlastQu);
 //                                firstThread.exit = false;
 //                                firstThread.start();
+                            Utils.writeRecord("---电流波动弹窗--继续---");
                             dialog16.dismiss();
                             if (isJL) {
                                 isDlycbdShow = false;
@@ -1905,19 +1910,6 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //判断当点击的是返回键
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitJl();
-            closeThread();
-            closeForm();
-            Utils.writeRecord("---点击返回按键退出起爆界面---");
-            return true;
-        }
-        return true;
-    }
-
-    @Override
     public void sendInterruptCmd() {
         byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35
         sendCmd(reCmd);
@@ -2195,52 +2187,52 @@ public class FiringMainActivity extends SerialPortActivity {
             } else {
                 Utils.writeRecord("busHandler为空");
             }
-            if (!isJL) {
-                if (stage == 8 && eightCount != Qibaotime) {
-                    Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu +
-                            "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
-                    if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) ||
-                            isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
-                        Log.e(TAG, "case8电流或者电压不稳定,需延长5秒轮训40指令，页面上显示起爆中");
-                        increase(13);
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                    } else {
-                        Log.e(TAG, "case8电流电压稳定，可以发34指令");
-                        eightCmdExchangePower = 1;
-                    }
-                }
-                if (stage == 13 && thirteenCount != 5) {
-                    Log.e(TAG, "case13thirteenCount：" + thirteenCount + "--起爆中的电流: " + busInfo.getBusCurrentIa()
-                            + "--beforeC:" + befor_dianliu + "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
-                    if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) &&
-                            isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
-                        isCasePeakWd = true;
-                        isCaseVoltageWd = true;
-                        Log.e(TAG, "case13电压和电流都不稳定,需展示出强制起爆的dialog");
-                        increase(14);
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                    } else if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1)) {
-                        isCasePeakWd = true;
-                        isCaseVoltageWd = false;
-                        Log.e(TAG, "case13电流不稳定,需展示出强制起爆的dialog");
-                        increase(14);
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                    } else if (isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
-                        isCasePeakWd = false;
-                        isCaseVoltageWd = true;
-                        Log.e(TAG, "case13电压不稳定,需展示出强制起爆的dialog");
-                        increase(14);
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                    } else {
-                        Log.e(TAG, "case13电流电压稳定，可以发34指令");
-                        isCasePeakWd = false;
-                        isCaseVoltageWd = false;
-                        thirteenCmdExchangePower = 1;
-                    }
-                }
-                befor_dianliu = busInfo.getBusCurrentIa();
-                befor_dianya = busInfo.getBusVoltage();
-            }
+//            if (!isJL) {
+//                if (stage == 8 && eightCount != Qibaotime) {
+//                    Log.e(TAG, "case8按1+5后的电流: " + busInfo.getBusCurrentIa() + "--beforeC:" + befor_dianliu +
+//                            "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
+//                    if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) ||
+//                            isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
+//                        Log.e(TAG, "case8电流或者电压不稳定,需延长5秒轮训40指令，页面上显示起爆中");
+//                        increase(13);
+//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                    } else {
+//                        Log.e(TAG, "case8电流电压稳定，可以发34指令");
+//                        eightCmdExchangePower = 1;
+//                    }
+//                }
+//                if (stage == 13 && thirteenCount != 5) {
+//                    Log.e(TAG, "case13thirteenCount：" + thirteenCount + "--起爆中的电流: " + busInfo.getBusCurrentIa()
+//                            + "--beforeC:" + befor_dianliu + "--电压：" + busInfo.getBusVoltage() + "--beforeV:" + befor_dianya);
+//                    if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1) &&
+//                            isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
+//                        isCasePeakWd = true;
+//                        isCaseVoltageWd = true;
+//                        Log.e(TAG, "case13电压和电流都不稳定,需展示出强制起爆的dialog");
+//                        increase(14);
+//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                    } else if (isDifferenceWithin(busInfo.getBusCurrentIa(), befor_dianliu, 90, 1)) {
+//                        isCasePeakWd = true;
+//                        isCaseVoltageWd = false;
+//                        Log.e(TAG, "case13电流不稳定,需展示出强制起爆的dialog");
+//                        increase(14);
+//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                    } else if (isDifferenceWithin(busInfo.getBusVoltage(), befor_dianya, 10, 2)) {
+//                        isCasePeakWd = false;
+//                        isCaseVoltageWd = true;
+//                        Log.e(TAG, "case13电压不稳定,需展示出强制起爆的dialog");
+//                        increase(14);
+//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                    } else {
+//                        Log.e(TAG, "case13电流电压稳定，可以发34指令");
+//                        isCasePeakWd = false;
+//                        isCaseVoltageWd = false;
+//                        thirteenCmdExchangePower = 1;
+//                    }
+//                }
+//                befor_dianliu = busInfo.getBusCurrentIa();
+//                befor_dianya = busInfo.getBusVoltage();
+//            }
         } else if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41 切换电源
             //说明打开电源命令成功
             if (FiringMainActivity.stage == 1) {
@@ -2482,6 +2474,10 @@ public class FiringMainActivity extends SerialPortActivity {
             case 9://起爆之后,弹出对话框
                 eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
                 Log.e("起爆成功", "显示出最后的弹窗");
+                if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
+                    saveFireResult();
+                    Utils.writeRecord("--生成历史记录");
+                }
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
 
@@ -2601,6 +2597,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             MmkvUtils.savecode("isTestDenator", "N");
                         })
                         .setNegativeButton(getResources().getString(R.string.text_dialog_jxqb), (dialog15, which) -> {
+                            Utils.writeRecord("---1+5阶段电流不稳定强制起爆---");
                             dialog15.dismiss();
                             //发出34 起爆命令
                             byte[] qbCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");
@@ -3046,10 +3043,9 @@ public class FiringMainActivity extends SerialPortActivity {
                                 increase(8);
                                 Log.e("increase", "8");
                                 keyFireCmd = 0;
-                                if (isJL) {
-                                    eightCmdExchangePower = 1;
-                                }
+                                eightCmdExchangePower = 1;
                             }
+                            Log.e(TAG, "eightCmdExchangePower7: "+eightCmdExchangePower);
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://5s倒计时后,发送起爆指令,起爆阶段
@@ -3057,6 +3053,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                                byte[] reCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41开启总线电源指令,切换低压
 //                                sendCmd(reCmd);
 //                            }
+                            Log.e(TAG, "eightCmdFlag: "+eightCmdFlag);
+                            Log.e(TAG, "eightCmdExchangePower8: "+eightCmdExchangePower);
                             if (eightCount >= 1) {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -3656,7 +3654,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private String loadHisMainData() {
         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().loadAll();
-//        Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
+        Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
         return list.get(0).getBlastdate();
     }
 
@@ -3725,7 +3723,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNegativeButton(getResources().getString(R.string.text_tc), (dialog, id) -> {
+                .setNeutralButton(getResources().getString(R.string.text_tc), (dialog, id) -> {
                     exitJl();
                     dialog.cancel();
                     mOffTime.cancel();
@@ -4352,11 +4350,43 @@ public class FiringMainActivity extends SerialPortActivity {
         }
     }
 
+    /**
+     * 检查重复的历史记录
+     * @param time
+     * @return
+     */
+    public boolean checkRepeatHis(String time) {
+        Log.e(TAG, "判断是否生成历史记录 time: "+time );
+        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
+
+        if (denatorHis_Main != null) {
+            Log.e(TAG, "判断是否生成历史记录 his: "+true );
+            return true;
+        } else {
+            Log.e(TAG, "判断是否生成历史记录 his: "+false );
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断当点击的是返回键
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitJl();
+            closeThread();
+            closeForm();
+            Utils.writeRecord("---点击返回按键退出起爆界面---");
+            return true;
+        }
+        return true;
+    }
+
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         if (db != null) db.close();
 //        Utils.saveFile();//把软存中的数据存入磁盘中
+        sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35
         closeThread();
         closeForm();
         new Thread(new Runnable() {

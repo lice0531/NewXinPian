@@ -698,12 +698,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
-                    } else if (displayIc > (denatorCount * cankaodianliu +1000) && displayIc < (denatorCount * cankaodianliu +4000) && displayIc > 10) {// "电流偏大";
-                        displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
-                        ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
-                        ll_firing_IC_4.setTextSize(20);
-                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
-                    }else if (displayIc > (denatorCount * cankaodianliu +4000) ) {//Preparation_time * 0.5
+                    }
+//                    else if (displayIc > (denatorCount * cankaodianliu +1000) && displayIc < (denatorCount * cankaodianliu +4000) && displayIc > 10) {// "电流偏大";
+//                        displayIcStr = displayIcStr + getString(R.string.text_test_dlpd);
+//                        ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
+//                        ll_firing_IC_4.setTextSize(20);
+//                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
+//                    }
+                    else if (displayIc > (denatorCount * cankaodianliu +4000) ) {//Preparation_time * 0.5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
@@ -1510,9 +1512,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         endTest();
         secondTxt.setText(R.string.text_test_tip4);
         ll_1.setVisibility(View.GONE);
-        ll_2.setVisibility(View.GONE);
-        ll_3.setVisibility(View.VISIBLE);
-        btn_return.setText(R.string.text_firing_ssqb);
+        ll_2.setVisibility(View.VISIBLE);
+//        ll_3.setVisibility(View.VISIBLE);
+//        btn_return.setText(R.string.text_firing_ssqb);
     }
 
     //off()方法 true 获取全部雷管  flase 获取错误雷管

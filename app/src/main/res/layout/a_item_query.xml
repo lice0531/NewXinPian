@@ -8,38 +8,51 @@
     <!-- 序号 -->
     <TextView
         android:id="@+id/tv_blastserial"
-        android:layout_width="40dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />
     <!-- 序号 -->
     <TextView
         android:id="@+id/tv_duanNo"
-        android:layout_width="60dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />
     <!-- 序号 -->
     <TextView
         android:id="@+id/tv_piace"
-        android:layout_width="60dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />
+    <TextView
+        android:id="@+id/tv_delay"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        style="@style/alltextstyle"
+        android:textSize="18sp" />
     <!-- 管壳号-->
 
     <!-- 状态-->
     <TextView
         android:id="@+id/tv_shellBlastNo"
         style="@style/alltextstyle"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
+        android:layout_weight="2"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tv_status"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle"

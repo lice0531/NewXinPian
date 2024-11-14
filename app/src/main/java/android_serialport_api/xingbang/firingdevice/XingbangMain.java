@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -62,6 +63,7 @@ import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -194,6 +196,7 @@ public class XingbangMain extends SerialPortActivity {
     private boolean threadStarted = false;
     private boolean isshow1 = true;
     private int duanlu_sun=0;
+    private List<DenatorBaseinfo> list_shou;
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
 
@@ -292,7 +295,7 @@ public class XingbangMain extends SerialPortActivity {
                 TextView view = new TextView(this);
                 view.setTextSize(25);
                 view.setTextColor(Color.RED);
-                view.setText(getString(R.string.text_fir_dialog8));
+                view.setText("总线线路异常,可能有短路的情况，请检查线路");
                 view.setTypeface(null, Typeface.BOLD);
                 AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                         .setTitle(getString(R.string.text_fir_dialog7))//设置对话框的标题//"成功起爆"
@@ -399,9 +402,10 @@ public class XingbangMain extends SerialPortActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_shou = master.queryLeiGuan(format1, mRegion);
+        list_shou = master.queryLeiGuan(format1, mRegion);
         Yanzheng_sq_size = list_shou.size();
         Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.toString());
     }
 
     /**
@@ -804,21 +808,21 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
-//                if(mExpDevMgr.isSafeSwitchOpen()){
-//                    createDialog_kaiguan();
-//                    return;
-//                }
-                close();//停止访问电流
+                //2次点击
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
+
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
-                    createDialog();
+                    initDialog_shouquan();
                     return;
                 }
+
+
+
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
                 if (time - endTime < 180000) {//第二次启动时间不重置
@@ -828,6 +832,7 @@ public class XingbangMain extends SerialPortActivity {
                     }
                     return;
                 }
+                close();//停止访问电流
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);
@@ -849,20 +854,15 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-//                if(mExpDevMgr.isSafeSwitchOpen()){
-//                    createDialog_kaiguan();
-//                    return;
-//                }
-
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
+                //
                 queryBeian();
                 //验证是否授权
-                Log.e(TAG, "验证: "+Yanzheng_sq);
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
-                    createDialog();
+                    initDialog_shouquan();
                     return;
                 }
                 time = System.currentTimeMillis();
@@ -1700,5 +1700,48 @@ public class XingbangMain extends SerialPortActivity {
         super.onDestroy();
         Log.e(TAG, "onDestroy: ");
         openHandler.removeCallbacksAndMessages(null);
+    }
+
+    /***
+     * 建立对话框
+     */
+    private void initDialog_shouquan() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View getlistview = inflater.inflate(R.layout.firing_error_shouquan_listview, null);
+        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+        llview.setVisibility(View.GONE);
+        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+        text_tip.setText(R.string.text_alert_tip_wsqtx);
+        text_tip.setVisibility(View.VISIBLE);
+        // 给ListView绑定内容
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        errlistview.setVisibility(View.GONE);
+        ErrShouQuanListAdapter mAdapter = new ErrShouQuanListAdapter(this, list_shou, R.layout.firing_error_item_shouquan);
+        errlistview.setAdapter(mAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.text_alert_tip_wsq);//"错误雷管列表"
+        builder.setView(getlistview);
+        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+
+
+        });
+        builder.setNeutralButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+//            stopXunHuan();
+            llview.setVisibility(View.VISIBLE);
+            text_tip.setVisibility(View.GONE);
+            errlistview.setVisibility(View.VISIBLE);
+            dialogOn(dialog);
+        });
+//        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+////            stopXunHuan();
+//            llview.setVisibility(View.VISIBLE);
+//            text_tip.setVisibility(View.GONE);
+//            errlistview.setVisibility(View.VISIBLE);
+//            dialogOn(dialog);
+//        });
+        builder.create().show();
     }
 }

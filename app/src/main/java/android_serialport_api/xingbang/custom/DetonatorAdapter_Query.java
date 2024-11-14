@@ -69,58 +69,41 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
 
-            List<DenatorBaseinfo> list_detonatorBaseInfo = (List<DenatorBaseinfo>) mListData;
+        List<DenatorBaseinfo> list_detonatorBaseInfo = (List<DenatorBaseinfo>) mListData;
 
-            DenatorBaseinfo detonatorBaseInfo = list_detonatorBaseInfo.get(position);
-            holder.mTvBlastSerial.setText((list_detonatorBaseInfo.size() - position) + "");                 // 序号
-            holder.mTvShellBlastNo.setText(detonatorBaseInfo.getShellBlastNo());   // 管壳号
-            holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
-//            if(mLine == 6){
-//                holder.mTvShellBlastNo.setText(detonatorBaseInfo.getDenatorId());   // 芯片码
-//                holder.mTvSitHole.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());     // 段号
-//                holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
-//            }
-//            if (mLine == 4) {
-//                holder.mTvSitHole.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());      // 段号
-//                holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
-//            }
-//            if ( mLine == 5) {
-//                holder.mTvSitHole.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());     // 孔号
-//                holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
-//                if (detonatorBaseInfo.getErrorCode().equals("FF")) {
-//                    holder.mTvStatus.setTextColor(Color.GREEN);
-//                } else {
-//                    holder.mTvStatus.setTextColor(Color.RED);
-//                }
-//            }
-            if (mIndex == 1) {
+        DenatorBaseinfo detonatorBaseInfo = list_detonatorBaseInfo.get(position);
+        holder.mTvBlastSerial.setText((list_detonatorBaseInfo.size() - position) + "");                 // 序号
+        holder.mTvShellBlastNo.setText(detonatorBaseInfo.getShellBlastNo());   // 管壳号
+        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
+        if (mIndex == 1) {
 
-                if(position!=0){
-                    DenatorBaseinfo detonatorBaseInfo2 = list_detonatorBaseInfo.get(position-1);
-                    int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(12));//5340821A00001
-                    int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(12));//5340821A00001
-                    if(b-a!=1){
-                        Log.e("对比", "detonatorBaseInfo.getShellBlastNo(): "+detonatorBaseInfo.getShellBlastNo() );
-                        Log.e("对比", "detonatorBaseInfo2.getShellBlastNo(): "+detonatorBaseInfo2.getShellBlastNo() );
-                        if((a==9&&b==0)){
-                            holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
-                        }else {
-                            holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
-                        }
-
-                    }else {
+            if (position != 0&&!detonatorBaseInfo.getShellBlastNo().startsWith("A6")) {
+                DenatorBaseinfo detonatorBaseInfo2 = list_detonatorBaseInfo.get(position - 1);
+                int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(12));//5340821A00001
+                int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(12));//5340821A00001
+                if (b - a != 1) {
+                    Log.e("对比", "detonatorBaseInfo.getShellBlastNo(): " + detonatorBaseInfo.getShellBlastNo());
+                    Log.e("对比", "detonatorBaseInfo2.getShellBlastNo(): " + detonatorBaseInfo2.getShellBlastNo());
+                    if ((a == 9 && b == 0)) {
                         holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
+                    } else {
+                        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
                     }
+
+                } else {
+                    holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
                 }
             }
-                holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
-                holder.mTvDuanNo.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());
-                holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
-                if (detonatorBaseInfo.getErrorCode().equals("FF")) {
-                    holder.mTvStatus.setTextColor(Color.GREEN);
-                } else {
-                    holder.mTvStatus.setTextColor(Color.RED);
-                }
+        }
+        holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
+        holder.mTvDuanNo.setText(detonatorBaseInfo.getDuan() + "-" + detonatorBaseInfo.getDuanNo());
+        holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
+        holder.mTvDelay.setText(detonatorBaseInfo.getDelay()+"");
+        if (detonatorBaseInfo.getErrorCode().equals("FF")) {
+            holder.mTvStatus.setTextColor(Color.GREEN);
+        } else {
+            holder.mTvStatus.setTextColor(Color.RED);
+        }
 
 //            if (mLine == 5) {
 //                holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
@@ -142,13 +125,13 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
 //                }
 //            }
 
-            // 长按
-            if (onitemLongClick != null) {
-                holder.itemView.setOnLongClickListener(v -> {
-                    onitemLongClick.itemLongClick(position);
-                    return true;
-                });
-            }
+        // 长按
+        if (onitemLongClick != null) {
+            holder.itemView.setOnLongClickListener(v -> {
+                onitemLongClick.itemLongClick(position);
+                return true;
+            });
+        }
 
 
     }
@@ -189,6 +172,7 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
     public interface OnItemLongClick {
         void itemLongClick(int position);
     }
+
     //条目长按接口回调
     public void setOnItemLongClick(OnItemLongClick onitemLongClick) {
         this.onitemLongClick = onitemLongClick;
@@ -204,7 +188,8 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
     public void setGetListener(GetListener getListener) {
         this.getListener = getListener;
     }
-    private  int mPosition;
+
+    private int mPosition;
 
     public int getmPosition() {
         return mPosition;

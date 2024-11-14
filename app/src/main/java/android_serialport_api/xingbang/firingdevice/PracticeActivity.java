@@ -117,6 +117,8 @@ public class PracticeActivity extends BaseActivity {
     Button butVersion;
     @BindView(R.id.but_sendMsg)
     Button but_sendMsg;
+    @BindView(R.id.but_rizhi)
+    Button butRizhi;
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list_uid = new ArrayList<>();
@@ -155,7 +157,7 @@ public class PracticeActivity extends BaseActivity {
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText(getResources().getString(R.string.text_sendMsg_ip) + getlocalip());
@@ -292,14 +294,14 @@ public class PracticeActivity extends BaseActivity {
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
             denator.setBlastserial(maxNo);
-            denator.setSithole(maxNo+"");
+            denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
             if (a.length == 3) {
                 denator.setShellBlastNo(a[2]);
             }
             if (a.length == 4) {
                 denator.setDuanNo(Integer.parseInt(a[3]));
-                denator.setDuan(Integer.parseInt(a[3].substring(0,1)));
+                denator.setDuan(Integer.parseInt(a[3].substring(0, 1)));
             }
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormat(new Date()));
@@ -420,8 +422,6 @@ public class PracticeActivity extends BaseActivity {
     }
 
 
-
-
     /**
      * 处理接收到的cmd命令
      */
@@ -440,8 +440,9 @@ public class PracticeActivity extends BaseActivity {
     }
 
 
-
-    @OnClick({R.id.but_pre, R.id.but_jilian,R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_test, R.id.but_sendMsg})
+    @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read,
+            R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile,
+            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -462,6 +463,10 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_sendMsg://进入数据互传页面
                 Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
                 startActivity(intent12);
+                break;
+            case R.id.but_rizhi://进入上传日志页面
+                Intent intent13 = new Intent(this, RiZhiActivity.class);//日志
+                startActivity(intent13);
                 break;
             case R.id.but_pre://开启测试
 
@@ -513,7 +518,7 @@ public class PracticeActivity extends BaseActivity {
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo()+ "#" + list_uid.get(i).getDuanNo() + ",");
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo() + ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
                     }
@@ -603,11 +608,6 @@ public class PracticeActivity extends BaseActivity {
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
     }
-
-
-
-
-
 
 
     /**
@@ -849,7 +849,6 @@ public class PracticeActivity extends BaseActivity {
         }
         return res;
     }
-
 
 
     private Socket socket = null;
