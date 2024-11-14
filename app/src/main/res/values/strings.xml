@@ -645,7 +645,7 @@
     <string name="text_updata_sys_6">检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?</string>
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_241113</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">KT50_PT_V2.1_241114</string>
     <string name="text_main_tip1">当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测</string>
     <string name="text_queryHis_dialog10">确认删除</string>
     <string name="text_list_piace">区域</string>
