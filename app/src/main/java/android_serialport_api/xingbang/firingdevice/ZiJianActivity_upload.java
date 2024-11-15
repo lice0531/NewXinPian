@@ -50,6 +50,7 @@ import butterknife.ButterKnife;
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissonItem;
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class ZiJianActivity_upload extends BaseActivity {
 
@@ -108,6 +109,7 @@ public class ZiJianActivity_upload extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zi_jian);
         ButterKnife.bind(this);
+        SQLiteStudioService.instance().start(this);
         initPower();                // 初始化上电方式()
         powerOnDevice(PIN_ADSL);    // 上电
 // 标题栏

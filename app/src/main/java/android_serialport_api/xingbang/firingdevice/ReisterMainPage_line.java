@@ -220,6 +220,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private int send_10 = 0;
     private int send_41 = 0;
     private int send_40 = 0;
+    private int send_46 = 0;
+    private boolean send_kg = false;
     private String scan_date = "";
 
     // 雷管列表
@@ -319,17 +321,22 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     }
 
     private void close() {
-        Log.e("关闭send", "close: ");
-        if (!sendPower.exit) {
-            openPower = false;
-            sendPower.exit = true;
-            sendPower.interrupt();
-            try {
-                sendPower.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+//        Log.e("关闭send", "close: ");
+//        Log.e("关闭send", "send_46: "+send_46);
+//        Log.e("关闭send", "send_10: "+send_10);
+
+            if (!sendPower.exit) {
+                openPower = false;
+                sendPower.exit = true;
+                sendPower.interrupt();
+                try {
+                    sendPower.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+
+
 
     }
 
@@ -1367,17 +1374,17 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
 
         if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
-            send_41 = 0;
+            send_41 = 1;
 //            sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: " + qiaosi_set);
             sendCmd(FourStatusCmd.send46("00", lg_ver));//46
 
 
         } else if (DefCommand.CMD_1_REISTER_1.equals(cmd)) {//10 进入自动注册模式
-//            send_10 = 0;
+            send_10 = 1;
             //发送获取电源信息
             open();
-
+            send_kg=true;
         } else if (DefCommand.CMD_1_REISTER_2.equals(cmd)) {//11 有雷管接入
             close();
 
@@ -1435,7 +1442,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
 
         } else if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 退出自动注册模式
-            send_13 = 0;
+            send_13 = 1;
             if (initCloseCmdReFlag == 0) {//打开电源
                 initCloseCmdReFlag = 1;
 //                revCloseCmdReFlag = 1;
@@ -1447,7 +1454,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
         } else if (DefCommand.CMD_4_XBSTATUS_1.equals(cmd)) { //40 总线电流电压
             if (fromCommad.length() == "C0004008000033040000130C2C70C0".length()) {
-                send_40 = 0;
+                send_40 = 1;
                 busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", cmdBuf);//解析 40指令
 
                 tipInfoFlag = 1;
@@ -1494,6 +1501,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
 
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {//46
+            send_46=1;
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
                 sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
             } else {
@@ -2000,13 +2008,19 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 break;
 
             case R.id.btn_singleReister:
-                close();
-                if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
-                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
-                } else {
-                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
+//                Log.e("开关", "openPower: "+openPower );
+                if(send_10==1&&send_46==1&&send_kg){
+                    close();
+                    if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
+                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "01"));
+                    } else {
+                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Init12_2("00", "00"));
+                    }
+                    tip_show = true;
+                }else {
+                    show_Toast(getString(R.string.text_line_tip1));
                 }
-                tip_show = true;
+
                 break;
 
 
