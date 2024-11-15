@@ -388,6 +388,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                 scan_date = data;
                 String barCode;
                 String denatorId;
+                String yscs;
                 if (data.length() == 28) {
                     Log.e("扫码", "data: " + data);
                     //5620302H00001A62F400FFF20AB603
@@ -395,23 +396,30 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     //Y5620413H00009A630FD74D87604(四川)
                     //M5621132A9999900F491EF8B0922
                     if (data.charAt(0) == 'Y') {
-                        barCode = data.substring(1, 14);
-                        String a = data.substring(14, 24);
+                        if(data.startsWith("A6", 14)){
+                            barCode = data.substring(1, 14);//
+                            String a = data.substring(14, 24);
+                            denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
+                            yscs=data.substring(24);
+                            insertSingleDenator_2(barCode, denatorId,yscs,"1", "0");//同时注册管壳码和芯片码
+                        }else {
+                            barCode = data.substring(1, 14);
+                            denatorId = "A6210" + data.substring(14, 22);
+                            yscs = data.substring(22, 26);
+                            String version = data.substring(26, 27);
+                            String duan = data.substring(27, 28);
+                            insertSingleDenator_2(barCode, denatorId,yscs,version, duan);//同时注册管壳码和芯片码
+                        }
+                        // Y5621202Y00015 A6 00D854F3 2103  pt
+                        // Y5640526A99997 00 A67FF8 D804 1 2  mx
 
-                        barCode = data.substring(1, 14);
-                        denatorId = "A6210" + data.substring(14, 22);
-                        String yscs = data.substring(22, 26);
-                        String version = data.substring(26, 27);
-                        String duan = data.substring(27, 28);
-                        Log.e("扫码", "barCode: " + barCode);
-                        Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "data.substring(24): " + data.substring(24));
-                        insertSingleDenator_2(barCode, denatorId,yscs,version, duan);//同时注册管壳码和芯片码
+
+
                     } else {
                         //1530924217014 000FA546C F203 1 0
                         barCode = data.substring(0, 13);
                         String a = data.substring(13, 22);
-                        String yscs = data.substring(22, 26);
+                        yscs = data.substring(22, 26);
                         version = "0" + data.substring(26, 27);
                         denatorId = "A621" + a;
                         String duan = data.substring(27, 28);
