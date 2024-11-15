@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -44,7 +44,7 @@ import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
 import me.weyye.hipermission.PermissonItem;
 
-public class ZiJianActivity_upload extends SerialPortActivity {
+public class ZiJianActivity_upload extends LxrSerialPortActivity {
 
     @BindView(R.id.tv_zj_num)
     TextView tvZjNum;
@@ -95,8 +95,9 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zi_jian);
         ButterKnife.bind(this);
-        initPower();                // 初始化上电方式()
-        powerOnDevice(PIN_ADSL);    // 上电
+//        lxrPowerOnDevice();
+//        initPower();                // 初始化上电方式()
+//        powerOnDevice(PIN_ADSL);    // 上电
     // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         //获取偏好设置的编辑器
@@ -263,7 +264,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     //退出方法
     private void exit() {
-        powerOffDevice(PIN_ADSL);//主板下电
+        lxrPowerOffDevice();
+//        powerOffDevice(PIN_ADSL);//主板下电
         //点击在两秒以内
         removeALLActivity();//执行移除所以Activity方法
     }
@@ -282,11 +284,12 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //                        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
                     }
                     if (firstCount == 0) {
-                        new Thread(() -> {
-                            mApplication.closeSerialPort();
-                            Log.e(getLocalClassName(),"调用mApplication.closeSerialPort()开始关闭串口了。。");
-                            mSerialPort = null;
-                        }).start();
+//                        new Thread(() -> {
+                            closeSeialPort();
+//                            mApplication.closeSerialPort();
+//                            Log.e(getLocalClassName(),"调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                            mSerialPort = null;
+//                        }).start();
                         exit = true;
                         Intent intent = new Intent(ZiJianActivity_upload.this, XingbangMain.class);
                         startActivity(intent);
@@ -319,6 +322,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
         byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c + b) + (e + d));//14
         sendCmd(powerCmd);
+//        sendOpenThread = new SendOpenPower(c,b,e,d);
+//        sendOpenThread.start();
     }
 
     @Override
@@ -351,15 +356,13 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     }
 
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//        Log.e("自检收到", "fromCommad: "+fromCommad );
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);
+        Log.e("自检页面收到", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
                 return;
@@ -374,22 +377,81 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         }
     }
 
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+////        Log.e("自检收到", "fromCommad: "+fromCommad );
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf, localSize);
+//                }
+//            }
+//        }
+//    }
+    private SendOpenPower sendOpenThread;
+    private volatile int revOpenCmdReFlag = 0;
+    private class SendOpenPower extends Thread {
+        public volatile boolean exit = false;
+        String str1;String str2;String str3;String str4;
+        public SendOpenPower(String b,String c,String d,String e) {
+            this.str1 = b;
+            this.str2 = c;
+            this.str3 = d;
+            this.str4 = e;
+        }
+        public void run() {
+            int zeroCount = 0;
+
+            while (!exit) {
+                try {
+                    if (revOpenCmdReFlag == 1) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount >= 0 && revOpenCmdReFlag == 0) {
+                        byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((str2 + str1) + (str4 + str3));//14
+                        sendCmd(powerCmd);
+                    }
+                    Thread.sleep(1000);
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     //发送命令
     public void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("自检发送:" + str);
-                Log.e("发送命令", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        } else {
-            return;
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Utils.writeLog("自检发送:" + str);
+//                Log.e("发送命令", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//
+//        } else {
+//            return;
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e("自检页面","发送命令" + str);
     }
 
     /**
@@ -402,7 +464,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //            busHandler.sendMessage(busHandler.obtainMessage());
             sendCmd(FourStatusCmd.getSoftVersion("00"));//43
         } else if (DefCommand.CMD_1_REISTER_5.equals(cmd)) {//14 核心板自检
-
+            revOpenCmdReFlag = 1;
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             String a = realyCmd1.substring(6, 8);
@@ -494,9 +556,21 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 //        show_Toast("删除成功");
     }
 
+    private void closeThread() {
+        if (sendOpenThread != null) {
+            sendOpenThread.exit = true;  // 终止线程thread
+            try {
+                sendOpenThread.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected void onDestroy() {
-
+        closeThread();
         super.onDestroy();
     }
 }

@@ -41,8 +41,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -82,7 +82,7 @@ import org.greenrobot.eventbus.ThreadMode;
  * 起爆页面
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class FiringMainActivity extends SerialPortActivity {
+public class FiringMainActivity extends LxrSerialPortActivity {
 
     private Button btn_return1;
     private Button btn_return2;
@@ -1434,20 +1434,23 @@ public class FiringMainActivity extends SerialPortActivity {
 
     //发送命令
     public void sendCmd(byte[] mBuffer) {
-        int pid = Process.myPid(); // 获取当前进程的ID
-        int tid = Process.myTid(); // 获取当前线程的ID
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送命令", str);//pid + "-" + tid +
-                Utils.writeLog("->:" + str);
-                mOutputStream.write(mBuffer);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+//        int pid = Process.myPid(); // 获取当前进程的ID
+//        int tid = Process.myTid(); // 获取当前线程的ID
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Log.e("发送命令", str);//pid + "-" + tid +
+//                Utils.writeLog("->:" + str);
+//                mOutputStream.write(mBuffer);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e(TAG,"发送命令" + str);
     }
 
 
@@ -1577,9 +1580,10 @@ public class FiringMainActivity extends SerialPortActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mApplication.closeSerialPort();
-                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
             }
         }).start();
         super.onDestroy();
@@ -1611,11 +1615,8 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);//fromCommad为返回的16进制命令
         int pid = Process.myPid(); // 获取当前进程的ID
         int tid = Process.myTid(); // 获取当前线程的ID
         //pid + "-" + tid +
@@ -1641,17 +1642,48 @@ public class FiringMainActivity extends SerialPortActivity {
         }
     }
 
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+//        int pid = Process.myPid(); // 获取当前进程的ID
+//        int tid = Process.myTid(); // 获取当前线程的ID
+//        //pid + "-" + tid +
+//        Utils.writeLog("<-:" + fromCommad);//找到问题可以把这个进程id去掉
+////        Log.e("返回命令--起爆页面", fromCommad);
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+////            Utils.writeLog("Firing reFrom:" + fromCommad);
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd2(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf);//处理cmd命令
+//
+//                }
+//            }
+//        }
+//    }
+
     /***
      * 处理芯片返回命令
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
         String currentPeak = "";
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
-            increase(1);
             Log.e(TAG, "increase: 1");
             zeroCmdReFlag = 1;
             byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
             sendCmd(powerCmd);
+            increase(1);
 //            int pid = Process.myPid(); // 获取当前进程的ID
 //            int Tid = Process.myTid(); // 获取当前线程的ID
 //            Log.e(TAG, "收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
@@ -2267,7 +2299,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     }
 
-
+    private long zeroStartTime = 0;//第1阶段每个雷管返回命令计时器
     /***
      * 全部
      * @author zenghp
@@ -2292,23 +2324,32 @@ public class FiringMainActivity extends SerialPortActivity {
                             Thread.sleep(100);
                             if (zeroCount == 0) {
                                 //关闭电源
+                                zeroStartTime = System.currentTimeMillis();
                                 byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
                                 sendCmd(powerCmd);
+                                Log.e(TAG, "第一次发送13指令");
                             }
-
+                            if (System.currentTimeMillis() - zeroStartTime > 1000) {
+                                //13返回未超时  重发13
+                                byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Exit12_4("00");//13
+                                sendCmd(powerCmd);
+                                zeroStartTime = System.currentTimeMillis();
+                                Log.e(TAG, "1秒内没收到芯片回复13,重发13指令");
+                            }
 //                            increase(1);
 //                            Log.e(TAG, "increase: 1");
 //                            zeroCmdReFlag = 1;
 //                            sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41
-                            Log.e(TAG, "发送41指令");
+//                            Log.e(TAG, "发送41指令");
                             if (zeroCmdReFlag == 1) {
                                 break;
                             }
                             zeroCount++;
-                            if (zeroCount > 50) {//等待时间答应5秒，退出
+                            if (zeroCount > 60) {//等待时间答应5秒，退出
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 exit = true;
                             }
+                            Log.e(TAG,"case0--zeroCount: " + zeroCount);
                             break;
                         case 1://等待总线稳定时间
                             Thread.sleep(1000);

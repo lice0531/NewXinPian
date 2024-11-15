@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
-import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -98,7 +98,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class XingbangMain extends SerialPortActivity {
+public class XingbangMain extends LxrSerialPortActivity {
 
     @BindView(R.id.tv_main_no)
     TextView tvMainNo;
@@ -165,7 +165,7 @@ public class XingbangMain extends SerialPortActivity {
     private Handler mHandler_updataVersion = new Handler();//更新版本
     private List<DenatorBaseinfo> list_data = new ArrayList<>();
     private ArrayList<String> lg2_yanshi = new ArrayList<>();
-    private String TAG = "主页";
+    private String TAG = "主页面";
 
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
@@ -241,8 +241,7 @@ public class XingbangMain extends SerialPortActivity {
             app_version_name =getString(R.string.app_version_name);
         }
 
-
-        initPower();                // 初始化上电方式()
+        lxrPowerOnDevice();// 初始化上电
         initView();         // 初始化控件
 
         tipDlg = new LoadingDialog(XingbangMain.this);
@@ -725,7 +724,8 @@ public class XingbangMain extends SerialPortActivity {
             show_Toast(getString(R.string.text_error_tip56));
         } else {
             Utils.writeRecord("---点击返回按键退出程序---");
-            powerOffDevice(PIN_ADSL);//主板下电
+//            powerOffDevice(PIN_ADSL);//主板下电
+            lxrPowerOffDevice();
             //点击在两秒以内
             removeALLActivity();//执行移除所以Activity方法
         }
@@ -1504,30 +1504,31 @@ public class XingbangMain extends SerialPortActivity {
 
     //发送命令
     public synchronized void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("->:" + str);
-                Log.e("发送命令", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            return;
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Utils.writeLog("->:" + str);
+//                Log.e("发送命令", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            return;
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e(TAG,"发送命令" + str);
     }
 
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//        Log.e("自检收到", "fromCommad: "+fromCommad );
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);
+        Log.e(TAG, "收到fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
                 return;
@@ -1541,6 +1542,30 @@ public class XingbangMain extends SerialPortActivity {
             }
         }
     }
+
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+////        Log.e("自检收到", "fromCommad: "+fromCommad );
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * 处理接收到的cmd命令
@@ -1578,9 +1603,9 @@ public class XingbangMain extends SerialPortActivity {
                     if (zeroCount > 0 && zeroCount <= 3 && get41Resp == 0) {
                         Log.e(TAG,"发送41指令");
                         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-                        Thread.sleep(3500);
-                    } else if (zeroCount > 3){
-                        Log.e(TAG,"41指令未返回已发送3次，停止发送41指令");
+                        Thread.sleep(2500);
+                    } else if (zeroCount > 6){
+                        Log.e(TAG,"41指令未返回已发送6次，停止发送41指令");
                         exit = true;
                         break;
                     }
@@ -1601,18 +1626,18 @@ public class XingbangMain extends SerialPortActivity {
         public void run() {
 
             while (!exit) {
-//                try {
+                try {
                     //发送获取电源信息
                     long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastProcessedTime > 1000){
+                    if (currentTime - lastProcessedTime > 1500){
                         sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
                         lastProcessedTime = currentTime;
                     }
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1627,7 +1652,7 @@ public class XingbangMain extends SerialPortActivity {
         sendPower.exit = false;
         if (!threadStarted) {
             threadPoolExecutor.execute( sendPower);
-
+            sendPower.start();
             Log.e(TAG,"已开启40线程");
             threadStarted = true;
         } else {
@@ -1640,12 +1665,21 @@ public class XingbangMain extends SerialPortActivity {
         isRestarted = false;
         threadStarted = false;
         get41Resp = 0;
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
+        if (sendPower != null) {
+            sendPower.exit = true;  // 终止线程thread
+            sendPower.interrupt();
+        }
         threadPoolExecutor.shutdown();
         Log.e(TAG, "close: 关闭线程池" );
-//        if (sendPower != null) {
-//            sendPower.exit = true;  // 终止线程thread
-//                sendPower.interrupt();
-//        }
 
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
@@ -1656,14 +1690,6 @@ public class XingbangMain extends SerialPortActivity {
 //                e.printStackTrace();
 //            }
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
     }
 
     @Override
@@ -1683,21 +1709,23 @@ public class XingbangMain extends SerialPortActivity {
             Log.e(TAG,"已关闭openPower");
         }
         if (!isCmdClosed) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mApplication.closeSerialPort();
-                    Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
-                    mSerialPort = null;
-                }
-            }).start();
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+                    closeSeialPort();
+//                    mApplication.closeSerialPort();
+//                    Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                    mSerialPort = null;
+//                }
+//            }).start();
         }
 //        if (tipDlg != null) {
 //            tipDlg.dismiss();
 //            tipDlg = null;
 //        }
+        lxrPowerOffDevice();
         super.onDestroy();
-        Log.e(TAG, "onDestroy: ");
+        Log.e(TAG, "onDestroy: 已下电");
         openHandler.removeCallbacksAndMessages(null);
     }
 }

@@ -52,12 +52,12 @@ import java.util.Date;
 import java.util.List;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
@@ -90,7 +90,7 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * 单发检测
  */
-public class ReisterMainPage_line extends SerialPortActivity {
+public class ReisterMainPage_line extends LxrSerialPortActivity {
 
     @BindView(R.id.text_start)
     TextView textStart;
@@ -1664,14 +1664,15 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 e.printStackTrace();
             }
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("ReisterMainPage_line","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e("ReisterMainPage_line","调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
         }
@@ -1932,17 +1933,13 @@ public class ReisterMainPage_line extends SerialPortActivity {
         return 1;
     }
 
-
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);//fromCommad为返回的16进制命令
         if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
 //            Utils.writeLog("Firing reFrom:" + fromCommad);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
@@ -1956,7 +1953,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 }
             }
         } else {
-            String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
+            String data = new String(buffer).trim();//使用构造函数转换成字符串
             Utils.writeLog("扫码结果:" + data);
             //扫码注册
             if (data.length() == 19) {//扫描箱号
@@ -1981,6 +1978,55 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
         }
     }
+
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+////            Utils.writeLog("Firing reFrom:" + fromCommad);
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf);//处理cmd命令
+//                }
+//            }
+//        } else {
+//            String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
+//            Utils.writeLog("扫码结果:" + data);
+//            //扫码注册
+//            if (data.length() == 19) {//扫描箱号
+//                addXiangHao(data);
+//            }
+//            if (sanButtonFlag > 0 && data.length() == 13) {
+////                optGpio_down(PIN_TRACKER_EN);//扫描头下电
+//                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+//
+////                mHandler_0.sendMessage(mHandler_0.obtainMessage(1004, data));
+//
+//            } else {
+//                String barCode = getContinueScanBlastNo(data);
+//                if (barCode == null) return;
+//                if (checkRepeatShellNo(barCode)) {
+//                    singleShellNo = barCode;
+//                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+//                    return;
+//                }
+//                insertSingleDenator(barCode);
+//            }
+//
+//        }
+//    }
 
     /**
      * 关闭守护线程
@@ -2007,18 +2053,21 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
     //发送命令
     public synchronized void sendCmd(byte[] mBuffer) {//0627添加synchronized,尝试加锁
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("->:" + str);
-                Log.e("发送命令", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            return;
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Utils.writeLog("->:" + str);
+//                Log.e("发送命令", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            return;
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e(TAG,"发送命令" + str);
     }
 
     //模拟
@@ -2040,6 +2089,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
 
         if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
+            revOpenCmdReFlag = 1;
 //            sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: " + qiaosi_set);
             if (qiaosi_set.equals("true")) {//10 进入自动注册模式(00不检测01检测)桥丝
@@ -2838,8 +2888,9 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     closeThread();
 //                    closeOpenThread = new CloseOpenPower();
 //                    closeOpenThread.start();
-                    sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-
+//                    sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+                    sendOpenThread = new SendOpenPower();
+                    sendOpenThread.start();
                 } else {
                     btnInputOk.setEnabled(true);
                     btnSingleReister.setText(getResources().getString(R.string.text_singleReister));
@@ -3336,15 +3387,15 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
             while (!exit) {
                 try {
-                    if (zeroCount == 0) {
-                        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41 开启总线电源指令
-                        sendCmd(powerCmd);
-                    }
                     if (revOpenCmdReFlag == 1) {
                         exit = true;
                         break;
                     }
-                    Thread.sleep(100);
+                    if (zeroCount >= 0 && revOpenCmdReFlag == 0) {
+                        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41 开启总线电源指令
+                        sendCmd(powerCmd);
+                    }
+                    Thread.sleep(1000);
                     if (zeroCount > 30) {
                         tipInfoFlag = 4;
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());

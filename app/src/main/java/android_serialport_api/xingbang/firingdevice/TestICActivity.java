@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TestICActivity extends SerialPortActivity {
+public class TestICActivity extends LxrSerialPortActivity {
     @BindView(R.id.but_pre)
     Button butPre;
     @BindView(R.id.tv_ceshi_dianliu)
@@ -147,20 +147,17 @@ public class TestICActivity extends SerialPortActivity {
         super.sendInterruptCmd();
     }
 
-    //接收串口数据
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);//将数组转化为16进制字符串
-
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);//将数组转化为16进制字符串
+        Log.e("快速测试页面","收到:" + fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) {
-                this.revCmd = this.afterCmd;
-            } else {
-                this.revCmd = "";
-            }
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) {
+//                this.revCmd = this.afterCmd;
+//            } else {
+//                this.revCmd = "";
+//            }
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);//返回命令解码
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
 
@@ -174,6 +171,34 @@ public class TestICActivity extends SerialPortActivity {
             }
         }
     }
+
+    //接收串口数据
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);//将数组转化为16进制字符串
+//
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) {
+//                this.revCmd = this.afterCmd;
+//            } else {
+//                this.revCmd = "";
+//            }
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);//返回命令解码
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);//得到 返回命令
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);//将字符串转化为数组
+//                    doWithReceivData(cmd, localBuf, localSize);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * 处理接收到的cmd命令
@@ -216,17 +241,20 @@ public class TestICActivity extends SerialPortActivity {
      * 发送命令
      */
     public void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Log.e("发送", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Log.e("发送", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e("快速测试页面","发送命令" + str);
     }
 
 
@@ -407,14 +435,15 @@ public class TestICActivity extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("TestICActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e("TestICActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
         super.onDestroy();
     }
 }

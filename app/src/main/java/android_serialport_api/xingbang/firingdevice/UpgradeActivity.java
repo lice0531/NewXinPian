@@ -42,8 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.Cmd_EX;
 import android_serialport_api.xingbang.cmd.DefCmd;
 import android_serialport_api.xingbang.models.DownloadVersionBean;
@@ -67,7 +67,7 @@ import android_serialport_api.xingbang.utils.uploadUtils.ToastUtils;
  * @Date: 11/30/20 10:47 AM
  * @Author: kalinaji
  */
-public class UpgradeActivity extends SerialPortActivity {
+public class UpgradeActivity extends LxrSerialPortActivity {
 
     private static final String TAG = "升级页面";
     // 控件
@@ -192,29 +192,41 @@ public class UpgradeActivity extends SerialPortActivity {
     }
 
     //发送命令
+
     public void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("->:" + str);
-//                Log.e("发送命令", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Utils.writeLog("->:" + str);
+////                Log.e("发送命令", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e(TAG,"发送命令" + str);
     }
 
     //处理芯片返回
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);
         Log.e(TAG, "收到命令: " + fromCommad);
         mHandler.sendMessage(mHandler.obtainMessage(1100, fromCommad));
-
     }
+
+    //处理芯片返回
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        Log.e(TAG, "收到命令: " + fromCommad);
+//        mHandler.sendMessage(mHandler.obtainMessage(1100, fromCommad));
+//
+//    }
 
     /**
      * 初始化上电方式
@@ -612,9 +624,15 @@ public class UpgradeActivity extends SerialPortActivity {
 
     private void E0() {
         // 下电
-        powerOffDevice(PIN_ADSL);
+        lxrPowerOffDevice();
         // 上电
-        powerOnDevice(PIN_ADSL);
+        lxrPowerOnDevice();
+
+//        // 下电
+//        powerOffDevice(PIN_ADSL);
+//        // 上电
+//        powerOnDevice(PIN_ADSL);
+
         // E0 强制升级指令
         byte[] mE0 = Cmd_EX.sendE0();
 //            mSerialHelper.send(mE0, true);
@@ -1191,16 +1209,18 @@ public class UpgradeActivity extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("UpgradeActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e("UpgradeActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
         super.onDestroy();
-        powerOffDevice(PIN_ADSL);// 下电
+        lxrPowerOffDevice();
+//        powerOffDevice(PIN_ADSL);// 下电
         // 退出 IAP检测线程
         if (mReadThread_upload != null) {
             mReadThread_upload.mExit = true;

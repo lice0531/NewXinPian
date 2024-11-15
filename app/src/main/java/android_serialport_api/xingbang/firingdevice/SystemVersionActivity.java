@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.regex.Pattern;
 
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SystemVersionActivity extends SerialPortActivity {
+public class SystemVersionActivity extends LxrSerialPortActivity {
 
     SharedPreferences.Editor edit;
     @BindView(R.id.btn_Soft_Version)
@@ -45,6 +45,7 @@ public class SystemVersionActivity extends SerialPortActivity {
     private Handler Handler_tip = null;//提示信息
     private String changjia = "TY";
     Handler openHandler = new Handler();//重新打开串口
+    private SendOpenPower sendOpenThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +83,10 @@ public class SystemVersionActivity extends SerialPortActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        sendOpenThread = new SendOpenPower();
+        sendOpenThread.start();
 //        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
-        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
+//        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
 //        openHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -96,10 +98,9 @@ public class SystemVersionActivity extends SerialPortActivity {
     }
 
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);
+        Log.e("版本号页面","收到:" + fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
             if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -118,6 +119,29 @@ public class SystemVersionActivity extends SerialPortActivity {
         }
     }
 
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf, localSize);
+//                }
+//            }
+//        }
+//    }
+
     /***
      * 处理芯片返回命令
      */
@@ -127,6 +151,7 @@ public class SystemVersionActivity extends SerialPortActivity {
         String fromCommad =  Utils.bytesToHexFun(locatBuf);
         String realyCmd1 = DefCommand.decodeCommand(fromCommad);
         if (DefCommand.CMD_4_XBSTATUS_4.equals(cmd)) {//获取软件版本号 43
+            revOpenCmdReFlag = 1;
             Log.e("软件版本返回的命令", "realyCmd1: "+realyCmd1 );
             String a =realyCmd1.substring(6);//2020031201
             StringBuilder output = new StringBuilder();
@@ -167,19 +192,22 @@ public class SystemVersionActivity extends SerialPortActivity {
 
     //发送命令
     public synchronized void sendCmd(byte[] mBuffer) {//0627添加synchronized,尝试加锁
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-//					mOutputStream.write(mBuffer);
-                String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("Reister sendTo:" + str);
-                Log.e("发送命令", "sendCmd: " + str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            return;
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+////					mOutputStream.write(mBuffer);
+//                String str = Utils.bytesToHexFun(mBuffer);
+////                Utils.writeLog("Reister sendTo:" + str);
+//                Log.e("发送命令", "sendCmd: " + str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            return;
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e("版本号页面","发送命令" + str);
     }
 
     public static boolean isNumber(String str) {
@@ -220,17 +248,55 @@ public class SystemVersionActivity extends SerialPortActivity {
                 break;
         }
     }
+    private volatile int revOpenCmdReFlag = 0;
+    private class SendOpenPower extends Thread {
+        public volatile boolean exit = false;
+
+        public void run() {
+            int zeroCount = 0;
+
+            while (!exit) {
+                try {
+                    if (revOpenCmdReFlag == 1) {
+                        exit = true;
+                        break;
+                    }
+                    if (zeroCount >= 0 && revOpenCmdReFlag == 0) {
+                        sendCmd(FourStatusCmd.getSoftVersion("00"));//43
+                    }
+                    Thread.sleep(1000);
+                    zeroCount++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void closeThread() {
+        if (sendOpenThread != null) {
+            sendOpenThread.exit = true;  // 终止线程thread
+            try {
+                sendOpenThread.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("SystemVersionActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e("SystemVersionActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
+        closeThread();
         super.onDestroy();
         finish();
     }

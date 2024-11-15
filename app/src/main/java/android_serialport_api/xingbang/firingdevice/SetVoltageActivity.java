@@ -17,8 +17,8 @@ import android.widget.Spinner;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FiveTestingCmd;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
@@ -29,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SetVoltageActivity extends SerialPortActivity {
+public class SetVoltageActivity extends LxrSerialPortActivity {
 
     @BindView(R.id.et_set_lowVoltage)
     EditText etSetlowVoltage;
@@ -134,14 +134,13 @@ public class SetVoltageActivity extends SerialPortActivity {
     }
 
     @Override
-    protected void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);
+        Log.e("高低压设置页面","收到:" + fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
 
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
@@ -156,6 +155,30 @@ public class SetVoltageActivity extends SerialPortActivity {
             }
         }
     }
+
+//    @Override
+//    protected void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd(fromCommad);
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf, localSize);
+//                }
+//            }
+//        }
+//    }
 
     /***
      * 处理芯片返回命令
@@ -207,17 +230,20 @@ public class SetVoltageActivity extends SerialPortActivity {
 
     //发送命令
     public synchronized void sendCmd(byte[] mBuffer) {//0627添加synchronized,尝试加锁
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-//					mOutputStream.write(mBuffer);
-                String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("Reister sendTo:" + str);
-                Log.e("发送命令", "sendCmd: " + str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+////					mOutputStream.write(mBuffer);
+//                String str = Utils.bytesToHexFun(mBuffer);
+////                Utils.writeLog("Reister sendTo:" + str);
+//                Log.e("发送命令", "sendCmd: " + str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e("高低压设置页面","发送命令" + str);
     }
 
     public static boolean isNumber(String str) {
@@ -303,14 +329,15 @@ public class SetVoltageActivity extends SerialPortActivity {
 
     @Override
     protected void onDestroy() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e("SetVoltageActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                mApplication.closeSerialPort();
+//                Log.e("SetVoltageActivity","调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                mSerialPort = null;
+//            }
+//        }).start();
         super.onDestroy();
     }
 }

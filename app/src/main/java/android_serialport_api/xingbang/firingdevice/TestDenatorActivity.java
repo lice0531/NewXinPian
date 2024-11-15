@@ -38,8 +38,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -67,7 +67,7 @@ import android_serialport_api.xingbang.utils.Utils;
  * 测试页面
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class TestDenatorActivity extends SerialPortActivity {
+public class TestDenatorActivity extends LxrSerialPortActivity {
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<VoBlastModel> list_lg = new ArrayList<>();
@@ -388,15 +388,16 @@ public class TestDenatorActivity extends SerialPortActivity {
         checkHandler.removeMessages(0);
         if (db != null) db.close();
         fixInputMethodManagerLeak(TestDenatorActivity.this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mApplication.closeSerialPort();
-                Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                mSerialPort = null;
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                closeSeialPort();
+//                    mApplication.closeSerialPort();
+//                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                    mSerialPort = null;
                 isSerialPortClosed = true;
-            }
-        }).start();
+//            }
+//        }).start();
         finish();
         String str5 = "起爆";
         Log.e("验证2", "Yanzheng: " + Yanzheng);
@@ -664,15 +665,15 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
-                    if (displayIc == 0 && denatorCount > 5 && firstCount < 5&&firstCount >2) {//Preparation_time * 0.2
-                        ll_firing_IC_4.setTextColor(Color.RED);
-                        show_Toast(getString(R.string.text_test_tip12));
-                        btn_jixu.setVisibility(View.GONE);
-                        stage = 5;
-                        Utils.writeRecord("总线电流为0");
-                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                        return;
-                    }
+//                    if (displayIc == 0 && denatorCount > 5 && firstCount < 5&&firstCount >2) {//Preparation_time * 0.2
+//                        ll_firing_IC_4.setTextColor(Color.RED);
+//                        show_Toast(getString(R.string.text_test_tip12));
+//                        btn_jixu.setVisibility(View.GONE);
+//                        stage = 5;
+//                        Utils.writeRecord("总线电流为0");
+//                        mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                        return;
+//                    }
 
 //                    if (displayIc < denatorCount * cankaodianliu * 0.25 && firstCount < Preparation_time * 0.25) {//总线电流小于参考值一半,可能出现断路
 //                        ll_firing_IC_4.setTextColor(Color.RED);
@@ -928,16 +929,20 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     //发送命令
     public void sendCmd(byte[] mBuffer) {
-        if (mSerialPort != null && mOutputStream != null) {
-            try {
-                String str = Utils.bytesToHexFun(mBuffer);
-                Utils.writeLog("->:" + str);
-                Log.e("发送命令", str);
-                mOutputStream.write(mBuffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (mSerialPort != null && mOutputStream != null) {
+//            try {
+//                String str = Utils.bytesToHexFun(mBuffer);
+//                Utils.writeLog("->:" + str);
+//                Log.e("发送命令", str);
+//                mOutputStream.write(mBuffer);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        iCcon.onDataSent(mBuffer);
+        String str = Utils.bytesToHexFun(mBuffer);
+        Log.e(TAG,"发送命令" + str);
     }
 
     /***
@@ -1253,13 +1258,9 @@ public class TestDenatorActivity extends SerialPortActivity {
         }
     }
 
-
     @Override
-    protected synchronized void onDataReceived(byte[] buffer, int size) {
-        byte[] cmdBuf = new byte[size];
-
-        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+    protected void onLxrDataReceived(byte[] buffer) {
+        String fromCommad = Utils.bytesToHexFun(buffer);
         Utils.writeLog("<-:" + fromCommad);
 //        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
@@ -1281,6 +1282,34 @@ public class TestDenatorActivity extends SerialPortActivity {
         }
 
     }
+
+//    @Override
+//    protected synchronized void onDataReceived(byte[] buffer, int size) {
+//        byte[] cmdBuf = new byte[size];
+//
+//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
+//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
+//        Utils.writeLog("<-:" + fromCommad);
+////        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
+//        if (completeValidCmd(fromCommad) == 0) {
+//            fromCommad = this.revCmd;
+//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
+//            else this.revCmd = "";
+//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
+//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+//                return;
+//            } else {
+//                String cmd = DefCommand.getCmd2(fromCommad);
+////                Log.e("返回命令--测试页面", "cmd: "+cmd );
+//                if (cmd != null) {
+//                    int localSize = fromCommad.length() / 2;
+//                    byte[] localBuf = Utils.hexStringToBytes(fromCommad);
+//                    doWithReceivData(cmd, localBuf, localSize);
+//                }
+//            }
+//        }
+//
+//    }
 
     /***
      * 处理芯片返回
@@ -1405,16 +1434,16 @@ public class TestDenatorActivity extends SerialPortActivity {
 
             while (!exit) {
                 try {
-                    if (zeroCount == 0) {
-                        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
-                        sendCmd(powerCmd);
-                    }
                     if (revOpenCmdReFlag == 1) {
                         exit = true;
                         break;
                     }
-                    Thread.sleep(100);
-                    if (zeroCount > 100) {
+                    if (zeroCount >= 0 && revOpenCmdReFlag == 0) {
+                        byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
+                        sendCmd(powerCmd);
+                    }
+                    Thread.sleep(1000);
+                    if (zeroCount > 10) {
                         tipInfoFlag = 4;
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         exit = true;
@@ -1706,14 +1735,15 @@ public class TestDenatorActivity extends SerialPortActivity {
         Log.e(TAG, "onDestroy: ==========");
         if (!isSerialPortClosed) {
             sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mApplication.closeSerialPort();
-                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
-                    mSerialPort = null;
-                }
-            }).start();
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+                    closeSeialPort();
+//                    mApplication.closeSerialPort();
+//                    Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+//                    mSerialPort = null;
+//                }
+//            }).start();
         }
         super.onDestroy();
         fixInputMethodManagerLeak(this);

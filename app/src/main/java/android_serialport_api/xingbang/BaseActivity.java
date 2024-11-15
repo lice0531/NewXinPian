@@ -183,14 +183,25 @@ public class  BaseActivity extends AppCompatActivity {
 			mExpDevMgr = new ExpdDevMgr(this);
 //			mExpDevMgr.setExGpio(108,1);//32 17 19   485通信/11 12 13 14   发送/17 19
 			Log.e("BaseActivity", "M900设备");
-		}else if (mPowerOnMode == 5) {
-			iCcon=  iCcon.getInstance();
-			Log.e("BaseActivity", "LXR设备 实例化");
+//		}else if (mPowerOnMode == 5) {
+//			iCcon=  iCcon.getInstance();
+//			Log.e("BaseActivity", "LXR设备 实例化");
 		} else {
 			Log.e("BaseActivity", "实例化 空");
 		}
 	}
 
+	//联祥瑞设备上电
+	public void lxrPowerOnDevice() {
+		int a = iCcon.MCU_interface_power(1);
+		Log.e("BaseActivity","联祥瑞mcu上电: " + a);
+	}
+
+	//联祥瑞设备下电
+	public void lxrPowerOffDevice() {
+		int a = iCcon.MCU_interface_power(0);
+		Log.e("BaseActivity","联祥瑞mcu下电: " + a);
+	}
 
 	/**
 	 * 主板上电
@@ -235,30 +246,13 @@ public class  BaseActivity extends AppCompatActivity {
 			mExpDevMgr.exPowerOn();//办卡供电
 			mExpDevMgr.setPsamReaderPw(true);
 //			mExpDevMgr.setExGpio(1,1);//32 17 19   485通信/11 12 13 14   发送/17 19
-		}else if (mPowerOnMode == 5) {// LXR上电
-			Log.e("BaseActivity", "LXR设备 上电");
-//			iCcon.mcu_powerAndoPenOrCloseSerialPort(1);
-//			iCcon.exPowerOn();
-//			boolean r=iCcon.setPciePwr_EnOn();
-//			int a =iCcon.MCU_interface_power(1);//主板供电
-//			iCcon.setPCIBandrate(115200);
-//			int b =iCcon.mcu_powerAndoPenOrCloseSerialPort(1);
-//			int c =iCcon.oPenOrCloseSerialPort(1,1);
-//			iCcon.setPCIBandrate(115200);
-//			Log.e("BaseActivity", "r "+r);
-//			Log.e("BaseActivity", "a "+a);
-//			Log.e("BaseActivity", "b "+b);
-//			Log.e("BaseActivity", "c "+c);
-
 		}
-
 	}
 
 	/**
 	 * 主板下电
 	 */
 	public void powerOffDevice(String mode) {
-
 		try {
 			Thread.sleep(100);
 			Log.e("BaseActivity", "下电延时100ms");
@@ -306,18 +300,6 @@ public class  BaseActivity extends AppCompatActivity {
 			Log.e("BaseActivity", "M900 主板下电");
 			mExpDevMgr.exPowerOff();
 			mExpDevMgr.setPsamReaderPw(false);
-		}else if (mPowerOnMode == 5) {// LXR下电
-			Log.e("BaseActivity", "LXR 主板下电");
-			iCcon.mcu_powerAndoPenOrCloseSerialPort(0);
-//			iCcon.exPowerOff();
-//			boolean r=iCcon.setPciePwr_EnOff();
-//			int a =iCcon.MCU_interface_power(0);
-//			int b =iCcon.mcu_powerAndoPenOrCloseSerialPort(0);
-//			int c =iCcon.oPenOrCloseSerialPort(1,0);
-//			Log.e("BaseActivity", "r "+r);
-//			Log.e("BaseActivity", "a "+a);
-//			Log.e("BaseActivity", "b "+b);
-//			Log.e("BaseActivity", "c "+c);
 		}
 	}
 
