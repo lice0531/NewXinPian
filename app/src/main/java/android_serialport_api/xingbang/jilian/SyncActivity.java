@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -95,7 +96,8 @@ public class SyncActivity extends BaseActivity {
     private int delay = 0;
     private String Yanzheng = "";//是否验证地理位置
     private String TAG = "热点级联页面";
-
+    private String qbxm_id = "-1";
+    private String qbxm_name = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +128,21 @@ public class SyncActivity extends BaseActivity {
     private void getPropertiesData() {
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Log.e(TAG + "级联", "Yanzheng: "+Yanzheng );
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            qbxm_id = !TextUtils.isEmpty((String)bundle.get("qbxm_id")) ?
+                    (String)bundle.get("qbxm_id") : "";
+            qbxm_name = !TextUtils.isEmpty((String) bundle.get("qbxm_name")) ?
+                    (String) bundle.get("qbxm_name") : "";
+        } else {
+            qbxm_id = "";
+            qbxm_name = "";
+        }
+        if (qbxm_id == null) {
+            qbxm_id = "-1";
+            qbxm_name = " ";
+        }
     }
 
 
@@ -169,18 +186,22 @@ public class SyncActivity extends BaseActivity {
                     } else if (response.startsWith("A002")) {
                         show_Toast(getString(R.string.text_sync_tip4));
                         String str5 = "级联起爆";
-                        if (Yanzheng.equals("验证")) {
-                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                            Intent intent5 = new Intent(SyncActivity.this, VerificationActivity.class);//验证爆破范围页面
-                            intent5.putExtra("dataSend", str5);
-                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        } else {
+//                        if (Yanzheng.equals("验证")) {
+//                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                            Intent intent5 = new Intent(SyncActivity.this, VerificationActivity.class);//验证爆破范围页面
+//                            intent5.putExtra("dataSend", str5);
+//                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
+//                        } else {
                             Intent intent5 = new Intent(SyncActivity.this, FiringMainActivity.class);//四川大带载
+                            Bundle bundle = new Bundle();
+                            bundle.putString("qbxm_id", qbxm_id);
+                            bundle.putString("qbxm_name", qbxm_name);
+                            intent5.putExtras(bundle);
                             intent5.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             intent5.putExtra("dataSend", str5);
                             intent5.putExtra("isJl","Y");
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        }
+//                        }
                     } else if (response.startsWith("A003")) {
 //                        show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));

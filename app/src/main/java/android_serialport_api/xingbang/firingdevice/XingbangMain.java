@@ -372,6 +372,7 @@ public class XingbangMain extends SerialPortActivity {
         mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
         mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+        Log.e(TAG,"当前区域:" + mRegion);
         // 设置标题区域
         setTitleRegion();
         // 获取区域雷管数量
@@ -821,16 +822,14 @@ public class XingbangMain extends SerialPortActivity {
                     return;
                 }
 
-
-
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if (a < 180000) {
+                    if (a >= 0 && a < 180000) {
                         initDialog_fangdian(getString(R.string.text_main_tip1), a, "组网");
+                        return;
                     }
-                    return;
                 }
                 close();//停止访问电流
                 Log.e("测试页面", "测试: ");
@@ -870,7 +869,7 @@ public class XingbangMain extends SerialPortActivity {
 
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if (a < 180000) {
+                    if (a >= 0 &&  a < 180000) {
                         initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
                         return;
                     }
@@ -1733,6 +1732,13 @@ public class XingbangMain extends SerialPortActivity {
             llview.setVisibility(View.VISIBLE);
             text_tip.setVisibility(View.GONE);
             errlistview.setVisibility(View.VISIBLE);
+            // 点击按钮时错误雷管列表展示出来后,“查看错误雷管”按钮没有用了,所以直接隐藏
+            // 获取AlertDialog对象
+            AlertDialog alertDialog = (AlertDialog) dialog;
+            // 获取中立按钮
+            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            // 隐藏按钮
+            neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
             dialogOn(dialog);
         });
 //        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {

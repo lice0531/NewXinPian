@@ -4165,7 +4165,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     show_Toast(getString(R.string.text_sync_tip6));
                     // 此时进入时钟同步模式  向核心板发送指令  让核心板决定谁起爆
                     Log.e(TAG,"sendCmd83--主的子设备可以起爆了--发83指令");
-                    Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "下发83指令");
+                    Utils.writeRecord("主的子设备：" + MmkvUtils.getcode("ACode", "") + "下发83指令");
                     sendCmd(ThreeFiringCmd.setToXbCommon_Translate_83("" + MmkvUtils.getcode("ACode", "")));
                     EventBus.getDefault().post(new FirstEvent("close485"));
                 }
@@ -4182,7 +4182,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 //此时在页面显示出时钟校验的文字
                 increase(12);
                 Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
-                Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
+                Utils.writeRecord("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
             }
         } else if (msg.equals("otherA5")) {
             //A5起爆指令  说明是其他子设备收到了A5指令  此时需要关闭串口
@@ -4191,7 +4191,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     otherA5 = false;
                     EventBus.getDefault().post(new FirstEvent("otherClose"));
                     Log.e(TAG,"其他子设备开始关串口执行起爆");
-                    Utils.writeLog("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
+                    Utils.writeRecord("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
                 }
             }
         } else if (msg.equals("handleJx")) {

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,6 +40,8 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.jilian.SyncActivity;
+import android_serialport_api.xingbang.jilian.SyncActivityYouxian;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
@@ -87,6 +90,7 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
     private List<VoBlastModel> list_data = new ArrayList<>();
     private LocationService locationService;
     private String mRegion;     // 区域
+    private String isJl = "";//级联
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +120,9 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
             mAdapter.notifyDataSetChanged();
             return false;
         });
-
+        isJl = !TextUtils.isEmpty(getIntent().getStringExtra("isJl")) ?
+                getIntent().getStringExtra("isJl") : "";
+        Log.e("验证页面","isJl:" + isJl);
     }
 
     private void baidudingwei() {
@@ -366,7 +372,17 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
         Log.e("验证数据", "map_dl.get(position).get(id): " + map_dl.get(position).get("id"));
         qbxm_id = map_dl.get(position).get("id") + "";
         qbxm_name = map_dl.get(position).get("spare1").toString();
-        Intent intent = new Intent(this, FiringMainActivity.class);
+        Intent intent = null;
+        if (!TextUtils.isEmpty(isJl)) {
+            //看是有线级联还是热点级联
+            if ("isYxjl".equals(isJl)) {
+                intent = new Intent(this, SyncActivityYouxian.class);
+            } else if ("isRdjl".equals(isJl)) {
+                intent = new Intent(this, SyncActivity.class);
+            }
+        } else {
+            intent = new Intent(this, FiringMainActivity.class);
+        }
         Bundle bundle = new Bundle();
         bundle.putString("qbxm_id", qbxm_id);
         bundle.putString("qbxm_name", qbxm_name);
@@ -396,7 +412,18 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 mLocationClient.startLocation();
                 break;
             case R.id.btn_yz:
-                Intent intent = new Intent(this, FiringMainActivity.class);
+                Intent intent = null;
+                if (!TextUtils.isEmpty(isJl)) {
+                    //看是有线级联还是热点级联
+                    if ("isYxjl".equals(isJl)) {
+                        intent = new Intent(this, SyncActivityYouxian.class);
+                    } else if ("isRdjl".equals(isJl)) {
+                        intent = new Intent(this, SyncActivity.class);
+                    }
+                } else {
+                    intent = new Intent(this, FiringMainActivity.class);
+                }
+//                Intent intent = new Intent(this, FiringMainActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("qbxm_id", qbxm_id);
                 intent.putExtras(bundle);
