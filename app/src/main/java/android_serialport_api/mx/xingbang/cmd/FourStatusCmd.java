@@ -65,7 +65,7 @@ public class FourStatusCmd {
                 int voltLowInt = Integer.parseInt(strLow, 16);
                 //可调电压版本,系数为0.011,不可调为0.006
 //				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.006;
-                double voltTotal = (volthigh + voltLowInt) * 3.0 * 11 / 4.096 / 1000*1.18;//新芯片
+                double voltTotal = (volthigh + voltLowInt) * 3.0 * 11 / 4.096 / 1000;//新芯片
 //				double voltTotal =(volthigh+voltLowInt)/4.095*3.0 * 0.011;//可调电压
                 float busVoltage = (float) voltTotal;
                 busVoltage = Utils.getFloatToFormat(busVoltage, 2, 4);
@@ -84,11 +84,11 @@ public class FourStatusCmd {
                 int icLowInt = Integer.parseInt(strLow2, 16);
 //				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
                 double icTotal = (ichigh + icLowInt) * 3.0 / (4.096 * 0.35);//新芯片
-                float busCurrent = (float) (icTotal*1.8);//*400
+                float busCurrent = (float) (icTotal*1.8)-10;//
                 if(busCurrent<0){
                     busCurrent=0;
                 }
-                busCurrent = Utils.getFloatToFormat(busCurrent, 0, 4);
+                busCurrent = Utils.getFloatToFormat(busCurrent, 2, 4);
                 vo.setBusCurrentIa(busCurrent);//设置总线电流
 
 
