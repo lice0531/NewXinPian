@@ -367,33 +367,36 @@ public class SouSuoSQActivity extends BaseActivity {
             return;
         }
 
-        String duan = "1";
+
         String version = null;
         String yscs = null;
         if (db.getDetonatorId() != null) {
-            duan = db.getCong_yscs();
+//            duan = db.getCong_yscs();
             version = db.getDetonatorIdSup();
             yscs = db.getZhu_yscs();
         }
         String delay = "";
-        switch (duan) {
-            case "1":
-                delay = "0";
-                break;
-            case "2":
-                delay = "25";
-                break;
-            case "3":
-                delay = "50";
-                break;
-            case "4":
-                delay = "75";
-                break;
-            case "5":
-                delay = "100";
-                break;
-        }
+//        switch (duan) {
+//            case "1":
+//                delay = "0";
+//                break;
+//            case "2":
+//                delay = "25";
+//                break;
+//            case "3":
+//                delay = "50";
+//                break;
+//            case "4":
+//                delay = "75";
+//                break;
+//            case "5":
+//                delay = "100";
+//                break;
+//        }
+        String duan = "1";
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
+        Log.e("搜索", "duanNUM: "+duanNUM);
+        Log.e("搜索", "duanNUM: "+duanNUM);
         maxNo++;
         DenatorBaseinfo denator = new DenatorBaseinfo();
         denator.setBlastserial(maxNo);
@@ -401,7 +404,7 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setDenatorId(db.getDetonatorId());
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
-        denator.setDelay(Integer.parseInt(delay));
+//        denator.setDelay(Integer.parseInt(delay));//PT不更新延时
         if (db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")) {
             denator.setRegdate(db.getTime());
         } else {
