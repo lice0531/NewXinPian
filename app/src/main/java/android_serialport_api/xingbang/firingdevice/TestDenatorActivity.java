@@ -130,14 +130,14 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean send_kg = true;//是否发送41
     public static final int RESULT_SUCCESS = 1;
     private String mRegion;     // 区域
-    private  int cankaodianliu = 15;
+    private int cankaodianliu = 15;
     private List<DenatorBaseinfo> errlist;
     private String Yanzheng = "";//是否验证地理位置
     private String changjia = "TY";
     List<Float> list_dianliu = new ArrayList();
     private boolean isSerialPortClosed = false;//是否已关闭串口
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
-    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(2), new ThreadPoolExecutor.CallerRunsPolicy());
 
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
@@ -175,10 +175,10 @@ public class TestDenatorActivity extends SerialPortActivity {
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        if(changjia.equals("CQ")){
-            cankaodianliu=15;
-        }else {
-            cankaodianliu=17;
+        if (changjia.equals("CQ")) {
+            cankaodianliu = 15;
+        } else {
+            cankaodianliu = 17;
         }
         //获取区号
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -664,7 +664,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     dangqian_ic = busInfo.getBusCurrentIa();
                     ll_firing_Volt_4.setText("" + busInfo.getBusVoltage() + "V");
                     ll_firing_IC_4.setText("" + displayIcStr);
-                    if (displayIc == 0 && denatorCount > 5 && firstCount < 5&&firstCount >2) {//Preparation_time * 0.2
+                    if (displayIc == 0 && denatorCount > 5 && firstCount < 5 && firstCount > 2) {//Preparation_time * 0.2
                         ll_firing_IC_4.setTextColor(Color.RED);
                         show_Toast(getString(R.string.text_test_tip12));
                         btn_jixu.setVisibility(View.GONE);
@@ -692,7 +692,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         return;
                     }
                     //判断电流过大是用的之前的参数,这个后续会改
-                    if (displayIc > 21000 ) {//Preparation_time * 0.5
+                    if (displayIc > 21000) {//Preparation_time * 0.5
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
                         ll_firing_IC_4.setTextSize(20);
@@ -705,13 +705,19 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        ll_firing_IC_4.setTextSize(20);
 //                        Utils.writeRecord("--起爆测试--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,电流偏大");
 //                    }
-                    else if (displayIc > (denatorCount * cankaodianliu +4000) ) {//Preparation_time * 0.5
+                    else if (denatorCount < 200 && displayIc > (denatorCount * cankaodianliu * 2)) {//Preparation_time * 0.5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
-                    } else if (displayIc < 4 + denatorCount * 6 ) {//Preparation_time * 0.5
+                    } else if (denatorCount >= 200 && displayIc > (denatorCount * cankaodianliu + 4000)) {//Preparation_time * 0.5
+                        Log.e(TAG, "电流过大: ");
+                        displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
+                        ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
+                        ll_firing_IC_4.setTextSize(20);
+                        Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
+                    } else if (displayIc < 4 + denatorCount * 6) {//Preparation_time * 0.5
                         displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
@@ -984,14 +990,14 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
                             Log.e(TAG, "firstCount1: " + firstCount + "--" + Preparation_time);
                             Log.e(TAG, "firstCount: " + firstCount + "--" + "firstCount_max = " + firstCount_min);
-                            if (firstCount >= firstCount_min && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) >-20) {
+                            if (firstCount >= firstCount_min && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {
                                 firstCount_panduan++;
-                                Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size()+"--电流"+list_dianliu.get(list_dianliu.size()-1));
-                                Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size() - 5)+"--电流"+list_dianliu.get(list_dianliu.size()- 5));
+                                Log.e(TAG, "list_dianliu.size(): " + list_dianliu.size() + "--电流" + list_dianliu.get(list_dianliu.size() - 1));
+                                Log.e(TAG, "list_dianliu.size()-5: " + (list_dianliu.size() - 5) + "--电流" + list_dianliu.get(list_dianliu.size() - 5));
                                 Log.e(TAG, "list_dianliu.get(list_dianliu.size()-1)-list_dianliu.get(list_dianliu.size()-5): " + (list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5)));
 
 //                                revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
-                                Log.e(TAG, "firstCount_panduan: " +firstCount_panduan);
+                                Log.e(TAG, "firstCount_panduan: " + firstCount_panduan);
 //                                Thread.sleep(1000);//为了发40后等待
 //                                stage = 3;
 //                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -999,7 +1005,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                             }
 
                             //到达最大时间,直接跳转
-                            if (firstCount >= Preparation_time){
+                            if (firstCount >= Preparation_time) {
                                 Thread.sleep(1000);//为了发40后等待
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 stage = 3;
@@ -1028,7 +1034,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                                 sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                             }
 
-                            if(firstCount_panduan>5){//判断是否符合条件,跳转阶段
+                            if (firstCount_panduan > 5) {//判断是否符合条件,跳转阶段
                                 Thread.sleep(1000);//为了发40后等待
                                 stage = 3;
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
@@ -1483,7 +1489,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         } else {
             loadMoreData_err();
         }
-        firstCount=0;
+        firstCount = 0;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
         byte[] powerCmd = FourStatusCmd.setToXbCommon_OpenPower_42_2("00");//41
         sendCmd(powerCmd);
@@ -1522,7 +1528,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n" +  getResources().getString(R.string.text_fir_dialog1));
+        mOffTextView.setText(tip + "\n" + getResources().getString(R.string.text_fir_dialog1));
         mDialog = new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.text_fir_dialog2)).setCancelable(false).setView(mOffTextView)
 //                .setPositiveButton("确定", (dialog, id) -> {
@@ -1586,7 +1592,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog1, which) -> {
                         off(true);//重新检测
                         dialog1.dismiss();
-                    }).setNeutralButton (getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                    }).setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
                         stopXunHuan();
                     }).create();
             if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
@@ -1621,7 +1627,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     .setCancelable(false)
                     //设置对话框的按钮
-                    .setNegativeButton (getResources().getString(R.string.text_firing_jixu), (dialog1, which) -> {
+                    .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog1, which) -> {
                         off(true);//重新检测
                         dialog1.dismiss();
                     }).setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
@@ -1723,9 +1729,10 @@ public class TestDenatorActivity extends SerialPortActivity {
 
     /**
      * 防止多次点击方法
-     * */
+     */
     private static final int MIN_CLICK_DELAY_TIME = 1000; // 点击间隔1秒
     private long mLastClickTime;
+
     private boolean needIgnoreClick() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - mLastClickTime < MIN_CLICK_DELAY_TIME) {
