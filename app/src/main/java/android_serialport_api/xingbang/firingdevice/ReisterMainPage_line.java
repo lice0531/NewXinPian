@@ -687,6 +687,31 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            }
+        }
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -2212,6 +2237,31 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            }
+        }
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
