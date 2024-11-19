@@ -418,7 +418,7 @@ public class SetDelayTime extends BaseActivity {
 
         String checstr = checkData();
         if (checstr == null || checstr.trim().length() < 1) {
-            int maxDelay = getComputerDenDelay(dijia,startNo,endNo);
+            int maxDelay = getComputerDenDelay(dijia);
             Log.e("延时1", "maxDelay: " + maxDelay);//9010
             Log.e("延时2", "maxSecond: " + maxSecond);//5000
             if (maxSecond >= 0  &&  maxSecond < maxDelay) {
@@ -747,12 +747,12 @@ public class SetDelayTime extends BaseActivity {
     /**
      * 获取总延时值
      */
-    private int getComputerDenDelay(boolean dijia,String startNoStr,String endNoStr) {
+    private int getComputerDenDelay(boolean dijia) {
 
-//        //起始序号
-//        String startNoStr = startNoTxt.getText().toString();
-//        //终点序号
-//        String endNoStr = endNoTxt.getText().toString();
+        //起始序号
+        String startNoStr = startNoTxt.getText().toString();
+        //终点序号
+        String endNoStr = endNoTxt.getText().toString();
         //孔内雷管数
         String holeDeAmoStr = holeDeAmoTxt.getText().toString();
         //开始延时
