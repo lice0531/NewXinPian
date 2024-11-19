@@ -273,12 +273,16 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        qbxm_id = (String) bundle.get("qbxm_id");
-        qbxm_name = (String) bundle.get("qbxm_name");
-        if (qbxm_id == null) {
+        if (bundle != null) {
+            qbxm_id = !TextUtils.isEmpty((String) bundle.get("qbxm_id")) ?
+                    (String) bundle.get("qbxm_id") : "-1";
+            qbxm_name = !TextUtils.isEmpty((String) bundle.get("qbxm_name")) ?
+                    (String) bundle.get("qbxm_name") : "";
+        } else {
             qbxm_id = "-1";
             qbxm_name = " ";
         }
+        Log.e(TAG,"qbxm_id:" + qbxm_id + "--qbxm_name:" + qbxm_name);
         jlFlag = !TextUtils.isEmpty(intent.getStringExtra("isJl")) ?
                 intent.getStringExtra("isJl") : "";
         isResJc = !TextUtils.isEmpty(intent.getStringExtra("isResJc")) ?

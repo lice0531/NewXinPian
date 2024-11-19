@@ -1961,6 +1961,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
         int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         Log.e(TAG, "当前段最小序号延时: " + delay_minNum);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
@@ -2004,7 +2005,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
         if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2123,6 +2124,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay_max == 0 && duanNo2 == 0) {
@@ -2164,7 +2166,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
         if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2270,6 +2272,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay_max == 0 && duanNo2 == 0) {
@@ -2338,7 +2341,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
-            delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+            delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
             if (delay_max < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
@@ -2430,6 +2433,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum, int duanNo2) {
         Log.e(TAG, "flag_jh_f1: "+flag_jh_f1 );
         Log.e(TAG, "delay_set: "+delay_set );
+        Log.e(TAG, "delay_minNum: "+delay_minNum );
         if(!flag_jh_f1){
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {

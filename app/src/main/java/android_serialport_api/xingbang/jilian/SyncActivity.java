@@ -136,12 +136,8 @@ public class SyncActivity extends BaseActivity {
             qbxm_name = !TextUtils.isEmpty((String) bundle.get("qbxm_name")) ?
                     (String) bundle.get("qbxm_name") : "";
         } else {
-            qbxm_id = "";
-            qbxm_name = "";
-        }
-        if (qbxm_id == null) {
             qbxm_id = "-1";
-            qbxm_name = " ";
+            qbxm_name = "";
         }
     }
 
