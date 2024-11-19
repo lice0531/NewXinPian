@@ -678,6 +678,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay == 0 && duanNo2 == 0) {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
@@ -703,7 +704,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
         if (delay < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -945,6 +946,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay == 0 && duanNo2 == 0) {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
@@ -998,7 +1000,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
 
-            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+            delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
             if (delay < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
@@ -2202,6 +2204,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         // 获取 该区域 最大序号的延时
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         Log.e(TAG, "当前段最小序号延时: " + delay_minNum);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay == 0 && duanNo2 == 0) {
@@ -2227,7 +2230,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
         if (delay < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2381,6 +2384,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         // 获取 该区域 最大序号的延时
         int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
+        int delay_minNo = new GreenDaoMaster().getPieceMinNoDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
         if (delay == 0 && duanNo2 == 0) {
             delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
@@ -2434,7 +2438,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        delay = getDelay(maxNo, delay, start_delay, f1, tk_num, f2,delay_minNo,duanNo2);
         if (delay < 0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;

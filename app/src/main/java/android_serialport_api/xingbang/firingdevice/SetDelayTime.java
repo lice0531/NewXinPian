@@ -341,9 +341,13 @@ public class SetDelayTime extends BaseActivity {
 
     private void setDalay( boolean dijia) {
         hideInputKeyboard();
+        String startNo_txt=startNoTxt.getText().toString();
+        String endNo_txt=endNoTxt.getText().toString();
+        String startNo=mListData.get(Integer.parseInt(startNo_txt)-1).getBlastserial()+"";
+        String endNo=mListData.get(Integer.parseInt(endNo_txt)-1).getBlastserial()+"";
 
         //同孔不许改延时
-        String sql = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" order by blastserial";//+" order by htbh "
+        String sql = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNo+" and blastserial <= "+endNo+" order by blastserial";//+" order by htbh "
         Log.e("语句", "sql: "+sql );
         List<String> list_duanNo = new ArrayList<>();//
         Cursor cursor5 = getDaoSession().getDatabase().rawQuery(sql, null);
@@ -356,8 +360,8 @@ public class SetDelayTime extends BaseActivity {
             cursor5.close();
         }
         GreenDaoMaster master = new GreenDaoMaster();
-        DenatorBaseinfo db_start =master.querylgForXh(startNoTxt.getText().toString(),mRegion);
-        DenatorBaseinfo db_end =master.querylgForXh(endNoTxt.getText().toString(),mRegion);
+        DenatorBaseinfo db_start =master.querylgForXh(startNo,mRegion);
+        DenatorBaseinfo db_end =master.querylgForXh(endNo,mRegion);
         Log.e("末尾雷管", "db_end: "+db_end.toString());
         int a = new GreenDaoMaster().querylgNum(db_start.getDuanNo(), db_start.getDuan(), mRegion);
         int b = new GreenDaoMaster().querylgNum(db_end.getDuanNo(), db_end.getDuan(), mRegion);
@@ -370,7 +374,7 @@ public class SetDelayTime extends BaseActivity {
         }
 
         //同孔不许改延时
-        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNoTxt.getText().toString()+" and blastserial <= "+endNoTxt.getText().toString()+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
+        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNo+" and blastserial <= "+endNo+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
         Log.e("语句", "sql: "+sql );
         List<String> list_fanzhuan = new ArrayList<>();//
         Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
@@ -388,7 +392,7 @@ public class SetDelayTime extends BaseActivity {
 
         String checstr = checkData();
         if (checstr == null || checstr.trim().length() < 1) {
-            int maxDelay = getComputerDenDelay(dijia);
+            int maxDelay = getComputerDenDelay(dijia,startNo,endNo);
             Log.e("延时1", "maxDelay: " + maxDelay);//9010
             Log.e("延时2", "maxSecond: " + maxSecond);//5000
             if (maxSecond >= 0  &&  maxSecond < maxDelay) {
@@ -717,12 +721,12 @@ public class SetDelayTime extends BaseActivity {
     /**
      * 获取总延时值
      */
-    private int getComputerDenDelay(boolean dijia) {
+    private int getComputerDenDelay(boolean dijia,String startNoStr,String endNoStr) {
 
-        //起始序号
-        String startNoStr = startNoTxt.getText().toString();
-        //终点序号
-        String endNoStr = endNoTxt.getText().toString();
+//        //起始序号
+//        String startNoStr = startNoTxt.getText().toString();
+//        //终点序号
+//        String endNoStr = endNoTxt.getText().toString();
         //孔内雷管数
         String holeDeAmoStr = holeDeAmoTxt.getText().toString();
         //开始延时
