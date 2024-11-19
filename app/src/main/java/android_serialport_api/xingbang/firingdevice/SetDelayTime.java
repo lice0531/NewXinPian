@@ -228,6 +228,9 @@ public class SetDelayTime extends BaseActivity {
                 if(endNoTxt.getText().length()==0){
                     show_Toast(getResources().getString(R.string.text_jsxh));
                     return;
+                }if(mListData.size()==0){
+                    show_Toast("请注册雷管");
+                    return;
                 }
                 AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
                         .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
@@ -253,6 +256,9 @@ public class SetDelayTime extends BaseActivity {
             }
             if(endNoTxt.getText().length()==0){
                 show_Toast(getResources().getString(R.string.text_jsxh));
+                return;
+            }if(mListData.size()==0){
+                show_Toast("请注册雷管");
                 return;
             }
             AlertDialog dialog = new AlertDialog.Builder(SetDelayTime.this)
