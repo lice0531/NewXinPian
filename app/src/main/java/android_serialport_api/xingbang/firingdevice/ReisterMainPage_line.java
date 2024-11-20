@@ -687,6 +687,31 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            }
+        }
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -786,7 +811,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        resetView_start();
         return 0;
     }
 
@@ -1081,7 +1105,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        resetView_start();
         return reCount;
     }
 
@@ -1234,6 +1257,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
+                    resetView_start();
                     break;
 
                 // 重新排序 更新视图
@@ -2212,6 +2236,31 @@ public class ReisterMainPage_line extends SerialPortActivity {
             delay_start=start_delay;
         }
         Log.e("扫码", "delay_set: " + delay_set);
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            }
+        }
         if (delay_set.equals("f1")) {
             if (maxSecond != 0 && delay + f1 > maxSecond) {//
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
@@ -2302,7 +2351,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
-        resetView_start();
         return 0;
     }
 
@@ -2523,7 +2571,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         mHandler_showNum.sendMessage(msg);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         SoundPlayUtils.play(1);
-        resetView_start();
+
         return 0;
     }
 

@@ -817,10 +817,10 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "oneCount: "+oneCount );
 //            Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
             Log.e(TAG, "stage: "+stage );
-            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu +4000) && busInfo.getBusCurrentIa() > 10 && stage == 2) {// "电流过大";
-                Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
-                Log.e(TAG, "stage: "+stage );
-                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+            if (isshow2 == 0 && oneCount >=gaoya_cankaoSun*0.9 && denatorCount >= 200 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu +4000) && busInfo.getBusCurrentIa() > 10 && stage == 2) {// "电流过大";
+                Log.e(TAG, "低压:雷管>=200:电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
+                Log.e(TAG, "低压:雷管>=200:stage: "+stage );
+                Log.e(TAG, "低压:雷管>=200:busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
                 if (isJL) {
                     if (!isGyError && !checkIsStopJl()) {
                         duanlu_sun++;
@@ -850,11 +850,41 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
 
-
-            if (isshow2 == 0 && twoCount >=gaoya_cankaoSun*0.9 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 1.3+8000) && busInfo.getBusCurrentIa() > 10 &&  stage == 6) {// "电流过大";
-                Log.e(TAG, "电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
-                Log.e(TAG, "stage: "+stage );
-                Log.e(TAG, "busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+            if (isshow2 == 0 && oneCount >= gaoya_cankaoSun * 0.9 && denatorCount < 200 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 2) && busInfo.getBusCurrentIa() > 10 && stage == 2) {// "电流过大";
+                Log.e(TAG, "低压:雷管<200:电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
+                Log.e(TAG, "低压:雷管<200:stage: "+stage );
+                Log.e(TAG, "低压:雷管<200:busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+                if (isJL) {
+                    if (!isGyError && !checkIsStopJl()) {
+                        duanlu_sun++;
+                        if (duanlu_sun > 1) {
+                            isshow2 = 1;
+                            //电流过大显示弹窗  有线级联通知主控
+                            sendErrorData("02");
+                            deviceStatus = "12";
+                            showDlgdDialog();
+                            Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
+                        }
+                    } else {
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
+                    }
+                } else {
+                    duanlu_sun++;
+                    if (duanlu_sun > 1) {
+                        isshow2 = 1;
+                        //电流过大显示弹窗  有线级联通知主控
+                        sendErrorData("02");
+                        deviceStatus = "12";
+                        showDlgdDialog();
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
+                    }
+                    Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--低压电流过大了");
+                }
+            }
+            if (isshow2 == 0 && twoCount >=gaoya_cankaoSun*0.9 && denatorCount >= 200 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 1.3+8000) && busInfo.getBusCurrentIa() > 10 &&  stage == 6) {// "电流过大";
+                Log.e(TAG, "高压:雷管>=200:电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
+                Log.e(TAG, "高压:雷管>=200:stage: "+stage );
+                Log.e(TAG, "高压:雷管>=200:busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
                 if (isJL) {
                     if (!isGyError) {
                         duanlu_sun++;
@@ -881,7 +911,36 @@ public class FiringMainActivity extends SerialPortActivity {
                     }
                 }
             }
-
+            if (isshow2 == 0 && twoCount >= gaoya_cankaoSun * 0.9 && denatorCount < 200 && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 1.3 * 2) && busInfo.getBusCurrentIa() > 10 && stage == 6) {// "电流过大";
+                Log.e(TAG, "高压:雷管<200:电流过大gaoya_cankaoSun: "+gaoya_cankaoSun );
+                Log.e(TAG, "高压:雷管<200:stage: "+stage );
+                Log.e(TAG, "高压:雷管<200:busInfo.getBusCurrentIa(): "+busInfo.getBusCurrentIa() );
+                if (isJL) {
+                    if (!isGyError) {
+                        duanlu_sun++;
+                        if(duanlu_sun>1){
+                            isshow2 = 1;
+                            //电流过大显示弹窗  有线级联通知主控
+                            sendErrorData("02");
+                            deviceStatus = "12";
+                            showDlgdDialog();
+                            Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压电流过大了");
+                        }
+                    } else {
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压电流过大了");
+                    }
+                } else {
+                    duanlu_sun++;
+                    if(duanlu_sun>1){
+                        isshow2 = 1;
+                        //电流过大显示弹窗  有线级联通知主控
+                        sendErrorData("02");
+                        deviceStatus = "12";
+                        showDlgdDialog();
+                        Log.e(TAG,"duanlu_sun:" + duanlu_sun + "--isJl:" + isJL + "--高压电流过大了");
+                    }
+                }
+            }
 
             //电流大于4000,重启检测阶段
             if (oneCount > 20 && stage == 2 && busInfo != null) {
@@ -1183,6 +1242,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (isJL) {
             isDlgdShow = true;
         }
+        Utils.writeRecord("---电流过大弹窗---");
         dlgdDialog = new Builder(FiringMainActivity.this)
                 .setTitle(getResources().getString(R.string.text_dlyc1))//设置对话框的标题//"成功起爆"
                 .setMessage(getResources().getString(R.string.text_dlyc2))//设置对话框的内容"本次任务成功起爆！"
@@ -1241,6 +1301,7 @@ public class FiringMainActivity extends SerialPortActivity {
         String currentPeak = Utils.strPaddingZero(cPeak, 6);
         EventBus.getDefault().post(new FirstEvent("B8",errMsgStatus,currentPeak,stureNum,serrNum));
     }
+
     private void zanting() {
         Log.e(TAG, "暂停线程:-------------------- ");
         firstThread.exit = true;

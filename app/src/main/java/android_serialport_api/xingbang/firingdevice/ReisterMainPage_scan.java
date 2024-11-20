@@ -666,6 +666,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     showDuanSum(duan_new);
+                    resetView_start();
                     break;
 
                 // 重新排序 更新视图
@@ -1670,12 +1671,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         final EditText username = (EditText) view.findViewById(R.id.blast_shellBlastNo_field);
         final EditText password = (EditText) view.findViewById(R.id.blast_delay_field);
 
-        String selection = "id = ?"; // 选择条件，给null查询所有  
+        String selection = "id = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {id + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, selection, selectionArgs, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
 
-            //int _id = cursor.getInt(0);  
+            //int _id = cursor.getInt(0);
             String name = cursor.getString(1);
             String age = cursor.getString(2);
             username.setText(name);
@@ -2086,7 +2087,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
-        resetView_start();
+
         return 0;
     }
 
@@ -2249,7 +2250,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        resetView_start();
         return 0;
     }
 
@@ -2423,7 +2423,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        resetView_start();
         return reCount;
     }
 
@@ -2726,8 +2725,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     flag_jh_f2 = true;
                 }
                 break;
-                case R.id.btn_start_delay:
-                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+            case R.id.btn_start_delay:
+                btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
                 if (btn_start) {
                     btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
                     btn_start = false;
