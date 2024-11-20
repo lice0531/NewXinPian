@@ -1723,7 +1723,6 @@ public class FiringMainActivity extends SerialPortActivity {
         }
         String xy[] = pro_coordxy.split(",");//经纬度
         int maxNo = getHisMaxNumberNo();
-
         maxNo++;
         String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
         DenatorHis_Main his = new DenatorHis_Main();
