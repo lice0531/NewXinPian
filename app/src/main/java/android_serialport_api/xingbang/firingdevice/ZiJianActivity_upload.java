@@ -111,7 +111,6 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         lowTiaoZheng = sp.getString("lowTiaoZheng", "0");
         highTiaoZheng = sp.getString("highTiaoZheng", "0");
         initHandler();
-        initFTP();              // 初始化FTP
         ziJianThread = new ZiJianThread();
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
@@ -119,17 +118,17 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         CJ = "SC_";//SC-四川 NM-内蒙(不同的版本需要修改)
 //        CJ="XB_";//实验用
         binName = CJ + "    KT50_V1.3_MX";
-        if (IntervalUtil.isFastClick_2()) {//SC_KT50_V1.3_MXDB
-            //有三个版本,16V-普通板子 16V-11000版子  17V-11000板子
-            //UpgradeActivity里面的对应值也要改
-            GetFileName(binName, "/mx/", ".bin");//17V是电流11000,16V是改变前的
-
-        }
         deleteRiZhi();
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, "1");
 
         deletaBeian();
+        if (NetUtils.haveNetWork(this)) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+            Log.e("记录时间", "format1: "+format1 );
+            MmkvUtils.savecode("time",format1);
+        }
     }
 
     private void deletaBeian() {
@@ -141,86 +140,8 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
     }
 
-    /**
-     * 初始化FTP
-     */
-    private void initFTP() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        mFTP = new FTP(mIP, mUserName, mPassWord);
-    }
 
 
-    private void GetFileName(String name, String remotePath, String type) {
-
-        // 如果是Bin文件
-        if (type.equals(".bin")) {
-            mGetFrom = 3;    // 从xb获得
-        }
-        Log.e("是否有网", NetUtils.haveNetWork(this) + "");
-        // 网络判断
-        if (!NetUtils.haveNetWork(this)) {
-            return;
-        }
-
-        try {
-            String ftpFileName = null;  // 所需文件在 服务器文件名称
-            String version_ftp;         // 所需文件在 服务器的版本号
-//            mPath_Local = "";           // 所需文件在 本地文件路径
-            String version_self;        // 当前使用 软件版本(apk升级参数)
-            String time_0 = null;       // bin文件日期最新日期
-
-            // 如果登录成功
-            if (mFTP.openConnect()) {
-                // 获取服务器文件列表
-                mList_FtpFileName.clear();
-                mList_FtpFileName = mFTP.listFiles(remotePath);
-//                Log.e("下载目录", mList_FtpFileName.toString());
-
-                for (int i = 0; i < mList_FtpFileName.size(); i++) {
-                    String fileName = mList_FtpFileName.get(i).getName();
-                    long fileSize = mList_FtpFileName.get(i).getSize();
-
-                    if (fileName.contains(name)) {
-
-                        // 如果是Bin文件
-                        if (type.equals(".bin")) {
-
-                            // 截取bin文件日期
-                            String time_1 = fileName.substring(fileName.indexOf("_") + 1, fileName.indexOf(".bin"));
-
-                            // 如果 这是第一个符合条件文件
-                            if (time_0 == null) {
-                                ftpFileName = fileName;
-                                time_0 = time_1;
-                                mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
-                                mDownLoadFileSize = fileSize;
-                                version_cloud = ftpFileName;
-                                Log.e("Download_Bin_1", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
-                            }
-                            // 如果 这是第n个符合条件文件
-//                            else {
-//
-//                                // 例如: permit_20210131.bin 比对 permit_20210319.bin
-//                                Log.e("Download_Bin_2", "time_0: " + time_0);
-//                                Log.e("Download_Bin_2", "time_1: " + time_1);
-//
-//                                if (TimeUtils.isDate2Bigger(time_0, time_1)) {
-//                                    Log.e("Download_Bin_2", "boolean: " + TimeUtils.isDate2Bigger(time_0, time_1));
-//                                    ftpFileName = fileName;
-//                                    mDownLoadFilePath = mSaveDirPath + "/" + ftpFileName;
-//                                    mDownLoadFileSize = fileSize;
-//                                    Log.e("Download_Bin_2", "需下载文件名称: " + ftpFileName + " 需下载文件大小: " + mDownLoadFileSize + " 需下载文件路径: " + mDownLoadFilePath);
-//                                }
-//                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void quanxian() {
         final String TAG = "权限";
@@ -242,8 +163,27 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
                     @Override
                     public void onFinish() {
-//                        show_Toast("所有权限申请完成");
-                        ziJianThread.start();
+                        //对比时间
+                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String format1 = sd.format(new Date(System.currentTimeMillis() ));//当前时间
+                        String time =(String) MmkvUtils.getcode("time","2024-11-20 12:00:00");
+                            try {
+                                Date date1 = sd.parse(format1);//当前日期
+                                Date date2 = sd.parse(time);//有网记录时间
+                                if(date1.compareTo(date2)>0){
+                                    //过期
+                                    ziJianThread.start();
+                                    Log.e(TAG, "当前时间大于记录时间: " );
+                                }else {
+                                    createDialog();
+                                    //大于
+                                    Log.e(TAG, "当前时间小于记录时间: " );
+                                }
+                            } catch (ParseException | java.text.ParseException e) {
+                                e.printStackTrace();
+                            }
+
+
                     }
 
                     @Override
@@ -434,26 +374,18 @@ public class ZiJianActivity_upload extends SerialPortActivity {
      */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("升级提醒");//"说明"
-        builder.setMessage("检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
-        builder.setPositiveButton("进行更新", (dialog, which) -> {
-//            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
-            finish();
-            Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", binName);
-            startActivity(intent);
-            dialog.dismiss();
-        });
-//        builder.setNeutralButton("退出", (dialog, which) -> {
-//            dialog.dismiss();
+        builder.setTitle("系统提醒");//"说明"
+        builder.setMessage("检测系统时间被修改,联网更新时间后,再进入程序");
+//        builder.setPositiveButton("进行更新", (dialog, which) -> {
+//
 //            finish();
+//            dialog.dismiss();
 //        });
-        builder.setNegativeButton("不更新", (dialog, which) -> {
-            finish();
-            Intent intent = new Intent(this, XingbangMain.class);
-            startActivity(intent);
+        builder.setNeutralButton("退出", (dialog, which) -> {
             dialog.dismiss();
+            finish();
         });
+
         builder.create().show();
     }
 
