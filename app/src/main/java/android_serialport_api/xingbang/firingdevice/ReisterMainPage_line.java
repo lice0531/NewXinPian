@@ -811,7 +811,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        resetView_start();
         return 0;
     }
 
@@ -1106,7 +1105,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        resetView_start();
         return reCount;
     }
 
@@ -1259,6 +1257,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
 
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
+                    resetView_start();
                     break;
 
                 // 重新排序 更新视图
@@ -2352,7 +2351,6 @@ public class ReisterMainPage_line extends SerialPortActivity {
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
-        resetView_start();
         return 0;
     }
 
@@ -2573,7 +2571,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         mHandler_showNum.sendMessage(msg);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         SoundPlayUtils.play(1);
-        resetView_start();
+
         return 0;
     }
 

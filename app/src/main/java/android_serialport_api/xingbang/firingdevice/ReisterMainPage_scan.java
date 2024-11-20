@@ -666,6 +666,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     showDuanSum(duan_new);
+                    resetView_start();
                     break;
 
                 // 重新排序 更新视图
@@ -2086,7 +2087,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
-        resetView_start();
+
         return 0;
     }
 
@@ -2249,7 +2250,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        resetView_start();
         return 0;
     }
 
@@ -2423,7 +2423,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         tipInfoFlag = 88;
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-        resetView_start();
         return reCount;
     }
 
