@@ -401,7 +401,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     private volatile int initOpenCmdReFlag = 0;
     private volatile int revCloseCmdReFlag = 0;
     private volatile int revOpenCmdReFlag = 0;
-    private ZhuceThread zhuceThread;
     private volatile String prex = "";
     private volatile int start = 0;
     private volatile int num = 0;
@@ -474,20 +473,30 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 }
             }
         });
+        //初始化联祥瑞扫码配置
         initLxrScan();
     }
 
     private void initLxrScan() {
-        //扫码模式配置
-        mBarcode = new Barcode(ReisterMainPage_scan.this);
-        mBarcodeConfig = new BarcodeConfig();
-        mBarcodeConfig.mOutPutMode = BarcodeConfig.OUTPUT_API;
-        mBarcodeConfig.mEncodeMode = BarcodeConfig.ENCODE_MODE_UTF8;
-        mBarcodeConfig.mTrigerMode = BarcodeConfig.TRIGGER_MODE_MANUAL;
-        mBarcode.setup1D(mBarcodeConfig);
-        //广播接收扫码结果   系统扫码按键扫码
-        mFilter = new IntentFilter("ACTION_BAR_SCAN");
-        registerReceiver(mReceiver, mFilter);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mBarcode = new Barcode(ReisterMainPage_scan.this);
+                //打开手动扫码
+//                boolean isOpen = mBarcode.open1D();
+//                Log.e("扫码", "手动扫码上电成功:" + isOpen);
+                //扫码模式配置
+                mBarcodeConfig = new BarcodeConfig();
+                mBarcodeConfig.mOutPutMode = BarcodeConfig.OUTPUT_API;
+                mBarcodeConfig.mEncodeMode = BarcodeConfig.ENCODE_MODE_UTF8;
+                mBarcodeConfig.mTrigerMode = BarcodeConfig.TRIGGER_MODE_MANUAL;
+                mBarcode.setup1D(mBarcodeConfig);
+                //广播接收扫码结果   系统扫码按键扫码
+                mFilter = new IntentFilter("ACTION_BAR_SCAN");
+                registerReceiver(mReceiver, mFilter);
+                lxrAjOpenScan();
+            }
+        });
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -495,12 +504,28 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG,"接收按键扫码事件");
             String scanData = intent.getStringExtra("EXTRA_SCAN_DATA");
-            if (scanData != null) {
-                Log.e(TAG, "按键扫码结果: " + scanData + "--长度:" + scanData.length());
-                saoma(scanData);
+            if (scanData.trim() != null) {
+                if (!isStartOrEndWithLetter(scanData)) {
+                    Log.e(TAG, "按键扫码结果正常--可进行注册: " + scanData + "--长度:" + scanData.length());
+                    Message msg = new Message();
+                    msg.obj = scanData;
+                    msg.what = 2;
+                    mAutoScan_handler.sendMessage(msg);
+                } else {
+                    Log.e(TAG, "按键扫码结果异常: " + scanData + "--长度:" + scanData.length());
+                }
             }
         }
     };
+
+    // 判断字符串是否以字母开头或结尾
+    public static boolean isStartOrEndWithLetter(String str) {
+        // 判断第一个字符是否是字母
+        boolean startsWithLetter = Character.isLetter(str.charAt(0));
+        // 判断最后一个字符是否是字母
+        boolean endsWithLetter = Character.isLetter(str.charAt(str.length() - 1));
+        return startsWithLetter || endsWithLetter; // 只要开头或结尾是字母，返回 true
+    }
 
     private void getUserMessage() {
         List<MessageBean> list = getDaoSession().getMessageBeanDao().loadAll();
@@ -744,6 +769,10 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             if (msg.what == 1) {
                 String result = (String) msg.obj;
                 Log.e(TAG,"手动扫码结果:" + result);
+                saoma(result);
+            } else if (msg.what == 2) {
+                String result = (String) msg.obj;
+                Log.e(TAG,"按键扫码结果:" + result);
                 saoma(result);
             }
             return false;
@@ -1163,25 +1192,25 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
         btnSetdelay.setEnabled(true);
         btnInput.setEnabled(true);
-        switch (Build.DEVICE) {
-            case "T-QBZD-Z6":
-            case "M900": {
+        lxrTzScan();
+//        switch (Build.DEVICE) {
+//            case "T-QBZD-Z6":
+//            case "M900": {
                 //M900关闭扫码
 //                mScaner.stopScan();
-                lxrTzScan();
-                break;
-            }
-            case "ST327":
-            case "S337": {
-                //st327扫码下电
-                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
-                break;
-            }
-            default: {
+//                break;
+//            }
+//            case "ST327":
+//            case "S337": {
+//                //st327扫码下电
+//                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
+//                break;
+//            }
+//            default: {
                 //kt50停止扫码头方法
 //                scanDecode.stopScan();//停止扫描
-            }
-        }
+//            }
+//        }
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {
@@ -1361,11 +1390,11 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         super.onResume();
-        if (mBarcode.setKeyenable(true)) {
-            Log.e(TAG,"按键扫描扫码open true");
-        } else {
-            Log.e(TAG,"按键扫描扫码open false");
-        }
+//        if (mBarcode.setKeyenable(true)) {
+//            Log.e(TAG,"按键扫描扫码open true");
+//        } else {
+//            Log.e(TAG,"按键扫描扫码open false");
+//        }
     }
 
     @Override
@@ -1384,26 +1413,26 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 //            scanDecode.stopScan();//停止扫描
 //            scanDecode.onDestroy();//回复初始状态
 //        }
-        mBarcode.close1D();
+        lxrAjStopScan();
+        boolean isCancel = mBarcode.cancel1D();
+        Log.e(TAG,"取消扫码成功:" + isCancel);
+        boolean isClose = mBarcode.close1D();
+        Log.e(TAG,"扫码下电成功:" + isClose);
         unregisterReceiver(mReceiver);
+        mHandler_tip.removeCallbacksAndMessages(null);
+        mHandler_0.removeCallbacksAndMessages(null);
+        mHandler_1.removeCallbacksAndMessages(null);
+        mHandler_2.removeCallbacksAndMessages(null);
+        mAutoScan_handler.removeCallbacksAndMessages(null);
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
             try {
                 scanBarThread.join();
+                Log.e(TAG,"关闭扫码线程");
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }
-        if (zhuceThread != null) {
-            scanBarThread.exit = true;  // 终止线程thread
-            try {
-                zhuceThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-//                zhuceThread.interrupt();
-//            Log.e("关闭线程", "关闭线程: ");
         }
 //        new Thread(new Runnable() {
 //            @Override
@@ -2754,7 +2783,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
-                    lxrTzScan();
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
                         try {
@@ -2763,7 +2791,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                             e.printStackTrace();
                         }
                     }
-                    lxrKsScan();
 //                    kaishiScan();
                     //kt50持续扫码线程
                     scanBarThread = new ScanBar();
@@ -3170,7 +3197,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     //开启按键扫描
     private void lxrAjOpenScan() {
         boolean setKeyenable_open = mBarcode.setKeyenable(true);
-        Log.e("扫码setKeyenable_open", setKeyenable_open + "");
         if (setKeyenable_open) {
             Log.e(TAG,"按键扫码打开成功");
         } else {
@@ -3189,25 +3215,22 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         }
     }
     private void lxrKsScan() {
+        if (mBarcode == null) {
+            return;
+        }
         boolean open = mBarcode.open1D();
-//        if (destroy) {
-//            mBarcode.close1D();
-//            Log.e("扫码", "关闭扫码");
-//            return;
-//        }
-
         if (open) {
             Log.e("扫码", "上电成功");
             String result = mBarcode.scan1D();
             scanResult = result;
             if (result != null) {
                 if (!result.equals("")) {
-                    Log.e("扫码成功:", result);
+                    Log.e("扫码:", "手动开始扫码成功:" + result);
                 } else {
-                    Log.e("扫码", "获取到的扫码结果为空:" + result);
+                    Log.e("扫码", "手动开始扫码获取到的扫码结果为空:" + result);
                 }
             } else {
-                Log.e("扫码", "扫码失败");
+                Log.e("扫码", "手动开始扫码失败");
             }
         } else {
             Log.e("扫码", "上电失败");
@@ -3223,10 +3246,17 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Message msg = new Message();
-                msg.obj = scanResult;
-                msg.what = 1;
-                mAutoScan_handler.sendMessage(msg);
+                if (!TextUtils.isEmpty(scanResult.trim())) {
+                    if (!isStartOrEndWithLetter(scanResult)) {
+                        Log.e(TAG,"手动扫码结果正常--可进行注册:" + scanResult + "--长度:" + scanResult);
+                        Message msg = new Message();
+                        msg.obj = scanResult;
+                        msg.what = 1;
+                        mAutoScan_handler.sendMessage(msg);
+                    } else {
+                        Log.e(TAG,"手动扫码结果异常:" + scanResult + "--长度:" + scanResult);
+                    }
+                }
             }
         });
     }
@@ -3400,18 +3430,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         }
     }
 
-    private class ZhuceThread extends Thread {
-        public volatile boolean exit = false;
-
-        public void run() {
-            while (exit) {
-
-                insertDenator(prex, start, start + (num - 1),true);
-
-            }
-
-        }
-    }
     String scanResult = "";
 
     private class ScanBar extends Thread {
@@ -3422,7 +3440,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 
             while (!exit) {
                 try {
-                    lxrKsScan();
+                        lxrKsScan();
 //                    switch (Build.DEVICE) {
 //                        case "T-QBZD-Z6":
 //                        case "M900": {
@@ -3433,7 +3451,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 //                            scanDecode.starScan();
 //                        }
 //                    }
-                    Thread.sleep(2500);
+                    Thread.sleep(1250);
                     //break;
 
                 } catch (InterruptedException e) {

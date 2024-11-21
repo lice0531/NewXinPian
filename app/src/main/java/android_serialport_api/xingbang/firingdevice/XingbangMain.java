@@ -723,9 +723,22 @@ public class XingbangMain extends LxrSerialPortActivity {
             time = System.currentTimeMillis();
             show_Toast(getString(R.string.text_error_tip56));
         } else {
-            Utils.writeRecord("---点击返回按键退出程序---");
-//            powerOffDevice(PIN_ADSL);//主板下电
+            SQLiteStudioService.instance().stop();
+            if (sendPower != null) {
+                sendPower.exit = true;  // 终止线程thread
+                sendPower.interrupt();
+                Log.e(TAG,"已关闭sendPower");
+            }
+
+            if (openPower != null) {
+                openPower.exit = true;  // 终止线程thread
+                openPower.interrupt();
+                Log.e(TAG,"已关闭openPower");
+            }
+            closeSeialPort();
             lxrPowerOffDevice();
+            openHandler.removeCallbacksAndMessages(null);
+            Utils.writeRecord("---点击返回按键退出程序---");
             //点击在两秒以内
             removeALLActivity();//执行移除所以Activity方法
         }
@@ -1665,15 +1678,7 @@ public class XingbangMain extends LxrSerialPortActivity {
         isRestarted = false;
         threadStarted = false;
         get41Resp = 0;
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-                closeSeialPort();
-//                mApplication.closeSerialPort();
-//                Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                mSerialPort = null;
-//            }
-//        }).start();
+        closeSeialPort();
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread
             sendPower.interrupt();
