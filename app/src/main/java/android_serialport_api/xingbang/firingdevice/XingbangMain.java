@@ -264,6 +264,13 @@ public class XingbangMain extends BaseActivity {
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
         app_version_name=getString(R.string.app_version_name);
         getleveup();
+
+        if (NetUtils.haveNetWork(this)) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+            Log.e("记录时间", "format1: "+format1 );
+            MmkvUtils.savecode("time",format1);
+        }
     }
 
     private void queryBeian() {

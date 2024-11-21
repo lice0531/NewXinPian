@@ -123,12 +123,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         SPUtils.put(this, Constants_SP.RegionCode, "1");
 
         deletaBeian();
-        if (NetUtils.haveNetWork(this)) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
-            Log.e("记录时间", "format1: "+format1 );
-            MmkvUtils.savecode("time",format1);
-        }
+
     }
 
     private void deletaBeian() {
