@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -62,6 +63,7 @@ import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -194,6 +196,7 @@ public class XingbangMain extends LxrSerialPortActivity {
     private boolean threadStarted = false;
     private boolean isshow1 = true;
     private int duanlu_sun=0;
+    private List<DenatorBaseinfo> list_shou;
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2,2,0, TimeUnit.SECONDS,new LinkedBlockingQueue<>(2),new ThreadPoolExecutor.CallerRunsPolicy());
 
@@ -291,7 +294,7 @@ public class XingbangMain extends LxrSerialPortActivity {
                 TextView view = new TextView(this);
                 view.setTextSize(25);
                 view.setTextColor(Color.RED);
-                view.setText(getString(R.string.text_fir_dialog8));
+                view.setText("总线线路异常,可能有短路的情况，请检查线路");
                 view.setTypeface(null, Typeface.BOLD);
                 AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                         .setTitle(getString(R.string.text_fir_dialog7))//设置对话框的标题//"成功起爆"
@@ -302,7 +305,7 @@ public class XingbangMain extends LxrSerialPortActivity {
                             dialog12.dismiss();
                             finish();
                         })
-                        .setNegativeButton("继续", (dialog1, which) -> {
+                        .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog1, which) -> {
                             isshow1=true;
                             dialog1.dismiss();
                         })
@@ -368,6 +371,7 @@ public class XingbangMain extends LxrSerialPortActivity {
         mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
         mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
+        Log.e(TAG,"当前区域:" + mRegion);
         // 设置标题区域
         setTitleRegion();
         // 获取区域雷管数量
@@ -398,9 +402,10 @@ public class XingbangMain extends LxrSerialPortActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list_shou = master.queryLeiGuan(format1, mRegion);
+        list_shou = master.queryLeiGuan(format1, mRegion);
         Yanzheng_sq_size = list_shou.size();
         Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.toString());
     }
 
     /**
@@ -724,18 +729,7 @@ public class XingbangMain extends LxrSerialPortActivity {
             show_Toast(getString(R.string.text_error_tip56));
         } else {
             SQLiteStudioService.instance().stop();
-            if (sendPower != null) {
-                sendPower.exit = true;  // 终止线程thread
-                sendPower.interrupt();
-                Log.e(TAG,"已关闭sendPower");
-            }
-
-            if (openPower != null) {
-                openPower.exit = true;  // 终止线程thread
-                openPower.interrupt();
-                Log.e(TAG,"已关闭openPower");
-            }
-            closeSeialPort();
+            close();
             lxrPowerOffDevice();
             openHandler.removeCallbacksAndMessages(null);
             Utils.writeRecord("---点击返回按键退出程序---");
@@ -817,30 +811,29 @@ public class XingbangMain extends LxrSerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
-//                if(mExpDevMgr.isSafeSwitchOpen()){
-//                    createDialog_kaiguan();
-//                    return;
-//                }
-                close();//停止访问电流
+                //2次点击
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
+
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
-                    createDialog();
+                    initDialog_shouquan();
                     return;
                 }
+
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if (a < 180000) {
+                    if (a >= 0 && a < 180000) {
                         initDialog_fangdian(getString(R.string.text_main_tip1), a, "组网");
+                        return;
                     }
-                    return;
                 }
+                close();//停止访问电流
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
                 Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);
@@ -862,20 +855,15 @@ public class XingbangMain extends LxrSerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-//                if(mExpDevMgr.isSafeSwitchOpen()){
-//                    createDialog_kaiguan();
-//                    return;
-//                }
-
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
+                //
                 queryBeian();
                 //验证是否授权
-                Log.e(TAG, "验证: "+Yanzheng_sq);
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
-                    createDialog();
+                    initDialog_shouquan();
                     return;
                 }
                 time = System.currentTimeMillis();
@@ -883,7 +871,7 @@ public class XingbangMain extends LxrSerialPortActivity {
 
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if (a < 180000) {
+                    if (a >= 0 &&  a < 180000) {
                         initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
                         return;
                     }
@@ -1304,7 +1292,6 @@ public class XingbangMain extends LxrSerialPortActivity {
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             close();//停止访问电流
-
             finish();
             if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);
@@ -1613,12 +1600,12 @@ public class XingbangMain extends LxrSerialPortActivity {
                         exit = true;
                         break;
                     }
-                    if (zeroCount > 0 && zeroCount <= 3 && get41Resp == 0) {
+                    if (zeroCount > 0 && zeroCount <= 20 && get41Resp == 0) {
                         Log.e(TAG,"发送41指令");
                         sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
                         Thread.sleep(2500);
-                    } else if (zeroCount > 6){
-                        Log.e(TAG,"41指令未返回已发送6次，停止发送41指令");
+                    } else if (zeroCount > 20){
+                        Log.e(TAG,"41指令未返回已发送20次，停止发送41指令");
                         exit = true;
                         break;
                     }
@@ -1639,18 +1626,18 @@ public class XingbangMain extends LxrSerialPortActivity {
         public void run() {
 
             while (!exit) {
-                try {
-                    //发送获取电源信息
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastProcessedTime > 1500){
-                        sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
-                        lastProcessedTime = currentTime;
-                    }
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+//                try {
+                //发送获取电源信息
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastProcessedTime > 1000){
+                    sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "00"));
+                    lastProcessedTime = currentTime;
                 }
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
             }
         }
     }
@@ -1678,23 +1665,19 @@ public class XingbangMain extends LxrSerialPortActivity {
         isRestarted = false;
         threadStarted = false;
         get41Resp = 0;
-        closeSeialPort();
         if (sendPower != null) {
             sendPower.exit = true;  // 终止线程thread
             sendPower.interrupt();
         }
         threadPoolExecutor.shutdown();
         Log.e(TAG, "close: 关闭线程池" );
-
+        Utils.writeLog("首页:关闭获取电流电压线程池");
         if (openPower != null) {
             openPower.exit = true;  // 终止线程thread
-//            try {
-                openPower.interrupt();
-//            } catch (InterruptedException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
+            openPower.interrupt();
         }
+        closeSeialPort();
+        Log.e(TAG,"关闭串口了。。");
     }
 
     @Override
@@ -1702,28 +1685,6 @@ public class XingbangMain extends LxrSerialPortActivity {
         sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));//13
         close();
         SQLiteStudioService.instance().stop();
-        if (sendPower != null) {
-            sendPower.exit = true;  // 终止线程thread
-            sendPower.interrupt();
-            Log.e(TAG,"已关闭sendPower");
-        }
-
-        if (openPower != null) {
-            openPower.exit = true;  // 终止线程thread
-            openPower.interrupt();
-            Log.e(TAG,"已关闭openPower");
-        }
-        if (!isCmdClosed) {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-                    closeSeialPort();
-//                    mApplication.closeSerialPort();
-//                    Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                    mSerialPort = null;
-//                }
-//            }).start();
-        }
 //        if (tipDlg != null) {
 //            tipDlg.dismiss();
 //            tipDlg = null;
@@ -1732,5 +1693,55 @@ public class XingbangMain extends LxrSerialPortActivity {
         super.onDestroy();
         Log.e(TAG, "onDestroy: 已下电");
         openHandler.removeCallbacksAndMessages(null);
+    }
+
+    /***
+     * 建立对话框
+     */
+    private void initDialog_shouquan() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View getlistview = inflater.inflate(R.layout.firing_error_shouquan_listview, null);
+        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+        llview.setVisibility(View.GONE);
+        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+        text_tip.setText(R.string.text_alert_tip_wsqtx);
+        text_tip.setVisibility(View.VISIBLE);
+        // 给ListView绑定内容
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        errlistview.setVisibility(View.GONE);
+        ErrShouQuanListAdapter mAdapter = new ErrShouQuanListAdapter(this, list_shou, R.layout.firing_error_item_shouquan);
+        errlistview.setAdapter(mAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.text_alert_tip_wsq);//"错误雷管列表"
+        builder.setView(getlistview);
+        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+
+
+        });
+        builder.setNeutralButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+//            stopXunHuan();
+            llview.setVisibility(View.VISIBLE);
+            text_tip.setVisibility(View.GONE);
+            errlistview.setVisibility(View.VISIBLE);
+            // 点击按钮时错误雷管列表展示出来后,“查看错误雷管”按钮没有用了,所以直接隐藏
+            // 获取AlertDialog对象
+            AlertDialog alertDialog = (AlertDialog) dialog;
+            // 获取中立按钮
+            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            // 隐藏按钮
+            neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
+            dialogOn(dialog);
+        });
+//        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+////            stopXunHuan();
+//            llview.setVisibility(View.VISIBLE);
+//            text_tip.setVisibility(View.GONE);
+//            errlistview.setVisibility(View.VISIBLE);
+//            dialogOn(dialog);
+//        });
+        builder.create().show();
     }
 }

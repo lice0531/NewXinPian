@@ -88,7 +88,7 @@ public class FourStatusCmd {
                 int icLowInt = Integer.parseInt(strLow2, 16);
 //				double icTotal =(ichigh+ icLowInt)/4.096*3.0 * 0.0098;//普通版本
                 double icTotal = (ichigh + icLowInt) * 3.6 / (4.096 * 0.35);//新芯片
-                float f1 = (float) (icTotal*1.8*2)-10;//*400//减10是减0带载的电流
+                float f1 = (float) (icTotal*1.8*2);//*400//减10是减0带载的电流
                 BigDecimal b = new BigDecimal(f1);
                 float busCurrent = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();//保留两位小数
                 if (busCurrent < 0) {

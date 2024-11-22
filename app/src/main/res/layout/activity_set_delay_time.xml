@@ -48,29 +48,37 @@
             <Button
                 android:id="@+id/btn_setDelayTime_return"
                 style="@style/allbtntstyle"
-                android:layout_width="80dp"
+                android:layout_width="65dp"
                 android:layout_height="40dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="0dp"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/text_return" />
-
+            <Button
+                android:id="@+id/btn_dijian"
+                style="@style/allbtntstyle"
+                android:layout_width="65dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="递减" />
             <Button
                 android:id="@+id/btn_setDelayTime_inputOK"
                 style="@style/allbtntstyle"
-                android:layout_width="80dp"
+                android:layout_width="65dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
-                android:text="@string/text_sure" />
+                android:text="递增" />
 
             <Button
                 android:id="@+id/btn_setDelayTime_suidao"
                 style="@style/allbtntstyle"
-                android:layout_width="wrap_content"
+                android:layout_width="65dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:background="@drawable/bt_mainpage_style"
                 android:gravity="center"
                 android:text="@string/text_delay_sdsz" />

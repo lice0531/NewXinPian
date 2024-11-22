@@ -470,35 +470,37 @@ public class ShouQuanActivity extends BaseActivity {
         }
 
 
-        String duan = "1";
+
         String version = "02";
         String yscs = null;
         if (db.getDetonatorId() != null) {
-            duan = db.getCong_yscs();
+//            duan = db.getCong_yscs();
             version = db.getDetonatorIdSup();
             yscs = db.getZhu_yscs();
         }
         String delay ;
-        switch (duan) {
-            case "2":
-                delay = "25";
-                break;
-            case "3":
-                delay = "50";
-                break;
-            case "4":
-                delay = "75";
-                break;
-            case "5":
-                delay = "100";
-                break;
-            case "1":
-            default:
-                duan="1";
-                delay = "0";
-                break;
-        }
-        int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
+//        Log.e("下载", "duan: "+duan );
+//        switch (duan) {
+//            case "2":
+//                delay = "25";
+//                break;
+//            case "3":
+//                delay = "50";
+//                break;
+//            case "4":
+//                delay = "75";
+//                break;
+//            case "5":
+//                delay = "100";
+//                break;
+//            case "1":
+//            default:
+//                duan="1";
+//                delay = "0";
+//                break;
+//        }
+        String duan = "1";
+        int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, "1");
         maxNo++;
         DenatorBaseinfo denator = new DenatorBaseinfo();
         denator.setBlastserial(maxNo);
@@ -506,7 +508,7 @@ public class ShouQuanActivity extends BaseActivity {
         denator.setDenatorId(db.getDetonatorId());
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
-        denator.setDelay(Integer.parseInt(delay));
+//        denator.setDelay(Integer.parseInt(delay));
         if (db.getQibao().equals("雷管正常") || db.getQibao().equals("已起爆")) {
             denator.setRegdate(db.getTime());
         } else {

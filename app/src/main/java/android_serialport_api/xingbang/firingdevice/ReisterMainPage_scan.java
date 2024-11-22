@@ -2,7 +2,6 @@ package android_serialport_api.xingbang.firingdevice;
 
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
-import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,14 +40,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.kfree.comm.system.ScanQrControl;
 import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
@@ -69,26 +60,38 @@ import android_serialport_api.xingbang.LxrSerialPortActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
+import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
+import android_serialport_api.xingbang.db.DetonatorTypeNew;
+import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
+import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
-import android_serialport_api.xingbang.custom.DetonatorAdapter_Paper;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
-import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
-import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 雷管注册
@@ -357,6 +360,12 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     Button btnAddDelay;
     @BindView(R.id.btn_tk_F1)
     Button btnTkF1;
+    @BindView(R.id.btn_JH_F1)
+    Button btnJHF1;
+    @BindView(R.id.btn_JH_F2)
+    Button btnJHF2;
+    @BindView(R.id.btn_start_delay)
+    Button btnStartDelay;
 
     @BindView(R.id.btn_tk)
     Button btnTk;
@@ -433,12 +442,16 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     private String duan_set = "0";//是duan1还是duan2
     private int n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20 = 0;//翻转
     private int n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40 = 0;//翻转
-    private String TAG = "扫码注册";
+    private String TAG = "扫码注册页面";
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
     private Boolean charu = false;
     private DenatorBaseinfo db_charu;
 //    private ScanQrControl mScaner = null;
     private int xiangHao_errNum=0;//箱码重复数量
+    private Barcode mBarcode;
+    private BarcodeConfig mBarcodeConfig;
+    IntentFilter mFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -451,7 +464,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         getFactoryCode();//获取厂家码
         getFactoryType();//获取延期最大值
         //管壳号扫描分码--结束
-
         init();
         btn_onClick();//button的onClick
 
@@ -478,25 +490,16 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     }
 
     private void initLxrScan() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mBarcode = new Barcode(ReisterMainPage_scan.this);
-                //打开手动扫码
-//                boolean isOpen = mBarcode.open1D();
-//                Log.e("扫码", "手动扫码上电成功:" + isOpen);
-                //扫码模式配置
-                mBarcodeConfig = new BarcodeConfig();
-                mBarcodeConfig.mOutPutMode = BarcodeConfig.OUTPUT_API;
-                mBarcodeConfig.mEncodeMode = BarcodeConfig.ENCODE_MODE_UTF8;
-                mBarcodeConfig.mTrigerMode = BarcodeConfig.TRIGGER_MODE_MANUAL;
-                mBarcode.setup1D(mBarcodeConfig);
-                //广播接收扫码结果   系统扫码按键扫码
-                mFilter = new IntentFilter("ACTION_BAR_SCAN");
-                registerReceiver(mReceiver, mFilter);
-                lxrAjOpenScan();
-            }
-        });
+        mBarcode = new Barcode(ReisterMainPage_scan.this);
+        //扫码模式配置
+        mBarcodeConfig = new BarcodeConfig();
+        mBarcodeConfig.mOutPutMode = BarcodeConfig.OUTPUT_API;
+        mBarcodeConfig.mEncodeMode = BarcodeConfig.ENCODE_MODE_UTF8;
+        mBarcodeConfig.mTrigerMode = BarcodeConfig.TRIGGER_MODE_MANUAL;
+        mBarcode.setup1D(mBarcodeConfig);
+        //广播接收扫码结果   系统扫码按键扫码
+        mFilter = new IntentFilter("ACTION_BAR_SCAN");
+        registerReceiver(mReceiver, mFilter);
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -521,10 +524,14 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     // 判断字符串是否以字母开头或结尾
     public static boolean isStartOrEndWithLetter(String str) {
         // 判断第一个字符是否是字母
-        boolean startsWithLetter = Character.isLetter(str.charAt(0));
-        // 判断最后一个字符是否是字母
-        boolean endsWithLetter = Character.isLetter(str.charAt(str.length() - 1));
-        return startsWithLetter || endsWithLetter; // 只要开头或结尾是字母，返回 true
+//        boolean startsWithLetter = Character.isLetter(str.charAt(0));
+//        // 判断最后一个字符是否是字母
+//        boolean endsWithLetter = Character.isLetter(str.charAt(str.length() - 1));
+//        return startsWithLetter; // 只要开头或结尾是字母，返回 true
+        if (str.contains("timeout") || str.contains("stop")) {
+            return true;
+        }
+        return false;
     }
 
     private void getUserMessage() {
@@ -540,99 +547,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         getDaoSession().getMessageBeanDao().update(bean);
         Utils.saveFile_Message();
     }
-
-
-    /**
-     * 扫码注册方法/扫描头返回方法
-     */
-//    private void scan() {
-//        switch (Build.DEVICE) {
-//            // KT50 起爆器设备
-//            case "T-QBZD-Z6":
-//            case "M900": {
-//                // 创建扫描头操作对象，并注册回调
-//                mScaner = new ScanQrControl(this);
-//                mScaner.registerScanCb(new ScanQrControl.IScan() {
-//                    @Override
-//                    public void onScanStart(int timeoutSec) {
-//                    }
-//
-//                    @Override
-//                    public void onScanResult(boolean isSuccess, String scanResultStr) {
-//                        Log.e("扫码结果: ", "ScanResult:" + isSuccess + "|" + scanResultStr);
-//                        saoma(scanResultStr);
-//                    }
-//                });
-//                break;
-//            }
-//            default: {
-//                scanDecode = new ScanDecode(this);
-//                scanDecode.initService("true");//初始化扫描服务
-//
-//                scanDecode.getBarCode(data -> {
-//                    saoma(data);
-//                });
-//            }
-//
-//        }
-//
-//
-////        scanDecode = new ScanDecode(this);
-////        scanDecode.initService("true");//初始化扫描服务
-////
-////        scanDecode.getBarCode(data -> {
-////            Log.e("扫码", "data: " + data);
-//////            if (deleteList()) return;
-////            hideInputKeyboard();//隐藏光标
-////            //根据二维码长度判断新旧版本,兼容01一代,02二代芯片
-////            if (data.length() == 13) {
-////                updateMessage("01");
-////            } else if (data.length() == 28) {//P53904180500005390418050000
-////                updateMessage("02");
-////            } else if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
-////                updateMessage("02");
-////            }
-////            if (data.length() == 19) {//扫描箱号
-////                addXiangHao(data);
-////            }
-////            if (sanButtonFlag > 0) {//扫码结果设置到输入框里
-////                Log.e("扫码注册", "data: " + data);
-////                decodeBar(data);
-////                Message msg = new Message();
-////                msg.obj = data;
-////                msg.what = 9;
-////                mHandler_tip.sendMessage(msg);
-////                scanDecode.stopScan();
-////            } else {
-////                String barCode;
-////                String denatorId;
-////                if (data.length() == 28) {
-////                    //Y5620413H00009A630FD74D87604()
-////                    //5620722H12345+000ABCDEF+B603+0+1  13 22 26 27 28
-////                    Log.e("扫码", "data: " + data);
-////                    //5620302H00001A62F400FFF20AB603
-////                    //5420302H00001A6F4FFF20AB603
-////                    //Y5620413H00009A630FD74D87604
-//////                    barCode = data.substring(1, 14);
-//////                    String a = data.substring(13, 22);
-//////                    denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-////
-////                    //内蒙版
-////                    barCode = data.substring(0, 13);
-////                    denatorId = "A621" + data.substring(13, 22);
-////                    String yscs = data.substring(22, 26);
-////                    String version = data.substring(26, 27);
-////                    String duan = data.substring(27, 28);
-////
-////                    insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
-////                } else if (data.length() == 13) {
-////                    barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
-////                    insertSingleDenator(barCode);
-////                }
-////                hideInputKeyboard();//隐藏光标
-////            }
-////        });
-//    }
 
     private void saoma(String data) {
         Log.e("扫码", "data: " + data);
@@ -651,6 +565,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         }if (data.length() == 18) {//扫描箱号
             addXiangHao(data);
         }
+        Log.e(TAG,"sanButtonFlag:" + sanButtonFlag);
         if (sanButtonFlag > 0) {//扫码结果设置到输入框里
             Log.e("扫码注册", "data: " + data);
             decodeBar(data);
@@ -716,6 +631,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     // 设置标题区域
                     setTitleRegion(mRegion, mListData.size());
                     showDuanSum(duan_new);
+                    resetView_start();
                     break;
 
                 // 重新排序 更新视图
@@ -818,6 +734,9 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 show_Toast(getString(R.string.text_error_tip66));
             } else if (msg.what == 12) {
                 show_Toast(getString(R.string.text_mx_zcsb));
+            } else if (msg.what == 13) {
+                SoundPlayUtils.play(4);
+                show_Toast("延时不能小于0ms");
             }else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
                 show_Toast("共有"+xiangHao_errNum+"盒重复");
@@ -936,12 +855,12 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     private long mExitTime = 0;
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.e("点击按键", "keyCode: " + keyCode);
-        if (keyCode == KeyEvent.KEYCODE_THUMBS_DOWN || keyCode == KeyEvent.KEYCODE_PROFILE_SWITCH || keyCode == 289) {//287
-            if (Build.DEVICE.equals("M900")||Build.DEVICE.equals("T-QBZD-Z6")) {
-//                mScaner.startScan();
+        Log.e(TAG,"点击按键:keyCode: " + keyCode);
+        if (keyCode == KeyEvent.KEYCODE_THUMBS_DOWN || keyCode == KeyEvent.KEYCODE_PROFILE_SWITCH || keyCode == 140 || keyCode == 141) {//287
+            if (Build.DEVICE.equals("GEXPZ4")) {
+                lxrAjOpenScan();
+                Log.e(TAG,"启动按键扫码了");
             }
-
             return true;
         }
 //        if (keyCode == KeyEvent.KEYCODE_BACK && pb_show == 1) {
@@ -1193,32 +1112,10 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         btnSetdelay.setEnabled(true);
         btnInput.setEnabled(true);
         lxrTzScan();
-//        switch (Build.DEVICE) {
-//            case "T-QBZD-Z6":
-//            case "M900": {
-                //M900关闭扫码
-//                mScaner.stopScan();
-//                break;
-//            }
-//            case "ST327":
-//            case "S337": {
-//                //st327扫码下电
-//                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
-//                break;
-//            }
-//            default: {
-                //kt50停止扫码头方法
-//                scanDecode.stopScan();//停止扫描
-//            }
-//        }
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            scanBarThread.interrupt();
+            Log.e(TAG,"关闭扫码线程");
         }
     }
 
@@ -1406,19 +1303,13 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             tipDlg = null;
         }
 //        Utils.saveFile();//把软存中的数据存入磁盘中
-//        if (mScaner != null) {
-//            mScaner.unregisterScanCb();
-//        }
-//        if (scanDecode != null) {
-//            scanDecode.stopScan();//停止扫描
-//            scanDecode.onDestroy();//回复初始状态
-//        }
+        //关闭按键扫码
         lxrAjStopScan();
+        unregisterReceiver(mReceiver);
         boolean isCancel = mBarcode.cancel1D();
         Log.e(TAG,"取消扫码成功:" + isCancel);
         boolean isClose = mBarcode.close1D();
         Log.e(TAG,"扫码下电成功:" + isClose);
-        unregisterReceiver(mReceiver);
         mHandler_tip.removeCallbacksAndMessages(null);
         mHandler_0.removeCallbacksAndMessages(null);
         mHandler_1.removeCallbacksAndMessages(null);
@@ -1426,23 +1317,11 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         mAutoScan_handler.removeCallbacksAndMessages(null);
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-                Log.e(TAG,"关闭扫码线程");
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            scanBarThread.interrupt();
+            Log.e(TAG,"关闭扫码线程");
         }
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-                closeSeialPort();
-//                mApplication.closeSerialPort();
-//                Log.e("ReisterMainPage_scan","调用mApplication.closeSerialPort()开始关闭串口了。。");
-//                mSerialPort = null;
-//            }
-//        }).start();
+        closeSeialPort();
+        Log.e(TAG,"关闭串口");
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
         if (reEtF1.getText().length() > 0) {
             MmkvUtils.savecode("f1", reEtF1.getText().toString());
@@ -1662,7 +1541,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
                     .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
-                    .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+                    .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
                     .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -1742,12 +1621,12 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         final EditText username = (EditText) view.findViewById(R.id.blast_shellBlastNo_field);
         final EditText password = (EditText) view.findViewById(R.id.blast_delay_field);
 
-        String selection = "id = ?"; // 选择条件，给null查询所有  
+        String selection = "id = ?"; // 选择条件，给null查询所有
         String[] selectionArgs = {id + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         Cursor cursor = db.query(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, null, selection, selectionArgs, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {  //cursor不位空,可以移动到第一行
 
-            //int _id = cursor.getInt(0);  
+            //int _id = cursor.getInt(0);
             String name = cursor.getString(1);
             String age = cursor.getString(2);
             username.setText(name);
@@ -1774,187 +1653,16 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         builder.show();
     }
 
-//    private void modifyBlastBaseInfo(String serialNo, String hoteNo, String delaytime, final String denatorNo) {
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        // builder.setIcon(R.drawable.ic_launcher);
-//        //   builder.setTitle("修改延时信息");
-//        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
-//        View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
-//        //    设置我们自己定义的布局文件作为弹出框的Content
-//        builder.setView(view);
-//
-//        final EditText serialNoTxt = (EditText) view.findViewById(R.id.serialNo);
-//        final EditText denatorNoTxt = (EditText) view.findViewById(R.id.denatorNo);
-//        final EditText delaytimeTxt = (EditText) view.findViewById(R.id.delaytime);
-//
-//        serialNoTxt.setEnabled(false);
-//        denatorNoTxt.setEnabled(false);
-//
-//        serialNoTxt.setText(serialNo);
-//        denatorNoTxt.setText(denatorNo);
-//        delaytimeTxt.setText(delaytime);
-//
-//        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                //String a = username.getText().toString().trim();
-//                String b = delaytimeTxt.getText().toString().trim();
-//                if (maxSecond != 0 && Integer.parseInt(b) > maxSecond) {//
-//                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-//                    dialog.dismiss();
-//                } else if (b == null || b.trim().length() < 1 || (maxSecond > 0 && Integer.parseInt(b) > maxSecond)) {
-//                    show_Toast(getString(R.string.text_error_tip37));
-//                    dialog.dismiss();
-//                } else {
-//                    Utils.writeRecord("-单发修改延时:" + "-管壳码:" + denatorNo + "-延时:" + b);
-//                    modifyDelayTime(selectDenatorId, b);
-////                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-//                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//                    //    将输入的用户名和密码打印出来
-//                    show_Toast(getString(R.string.text_error_tip38));
-//                    dialog.dismiss();
-//                }
-//            }
-//        });
-//        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//            }
-//        });
-//        builder.setNeutralButton("删除", (dialog, which) -> {
-//            dialog.dismiss();
-//            pb_show = 1;
-//            runPbDialog();
-//            Utils.writeRecord("-单发删除:" + "-删除管壳码:" + denatorNo + "-延时" + delaytime);
-//            new Thread(() -> {
-//                String whereClause = "shellBlastNo = ?";
-//                String[] whereArgs = {denatorNo};
-//                db.delete(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, whereClause, whereArgs);
-//                Utils.deleteData(mRegion);//重新排序雷管
-////                    getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
-//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//                tipDlg.dismiss();
-//                Utils.saveFile();//把软存中的数据存入磁盘中
-//                pb_show = 0;
-//            }).start();
-//        });
-//        builder.show();
-//    }
-
-    //更新延时
-    public int modifyDelayTime(String id, String delay) {
-        ContentValues values = new ContentValues();
-        values.put("delay", delay);
-        db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=?", new String[]{"" + id});
-        Utils.saveFile();//把软存中的数据存入磁盘中
-        return 1;
-    }
-
     @Override
     protected void onLxrDataReceived(byte[] buffer) {
         String fromCommad = Utils.bytesToHexFun(buffer);
-        //Utils.writeLog("Firing recTemp:"+fromCommad);
-        sendOpenThread = new SendOpenPower();
-        if (completeValidCmd(fromCommad) == 0) {
-            fromCommad = this.revCmd;
-            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-            else this.revCmd = "";
-            //	System.out.println("fromCommad="+fromCommad);
-//            Utils.writeLog("reister recFrom:" + fromCommad);
-            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-                return;
-            } else {
-                String cmd = DefCommand.getCmd(fromCommad);
-                if (cmd != null) {
-                    doWithReceivData(cmd, buffer);
-                }
-            }
-        } else {
-            String data = new String(buffer).trim();//使用构造函数转换成字符串
-            Utils.writeLog("扫码结果:" + data);
-            //扫码注册
-            if (data.length() == 19) {//扫描箱号
-                addXiangHao(data);
-            }
-            if (sanButtonFlag > 0 && data.length() == 13) {
-//                optGpio_down(PIN_TRACKER_EN);//扫描头下电
-                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
-
-//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1004, data));
-
-            } else {
-                String barCode = getContinueScanBlastNo(data);
-                if (barCode == null) return;
-                if (checkRepeatShellNo(barCode)) {
-                    singleShellNo = barCode;
-                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-                    return;
-                }
-                insertSingleDenator(barCode);
-            }
-
-        }
+        Utils.writeLog("扫码页面收到:"+fromCommad);
     }
-//    @Override
-//    protected void onDataReceived(byte[] buffer, int size) {
-//        // ignore incoming data
-//        byte[] cmdBuf = new byte[size];
-//        System.arraycopy(buffer, 0, cmdBuf, 0, size);
-//        //String crs16 = CRC16.bytesToHexString(cmdBuf);
-//        //System.out.println(crs16);
-//
-//        String fromCommad = Utils.bytesToHexFun(cmdBuf);
-//        //Utils.writeLog("Firing recTemp:"+fromCommad);
-//        sendOpenThread = new SendOpenPower();
-//        if (completeValidCmd(fromCommad) == 0) {
-//            fromCommad = this.revCmd;
-//            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
-//            else this.revCmd = "";
-//            //	System.out.println("fromCommad="+fromCommad);
-////            Utils.writeLog("reister recFrom:" + fromCommad);
-//            String realyCmd1 = DefCommand.decodeCommand(fromCommad);
-//            if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
-//                return;
-//            } else {
-//                String cmd = DefCommand.getCmd(fromCommad);
-//                if (cmd != null) {
-//                    doWithReceivData(cmd, cmdBuf);
-//                }
-//            }
-//        } else {
-//            String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
-//            Utils.writeLog("扫码结果:" + data);
-//            //扫码注册
-//            if (data.length() == 19) {//扫描箱号
-//                addXiangHao(data);
-//            }
-//            if (sanButtonFlag > 0 && data.length() == 13) {
-////                optGpio_down(PIN_TRACKER_EN);//扫描头下电
-//                powerOffScanDevice(PIN_TRACKER_EN);//扫码头下电
-//
-////                mHandler_0.sendMessage(mHandler_0.obtainMessage(1004, data));
-//
-//            } else {
-//                String barCode = getContinueScanBlastNo(data);
-//                if (barCode == null) return;
-//                if (checkRepeatShellNo(barCode)) {
-//                    singleShellNo = barCode;
-//                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-//                    return;
-//                }
-//                insertSingleDenator(barCode);
-//            }
-//
-//        }
-//    }
 
     /**
      * 关闭守护线程
      */
     private void closeThread() {
-
         //Thread_stage_1 ttst_1
         if (closeOpenThread != null) {
             closeOpenThread.exit = true;  // 终止线程thread
@@ -1977,12 +1685,13 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         }
         if (this.scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
-            try {
-                scanBarThread.join();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+//            try {
+                scanBarThread.interrupt();
+                Log.e(TAG,"关闭扫码线程");
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
 
     }
@@ -2034,15 +1743,6 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 
     }
 
-
-    /**
-     * 查询生产表中对应的管壳码
-     */
-    private DetonatorTypeNew serchDenatorForDetonatorTypeNew(String denatorId) {
-        GreenDaoMaster master = new GreenDaoMaster();
-        return master.queryDetonatorForTypeNew(denatorId);
-    }
-
     /***
      * 单发注册方法(扫码注册,单发输入会用到)
      */
@@ -2083,52 +1783,54 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         // 获取 该区域 最大序号
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);
         // 获取 该区域 最大序号的延时
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
+        int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         Log.e(TAG, "当前段最小序号延时: " + delay_minNum);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
-        if (delay == 0 && duanNo2 == 0) {
-            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        if (delay_max == 0 && duanNo2 == 0) {
+            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
-        int delay_start = delay;
-        Log.e("扫码", "delay_set: " + delay_set);
-        if (delay_set.equals("f1")) {
-            if (maxSecond != 0 && delay + f1 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+        int delay_start = delay_max;
+        if(btn_start||maxNo==0){
+            delay_start=start_delay;
+        }
+        Log.e("单发输入", "delay_start: " + delay_start);
+
+        //判断延时是否超出范围
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
             }
-        } else if (delay_set.equals("f2")) {
-            if (maxSecond != 0 && delay + f2 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay_max + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay_max + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
             }
         }
+
         int tk_num = 0;
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-
-        if (delay_set.equals("f1")) {//孔间延时
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay + f1 * (tk_num + 1);
-                } else {
-                    delay = delay + f1;
-                }
-
-            }
-        } else if (delay_set.equals("f2")) {//排间延时
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay_minNum + f2 * (tk_num + 1);
-                } else {
-                    delay = delay_minNum + f2;
-                }
-            }
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        if (delay_max < 0) {//
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+            return -1;
         }
         int duanNUM = getDuanNo(duan_new, mRegion);//也得做区域区分
 
@@ -2138,7 +1840,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         denatorBaseinfo.setBlastserial(maxNo);
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
-        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setDelay(delay_max);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
@@ -2162,37 +1864,23 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
-
-                delay = db_charu.getDelay();
-                if (delay_set.equals("f1")) {//获取最大延时有问题
-                    delay_add = f1;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay + f1 * (tk_num + 1);
-                        } else {
-                            delay = delay + f1;
-                        }
+                if(!flag_jh_f1){
+                    if(delay_set.equals("f1")){
+                        delay_add=-f1;
                     }
-                } else if (delay_set.equals("f2")) {
-                    delay_add = f2;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay_minNum + f2 * (tk_num + 1);
-                        } else {
-                            delay = delay_minNum + f2;
-                        }
+                }else {
+                    if(delay_set.equals("f1")){
+                        delay_add=f1;
                     }
                 }
-
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
+                Log.e("单发输入--插入延时", "delay_max: " + delay_max);
+                Log.e("单发输入--插入延时", "delay_add: " + delay_add);
 //                if(flag_t1&&delay==db_charu.getDelay()){
 //                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
 //                    return -1;
 //                }
-                denatorBaseinfo.setDelay(delay);
+                denatorBaseinfo.setDelay(delay_max);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
             }
 
@@ -2220,9 +1908,12 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
+
         return 0;
     }
+
+
 
     /***
      * 扫码注册方法
@@ -2254,53 +1945,55 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 //        int delay = getMaxDelay(maxNo);//获取最大延时
 
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
-        if (delay == 0 && duanNo2 == 0) {
-            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        if (delay_max == 0 && duanNo2 == 0) {
+            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
-        int delay_start = delay;
+        int delay_start = delay_max;
+        if(btn_start||maxNo==0){
+            delay_start=start_delay;
+        }
         Log.e("扫码", "delay_set: " + delay_set);
-        if (delay_set.equals("f1")) {
-            if (maxSecond != 0 && delay + f1 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+        //判断延时是否超出范围
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
             }
-        } else if (delay_set.equals("f2")) {
-            if (maxSecond != 0 && delay + f2 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay_max + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay_max + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
             }
         }
+
         int tk_num = 0;
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-
-        if (delay_set.equals("f1")) {//获取最大延时有问题
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay + f1 * (tk_num + 1);
-                } else {
-                    delay = delay + f1;
-                }
-
-            }
-        } else if (delay_set.equals("f2")) {
-            if (maxNo == 0) {
-                delay = delay + start_delay;
-            } else {
-                if (flag_tk) {
-                    delay = delay_minNum + f2 * (tk_num + 1);
-                } else {
-                    delay = delay_minNum + f2;
-                }
-            }
+        delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+        if (delay_max < 0) {//
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+            return -1;
         }
-        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
+
+        Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay_max);
         int a = 0;
         if (duan_scan.equals("0")) {//普通雷管按当前页面选择的来
             a = duan_new;
@@ -2314,7 +2007,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         denatorBaseinfo.setBlastserial(maxNo);
         denatorBaseinfo.setSithole(maxNo + "");
         denatorBaseinfo.setShellBlastNo(shellNo);
-        denatorBaseinfo.setDelay(delay);
+        denatorBaseinfo.setDelay(delay_max);
         denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
         denatorBaseinfo.setStatusCode("FF");
         denatorBaseinfo.setStatusName("已注册");
@@ -2346,37 +2039,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
-
-                delay = db_charu.getDelay();
-                if (delay_set.equals("f1")) {//获取最大延时有问题
-                    delay_add = f1;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay + f1 * (tk_num + 1);
-                        } else {
-                            delay = delay + f1;
-                        }
+                if(!flag_jh_f1){
+                    if(delay_set.equals("f1")){
+                        delay_add=-f1;
                     }
-                } else if (delay_set.equals("f2")) {
-                    delay_add = f2;
-                    if (maxNo == 0) {
-                        delay = delay + start_delay;
-                    } else {
-                        if (flag_tk) {
-                            delay = delay_minNum + f2 * (tk_num + 1);
-                        } else {
-                            delay = delay_minNum + f2;
-                        }
+                }else {
+                    if(delay_set.equals("f1")){
+                        delay_add=f1;
                     }
                 }
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
 
-//                if(flag_t1&&delay==db_charu.getDelay()){
-//                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                    return -1;
-//                }
-                denatorBaseinfo.setDelay(delay);
+                denatorBaseinfo.setDelay(delay_max);
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
             }
 
@@ -2417,25 +2091,42 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 //        int maxNo = getMaxNumberNo();
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
-        int delay = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
+        int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         int duanNo2 = new GreenDaoMaster().getPieceMaxDuanNo(duan_new, mRegion);//获取该区域 最大序号的延时
-        if (delay == 0 && duanNo2 == 0) {
-            delay = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
+        if (delay_max == 0 && duanNo2 == 0) {
+            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
-        int delay_start = delay;
+        int delay_start = delay_max;
+        if(btn_start||maxNo==0){
+            delay_start=start_delay;
+        }
+        if(!flag_jh_f1||!flag_jh_f2){
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                    return -1;
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {
+                if (maxSecond != 0 && delay_max + f1 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            } else if (delay_set.equals("f2")) {
+                if (maxSecond != 0 && delay_max + f2 > maxSecond) {//
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+                    return -1;
+                }
+            }
+        }
 
-        if (delay_set.equals("f1")) {
-            if (maxSecond != 0 && delay + f1 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
-            }
-        } else if (delay_set.equals("f2")) {
-            if (maxSecond != 0 && delay + f2 > maxSecond) {//
-                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                return -1;
-            }
-        }
         if (maxSecond != 0 && f1 > maxSecond) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
             return -1;
@@ -2469,29 +2160,12 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
-
-            if (delay_set.equals("f1")) {//获取最大延时有问题
-                if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else {
-                    if (flag_tk) {
-                        delay = delay + f1 * (tk_num + 1);
-                    } else {
-                        delay = delay + f1;
-                    }
-                }
-            } else if (delay_set.equals("f2")) {
-                if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else {
-                    if (flag_tk) {
-                        delay = delay_minNum + f2 * (tk_num + 1);
-                    } else {
-                        delay = delay_minNum + f2;
-                    }
-                }
+            delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2,delay_minNum,duanNo2);
+            if (delay_max < 0) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
+                return -1;
             }
-            if (maxSecond != 0 && delay > maxSecond) {
+            if (maxSecond != 0 && delay_max > maxSecond) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 break;
             }
@@ -2504,7 +2178,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             denatorBaseinfo.setBlastserial(maxNo);
             denatorBaseinfo.setSithole(maxNo + "");
             denatorBaseinfo.setShellBlastNo(shellNo);
-            denatorBaseinfo.setDelay(delay);
+            denatorBaseinfo.setDelay(delay_max);
             denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
             denatorBaseinfo.setStatusCode("FF");
             denatorBaseinfo.setStatusName("已注册");
@@ -2529,37 +2203,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
                     denatorBaseinfo.setDelay(db_charu.getDelay());
                 } else {
-
-                    delay = db_charu.getDelay();
-                    if (delay_set.equals("f1")) {//获取最大延时有问题
-                        delay_add = f1;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay + f1 * (tk_num + 1);
-                            } else {
-                                delay = delay + f1;
-                            }
+                    if(!flag_jh_f1){
+                        if(delay_set.equals("f1")){
+                            delay_add=-f1;
                         }
-                    } else if (delay_set.equals("f2")) {
-                        delay_add = f2;
-                        if (maxNo == 0) {
-                            delay = delay + start_delay;
-                        } else {
-                            if (flag_tk) {
-                                delay = delay_minNum + f2 * (tk_num + 1);
-                            } else {
-                                delay = delay_minNum + f2;
-                            }
+                    }else {
+                        if(delay_set.equals("f1")){
+                            delay_add=f1;
                         }
                     }
+                    delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
 
-//                    if(flag_t1&&delay==db_charu.getDelay()){
-//                        show_Toast("没选同孔,不能设置跟选中雷管相同延时");
-//                        return -1;
-//                    }
-                    denatorBaseinfo.setDelay(delay);
+                    denatorBaseinfo.setDelay(delay_max);
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
                 }
 
@@ -2591,6 +2246,109 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //        Utils.saveFile();//把软存中的数据存入磁盘中
         return reCount;
+    }
+
+    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum, int duanNo2) {
+        Log.e(TAG, "flag_jh_f1: "+flag_jh_f1 );
+        Log.e(TAG, "delay_set: "+delay_set );
+        if(!flag_jh_f1){
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = start_delay - delay;
+                    Log.e(TAG, "start_delay: "+start_delay );
+                    Log.e(TAG, "delay: "+delay );
+                }else if (btn_start) {
+                    delay = start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay - f1 * (tk_num + 1);
+                    } else {
+                        delay = delay - f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay_minNum + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay_minNum + f2;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                }else if (btn_start) {
+                    delay = start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay + f1 * (tk_num + 1);
+                    } else {
+                        delay = delay + f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+
+                if (maxNo == 0) {
+                    delay = delay + start_delay;
+                }else if (btn_start) {
+                    delay = start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay = delay_minNum + f2 * (tk_num + 1);
+                    } else {
+                        delay = delay_minNum + f2;
+                    }
+                }
+            }else {
+                delay = start_delay;
+            }
+        }
+        Log.e(TAG, "delay: "+delay );
+        return delay;
+    }
+
+    private int getDelay_charu(int start_delay, int f1, int f2, int maxNo, int delay_minNum, int tk_num) {
+        int delay_max;
+        delay_max = db_charu.getDelay();
+
+        if(!flag_jh_f1){
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+
+                if (maxNo == 0) {
+                    delay_max = start_delay - delay_max;
+                }else if (btn_start) {
+                    delay_max = start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max - f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max - f1;
+                    }
+                }
+            }
+        }else {
+            if (delay_set.equals("f1")) {//获取最大延时有问题
+
+                if (maxNo == 0) {
+                    delay_max = delay_max + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max + f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max + f1;
+                    }
+                }
+            }
+        }
+
+
+        return delay_max;
     }
 
     /***
@@ -2711,13 +2469,14 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     int flag1 = 0;
     int flag2 = 0;
     boolean flag_t1 = true;//同孔标志
+    boolean flag_jh_f1 = true;//减号标志
+    boolean flag_jh_f2 = true;//减号标志
+    boolean btn_start = false;//减号标志
     boolean flag_tk = false;//跳孔标志
-    private Barcode mBarcode;
-    private BarcodeConfig mBarcodeConfig;
-    IntentFilter mFilter;
+    boolean isOpen;
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
-            R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay,
+            R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay,R.id.btn_start_delay,
             R.id.re_btn_f1, R.id.re_btn_f2, R.id.re_btn_f3,
             R.id.re_btn_f4, R.id.re_btn_f5, R.id.re_btn_f6, R.id.re_btn_f7,
             R.id.re_btn_f8, R.id.re_btn_f9, R.id.re_btn_f10, R.id.re_btn_f11, R.id.re_btn_f12, R.id.re_btn_f13,
@@ -2764,8 +2523,42 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     flag_t1 = true;
                 }
                 break;
-
+            case R.id.btn_JH_F1:
+                btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_jh_f1) {
+                    btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_jh_f1 = false;
+                } else {
+                    btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_jh_f1 = true;
+                }
+                delay_set = "f1";//是f1还是f2
+                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                reEtF2.setBackgroundResource(R.drawable.translucent);
+                flag2 = 0;
+                break;
+            case R.id.btn_JH_F2:
+                btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (flag_jh_f2) {
+                    btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    flag_jh_f2 = false;
+                } else {
+                    btnJHF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    flag_jh_f2 = true;
+                }
+                break;
+            case R.id.btn_start_delay:
+                btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                if (btn_start) {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
+                    btn_start = false;
+                } else {
+                    btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                    btn_start = true;
+                }
+                break;
             case R.id.btn_scanReister:
+                sanButtonFlag = 0;
                 int d = getFan(duan_new);
                 if (d == 1) {
                     show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
@@ -2785,17 +2578,35 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     continueScanFlag = 1;
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
-                        try {
-                            scanBarThread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        scanBarThread.interrupt();
+                        Log.e(TAG,"关闭扫码线程");
                     }
 //                    kaishiScan();
-                    //kt50持续扫码线程
-                    scanBarThread = new ScanBar();
-                    scanBarThread.start();
-
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //打开手动扫码
+                            boolean isOpen = mBarcode.open1D();
+                            // 将结果回传到UI线程
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isOpen) {
+                                        Log.e("扫码", "上电成功");
+                                        // 启动扫码线程之前，检查是否已经启动过
+                                        if (scanBarThread == null || !scanBarThread.isAlive()) {
+                                            scanBarThread = new ScanBar();
+                                            scanBarThread.start();
+                                        } else {
+                                            Log.e("扫码", "扫码线程已经启动");
+                                        }
+                                    } else {
+                                        Log.e("扫码", "上电失败");
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scaning));//"正在扫码"
                     btnReisterScanStartEd.setEnabled(false);
                     btnReisterScanStartSt.setEnabled(false);
@@ -2808,12 +2619,8 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     lxrTzScan();
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
-                        try {
-                            scanBarThread.join();
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                        scanBarThread.interrupt();
+                        Log.e(TAG,"关闭扫码线程");
                     }
                 }
                 break;
@@ -2822,18 +2629,19 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 if (checkDelay()) return;
                 delay_set = "f1";
                 flag2 = 0;
-                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 switch (flag1) {
                     case 0:
                         reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                        reEtF1.setBackgroundResource(R.drawable.textview_border_green);
                         flag1 = 1;
                         break;
                     case 1:
                         reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                        reEtF1.setBackgroundResource(R.drawable.translucent);
                         flag1 = 0;
                         break;
                 }
-                reEtF1.setBackgroundResource(R.drawable.textview_border_green);
+                reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                 reEtF2.setBackgroundResource(R.drawable.translucent);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
@@ -2847,17 +2655,22 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 switch (flag2) {
                     case 0:
                         reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+                        reEtF2.setBackgroundResource(R.drawable.textview_border_green);
                         flag2 = 1;
                         break;
                     case 1:
                         reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
+                        reEtF2.setBackgroundResource(R.drawable.translucent);
                         flag2 = 0;
                         break;
                 }
                 reEtF1.setBackgroundResource(R.drawable.translucent);
-                reEtF2.setBackgroundResource(R.drawable.textview_border_green);
                 reEtF1.clearFocus();
                 reEtF2.clearFocus();
+
+                btnJHF1.setBackgroundResource(R.drawable.bt_mainpage_style);
+                flag_jh_f1 = true;
+
                 break;
             case R.id.btn_setdelay:
                 int a = getFan(duan_new);
@@ -3041,11 +2854,21 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
 //                    kaishiScan();//启动扫描
-                    lxrKsScan();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lxrKsScan();
+                        }
+                    }).start();
                 } else {
                     continueScanFlag = 0;
 //                    tingzhiScan();//停止扫描
                     lxrTzScan();
+                    if (scanBarThread != null) {
+                        scanBarThread.exit = true;  // 终止线程thread
+                        scanBarThread.interrupt();
+                        Log.e(TAG,"关闭扫码线程");
+                    }
                 }
                 sanButtonFlag = 1;
                 break;
@@ -3054,11 +2877,21 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 if (continueScanFlag == 0) {
                     continueScanFlag = 1;
 //                    kaishiScan();//启动扫描
-                    lxrKsScan();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lxrKsScan();
+                        }
+                    }).start();
                 } else {
                     continueScanFlag = 0;
 //                    tingzhiScan();//停止扫描
                     lxrTzScan();
+                    if (scanBarThread != null) {
+                        scanBarThread.exit = true;  // 终止线程thread
+                        scanBarThread.interrupt();
+                        Log.e(TAG,"关闭扫码线程");
+                    }
                 }
                 sanButtonFlag = 2;
                 break;
@@ -3197,52 +3030,29 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     //开启按键扫描
     private void lxrAjOpenScan() {
         boolean setKeyenable_open = mBarcode.setKeyenable(true);
-        if (setKeyenable_open) {
-            Log.e(TAG,"按键扫码打开成功");
-        } else {
-            Log.e(TAG,"按键扫码打开失败");
-        }
+        Log.e(TAG,"按键扫码打开成功:" + setKeyenable_open);
     }
 
     //关闭按键扫描
     private void lxrAjStopScan() {
         boolean setKeyenable_close = mBarcode.setKeyenable(false);
-        Log.e("setKeyenable_close", setKeyenable_close + "");
-        if (setKeyenable_close) {
-            Log.e(TAG,"按键扫码关闭成功");
-        } else {
-            Log.e(TAG,"按键扫码关闭失败");
-        }
+        Log.e(TAG,"按键扫码关闭成功:" + setKeyenable_close);
     }
     private void lxrKsScan() {
         if (mBarcode == null) {
             return;
         }
-        boolean open = mBarcode.open1D();
-        if (open) {
-            Log.e("扫码", "上电成功");
-            String result = mBarcode.scan1D();
-            scanResult = result;
-            if (result != null) {
-                if (!result.equals("")) {
-                    Log.e("扫码:", "手动开始扫码成功:" + result);
-                } else {
-                    Log.e("扫码", "手动开始扫码获取到的扫码结果为空:" + result);
-                }
+        String result = mBarcode.scan1D();
+        scanResult = result;
+        if (result != null) {
+            if (!result.equals("")) {
+                Log.e("扫码成功:", result);
             } else {
-                Log.e("扫码", "手动开始扫码失败");
+                Log.e("扫码", "获取到的扫码结果为空:" + result);
             }
         } else {
-            Log.e("扫码", "上电失败");
+            Log.e("扫码", "扫码失败");
         }
-
-        boolean close = mBarcode.close1D();
-        if (close) {
-            Log.e("扫码", "下电成功");
-        } else {
-            Log.e("扫码", "下电失败");
-        }
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -3262,12 +3072,16 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
     }
 
     private void lxrTzScan() {
-        boolean close = mBarcode.cancel1D();
-        if (close) {
-            Log.e("扫码", "取消扫码成功");
-        } else {
-            Log.e("扫码", "取消扫码失败");
-        }
+        //扫码上下电都需要在子线程中进行
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean isCancel = mBarcode.cancel1D();
+                Log.e("扫码", "取消扫码成功:" + isCancel);
+                boolean isClose = mBarcode.close1D();
+                Log.e("扫码", "扫码下电成功:" + isClose);
+            }
+        }).start();
     }
 
     private void kaishiScan() {
@@ -3440,17 +3254,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 
             while (!exit) {
                 try {
-                        lxrKsScan();
-//                    switch (Build.DEVICE) {
-//                        case "T-QBZD-Z6":
-//                        case "M900": {
-////                            mScaner.startScan();
-//                            break;
-//                        }
-//                        default: {
-//                            scanDecode.starScan();
-//                        }
-//                    }
+                    lxrKsScan();
                     Thread.sleep(1250);
                     //break;
 
@@ -3906,7 +3710,13 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             edit_start_entproduceDate_st.setText(dayCode);//日期码
             edit_start_entAT1Bit_st.setText(featureCode);
             edit_start_entboxNoAndSerial_st.setText(serialNo);
-
+            continueScanFlag = 0;
+            lxrTzScan();
+            if (scanBarThread != null) {
+                scanBarThread.exit = true;  // 终止线程thread
+                scanBarThread.interrupt();
+                Log.e(TAG,"关闭扫码线程");
+            }
 //            edit_end_entBF2Bit_en.setText("");
 //            edit_end_entproduceDate_ed.setText("");
 //            edit_end_entAT1Bit_ed.setText("");
@@ -3920,10 +3730,17 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             edit_end_entAT1Bit_ed.setText(featureCode);
             edit_end_entboxNoAndSerial_ed.clearFocus();
             edit_end_entboxNoAndSerial_ed.setText(serialNo);
+            continueScanFlag = 0;
+            lxrTzScan();
+            if (scanBarThread != null) {
+                scanBarThread.exit = true;  // 终止线程thread
+                scanBarThread.interrupt();
+                Log.e(TAG,"关闭扫码线程");
+            }
             btnReisterScanStartSt.setEnabled(true);
             btnScanReister.setEnabled(true);
         }
-        sanButtonFlag = 0;
+//        sanButtonFlag = 0;
     }
 
     /**
@@ -3960,6 +3777,15 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
 
         reEtF1.clearFocus();
         reEtF2.clearFocus();
+        et_startDelay.clearFocus();
+    }
+    /**
+     * 重置控件
+     */
+    private void resetView_start() {
+        btn_start = false;
+        et_startDelay.setBackgroundResource(R.drawable.translucent);
+        btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
         et_startDelay.clearFocus();
     }
 

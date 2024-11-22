@@ -193,7 +193,8 @@
     <string name="text_error_tip60">Category name cannot be empty</string>
     <string name="text_error_tip61">Seconds cannot be empty</string>
     <string name="text_error_tip62">The network is not connected. Please go to Settings to set up the network.！</string>
-
+    <string name="text_error_tip63">The delay cannot be 0</string>
+    <string name="text_error_tip65">The delay cannot be empty</string>
     <string name="text_uploda_tip1">Upload success</string>
     <string name="text_uploda_tip2">Illegal application information</string>
     <string name="text_uploda_tip3">Initiator not filed or set up operation task</string>
@@ -400,6 +401,7 @@
     <string name="text_zone5">Zone 5</string>
     <string name="text_dialog_choice">Please select a region</string>
     <string name="text_tk">Homopore</string>
+    <string name="text_jh">-</string>
     <string name="text_tiaok">Jump hole</string>
     <string name="text_scan_xzdw">Select segment</string>
     <string name="text_scan_f1">F1 delay</string>
@@ -524,8 +526,10 @@
     <string name="text_sync_tip1">Data is empty</string>
     <string name="text_sync_tip2">Sync successful</string>
     <string name="text_sync_tip3">Connected</string>
-    <string name="text_sync_tip4">Received detonation test command</string>
-    <string name="text_sync_tip5">Received command to prepare for charging</string>
+<!--    <string name="text_sync_tip4">Received detonation test command</string>-->
+<!--    <string name="text_sync_tip5">Received command to prepare for charging</string>-->
+    <string name="text_sync_tip4">Received test command</string>
+    <string name="text_sync_tip5">Receive charging command</string>
     <string name="text_sync_tip6">Received detonation command</string>
     <string name="text_sync_tip7">Data sent successfully</string>
     <string name="text_sync_tip8">Connecting…</string>
@@ -834,8 +838,9 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PT_V2.1_240827</string>
-    <string name="text_xpwfh">The chip write command did not return</string>
+    <string name="app_version_name">M900_PT_JL_TY_V2.1_240923</string>
+    <string name="app_version_name2">M900_PT_JL_XJ_V2.1_240923</string>
+    <string name="app_version_name3">M900_PT_JL_CQ_V2.1_240923</string>    <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
     <string name="text_fld">detonator</string>
@@ -969,7 +974,14 @@
     <string name="text_dk">port</string>
     <string name="text_toastts">Tosat Tips</string>
     <string name="text_his_sclsjl">Please enter your password before deleting history records</string>
-    <string name="text_jh">减号</string>
-    <string name="app_version_name2">M900_PT_XJ_V2.1_240903</string>
-    <string name="app_version_name3">M900_PT_CQ_V2.1_240903</string>
+    <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
+    <string name="btn_fan">反</string>
+    <string name="text_dyyc">Bus low voltage exception</string>
+    <string name="dialog_dyyc">The current line low voltage is abnormal, please check the line and start the detonation process again</string>
+    <string name="text_gyyc">Bus high voltage exception</string>
+    <string name="dialog_gyyc">If the current status is abnormally high voltage, check the circuit and start the detonation process again</string>
+    <string name="text_czdl">Bus short circuit</string>
+    <string name="dialog_czdl">The current line is short circuited, please check the line and start the detonation process again to detonate</string>
+    <string name="text_gy">A total of</string>
+    <string name="text_hcf">Box duplication</string>
 </resources>

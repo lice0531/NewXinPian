@@ -128,7 +128,6 @@ public abstract class SerialPortActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("父页面", "onCreate: " );
         try {
             mSerialPort = mApplication.getSerialPort();
             mSerialPort.tcflush();
@@ -139,6 +138,7 @@ public abstract class SerialPortActivity extends BaseActivity {
             /* Create a receiving thread */
             mReadThread = new ReadThread();
             threadPoolExecutor.execute(mReadThread);
+            Log.e("父页面", "onCreate: " );
         } catch (SecurityException e) {
             DisplayError(R.string.error_security);
         } catch (IOException e) {

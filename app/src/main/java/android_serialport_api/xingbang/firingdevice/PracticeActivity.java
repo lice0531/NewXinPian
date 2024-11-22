@@ -2,8 +2,10 @@ package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,11 +22,13 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +42,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
@@ -45,6 +50,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,10 +61,14 @@ import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.SerialPortActivity;
+import android_serialport_api.xingbang.a_new.Constants_SP;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -116,6 +126,8 @@ public class PracticeActivity extends BaseActivity {
     Button butVersion;
     @BindView(R.id.but_sendMsg)
     Button but_sendMsg;
+    @BindView(R.id.but_rizhi)
+    Button butRizhi;
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list_uid = new ArrayList<>();
@@ -146,6 +158,12 @@ public class PracticeActivity extends BaseActivity {
     private ExecutorService executorService = new ThreadPoolExecutor(3, 3, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<Runnable>(128));
     private String path;
     private Handler Handler_tip = null;//提示信息
+    private int Yanzheng_sq_size = 0;
+    private String Yanzheng_sq = "";//是否验雷管已经授权
+    private String Yanzheng = "";//是否验证地理位置
+    private String TAG = "辅助功能页面";
+    private String mRegion;     // 区域
+    private List<DenatorBaseinfo> list_shou;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,11 +172,16 @@ public class PracticeActivity extends BaseActivity {
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText(getResources().getString(R.string.text_sendMsg_ip) + getlocalip());
-
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
+        Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
+        Log.e(TAG, "Yanzheng: " + Yanzheng);
+        // 获取 区域参数
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         initHandle();
 
 //        loadMoreData();
@@ -291,14 +314,14 @@ public class PracticeActivity extends BaseActivity {
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
             denator.setBlastserial(maxNo);
-            denator.setSithole(maxNo+"");
+            denator.setSithole(maxNo + "");
             denator.setDenatorId(a[0]);
             if (a.length == 3) {
                 denator.setShellBlastNo(a[2]);
             }
             if (a.length == 4) {
                 denator.setDuanNo(Integer.parseInt(a[3]));
-                denator.setDuan(Integer.parseInt(a[3].substring(0,1)));
+                denator.setDuan(Integer.parseInt(a[3].substring(0, 1)));
             }
             denator.setDelay(Integer.parseInt(a[1]));
             denator.setRegdate(Utils.getDateFormat(new Date()));
@@ -419,8 +442,6 @@ public class PracticeActivity extends BaseActivity {
     }
 
 
-
-
     /**
      * 处理接收到的cmd命令
      */
@@ -438,19 +459,133 @@ public class PracticeActivity extends BaseActivity {
         }
     }
 
+    private void queryBeian() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        GreenDaoMaster master = new GreenDaoMaster();
+        list_shou = master.queryLeiGuan(format1, mRegion);
+        Yanzheng_sq_size = list_shou.size();
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.toString());
+    }
+
+    /***
+     * 建立对话框
+     */
+    private void initDialog_shouquan() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View getlistview = inflater.inflate(R.layout.firing_error_shouquan_listview, null);
+        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+        llview.setVisibility(View.GONE);
+        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+        text_tip.setText(R.string.text_alert_tip_wsqtx);
+        text_tip.setVisibility(View.VISIBLE);
+        // 给ListView绑定内容
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        errlistview.setVisibility(View.GONE);
+        ErrShouQuanListAdapter mAdapter = new ErrShouQuanListAdapter(this, list_shou, R.layout.firing_error_item_shouquan);
+        errlistview.setAdapter(mAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.text_alert_tip_wsq);//"错误雷管列表"
+        builder.setView(getlistview);
+        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
 
 
-    @OnClick({R.id.but_pre, R.id.but_jilian,R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read, R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile, R.id.but_version, R.id.but_test, R.id.but_sendMsg})
+        });
+        builder.setNeutralButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+//            stopXunHuan();
+            llview.setVisibility(View.VISIBLE);
+            text_tip.setVisibility(View.GONE);
+            errlistview.setVisibility(View.VISIBLE);
+            // 点击按钮时错误雷管列表展示出来后,“查看错误雷管”按钮没有用了,所以直接隐藏
+            // 获取AlertDialog对象
+            AlertDialog alertDialog = (AlertDialog) dialog;
+            // 获取中立按钮
+            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            // 隐藏按钮
+            neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
+            dialogOn(dialog);
+        });
+//        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+////            stopXunHuan();
+//            llview.setVisibility(View.VISIBLE);
+//            text_tip.setVisibility(View.GONE);
+//            errlistview.setVisibility(View.VISIBLE);
+//            dialogOn(dialog);
+//        });
+        builder.create().show();
+    }
+
+    private void dialogOn(DialogInterface dialog) {
+        try {
+            Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+            field.setAccessible(true);
+            field.set(dialog, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dialogOFF(DialogInterface dialog) {
+        try {
+            Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+            field.setAccessible(true);
+            field.set(dialog, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read,
+            R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile,
+            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
-                Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    initDialog_shouquan();
+                    return;
+                }
+                String str5 = "起爆";
+                Log.e("验证2", "Yanzheng: " + Yanzheng);
+                Intent intent9;//金建华
+                if (Yanzheng.equals("验证")) {
+                    //Intent intent9 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                    intent9 = new Intent(this, VerificationActivity.class);
+                    intent9.putExtra("isJl","isYxjl");
+                } else {
+                    Log.e(TAG, "验证2: "+Yanzheng_sq);
+                    intent9 = new Intent(this, SyncActivityYouxian.class);
+                }
+//                Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
                 startActivity(intent9);
                 finish();
                 break;
             case R.id.but_jilian_wifi://m900级联页面
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    initDialog_shouquan();
+                    return;
+                }
+                String str = "起爆";
+                Log.e("验证2", "Yanzheng: " + Yanzheng);
+                Intent intent5;//金建华
+                if (Yanzheng.equals("验证")) {
+                    //Intent intent9 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+                    intent5 = new Intent(this, VerificationActivity.class);
+                    intent5.putExtra("isJl","isRdjl");
+                } else {
+                    Log.e(TAG, "验证2: "+Yanzheng_sq);
+                    intent5 = new Intent(this, SyncActivity.class);
+                }
 //                Intent intent5 = new Intent(this, SyncActivity2WIFI.class);//WIFI方式
-                Intent intent5 = new Intent(this, SyncActivity.class);//热点方式
+//                Intent intent5 = new Intent(this, SyncActivity.class);//热点方式
                 startActivity(intent5);
                 finish();
                 break;
@@ -461,6 +596,10 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_sendMsg://进入数据互传页面
                 Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
                 startActivity(intent12);
+                break;
+            case R.id.but_rizhi://进入上传日志页面
+                Intent intent13 = new Intent(this, RiZhiActivity.class);//日志
+                startActivity(intent13);
                 break;
             case R.id.but_pre://开启测试
 
@@ -512,7 +651,7 @@ public class PracticeActivity extends BaseActivity {
                 }
                 for (int i = 0; i < list_uid.size(); i++) {
                     if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId().length() > 7) {
-                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo()+ "#" + list_uid.get(i).getDuanNo() + ",");
+                        sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuanNo() + ",");
                     } else {
                         sb.append(list_uid.get(i).getDenatorId() + "#" + list_uid.get(i).getDelay() + ",");
                     }
@@ -602,11 +741,6 @@ public class PracticeActivity extends BaseActivity {
         return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                 + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
     }
-
-
-
-
-
 
 
     /**
@@ -848,7 +982,6 @@ public class PracticeActivity extends BaseActivity {
         }
         return res;
     }
-
 
 
     private Socket socket = null;
