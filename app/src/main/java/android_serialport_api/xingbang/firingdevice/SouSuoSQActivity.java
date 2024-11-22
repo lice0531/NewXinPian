@@ -611,6 +611,7 @@ public class SouSuoSQActivity extends BaseActivity {
         }
         String delay = "";
         switch (duan) {
+            default:
             case "1":
                 delay = "0";
                 break;
