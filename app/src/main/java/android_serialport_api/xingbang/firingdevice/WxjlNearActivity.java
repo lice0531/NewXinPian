@@ -653,6 +653,7 @@ public class WxjlNearActivity extends SerialPortActivity {
             doWithWxpzReceivData(cmd, localBuf);//处理cmd命令
         } else {
             Log.e(TAG, "-返回命令不完整" + fromCommad);
+            Utils.writeRecord("无线近距离页面--返回命令不完整" + fromCommad);
         }
     }
 
@@ -710,8 +711,8 @@ public class WxjlNearActivity extends SerialPortActivity {
             handler_msg.sendMessage(message);
         } else if (DefCommand.CMD_5_TRANSLATE_84.equals(cmd)) {//84 无线级联：读取错误雷管
             if (currentCount == 0) {
-                updateLgErrorStatus();
                 receive84 = true;
+                updateLgErrorStatus();
                 Message message = new Message();
                 message.what = 5;
                 message.obj = "true";
@@ -863,6 +864,7 @@ public class WxjlNearActivity extends SerialPortActivity {
             handler_msg.sendMessage(handler_msg.obtainMessage(1));
             receive81 = true;
             Log.e(TAG, "81已结束");
+            Utils.writeRecord("81数据传输指令已结束,当前次数:" + sendNum);
             return;
         }
         //数据体长度
@@ -901,6 +903,7 @@ public class WxjlNearActivity extends SerialPortActivity {
         }
 //        Log.e("81指令", "十进制datalength：" + dataLength + dataLength81 + serId + data81);
         sendCmd(ThreeFiringCmd.sendWxjl81(deviceId, dataLength81, serId, data81));
+        Utils.writeRecord("开始执行81数据传输指令,当前序号: " + serId + "--当前次数:" + sendNum);
     }
 
     private boolean isSend80 = true;//防止用户多次点击频发80
