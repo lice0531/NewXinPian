@@ -131,7 +131,7 @@ public abstract class LxrSerialPortActivity extends BaseActivity implements ICco
         super.onCreate(savedInstanceState);
         Log.e("LXR父页面", "onCreate: " );
         iCcon = iCcon.getInstance();
-        iCcon.debugMode(false);
+        iCcon.debugMode(false);//关闭联祥瑞lib日志打印
         Log.e(TAG, "LXR设备 实例化");
         iCcon.openSerialPort(this, this);
 //        mReadThread = new ReadThread();
@@ -283,15 +283,14 @@ public abstract class LxrSerialPortActivity extends BaseActivity implements ICco
 
                 //设置波特率
                 if (setBaund(115200)) {
-                    Log.e(TAG, "LXR串口设置波特率成功:115200");
+                    Log.e(TAG, "LXR串口打开成功,LXR串口设置波特率成功:115200");
                 } else {
-                    Log.e(TAG, "LXR串口设置波特率失败");
+                    Log.e(TAG, "LXR串口打开成功,LXR串口设置波特率失败");
                 }
                 //回调方式  开启回调数据接受
                 iCcon.openReadThead();
             }
         });
-        Log.e(TAG,"LXR串口打开成功");
     }
 
 

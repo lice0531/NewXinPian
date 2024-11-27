@@ -214,7 +214,26 @@ public class UpgradeActivity extends LxrSerialPortActivity {
     protected void onLxrDataReceived(byte[] buffer) {
         String fromCommad = Utils.bytesToHexFun(buffer);
         Log.e(TAG, "收到命令: " + fromCommad);
-        mHandler.sendMessage(mHandler.obtainMessage(1100, fromCommad));
+        if (fromCommad.startsWith("C0") && fromCommad.endsWith("C0") && fromCommad.length() > 4) {
+            mHandler.sendMessage(mHandler.obtainMessage(1100, fromCommad));
+        } else {
+            if (fromCommad.contains("E0")) {
+                E0();
+                Log.e(TAG, "收到不完整的E0命令:" + fromCommad + "重发E0指令");
+            } else if (fromCommad.contains("E1")) {
+                E1();
+                Log.e(TAG, "收到不完整的E1命令: " + fromCommad + "重发E1指令");
+            }  else if (fromCommad.contains("E2")) {
+                mIndex_E2 = mIndex_E2 + 1;
+                E2(mIndex_E2,false);
+                Log.e(TAG, "收到不完整的E2命令: " + fromCommad + "重发E2指令--mIndex_E2:" + mIndex_E2);
+            } else if (fromCommad.contains("E4")) {
+                E4();
+                Log.e(TAG, "收到不完整的E4命令: " + fromCommad + "重发E4指令");
+            } else {
+                Log.e(TAG, "收到不完整的命令: " + fromCommad);
+            }
+        }
     }
 
     //处理芯片返回
@@ -519,7 +538,8 @@ public class UpgradeActivity extends LxrSerialPortActivity {
                 mTvCmd.setText(mTip);
                 mTvCmd.setBackgroundResource(R.color.green);
                 Log.e("E1后续操作", "E1 -> E2");
-                E2();
+                Log.e("首次调用E2方法", "mIndex_E2:" + mIndex_E2);
+                E2(mIndex_E2,true);
                 break;
 
             case "E2":
@@ -555,9 +575,9 @@ public class UpgradeActivity extends LxrSerialPortActivity {
                 String str_E4_16 = DefCmd.getE4AgreementNumber(Cmd_E4);
                 // 16进制字符串 转换 10进制字符串
                 int int_E4_10_Number = Integer.parseInt(str_E4_16, 16);
+                Log.e("返回E4","int_E4_10_Number:" + int_E4_10_Number + "--mNumber_E2:" + mNumber_E2);
                 // bin文件名称
                 String fileName = mDownLoadFilePath.substring(mDownLoadFilePath.lastIndexOf("/") + 1);
-
                 // 如果 文件分割块数一致
                 if (int_E4_10_Number == mNumber_E2) {
 
@@ -657,9 +677,14 @@ public class UpgradeActivity extends LxrSerialPortActivity {
         Log.e(TAG, "mNumber_E2: " + mNumber_E2);
     }
 
-    private void E2() {
-
-
+    private void E2(int index_E2,boolean isFirstSend) {
+        int index;
+        if (index_E2 != 0) {
+            index = index_E2;
+        } else {
+            index = 0;
+        }
+        Log.e("调用E2方法","index：" + index);
         // 如果 已选择了文件 或者 从xb获得标记(固定路径)
         if (!EmptyUtils.isEmpty(mUri) || mGetFrom == 3) {
 
@@ -669,7 +694,7 @@ public class UpgradeActivity extends LxrSerialPortActivity {
             // 固件分割的块数
             mNumber_E2 = XbUtils.getDivisionNumber(mContext, mFormat, mGetFrom, mFileName, mUri, mDownLoadFilePath);
             // 循环
-            for (int i = 0; i < mNumber_E2; i++) {
+            for (int i = index; i < mNumber_E2; i++) {
 
                 // 新数组
                 byte[] mBinNew = new byte[mFormat];
@@ -715,8 +740,10 @@ public class UpgradeActivity extends LxrSerialPortActivity {
 //                        Log.e("UpgradeActivity", "srcPos: " + mSrcPos);
 //                        Log.e("UpgradeActivity", "mBinNew.length: " + mBinNew.length);
             }
-
-            mIndex_E2 = 0;
+            if (isFirstSend) {
+                mIndex_E2 = 0;
+                Log.e(TAG,"首次调用E2方法--mIndex_E2:" + mIndex_E2);
+            }
             // E2 固件发送和接收
             byte[] mE2 = Cmd_EX.sendE2(ByteUtil.ByteArrToHex(mList_Byte.get(mIndex_E2)));
             sendCmd(mE2);

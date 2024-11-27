@@ -725,15 +725,19 @@ public class XbUtils {
 
         // 兼容8.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            // 如果没有权限
-            if (!activity.getPackageManager().canRequestPackageInstalls()) {
-                startInstallPermissionSettingActivity(activity);
-            }
-            // 如果有权限
-            else {
-//                openAPKFile_8(activity, path);
+            if (Build.VERSION.SDK_INT >= 30) {
+                //android11以上默认授予  未知来源安装权限  直接安装即可
                 install(activity, path);
+            } else {
+                // 如果没有权限
+                if (!activity.getPackageManager().canRequestPackageInstalls()) {
+                    startInstallPermissionSettingActivity(activity);
+                }
+                // 如果有权限
+                else {
+//                openAPKFile_8(activity, path);
+                    install(activity, path);
+                }
             }
         }
         // 8.0以下

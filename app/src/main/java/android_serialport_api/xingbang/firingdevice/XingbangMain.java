@@ -231,7 +231,6 @@ public class XingbangMain extends LxrSerialPortActivity {
         setContentView(R.layout.activity_xingbang_main);
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
-
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
@@ -729,7 +728,6 @@ public class XingbangMain extends LxrSerialPortActivity {
             show_Toast(getString(R.string.text_error_tip56));
         } else {
             SQLiteStudioService.instance().stop();
-            close();
             lxrPowerOffDevice();
             openHandler.removeCallbacksAndMessages(null);
             Utils.writeRecord("---点击返回按键退出程序---");
