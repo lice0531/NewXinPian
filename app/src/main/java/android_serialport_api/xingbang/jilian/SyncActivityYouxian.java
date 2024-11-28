@@ -334,6 +334,7 @@ public class SyncActivityYouxian extends BaseActivity {
                                     EventBus.getDefault().post(new FirstEvent("otherA5"));
                                     //其他子设备
                                     Log.e(TAG,"其他子设备接收到A5指令了");
+                                    Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
                                     Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
                                     //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
                                     EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
@@ -805,6 +806,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     case "T-QBZD-Z6":
                     case "M900":
                         send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
+                        Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备发起退出级联0005指令");
                         Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备发起退出级联0005指令");
                         break;
                     default:
@@ -999,6 +1001,7 @@ public class SyncActivityYouxian extends BaseActivity {
             switch (Build.DEVICE) {
                 case "T-QBZD-Z6":
                 case "M900":
+                    Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到重新打开485串口指令");
                     openM900Rs485(event.getData());
                     break;
                 default:
@@ -1009,6 +1012,7 @@ public class SyncActivityYouxian extends BaseActivity {
 
         } else if (msg.equals("close485")) {
             //此时关闭485接收  让板子子机去执行起爆命令
+            Utils.writeRecord("主的子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
             Utils.writeLog("主的子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
             closeM900Rs485("B5" + MmkvUtils.getcode("ACode", ""));
         } else if (msg.equals("sendA4Data")) {
@@ -1029,6 +1033,7 @@ public class SyncActivityYouxian extends BaseActivity {
             }
         } else if (msg.equals("otherClose")) {
             Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
             Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + MmkvUtils.getcode("ACode", ""));
             closeM900Rs485((String)MmkvUtils.getcode("ACode", ""));
         }
@@ -1096,6 +1101,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     mExpDevMgr.set12VEnable(false);
                     Log.e("关闭485，设备是",code);
                     Utils.writeRecord("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
+                    Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
                 }
                 break;
             default:
@@ -1115,6 +1121,7 @@ public class SyncActivityYouxian extends BaseActivity {
                 case "M900":
                     send485Cmd("0005" + MmkvUtils.getcode("ACode", ""));
                     Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备发起退出级联0005指令");
+                    Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备发起退出级联0005指令");
                     break;
                 default:
                     closeSocket();
@@ -1122,6 +1129,7 @@ public class SyncActivityYouxian extends BaseActivity {
             }
             finish();
             Utils.writeRecord("---点击返回按键退出有线级联界面---");
+            Utils.writeLog("---点击返回按键退出有线级联界面---");
             return true;
         }
         return true;
@@ -1133,6 +1141,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //        EMgpio.SetGpioDataLow(94);//下电
         closeM900Rs485("页面销毁时正常关闭485");
         Utils.writeRecord("子设备：" + MmkvUtils.getcode("ACode", "") + "页面退出时开始关闭485指令");
+        Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "页面退出时开始关闭485指令");
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

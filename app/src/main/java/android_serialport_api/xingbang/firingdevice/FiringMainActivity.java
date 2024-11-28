@@ -2137,6 +2137,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 boolean isStopJl = checkIsStopJl();
                 if (isStopJl) {
                     xzqb();
+                    Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备收到34起爆指令但由于出错不需要起爆");
                 } else {
                     if (!isInterunptQb) {
                         deviceStatus = "06";//起爆结束
@@ -2147,6 +2148,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 deviceStatus + qbResult);
                         increase(11);//跳到第9阶段
                         Log.e("increase", "9");
+                        Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到34起爆指令,起爆已结束,重新打开485串口");
                         //热点级联起爆结束发消息
                         int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
                         String stureNum = Utils.strPaddingZero(allNum, 3);
@@ -2625,13 +2627,13 @@ public class FiringMainActivity extends SerialPortActivity {
             case 11://给范总加的起爆后的放电阶段
                 Log.e("进入放电阶段", "显示起爆中view");
                 btn_return8.setVisibility(View.GONE);
-                if (isSendWaitQb) {
-                    Log.e("切换模式下", "显示view");
-                    eightTxt.setText(getString(R.string.text_firing_qbz));
-                } else {
-                    Log.e("正常起爆模式下", "显示view");
+//                if (isSendWaitQb) {
+//                    Log.e("切换模式下", "显示view");
+//                    eightTxt.setText(getString(R.string.text_firing_qbz));
+//                } else {
+                    Log.e("case11", "显示起爆中view");
                     eightTxt.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
-                }
+//                }
                 break;
             case 12:
                 //时钟校验中 显示出起爆中文字
@@ -3162,10 +3164,14 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
                             break;
                         case 9:
+                            Utils.writeRecord("case9--neightCount:" + neightCount);
+                            Utils.writeLog("case9--neightCount:" + neightCount);
                             if (neightCount == 0) {
                                 byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
                                 sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功，页面切换至起爆完成弹窗画面");
+                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功，页面切换至起爆完成弹窗画面");
                             }
                             neightCount++;
                             break;
@@ -3173,12 +3179,15 @@ public class FiringMainActivity extends SerialPortActivity {
 
                             break;
                         case 11://放电阶段
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             Thread.sleep(1000);
                             elevenCount--;
-                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             if (elevenCount <= 0) {
                                 increase(9);
                             }
+                            Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
+                            Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
                             Log.e("正在放电阶段", "elevenCount:" + elevenCount);
                             break;
 
@@ -4255,7 +4264,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 //此时在页面显示出时钟校验的文字
                 increase(12);
                 Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
-                Utils.writeRecord("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
+                Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
             }
         } else if (msg.equals("otherA5")) {
             //A5起爆指令  说明是其他子设备收到了A5指令  此时需要关闭串口
@@ -4264,7 +4273,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     otherA5 = false;
                     EventBus.getDefault().post(new FirstEvent("otherClose"));
                     Log.e(TAG,"其他子设备开始关串口执行起爆");
-                    Utils.writeRecord("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
+                    Utils.writeLog("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
                 }
             }
         } else if (msg.equals("handleJx")) {
