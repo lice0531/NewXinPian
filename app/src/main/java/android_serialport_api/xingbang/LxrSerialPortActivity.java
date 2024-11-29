@@ -277,9 +277,9 @@ public abstract class LxrSerialPortActivity extends BaseActivity implements ICco
 
     @Override
     public void onSuccess(String s) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
 
                 //设置波特率
                 if (setBaund(115200)) {
@@ -289,8 +289,8 @@ public abstract class LxrSerialPortActivity extends BaseActivity implements ICco
                 }
                 //回调方式  开启回调数据接受
                 iCcon.openReadThead();
-            }
-        });
+//            }
+//        });
     }
 
 
