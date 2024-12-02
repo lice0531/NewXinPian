@@ -1715,7 +1715,8 @@ public class FiringMainActivity extends SerialPortActivity {
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
         if (hisTotalNum > 30) {
-            String time = loadHisMainData();
+//            String time = loadHisMainData();
+            String time = getFirstTime();
             Message message = new Message();
             message.obj = time;
             mHandler_tip.sendMessage(message);
@@ -2552,6 +2553,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
                     saveFireResult();
                     Utils.writeRecord("--生成历史记录");
+                    Log.e(TAG,"起爆历史记录未生成，开始生成起爆记录");
+                } else {
+                    Log.e(TAG,"起爆历史记录已生成，无需再次生成");
                 }
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
@@ -3164,14 +3168,14 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
                             break;
                         case 9:
-                            Utils.writeRecord("case9--neightCount:" + neightCount);
-                            Utils.writeLog("case9--neightCount:" + neightCount);
+//                            Utils.writeRecord("case9--neightCount:" + neightCount);
+//                            Utils.writeLog("case9--neightCount:" + neightCount);
                             if (neightCount == 0) {
                                 byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
                                 sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功，页面切换至起爆完成弹窗画面");
-                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功，页面切换至起爆完成弹窗画面");
+                                Utils.writeRecord("neightCount:" + neightCount + "--" + MmkvUtils.getcode("ACode", "") + "子设备起爆成功弹窗已展示,发35指令");
+                                Utils.writeLog("neightCount:" + neightCount + "--" + MmkvUtils.getcode("ACode", "") + "子设备起爆成功弹窗已展示,发35指令");
                             }
                             neightCount++;
                             break;
@@ -3185,6 +3189,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             if (elevenCount <= 0) {
                                 increase(9);
+                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
+                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
                             }
                             Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
                             Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
@@ -3740,6 +3746,24 @@ public class FiringMainActivity extends SerialPortActivity {
         return list.get(0).getBlastdate();
     }
 
+    private String getFirstTime() {
+        //直接查询出起爆历史记录表中的blastdate（起爆时间）列字段  然后获取到第一条blastdate即可
+        List<String> timeList = new ArrayList<>();
+        String sql = "select blastdate from denatorHis_Main";
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                timeList.add(cursor.getString(0));
+            }
+            cursor.close();
+            Log.e(TAG, "起爆历史表中数据总条数: "+ timeList.size() + "--第一条数据:" + timeList.get(0));
+            return timeList.get(0);
+        } else {
+            Log.e(TAG, "获取起爆历史表第一条数据起爆时间报错");
+            return "";
+        }
+    }
+
 
     private TextView mOffTextView;
     private Handler mOffHandler;
@@ -4187,7 +4211,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 show_Toast(getString(R.string.text_sync_tip5));
                 if (stage == 4) {
                     increase(6);
-                    Utils.writeRecord("-------------------开始充电-------------------");
+                    Utils.writeRecord("接到级联指令开始充电了");
                 }
                 EventBus.getDefault().post(new FirstEvent("sendA4Data", "B4" + MmkvUtils.getcode("ACode", "") +
                         deviceStatus + qbResult));
@@ -4197,7 +4221,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 show_Toast(getString(R.string.text_sync_tip5));
                 if (stage == 4) {
                     increase(6);
-                    Utils.writeRecord("-------------------开始充电-------------------");
+                    Utils.writeRecord("接到级联指令开始充电了");
                 }
                 EventBus.getDefault().post(new FirstEvent("reSendA4Data", "BBA4" + MmkvUtils.getcode("ACode", "") +
                         deviceStatus + qbResult));
@@ -4438,14 +4462,14 @@ public class FiringMainActivity extends SerialPortActivity {
      * @return
      */
     public boolean checkRepeatHis(String time) {
-        Log.e(TAG, "判断是否生成历史记录 time: "+time );
-        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
-
-        if (denatorHis_Main != null) {
-            Log.e(TAG, "判断是否生成历史记录 his: "+true );
+        Log.e(TAG, "判断是否生成历史记录 time: "+ time);
+//        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
+        long recordCount = new GreenDaoMaster().checkRepeatHis(time);
+        if (recordCount > 0) {
+            Log.e(TAG, "判断是否生成历史记录 his: "+true + "--recordCount:" + recordCount);
             return true;
         } else {
-            Log.e(TAG, "判断是否生成历史记录 his: "+false );
+            Log.e(TAG, "判断是否生成历史记录 his: "+false  + "--recordCount:" + recordCount);
             return false;
         }
     }
