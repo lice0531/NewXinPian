@@ -2491,7 +2491,10 @@ public class Utils {
 
         File file = new File(filePath);
         if (file.exists()) {
+            Log.e("日志页面","程序运行日志已删除");
             file.delete();
+        } else {
+            Log.e("日志页面","程序运行日志不存在无法删除");
         }
     }
 

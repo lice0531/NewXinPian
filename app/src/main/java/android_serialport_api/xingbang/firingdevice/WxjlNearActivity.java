@@ -104,6 +104,8 @@ public class WxjlNearActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wxjl_near);
         ButterKnife.bind(this);
+        //若用正常掌机测试可加上该行
+//        MmkvUtils.savecode("xinDao",37);
         deviceId = "01";
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initPower();                // 初始化上电方式()
