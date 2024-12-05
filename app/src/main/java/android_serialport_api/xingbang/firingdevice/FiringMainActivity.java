@@ -238,6 +238,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
     List<Float> list_dianliu = new ArrayList();
     private String isYxjl;//接收有线级联进来起爆页面的flag
+    private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,7 +277,8 @@ public class FiringMainActivity extends SerialPortActivity {
         firstThread = new ThreadFirst(allBlastQu);//全部线程
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
-        elevenCount = getMaxDelay() / 1000 + 1;
+//        elevenCount = getMaxDelay() / 1000 + 1;
+        elevenCount = getRegionMaxDelay() / 1000 + 1;
         Log.e(TAG, "elevenCount: " + elevenCount);
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         //给主机发消息告知已进入起爆页面
@@ -1343,7 +1345,8 @@ public class FiringMainActivity extends SerialPortActivity {
         int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
         if (hisTotalNum > 30) {
-            String time = loadHisMainData();
+//            String time = loadHisMainData();
+            String time = getFirstTime();
             Message message = new Message();
             message.obj = time;
             mHandler_tip.sendMessage(message);
@@ -2141,7 +2144,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("起爆成功", "显示出最后的弹窗");
                 if (!checkRepeatHis(hisInsertFireDate)) {//弹上传的时候再判断一下是否成功生成历史记录了
                     saveFireResult();
-                    Utils.writeRecord("--生成历史记录");
+                    Utils.writeRecord("--再次生成历史记录");
+                    Log.e(TAG,"起爆历史记录未生成，开始生成起爆记录");
+                } else {
+                    Log.e(TAG,"起爆历史记录已生成，无需再次生成");
                 }
                 if (eightCmdFlag == 2) {
                     eightCmdFlag = 0;
@@ -3268,7 +3274,23 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "查询第一条历史记录: " + list.get(0).toString());
         return list.get(0).getBlastdate();
     }
-
+    private String getFirstTime() {
+        //直接查询出起爆历史记录表中的blastdate（起爆时间）列字段  然后获取到第一条blastdate即可
+        List<String> timeList = new ArrayList<>();
+        String sql = "select blastdate from denatorHis_Main";
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                timeList.add(cursor.getString(0));
+            }
+            cursor.close();
+            Log.e(TAG, "起爆历史表中数据总条数: "+ timeList.size() + "--第一条数据:" + timeList.get(0));
+            return timeList.get(0);
+        } else {
+            Log.e(TAG, "获取起爆历史表第一条数据起爆时间报错");
+            return "";
+        }
+    }
 
     private TextView mOffTextView;
     private Handler mOffHandler;
@@ -3609,6 +3631,46 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     /**
+     * 找到所有选中区域雷管的最大延时并比较，最后得到最大延时
+     * @return：最大延时（作为起爆结束倒计时时间）
+     */
+    private int getRegionMaxDelay() {
+        int maxDelay = 0;  // 初始值为0，表示没有延时数据
+        List<String> selectedRegions = new ArrayList<>();
+        if (mRegion1) selectedRegions.add("1");
+        if (mRegion2) selectedRegions.add("2");
+        if (mRegion3) selectedRegions.add("3");
+        if (mRegion4) selectedRegions.add("4");
+        if (mRegion5) selectedRegions.add("5");
+        if (selectedRegions.isEmpty()) {
+            return maxDelay; // 如果没有选中任何区域，直接返回0
+        }
+        // 构建 SQL 查询，使用 IN 查询多个区域
+        StringBuilder queryBuilder = new StringBuilder("select max(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece IN (");
+        for (int i = 0; i < selectedRegions.size(); i++) {
+            queryBuilder.append("?");
+            if (i < selectedRegions.size() - 1) {
+                queryBuilder.append(",");
+            }
+        }
+        queryBuilder.append(")");
+        // 执行查询
+        Cursor cursor = db.rawQuery(queryBuilder.toString(), selectedRegions.toArray(new String[0]));
+        if (cursor != null && cursor.moveToNext()) {
+            if (!cursor.isNull(0)) {
+                maxDelay = cursor.getInt(0);
+                Log.e(TAG, "所有选中区域的最大延时为: " + maxDelay);
+            } else {
+                Log.e(TAG, "数据库获取到的最大延时为null");
+            }
+            cursor.close();
+        } else {
+            Log.e(TAG, "查询出错或无数据");
+        }
+        return maxDelay;  // 返回选中区域的最大延时
+    }
+
+    /**
      * 级联接收命令代码 eventbus
      */
     private long lastProcessedTime = 0;
@@ -3690,13 +3752,13 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     public boolean checkRepeatHis(String time) {
         Log.e(TAG, "判断是否生成历史记录 time: " + time);
-        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
-
-        if (denatorHis_Main != null) {
-            Log.e(TAG, "判断是否生成历史记录 his: " + true);
+//        DenatorHis_Main denatorHis_Main = new GreenDaoMaster().checkRepeatHis(time);
+        long recordCount = new GreenDaoMaster().checkRepeatHis(time);
+        if (recordCount > 0) {
+            Log.e(TAG, "判断是否生成历史记录 his: "+true + "--recordCount:" + recordCount);
             return true;
         } else {
-            Log.e(TAG, "判断是否生成历史记录 his: " + false);
+            Log.e(TAG, "判断是否生成历史记录 his: "+false  + "--recordCount:" + recordCount);
             return false;
         }
     }
