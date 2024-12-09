@@ -125,6 +125,8 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     //RecyclerView适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+
+    implementation 'com.github.gzu-liyujiang.AndroidPicker:AddressPicker:4.1.13'
 }
 
 greendao {

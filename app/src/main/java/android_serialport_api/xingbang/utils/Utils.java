@@ -86,6 +86,12 @@ public class Utils {
 
 //    public static String httpurl_xb_leveup = "http://test.xingbangtech.com:666/HandSet/isRenew ";
 //    public static String httpurl_xb_download = "http://test.xingbangtech.com:666/HandSet/DownloadVersion";
+    //金建华上传历史记录
+    public static String httpurl_jjh_his = "https://app.99mb.net/api/MbSystem/pda/uploadBlastRecord";
+    public static String httpurl_jjh_test_his = "http://test.99mb.net:510/api/MbSystem/pda/uploadBlastRecord";
+    //金建华现场人员验证
+    public static String httpurl_jjh_check = "https://app.99mb.net/api/MbSystem/pda/checkAllowDetonate";
+    public static String httpurl_jjh_test_check = "http://test.99mb.net:510/api/MbSystem/pda/checkAllowDetonate";
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 

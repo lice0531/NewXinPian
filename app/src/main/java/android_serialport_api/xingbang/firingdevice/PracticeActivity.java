@@ -119,6 +119,8 @@ public class PracticeActivity extends BaseActivity {
     Button but_sendMsg;
     @BindView(R.id.but_rizhi)
     Button butRizhi;
+    @BindView(R.id.but_danwei)
+    Button butDanwei;
 
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list_uid = new ArrayList<>();
@@ -442,7 +444,7 @@ public class PracticeActivity extends BaseActivity {
 
     @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read,
             R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile,
-            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi})
+            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi, R.id.but_danwei})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -467,6 +469,10 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_rizhi://进入上传日志页面
                 Intent intent13 = new Intent(this, RiZhiActivity.class);//日志
                 startActivity(intent13);
+                break;
+            case R.id.but_danwei://单位信息
+
+                startActivity(new Intent(this, ZhuCeActivity.class));
                 break;
             case R.id.but_pre://开启测试
 

@@ -36,6 +36,11 @@
         tools:remove="android:appComponentFactory"
         tools:targetApi="p">
         <activity
+            android:name=".firingdevice.ZhuCeActivity"
+            android:exported="false"
+            android:label="单位信息"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".firingdevice.RiZhiActivity"
             android:exported="false"
             android:label="日志上传"

@@ -244,21 +244,30 @@
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
             android:background="@color/label_color" />
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="80dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/but_sendMsg"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginStart="90dp"
+                android:layout_marginStart="10dp"
                 android:text="@string/text_fz_sjhc" />
-
-        </RelativeLayout>
+            <Button
+                android:id="@+id/but_danwei"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:text="单位信息" />
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -278,6 +287,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="90dp"
                 android:text="上传日志" />
+
             <Button
                 android:visibility="gone"
                 android:id="@+id/but_upgrade"
@@ -290,7 +300,12 @@
                 android:text="升级硬件程序" />
 
         </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+        </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
