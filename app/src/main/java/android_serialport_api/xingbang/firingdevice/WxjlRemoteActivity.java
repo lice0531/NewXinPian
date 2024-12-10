@@ -1254,25 +1254,25 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                     }
                                 }
                                 if (!TextUtils.isEmpty(bean4.getCurrentPeak())) {
-//                                    if (Float.parseFloat(bean4.getCurrentPeak()) <= 8) {
-//                                        long currentTime = System.currentTimeMillis();
-//                                        if (!lastCheckTimes.containsKey("isDl")) {
-//                                            lastCheckTimes.put("isDl", currentTime);
-//                                        } else {
-//                                            long firstTime = lastCheckTimes.get("isDl");
-//                                            if ((currentTime - firstTime) >= pdTime && !showDialog3) {
-//                                                Log.e(TAG, "断路开启A7线程--倒计时后:" + bean4.getCurrentPeak());
-//                                                isShowError = true;
-//                                                closeLx();
-//                                                zeroCountA7 = 0;
-//                                                reciveB7 = false;
-//                                                exitRemotePage();
-//                                                showDialog3 = true;
-//                                                Utils.writeLog("级联页面" + bean4.getInfo() + "电流断路");
-//                                                showErrorDialog("当前电流疑似断路，请退出当前页面,重新进行级联");
-//                                            }
-//                                        }
-//                                    }
+                                    if (Float.parseFloat(bean4.getCurrentPeak()) <= 8) {
+                                        long currentTime = System.currentTimeMillis();
+                                        if (!lastCheckTimes.containsKey("isDl")) {
+                                            lastCheckTimes.put("isDl", currentTime);
+                                        } else {
+                                            long firstTime = lastCheckTimes.get("isDl");
+                                            if ((currentTime - firstTime) >= pdTime && !showDialog3) {
+                                                Log.e(TAG, "断路开启A7线程--倒计时后:" + bean4.getCurrentPeak());
+                                                isShowError = true;
+                                                closeLx();
+                                                zeroCountA7 = 0;
+                                                reciveB7 = false;
+                                                exitRemotePage();
+                                                showDialog3 = true;
+                                                Utils.writeLog("级联页面" + bean4.getInfo() + "电流断路");
+                                                showErrorDialog("当前电流疑似断路，请退出当前页面,重新进行级联");
+                                            }
+                                        }
+                                    }
                                     //暂时先不加电流过小的判断
 //                                    else if (Float.parseFloat(bean4.getCurrentPeak()) < (mListData.size() * 15 * 0.7)
 //                                            && Float.parseFloat(bean4.getCurrentPeak()) > 8) {
