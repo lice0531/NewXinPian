@@ -123,6 +123,7 @@ public class WxjlNearActivity extends SerialPortActivity {
                 show_Toast("串口已打开");
                 Log.e(TAG,"onrestart打开串口了");
                 isOpened = true;
+                sendCmd(ThreeFiringCmd.sendWxjlA7(deviceId));
             }
         }, 2000);
     }
@@ -489,15 +490,15 @@ public class WxjlNearActivity extends SerialPortActivity {
                         exit = true;
                         break;
                     }
-                    if (zeroCount > 0 && zeroCount <= 5 && !receive82) {
+                    if (zeroCount > 0 && zeroCount <= 10 && !receive82) {
                         String b = Utils.intToHex(1);
                         dataLength82 = Utils.addZero(b, 2);
                         data82 = "01";
                         sendCmd(ThreeFiringCmd.sendWxjl82(deviceId, dataLength82, data82));
                         Log.e(TAG, "发送82进入检测模式指令");
                         Thread.sleep(1500);
-                    } else if (zeroCount > 5) {
-                        Log.e(TAG, "82指令未返回已发送5次，停止发送82指令");
+                    } else if (zeroCount > 10) {
+                        Log.e(TAG, "82指令未返回已发送10次，停止发送82指令");
                         exit = true;
                         Message message = new Message();
                         message.what = 2;

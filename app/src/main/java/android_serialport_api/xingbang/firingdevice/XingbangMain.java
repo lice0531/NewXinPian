@@ -268,7 +268,6 @@ public class XingbangMain extends BaseActivity {
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         app_version_name = getString(R.string.app_version_name);
         getleveup();
-
     }
 
     private void queryBeian() {

@@ -86,10 +86,13 @@ public class DeviceAdapter extends BaseAdapter {
             holder.ll_currentPeak.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
         }
-        Log.e("adapter", "bean: "+list.get(position).toString() );
         holder.tv_name.setText((position+1) + "");
-        holder.tv_code.setText(list.get(position).getCode());
+        //设备号先默认写01
+//        holder.tv_code.setText(list.get(position).getCode());
+        holder.tv_code.setText("01");
         holder.tv_state.setText(list.get(position).getBusVoltage()+"V");//电压
+        holder.tv_status.setTextColor(list.get(position).getInfo().equals("已掉线") ?
+                Color.RED : Color.BLACK);
         holder.tv_status.setText(list.get(position).getInfo());
         holder.tv_currentPeak.setText(list.get(position).getCurrentPeak());
         if (list.get(position).getTrueNum() != null){
@@ -97,19 +100,6 @@ public class DeviceAdapter extends BaseAdapter {
             holder.tv_errNum.setTextColor(Color.RED);
             holder.tv_errNum.setText(list.get(position).getErrNum());
         }
-
-//        if (list.get(position).getInfo() != null && !list.get(position).getInfo().equals("")) {
-//            String f = "";
-//            String a[] = list.get(position).getInfo().split(",");
-//            for (int i = 0; i < a.length; i++) {
-//                if (i == 0) {
-//                    f = a[i];
-//                } else {
-//                    f = f + "\n" + a[i];
-//                }
-//            }
-//            holder.tv_info.setText(f);
-//        }
         return convertView;
     }
 }
