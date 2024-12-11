@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -39,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +54,7 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.UserMain;
@@ -160,7 +163,9 @@ public class XingbangMain extends BaseActivity {
     TextView totalbar_title;
     private Handler mHandler_updataVersion = new Handler();//更新版本
     private String app_version_name = "";
-
+    private int Yanzheng_sq_size = 0;
+    private String Yanzheng_sq = "";//是否验雷管已经授权
+    private List<DenatorBaseinfo> list_shou;
 
     @Override
     protected void onPause() {
@@ -171,6 +176,8 @@ public class XingbangMain extends BaseActivity {
     protected void onRestart() {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -220,7 +227,8 @@ public class XingbangMain extends BaseActivity {
         setContentView(R.layout.activity_xingbang_main);
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
-
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         initPower();                // 初始化上电方式()
         initView();         // 初始化控件
 //        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
@@ -580,7 +588,9 @@ public class XingbangMain extends BaseActivity {
         context.startActivity(intent);
     }
 
-
+    //全局定义
+    private long lastClickTime = 0L;
+    private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
     public void onViewClicked(View view) {
 
@@ -594,19 +604,25 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                //2次点击
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
+                queryBeian();
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    initDialog_shouquan();
+                    return;
+                }
                 long time = System.currentTimeMillis();
-                long time2 = System.nanoTime();
-                Log.e(TAG, "time: "+time );
-                Log.e(TAG, "time2: "+time2 );
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-                Log.e(TAG, "endTime: "+endTime );
-                if (time>0 && time - endTime < 180000  ) {//第二次启动时间不重置
+                if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    if(a<200){
-                        initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "组网");
-                        Log.e(TAG, "endTime: "+ a );
-                        return;
+                    if (a < 180000) {
+                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "组网");
                     }
+                    return;
                 }
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
@@ -627,19 +643,34 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-                for (int i = 0; i < lg2_yanshi.size(); i++) {
-                    if (lg2_yanshi.get(i).equals("0")) {
-                        createDialog();
-                        return;
-                    }
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
                 }
+                lastClickTime = System.currentTimeMillis();
+                queryBeian();
                 time = System.currentTimeMillis();
                 endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
 
                 if (time - endTime < 180000) {//第二次启动时间不重置
                     int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-                    initDialog_fangdian("当前系统检测到您高压充电后,系统尚未放电成功,为保证检测效果,请等待3分钟后再进行检测", a, "起爆");
+                    if (a < 180000) {
+                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
+                        return;
+                    }
+//                    Log.e(TAG, "a: "+a);
+//                    Log.e(TAG, "time: "+time);
+//                    Log.e(TAG, "endTime: "+endTime);
+                }
+                //验证是否授权
+                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+                    initDialog_shouquan();
                     return;
+                }
+                for (int i = 0; i < lg2_yanshi.size(); i++) {
+                    if (lg2_yanshi.get(i).equals("0")) {
+                        createDialog();
+                        return;
+                    }
                 }
                 GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
                 List<UserMain> userMainList = master.queryAllUser();
@@ -685,6 +716,66 @@ public class XingbangMain extends BaseActivity {
 //                startActivity(intent55);
                 break;
         }
+    }
+
+    private void queryBeian() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        GreenDaoMaster master = new GreenDaoMaster();
+        list_shou = master.queryLeiGuan(format1, mRegion);
+        Yanzheng_sq_size = list_shou.size();
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
+        Log.e(TAG, "超过授权日期list_shou: " + list_shou.toString());
+    }
+
+    /***
+     * 建立对话框
+     */
+    private void initDialog_shouquan() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View getlistview = inflater.inflate(R.layout.firing_error_shouquan_listview, null);
+        LinearLayout llview = getlistview.findViewById(R.id.ll_dialog_err);
+        llview.setVisibility(View.GONE);
+        TextView text_tip = getlistview.findViewById(R.id.dialog_tip);
+        text_tip.setText(R.string.text_alert_tip_wsqtx);
+        text_tip.setVisibility(View.VISIBLE);
+        // 给ListView绑定内容
+        ListView errlistview = getlistview.findViewById(R.id.X_listview);
+        errlistview.setVisibility(View.GONE);
+        ErrShouQuanListAdapter mAdapter = new ErrShouQuanListAdapter(this, list_shou, R.layout.firing_error_item_shouquan);
+        errlistview.setAdapter(mAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.text_alert_tip_wsq);//"错误雷管列表"
+        builder.setView(getlistview);
+        builder.setPositiveButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+
+
+        });
+        builder.setNeutralButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+//            stopXunHuan();
+            llview.setVisibility(View.VISIBLE);
+            text_tip.setVisibility(View.GONE);
+            errlistview.setVisibility(View.VISIBLE);
+            // 点击按钮时错误雷管列表展示出来后,“查看错误雷管”按钮没有用了,所以直接隐藏
+            // 获取AlertDialog对象
+            AlertDialog alertDialog = (AlertDialog) dialog;
+            // 获取中立按钮
+            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            // 隐藏按钮
+            neutralButton.setVisibility(View.GONE); // 设置按钮为不可见
+            dialogOn(dialog);
+        });
+//        builder.setNegativeButton(getString(R.string.text_fir_dialog5), (dialog, which) -> {
+////            stopXunHuan();
+//            llview.setVisibility(View.VISIBLE);
+//            text_tip.setVisibility(View.GONE);
+//            errlistview.setVisibility(View.VISIBLE);
+//            dialogOn(dialog);
+//        });
+        builder.create().show();
     }
 
     private void loginToFiring() {
@@ -749,6 +840,7 @@ public class XingbangMain extends BaseActivity {
             //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
             intent5 = new Intent(this, VerificationActivity.class);
         } else {
+            Log.e(TAG, "验证2: "+Yanzheng_sq);
             intent5 = new Intent(this, FiringMainActivity.class);
         }
         intent5.putExtra("dataSend", str5);
@@ -1117,7 +1209,6 @@ public class XingbangMain extends BaseActivity {
                     mOffTime.cancel();
                 })
                 .setPositiveButton("继续", (dialog2, which) -> {
-                    dialog2.dismiss();
                     Intent intent5;//金建华
                     if (str5.equals("组网")) {
                         dialog2.dismiss();
