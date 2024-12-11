@@ -2149,22 +2149,24 @@ public class FiringMainActivity extends SerialPortActivity {
                     Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备收到34起爆指令但由于出错不需要起爆");
                 } else {
                     if (!isInterunptQb) {
-                        deviceStatus = "06";//起爆结束
+//                        deviceStatus = "06";//起爆结束
                         //有线级联起爆结束打开串口
-                        EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
-                                deviceStatus + qbResult));
-                        Log.e("起爆结束了", "去重新打开485接口--起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
-                                deviceStatus + qbResult);
+//                        EventBus.getDefault().post(new FirstEvent("open485", "B005" + MmkvUtils.getcode("ACode", "") +
+//                                deviceStatus + qbResult));
+//                        Log.e("起爆结束了", "去重新打开485接口--起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+//                                deviceStatus + qbResult);
+                        EventBus.getDefault().post(new FirstEvent("open485", "Y"));
+                        Log.e("起爆结束了", "去重新打开485接口--msg是: open485--data:Y");
                         increase(11);//跳到第9阶段
                         Log.e("increase", "9");
                         Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到34起爆指令,起爆已结束,重新打开485串口");
-                        //热点级联起爆结束发消息
-                        int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
-                        String stureNum = Utils.strPaddingZero(allNum, 3);
-                        String serrNum = Utils.strPaddingZero(errorNumJl, 3);
-                        String currentPeak = Utils.strPaddingZero(cPeak, 6);
-                        //热点级联发送起爆结果
-                        EventBus.getDefault().post(new FirstEvent("qbjg", deviceStatus, currentPeak, stureNum, serrNum));
+//                        //热点级联起爆结束发消息
+//                        int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
+//                        String stureNum = Utils.strPaddingZero(allNum, 3);
+//                        String serrNum = Utils.strPaddingZero(errorNumJl, 3);
+//                        String currentPeak = Utils.strPaddingZero(cPeak, 6);
+//                        //热点级联发送起爆结果
+//                        EventBus.getDefault().post(new FirstEvent("qbjg", deviceStatus, currentPeak, stureNum, serrNum));
                     }
                 }
             }
@@ -2556,6 +2558,22 @@ public class FiringMainActivity extends SerialPortActivity {
                 eightTxt.setText(getString(R.string.text_firing_tip13) + eightCount + "s");//"倒计时\n"
                 break;
             case 9://起爆之后,弹出对话框
+                if (isJL) {
+                    deviceStatus = "06";//起爆结束
+                    Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
+                    Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
+                    EventBus.getDefault().post(new FirstEvent("qbjs", "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult));
+                    Log.e("起爆结束了", "子机将起爆结果发送给主控--起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
+                            deviceStatus + qbResult);
+                    //热点级联起爆结束发消息
+                    int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
+                    String stureNum = Utils.strPaddingZero(allNum, 3);
+                    String serrNum = Utils.strPaddingZero(errorNumJl, 3);
+                    String currentPeak = Utils.strPaddingZero(cPeak, 6);
+                    //热点级联发送起爆结果
+                    EventBus.getDefault().post(new FirstEvent("qbjg", deviceStatus, currentPeak, stureNum, serrNum));
+                }
                 eightTxt.setText(R.string.text_firing_qbcg);//"起爆成功！"
                 Log.e("起爆成功", "显示出最后的弹窗");
                 if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
@@ -3197,8 +3215,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             if (elevenCount <= 0) {
                                 increase(9);
-                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
-                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
+//                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
+//                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
                             }
                             Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
                             Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);

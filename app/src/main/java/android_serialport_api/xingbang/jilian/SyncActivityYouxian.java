@@ -1036,10 +1036,23 @@ public class SyncActivityYouxian extends BaseActivity {
             Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
             Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + MmkvUtils.getcode("ACode", ""));
             closeM900Rs485((String)MmkvUtils.getcode("ACode", ""));
+        } else if (msg.equals("qbjs")) {
+            String qbResult = event.getData();
+            Utils.writeRecord("其他子设备:" + MmkvUtils.getcode("ACode", "") + "已起爆结束,现在将起爆结果通知主控");
+            Utils.writeLog("其他子设备:" + MmkvUtils.getcode("ACode", "") + "已起爆结束,现在将起爆结果通知主控:" + event.getData());
+            Log.e("其他子设备",MmkvUtils.getcode("ACode", "") + "已起爆结束,现在将起爆结果通知主控:" + event.getData());
+            sendDelay();
+            if (qbResult.startsWith("B005") && qbResult.length() == 20) {
+                Log.e(TAG + "起爆结束后发送的数据正常",qbResult);
+                send485Cmd(qbResult);
+            } else {
+                Log.e(TAG + "起爆结束后发送的数据有误",qbResult);
+            }
         }
     }
 
-    private void openM900Rs485(String qbResult){
+    private void openM900Rs485(String data){
+        Log.e(TAG,"重新打开485--data:" + data);
         mExpDevMgr = new ExpdDevMgr(this);
         //串口打开监听
         OnOpenSerialPortListener listener = new OnOpenSerialPortListener() {
@@ -1083,13 +1096,13 @@ public class SyncActivityYouxian extends BaseActivity {
         };
         mExpDevMgr.set12VEnable(true);
         mExpDevMgr.openRs485(listener, listener2, 115200);
-        sendDelay();
-        if (qbResult.startsWith("B005") && qbResult.length() == 20) {
-            Log.e(TAG + "起爆结束后发送的数据正常",qbResult);
-            send485Cmd(qbResult);
-        } else {
-            Log.e(TAG + "起爆结束后发送的数据有误",qbResult);
-        }
+//        sendDelay();
+//        if (qbResult.startsWith("B005") && qbResult.length() == 20) {
+//            Log.e(TAG + "起爆结束后发送的数据正常",qbResult);
+//            send485Cmd(qbResult);
+//        } else {
+//            Log.e(TAG + "起爆结束后发送的数据有误",qbResult);
+//        }
     }
 
     private void closeM900Rs485(String code) {
