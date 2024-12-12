@@ -499,6 +499,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
     private void scan() {
         switch (Build.DEVICE) {
             // KT50 起爆器设备
+            case "T-QBZD-Z6":
             case "M900": {
                 // 创建扫描头操作对象，并注册回调
                 mScaner = new ScanQrControl(this);
@@ -1331,7 +1332,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                                     int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
                                     new GreenDaoMaster().deleteDetonator(shellBlastNo);
                                     Utils.writeRecord("--删除雷管:" + shellBlastNo);
-                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
+//                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
                                     //更新每段雷管数量
                                     Message msg = new Message();
                                     msg.arg1 = duan_guan;
@@ -2967,6 +2968,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
     private void tingzhiScan() {
         switch (Build.DEVICE) {
+            case "T-QBZD-Z6":
             case "M900": {
                 //M900关闭扫码
                 mScaner.stopScan();

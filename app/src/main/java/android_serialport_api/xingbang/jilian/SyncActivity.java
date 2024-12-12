@@ -131,6 +131,7 @@ public class SyncActivity extends BaseActivity {
             case "KT50_B2": {
                 break;
             }
+            case "T-QBZD-Z6":
             case "M900": {
                 mExpDevMgr = new ExpdDevMgr(this);
                 break;
@@ -564,6 +565,7 @@ public class SyncActivity extends BaseActivity {
                         }
                         break;
                     }
+                    case "T-QBZD-Z6":
                     case "M900": {
 
                         //串口打开监听
@@ -617,6 +619,7 @@ public class SyncActivity extends BaseActivity {
                 show_Toast(getString(R.string.text_sync_tip11));
                 isTongBu = false;
                 switch (Build.DEVICE){
+                    case "T-QBZD-Z6":
                     case "M900":
                         send485Cmd("0005"+ MmkvUtils.getcode("ACode", ""));
                         break;
@@ -799,6 +802,7 @@ public class SyncActivity extends BaseActivity {
 //        EMgpio.SetGpioDataLow(94);//下电
 
         switch (Build.DEVICE){
+            case "T-QBZD-Z6":
             case "M900":
                 if(mExpDevMgr!=null){
                     mExpDevMgr.closeRs485();
