@@ -724,8 +724,10 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 //            if (zeroCountA5 < 4) {
 //                return;
 //            }
+//            Log.e(TAG,"收到B5消息了前--zeroCountA5:" + zeroCountA5);
             reciveB5 = true;
             zeroCountA5 = 0;
+//            Log.e(TAG,"收到B5消息了后--zeroCountA5:" + zeroCountA5);
             isDeviceOffline = false;
             DeviceBean bean = new DeviceBean();
             receB5Data(bean, res, 2);
@@ -1601,18 +1603,13 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
                                 }
                             },1500);
                         } else if (toastMsg.contains("掉线")) {
-//                            if (showOfflineDialog) {
-//                                showOfflineDialog = false;
                                 showOfflineDialog("当前" + wxjlDeviceId + "设备已掉线,请缩短通信距离后再重试","确定");
-//                            }
-//                            if (list_device != null && list_device.size() > 0) {
                             isDeviceOffline = true;
                             for (DeviceBean deviceBean : list_device) {
                                 deviceBean.setInfo("已掉线");
+                                Log.e(TAG,"case16:掉线了--zeroCountA5:" + zeroCountA5 + list_device.toString());
                             }
                             adapter.notifyDataSetChanged();
-                            Log.e(TAG,"case16:" + list_device.toString() + "掉线了");
-//                            }
                         }
                         break;
                     case 17:
@@ -2495,7 +2492,7 @@ public class WxjlRemoteActivity extends SerialPortActivity implements AdapterVie
 //            if (zeroCountA5 > 0 && zeroCountA5 <= 2 && !reciveB5) {
 ////                Log.e(TAG,"A5线程监控次数,次数：" + zeroCount);
 //            } else
-                if (zeroCountA5 > 2) {
+                if (zeroCountA5 > 8) {
                 Log.e(TAG, "A5指令未返回已发送8次，停止发送A5指令");
                 if (!isCloseLx && !isDeviceOffline) {
                     Message message = new Message();

@@ -123,7 +123,6 @@ public class WxjlNearActivity extends SerialPortActivity {
                 show_Toast("串口已打开");
                 Log.e(TAG,"onrestart打开串口了");
                 isOpened = true;
-                sendCmd(ThreeFiringCmd.sendWxjlA7(deviceId));
             }
         }, 2000);
     }
