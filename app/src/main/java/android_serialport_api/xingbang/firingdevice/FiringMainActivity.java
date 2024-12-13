@@ -2159,7 +2159,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         Log.e("起爆结束了", "去重新打开485接口--msg是: open485--data:Y");
                         increase(11);//跳到第9阶段
                         Log.e("increase", "9");
-                        Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到34起爆指令,起爆已结束,重新打开485串口");
+                        Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到34起爆指令,重新打开485串口");
 //                        //热点级联起爆结束发消息
 //                        int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
 //                        String stureNum = Utils.strPaddingZero(allNum, 3);
@@ -2357,6 +2357,7 @@ public class FiringMainActivity extends SerialPortActivity {
         stage = val;
     }
 
+    private boolean isEnterQbDjs = false;//级联是否已经进入起爆倒计时
     @SuppressLint("SetTextI18n")
     public void execStage(Message msg) {//页面切换
         switch (stage) {
@@ -3209,18 +3210,26 @@ public class FiringMainActivity extends SerialPortActivity {
 
                             break;
                         case 11://放电阶段
-                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                            Thread.sleep(1000);
-                            elevenCount--;
+                            if (isJL) {
+                                isEnterQbDjs = true;
+                            }
+                            Log.e(TAG, "进入case11了--elevenCount:" + elevenCount);
 //                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                            Thread.sleep(1000);
+//                            Log.e(TAG, "case11开始sleep--elevenCount:" + elevenCount);
+                            elevenCount--;
+                            Log.e(TAG, "case11开始递减了:" + elevenCount);
+                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
+//                            Log.e(TAG, "case11开始递减handler了--elevenCount:" + elevenCount);
                             if (elevenCount <= 0) {
+                                Log.e(TAG, "case11起爆成功了，开始进入case9--elevenCount:" + elevenCount);
                                 increase(9);
 //                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
 //                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
                             }
                             Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
                             Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
-                            Log.e("正在放电阶段", "elevenCount:" + elevenCount);
+                            Log.e(TAG, "正在放电阶段elevenCount:" + elevenCount);
                             break;
 
                         case 12://切换模式放电阶段
@@ -4281,7 +4290,7 @@ public class FiringMainActivity extends SerialPortActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FirstEvent event) {
         String msg = event.getMsg();
-//        Log.e("起爆页面接收到的消息", "msg: " + msg);
+//        Log.e(TAG + "eventBus消息", "msg: " + msg);
         if (msg.equals("jixu")) {
             //如果是限制起爆状态  级联指令也不操作
             if (!isQbFail) {
@@ -4362,10 +4371,16 @@ public class FiringMainActivity extends SerialPortActivity {
                     jixu();
                     kaiguan = false;
                 }
-                //此时在页面显示出时钟校验的文字
-                increase(12);
-                Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
-                Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
+                if (!isEnterQbDjs) {
+                    //如果已经进入起爆倒计时  就不再显示起爆中了  等待起爆即可
+                    //此时在页面显示出时钟校验的文字
+                    increase(12);
+                    Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
+                    Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
+                } else {
+                    Utils.writeLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
+                    Log.e(TAG,"级联已进入起爆倒计时，不再做处理");
+                }
             }
         } else if (msg.equals("otherA5")) {
             //A5起爆指令  说明是其他子设备收到了A5指令  此时需要关闭串口

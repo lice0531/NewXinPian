@@ -380,7 +380,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         EventBus.getDefault().post(new FirstEvent("exitPage"));
                         //收到主控退到有线级联页面指令
                     } else if (response.startsWith("A012")) {
-                        //说明子设备出现异常情况，有继续喝退出按钮，主控来操控子设备是否继续
+                        //说明子设备出现异常情况，有继续和退出按钮，主控来操控子设备是否继续
                         Log.e(TAG,"收到主控A012消息了" + response);
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(4,6))) {
                             EventBus.getDefault().post(new FirstEvent("handleJx",response.substring(response.length() - 2)));
