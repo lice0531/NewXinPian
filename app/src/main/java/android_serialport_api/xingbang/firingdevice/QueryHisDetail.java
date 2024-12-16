@@ -115,6 +115,7 @@ public class QueryHisDetail extends BaseActivity {
     private String server_ip = "";
     private String server_type1 = "";
     private String server_type2 = "";
+    private String server_type3 = "";
     private String Shangchuan;
     private Button btn_del_all;
 
@@ -130,6 +131,7 @@ public class QueryHisDetail extends BaseActivity {
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
     private String changjia = "TY";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,11 +139,11 @@ public class QueryHisDetail extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        Log.e("上传", "changjia: "+changjia );
+        Log.e("上传", "changjia: " + changjia);
 
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
@@ -192,13 +194,13 @@ public class QueryHisDetail extends BaseActivity {
                                 show_Toast(getResources().getString(R.string.text_error_tip55));
                                 return;
                             }
-                            String fireDate =Utils.getDateFormatLong(new Date());
+                            String fireDate = Utils.getDateFormatLong(new Date());
                             saveFireResult(fireDate);
                             blastdate = fireDate;
                         }
 //                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
-                        Log.e("上传-经纬度", "pro_coordxy: "+pro_coordxy );
-                        Log.e("上传-经纬度", "jd: "+jd );
+                        Log.e("上传-经纬度", "pro_coordxy: " + pro_coordxy);
+                        Log.e("上传-经纬度", "jd: " + jd);
                         if (pro_coordxy.length() < 2 && jd == null) {
                             show_Toast(getResources().getString(R.string.text_his_jwdwk));
                             return;
@@ -216,7 +218,10 @@ public class QueryHisDetail extends BaseActivity {
                         if (server_type2.equals("2")) {
                             performUp(blastdate, pos, htbh, jd, wd);//中爆上传
                         }
-                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
+                        if (server_type3.equals("3")) {
+                            upload_JJH(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//金建华上传
+                        }
+                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
 
                         break;
                     case R.id.bt_delete:
@@ -261,7 +266,7 @@ public class QueryHisDetail extends BaseActivity {
             }
         };
         mHandler_tip = new Handler(msg -> {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     show_Toast(getResources().getString(R.string.text_xzsb16));
                     break;
@@ -304,14 +309,14 @@ public class QueryHisDetail extends BaseActivity {
     //获取配置文件中的值
     private void getPropertiesData() {
 //        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
-        if(changjia.equals("XJ")){
-            Shangchuan="否";
-        }else {
-            Shangchuan="是";
+        if (changjia.equals("XJ")) {
+            Shangchuan = "否";
+        } else {
+            Shangchuan = "是";
         }
-        Log.e("是否上传错误雷管", "changjia: "+changjia );
-        Log.e("是否上传错误雷管", "Shangchuan: "+Shangchuan );
-        Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
+        Log.e("是否上传错误雷管", "changjia: " + changjia);
+        Log.e("是否上传错误雷管", "Shangchuan: " + Shangchuan);
+        Utils.writeRecord("==是否上传错误雷管:" + Shangchuan);
     }
 
     private void getUserMessage() {
@@ -440,6 +445,7 @@ public class QueryHisDetail extends BaseActivity {
         return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
 
     }
+
     /**
      * 删除历史记录
      */
@@ -591,11 +597,11 @@ public class QueryHisDetail extends BaseActivity {
 
     /**
      * 添加错误日志
-     * */
-    private void updatalog(String blastdate,String err) {
+     */
+    private void updatalog(String blastdate, String err) {
         GreenDaoMaster master = new GreenDaoMaster();
-        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
-        his_main.setLog(his_main.getLog()+"\n"+err);
+        DenatorHis_Main his_main = master.queryDetonatorForMainHis(blastdate);
+        his_main.setLog(his_main.getLog() + "\n" + err);
         getDaoSession().getDenatorHis_MainDao().update(his_main);
     }
 
@@ -639,6 +645,7 @@ public class QueryHisDetail extends BaseActivity {
         builder.create().show();
 
     }
+
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
@@ -810,7 +817,7 @@ public class QueryHisDetail extends BaseActivity {
             } else {
                 object.put("htid", pro_htid);//合同编号
             }
-            object.put("bpsj", "20"+blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
+            object.put("bpsj", "20" + blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
             object.put("dwdm", pro_dwdm);//单位代码
@@ -863,15 +870,15 @@ public class QueryHisDetail extends BaseActivity {
                         String cwxx = object.getString("cwxx");
                         if (cwxx.equals("1")) {
                             Message msg = new Message();
-                            msg.what=3;
-                            msg.obj=cwxx;
+                            msg.what = 3;
+                            msg.obj = cwxx;
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                         } else if (cwxx.equals("2")) {
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
                         } else {
                             Message msg = new Message();
-                            msg.what=5;
-                            msg.obj=cwxx;
+                            msg.what = 5;
+                            msg.obj = cwxx;
                             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
                         }
                     }
@@ -896,25 +903,25 @@ public class QueryHisDetail extends BaseActivity {
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);
         String xy[] = pro_coordxy.split(",");//经纬度
-        String app_verson_name ;
+        String app_verson_name;
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        if(changjia.equals("XJ")){
-            app_verson_name =getString(R.string.app_version_name2);
-        }else if(changjia.equals("CQ")){
-            app_verson_name =getString(R.string.app_version_name3);
-        }else {
-            app_verson_name =getString(R.string.app_version_name);
+        if (changjia.equals("XJ")) {
+            app_verson_name = getString(R.string.app_version_name2);
+        } else if (changjia.equals("CQ")) {
+            app_verson_name = getString(R.string.app_version_name3);
+        } else {
+            app_verson_name = getString(R.string.app_version_name);
         }
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
             if (jd != null) {
                 object.put("jd", jd);//经度
-            } else if(pro_coordxy.length()>5){
+            } else if (pro_coordxy.length() > 5) {
                 object.put("jd", xy[0]);//经度
             }
             if (wd != null) {
                 object.put("wd", wd);//纬度
-            } else if(pro_coordxy.length()>5){
+            } else if (pro_coordxy.length() > 5) {
                 object.put("wd", xy[1]);//纬度
             }
             if (htid != null) {
@@ -928,20 +935,20 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/", "-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("rj_version", app_verson_name);//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
-        } catch (JSONException| PackageManager.NameNotFoundException e) {
+        } catch (JSONException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
-            object2.put("param",json);
+            object2.put("param", json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -958,11 +965,73 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
-                Utils.writeLog("煋邦网络上传错误-IOException:"+e);
-                updatalog(blastdate,"煋邦网络上传错误-IOException:"+e);
+                Utils.writeLog("煋邦网络上传错误-IOException:" + e);
+                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
                 Message msg = new Message();
-                msg.what=5;
-                msg.obj=getResources().getString(R.string.text_xbscsb);
+                msg.what = 5;
+                msg.obj = getResources().getString(R.string.text_xbscsb);
+                mHandler_tip.sendMessage(msg);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.e("上传", "返回: " + response.toString());
+                pb_show = 0;
+            }
+        });
+    }
+
+    private void upload_JJH(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm, final String qbxm_name, final String log) {
+        final String key = "jadl12345678912345678912";
+//        String url = Utils.httpurl_jjh_his;//公司服务器上传
+        String url = Utils.httpurl_jjh_test_his;//公司服务器上传
+
+        OkHttpClient client = new OkHttpClient();
+        JSONObject object = new JSONObject();
+
+        try {
+
+            object.put("projectCode", "451323123450006");//民爆网备案的项目/合同编码
+            object.put("projectName", "观山湖公园大桥维修");//民爆网备案的项目/合同名称
+            object.put("projectType", "Contract");//类型（项目：Project，合同：Contract）
+            object.put("burstOrgCode", "1111024300011");//爆破公司民爆网备案的企业代码
+            object.put("burstOrgName", "贵州猿途爆破工程有限公司");//爆破公司名字
+            object.put("deviceNO", equ_no);//民爆网备案的起爆器编号
+            object.put("burstTime", "20"+blastdate);//爆破时间（格式：年-月-日 时:分:秒）
+            object.put("idCard", "110101199003076034");//爆破员身份证号
+            object.put("bursterName", "张王益");//爆破员姓名
+            object.put("detonatorCount", hisListData.size()-1);//雷管数量
+            object.put("lngLat", pro_coordxy);//GPS坐标
+            object.put("gpsCoordinateSystems", "WGS84");//GPS坐标系
+            object.put("isOffline", false);//是否离线爆破
+            object.put("offlineTime", 0.0);//离线时间（小时）
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //3des加密
+        String json = object.toString();
+        MediaType JSON = MediaType.parse("application/json;charset=UTF-8");
+        Log.e("注册请求", "json: " + json);
+        RequestBody requestBody = FormBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("access-token","CCDE3AE0CB8C4CF3A21925EE")
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json;charset=UTF-8")//text/plain  application/json  application/x-www-form-urlencoded
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                pb_show = 0;
+                Log.e("上传公司网络请求", "IOException: " + e);
+                Utils.writeLog("煋邦网络上传错误-IOException:" + e);
+                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
+                Message msg = new Message();
+                msg.what = 5;
+                msg.obj = getResources().getString(R.string.text_xbscsb);
                 mHandler_tip.sendMessage(msg);
             }
 
@@ -1047,12 +1116,12 @@ public class QueryHisDetail extends BaseActivity {
                         show_Toast(getString(R.string.text_alert_password));
                         return;
                     }
-                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
-                    if ( b.equals("123")) {
+                    Log.e("删除已上传记录", "list_savedate.size() : " + list_savedate.size());
+                    if (b.equals("123")) {
                         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
                         GreenDaoMaster master = new GreenDaoMaster();
-                        for (DenatorHis_Main his:list) {
-                            if(his.getUploadStatus().equals("已上传")){
+                        for (DenatorHis_Main his : list) {
+                            if (his.getUploadStatus().equals("已上传")) {
                                 master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
                                 master.deleteForHis(his.getBlastdate());
                                 master.deleteForDetail(his.getBlastdate());

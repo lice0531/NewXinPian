@@ -23,6 +23,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.models.JJHYanZheng;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -161,13 +162,13 @@ public class ZhuCeActivity extends BaseActivity {
 //                    return;
 //                }
 
-//                MmkvUtils.savecode("uPhone", uPhone);
-//                MmkvUtils.savecode("uCName", uCName);
-//                MmkvUtils.savecode("uFName", uFName);
-//
-//                MmkvUtils.savecode("province", tv_province.getText());
-//                MmkvUtils.savecode("market", tv_market.getText());
-//                MmkvUtils.savecode("county", tv_county.getText());
+                MmkvUtils.savecode("uPhone", uPhone);
+                MmkvUtils.savecode("uCName", uCName);
+                MmkvUtils.savecode("uFName", uFName);
+
+                MmkvUtils.savecode("province", tv_province.getText());
+                MmkvUtils.savecode("market", tv_market.getText());
+                MmkvUtils.savecode("county", tv_county.getText());
 
 //                show_Toast("保存成功");
                 upload(uPhone,uPwd,uIDCard,uCName,uFName,uDwdm);
