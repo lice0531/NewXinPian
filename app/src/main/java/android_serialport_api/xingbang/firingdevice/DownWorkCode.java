@@ -885,7 +885,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             @Override
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
-                mHandler_1.sendMessage(mHandler_1.obtainMessage(13));
+                mHandler_1.sendMessage(mHandler_1.obtainMessage(15));
             }
 
             @Override
@@ -2059,7 +2059,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setTitle("下载提示")//设置对话框的标题//"成功起爆"
                         .setMessage("请确认项目编号,地理位置等信息输入无误后,点击确认下载")//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton("再次确认", (dialog1, which) -> dialog1.dismiss())
+                        .setNeutralButton("再次确认", (dialog1, which) -> dialog1.dismiss())
                         .setPositiveButton("确认下载", (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法

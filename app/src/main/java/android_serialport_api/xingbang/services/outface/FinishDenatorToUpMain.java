@@ -236,7 +236,7 @@ public class FinishDenatorToUpMain {
         String headAfter = "";
         int currentPackLen = 0;
         String currentPackLenStr = "";
-        eNo = Utils.strPaddingZero(tempequNo, 8);
+        eNo = Utils.strPaddingZero(tempequNo, 11);
 
         int currentDataIndex = 0;
         for (int i = 2; i <= packTotal; i++) {
@@ -293,6 +293,7 @@ public class FinishDenatorToUpMain {
 //        dateStr = dateStr.substring(2);
         String timeStr = fireDate.substring(9,17);
         timeStr = timeStr.replaceAll(":", "");
+        Log.e("上传中爆", "equNo: "+equNo );
         Log.e("上传中爆", "fireDate: "+fireDate );
         Log.e("上传中爆", "dateStr: "+dateStr );
         Log.e("上传中爆", "timeStr: "+timeStr );

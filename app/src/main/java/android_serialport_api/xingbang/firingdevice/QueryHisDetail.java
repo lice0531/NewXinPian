@@ -504,7 +504,7 @@ public class QueryHisDetail extends BaseActivity {
             Looper.loop();
         }).start();
     }
-
+    //* 02 01 05 1F 15 06 80 30 60 08 22 15 84 21 19 7241213195202001083$
     /**
      * 获取起爆历史详细信息
      */
