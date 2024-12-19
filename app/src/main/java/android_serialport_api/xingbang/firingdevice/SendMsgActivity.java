@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
@@ -62,11 +63,16 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.cmd.SecondNetTestCmd;
+import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
+import android_serialport_api.xingbang.cmd.vo.From22WriteDelay;
+import android_serialport_api.xingbang.cmd.vo.From32DenatorFiring;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -199,7 +205,7 @@ public class SendMsgActivity extends BaseActivity {
                     String str = getResources().getString(R.string.text_list_piace) + mRegion + "(" + getResources().getString(R.string.text_main_sl) + ": " + mListData.size() + ")";
 
 //                    setTitleRegion(mRegion, mListData.size());
-                    show_Toast(getString(R.string.text_sendMsg_dr) + msg.arg1+ getString(R.string.text_sendMsg_lgcg));
+                    show_Toast(getString(R.string.text_sendMsg_dr) + msg.arg1 + getString(R.string.text_sendMsg_lgcg));
                     break;
                 case 1:
                     show_Toast(msg.obj.toString());
@@ -267,7 +273,7 @@ public class SendMsgActivity extends BaseActivity {
     public boolean checkRepeatDenatorId(String denatorId) {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
-        Log.e("检查重复的芯片码", "数量: "+denatorBaseinfo.size() );
+        Log.e("检查重复的芯片码", "数量: " + denatorBaseinfo.size());
         if (denatorBaseinfo.size() > 0) {
             return true;
         } else {
@@ -292,9 +298,9 @@ public class SendMsgActivity extends BaseActivity {
             Log.e("分割", "a[3]" + a[3]);
             String[] duan = a[3].split("-");
             int duanNo = 0;
-            if(!a[3].contains("-")){
-                duan[0]="1";
-                duanNo= new GreenDaoMaster().getPieceMaxDuanNo(Integer.parseInt(duan[0]), mRegion);//获取该区域 最大序号的延时;
+            if (!a[3].contains("-")) {
+                duan[0] = "1";
+                duanNo = new GreenDaoMaster().getPieceMaxDuanNo(Integer.parseInt(duan[0]), mRegion);//获取该区域 最大序号的延时;
             }
             if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
                 reCount++;
@@ -304,8 +310,8 @@ public class SendMsgActivity extends BaseActivity {
                 reCount++;
                 continue;
             }
-            if(a[0].equals("无")){
-                a[0]="";
+            if (a[0].equals("无")) {
+                a[0] = "";
             }
             maxNo++;
             DenatorBaseinfo denator = new DenatorBaseinfo();
@@ -315,9 +321,9 @@ public class SendMsgActivity extends BaseActivity {
             denator.setShellBlastNo(a[2]);
             denator.setDuan(Integer.parseInt(duan[0]));
 
-            if(!a[3].contains("-")){
+            if (!a[3].contains("-")) {
                 denator.setDuanNo((duanNo + 1));
-            }else {
+            } else {
                 denator.setDuanNo(Integer.parseInt(duan[1]));
             }
             denator.setDelay(Integer.parseInt(a[1]));
@@ -328,9 +334,9 @@ public class SendMsgActivity extends BaseActivity {
             denator.setErrorName("");
             denator.setWire("");
             denator.setPiece(mRegion);
-            if(a.length==4){
+            if (a.length == 4) {
                 denator.setZhu_yscs(a[3]);
-            }else {
+            } else {
                 denator.setZhu_yscs(a[4]);
             }
 
@@ -339,22 +345,23 @@ public class SendMsgActivity extends BaseActivity {
             reCount++;
         }
         pb_show = 0;
-        Message msg =new Message();
-        msg.what=1002;
-        msg.arg1= lg.length;
+        Message msg = new Message();
+        msg.what = 1002;
+        msg.arg1 = lg.length;
         mHandler_0.sendMessage(msg);
         return reCount;
     }
 
     /**
      * 检查重复的管壳码
+     *
      * @param shellNo
      * @return
      */
     public boolean checkRepeatShellNo(String shellNo) {
         GreenDaoMaster master = new GreenDaoMaster();
         List<DenatorBaseinfo> list_lg = master.checkRepeatShellNo(shellNo);
-        Log.e("检查重复的管壳码", "重复数量: "+list_lg.size() );
+        Log.e("检查重复的管壳码", "重复数量: " + list_lg.size());
         return list_lg.size() > 0;
     }
 
@@ -394,10 +401,10 @@ public class SendMsgActivity extends BaseActivity {
                 }).start();
                 break;
             case R.id.btn_read_log:
-//                String log = Utils.fenxiLog(path);
-//
-//                registerLog(log);
-                readCVS();
+                String log = Utils.fenxiLog(path);
+
+                registerLog(log);
+//                readCVS();
                 break;
             case R.id.but_send://数据互传 发送
                 AlertDialog dialog = new AlertDialog.Builder(SendMsgActivity.this)
@@ -413,7 +420,7 @@ public class SendMsgActivity extends BaseActivity {
                             }
                             for (int i = 0; i < list_uid.size(); i++) {//芯片码#延时#管壳码#段位-段号#延时参数
 //                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
-                                sb.append((list_uid.get(i).getDenatorId() + "").replace("null", "无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" +list_uid.get(i).getDuan()+"-"+ list_uid.get(i).getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs() + "").replace("null", "无") + ",");
+                                sb.append((list_uid.get(i).getDenatorId() + "").replace("null", "无") + "#" + list_uid.get(i).getDelay() + "#" + list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDuan() + "-" + list_uid.get(i).getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs() + "").replace("null", "无") + ",");
 //                    } else {
 //                        sb.append(list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ",");
 //                    }
@@ -858,11 +865,11 @@ public class SendMsgActivity extends BaseActivity {
             shellNo = log[i];
             if (shellNo.length() != 5) {
                 String[] ml = shellNo.split(":");
-                Log.e("分析日志", "ml: " + ml[2]);
-                String cmd = DefCommand.getCmd(ml[2]);//得到 返回命令
+                Log.e("分析日志", "ml: " + ml[4]);
+                String cmd = DefCommand.getCmd(ml[4]);//得到 返回命令
                 if (cmd != null) {
-                    int localSize = ml[2].length() / 2;
-                    byte[] localBuf = Utils.hexStringToBytes(ml[2]);//将字符串转化为数组
+                    int localSize = ml[4].length() / 2;
+                    byte[] localBuf = Utils.hexStringToBytes(ml[4]);//将字符串转化为数组
                     doWithReceivData_fenxi(cmd, localBuf, localSize);
                 }
             }
@@ -877,14 +884,44 @@ public class SendMsgActivity extends BaseActivity {
     private void doWithReceivData_fenxi(String cmd, byte[] cmdBuf, int size) {
         byte[] locatBuf = new byte[size];
         System.arraycopy(cmdBuf, 0, locatBuf, 0, size); // 将cmdBuf数组复制到locatBuf数组
-
+        String fromCommad = Utils.bytesToHexFun(cmdBuf);
         if ("20".equals(cmd)) {//进入测试模式
         } else if ("40".equals(cmd)) {
             busInfo = FourStatusCmd.decodeFromReceiveDataPower24_1("00", locatBuf);
-            Log.e("40命令", "busInfo: " + busInfo.toString());
+            if (size > 10) {
+                Log.e("40命令解析", "busInfo: " + busInfo.toString());
+            }
         } else if ("22".equals(cmd)) { // 关闭测试
+            Log.e("22命令解析", "退出组网: " );
         } else if ("13".equals(cmd)) { // 关闭电源
         } else if ("41".equals(cmd)) { // 开启总线电源指令
+        } else if (DefCommand.CMD_3_DETONATE_2.equals(cmd)) {//31 写入延时时间，检测结果看雷管是否正常
+            From32DenatorFiring fromData = ThreeFiringCmd.decodeFromReceiveDataWriteDelay23_2("00", locatBuf);
+            if (fromCommad.startsWith("C0003104")) {
+                Log.e("31命令解析", "fromData: " + fromData.toString());
+            }
+        } else if (DefCommand.CMD_3_DETONATE_3.equals(cmd)) {//32 充电（雷管充电命令 等待6S（500米线，200发雷管），5.5V充电）
+            //发送 高压输出命令
+            Log.e("32命令解析", "开始充电: ");
+        } else if (DefCommand.CMD_3_DETONATE_4.equals(cmd)) {//33 高压输出（继电器切换，等待12S（500米线，200发雷管）16V充电）
+            //收到高压充电完成命令
+            Log.e("33命令解析", "切换高压: ");
+        } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            Log.e("34命令解析", "起爆指令: ");
+        }else if (DefCommand.CMD_2_NETTEST_1.equals(cmd)) {//20 进入测试模式
+//            revOpenCmdTestFlag = 1;//跳转发送测试命令阶段
+        } else if (DefCommand.CMD_2_NETTEST_2.equals(cmd)) {//21写入延时时间，检测结果看雷管是否正常
+            From22WriteDelay fromData = SecondNetTestCmd.decodeFromReceiveDataWriteCommand22("00", locatBuf);
+            if (fromCommad.startsWith("C0002104")) {
+                Log.e("21命令解析", "fromData: " + fromData.toString());
+            }
+        }else if (DefCommand.CMD_3_DETONATE_9.equals(cmd)) {//38 进入充电检测模式
+            String fromCommad2 = Utils.bytesToHexFun(cmdBuf);
+            if (fromCommad2.startsWith("C0003801FF")) {
+                Log.e("38命令解析", "充电成功: ");
+            }else if(fromCommad2.startsWith("C000380100")){
+                Log.e("38命令解析", "充电失败: ");
+            }
         }
     }
 
