@@ -49,7 +49,7 @@ public class DefCommand {
 
 	public static String CMD_5_TEST_8="5B";//设置低压
 	public static String CMD_5_TEST_9="5C";//设置高压
-
+	public static String CMD_5_TEST_10="5E";//设置时间参数
 
 	
 	

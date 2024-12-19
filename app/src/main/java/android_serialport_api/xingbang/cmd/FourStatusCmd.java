@@ -253,4 +253,11 @@ public class FourStatusCmd {
         return DefCommand.getCommadBytes(command);
     }
 
+    /**
+     * 发送设置时间参数指令
+     * */
+    public static byte[] setToXbCommon_SetTime(String addr,String data){
+        String command = addr + DefCommand.CMD_5_TEST_10+"02"+data;//5E02
+        return DefCommand.getCommadBytes(command);
+    }
 }

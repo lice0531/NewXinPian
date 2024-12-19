@@ -104,6 +104,38 @@
             android:text="设置高压"
             android:textColor="@color/bt_fg_base"
             android:visibility="visible"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置校准时间参数(μs微秒)"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/et_setTime"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:inputType="number|numberDecimal"
+                android:hint="时间参数/μs" />
+
+            <Button
+                android:id="@+id/btn_setTime"
+                style="@style/allbtntstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bt_mainpage_style"
+                android:text="设置时间"
+                android:textColor="@color/bt_fg_base" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"

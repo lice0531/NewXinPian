@@ -205,9 +205,11 @@ public class FiringMainActivity extends SerialPortActivity {
     private Button btn_lowVoltage;
     private Button btn_start;
     private Button btn_highVoltage;
+    private Button btn_setTime;
     private EditText et_set_lowVoltage;
     private EditText et_set_highVoltage;
     private EditText et_set_delay;
+    private EditText et_setTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,15 +251,37 @@ public class FiringMainActivity extends SerialPortActivity {
         String lowVoltage =(String) MmkvUtils.getcode("lowVoltage", "8.5");
         String highVoltage = (String) MmkvUtils.getcode("highVoltage", "16");
         String miaoliang = (String) MmkvUtils.getcode("miaoliang", "0");
+        String shijian = (String) MmkvUtils.getcode("setTime", "0");
         ll_0 = (LinearLayout) findViewById(R.id.ll_firing_0);
         et_set_lowVoltage=findViewById(R.id.et_set_lowVoltage);
         et_set_highVoltage=findViewById(R.id.et_set_highVoltage);
+        et_setTime=findViewById(R.id.et_setTime);
         et_set_lowVoltage.setText(lowVoltage);
         et_set_highVoltage.setText(highVoltage);
+        et_setTime.setText(shijian);
         et_set_delay=findViewById(R.id.et_set_delay);
         et_set_delay.setText(miaoliang);
         btn_lowVoltage=findViewById(R.id.btn_lowVoltage);
         btn_highVoltage=findViewById(R.id.btn_highVoltage);
+        btn_setTime=findViewById(R.id.btn_setTime);
+        btn_setTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str_time = et_setTime.getText().toString();
+                int time = Double.valueOf(Utils.convertToDouble(str_time, 1.0)).intValue();
+                if (Utils.isNumber(str_time)) {
+                    MmkvUtils.savecode("setTime", str_time);
+                    byte[] delayBye = Utils.shortToByte((short) time);
+                    String delayStr = Utils.bytesToHexFun(delayBye);
+                    String b = delayStr.substring(0, 2);
+                    String c = delayStr.substring(2);
+                    byte[] reCmd1 = FourStatusCmd.setToXbCommon_SetTime("00", c + b);//已验证正确
+                    sendCmd(reCmd1);
+                } else {
+                    show_Toast("您输入数值不符合规范,请重新输入");
+                }
+            }
+        });
         btn_lowVoltage.setOnClickListener(v -> {
             String str_lowVoltage=  et_set_lowVoltage.getText().toString();
             int low = Double.valueOf(Utils.convertToDouble(str_lowVoltage,7.0)*10).intValue();
@@ -1375,6 +1399,11 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if (DefCommand.CMD_5_TEST_9.equals(cmd)) {//5C设置高压
             Message msg = Handler_tip.obtainMessage();
             msg.what = 4;
+            Handler_tip.sendMessage(msg);
+        } else if (DefCommand.CMD_5_TEST_10.equals(cmd)) {//5E设置偏差值
+            Message msg = Handler_tip.obtainMessage();
+            msg.what = 6;
+            msg.obj="设置成功";
             Handler_tip.sendMessage(msg);
         } else {
             Log.e("起爆页面", "返回命令没有匹配对应的命令-cmd: " + cmd);
