@@ -378,6 +378,7 @@
     <string name="text_communication_state7">Bridge wire abnormality</string>
     <string name="et_hint_zuwang">Default 50s</string>
     <string name="add_project_actv_hint">15 digit number</string>
+    <string name="add_project_jwd_hint">Only numbers and commas can be entered</string>
     <string name="qb_tip_err">Err:</string>
     <string name="text_qb_tip5">Whether the detonator is detonated (press the 1+3 combination key to detonate the detonator)</string>
     <string name="text_qb_tip5_2">Whether the detonator is detonated (press the 1+5 combination key to detonate the detonator)</string>
@@ -838,9 +839,9 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PT_TY_V2.1_241122_3</string>
-    <string name="app_version_name2">M900_PT_XJ_V2.1_241122_3</string>
-    <string name="app_version_name3">M900_PT_CQ_V2.1_241122_3</string>
+    <string name="app_version_name">M900_PT_TY_V2.1_241122_4</string>
+    <string name="app_version_name2">M900_PT_XJ_V2.1_241122_4</string>
+    <string name="app_version_name3">M900_PT_CQ_V2.1_241122_4</string>
     <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
@@ -985,4 +986,5 @@
     <string name="dialog_czdl">The current line is short circuited, please check the line and start the detonation process again to detonate</string>
     <string name="text_gy">A total of</string>
     <string name="text_hcf">Box duplication</string>
+    <string name="text_scxm">Do you want to delete the project?</string>
 </resources>

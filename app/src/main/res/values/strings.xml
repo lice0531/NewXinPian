@@ -384,6 +384,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="app_title">煋邦起爆系统   /</string>
     <string name="add_project_actv_hint">合同,项目,单位代码必填一项</string>
+    <string name="add_project_jwd_hint">只能输入数字和逗号</string>
     <string name="qb_tip_err">错误:</string>
     <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
     <string name="text_qb_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
@@ -589,9 +590,9 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241122_3</string>//通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241122_3</string>//华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241122_3</string>//重庆
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241122_4</string>//通用
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241122_4</string>//华丰/金建华(新疆客户)
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241122_4</string>//重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
     <string name="text_main_dfzc">1.单发检测</string>
@@ -992,4 +993,5 @@
     <string name="text_hcf">盒重复</string>
     <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
     <string name="btn_fan">反</string>
+    <string name="text_scxm">是否删除该项目?</string>
 </resources>

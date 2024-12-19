@@ -35,10 +35,16 @@ public class Project extends LitePalSupport {
     private String bprysfz;//爆破员身份证
     @Property(nameInDb = "coordxy")
     private String coordxy;//经纬度
+    @Property(nameInDb = "selected")
+    private String selected;
+    //公司性质：营业性单位、非营业性单位
+    @Property(nameInDb = "business")
+    private String business;
 
-    @Generated(hash = 1076235564)
+    @Generated(hash = 1784969971)
     public Project(Long id, String project_name, String xmbh, String htbh,
-            String dwdm, String bprysfz, String coordxy) {
+            String dwdm, String bprysfz, String coordxy, String selected,
+                   String business) {
         this.id = id;
         this.project_name = project_name;
         this.xmbh = xmbh;
@@ -46,6 +52,8 @@ public class Project extends LitePalSupport {
         this.dwdm = dwdm;
         this.bprysfz = bprysfz;
         this.coordxy = coordxy;
+        this.selected = selected;
+        this.business = business;
     }
 
     @Generated(hash = 1767516619)
@@ -62,7 +70,25 @@ public class Project extends LitePalSupport {
                 ", dwdm='" + dwdm + '\'' +
                 ", bprysfz='" + bprysfz + '\'' +
                 ", coordxy='" + coordxy + '\'' +
+                ", selected='" + selected + '\'' +
+                ", business='" + business + '\'' +
                 '}';
+    }
+
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
+    }
+
+    public String getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(String business) {
+        this.business = business;
     }
 
     public Long getId() {

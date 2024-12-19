@@ -38,6 +38,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -307,43 +310,61 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.startsWith("A5")) {
                         Log.e("接收到A5指令了",response);
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
-                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2,4))) {
-                            if (A5Main) {
-                                isHandleMainQb = true;
-                                A5Main = false;
-                                //主的子设备
-//                            show_Toast(getString(R.string.text_sync_tip6));
-                                Log.e("主的子设备已接收到切换模式指令",response);
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
-                                EventBus.getDefault().post(new FirstEvent("sendCmd83"));
-                                //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
-                                EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
-                            } else {
-                                Log.e(TAG,"重复接收到A5起爆主的子设备消息，不处理");
+                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2, 4))) {
+                            Log.e(TAG, "一进来的mainA5Str:" + mainA5Str);
+                            if (mainA5Str.equals(response)) {
+                                //多次重复收到A5消息时，只处理一次
+                                Log.e(TAG, "主的子设备多次接收到A5消息，不处理");
+                                break;
                             }
+//                            if (A5Main) {
+                            mainA5Str = response;
+                            Log.e(TAG, "处理前的mainA5Str:" + mainA5Str);
+                            isHandleMainQb = true;
+                            A5Main = false;
+                            //主的子设备
+//                            show_Toast(getString(R.string.text_sync_tip6));
+                            Log.e("主的子设备已接收到切换模式指令", response);
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            send485Cmd("B5" + MmkvUtils.getcode("ACode", ""));
+                            EventBus.getDefault().post(new FirstEvent("sendCmd83"));
+                            //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
+                            EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+//                                Log.e(TAG,"处理结束的mainA5Str:" + mainA5Str);
+//                            } else {
+//                                Log.e(TAG,"重复接收到A5起爆主的子设备消息，不处理");
+//                            }
                         } else {
-                            if (!isHandleMainQb) {
-                                if (A5Other) {
-                                    A5Other = false;
-//                            show_Toast(getString(R.string.text_sync_tip6));
-                                    EventBus.getDefault().post(new FirstEvent("otherA5"));
-                                    //其他子设备
-                                    Log.e(TAG,"其他子设备接收到A5指令了");
-                                    Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-                                    Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-                                    //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
-                                    EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
-                                } else {
-                                    Log.e(TAG,"重复接收到A5起爆其他设备消息，不处理");
-                                }
-                            } else {
-                                Log.e(TAG,"主的子设备已经处理了起爆指令，接收到了其他子设备起爆指令也不用执行");
+                            Log.e(TAG, "一进来的otherA5Str:" + otherA5Str);
+                            if (otherA5Str.equals(response)) {
+                                //多次重复收到A5消息时，只处理一次
+                                Log.e(TAG, "其他子设备多次接收到A5消息，不处理");
+                                break;
                             }
+//                            if (!isHandleMainQb) {
+//                                if (A5Other) {
+                            otherA5Str = response;
+                            Log.e(TAG, "处理前的otherA5Str:" + otherA5Str);
+                            A5Other = false;
+//                            show_Toast(getString(R.string.text_sync_tip6));
+//                                    EventBus.getDefault().post(new FirstEvent("otherA5"));
+                            //其他子设备
+                            Log.e(TAG, "其他子设备接收到A5指令了");
+                            closeM900Rs485((String) MmkvUtils.getcode("ACode", ""));
+                            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+                            //此时在起爆页面展示一个文字提示，内容为：时钟校验中，等待起爆，请稍等
+                            EventBus.getDefault().post(new FirstEvent("sendWaitQb"));
+//                                } else {
+//                                    Log.e(TAG,"重复接收到A5起爆其他设备消息，不处理");
+////                                }
+//                            } else {
+//                                Log.e(TAG,"主的子设备已经处理了起爆指令，接收到了其他子设备起爆指令也不用执行");
+//                            }
                         }
 
 //                    } else if (response.contains("A003")) {
@@ -513,6 +534,8 @@ public class SyncActivityYouxian extends BaseActivity {
         }
     });
 
+    private String mainA5Str = "";//用来记录是否重复接收到主的子设备A5指令
+    private String otherA5Str = "";//用来记录是否重复接收到其他子设备A5指令
     //因为充电指令收到的消息中有A4数据粘连的情况  所以采取截取string方式处理接收到的485指令
     public  String getStringAfterA4(String str) {
         // 找到 "A4" 在 str 中的位置
@@ -1003,6 +1026,8 @@ public class SyncActivityYouxian extends BaseActivity {
                 case "M900":
                     Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到重新打开485串口指令");
                     openM900Rs485(event.getData());
+                    mainA5Str = "";
+                    otherA5Str = "";
                     break;
                 default:
                     Log.e("执行关闭socket操作","。。。。。");
@@ -1031,11 +1056,11 @@ public class SyncActivityYouxian extends BaseActivity {
             } else {
                 Log.e(TAG + "收到充电指令后发送的数据有误",event.getData());
             }
-        } else if (msg.equals("otherClose")) {
-            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
-            Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + MmkvUtils.getcode("ACode", ""));
-            closeM900Rs485((String)MmkvUtils.getcode("ACode", ""));
+//        } else if (msg.equals("otherClose")) {
+//            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+//            Utils.writeLog("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");
+//            Log.e("其他子设备已接收到切换模式指令","现在开始关闭485" + MmkvUtils.getcode("ACode", ""));
+//            closeM900Rs485((String)MmkvUtils.getcode("ACode", ""));
         } else if (msg.equals("qbjs")) {
             String qbResult = event.getData();
             Utils.writeRecord("其他子设备:" + MmkvUtils.getcode("ACode", "") + "已起爆结束,现在将起爆结果通知主控");
@@ -1112,7 +1137,7 @@ public class SyncActivityYouxian extends BaseActivity {
                 if (mExpDevMgr != null) {
                     mExpDevMgr.closeRs485();
                     mExpDevMgr.set12VEnable(false);
-                    Log.e("关闭485，设备是",code);
+                    Log.e(TAG + "关闭485，设备是",code);
                     Utils.writeRecord("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
                     Utils.writeLog("子设备：" + MmkvUtils.getcode("ACode", "") + "已关闭485指令");
                 }
@@ -1159,5 +1184,4 @@ public class SyncActivityYouxian extends BaseActivity {
             EventBus.getDefault().unregister(this);
         }
     }
-
 }

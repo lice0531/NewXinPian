@@ -347,6 +347,25 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/text_sm"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".firingdevice.ProjectManagerActivity"
+            android:label="@string/text_sm"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".firingdevice.ProjectErCodeActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".firingdevice.DetailLogActivity"
+            android:exported="false"
+            android:label="程序日志上传"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".firingdevice.ProjectDetailActivity"
+            android:exported="false"
+            android:label="项目详情"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

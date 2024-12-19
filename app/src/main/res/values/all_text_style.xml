@@ -8,4 +8,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="itemtextstyle" parent="@android:style/Widget.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/result_view</item>
+<!--        <item name="android:textStyle">bold</item>-->
+    </style>
 </resources>

@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/totalbar"
+        layout="@layout/title_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/gray_layout"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tvDeviceNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="设备编号:"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/white_layout"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvYyx"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="营业性单位"
+                    android:textColor="@color/text_sub"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFyyx"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="非营业性单位"
+                    android:textColor="@color/text_sub"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="请填写以下信息"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView1"
+                style="@style/cardview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:cardCornerRadius="3dp"
+                app:cardElevation="5dp"
+                app:contentPadding="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/totalbar"
+                app:layout_constraintVertical_bias="0.001">
+
+                <LinearLayout
+                    android:id="@+id/card_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/addproject_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/alltextstyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/addproject_tv_left"
+                            android:text="项目名称: "
+                            android:textSize="20sp" />
+
+                        <AutoCompleteTextView
+                            android:id="@+id/down_at_project_name"
+                            style="@style/alltextstyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+                            android:gravity="center_vertical"
+                            android:hint="项目名称"
+                            android:padding="5dp"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/rangle_border_base" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/addproject_heigh"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <TextView
+                            style="@style/alltextstyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/addproject_tv_left"
+                            android:text="公司性质: "
+                            android:textSize="20sp" />
+
+                        <Spinner
+                            android:id="@+id/add_gsxz"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:spinnerMode="dropdown" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_xmxx"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@color/rangle_border_base"
+                            android:visibility="visible" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/addproject_heigh"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/alltextstyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/addproject_tv_left"
+                                android:text="合同编号: "
+                                android:textSize="20sp" />
+
+                            <AutoCompleteTextView
+                                android:id="@+id/down_at_htid"
+                                style="@style/alltextstyle"
+                                android:layout_width="10dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="5"
+                                android:digits="0123456789"
+                                android:gravity="center_vertical"
+                                android:hint="15位数字"
+                                android:inputType="number"
+                                android:maxLength="15"
+                                android:padding="5dp"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@color/rangle_border_base" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/addproject_heigh"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/alltextstyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/addproject_tv_left"
+                                android:text="项目编号: "
+                                android:textSize="20sp" />
+
+                            <AutoCompleteTextView
+                                android:id="@+id/down_at_xmbh"
+                                style="@style/alltextstyle"
+                                android:layout_width="10dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="5"
+                                android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                                android:gravity="center_vertical"
+                                android:hint="15位数字或字母"
+                                android:maxLength="15"
+                                android:padding="5dp"
+                                android:text=""
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_dwxx"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@color/rangle_border_base" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/addproject_heigh"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/alltextstyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/addproject_tv_left"
+                                android:text="单位代码: "
+                                android:textSize="20sp" />
+
+                            <AutoCompleteTextView
+                                android:id="@+id/down_at_dwdm"
+                                style="@style/alltextstyle"
+                                android:layout_width="10dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="5"
+                                android:digits="1234567890"
+                                android:gravity="center_vertical"
+                                android:hint="13位数字"
+                                android:inputType="number"
+                                android:maxLength="13"
+                                android:padding="5dp"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/rangle_border_base" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/addproject_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/alltextstyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/addproject_tv_left"
+                            android:text="经纬度:     "
+                            android:textSize="20sp" />
+
+                        <AutoCompleteTextView
+                            android:id="@+id/down_at_coordxy"
+                            style="@style/alltextstyle"
+                            android:layout_width="10dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+                            android:digits="1234567890.,"
+                            android:gravity="center_vertical"
+                            android:hint="@string/add_project_jwd_hint"
+                            android:inputType="number"
+                            android:maxLength="13"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/rangle_border_base" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/addproject_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/alltextstyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/addproject_tv_left"
+                            android:text="身份证号: "
+                            android:textSize="20sp" />
+
+                        <AutoCompleteTextView
+                            android:id="@+id/down_at_bprysfz"
+                            style="@style/alltextstyle"
+                            android:layout_width="10dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+                            android:digits="0123456789X"
+                            android:gravity="center_vertical"
+                            android:hint="爆破人员身份证"
+                            android:maxLength="18"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_down_inputOK"
+                    style="@style/allbtntstyle"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1"
+                    android:text="保存信息"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btn_down_ercode"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/green_style"
+                    android:gravity="center"
+                    android:text="互传信息\n（生成二维码）"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

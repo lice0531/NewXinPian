@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_practice"
     android:layout_width="match_parent"
+    android:scrollbars="none"
     android:layout_height="match_parent"
     android:background="@color/child_pg_bg"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="android_serialport_api.xingbang.firingdevice.PracticeActivity">
+    <LinearLayout
+        android:id="@+id/activity_practice"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,7 +101,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="120dp"
             android:orientation="vertical">
 
             <TextView
@@ -264,11 +269,10 @@
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
             android:background="@color/label_color" />
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:visibility="visible">
-
+            android:layout_height="120dp"
+            android:orientation="vertical">
             <Button
                 android:id="@+id/but_rizhi"
                 style="@style/allbtntstyle"
@@ -276,7 +280,7 @@
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginStart="90dp"
+                android:layout_marginTop="10dp"
                 android:text="上传日志" />
             <Button
                 android:visibility="gone"
@@ -284,10 +288,30 @@
                 style="@style/allbtntstyle"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:layout_marginStart="90dp"
                 android:text="升级硬件程序" />
+            <Button
+                android:id="@+id/btn_detail_log"
+                style="@style/allbtntstyle"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="程序日志上传"
+                android:visibility="visible" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/label_color" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:visibility="visible">
+
 
         </RelativeLayout>
 
@@ -462,4 +486,5 @@
             android:text="生成表格"
             android:visibility="invisible" />
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

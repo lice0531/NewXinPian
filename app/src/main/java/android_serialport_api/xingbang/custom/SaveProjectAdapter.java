@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.custom;
 
 import android.content.Context;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +9,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import java.util.Map;
@@ -37,12 +43,18 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
 
     public interface InnerItemOnclickListener {
         void itemClick(View v);
+        void itemViewClick(View v,int position);
     }
 
     public void setOnInnerItemOnClickListener(InnerItemOnclickListener listener) {
         this.mListener = listener;
     }
 
+    private boolean isShowCheck = false;
+    public void showCheckBox(boolean isShow){
+        isShowCheck = isShow;
+        notifyDataSetChanged();
+    }
     @Override
     public int getCount() {
         return list.size();
@@ -72,6 +84,11 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
             viewHolder.tv_sp_sfz = (TextView) convertView.findViewById(R.id.tv_sp_sfz);
             viewHolder.btn_del = (Button) convertView.findViewById(R.id.btn_del_name);
             viewHolder.ly_sq = (LinearLayout) convertView.findViewById(R.id.ly_sq);
+            viewHolder.tv_gsxz = convertView.findViewById(R.id.tv_gsxz);
+            viewHolder.ll_item_dwxx = convertView.findViewById(R.id.ll_item_dwxx);
+            viewHolder.ll_item_xmxx = convertView.findViewById(R.id.ll_item_xmxx);
+            viewHolder.cbIsSelected = convertView.findViewById(R.id.cbIsSelected);
+            viewHolder.iv_used = convertView.findViewById(R.id.iv_used);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -82,10 +99,36 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         viewHolder.tv_sp_dwdm.setText(list.get(position).get("dwdm").toString());
         viewHolder.tv_sp_sfz.setText(list.get(position).get("bprysfz").toString());
         viewHolder.tv_sp_coordxy.setText(list.get(position).get("coordxy").toString());
+        viewHolder.iv_used.setVisibility(("true".equals(list.get(position).get("selected").toString())
+                ? View.VISIBLE : View.GONE));
+        viewHolder.cbIsSelected.setVisibility(isShowCheck ? View.VISIBLE : View.GONE);
+        if (list.get(position).get("business") == null) {
+            viewHolder.tv_gsxz.setVisibility(View.GONE);
+        } else {
+            viewHolder.tv_gsxz.setText(list.get(position).get("business").toString());
+            if (list.get(position).get("business").toString().startsWith("营业性")) {
+                viewHolder.ll_item_xmxx.setVisibility(View.VISIBLE);
+                viewHolder.ll_item_dwxx.setVisibility(View.GONE);
+            } else {
+                viewHolder.ll_item_xmxx.setVisibility(View.GONE);
+                viewHolder.ll_item_dwxx.setVisibility(View.VISIBLE);
+            }
+        }
         viewHolder.btn_del.setTag(position);
         viewHolder.ly_sq.setTag(position);
         viewHolder.btn_del.setOnClickListener(this);
         viewHolder.ly_sq.setOnClickListener(this);
+        viewHolder.cbIsSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (mListener != null) {
+                        //确保position值有效
+                        mListener.itemViewClick(buttonView, position);
+                    }
+                }
+            }
+        });
         return convertView;
     }
 
@@ -96,8 +139,12 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         private TextView tv_sp_dwdm;
         private TextView tv_sp_coordxy;
         private TextView tv_sp_sfz;
+        private TextView tv_gsxz;
         private Button btn_del;
         private LinearLayout ly_sq;
+        private LinearLayout ll_item_xmxx;
+        private LinearLayout ll_item_dwxx;
+        private CheckBox cbIsSelected;
+        private ImageView iv_used;
     }
-
 }

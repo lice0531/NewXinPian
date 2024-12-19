@@ -1,5 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -87,16 +89,24 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     Button btnClearProjectName;
     @BindView(R.id.btn_clear_dwdm)
     Button btnClearDwdm;
-    @BindView(R.id.sv_sp)
-    ScrollView svSp;
+//    @BindView(R.id.sv_sp)
+//    ScrollView svSp;
     @BindView(R.id.btn_down_offline)
     Button btnOffline;
-
+    @BindView(R.id.btn_add_project)
+    Button btnAddProject;
+    @BindView(R.id.btn_down_project)
+    Button btnDownProject;
+    @BindView(R.id.btn_delete_project)
+    Button btnDelete;
     private SaveProjectAdapter mAdapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private List<Map<String, Object>> map_project = new ArrayList<Map<String, Object>>();
+    private TextView totalbar_title;
+    private boolean isDelete = true;//是否展示列表中的多选按钮
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,12 +116,38 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         db = mMyDatabaseHelper.getReadableDatabase();
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        loadMoreData();
-        mAdapter = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject);
+        totalbar_title =  findViewById(R.id.title_text);
+        TextView tv_right = findViewById(R.id.title_right);
+        ImageView title_add = findViewById(R.id.title_add);
+        ImageView iv_back = findViewById(R.id.title_back);
+        title_add.setVisibility(View.GONE);
+        tv_right.setVisibility(View.VISIBLE);
+        tv_right.setText("管理");
+        totalbar_title.setText("项目列表");
+        iv_back.setOnClickListener(v -> finish());
+        tv_right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isDelete) {
+                    isDelete = false;
+                    mAdapter.showCheckBox(true);
+                    btnDelete.setVisibility(View.VISIBLE);
+                    tv_right.setText("取消");
+                    pnList.clear();
+                } else {
+                    pnList.clear();
+                    isDelete = true;
+                    mAdapter.showCheckBox(false);
+                    btnDelete.setVisibility(View.GONE);
+                    tv_right.setText("管理");
+                }
+            }
+        });
+//        loadMoreData();
+        mAdapter = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject_new);
         mAdapter.setOnInnerItemOnClickListener(this);
         lvProject.setAdapter(mAdapter);
         lvProject.setOnItemClickListener(this);
-
         initAutoComplete("history_htid", at_htid);//输入历史记录
         initAutoComplete("history_projectName", at_projectName);//输入历史记录
         initAutoComplete("history_xmbh", at_xmbh);
@@ -136,12 +172,20 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             item.put("xmbh", project.getXmbh());
             item.put("coordxy", project.getCoordxy());
             item.put("project_name", project.getProject_name());
+            item.put("business", project.getBusiness());
+            item.put("selected", project.getSelected());
             item.put("dwdm", project.getDwdm());
             item.put("bprysfz", project.getBprysfz());
             map_project.add(item);
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadMoreData();
+        mAdapter.notifyDataSetChanged();
+    }
 
     //隐藏键盘
     public void hideInputKeyboard() {
@@ -251,7 +295,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_clear_htid, R.id.btn_clear_xmbh,
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,
-            R.id.sv_sp,R.id.btn_down_offline})
+            R.id.btn_down_offline,R.id.btn_add_project,R.id.btn_down_project,R.id.btn_delete_project})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_down_return:
@@ -289,12 +333,32 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.btn_clear_dwdm:
                 deleteHistory("history_dwdm", at_dwdm);
                 break;
-            case R.id.sv_sp:
-                hideInputKeyboard();
-                break;
+//            case R.id.sv_sp:
+//                hideInputKeyboard();
+//                break;
             case R.id.btn_down_offline:
                 Intent intent = new Intent(this, DownOfflineActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.btn_add_project:
+                Intent im = new Intent(this, ProjectManagerActivity.class);
+                startActivity(im);
+                break;
+            case R.id.btn_down_project:
+                String str7 = "下载";
+                Intent intent7 = new Intent(SaveProjectActivity.this, DownWorkCode.class);
+                intent7.putExtra("dataSend", str7);
+                startActivityForResult(intent7, 1);
+                break;
+            case R.id.btn_delete_project:
+                for (String pn : pnList) {
+                    delShouQuan(pn);//删除方法
+//                    if (map_project != null && map_project.size() > 0) {//移除map中的值
+//                        map_project.remove(position);
+//                    }
+                }
+                loadMoreData();
+                mAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -309,7 +373,40 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             }
             mAdapter.notifyDataSetChanged();
         }
+        if ("true".equals(map_project.get(position).get("selected").toString())) {
+            //如果是使用中的项目，进入项目编辑页面
+            Intent intent = new Intent(this,ProjectManagerActivity.class);
+            intent.putExtra("xmPageFlag","Y");
+            intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
+            intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
+            intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
+            intent.putExtra("coordxy",map_project.get(position).get("coordxy").toString());
+            intent.putExtra("business",map_project.get(position).get("business").toString());
+            intent.putExtra("project_name",map_project.get(position).get("project_name").toString());
+            intent.putExtra("bprysfz",map_project.get(position).get("bprysfz").toString());
+            startActivity(intent);
+        } else {
+            //如果不是使用中的项目，进入项目详情页面
+            Intent intent = new Intent(this,ProjectDetailActivity.class);
+            intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
+            intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
+            intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
+            intent.putExtra("coordxy",map_project.get(position).get("coordxy").toString());
+            intent.putExtra("business",map_project.get(position).get("business").toString());
+            intent.putExtra("project_name",map_project.get(position).get("project_name").toString());
+            intent.putExtra("bprysfz",map_project.get(position).get("bprysfz").toString());
+            startActivity(intent);
+        }
+    }
 
+    private List<String> pnList = new ArrayList<>();
+    @Override
+    public void itemViewClick(View v, int index) {
+        int position = index;
+        if (v.getId() == R.id.cbIsSelected) {
+            //多选   选中的项目  可执行多条删除功能
+            pnList.add(map_project.get(position).get("project_name").toString());
+        }
     }
 
     private int delShouQuan(String project_name) {//删除雷管
