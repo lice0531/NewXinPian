@@ -26,6 +26,8 @@ import android.widget.TextView;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -178,6 +180,20 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             item.put("bprysfz", project.getBprysfz());
             map_project.add(item);
         }
+        // 使用 Comparator 对 map_project 进行排序，确保 selected = "true" 的条目排在前面
+        Collections.sort(map_project, new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                String selected1 = (String) o1.get("selected");
+                String selected2 = (String) o2.get("selected");
+                // 先把字符串 "true" 转换为布尔值，再进行比较
+                boolean isSelected1 = "true".equals(selected1);
+                boolean isSelected2 = "true".equals(selected2);
+
+                // selected 为 "true" 的排在前面
+                return Boolean.compare(isSelected2, isSelected1); // 反向排序
+            }
+        });
     }
 
     @Override
