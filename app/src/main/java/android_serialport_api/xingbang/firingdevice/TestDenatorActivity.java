@@ -178,7 +178,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         if (changjia.equals("CQ")) {
             cankaodianliu = 15;
         } else {
-            cankaodianliu = 17;
+            cankaodianliu = 16;
         }
         //获取区号
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");

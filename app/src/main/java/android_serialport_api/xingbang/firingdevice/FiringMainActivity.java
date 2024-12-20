@@ -270,7 +270,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if(changjia.equals("CQ")){
             cankaodianliu=15;
         }else {
-            cankaodianliu=17;
+            cankaodianliu=16;
         }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
