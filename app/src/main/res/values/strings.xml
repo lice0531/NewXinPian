@@ -280,11 +280,11 @@
     <string name="text_del_end">终号</string>
     <string name="text_del_ok">删除成功</string>
 
-<!--    <string name="text_firing_tip1">测试准备阶段</string>-->
+    <!--    <string name="text_firing_tip1">测试准备阶段</string>-->
     <string name="text_firing_tip1">授时起爆准备阶段</string>
     <string name="text_firing_num">待测雷管数量:</string>
     <string name="text_firing_errnum">错误数量 :</string>
-<!--    <string name="text_firing_tip2">测试准备阶段</string>-->
+    <!--    <string name="text_firing_tip2">测试准备阶段</string>-->
     <string name="text_firing_tip2">授时起爆准备阶段</string>
     <string name="text_firing_tip3">是否进入充电模式？</string>
     <string name="text_firing_err_lg">错误雷管</string>
@@ -294,7 +294,7 @@
     <string name="text_firing_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
     <string name="text_firing_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
     <string name="text_firing_tip6">倒计时</string>
-<!--    <string name="text_firing_tip7">测试准备阶段 (</string>-->
+    <!--    <string name="text_firing_tip7">测试准备阶段 (</string>-->
     <string name="text_firing_tip7">授时起爆准备阶段 (</string>
     <string name="text_firing_tip8">写入未返回:</string>
     <string name="text_firing_tip9">正在检测第 (</string>
@@ -533,8 +533,8 @@
     <string name="text_sync_tip1">数据为空</string>
     <string name="text_sync_tip2">同步成功</string>
     <string name="text_sync_tip3">已连接</string>
-<!--    <string name="text_sync_tip4">收到起爆测试指令</string>-->
-<!--    <string name="text_sync_tip5">收到准备充电指令</string>-->
+    <!--    <string name="text_sync_tip4">收到起爆测试指令</string>-->
+    <!--    <string name="text_sync_tip5">收到准备充电指令</string>-->
     <string name="text_sync_tip4">收到检测指令</string>
     <string name="text_sync_tip5">收到充电指令</string>
     <string name="text_sync_tip6">收到起爆指令</string>
@@ -590,9 +590,12 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241122_4</string>//通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241122_4</string>//华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241122_4</string>//重庆
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241122_4</string>
+    //通用
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241122_4</string>
+    //华丰/金建华(新疆客户)
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241122_4</string>
+    //重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
     <string name="text_main_dfzc">1.单发检测</string>
@@ -612,9 +615,9 @@
         <item>CQ</item>
         <item>XJ</item>
     </string-array>
-<!--    <string name="tongyong">通用</string>-->
-<!--    <string name="chongqing">重庆</string>-->
-<!--    <string name="huafeng">华丰</string>-->
+    <!--    <string name="tongyong">通用</string>-->
+    <!--    <string name="chongqing">重庆</string>-->
+    <!--    <string name="huafeng">华丰</string>-->
     <string name="set_shouquan">是否验证雷管已经授权</string>
     <string name="set_cdfj">是否开启充电复检功能</string>
     <string name="set_cdzdsj">设置充电最大时间/s</string>
