@@ -38,7 +38,7 @@
         <activity
             android:name=".firingdevice.QuYuActivity"
             android:exported="false"
-            android:label="日志上传"
+            android:label="区域管理"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
