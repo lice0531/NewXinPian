@@ -158,6 +158,7 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
                 Environment.MEDIA_MOUNTED)) {
 
             logPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
+//            logPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序崩溃日志/" + Utils.getDate(new Date()) + ".txt";
             try {
                 FileWriter fw = new FileWriter(logPath, true);
                 fw.write(Utils.getDate(new Date()) + "错误原因：\n");

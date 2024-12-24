@@ -87,6 +87,7 @@ import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.AMapUtils;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.LngLat;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
@@ -258,6 +259,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         ButterKnife.bind(this);
         DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
+        AppLogUtils.writeAppLog("---进入下载项目页面---");
         baidudingwei();
         getUserMessage();//获取用户信息
 //        getPropertiesData();//第二种获取用户信息
@@ -395,6 +397,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入项目下载页面---");
+        AppLogUtils.writeAppLog("---进入项目下载页面---");
 
         //模拟下载---测试完要记得关闭
 //        new Thread(new Runnable() {
@@ -1067,6 +1070,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             object.put("dwdm", tv_dwdm);//单位代码
             Log.e("上传信息", object.toString());
             Utils.writeRecord("---上传丹灵信息:" + object);
+            AppLogUtils.writeAppLog("---上传丹灵信息:" + object);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1104,6 +1108,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 }
                 Log.e("网络请求", "res: " + res);
                 Utils.writeRecord("---丹灵网返回:" + res);
+                AppLogUtils.writeAppLog("---丹灵网返回:" + res);
                 Gson gson = new Gson();
                 DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
                 try {
@@ -1269,6 +1274,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 }
                 Log.e("网络请求返回", "res: " + res);
                 Utils.writeRecord("---煋邦返回:" + res);
+                AppLogUtils.writeAppLog("---煋邦返回:" + res);
                 Gson gson = new Gson();
                 DanLingBean danLingBean = gson.fromJson(res, DanLingBean.class);
                 try {

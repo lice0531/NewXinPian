@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +43,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -61,12 +59,10 @@ import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
@@ -76,7 +72,6 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.jilian.SyncActivity;
 import android_serialport_api.xingbang.jilian.SyncActivityYouxian;
-import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -700,7 +695,7 @@ public class PracticeActivity extends BaseActivity {
                 startActivityForResult(intent, 1);
                 break;
             case R.id.btn_detail_log:
-                Intent dlIntent = new Intent(this,DetailLogActivity.class);
+                Intent dlIntent = new Intent(this, AppDetailLogActivity.class);
                 startActivity(dlIntent);
                 break;
 

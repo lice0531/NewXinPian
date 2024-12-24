@@ -70,6 +70,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -459,6 +460,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入单发注册页面---");
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
+        AppLogUtils.writeAppLog("---进入单发注册页面---changjia:" + changjia);
         if (changjia.equals("CQ")) {
             sendCmd(FourStatusCmd.send46("00", "03"));//20(第一代)
         } else {
@@ -733,6 +735,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
         }
+        AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay);
         int a = 0;
         if (duan_scan.equals("0")) {//普通雷管按当前页面选择的来
@@ -997,6 +1000,8 @@ public class ReisterMainPage_line extends SerialPortActivity {
             return -1;
         }
         int reCount = 0;//统计注册了多少发雷管
+        AppLogUtils.writeAppLog("--手动输入注册--前8位:" + prex + "--开始后5位:" + start +
+                "--结束后5位:" + end + "--开始延时:" + start_delay);
         Utils.writeRecord("--手动输入注册--前8位:" + prex + "--开始后5位:" + start +
                 "--结束后5位:" + end + "--开始延时:" + start_delay);
         for (int i = start; i <= end; i++) {
@@ -1749,6 +1754,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         MmkvUtils.savecode("start", et_startDelay.getText().toString());
         super.onDestroy();
         fixInputMethodManagerLeak(this);
+        AppLogUtils.writeAppLog("---已退出单发注册页面-----");
     }
 
     /****
@@ -1946,6 +1952,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                                     int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
                                     new GreenDaoMaster().deleteDetonator(shellBlastNo);
                                     Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                                    AppLogUtils.writeAppLog("--删除雷管:" + shellBlastNo);
                                     Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
                                     //更新每段雷管数量
                                     Message msg = new Message();
@@ -1974,6 +1981,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2001, getResources().getString(R.string.text_reister_tip5) + maxSecond + "ms"));
 
             } else {
+                AppLogUtils.writeAppLog("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
                 Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
                 // 修改雷管延时
                 new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1));
@@ -2026,6 +2034,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         } else {
             String data = new String(cmdBuf).trim();//使用构造函数转换成字符串
             Utils.writeLog("扫码结果:" + data);
+            AppLogUtils.writeAppLog("扫码结果:" + data);
             //扫码注册
             if (data.length() == 19) {//扫描箱号
                 addXiangHao(data);
@@ -2079,6 +2088,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
+                AppLogUtils.writeAppXBLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -2134,6 +2144,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
                 Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
+                AppLogUtils.writeAppLog("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + " 芯片码:" + detonatorId + "该雷管桥丝异常");
             }
             zhuce_Flag = 1;
 
@@ -2165,6 +2176,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                     SoundPlayUtils.play(4);
                     zhuce_Flag = 0;
+                    AppLogUtils.writeAppLog("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                     Utils.writeRecord("--单发注册--:管壳码:" + serchShellBlastNo(detonatorId) + "芯片码" + zhuce_form.getDenaId() + "该雷管电流过大");
                 }
 //                else {
@@ -2351,6 +2363,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
+        AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "--延时:" + delay);
         return 0;
     }
 
@@ -2500,11 +2513,13 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 denatorBaseinfo.setZhu_yscs(detonatorTypeNew.getZhu_yscs());
                 denatorBaseinfo.setRegdate(detonatorTypeNew.getTime());
                 denatorBaseinfo.setAuthorization(detonatorTypeNew.getDetonatorIdSup());//雷管芯片型号
+                AppLogUtils.writeAppLog("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
                 Utils.writeRecord("--单发注册--" + "注册雷管码:" + detonatorTypeNew.getShellBlastNo() + " --芯片码:" + zhuce_form.getDenaId());
             } else {
                 denatorBaseinfo.setShellBlastNo(detonatorId);
                 denatorBaseinfo.setZhu_yscs(zhuce_form.getZhu_yscs());
                 denatorBaseinfo.setRegdate(Utils.getDateFormat(new Date()));
+                AppLogUtils.writeAppLog("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
                 Utils.writeRecord("--单发注册--" + " --芯片码:" + zhuce_form.getDenaId());
             }
 
@@ -2512,6 +2527,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
                 String detonatorId_Sup = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaIdSup());
                 denatorBaseinfo.setDenatorIdSup(detonatorId_Sup);//从芯片
                 denatorBaseinfo.setCong_yscs(detonatorTypeNew.getCong_yscs());
+                AppLogUtils.writeAppLog("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
                 Utils.writeRecord("--单发注册: 从芯片码:" + zhuce_form.getDenaIdSup());
             }
             denatorBaseinfo.setBlastserial(maxNo);

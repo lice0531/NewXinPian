@@ -59,6 +59,7 @@ import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
@@ -142,7 +143,7 @@ public class QueryHisDetail extends BaseActivity {
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Log.e("上传", "changjia: "+changjia );
-
+        AppLogUtils.writeAppLog("---进入起爆历史记录上传页面");
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
 
@@ -312,6 +313,7 @@ public class QueryHisDetail extends BaseActivity {
         Log.e("是否上传错误雷管", "changjia: "+changjia );
         Log.e("是否上传错误雷管", "Shangchuan: "+Shangchuan );
         Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
+        AppLogUtils.writeAppLog("==是否上传错误雷管:"+Shangchuan);
     }
 
     private void getUserMessage() {
@@ -959,6 +961,7 @@ public class QueryHisDetail extends BaseActivity {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
                 Utils.writeLog("煋邦网络上传错误-IOException:"+e);
+                AppLogUtils.writeAppXBLog("煋邦网络上传错误-IOException:"+e);
                 updatalog(blastdate,"煋邦网络上传错误-IOException:"+e);
                 Message msg = new Message();
                 msg.what=5;

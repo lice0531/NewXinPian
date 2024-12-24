@@ -43,6 +43,7 @@ import android_serialport_api.xingbang.custom.MyRecyclerView;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -249,7 +250,7 @@ public class SetDelayTime_suidao extends BaseActivity {
 
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-
+        AppLogUtils.writeAppLog("---进入设置隧道延时页面---");
         Utils.writeRecord("---进入设置隧道延时页面---");
     }
 

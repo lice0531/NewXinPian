@@ -26,8 +26,10 @@ import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -46,6 +48,7 @@ public class GreenDaoMaster {
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
     private DenatorHis_MainDao denatorHis_mainDao;
+    private SysLogDao sysLogDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -57,6 +60,7 @@ public class GreenDaoMaster {
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
         this.denatorHis_mainDao = Application.getDaoSession().getDenatorHis_MainDao();
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
+        this.sysLogDao = Application.getDaoSession().getSysLogDao();
     }
 
 
@@ -1501,4 +1505,71 @@ public class GreenDaoMaster {
 //                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
 //                .unique();
 //    }
+
+    /**
+     * 程序日志上传页面-删除单条日志记录
+     * @param filename:日志文件名
+     * @return
+     */
+    public List<SysLog> deleteAppLogs(String filename) {
+        // 提取前缀（假设前缀是 filename 的前8个字符，可以根据需求调整）
+        String prefix = filename.substring(0, 10);
+        // 查询所有以该前缀开头的日志记录
+        return sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.Filename.like(prefix + "%"))  // 使用前缀进行匹配
+                .list();
+    }
+
+    /**
+     * 程序日志上传页面-更新日志上传状态
+     * @param dateTime:当前条目日志记录的更新时间
+     */
+    public void updateAppLog(String dateTime) {
+        // 提取日期部分（yyyy-MM-dd）
+        String date = dateTime.split(" ")[0];  // 以空格分隔，取第一部分即为 "2024-12-24"
+        // 按日期前缀和更新时间排序查询
+        List<SysLog> logs = sysLogDao.queryBuilder()
+                // 使用 LIKE 操作符匹配 updateTime 字段的前 10 个字符 (即 yyyy-MM-dd 部分)
+                .where(SysLogDao.Properties.UpdataTime.like(date + "%"))  // 按更新时间降序排列
+                .list();
+        // 遍历查询结果并更新 upState 字段
+        for (SysLog log : logs) {
+            log.setUpdataState("已上传");  // 设置状态为“已上传”
+        }
+        // 在事务中批量更新日志记录
+        sysLogDao.updateInTx(logs);  //
+    }
+
+    /**
+     * 程序日志上传页面-查询日志记录
+     * @return
+     */
+    public List<SysLog> getAppLogList() {
+        // 按日期前缀和更新时间排序查询
+        List<SysLog> sysLogs = sysLogDao.queryBuilder()
+                .orderDesc(SysLogDao.Properties.UpdataTime) // 按更新时间降序排列
+                .list();
+        // 存储去重后的日志
+        Map<String, SysLog> latestLogsMap = new HashMap<>();
+        for (SysLog log : sysLogs) {
+            String datePrefix = log.getFilename().substring(0, 10);  // 提取文件名年月日作为日期前缀
+            // 如果没有该日期前缀的记录，或者遇到较新的记录，则更新
+            if (!latestLogsMap.containsKey(datePrefix)) {
+                latestLogsMap.put(datePrefix, log);
+            }
+        }
+        // 将去重后的日志转化为 List
+        return new ArrayList<>(latestLogsMap.values());
+    }
+
+    /**
+     * 程序日志上传页面-删除日常日志所有已上传记录
+     * @param state
+     */
+    public void deleteLogByState(String state) {
+        sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.UpdataState.eq(state))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();  // 执行删除操作，删除满足条件的所有记录
+    }
 }

@@ -60,6 +60,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -122,6 +123,7 @@ public class SetDelayTime extends BaseActivity {
         initHandle();
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.writeRecord("---进入设置延时页面---");
+        AppLogUtils.writeAppLog("---进入设置延时页面---");
     }
 
     private void initHandle() {
@@ -221,6 +223,7 @@ public class SetDelayTime extends BaseActivity {
         btn_dijian.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppLogUtils.writeAppLog("点击了递减按钮");
                 if(startNoTxt.getText().length()==0){
                     show_Toast(getResources().getString(R.string.text_ksxh));
                     return;
@@ -260,6 +263,7 @@ public class SetDelayTime extends BaseActivity {
         });
         btn_OK = findViewById(R.id.btn_setDelayTime_inputOK);
         btn_OK.setOnClickListener(v -> {
+            AppLogUtils.writeAppLog("点击了递增按钮");
             if(startNoTxt.getText().length()==0){
                 show_Toast(getResources().getString(R.string.text_ksxh));
                 return;
@@ -535,6 +539,7 @@ public class SetDelayTime extends BaseActivity {
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
                 Utils.writeRecord("--删除雷管:"+shellBlastNo);
+                AppLogUtils.writeAppLog("--删除雷管:"+shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
                 pb_show = 0;
@@ -543,6 +548,7 @@ public class SetDelayTime extends BaseActivity {
         });
         builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
+            AppLogUtils.writeAppLog("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip9) + maxSecond + "ms"));
@@ -609,6 +615,7 @@ public class SetDelayTime extends BaseActivity {
                                 // 删除某一发雷管
                                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                                 Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                                AppLogUtils.writeAppLog("--删除雷管:" + shellBlastNo);
                                 Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
                                 // 区域 更新视图
                                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
@@ -631,6 +638,7 @@ public class SetDelayTime extends BaseActivity {
                 return;
             }
             String delay1 = et_delay.getText().toString();
+            AppLogUtils.writeAppLog("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(2001, getResources().getString(R.string.text_reister_tip8)));
@@ -860,6 +868,8 @@ public class SetDelayTime extends BaseActivity {
         Utils.saveFile();//把软存中的数据存入磁盘中
 //        getLoaderManager().restartLoader(1, null, SetDelayTime.this);
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        AppLogUtils.writeAppLog("--设置延时:起始序号:"+startNoStr+",终点序号:"+endNoStr+",孔内雷管数:"+holeDeAmoStr
+                +",开始延时:"+startDelayStr+",孔内延时:"+holeinDelayStr+",孔间延时:"+holeBetweentStr);
         Utils.writeRecord("--设置延时:起始序号:"+startNoStr+",终点序号:"+endNoStr+",孔内雷管数:"+holeDeAmoStr
                 +",开始延时:"+startDelayStr+",孔内延时:"+holeinDelayStr+",孔间延时:"+holeBetweentStr);
     }

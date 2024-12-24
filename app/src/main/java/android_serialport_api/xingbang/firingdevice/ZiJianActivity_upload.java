@@ -33,6 +33,7 @@ import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -112,6 +113,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         ziJianThread = new ZiJianThread();
 //        ziJianThread.start();
         Utils.writeRecord("--进入起爆器--");
+        AppLogUtils.writeAppLog("--进入起爆器--");
         quanxian();//申请权限
 //        CJ="HF_";//SC-四川 NM-内蒙 HF-华丰(不同的版本需要修改)
 //        CJ="XB_";//测试用
@@ -317,6 +319,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         Log.e("低压", "c+b: " + c + b);
         Log.e("高压", "e+d: " + e + d);
         Utils.writeRecord("设置低压" + (c + b) + "--设置高压" + (e + d));
+        AppLogUtils.writeAppLog("设置低压" + (c + b) + "--设置高压" + (e + d));
         byte[] powerCmd = OneReisterCmd.setToXbCommon_Reister_Test((c + b) + (e + d));//14
         sendCmd(powerCmd);
     }
@@ -380,6 +383,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("自检发送:" + str);
+                AppLogUtils.writeAppXBLog("自检页面发送:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -415,6 +419,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             double voltHeigh = (Integer.parseInt(b1, 16) * 256 + Integer.parseInt(b, 16)) / 4.095 * 3.0 * 0.006;
 //            Log.e("核心板自检", "voltLow: " +voltLow);
 //            Log.e("核心板自检", "voltHeigh: " +voltHeigh);
+            AppLogUtils.writeAppLog("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
             Utils.writeRecord("单片机返回的设置电压--低压:" + voltLow + "--高压:" + voltHeigh);
             dianya_low = Utils.getFloatToFormat((float) voltLow, 2, 4);
             dianya_high = Utils.getFloatToFormat((float) voltHeigh, 2, 4);

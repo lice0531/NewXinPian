@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.models.VoFireHisMain;
+import android_serialport_api.xingbang.db.SysLog;
 
-public class LoadDetaiLogAdapter extends RecyclerView.Adapter<LoadDetaiLogAdapter.ViewHolder> implements View.OnClickListener {
-    private List<VoFireHisMain> list_his;
+public class AppDetaiLogAdapter extends RecyclerView.Adapter<AppDetaiLogAdapter.ViewHolder> implements View.OnClickListener {
+    private List<SysLog> list_his;
     private Context mContext;
     private OnItemClickListener onItemClickListener;//声明自定义的监听接口
 
@@ -48,11 +48,11 @@ public class LoadDetaiLogAdapter extends RecyclerView.Adapter<LoadDetaiLogAdapte
     }
 
 
-    public LoadDetaiLogAdapter(Context mContext, List<VoFireHisMain> list_his) {
+    public AppDetaiLogAdapter(Context mContext, List<SysLog> list_his) {
         this.mContext = mContext;
         this.list_his = list_his;
     }
-    public void setDataSource(List<VoFireHisMain> list_his) {
+    public void setDataSource(List<SysLog> list_his) {
         this.list_his = list_his;
         notifyDataSetChanged();
     }
@@ -67,12 +67,13 @@ public class LoadDetaiLogAdapter extends RecyclerView.Adapter<LoadDetaiLogAdapte
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bt_delete.setVisibility(View.GONE);
+        holder.fireDate.setTextSize(18);
+        holder.txtstatus.setTextSize(18);
         holder.serialNo.setText((position+1)+"");
-        holder.fireDate.setText(list_his.get(position).getBlastdate());
-        holder.bt_delete.setTag(R.id.bt_delete, list_his.get(position).getBlastdate());
+        holder.fireDate.setText(list_his.get(position).getUpdataTime());
+        holder.bt_delete.setTag(R.id.bt_delete, list_his.get(position).getUpdataTime());
         holder.bt_upload.setTag(R.id.bt_upload,position);
-        if("未上传".equals(list_his.get(position).getUploadStatus())){
+        if("未上传".equals(list_his.get(position).getUpdataState())){
             holder.txtstatus.setText(mContext.getString(R.string.text_query_up));	//"未上传"
             holder.bt_upload.setText(mContext.getString(R.string.text_query_uploda));//"上传"
             holder.ly_his.setBackgroundResource(R.drawable.textview_border_green);
@@ -88,7 +89,6 @@ public class LoadDetaiLogAdapter extends RecyclerView.Adapter<LoadDetaiLogAdapte
             holder.txtstatus.setBackgroundResource(R.drawable.textview_border_red);
         }
         holder.itemView.setTag(position);
-
     }
 
     @Override

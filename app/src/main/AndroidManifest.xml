@@ -357,7 +357,7 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".firingdevice.DetailLogActivity"
+            android:name=".firingdevice.AppDetailLogActivity"
             android:exported="false"
             android:label="程序日志上传"
             android:theme="@style/AppTheme.NoActionBar"/>

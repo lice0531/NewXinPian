@@ -66,6 +66,7 @@ import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -291,6 +292,7 @@ public class FiringMainActivity extends SerialPortActivity {
         isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
         Log.e(TAG,"进入起爆页面");
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
+        AppLogUtils.writeAppXBLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
         startFlag = 1;
         initParam();//重置参数
         initView();
@@ -304,6 +306,7 @@ public class FiringMainActivity extends SerialPortActivity {
         elevenCount = getRegionMaxDelay() / 1000 + 1;
         Log.e(TAG, "elevenCount: " + elevenCount);
         Utils.writeLog("起爆放电倒计时值:" + elevenCount);
+        AppLogUtils.writeAppXBLog("起爆页面-qbxm_id:" + qbxm_name);
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         if (isJL) {
             //给主机发消息告知已进入起爆页面
@@ -1854,6 +1857,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Log.e("发送命令", str);//pid + "-" + tid +
                 Utils.writeLog("->:" + str);
+                AppLogUtils.writeAppXBLog("->:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {
@@ -1887,8 +1891,9 @@ public class FiringMainActivity extends SerialPortActivity {
         } else if ("02".equals(fromData.getCommicationStatus())) {
             show_Toast(getString(R.string.text_error_tip51));//桥丝检测不正常
             Utils.writeRecord("--起爆检测错误:" + fromData.toString());
+            AppLogUtils.writeAppLog("--起爆检测错误:" + fromData.toString());
         }
-
+        AppLogUtils.writeAppLog("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
         Utils.writeRecord("返回延时:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getDelayTime() + "-写入延时" + writeDelay);
     }
 
@@ -1912,6 +1917,7 @@ public class FiringMainActivity extends SerialPortActivity {
         twoErrorDenatorFlag = 1;
         noReisterHandler.sendMessage(noReisterHandler.obtainMessage());
 //        }
+        AppLogUtils.writeAppLog("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus());
         Utils.writeRecord("充电状态:" + "管码" + fromData.getShellNo() + "-返回延时" + fromData.getCommicationStatus());
     }
 
@@ -2008,6 +2014,7 @@ public class FiringMainActivity extends SerialPortActivity {
         int tid = Process.myTid(); // 获取当前线程的ID
         //pid + "-" + tid +
         Utils.writeLog("<-:" + fromCommad);//找到问题可以把这个进程id去掉
+        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
 //        Log.e("返回命令--起爆页面", fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -2026,6 +2033,8 @@ public class FiringMainActivity extends SerialPortActivity {
 
                 }
             }
+        } else {
+            AppLogUtils.writeAppXBLog("芯片返回指令不完整:" + fromCommad);
         }
     }
 
@@ -2034,6 +2043,7 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void doWithReceivData(String cmd, byte[] locatBuf) {
         if (DefCommand.CMD_1_REISTER_4.equals(cmd)) {//13 收到关闭电源命令
+            AppLogUtils.writeAppXBLog("已收到芯片13指令");
             increase(1);
             Log.e(TAG, "increase: 1");
             zeroCmdReFlag = 1;
@@ -2043,7 +2053,7 @@ public class FiringMainActivity extends SerialPortActivity {
 //            int Tid = Process.myTid(); // 获取当前线程的ID
 //            Log.e(TAG, "收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
 //            Utils.writeRecord("收到41--1阶段firstCmdReFlag: "+firstCmdReFlag+"  oneCount:"+oneCount +"  stage:"+stage+"  pid:"+pid+"  Tid:"+Tid);
-
+            AppLogUtils.writeAppLog("已收到芯片13指令,开始发送41指令");
             Log.e(TAG, "收到13指令，开始发送41指令");
         } else if (DefCommand.CMD_3_DETONATE_1.equals(cmd)) {//30 进入起爆模式
             deviceStatus = "02";//等待检测
@@ -2073,6 +2083,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fromData.setShellNo(temp.getShellBlastNo());
                 fromData.setDenaId(temp.getDenatorId());//芯片码
                 Utils.writeRecord("--起爆测试结果:" + fromData);
+                AppLogUtils.writeAppLog("--起爆测试结果:" + fromData);
                 updateDenator(fromData, writeDelay);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
@@ -2106,6 +2117,7 @@ public class FiringMainActivity extends SerialPortActivity {
             sixCmdSerial = 3;
             Log.e(TAG, "33指令已返回,充电倒计时值twoCount:" + twoCount);
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            AppLogUtils.writeAppXBLog("已收到芯片34指令");
             isGetQbResult = true;
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             //C000340100ABCDC0
@@ -2126,6 +2138,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
+            AppLogUtils.writeAppLog("34已返回,生成起爆历史记录");
 //            saveFireResult_All();
             if (!qbxm_id.equals("-1")) {
                 updataState(qbxm_id);
@@ -2146,6 +2159,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 boolean isStopJl = checkIsStopJl();
                 if (isStopJl) {
                     xzqb();
+                    AppLogUtils.writeAppXBLog(MmkvUtils.getcode("ACode", "") + "子设备收到34起爆指令但由于出错不需要起爆");
                     Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备收到34起爆指令但由于出错不需要起爆");
                 } else {
                     if (!isInterunptQb) {
@@ -2159,6 +2173,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         Log.e("起爆结束了", "去重新打开485接口--msg是: open485--data:Y");
                         increase(11);//跳到第9阶段
                         Log.e("increase", "9");
+                        AppLogUtils.writeAppXBLog(MmkvUtils.getcode("ACode", "") + "子设备已收到34起爆指令,重新打开485串口");
                         Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备已收到34起爆指令,重新打开485串口");
 //                        //热点级联起爆结束发消息
 //                        int allNum = Integer.parseInt(ll_firing_deAmount_4.getText().toString());
@@ -2239,6 +2254,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     fromData.setShellNo(temp.getShellBlastNo());
                     fromData.setDenaId(temp.getDenatorId());//芯片码
                     Utils.writeRecord("--起爆测试结果:" + fromData);
+                    AppLogUtils.writeAppLog("38指令--起爆测试结果:" + fromData);
                     updateDenator(fromData);//更新雷管状态
                     writeDenator = null;
                 }
@@ -2252,6 +2268,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fromData.setShellNo(temp.getShellBlastNo());
                 fromData.setDenaId(temp.getDenatorId());//芯片码
                 Utils.writeRecord("--起爆测试结果:" + fromData);
+                AppLogUtils.writeAppLog("39指令--起爆测试结果:" + fromData);
                 updateDenator(fromData);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
@@ -2272,6 +2289,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 busHandler.sendMessage(busHandler.obtainMessage());
             } else {
                 Utils.writeRecord("busHandler为空");
+                AppLogUtils.writeAppLog("40指令解析busHandler为空");
             }
 //            if (!isJL) {
 //                if (stage == 8 && eightCount != Qibaotime) {
@@ -2333,6 +2351,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 byte[] initBuf = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_5("00");//34  起爆
                 sendCmd(initBuf);
                 Utils.writeRecord("第一次发送起爆指令--");
+                AppLogUtils.writeAppLog("第一次发送起爆指令--");
             }
         } else if (DefCommand.CMD_4_XBSTATUS_7.equals(cmd)) {
             Log.e("起爆页面", "收到46指令成功切换版本");
@@ -2562,7 +2581,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 if (isJL) {
                     deviceStatus = "06";//起爆结束
                     Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
-                    Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
+                    AppLogUtils.writeAppXBLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
                     EventBus.getDefault().post(new FirstEvent("qbjs", "B005" + MmkvUtils.getcode("ACode", "") +
                             deviceStatus + qbResult));
                     Log.e("起爆结束了", "子机将起爆结果发送给主控--起爆结果是: " + "B005" + MmkvUtils.getcode("ACode", "") +
@@ -2580,8 +2599,10 @@ public class FiringMainActivity extends SerialPortActivity {
                 if(!checkRepeatHis(hisInsertFireDate)){//弹上传的时候再判断一下是否成功生成历史记录了
                     saveFireResult();
                     Utils.writeRecord("--生成历史记录");
+                    AppLogUtils.writeAppLog("起爆历史记录未生成，开始生成起爆记录");
                     Log.e(TAG,"起爆历史记录未生成，开始生成起爆记录");
                 } else {
+                    AppLogUtils.writeAppLog("起爆历史记录已生成，无需再次生成");
                     Log.e(TAG,"起爆历史记录已生成，无需再次生成");
                 }
                 if (eightCmdFlag == 2) {
@@ -2792,6 +2813,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                 sendCmd(powerCmd);
                                 zeroStartTime = System.currentTimeMillis();
                                 Log.e(TAG, "1.2秒内没收到芯片回复13,重发13指令");
+                                AppLogUtils.writeAppLog("case0-1.2秒内没收到芯片回复13,重发13指令");
                             }
 //                            increase(1);
 //                            Log.e(TAG, "increase: 1");
@@ -2804,6 +2826,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (zeroCount > 50) {//等待时间答应5秒，退出
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 exit = true;
+                                AppLogUtils.writeAppLog("case0-等待时间一直无响应,退出起爆流程");
                             }
                             Log.e(TAG,"case0--zeroCount: " + zeroCount);
 
@@ -3195,13 +3218,11 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
                             break;
                         case 9:
-//                            Utils.writeRecord("case9--neightCount:" + neightCount);
-//                            Utils.writeLog("case9--neightCount:" + neightCount);
                             if (neightCount == 0) {
                                 byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35 退出起爆
                                 sendCmd(reCmd);
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
-                                Utils.writeRecord("neightCount:" + neightCount + "--" + MmkvUtils.getcode("ACode", "") + "子设备起爆成功弹窗已展示,发35指令");
+                                AppLogUtils.writeAppXBLog("neightCount:" + neightCount + "--" + MmkvUtils.getcode("ACode", "") + "子设备起爆成功弹窗已展示,发35指令");
                                 Utils.writeLog("neightCount:" + neightCount + "--" + MmkvUtils.getcode("ACode", "") + "子设备起爆成功弹窗已展示,发35指令");
                             }
                             neightCount++;
@@ -3221,10 +3242,8 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (elevenCount <= 0) {
                                 Log.e(TAG, "case11起爆成功了，开始进入case9--elevenCount:" + elevenCount);
                                 increase(9);
-//                                Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
-//                                Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆成功,该展示出起爆成功弹窗了");
                             }
-                            Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
+                            AppLogUtils.writeAppXBLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
                             Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
 //                            Log.e(TAG, "正在放电阶段elevenCount:" + elevenCount);
                             break;
@@ -4372,10 +4391,12 @@ public class FiringMainActivity extends SerialPortActivity {
                     //如果已经进入起爆倒计时  就不再显示起爆中了  等待起爆即可
                     //此时在页面显示出时钟校验的文字
                     increase(12);
+                    AppLogUtils.writeAppXBLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
                     Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
                     Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
                 } else {
                     increase(11);
+                    AppLogUtils.writeAppXBLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
                     Utils.writeLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
                     Log.e(TAG,"级联已进入起爆倒计时，不再做处理elevenCount:" + elevenCount);
                 }

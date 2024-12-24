@@ -38,6 +38,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.firingdevice.FiringMainActivity;
 import android_serialport_api.xingbang.firingdevice.TestDenatorActivity;
 import android_serialport_api.xingbang.firingdevice.VerificationActivity;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -766,6 +767,7 @@ public class SyncActivity extends BaseActivity {
 //                writeData(a);
             writeData("0005" + MmkvUtils.getcode("ACode", ""));
             Utils.writeRecord("---点击返回按键退出热点级联界面---");
+            AppLogUtils.writeAppLog("---点击返回按键退出热点级联界面---");
             return true;
         }
         return true;

@@ -68,6 +68,7 @@ import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -461,6 +462,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         scan();//扫描初始化//扫描参数设置
         hideInputKeyboard();//隐藏焦点
         Utils.writeRecord("---进入手动输入和扫码注册页面---");
+        AppLogUtils.writeAppLog("---进入手动输入和扫码注册页面---");
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
         MmkvUtils.savecode("duan", 1);//每次进入都重置段位参数
@@ -1605,6 +1607,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                     int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
                                     new GreenDaoMaster().deleteDetonator(shellBlastNo);
                                     Utils.writeRecord("--删除雷管:" + shellBlastNo);
+                                    AppLogUtils.writeAppLog("--删除雷管:" + shellBlastNo);
                                     Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
                                     //更新每段雷管数量
                                     Message msg = new Message();
@@ -1631,7 +1634,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 return;
             }
             String delay1 = et_delay.getText().toString();
-
+            AppLogUtils.writeAppLog("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
             Log.e("单发修改", "delay1: " + delay1);
             Log.e("单发修改", "maxSecond: " + maxSecond);
@@ -1786,6 +1789,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
         Utils.writeLog("扫码页面收到:"+fromCommad);
+        AppLogUtils.writeAppXBLog("扫码注册页面收到:"+fromCommad);
 //        if (completeValidCmd(fromCommad) == 0) {
 //            fromCommad = this.revCmd;
 //            if (this.afterCmd != null && this.afterCmd.length() > 0) this.revCmd = this.afterCmd;
@@ -2087,7 +2091,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
-
+        AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         return 0;
     }
 
@@ -2170,7 +2174,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
         }
-
+        AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay_max);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "芯片码" + denatorId + "--延时:" + delay_max);
         int a = 0;
         if (duan_scan.equals("0")) {//普通雷管按当前页面选择的来
@@ -2314,6 +2318,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return -1;
         }
         int reCount = 0;//统计注册了多少发雷管
+        AppLogUtils.writeAppLog("--手动输入注册--前8位:" + prex + "--开始后5位:" + start +
+                "--结束后5位:" + end + "--开始延时:" + start_delay);
         Utils.writeRecord("--手动输入注册--前8位:" + prex + "--开始后5位:" + start +
                 "--结束后5位:" + end + "--开始延时:" + start_delay);
         for (int i = start; i <= end; i++) {
@@ -2728,9 +2734,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.btn_start_delay:
                 btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
                 if (btn_start) {
+                    AppLogUtils.writeAppLog("取消选中了起始延时");
                     btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style);
                     btn_start = false;
                 } else {
+                    AppLogUtils.writeAppLog("选中了起始延时");
                     btnStartDelay.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                     btn_start = true;
                 }
@@ -2795,11 +2803,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 flag2 = 0;
                 switch (flag1) {
                     case 0:
+                        AppLogUtils.writeAppLog("选中了孔间延时");
                         reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                         reEtF1.setBackgroundResource(R.drawable.textview_border_green);
                         flag1 = 1;
                         break;
                     case 1:
+                        AppLogUtils.writeAppLog("取消选中孔间延时");
                         reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                         reEtF1.setBackgroundResource(R.drawable.translucent);
                         flag1 = 0;
@@ -2818,11 +2828,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 reBtnF1.setBackgroundResource(R.drawable.bt_mainpage_style);
                 switch (flag2) {
                     case 0:
+                        AppLogUtils.writeAppLog("选中了排间延时");
                         reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style_green);
                         reEtF2.setBackgroundResource(R.drawable.textview_border_green);
                         flag2 = 1;
                         break;
                     case 1:
+                        AppLogUtils.writeAppLog("选中了孔排间延时");
                         reBtnF2.setBackgroundResource(R.drawable.bt_mainpage_style);
                         reEtF2.setBackgroundResource(R.drawable.translucent);
                         flag2 = 0;
@@ -3928,6 +3940,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 duan_old = 1;
                 MmkvUtils.savecode("duan", 1);
                 btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
+                AppLogUtils.writeAppLog("已选中区域" + mRegion);
                 return true;
 
             default:

@@ -38,6 +38,7 @@ import android_serialport_api.xingbang.R;
 
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.services.MyLoad;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -299,6 +300,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
                 getLoaderManager().restartLoader(1, null, SetDenatorTypeActivity.this);
                 //    将输入的用户名和密码打印出来
                 show_Toast(getString(R.string.text_error_tip38));
+                AppLogUtils.writeAppLog("最大延时设置成功:" + b);
                 hideInputKeyboard();
             }
 

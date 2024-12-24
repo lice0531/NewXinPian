@@ -41,6 +41,7 @@ import android_serialport_api.xingbang.custom.SaveProjectAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -116,6 +117,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         ButterKnife.bind(this);
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
+        AppLogUtils.writeAppLog("---进入项目列表页面----");
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         totalbar_title =  findViewById(R.id.title_text);
@@ -130,18 +132,22 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         tv_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDelete) {
-                    isDelete = false;
-                    mAdapter.showCheckBox(true);
-                    btnDelete.setVisibility(View.VISIBLE);
-                    tv_right.setText("取消");
-                    pnList.clear();
+                if (map_project != null && map_project.size() > 0) {
+                    if (isDelete) {
+                        isDelete = false;
+                        mAdapter.showCheckBox(true);
+                        btnDelete.setVisibility(View.VISIBLE);
+                        tv_right.setText("取消");
+                        pnList.clear();
+                    } else {
+                        pnList.clear();
+                        isDelete = true;
+                        mAdapter.showCheckBox(false);
+                        btnDelete.setVisibility(View.GONE);
+                        tv_right.setText("管理");
+                    }
                 } else {
-                    pnList.clear();
-                    isDelete = true;
-                    mAdapter.showCheckBox(false);
-                    btnDelete.setVisibility(View.GONE);
-                    tv_right.setText("管理");
+                    show_Toast("请先新增项目");
                 }
             }
         });
