@@ -408,8 +408,8 @@ public class QueryHisDetail extends BaseActivity {
         }
         if (equ_no.length() > 8) {//中爆网起爆器编号8位
 //            String qbq_no = equ_no.substring(0, 5) + equ_no.substring(8);//截取起爆器编号前5位和后3位
-//            String qbq_no = equ_no.substring(1, 3) + equ_no.substring(5);//截取起爆器编号前23位和后6位
-            String qbq_no = equ_no;//截取起爆器编号前23位和后6位
+            String qbq_no = equ_no.substring(1, 3) + equ_no.substring(5);//截取起爆器编号前23位和后6位
+//            String qbq_no = equ_no;//截取起爆器编号前23位和后6位
             return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, qbq_no, server_ip, server_port, server_http, blastdate);
         }
         return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
