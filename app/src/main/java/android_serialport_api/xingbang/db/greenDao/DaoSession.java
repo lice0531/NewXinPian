@@ -20,6 +20,7 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.ErrLog;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.SysLog;
 import android_serialport_api.xingbang.db.Temporary_database;
@@ -37,6 +38,7 @@ import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.ErrLogDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
+import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.db.greenDao.Temporary_databaseDao;
@@ -63,6 +65,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig errLogDaoConfig;
     private final DaoConfig messageBeanDaoConfig;
     private final DaoConfig projectDaoConfig;
+    private final DaoConfig quYuDaoConfig;
     private final DaoConfig shouQuanDaoConfig;
     private final DaoConfig sysLogDaoConfig;
     private final DaoConfig temporary_databaseDaoConfig;
@@ -80,6 +83,7 @@ public class DaoSession extends AbstractDaoSession {
     private final ErrLogDao errLogDao;
     private final MessageBeanDao messageBeanDao;
     private final ProjectDao projectDao;
+    private final QuYuDao quYuDao;
     private final ShouQuanDao shouQuanDao;
     private final SysLogDao sysLogDao;
     private final Temporary_databaseDao temporary_databaseDao;
@@ -125,6 +129,9 @@ public class DaoSession extends AbstractDaoSession {
         projectDaoConfig = daoConfigMap.get(ProjectDao.class).clone();
         projectDaoConfig.initIdentityScope(type);
 
+        quYuDaoConfig = daoConfigMap.get(QuYuDao.class).clone();
+        quYuDaoConfig.initIdentityScope(type);
+
         shouQuanDaoConfig = daoConfigMap.get(ShouQuanDao.class).clone();
         shouQuanDaoConfig.initIdentityScope(type);
 
@@ -149,6 +156,7 @@ public class DaoSession extends AbstractDaoSession {
         errLogDao = new ErrLogDao(errLogDaoConfig, this);
         messageBeanDao = new MessageBeanDao(messageBeanDaoConfig, this);
         projectDao = new ProjectDao(projectDaoConfig, this);
+        quYuDao = new QuYuDao(quYuDaoConfig, this);
         shouQuanDao = new ShouQuanDao(shouQuanDaoConfig, this);
         sysLogDao = new SysLogDao(sysLogDaoConfig, this);
         temporary_databaseDao = new Temporary_databaseDao(temporary_databaseDaoConfig, this);
@@ -166,6 +174,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ErrLog.class, errLogDao);
         registerDao(MessageBean.class, messageBeanDao);
         registerDao(Project.class, projectDao);
+        registerDao(QuYu.class, quYuDao);
         registerDao(ShouQuan.class, shouQuanDao);
         registerDao(SysLog.class, sysLogDao);
         registerDao(Temporary_database.class, temporary_databaseDao);
@@ -185,6 +194,7 @@ public class DaoSession extends AbstractDaoSession {
         errLogDaoConfig.clearIdentityScope();
         messageBeanDaoConfig.clearIdentityScope();
         projectDaoConfig.clearIdentityScope();
+        quYuDaoConfig.clearIdentityScope();
         shouQuanDaoConfig.clearIdentityScope();
         sysLogDaoConfig.clearIdentityScope();
         temporary_databaseDaoConfig.clearIdentityScope();
@@ -237,6 +247,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ProjectDao getProjectDao() {
         return projectDao;
+    }
+
+    public QuYuDao getQuYuDao() {
+        return quYuDao;
     }
 
     public ShouQuanDao getShouQuanDao() {

@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".firingdevice.QuYuActivity">
-
+    <include
+        android:id="@+id/totalbar"
+        layout="@layout/title_layout" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rl_quyu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_shouquan"/>
+        tools:listitem="@layout/item_quyu"/>
 
 </LinearLayout>

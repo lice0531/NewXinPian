@@ -803,7 +803,8 @@ public class XingbangMain extends SerialPortActivity {
             case R.id.btn_main_reister://注册
                 close();//停止访问电流
                 String str1 = "注册";
-                Intent intent = new Intent(XingbangMain.this, ReisterMainPage_scan.class);//金建华
+                Intent intent = new Intent(XingbangMain.this, QuYuActivity.class);//金建华
+//                Intent intent = new Intent(XingbangMain.this, ReisterMainPage_scan.class);//金建华
                 intent.putExtra("dataSend", str1);
                 startActivityForResult(intent, 1);
                 break;

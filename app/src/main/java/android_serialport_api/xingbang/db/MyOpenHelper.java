@@ -14,6 +14,7 @@ import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
+import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 
@@ -39,23 +40,23 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
 //        MigrationHelper.getInstance().migrate(db, DenatorBaseinfoDao.class);
         MigrationHelper.migrate(db, new MigrationHelper.ReCreateAllTableListener() {
 
-            @Override
-            public void onCreateAllTables(Database db, boolean ifNotExists) {
-                DaoMaster.createAllTables(db, ifNotExists);
-            }
+                    @Override
+                    public void onCreateAllTables(Database db, boolean ifNotExists) {
+                        DaoMaster.createAllTables(db, ifNotExists);
+                    }
 
-            @Override
-            public void onDropAllTables(Database db, boolean ifExists) {
-                DaoMaster.dropAllTables(db, ifExists);
-            }
-        }, MessageBeanDao.class,
+                    @Override
+                    public void onDropAllTables(Database db, boolean ifExists) {
+                        DaoMaster.dropAllTables(db, ifExists);
+                    }
+                }, MessageBeanDao.class,
                 DenatorBaseinfoDao.class,
                 ProjectDao.class,
                 ShouQuanDao.class,
                 DenatorHis_MainDao.class,
                 DenatorHis_DetailDao.class,
+                QuYuDao.class,
                 DetonatorTypeNewDao.class);
+
     }
-
-
 }

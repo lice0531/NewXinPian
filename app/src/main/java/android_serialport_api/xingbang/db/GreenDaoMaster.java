@@ -25,6 +25,7 @@ import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
+import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
@@ -43,6 +44,7 @@ public class GreenDaoMaster {
     private Denator_typeDao mDenatorType;
     private MessageBeanDao messageBeanDao;
     private DetonatorTypeNewDao detonatorTypeNewDao;
+    private QuYuDao quyuDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
     private DenatorHis_MainDao denatorHis_mainDao;
@@ -57,6 +59,7 @@ public class GreenDaoMaster {
         this.denatorHis_detailDao = Application.getDaoSession().getDenatorHis_DetailDao();
         this.denatorHis_mainDao = Application.getDaoSession().getDenatorHis_MainDao();
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
+        this.quyuDao = Application.getDaoSession().getQuYuDao();
     }
 
 
@@ -810,21 +813,6 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxNumDelay(String piece) {
-//        // 倒叙查询
-//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
-//
-//        // 如果有数据
-//        if (mList.size() > 0) {
-//            // 第一个雷管数据 该区域 最大序号 的延时
-//            int delay = mList.get(0).getDelay();
-//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
-//            return delay;
-//            // 如果没数据
-//        } else {
-//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
-//            return 0;
-//        }
-
         int delay;
         String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
@@ -1501,4 +1489,54 @@ public class GreenDaoMaster {
 //                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
 //                .unique();
 //    }
+
+    /**
+     * 根据申请日期查询生产库中雷管
+     */
+    public List<QuYu> queryQuYu() {
+        return quyuDao.queryBuilder()
+                .list();
+    }
+
+    /**
+     * 获取 该区域 最小序号 的延时
+     *
+     */
+    public int getPieceMaxPai() {
+        int pai;
+        String sql = "select max(pai) from denatorBaseinfo  ";
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            pai = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMaxNumDelay", "获取当前区域最大段号: "+pai);
+            return pai;
+        }else {
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 1");
+            return 1;
+        }
+
+    }
+
+
+    /**
+     * 获取 该区域 最小的延时
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceMinNumDelay(String piece) {
+        int delay;
+        String sql = "select min(delay) from denatorBaseinfo where  piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMinNumDelay", "获取最小序号 的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceMinNumDelay", "获取最小序号 的延时: 0");
+            return 0;
+        }
+    }
 }
