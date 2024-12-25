@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.db;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -1511,12 +1512,24 @@ public class GreenDaoMaster {
      * @param filename:日志文件名
      * @return
      */
-    public List<SysLog> deleteAppLogs(String filename) {
+    public List<SysLog> deleteAppLogsByName(String filename) {
         // 提取前缀（假设前缀是 filename 的前8个字符，可以根据需求调整）
         String prefix = filename.substring(0, 10);
         // 查询所有以该前缀开头的日志记录
         return sysLogDao.queryBuilder()
                 .where(SysLogDao.Properties.Filename.like(prefix + "%"))  // 使用前缀进行匹配
+                .list();
+    }
+
+    /**
+     * 程序日志上传页面-删除单条日志记录
+     * @param id:日志文件id
+     * @return
+     */
+    public List<SysLog> deleteAppLogsById(Long id) {
+        // 查询所有以该前缀开头的日志记录
+        return sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.Id.eq(id))  // 使用前缀进行匹配
                 .list();
     }
 
@@ -1551,25 +1564,21 @@ public class GreenDaoMaster {
                 .list();
         // 存储去重后的日志
         Map<String, SysLog> latestLogsMap = new HashMap<>();
+        List<SysLog> list = new ArrayList<>();
         for (SysLog log : sysLogs) {
-            String datePrefix = log.getFilename().substring(0, 10);  // 提取文件名年月日作为日期前缀
-            // 如果没有该日期前缀的记录，或者遇到较新的记录，则更新
-            if (!latestLogsMap.containsKey(datePrefix)) {
-                latestLogsMap.put(datePrefix, log);
+            /**
+             * 之前存储在sysLog表中的日志UpdataTime是24-10-29 最新的日志UpdataTime是2024-10-29
+             * 所以先排除掉之前的旧数据
+             */
+            if (!TextUtils.isEmpty(log.getUpdataTime())) {
+                // 如果没有该日期前缀的记录，或者遇到较新的记录，则更新
+                list.add(log);
+//                String datePrefix = log.getFilename().substring(0, 10);  // 提取文件名年月日作为日期前缀
+//                latestLogsMap.put(datePrefix, log);
             }
         }
-        // 将去重后的日志转化为 List
-        return new ArrayList<>(latestLogsMap.values());
-    }
-
-    /**
-     * 程序日志上传页面-删除日常日志所有已上传记录
-     * @param state
-     */
-    public void deleteLogByState(String state) {
-        sysLogDao.queryBuilder()
-                .where(SysLogDao.Properties.UpdataState.eq(state))
-                .buildDelete()
-                .executeDeleteWithoutDetachingEntities();  // 执行删除操作，删除满足条件的所有记录
+/*        // 将去重后的日志转化为 List
+        return new ArrayList<>(latestLogsMap.values());*/
+        return list;
     }
 }

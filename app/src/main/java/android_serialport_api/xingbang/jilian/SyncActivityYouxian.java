@@ -816,6 +816,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //                        final String data = "0001" + MmkvUtils.getcode("ACode", "") + "\n";
                         final String data = "B1" + MmkvUtils.getcode("ACode", "") + "\n";
                         send485Cmd(data);
+                        AppLogUtils.writeAppXBLog("有线级联开始同步:" + "B1" + MmkvUtils.getcode("ACode", ""));
                         break;
                     }
 
@@ -1002,10 +1003,12 @@ public class SyncActivityYouxian extends BaseActivity {
             //说明子机出现了不同异常情况的弹窗  此时通知主控
             sendDelay();
             send485Cmd("B8" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+            AppLogUtils.writeAppXBLog("子设备:" + MmkvUtils.getcode("ACode", "") + "出现了不同异常情况的弹窗-异常编码:" + event.getData());
         } else if (msg.equals("B9")) {
             //说明子机出现了限制起爆情况的弹窗  此时通知主控
             sendDelay();
             send485Cmd("B9" + MmkvUtils.getcode("ACode", "") + event.getData() + event.getTureNum() + event.getErrNum() + event.getCurrentPeak());
+            AppLogUtils.writeAppXBLog("子设备:" + MmkvUtils.getcode("ACode", "") + "出现了限制起爆情况的弹窗-异常编码:" + event.getData());
         }  else if (msg.equals("clycjg")) {
             Log.e(TAG + "返回clycjg测试结果", "tureNum: " + event.getTureNum() + "--errNum: " + event.getErrNum() + "--currentPeak: " + event.getCurrentPeak());
             sendDelay();
@@ -1055,8 +1058,12 @@ public class SyncActivityYouxian extends BaseActivity {
             if (event.getData().startsWith("BBA4") && event.getData().length() == 20) {
                 Log.e(TAG + "收到充电指令后发送的数据正常",event.getData());
                 send485Cmd(event.getData());
+                AppLogUtils.writeAppXBLog(MmkvUtils.getcode("ACode", "") +
+                        "设备收到充电指令后向主控回应:" + event.getData());
             } else {
                 Log.e(TAG + "收到充电指令后发送的数据有误",event.getData());
+                AppLogUtils.writeAppXBLog(MmkvUtils.getcode("ACode", "") +
+                        "设备收到充电指令后发送的数据有误:" + event.getData());
             }
 //        } else if (msg.equals("otherClose")) {
 //            Utils.writeRecord("其他子设备：" + MmkvUtils.getcode("ACode", "") + "开始关闭485指令");

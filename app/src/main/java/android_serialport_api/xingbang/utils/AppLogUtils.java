@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.SysLog;
 import android_serialport_api.xingbang.db.greenDao.SysLogDao;
@@ -30,7 +32,6 @@ public class AppLogUtils {
     static {
         // 根据是否有SD卡来设置日志路径
         boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-
         if (hasSDCard) {
             // 如果有SD卡，使用外部存储路径
             LOG_DIRECTORY = Environment.getExternalStorageDirectory().toString() + File.separator + "/APP程序运行日志/";
@@ -38,7 +39,6 @@ public class AppLogUtils {
             // 如果没有SD卡，使用内部存储路径
             LOG_DIRECTORY = Environment.getDownloadCacheDirectory().toString() + File.separator + "/APP程序运行日志/";
         }
-
         // 创建日志目录（如果不存在）
         File logDir = new File(LOG_DIRECTORY);
         if (!logDir.exists()) {
@@ -54,7 +54,6 @@ public class AppLogUtils {
     static {
         // 根据是否有SD卡来设置日志路径
         boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-
         if (hasSDCard) {
             // 如果有SD卡，使用外部存储路径
             LOG_XBDIRECTORY = Environment.getExternalStorageDirectory().toString() + File.separator + "/APP-XB程序运行日志/";
@@ -62,7 +61,6 @@ public class AppLogUtils {
             // 如果没有SD卡，使用内部存储路径
             LOG_XBDIRECTORY = Environment.getDownloadCacheDirectory().toString() + File.separator + "/APP-XB程序运行日志/";
         }
-
         // 创建日志目录（如果不存在）
         File logDir = new File(LOG_XBDIRECTORY);
         if (!logDir.exists()) {
@@ -107,12 +105,14 @@ public class AppLogUtils {
         String currentDate = sdf.format(new Date());
         // 获取当前目录中的所有文件，筛选出以当前日期为前缀的文件
         File logDirectory = new File(LOG_DIRECTORY);
-        File[] files = logDirectory.listFiles((dir, name) -> name.startsWith(currentDate));
-
-        // 如果已存在日志文件且文件大小超过限制，则进行重命名并创建新的日志文件
+        File[] files = logDirectory.listFiles((dir, name) -> name.startsWith(currentDate) &&
+                name.endsWith(".txt"));
+        Log.e(TAG,"APPLog当前系统日期:" + currentDate);
         if (files != null && files.length > 0) {
+            // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentLogFile = files[0];
             if (currentLogFile.length() > MAX_FILE_SIZE) {
+                //如果当前文件已大于1MB  就重新生成文件
                 renameLogFile();
             }
         } else {
@@ -128,8 +128,8 @@ public class AppLogUtils {
             }
         }
     }
-    // 重命名日志文件，并递增时间戳
 
+    // 重命名日志文件，并递增时间戳
     private static void renameLogFile() {
         // 重命名当前日志文件
         File renamedFile = new File(LOG_DIRECTORY + currentTimestamp + ".txt");
@@ -183,11 +183,12 @@ public class AppLogUtils {
         // 获取当前目录中的所有文件，筛选出以当前日期为前缀的文件
         File logDirectory = new File(LOG_XBDIRECTORY);
         File[] files = logDirectory.listFiles((dir, name) -> name.startsWith(currentDate));
-
-        // 如果已存在日志文件且文件大小超过限制，则进行重命名并创建新的日志文件
+        Log.e(TAG,"XBLog当前系统日期:" + currentDate);
         if (files != null && files.length > 0) {
+            // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentXBLogFile = files[0];
             if (currentXBLogFile.length() > MAX_FILE_SIZE) {
+                //如果当前文件已大于1MB  就重新生成文件
                 renameXBLogFile();
             }
         } else {
@@ -217,13 +218,13 @@ public class AppLogUtils {
             // 创建一个新的日志文件
             try {
                 if (currentXBLogFile.createNewFile()) {
-                    Log.e(TAG,"新日志文件已创建: " + currentXBLogFile.getName());
+                    Log.e(TAG,"新APP-XB程序日志文件已创建: " + currentXBLogFile.getName());
                 }
             } catch (IOException e) {
-                Log.e(TAG,"无法创建新日志文件: " + e.getMessage());
+                Log.e(TAG,"无法创建新APP-XB程序日志文件: " + e.getMessage());
             }
         } else {
-            Log.e(TAG,"重命名文件失败!");
+            Log.e(TAG,"重命名APP-XB程序文件失败!");
         }
     }
 
@@ -241,26 +242,42 @@ public class AppLogUtils {
 
     private static void insertOrUpdateSysLog(String filename, String path, String timestamp) {
         // 提取日期部分（假设日期格式为 "dd-MM-yy"）
-        String date = timestamp.substring(0, 8);  // "24-12-23" 这个部分
+        String date = timestamp.substring(0, 8);  // "2024-12-23" 这个部分
         // 获取数据库会话
         SysLogDao sysLogDao = Application.getDaoSession().getSysLogDao();
-        // 检查是否已经存在该日期的数据
-        SysLog existingLog = sysLogDao.queryBuilder()
-                .where(SysLogDao.Properties.Filename.eq(filename),SysLogDao.Properties.UpdataTime.like(date + "%"))  // 只匹配相同日期的数据
-                .unique();
-        if (existingLog != null) {
-            // 如果记录存在，更新该记录
-            existingLog.setUpdataTime(timestamp);  // 设置更新时间
-            existingLog.setUpdataState("未上传");
-            sysLogDao.update(existingLog); // 更新数据库
+        // 查询相同日期的所有记录
+        List<SysLog> existingLogs = sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.Filename.eq(filename), SysLogDao.Properties.UpdataTime.like(date + "%"))
+                .list();
+        if (!existingLogs.isEmpty()) {
+            // 如果存在记录，遍历所有记录并进行判断
+            boolean isUpdated = false;
+            for (SysLog existingLog : existingLogs) {
+                if ("未上传".equals(existingLog.getUpdataState())) {
+                    // 如果记录的 UpdataState 是 "未上传"，则更新 UpdataTime
+                    existingLog.setUpdataTime(timestamp);
+                    sysLogDao.update(existingLog); // 更新数据库
+                    isUpdated = true;
+                    break;  // 找到一个未上传的记录后就停止
+                }
+            }
+            // 如果没有更新记录，说明是 "已上传"，需要插入新记录
+            if (!isUpdated) {
+                SysLog newSysLog = new SysLog();
+                newSysLog.setFilename(filename);
+                newSysLog.setPath(path);
+                newSysLog.setUpdataState("未上传");
+                newSysLog.setUpdataTime(timestamp);  // 设置更新时间
+                sysLogDao.insert(newSysLog); // 插入新记录
+            }
         } else {
-            // 如果记录不存在，插入新记录
-            SysLog sysLog = new SysLog();
-            sysLog.setFilename(filename);
-            sysLog.setPath(path);
-            sysLog.setUpdataState("未上传");
-            sysLog.setUpdataTime(timestamp);  // 设置更新时间
-            sysLogDao.insert(sysLog); // 插入数据库
+            // 如果没有找到相同日期的记录，插入新记录
+            SysLog newSysLog = new SysLog();
+            newSysLog.setFilename(filename);
+            newSysLog.setPath(path);
+            newSysLog.setUpdataState("未上传");
+            newSysLog.setUpdataTime(timestamp);  // 设置更新时间
+            sysLogDao.insert(newSysLog); // 插入新记录
         }
     }
 
@@ -277,7 +294,7 @@ public class AppLogUtils {
             return "Invalid updateTime format. Expected format: yyyy-MM-dd HH:mm:ss";
         }
         // 提取日期部分（yyyy-MM-dd），去掉时分秒部分
-        String datePart = updateTime.substring(0, 10);  // 例如 "2021-03-22"
+        String datePart = updateTime.substring(0, 8);  // 例如 "2021-03-22"
         // 获取日志目录
         String path = "";
         if (type == 1) {

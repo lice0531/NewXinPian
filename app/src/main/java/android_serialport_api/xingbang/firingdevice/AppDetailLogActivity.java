@@ -141,9 +141,7 @@ public class AppDetailLogActivity extends BaseActivity {
             public void onButtonClicked(View v, int position) {
                 switch (v.getId()) {
                     case R.id.bt_delete:
-                        deleteNormalLogs(normalLogList.get(position).getFilename());
-//                        loadMoreData();
-                        appLogAdapter.notifyDataSetChanged();
+                        deleteNormalLogs(normalLogList.get(position).getFilename(), normalLogList.get(position).getId());
                         break;
                     case R.id.bt_upload:
                         if (equ_no.length() < 1) {
@@ -212,13 +210,13 @@ public class AppDetailLogActivity extends BaseActivity {
 
     // 由于列表展示是查询出相同前缀的数据后，只展示最新的一条记录即可，所以删除要删除掉相同前缀filename的所有数据
     // 根据传入的完整 filename 删除所有以相同前缀开始的日志
-    public void deleteNormalLogs(String filename) {
+    public void deleteNormalLogs(String filename,Long id) {
         // 提取前缀（假设前缀是 filename 的前8个字符，可以根据需求调整）
         String prefix = filename.substring(0, 10);
         // 获取 SysLogDao 实例
         SysLogDao sysLogDao = getDaoSession().getSysLogDao();
         // 查询所有以该前缀开头的日志记录
-        List<SysLog> logsToDelete = new GreenDaoMaster().deleteAppLogs(filename);
+        List<SysLog> logsToDelete = new GreenDaoMaster().deleteAppLogsById(id);
         // 如果有匹配的日志记录，进行删除
         if (!logsToDelete.isEmpty()) {
             // 批量删除符合条件的日志
@@ -226,7 +224,7 @@ public class AppDetailLogActivity extends BaseActivity {
             if (normalLogList != null && normalLogList.size() > 0) {
                 for (int i = normalLogList.size() - 1; i >= 0; i--) {
                     SysLog sys = normalLogList.get(i);
-                    if (filename.equals(sys.getFilename())) {
+                    if (id == sys.getId()) {
                         normalLogList.remove(sys);
                     }
                 }
