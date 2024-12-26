@@ -107,7 +107,7 @@ public class AppLogUtils {
         File logDirectory = new File(LOG_DIRECTORY);
         File[] files = logDirectory.listFiles((dir, name) -> name.startsWith(currentDate) &&
                 name.endsWith(".txt"));
-        Log.e(TAG,"APPLog当前系统日期:" + currentDate);
+//        Log.e(TAG,"APPLog当前系统日期:" + currentDate);
         if (files != null && files.length > 0) {
             // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentLogFile = files[0];
@@ -183,7 +183,7 @@ public class AppLogUtils {
         // 获取当前目录中的所有文件，筛选出以当前日期为前缀的文件
         File logDirectory = new File(LOG_XBDIRECTORY);
         File[] files = logDirectory.listFiles((dir, name) -> name.startsWith(currentDate));
-        Log.e(TAG,"XBLog当前系统日期:" + currentDate);
+//        Log.e(TAG,"XBLog当前系统日期:" + currentDate);
         if (files != null && files.length > 0) {
             // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentXBLogFile = files[0];
@@ -247,8 +247,8 @@ public class AppLogUtils {
         SysLogDao sysLogDao = Application.getDaoSession().getSysLogDao();
         // 查询相同日期的所有记录
         List<SysLog> existingLogs = sysLogDao.queryBuilder()
-                .where(SysLogDao.Properties.Filename.eq(filename), SysLogDao.Properties.UpdataTime.like(date + "%"))
-                .list();
+                .where(SysLogDao.Properties.Filename.eq(filename),
+                        SysLogDao.Properties.UpdataTime.like(date + "%")).list();
         if (!existingLogs.isEmpty()) {
             // 如果存在记录，遍历所有记录并进行判断
             boolean isUpdated = false;

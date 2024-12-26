@@ -1052,6 +1052,7 @@ public class QueryHisDetail extends BaseActivity {
                     }
                     Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
                     if ( b.equals("123")) {
+                        AppLogUtils.writeAppLog("点击了'删除所有已上传记录'按钮");
                         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
                         GreenDaoMaster master = new GreenDaoMaster();
                         for (DenatorHis_Main his:list) {

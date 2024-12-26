@@ -883,7 +883,8 @@
     <string name="text_cdcw">The length of the detonator shell code is incorrect</string>
     <string name="text_pxsb">Sort failed!</string>
     <string name="text_his_scsyjl">Delete all uploaded records</string>
-    <string name="text_his_scrcrz">Delete all uploaded daily data</string>
+    <string name="text_his_scrcrz">Delete all uploaded daily logs</string>
+    <string name="text_his_scbkrz">Delete all uploaded crash logs</string>
     <string name="text_his_zwsjsc">No data to delete</string>
     <string name="text_jilianset_tip1">Tip:Automatically save after input</string>
     <string name="text_jilianset_tip2">No：</string>

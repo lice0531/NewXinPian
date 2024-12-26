@@ -36,6 +36,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.services.MyLoad;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,6 +82,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
 
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppLog("--进入厂家管理设置页面--");
         ListView factory_listView = (ListView) this.findViewById(R.id.factory_listView);
         adapter = new SimpleCursorAdapter(SetFactoryActivity.this, R.layout.factoryitem,
                 null, new String[]{"deName", "deEntCode", "deFeatureCode", "isSelected"}, new int[]{R.id.deName, R.id.deEntCode, R.id.deFeatureCode, R.id.isSelected},
@@ -173,7 +175,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
         defactory.setDeFeatureCode(te);
         defactory.setIsSelected(selected);
         getDaoSession().getDefactoryDao().insert(defactory);
-
+        AppLogUtils.writeAppLog("设置的厂家代码是:" + code);
         getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
         return true;
     }
@@ -229,6 +231,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
 
             updateFactory(a, b, c, d, id);
             getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
+            AppLogUtils.writeAppLog("修改的厂家代码是:" + b);
             //    将输入的用户名和密码打印出来
             show_Toast(getString(R.string.text_error_tip38));
             hideInputKeyboard();

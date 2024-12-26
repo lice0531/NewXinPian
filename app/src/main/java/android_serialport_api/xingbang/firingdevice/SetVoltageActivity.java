@@ -59,6 +59,7 @@ public class SetVoltageActivity extends SerialPortActivity {
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppLog("---进入程序设置-厂家设置页面---");
         SharedPreferences sp = getSharedPreferences("config", 0);
         //获取偏好设置的编辑器
         edit = sp.edit();
@@ -300,6 +301,7 @@ public class SetVoltageActivity extends SerialPortActivity {
             case R.id.btn_sys://保存设置
                 MmkvUtils.savecode("sys_ver_name",sys_ver_name);
                 MmkvUtils.savecode("sys_ver_position",position_save);
+                AppLogUtils.writeAppLog(sys_ver_name + "厂家已成功设置");
                 show_Toast(getString(R.string.text_systip_1));
                 break;
         }

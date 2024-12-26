@@ -373,6 +373,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 startActivityForResult(intent7, 1);
                 break;
             case R.id.btn_delete_project:
+                AppLogUtils.writeAppLog("点击了'删除项目'按钮执行多些删除项目操作");
                 for (String pn : pnList) {
                     delShouQuan(pn);//删除方法
 //                    if (map_project != null && map_project.size() > 0) {//移除map中的值

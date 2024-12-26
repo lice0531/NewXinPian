@@ -68,6 +68,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         ButterKnife.bind(this);
+        AppLogUtils.writeAppLog("--进入雷管芯片设置页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
 
@@ -103,8 +104,10 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
                     facselected = "是";
                 }
                 int reVal = inserDenatorType(facname, faccode, facselected);
-                if (reVal == 0)
+                if (reVal == 0) {
                     show_Toast(getString(R.string.text_fac_tip1));
+                    AppLogUtils.writeAppLog("设置的最大延时是:" + faccode);
+                }
             } else {
                 show_Toast(checstr);
             }
@@ -300,7 +303,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
                 getLoaderManager().restartLoader(1, null, SetDenatorTypeActivity.this);
                 //    将输入的用户名和密码打印出来
                 show_Toast(getString(R.string.text_error_tip38));
-                AppLogUtils.writeAppLog("最大延时设置成功:" + b);
+                AppLogUtils.writeAppLog("修改的最大延时是:" + b);
                 hideInputKeyboard();
             }
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.QRCodeUtils;
 import android_serialport_api.xingbang.utils.ThreeDES;
@@ -28,6 +29,7 @@ public class ProjectErCodeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_ercode);
         ButterKnife.bind(this);
+        AppLogUtils.writeAppLog("--进入到项目二维码信息页面--");
         initData();
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +75,7 @@ public class ProjectErCodeActivity extends BaseActivity {
             ivXmCode.setImageBitmap(qrCodeBitmap);
         } catch (Exception e) {
             Log.e(TAG,"生成加密二维码失败:" + e.getMessage().toString());
+            AppLogUtils.writeAppLog("二维码生成失败:" + e.getMessage().toString());
             throw new RuntimeException(e);
         }
     }

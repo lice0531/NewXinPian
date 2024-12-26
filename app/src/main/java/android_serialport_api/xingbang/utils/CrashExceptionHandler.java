@@ -16,7 +16,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.db.ErrLog;
+import android_serialport_api.xingbang.db.SysLog;
+import android_serialport_api.xingbang.db.greenDao.ErrLogDao;
+import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 
 /**
  * 系统处理异常类，处理整个APP的异常
@@ -57,7 +64,9 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
-
+    /**
+     * 异常处理与提示
+     */
     @Override
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
         Log.e("报错信息", "处理报错: " );
@@ -75,7 +84,6 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
             System.exit(0);
         }
     }
-
     /**
      * 提示用户出现异常，将异常信息保存/上传
      *
@@ -102,6 +110,74 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
         saveCrash(ex);
 
         return true;
+    }
+
+    private void saveCrash(Throwable e) {
+        Writer writer = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(writer);
+        e.printStackTrace(printWriter);
+        Throwable exCause = e.getCause();
+        while (exCause != null) {
+            exCause.printStackTrace(printWriter);
+            exCause = exCause.getCause();
+        }
+        printWriter.close();
+
+        String logPath;// logPath: /storage/emulated/0//XB错误日志
+        String fileName;
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+
+//            logPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
+            logPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行崩溃日志/" + Utils.getDate(new Date()) + ".txt";
+            try {
+                FileWriter fw = new FileWriter(logPath, true);
+                fw.write(Utils.getDate(new Date()) + "错误原因：\n");
+                // 错误信息
+                // 这里还可以加上当前的系统版本，机型型号 等等信息
+                StackTraceElement[] stackTrace = e.getStackTrace();
+                fw.write("崩溃信息"+e.getMessage() + "\n");
+//                for (int i = 0; i < stackTrace.length; i++) {
+//                    fw.write("方法:" + stackTrace[i].getFileName() +
+//                            " -" + stackTrace[i].getClassName() +
+//                            " -" + stackTrace[i].getMethodName() +
+//                            " -" + stackTrace[i].getLineNumber() + "\n");
+//                }
+                fw.write(writer.toString());
+                fw.write("\n");
+                fw.close();
+                // 写入数据库
+                String fName = Utils.getDate(new Date()) + ".txt";
+                SimpleDateFormat updateTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timestamp = updateTimeSdf.format(new Date());
+                saveCrashLogToDatabase(fName, logPath, timestamp);
+            } catch (IOException e1) {
+                Log.e("错误拦截", "load file failed...", e1.getCause());
+            }
+        }
+    }
+
+    /**
+     * 将崩溃日志保存到 GreenDAO 数据库
+     */
+    private void saveCrashLogToDatabase(String filename, String path,String timestamp) {
+        ErrLogDao errLogDao = Application.getDaoSession().getErrLogDao();
+        ErrLog errLog = new ErrLog();
+        errLog.setFilename(filename);
+        errLog.setPath(path);
+        errLog.setUpdataState("未上传");
+        errLog.setUpdataTime(timestamp);  // 设置更新时间
+        errLogDao.insert(errLog); // 插入新记录
+        Log.e("CrashLog", "崩溃日志已保存到数据库");
+//        SysLogDao sysLogDao = Application.getDaoSession().getSysLogDao();
+//        // 如果没有找到相同日期的记录，插入新记录
+//        SysLog newSysLog = new SysLog();
+//        newSysLog.setFilename(filename);
+//        newSysLog.setPath(path);
+//        newSysLog.setUpdataState("未上传");
+//        newSysLog.setUpdataTime(timestamp);  // 设置更新时间
+//        sysLogDao.insert(newSysLog); // 插入新记录
+//        Log.e("CrashLog", "崩溃日志已保存到数据库");
     }
 
     /**
@@ -138,46 +214,6 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
             fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void saveCrash(Throwable e) {
-        Writer writer = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(writer);
-        e.printStackTrace(printWriter);
-        Throwable exCause = e.getCause();
-        while (exCause != null) {
-            exCause.printStackTrace(printWriter);
-            exCause = exCause.getCause();
-        }
-        printWriter.close();
-
-        String logPath;// logPath: /storage/emulated/0//XB错误日志
-        String fileName;
-        if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-
-            logPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序运行日志/" + Utils.getDate(new Date()) + ".txt";
-//            logPath = Environment.getExternalStorageDirectory().toString() + File.separator + "/程序崩溃日志/" + Utils.getDate(new Date()) + ".txt";
-            try {
-                FileWriter fw = new FileWriter(logPath, true);
-                fw.write(Utils.getDate(new Date()) + "错误原因：\n");
-                // 错误信息
-                // 这里还可以加上当前的系统版本，机型型号 等等信息
-                StackTraceElement[] stackTrace = e.getStackTrace();
-                fw.write("崩溃信息"+e.getMessage() + "\n");
-//                for (int i = 0; i < stackTrace.length; i++) {
-//                    fw.write("方法:" + stackTrace[i].getFileName() +
-//                            " -" + stackTrace[i].getClassName() +
-//                            " -" + stackTrace[i].getMethodName() +
-//                            " -" + stackTrace[i].getLineNumber() + "\n");
-//                }
-                fw.write(writer.toString());
-                fw.write("\n");
-                fw.close();
-            } catch (IOException e1) {
-                Log.e("错误拦截", "load file failed...", e1.getCause());
-            }
         }
     }
 }
