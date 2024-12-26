@@ -229,7 +229,7 @@ public class AppDetailLogActivity extends BaseActivity {
                             wd = "";//纬度
                         }
                         String qbxm_name = "APP详细崩溃日志";//项目名称
-                        String log = Utils.readOffline(errorLogList.get(position).getFilename());//日志
+                        String log = Utils.readOffline(errorLogList.get(position).getPath());//日志
                         String log_cmd = "";//日志
                         if (pro_coordxy.length() < 2 && jd == null) {
                             show_Toast("经纬度为空，不能执行上传");

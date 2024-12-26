@@ -22,8 +22,8 @@ public class AppLogUtils {
     private static final long MAX_FILE_SIZE = 1048576; // 1MB
     private static final String LOG_DIRECTORY; // 日志文件目录
     private static final String LOG_XBDIRECTORY; // 日志文件目录
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
     private static SimpleDateFormat updateTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private static String currentTimestamp; // 当前时间戳，用于文件命名
     private static File currentLogFile; // 当前日志文件
     private static File currentXBLogFile; // 当前XB日志文件
@@ -99,8 +99,6 @@ public class AppLogUtils {
 
     private static void initNewLogFile() {
         // 获取日期格式
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat timeSdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
         // 获取当前日期
         String currentDate = sdf.format(new Date());
         // 获取当前目录中的所有文件，筛选出以当前日期为前缀的文件
@@ -117,7 +115,7 @@ public class AppLogUtils {
             }
         } else {
             // 如果没有文件，生成新的文件
-            currentTimestamp = timeSdf.format(new Date());
+            currentTimestamp = updateTimeSdf.format(new Date());
             currentLogFile = new File(LOG_DIRECTORY + currentTimestamp + ".txt");
             try {
                 if (currentLogFile.createNewFile()) {
@@ -131,27 +129,20 @@ public class AppLogUtils {
 
     // 重命名日志文件，并递增时间戳
     private static void renameLogFile() {
-        // 重命名当前日志文件
-        File renamedFile = new File(LOG_DIRECTORY + currentTimestamp + ".txt");
-        boolean renamed = currentLogFile.renameTo(renamedFile);
-        if (renamed) {
-            Log.e(TAG,"日志文件已重命名为: " + renamedFile.getName());
-
-            // 递增时间戳，确保文件名唯一
-            increaseTimestamp();
-            currentLogFile = new File(LOG_DIRECTORY + currentTimestamp + ".txt");
-            // 创建一个新的日志文件
-            try {
-                if (currentLogFile.createNewFile()) {
-                    Log.e(TAG,"新日志文件已创建: " + currentLogFile.getName());
-                }
-            } catch (IOException e) {
-                Log.e(TAG,"无法创建新日志文件: " + e.getMessage());
+        // 递增时间戳，确保文件名唯一
+        currentTimestamp = updateTimeSdf.format(new Date());
+        increaseTimestamp();
+        currentLogFile = new File(LOG_DIRECTORY + currentTimestamp + ".txt");
+        // 创建一个新的日志文件
+        try {
+            if (currentLogFile.createNewFile()) {
+                Log.e(TAG, "现有txt大于1MB，新APP程序运行日志文件已创建: " + currentLogFile.getName());
             }
-        } else {
-            Log.e(TAG,"重命名文件失败!");
+        } catch (IOException e) {
+            Log.e(TAG, "现有txt大于1MB，无法创建新APP程序运行日志文件: " + e.getMessage());
         }
     }
+
     public static void writeAppXBLog(String logContent) {
         try {
             // 初始化时获取当前时间戳和文件对象
@@ -176,14 +167,12 @@ public class AppLogUtils {
     // 初始化新的日志文件或重新创建文件
     private static void initXBNewLogFile() {
         // 获取日期格式
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat timeSdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+
         // 获取当前日期
         String currentDate = sdf.format(new Date());
         // 获取当前目录中的所有文件，筛选出以当前日期为前缀的文件
         File logDirectory = new File(LOG_XBDIRECTORY);
         File[] files = logDirectory.listFiles((dir, name) -> name.startsWith(currentDate));
-//        Log.e(TAG,"XBLog当前系统日期:" + currentDate);
         if (files != null && files.length > 0) {
             // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentXBLogFile = files[0];
@@ -193,7 +182,7 @@ public class AppLogUtils {
             }
         } else {
             // 如果没有文件，生成新的文件
-            currentTimestamp = timeSdf.format(new Date());
+            currentTimestamp = updateTimeSdf.format(new Date());
             currentXBLogFile = new File(LOG_XBDIRECTORY + currentTimestamp + ".txt");
             try {
                 if (currentXBLogFile.createNewFile()) {
@@ -207,34 +196,27 @@ public class AppLogUtils {
 
     // 重命名日志文件，并递增时间戳
     private static void renameXBLogFile() {
-        // 重命名当前日志文件
-        File renamedFile = new File(LOG_XBDIRECTORY + currentTimestamp + ".txt");
-        boolean renamed = currentXBLogFile.renameTo(renamedFile);
-        if (renamed) {
-            Log.e(TAG,"日志文件已重命名为: " + renamedFile.getName());
-            // 递增时间戳，确保文件名唯一
-            increaseTimestamp();
-            currentXBLogFile = new File(LOG_XBDIRECTORY + currentTimestamp + ".txt");
-            // 创建一个新的日志文件
-            try {
-                if (currentXBLogFile.createNewFile()) {
-                    Log.e(TAG,"新APP-XB程序日志文件已创建: " + currentXBLogFile.getName());
-                }
-            } catch (IOException e) {
-                Log.e(TAG,"无法创建新APP-XB程序日志文件: " + e.getMessage());
+        // 递增时间戳，确保文件名唯一
+        currentTimestamp = updateTimeSdf.format(new Date());
+        increaseTimestamp();
+        currentXBLogFile = new File(LOG_XBDIRECTORY + currentTimestamp + ".txt");
+        // 创建一个新的日志文件
+        try {
+            if (currentXBLogFile.createNewFile()) {
+                Log.e(TAG, "现有txt大于1MB，新APP-XB程序日志文件已创建: " + currentXBLogFile.getName());
             }
-        } else {
-            Log.e(TAG,"重命名APP-XB程序文件失败!");
+        } catch (IOException e) {
+            Log.e(TAG, "现有txt大于1MB，无法创建新APP-XB程序日志文件: " + e.getMessage());
         }
     }
 
     // 递增时间戳，按分钟递增
     private static void increaseTimestamp() {
         try {
-            Date date = sdf.parse(currentTimestamp); // 将当前时间戳转为Date对象
+            Date date = updateTimeSdf.parse(currentTimestamp); // 将当前时间戳转为Date对象
             long timeInMillis = date.getTime();
             timeInMillis += 60000; // 增加60秒，即按分钟递增
-            currentTimestamp = sdf.format(new Date(timeInMillis)); // 更新当前时间戳
+            currentTimestamp = updateTimeSdf.format(new Date(timeInMillis)); // 更新当前时间戳
         } catch (Exception e) {
             Log.e(TAG,"递增时间戳时出错: " + e.getMessage());
         }
