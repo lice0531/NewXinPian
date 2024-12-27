@@ -47,6 +47,7 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -105,8 +106,7 @@ public class RiZhiActivity extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-
-
+        AppLogUtils.writeAppLog("--进入辅助功能-日志上传页面--");
         getUserMessage();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         mListData = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);

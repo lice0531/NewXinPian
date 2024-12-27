@@ -893,6 +893,9 @@
     <string name="text_cdcw">雷管管壳码长度错误</string>
     <string name="text_pxsb">排序失败!</string>
     <string name="text_his_scsyjl">删除所有已上传记录</string>
+    <string name="text_his_scrcrz">删除所有已上传的日常日志</string>
+    <string name="text_his_scbkrz">删除所有已上传的崩溃日志</string>
+    <string name="text_his_zwsjsc">没有可以删除的数据</string>
     <string name="text_jilianset_tip1">Tip:输入后会自动保存</string>
     <string name="text_jilianset_tip2">编号：</string>
     <string name="text_jilianset_tip3">请输入编号长度为2(例如：01,99)</string>

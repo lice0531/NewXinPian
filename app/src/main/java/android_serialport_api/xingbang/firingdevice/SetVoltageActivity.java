@@ -23,6 +23,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FiveTestingCmd;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -58,6 +59,7 @@ public class SetVoltageActivity extends SerialPortActivity {
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppLog("---进入程序设置-厂家设置页面---");
         SharedPreferences sp = getSharedPreferences("config", 0);
         //获取偏好设置的编辑器
         edit = sp.edit();
@@ -97,6 +99,7 @@ public class SetVoltageActivity extends SerialPortActivity {
             }
             return false;
         });
+        AppLogUtils.writeAppLog("---进入设置电压页面---");
         Utils.writeRecord("---进入设置电压页面---");
         Log.e("设置高压", "send_high: " + send_high);
 
@@ -243,6 +246,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                     String str_lowVoltage = etSetlowVoltage.getText().toString();
                     int low = Double.valueOf(Utils.convertToDouble(str_lowVoltage, 7.0) * 10).intValue();
                     Log.e("设置电压", "low: " + low);
+                    AppLogUtils.writeAppLog("-设置低压:" + low);
                     Utils.writeRecord("-设置低压:" + low);
                     if (isNumber(str_lowVoltage) && low > 60 && low < 120) {
                         edit.putString("lowVoltage", str_lowVoltage);
@@ -272,6 +276,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                     String str_highVoltage = etSethighVoltage.getText().toString();
                     int high = Double.valueOf(Utils.convertToDouble(str_highVoltage, 16.0) * 10).intValue();
                     Log.e("设置电压", "high: " + high);
+                    AppLogUtils.writeAppLog("-设置高压:" + high);
                     Utils.writeRecord("-设置高压:" + high);
                     if (isNumber(str_highVoltage) && high > 100 && high < 200) {
                         edit.putString("highVoltage", str_highVoltage);
@@ -296,6 +301,7 @@ public class SetVoltageActivity extends SerialPortActivity {
             case R.id.btn_sys://保存设置
                 MmkvUtils.savecode("sys_ver_name",sys_ver_name);
                 MmkvUtils.savecode("sys_ver_position",position_save);
+                AppLogUtils.writeAppLog(sys_ver_name + "厂家已成功设置");
                 show_Toast(getString(R.string.text_systip_1));
                 break;
         }

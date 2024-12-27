@@ -11,7 +11,9 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +52,7 @@ import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.EncryptionUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.QRCodeUtils;
@@ -97,6 +100,7 @@ public class ProjectManagerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_manager);
         ButterKnife.bind(this);
+        AppLogUtils.writeAppLog("--进入到项目管理页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         SQLiteStudioService.instance().start(this);
@@ -139,21 +143,12 @@ public class ProjectManagerActivity extends BaseActivity {
         if (!TextUtils.isEmpty(pageFlag)) {
             tv_right.setVisibility(View.VISIBLE);
             tv_right.setText("删除项目");
-          /*  //如果是点击了列表中的项目进入该页面，所有输入项不可编辑
-            downAtProjectName.setEnabled(false);
-            downAtBprysfz.setEnabled(false);
-            downAtCoordxy.setEnabled(false);
-            downAtDwdm.setEnabled(false);
-            downAtHtid.setEnabled(false);
-            downAtXmbh.setEnabled(false);
-            addGsxz.setEnabled(false);*/
             downAtProjectName.setText(project_name);
             downAtHtid.setText(htbh);
             downAtXmbh.setText(xmbh);
             downAtDwdm.setText(dwdm);
             downAtCoordxy.setText(coordxy);
             downAtBprysfz.setText(bprysfz);
-
             if (business.startsWith("非营业性")) {
                 addGsxz.setSelection(0);
                 llXmxx.setVisibility(View.GONE);
@@ -189,6 +184,7 @@ public class ProjectManagerActivity extends BaseActivity {
                                     EventBus.getDefault().post(new FirstEvent("finishDetailPage"));
                                 }
                                 delShouQuan(project_name);//删除方法
+                                AppLogUtils.writeAppLog("点击了删除项目");
                                 finish();
                             })
                             .create();
@@ -196,6 +192,7 @@ public class ProjectManagerActivity extends BaseActivity {
                     dialog.show();
                 }
             } else {
+                AppLogUtils.writeAppLog("点击了扫码新增项目按钮");
                 if (scanBarThread != null) {
                     scanBarThread.exit = true;  // 终止线程thread
                     try {
@@ -204,7 +201,6 @@ public class ProjectManagerActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                 }
-
                 kaishiScan();
                 //kt50持续扫码线程
                 scanBarThread = new ScanBar();
@@ -518,7 +514,7 @@ public class ProjectManagerActivity extends BaseActivity {
      * 保存信息
      */
     private void saveData() {
-        Logger.e("选中项"+addGsxz.getSelectedItem());
+        Log.e(TAG, "选中项" + addGsxz.getSelectedItem());
         String checstr = checkData();
         if (checstr.length()>0){
             show_Toast(checstr);
@@ -532,7 +528,7 @@ public class ProjectManagerActivity extends BaseActivity {
 //            Logger.e("保存项目"+ "pro: "+pro.toString());
 //            pro.delete();
 //        }
-        if (checstr.trim().length() < 1) {
+        if (checstr == null || checstr.trim().length() < 1) {
             String a = downAtBprysfz.getText().toString().trim().replace(" ", "");
             String b = downAtHtid.getText().toString().trim().replace(" ", "");
             String c = downAtXmbh.getText().toString().trim().replace(" ", "");

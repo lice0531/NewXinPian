@@ -37,7 +37,9 @@ import com.tencent.bugly.proguard.X;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -72,6 +74,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.models.DownloadVersionBean;
 import android_serialport_api.xingbang.models.IsRenewBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
@@ -270,7 +273,7 @@ public class XingbangMain extends SerialPortActivity {
         mHandler_updata.sendMessage(mHandler_updata.obtainMessage());//更新设备编号
 //        getMaxNumberNo();
         Utils.writeRecord("---进入主页面---");
-
+        AppLogUtils.writeAppLog("---进入主页面---");
         getleveup();
 
         busHandler = new Handler(msg -> {
@@ -283,6 +286,7 @@ public class XingbangMain extends SerialPortActivity {
 //                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr + getString(R.string.text_text_ysdl);
                 txt_IC.setTextColor(Color.RED);//设置颜色
 //                txt_IC.setText(displayIcStr);
+                AppLogUtils.writeAppLog("--主页--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                 Utils.writeRecord("--主页--当前电流:" + displayIcStr + "  当前电压:" + busInfo.getBusVoltage() + "V,疑似短路");
             }else {
 //                displayIcStr = getResources().getString(R.string.text_reister_ele) + displayIcStr;
@@ -291,6 +295,7 @@ public class XingbangMain extends SerialPortActivity {
             }
             if (busInfo.getBusVoltage() < 6&&isshow1) {
                 Utils.writeRecord("--主页--:总线短路");
+                AppLogUtils.writeAppLog("--主页--:总线短路");
                 isshow1=false;
                 TextView view = new TextView(this);
                 view.setTextSize(25);
@@ -317,7 +322,7 @@ public class XingbangMain extends SerialPortActivity {
             if ((int)busInfo.getBusCurrentIa()>30000) {
                 duanlu_sun++;
                 if(duanlu_sun==6){
-
+                    AppLogUtils.writeAppLog("--主页--:总线短路");
                     Utils.writeRecord("--主页--:总线短路");
                     TextView view = new TextView(this);
                     view.setTextSize(25);
@@ -373,6 +378,7 @@ public class XingbangMain extends SerialPortActivity {
         mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
         Log.e(TAG,"当前区域:" + mRegion);
+        AppLogUtils.writeAppLog("当前区域:" + mRegion);
         // 设置标题区域
         setTitleRegion();
         // 获取区域雷管数量
@@ -613,6 +619,24 @@ public class XingbangMain extends SerialPortActivity {
         Log.e(TAG, "Yanzheng: " + Yanzheng);
     }
 
+    private void getDb(){
+        //导出现有db文件到本地文件夹中
+        File src = new File(getDatabasePath("denatorSys.db").getAbsolutePath());
+        File dest = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/xb", "denatorSys.db");
+        try {
+            FileInputStream fis = new FileInputStream(src);
+            FileOutputStream fos = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+            fis.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void setUserMessage() {
         MessageBean message = new MessageBean();
         message.setId((long) 1);
@@ -730,6 +754,7 @@ public class XingbangMain extends SerialPortActivity {
             show_Toast(getString(R.string.text_error_tip56));
         } else {
             Utils.writeRecord("---点击返回按键退出程序---");
+            AppLogUtils.writeAppLog("---点击返回按键退出程序---");
             powerOffDevice(PIN_ADSL);//主板下电
             //点击在两秒以内
             removeALLActivity();//执行移除所以Activity方法
@@ -1410,6 +1435,7 @@ public class XingbangMain extends SerialPortActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
+                AppLogUtils.writeAppLog("上传公司网络请求失败" + "IOException: " + e);
                 Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
             }
 
@@ -1474,6 +1500,7 @@ public class XingbangMain extends SerialPortActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
+                AppLogUtils.writeAppLog("上传公司网络请求失败" + "IOException: " + e);
                 Utils.writeRecord("上传公司网络请求失败" + "IOException: " + e);
             }
 
@@ -1509,6 +1536,7 @@ public class XingbangMain extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
+                AppLogUtils.writeAppXBLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -1524,6 +1552,7 @@ public class XingbangMain extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
+        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
 //        Log.e("自检收到", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -1644,6 +1673,7 @@ public class XingbangMain extends SerialPortActivity {
         threadPoolExecutor.shutdown();
         Log.e(TAG, "close: 关闭线程池" );
         Utils.writeLog("首页:关闭获取电流电压线程池");
+        AppLogUtils.writeAppXBLog("首页:关闭获取电流电压线程池");
 //        if (sendPower != null) {
 //            sendPower.exit = true;  // 终止线程thread
 //                sendPower.interrupt();
@@ -1664,6 +1694,7 @@ public class XingbangMain extends SerialPortActivity {
                 mApplication.closeSerialPort();
                 Log.e(TAG,"调用mApplication.closeSerialPort()开始关闭串口了。。");
                 Utils.writeLog("首页:关闭串口");
+                AppLogUtils.writeAppXBLog("首页:关闭串口");
                 mSerialPort = null;
             }
         }).start();

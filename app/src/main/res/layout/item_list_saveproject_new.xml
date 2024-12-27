@@ -226,6 +226,7 @@
         android:layout_height="50dp"
         android:layout_gravity="bottom|right"
         android:scaleType="fitXY"
+        android:alpha="0.8"
         android:src="@drawable/icon_usering"
         android:visibility="gone" />
 

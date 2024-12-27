@@ -25,6 +25,7 @@ import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.services.sendmessge.MessageEvent;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.QRCodeUtils;
 import android_serialport_api.xingbang.utils.ThreeDES;
 import butterknife.BindView;
@@ -69,6 +70,7 @@ public class ProjectDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_detail);
         ButterKnife.bind(this);
+        AppLogUtils.writeAppLog("--进入到项目详情页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         SQLiteStudioService.instance().start(this);
@@ -166,6 +168,7 @@ public class ProjectDetailActivity extends BaseActivity {
             Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(encode);
             ivXmCode.setImageBitmap(qrCodeBitmap);
         } catch (Exception e) {
+            AppLogUtils.writeAppLog("二维码生成失败:" + e.getMessage().toString());
             Log.e(TAG,"生成加密二维码失败:" + e.getMessage().toString());
             throw new RuntimeException(e);
         }
@@ -186,6 +189,7 @@ public class ProjectDetailActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.btn_set_project:
+                AppLogUtils.writeAppLog("点击了'设置为当前项目'按钮");
                 updateData();
                 break;
         }

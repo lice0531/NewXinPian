@@ -507,12 +507,12 @@
                                 android:id="@+id/btn_f2"
                                 style="@style/allbtntstyle"
                                 android:layout_width="0dp"
-                                android:layout_height="45dp"
+                                android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:textSize="20sp"
-                                android:text="@string/text_scan_f2" />
+                                android:text="@string/text_scan_f2"
+                                android:textSize="20sp" />
 
                             <EditText
                                 android:id="@+id/re_et_f2"

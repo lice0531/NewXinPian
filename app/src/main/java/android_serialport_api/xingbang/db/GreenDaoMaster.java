@@ -3,6 +3,7 @@ package android_serialport_api.xingbang.db;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -11,7 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
@@ -21,14 +24,18 @@ import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
+import android_serialport_api.xingbang.db.greenDao.ErrLogDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.PaiDataDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.Utils;
 
 /**
  * 管理GreenDao查询语句
@@ -47,6 +54,8 @@ public class GreenDaoMaster {
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
     private DenatorHis_MainDao denatorHis_mainDao;
+    private SysLogDao sysLogDao;
+    private ErrLogDao errLogDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -60,6 +69,8 @@ public class GreenDaoMaster {
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
         this.quyuDao = Application.getDaoSession().getQuYuDao();
         this.paiDataDao = Application.getDaoSession().getPaiDataDao();
+        this.sysLogDao = Application.getDaoSession().getSysLogDao();
+        this.errLogDao = Application.getDaoSession().getErrLogDao();
     }
 
 
@@ -677,18 +688,6 @@ public class GreenDaoMaster {
                 .list();
     }
 
-    /**
-     * 查询雷管数量
-     * @return
-     */
-    public int queryDetonatorSize(String piece) {
-        return mDeantorBaseDao
-                .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
-                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
-                .list().size();
-    }
-
     public List<DenatorBaseinfo> queryDetonatorRegionAsc() {
         List<DenatorBaseinfo> mListData = new ArrayList<>();
         boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
@@ -825,6 +824,21 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxNumDelay(String piece) {
+//        // 倒叙查询
+//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
+//
+//        // 如果有数据
+//        if (mList.size() > 0) {
+//            // 第一个雷管数据 该区域 最大序号 的延时
+//            int delay = mList.get(0).getDelay();
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
+//            return delay;
+//            // 如果没数据
+//        } else {
+//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
+//            return 0;
+//        }
+
         int delay;
         String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
@@ -1501,6 +1515,130 @@ public class GreenDaoMaster {
 //                .where(DenatorHis_MainDao.Properties.Blastdate.eq(time))
 //                .unique();
 //    }
+
+    /**
+     * 程序日志上传页面-删除单条日志记录
+     * @param filename:日志文件名
+     * @return
+     */
+    public List<SysLog> deleteAppLogsByName(String filename) {
+        // 提取前缀（假设前缀是 filename 的前8个字符，可以根据需求调整）
+        String prefix = filename.substring(0, 10);
+        // 查询所有以该前缀开头的日志记录
+        return sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.Filename.like(prefix + "%"))  // 使用前缀进行匹配
+                .list();
+    }
+
+    /**
+     * 程序日志上传页面-删除单条日志记录
+     * @param id:日志文件id
+     * @return
+     */
+    public List<SysLog> deleteAppLogsById(Long id) {
+        // 查询所有以该前缀开头的日志记录
+        return sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.Id.eq(id))  // 使用前缀进行匹配
+                .list();
+    }
+
+    /**
+     * 程序日志上传页面-删除单条日志记录
+     * @param id:日志文件id
+     * @return
+     */
+    public List<ErrLog> deleteAppErrorLogsById(Long id) {
+        // 查询所有以该前缀开头的日志记录
+        return errLogDao.queryBuilder()
+                .where(ErrLogDao.Properties.Id.eq(id))  // 使用前缀进行匹配
+                .list();
+    }
+
+    /**
+     * 程序日志上传页面-更新日志上传状态
+     * @param id:当前条目日志记录数据库的id
+     */
+    public void updateAppLog(Long id) {
+        // 提取日期部分（yyyy-MM-dd）
+//        String date = dateTime.split(" ")[0];  // 以空格分隔，取第一部分即为 "2024-12-24"
+        // 按日期前缀和更新时间排序查询
+        List<SysLog> logs = sysLogDao.queryBuilder()
+                .where(SysLogDao.Properties.Id.eq(id))
+                // 使用 LIKE 操作符匹配 updateTime 字段的前 10 个字符 (即 yyyy-MM-dd 部分)
+//                .where(SysLogDao.Properties.UpdataTime.like(date + "%"))  // 按更新时间降序排列
+                .list();
+        // 遍历查询结果并更新 upState 字段
+        for (SysLog log : logs) {
+            if (!TextUtils.isEmpty(log.getUpdataTime())) {
+                    log.setUpdataState("已上传");  // 设置状态为“已上传”
+            }
+        }
+        // 在事务中批量更新日志记录
+        sysLogDao.updateInTx(logs);  //
+    }
+
+    /**
+     * 程序日志上传页面-更新日志上传状态
+     * @param id:当前条目日志记录数据库的id
+     */
+    public void updateErrorAppLog(Long id) {
+        // 提取日期部分（yyyy-MM-dd）
+//        String date = dateTime.split(" ")[0];  // 以空格分隔，取第一部分即为 "2024-12-24"
+        // 按日期前缀和更新时间排序查询
+        List<ErrLog> logs = errLogDao.queryBuilder()
+                .where(ErrLogDao.Properties.Id.eq(id))
+                .list();
+        // 遍历查询结果并更新 upState 字段
+        for (ErrLog log : logs) {
+            if (!TextUtils.isEmpty(log.getUpdataTime())) {
+                    log.setUpdataState("已上传");  // 设置状态为“已上传”
+            }
+        }
+        // 在事务中批量更新日志记录
+        errLogDao.updateInTx(logs);  //
+    }
+
+    /**
+     * 程序日志上传页面-查询日志记录
+     * @return
+     */
+    public List<SysLog> getAppLogList() {
+        // 按日期前缀和更新时间排序查询
+        List<SysLog> sysLogs = sysLogDao.queryBuilder()
+                .orderDesc(SysLogDao.Properties.UpdataTime) // 按更新时间降序排列
+                .list();
+        // 存储去重后的日志
+        List<SysLog> list = new ArrayList<>();
+        for (SysLog log : sysLogs) {
+            /**
+             * 之前存储在sysLog表中的日志UpdataTime是24-10-29 最新的日志UpdataTime是2024-10-29
+             * 所以先排除掉之前的旧数据
+             */
+            if (!TextUtils.isEmpty(log.getUpdataTime())) {
+                // 如果没有该日期前缀的记录，或者遇到较新的记录，则更新
+                list.add(log);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 程序日志上传页面-查询日志记录
+     * @return
+     */
+    public List<ErrLog> getAppErrorLogList() {
+        // 按日期前缀和更新时间排序查询
+        List<ErrLog> errLogs = errLogDao.queryBuilder()
+                .orderDesc(ErrLogDao.Properties.UpdataTime) // 按更新时间降序排列
+                .list();
+        List<ErrLog> list = new ArrayList<>();
+        for (ErrLog log : errLogs) {
+            list.add(log);
+        }
+        return errLogDao.queryBuilder()
+                .orderDesc(ErrLogDao.Properties.UpdataTime) // 按更新时间降序排列
+                .list();
+    }
 
     /**
      * 根据申请日期查询生产库中雷管

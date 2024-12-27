@@ -887,7 +887,7 @@ public class Utils {
                 SysLog sysLog = new SysLog();
                 sysLog.setFilename(Utils.getDate(new Date()));
                 sysLog.setPath(filePath);
-                sysLog.setUpdataState("否");
+                sysLog.setUpdataState("未上传");
                 sysLog.setUpdataTime("");
                 Application.getDaoSession().getSysLogDao().insert(sysLog);
             } else {

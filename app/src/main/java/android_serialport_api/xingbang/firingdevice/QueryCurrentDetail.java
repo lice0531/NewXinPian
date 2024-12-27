@@ -40,6 +40,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -93,7 +94,7 @@ public class QueryCurrentDetail extends BaseActivity {
         setContentView(R.layout.activity_query_currentinfo);
         ButterKnife.bind(this);
         initView();
-
+        AppLogUtils.writeAppLog("---进入查看雷管信息页面---");
 
         mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
     }
@@ -132,6 +133,7 @@ public class QueryCurrentDetail extends BaseActivity {
         });
         btn_paixu = findViewById(R.id.btn_paixu);
         btn_paixu.setOnClickListener(v -> {
+            AppLogUtils.writeAppLog("点击了排序按钮");
             if (paixu_flag) {
                 mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1005));
                 paixu_flag = false;

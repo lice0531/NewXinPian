@@ -47,6 +47,7 @@ import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.Cmd_EX;
 import android_serialport_api.xingbang.cmd.DefCmd;
 import android_serialport_api.xingbang.models.DownloadVersionBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.DownloadTest;
 import android_serialport_api.xingbang.utils.LoadingUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
@@ -197,6 +198,7 @@ public class UpgradeActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
+                AppLogUtils.writeAppXBLog("->:" + str);
 //                Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

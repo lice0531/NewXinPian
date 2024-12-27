@@ -43,6 +43,7 @@ import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.services.LocationService;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,6 +101,7 @@ public class QueryMainActivity extends BaseActivity {
         ButterKnife.bind(this);
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppLog("---进入查看页面---");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         getUserMessage();

@@ -23,6 +23,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -56,9 +57,9 @@ public class SetSystemActivity extends BaseActivity {
     EditText etSetJiancetime;
     @BindView(R.id.set_Voltage)
     Button setVoltage;
+    private int Preparation_time;//准备时间
     @BindView(R.id.et_set_qibaotime)
     EditText etSetQibaotime;
-    private int Preparation_time;//准备时间
     private int ChongDian_time;//准备时间
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
@@ -78,6 +79,7 @@ public class SetSystemActivity extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppXBLog("--进入系统设置页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
@@ -222,6 +224,7 @@ public class SetSystemActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(etSetQibaotime.getText())) {//起爆等待时间
                     Log.e("起爆等待时间", "etSetQibaotime: " + etSetQibaotime.getText().toString());
                     MmkvUtils.savecode("Qibaotime", etSetQibaotime.getText());
+                    AppLogUtils.writeAppLog("设置的起爆按键倒计时时间是:" + etSetQibaotime.getText());
                 } else {
                     flag2 = 1;
                 }

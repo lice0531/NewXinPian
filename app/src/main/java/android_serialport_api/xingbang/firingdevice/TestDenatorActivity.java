@@ -59,6 +59,7 @@ import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFiringTestError;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -208,6 +209,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         // getDenatorType();
         Utils.writeRecord("---进入组网测试页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
+        AppLogUtils.writeAppLog("---进入组网测试页面---开始测试,雷管总数为" + denatorCount);
         sendOpenThread = new SendOpenPower();
         sendOpenThread.start();
 
@@ -670,6 +672,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         btn_jixu.setVisibility(View.GONE);
                         stage = 5;
                         Utils.writeRecord("总线电流为0");
+                        AppLogUtils.writeAppLog("总线电流为0");
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         return;
                     }
@@ -688,6 +691,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         show_Toast(getString(R.string.text_test_tip13));
                         mHandler_1.sendMessage(mHandler_1.obtainMessage());
                         stage = 5;
+                        AppLogUtils.writeAppLog("电压异常,电压为" + busInfo.getBusVoltage() + "V");
                         Utils.writeRecord("电压异常,电压为" + busInfo.getBusVoltage() + "V");
                         return;
                     }
@@ -696,6 +700,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         displayIcStr = displayIcStr + getString(R.string.text_text_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);
                         ll_firing_IC_4.setTextSize(20);
+                        AppLogUtils.writeAppLog("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
                         Utils.writeRecord("--电流:" + displayIcStr + "μA  --电压:" + busInfo.getBusVoltage() + "V,疑似短路");
 
                     }
@@ -710,20 +715,24 @@ public class TestDenatorActivity extends SerialPortActivity {
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
+                        AppLogUtils.writeAppLog("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (denatorCount >= 200 && displayIc > (denatorCount * cankaodianliu + 4000)) {//Preparation_time * 0.5
                         Log.e(TAG, "电流过大: ");
                         displayIcStr = displayIcStr + getString(R.string.text_test_dlgd);
                         ll_firing_IC_4.setTextColor(Color.RED);// "电流过大";
                         ll_firing_IC_4.setTextSize(20);
+                        AppLogUtils.writeAppLog("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流过大");
                     } else if (displayIc < 4 + denatorCount * 6) {//Preparation_time * 0.5
                         displayIcStr = displayIcStr + getString(R.string.text_test_ysdl);
                         ll_firing_IC_4.setTextColor(Color.RED);// "疑似断路";
                         ll_firing_IC_4.setTextSize(20);
+                        AppLogUtils.writeAppLog("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",疑似断路");
                     } else {
                         ll_firing_IC_4.setTextColor(Color.GREEN);
+                        AppLogUtils.writeAppLog("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
                         Utils.writeRecord("电流:" + busInfo.getBusCurrentIa() + "μA  --电压:" + busInfo.getBusVoltage() + "V" + ",当前电流正常");
                     }
                     ll_firing_IC_4.setText(displayIcStr);
@@ -738,6 +747,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                            initDialog("当前检测到总线电流过大,正在准备重新进行网络检测,请耐心等待。",true);//弹出框
 //                        } else {
                         sendCmd(SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00"));//22
+                        AppLogUtils.writeAppLog("case1展示电流过大弹窗");
                         initDialog_zanting_xiadian(getResources().getString(R.string.text_fir_dialog6));//弹出框
 //                        }
                         return;
@@ -808,6 +818,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     Log.e(TAG, "大于21000u ，全错: ");
                     byte[] reCmd = SecondNetTestCmd.setToXbCommon_Testing_Exit22_3("00");//22
                     sendCmd(reCmd);
+                    AppLogUtils.writeAppLog("case4展示电流过大弹窗");
 //                    if (chongfu) {
                     initDialog_zanting(getString(R.string.text_test_tip5));//弹出框
 //                    } else {
@@ -818,6 +829,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                    sendCmd(reCmd);
 //                    if (chongfu) {
                     initDialog_zanting(getResources().getString(R.string.text_fir_dialog11));//弹出框
+                    AppLogUtils.writeAppLog("case4展示检查错误雷管是否正确连接弹窗");
 //                    } else {
 //                        initDialog("当前有雷管检测错误,系统正在进行2次检测,如果依然检测错误,请检查线夹等部位是否有进水进泥等短路情况,确认无误后点击继续进行检测。",false);//弹出框
 //                    }
@@ -940,6 +952,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
+                AppLogUtils.writeAppXBLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -1269,6 +1282,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
         Utils.writeLog("<-:" + fromCommad);
+        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
 //        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -1286,6 +1300,8 @@ public class TestDenatorActivity extends SerialPortActivity {
                     doWithReceivData(cmd, localBuf, localSize);
                 }
             }
+        } else {
+            AppLogUtils.writeAppXBLog("返回指令不完整:" + fromCommad);
         }
 
     }
@@ -1327,6 +1343,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     errHandler.sendMessage(errHandler.obtainMessage());
                 }
                 Utils.writeRecord("--测试结果:" + fromData);
+                AppLogUtils.writeAppLog("21指令--测试结果:" + fromData);
                 Log.e("测试返回数据", "fromData: " + fromData);
 //
                 writeDenator = null;
