@@ -29,20 +29,28 @@
             android:layout_marginBottom="2dp"
             android:background="@color/white">
 
-            <ImageView
-                android:id="@+id/iv_check"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/icon_choose_default"
-                android:button="@null"
+<!--            <ImageView-->
+<!--                android:id="@+id/iv_check"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginStart="4dp"-->
+<!--                android:background="@drawable/icon_choose_default"-->
+<!--                android:button="@null"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintVertical_bias="0.55" />-->
+            <CheckBox
+                android:id="@+id/cb_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.55" />
-
+                app:layout_constraintVertical_bias="0.55"/>
             <TextView
                 android:id="@+id/qy_no"
                 style="@style/alltextstyle"

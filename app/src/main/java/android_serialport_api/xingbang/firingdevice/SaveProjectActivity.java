@@ -374,11 +374,13 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 break;
             case R.id.btn_delete_project:
                 AppLogUtils.writeAppLog("点击了'删除项目'按钮执行多些删除项目操作");
+                if (pnList.isEmpty()) {
+                    show_Toast("请先选中要删除的项目");
+                    return;
+                }
+                Log.e("页面","选中的项目: " + pnList.toString());
                 for (String pn : pnList) {
                     delShouQuan(pn);//删除方法
-//                    if (map_project != null && map_project.size() > 0) {//移除map中的值
-//                        map_project.remove(position);
-//                    }
                 }
                 loadMoreData();
                 mAdapter.notifyDataSetChanged();
@@ -424,11 +426,15 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
     private List<String> pnList = new ArrayList<>();
     @Override
-    public void itemViewClick(View v, int index) {
+    public void itemViewClick(View v, int index,boolean isChecked) {
         int position = index;
         if (v.getId() == R.id.cbIsSelected) {
-            //多选   选中的项目  可执行多条删除功能
-            pnList.add(map_project.get(position).get("project_name").toString());
+            if (isChecked) {
+                //多选   选中的项目  可执行多条删除功能
+                pnList.add(map_project.get(position).get("project_name").toString());
+            } else {
+                pnList.remove(map_project.get(position).get("project_name").toString());
+            }
         }
     }
 

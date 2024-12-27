@@ -43,7 +43,7 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
 
     public interface InnerItemOnclickListener {
         void itemClick(View v);
-        void itemViewClick(View v,int position);
+        void itemViewClick(View v,int position,boolean isChecked);
     }
 
     public void setOnInnerItemOnClickListener(InnerItemOnclickListener listener) {
@@ -121,12 +121,12 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         viewHolder.cbIsSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+//                if (isChecked) {
                     if (mListener != null) {
                         //确保position值有效
-                        mListener.itemViewClick(buttonView, position);
+                        mListener.itemViewClick(buttonView, position,isChecked);
                     }
-                }
+//                }
             }
         });
         return convertView;

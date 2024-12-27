@@ -139,7 +139,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean isSerialPortClosed = false;//是否已关闭串口
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(2), new ThreadPoolExecutor.CallerRunsPolicy());
-
+    private ArrayList<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initParam(boolean all_lg) {
@@ -190,10 +190,10 @@ public class TestDenatorActivity extends SerialPortActivity {
         errorList = new LinkedList<>();
         getUserMessage();//放在前面
         initParam(false);//清空所有数据,要放在读取数据的方法之前
+        qyIdList = getIntent().getIntegerArrayListExtra("qyList");
         initView();
         loadMoreData();//读取数据
         initHandler();
-
 
         if (denatorCount < 1) {
             show_Toast(getResources().getString(R.string.text_error_tip30));
@@ -408,6 +408,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
         } else {
             intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
+            intent.putIntegerArrayListExtra("qyList",qyIdList);
         }
         intent.putExtra("dataSend", str5);
         startActivity(intent);
@@ -467,7 +468,7 @@ public class TestDenatorActivity extends SerialPortActivity {
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         totalerrorNum = list.size();//得到数据的总条数
         ll_firing_errorNum_4.setText("" + totalerrorNum);
 //        String sql = "Select * from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where statusCode =? and errorCode<> ?";
@@ -498,7 +499,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -558,7 +559,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         blastQueue.clear();
         errorList.clear();
 
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
 //        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
@@ -589,7 +590,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errorList.clear();
 
 //        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryDetonatorRegionAsc();
-        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> denatorBaseinfos = new GreenDaoMaster().queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         //int count=0;
         for (DenatorBaseinfo a : denatorBaseinfos) {
             VoBlastModel item = new VoBlastModel();
@@ -619,7 +620,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
 //        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo denatorBaseinfo : list) {
             int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
             String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号

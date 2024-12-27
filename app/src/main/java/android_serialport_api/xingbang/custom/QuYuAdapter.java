@@ -1,7 +1,10 @@
 package android_serialport_api.xingbang.custom;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import androidx.annotation.Nullable;
 
@@ -26,11 +29,26 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         super(layoutResId, data);
     }
 
+    private boolean isShowCheck = false;
+    public void showCheckBox(boolean isShow){
+        isShowCheck = isShow;
+        notifyDataSetChanged();
+    }
+
     @Override
     protected void convert(BaseViewHolder helper, QuYuData item) {
         int position = helper.getLayoutPosition();
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.toString() );
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.getDetonatorIdSup() );
+        CheckBox cbIsSelected = helper.getView(R.id.cb_check);
+        cbIsSelected.setVisibility(isShowCheck ? View.VISIBLE : View.GONE);
+        cbIsSelected.setChecked(item.isSelect());
+        cbIsSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                item.setSelect(isChecked);
+            }
+        });
         GreenDaoMaster master = new GreenDaoMaster();
         int total=new GreenDaoMaster().queryDetonatorSize(item.getId()+"");
         int maxPai = master.getPieceMaxPai(item.getQyid()+"");
@@ -42,7 +60,6 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         helper.setText(R.id.qy_txt_totalPai, "共:" +maxPai+"排"+ total+"发");//
         helper.setText(R.id.qy_txt_minDealy, "最小延时:"+min );//
         helper.setText(R.id.qy_txt_maxDealy, "最大延时:"+max);//
-
     }
 
     /**
