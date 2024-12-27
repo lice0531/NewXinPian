@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -49,14 +50,22 @@ public class QuYuActivity extends BaseActivity {
     RecyclerView rlQuyu;
     @BindView(R.id.lay_bottom)
     LinearLayout layBottom;
-
+    @BindView(R.id.tv_input)
+    TextView tv_input;
+    @BindView(R.id.tv_check_all)
+    TextView tv_check_all;
     TextView totalbar_title;
     private QuYuAdapter quyuAdapter;
     private List<QuYu> mListData = new ArrayList<>();
     private List<QuYuData> mQuYuList = new ArrayList<>();
+    private ArrayList<Integer> qyIdList = new ArrayList<>();
     private MyAlertDialog myDialog;
     private Handler mHandle;
     private LoadingDialog loadingDialog;
+    private String pageFlag = "";//区分是从主页哪个模块进入区域选择页面
+    private String TAG = "区域选择页面";
+    private String qbxm_id = "-1";
+    private String qbxm_name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,23 +76,49 @@ public class QuYuActivity extends BaseActivity {
         loadingDialog = new LoadingDialog(QuYuActivity.this)
                 .setLoadingText("加载中...");
         titleText.setText("选择区域");
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            qbxm_id = !TextUtils.isEmpty((String)bundle.get("qbxm_id")) ?
+                    (String)bundle.get("qbxm_id") : "";
+            qbxm_name = !TextUtils.isEmpty((String) bundle.get("qbxm_name")) ?
+                    (String) bundle.get("qbxm_name") : "";
+        } else {
+            qbxm_id = "-1";
+            qbxm_name = "";
+        }
+        pageFlag = !TextUtils.isEmpty(intent.getStringExtra("pageFlag"))?
+                intent.getStringExtra("pageFlag") : "";
+        if (!TextUtils.isEmpty(pageFlag)) {
+            if ("zhuce".equals(pageFlag)) {
+                layBottom.setVisibility(View.GONE);
+                titleAdd.setVisibility(View.VISIBLE);
+            } else {
+                layBottom.setVisibility(View.VISIBLE);
+                titleAdd.setVisibility(View.GONE);
+            }
+        }
         mListData = new GreenDaoMaster().queryQuYu();
         // 线性布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rlQuyu.setLayoutManager(linearLayoutManager);
         quyuAdapter = new QuYuAdapter(R.layout.item_quyu, mQuYuList);
         rlQuyu.setAdapter(quyuAdapter);
+        if (!TextUtils.isEmpty(pageFlag) && !"zhuce".equals(pageFlag)) {
+            quyuAdapter.showCheckBox(true);
+        }
         quyuAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+                if ("zhuce".equals(pageFlag)) {
 //                loadingDialog.show();
-                String str1 = mListData.get(position).getId() + "";
-                Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
-                intent.putExtra("quyuId", str1);
-                startActivity(intent);
-                finish();
+                    String str1 = mListData.get(position).getId() + "";
+                    Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
+                    intent.putExtra("quyuId", str1);
+                    startActivity(intent);
+                    finish();
 //                loadingDialog.close();
+                }
             }
         });
         quyuAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
@@ -114,6 +149,7 @@ public class QuYuActivity extends BaseActivity {
                                 mQuYuList.add(qyData);
                             }
                         }
+
                         quyuAdapter.setNewData(mQuYuList);
                         rlQuyu.setAdapter(quyuAdapter);
                         break;
@@ -127,7 +163,10 @@ public class QuYuActivity extends BaseActivity {
         mHandle.sendMessage(mHandle.obtainMessage(1));
     }
 
-    @OnClick({R.id.title_back, R.id.title_add, R.id.tv_check_all})
+    private boolean isSelectAll = true;//是否全选
+    private long lastClickTime = 0L;
+    private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
+    @OnClick({R.id.title_back, R.id.title_add, R.id.tv_check_all,R.id.tv_input})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.title_back://注册
@@ -137,7 +176,49 @@ public class QuYuActivity extends BaseActivity {
                 carteQuYu();
                 break;
             case R.id.tv_check_all://全选
-                setAllItemChecked();
+                if (isSelectAll) {
+                    tv_check_all.setText("取消全选");
+                    isSelectAll = false;
+                    setAllItemChecked(true);
+                } else {
+                    tv_check_all.setText("全选");
+                    isSelectAll = true;
+                    setAllItemChecked(false);
+                }
+                break;
+            case R.id.tv_input:
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
+                for (QuYuData data : mQuYuList) {
+                    if (data.isSelect()) {
+                        qyIdList.add(data.getQyid());
+                    }
+                }
+                if (qyIdList.isEmpty()) {
+                    show_Toast("请先选择区域");
+                    return;
+                }
+                Intent intent = new Intent();
+                if ("testDenator".equals(pageFlag)) {
+                    //进入网检页面
+                    intent.setClass(QuYuActivity.this, TestDenatorActivity.class);
+                    intent.putIntegerArrayListExtra("qyList",qyIdList);
+                    intent.putExtra("dataSend", "测试");
+                } else {
+                    //进入起爆页面
+                    intent.setClass(QuYuActivity.this, FiringMainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("qbxm_id", qbxm_id);
+                    bundle.putString("qbxm_name", qbxm_name);
+                    intent.putExtras(bundle);
+                    intent.putIntegerArrayListExtra("qyList",qyIdList);
+                    intent.putExtra("dataSend", "起爆");
+                }
+                startActivity(intent);
+                Log.e(TAG,"区域页面多选结果:" + qyIdList.toString());
+                finish();
                 break;
         }
     }
@@ -179,16 +260,19 @@ public class QuYuActivity extends BaseActivity {
     private int mEditMode = STATE_DEFAULT;
     private boolean editorStatus = false;//是否为编辑状态
 
-    //全部选中
-    private void setAllItemChecked() {
+    //区域全选和取消全选
+    private void setAllItemChecked(boolean isSelected) {
         if (quyuAdapter == null) return;
-        for (int i = 0; i < mListData.size(); i++) {
-            mQuYuList.get(i).setSelect(true);
+        if (isSelected) {
+            for (QuYuData yuData : mQuYuList) {
+                yuData.setSelect(true);
+            }
+        } else {
+            for (QuYuData yuData : mQuYuList) {
+                yuData.setSelect(false);
+            }
         }
-        quyuAdapter.setNewData(mQuYuList);
         quyuAdapter.notifyDataSetChanged();
-        index = mListData.size();
-//        tvDelete.setText("删除(" + index + ")");
     }
 
     //改变编辑状态

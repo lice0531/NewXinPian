@@ -226,6 +226,18 @@ public class GreenDaoMaster {
         }
         return mListData;
     }
+
+    /**
+     * @param idList:区域页面多选的id
+     * @return
+     */
+    public List<DenatorBaseinfo> queryErrLeiGuanNew(List<Integer> idList) {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        for (int id : idList) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan(String.valueOf(id)));
+        }
+        return mListData;
+    }
     public List<DenatorBaseinfo> queryErrLeiGuan_CD() {
         List<DenatorBaseinfo> mListData = new ArrayList<>();
         boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
@@ -243,6 +255,18 @@ public class GreenDaoMaster {
             mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("4"));
         }if (mRegion5) {
             mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD("5"));
+        }
+        return mListData;
+    }
+
+    /**
+     * @param idList:区域页面多选的id
+     * @return
+     */
+    public List<DenatorBaseinfo> queryErrLeiGuan_CDNew(List<Integer> idList) {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        for (int id : idList) {
+            mListData.addAll(new GreenDaoMaster().queryErrLeiGuan_CD(String.valueOf(id)));
         }
         return mListData;
     }
@@ -705,6 +729,19 @@ public class GreenDaoMaster {
             mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("4"));
         }if (mRegion5) {
             mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc("5"));
+        }
+        return mListData;
+    }
+
+    /**
+     *
+     * @param idList:区域页面多选的id
+     * @return
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionAscNew(List<Integer> idList) {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        for (int id : idList) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc(String.valueOf(id)));
         }
         return mListData;
     }

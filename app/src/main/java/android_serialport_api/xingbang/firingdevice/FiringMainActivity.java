@@ -256,6 +256,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isInterunptQb = false;
     private boolean isGyError = false;//如果弹出了高压充电失败或长时间处于高压的弹窗 就不再提示电流不稳定
     private boolean isHaveError = false;//子机是否出现异常情况弹窗
+    private ArrayList<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,6 +295,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         AppLogUtils.writeAppXBLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
         startFlag = 1;
+        qyIdList = getIntent().getIntegerArrayListExtra("qyList");
         initParam();//重置参数
         initView();
         initHandle();
@@ -303,8 +305,8 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("---进入起爆页面---");
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount + "--当前区域:" + mRegion);
 //        elevenCount = getMaxDelay() / 1000 + 1;
-        elevenCount = getRegionMaxDelay() / 1000 + 1;
-        Log.e(TAG, "elevenCount: " + elevenCount);
+        elevenCount = getRegionMaxDelay(qyIdList) / 1000 + 1;
+        Log.e(TAG, "起爆放电倒计时值elevenCount: " + elevenCount);
         Utils.writeLog("起爆放电倒计时值:" + elevenCount);
         AppLogUtils.writeAppXBLog("起爆页面-qbxm_id:" + qbxm_name);
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
@@ -1470,7 +1472,7 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void getErrorBlastCount() {
         GreenDaoMaster master = new GreenDaoMaster();
-        errlist = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        errlist = master.queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
 
         int totalNum = errlist.size();//得到数据的总条数
         ll_firing_errorAmount_4.setText("" + totalNum);
@@ -1577,7 +1579,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private void loadErrorBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -1596,7 +1598,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private void loadErrCDBlastModel() {
         errDeData.clear();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan_CD();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan_CDNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
@@ -1645,7 +1647,7 @@ public class FiringMainActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
         GreenDaoMaster master = new GreenDaoMaster();
 //        List<DenatorBaseinfo> denatorlist = master.queryDenatorBaseinfo();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAscNew(qyIdList);//不分区域
         for (DenatorBaseinfo d : denatorlist) {
             VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
             vo.setBlastserial(d.getBlastserial());
@@ -1756,7 +1758,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.deleteRecord();//删除日志
 //        Utils.deleteRecord_cmd();//删除cmd日志,删之前要保存到历史记录里面
 
-        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAsc();
+        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
         GreenDaoMaster master = new GreenDaoMaster();
         for (DenatorBaseinfo dbf : list) {
             master.updateDetonatorTypezt(dbf.getShellBlastNo(), "已起爆");//更新授权库中状态
@@ -3611,7 +3613,7 @@ public class FiringMainActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
 
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAsc();//不分区域
+        List<DenatorBaseinfo> denatorlist = master.queryDetonatorRegionAscNew(qyIdList);//不分区域
 //        for (DenatorBaseinfo d : denatorlist) {
 //            VoDenatorBaseInfo vo = new VoDenatorBaseInfo();
 //            vo.setBlastserial(d.getBlastserial());
@@ -3657,7 +3659,7 @@ public class FiringMainActivity extends SerialPortActivity {
         errorList = new ConcurrentLinkedQueue<>();
 //        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuanNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo denatorBaseinfo : list) {
             int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
             String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
@@ -3686,7 +3688,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "errorList: " + errorList.size());
 //        List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
         GreenDaoMaster master = new GreenDaoMaster();
-        List<DenatorBaseinfo> list = master.queryErrLeiGuan_CD();//带参数是查一个区域,不带参数是查所有
+        List<DenatorBaseinfo> list = master.queryErrLeiGuan_CDNew(qyIdList);//带参数是查一个区域,不带参数是查所有
         for (DenatorBaseinfo denatorBaseinfo : list) {
             int serialNo = denatorBaseinfo.getBlastserial(); //获取第二列的值 ,序号
             String shellNo = denatorBaseinfo.getShellBlastNo();//管壳号
@@ -4258,6 +4260,52 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e(TAG, "查询出错或无数据");
         }
         return maxDelay;  // 返回选中区域的最大延时
+    }
+
+    /**
+     * 获取所选区域的最大延时
+     * @param qyidList:多选区域的id
+     * @return
+     */
+    private int getRegionMaxDelay(List<Integer> qyidList) {
+        int maxDelay = 0;  // 初始值为0，表示没有延时数据
+        // 如果 qyidList 为空，直接返回最大延时为 0
+        if (qyidList == null || qyidList.isEmpty()) {
+            return maxDelay;
+        }
+        // 构建 SQL 查询，使用 IN 查询多个区域
+        StringBuilder queryBuilder = new StringBuilder("select max(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece IN (");
+        // 使用 ? 占位符来动态传入参数
+        for (int i = 0; i < qyidList.size(); i++) {
+            queryBuilder.append("?");
+            if (i < qyidList.size() - 1) {
+                queryBuilder.append(",");
+            }
+        }
+        queryBuilder.append(")");
+        // 执行查询
+        Cursor cursor = db.rawQuery(queryBuilder.toString(), convertListToStringArray(qyidList));
+        if (cursor != null && cursor.moveToNext()) {
+            if (!cursor.isNull(0)) {
+                maxDelay = cursor.getInt(0);
+                Log.e(TAG, "所有选中区域的最大延时为: " + maxDelay);
+            } else {
+                Log.e(TAG, "数据库获取到的最大延时为null");
+            }
+            cursor.close();
+        } else {
+            Log.e(TAG, "查询出错或无数据");
+        }
+        return maxDelay;  // 返回选中区域的最大延时
+    }
+
+    // 辅助方法：将 List<Integer> 转换为 String[]
+    private String[] convertListToStringArray(List<Integer> list) {
+        String[] array = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = String.valueOf(list.get(i));  // 将 Integer 转换为 String
+        }
+        return array;
     }
 
     private void sendClycjg() {

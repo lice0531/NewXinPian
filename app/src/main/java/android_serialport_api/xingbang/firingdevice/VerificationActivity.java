@@ -381,7 +381,9 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                 intent = new Intent(this, SyncActivity.class);
             }
         } else {
-            intent = new Intent(this, FiringMainActivity.class);
+//            intent = new Intent(this, FiringMainActivity.class);
+            intent = new Intent(this, QuYuActivity.class);//金建华
+            intent.putExtra("pageFlag","firingMain");
         }
         Bundle bundle = new Bundle();
         bundle.putString("qbxm_id", qbxm_id);
@@ -421,7 +423,9 @@ public class VerificationActivity extends BaseActivity implements AdapterView.On
                         intent = new Intent(this, SyncActivity.class);
                     }
                 } else {
-                    intent = new Intent(this, FiringMainActivity.class);
+//                    intent = new Intent(this, FiringMainActivity.class);
+                    intent = new Intent(this, QuYuActivity.class);//金建华
+                    intent.putExtra("pageFlag","firingMain");
                 }
 //                Intent intent = new Intent(this, FiringMainActivity.class);
                 Bundle bundle = new Bundle();
