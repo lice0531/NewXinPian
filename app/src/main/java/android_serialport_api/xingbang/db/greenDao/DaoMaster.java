@@ -32,6 +32,7 @@ public class DaoMaster extends AbstractDaoMaster {
         DetonatorTypeNewDao.createTable(db, ifNotExists);
         ErrLogDao.createTable(db, ifNotExists);
         MessageBeanDao.createTable(db, ifNotExists);
+        PaiDataDao.createTable(db, ifNotExists);
         ProjectDao.createTable(db, ifNotExists);
         QuYuDao.createTable(db, ifNotExists);
         ShouQuanDao.createTable(db, ifNotExists);
@@ -53,6 +54,7 @@ public class DaoMaster extends AbstractDaoMaster {
         DetonatorTypeNewDao.dropTable(db, ifExists);
         ErrLogDao.dropTable(db, ifExists);
         MessageBeanDao.dropTable(db, ifExists);
+        PaiDataDao.dropTable(db, ifExists);
         ProjectDao.dropTable(db, ifExists);
         QuYuDao.dropTable(db, ifExists);
         ShouQuanDao.dropTable(db, ifExists);
@@ -88,6 +90,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(DetonatorTypeNewDao.class);
         registerDaoClass(ErrLogDao.class);
         registerDaoClass(MessageBeanDao.class);
+        registerDaoClass(PaiDataDao.class);
         registerDaoClass(ProjectDao.class);
         registerDaoClass(QuYuDao.class);
         registerDaoClass(ShouQuanDao.class);

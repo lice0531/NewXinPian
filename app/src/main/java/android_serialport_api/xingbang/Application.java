@@ -24,6 +24,8 @@ import com.orhanobut.logger.Logger;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.mmkv.MMKV;
+import com.xiasuhuei321.loadingdialog.manager.StyleManager;
+import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.litepal.LitePal;
@@ -151,6 +153,10 @@ public class Application extends MultiDexApplication {
         // 自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
         // 包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
         SDKInitializer.setCoordType(CoordType.BD09LL);
+
+        StyleManager s = new StyleManager();
+//        s.Anim(false).repeatTime(0).contentSize(-1).intercept(true);
+        LoadingDialog.initStyle(s);
     }
 
     /**

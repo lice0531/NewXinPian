@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,10 +9,75 @@
     <include
         android:id="@+id/totalbar"
         layout="@layout/title_layout" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rl_quyu"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_quyu"/>
+        android:layout_height="wrap_content"
+        android:layout_below ="@+id/totalbar"
+        android:layout_above="@+id/lay_bottom"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rl_quyu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_quyu"/>
+    </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/lay_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_check_all"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="全选"
+            android:textColor="@color/white"
+            style="@style/alltextstyle"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_bg_color" />
+        <TextView
+            android:id="@+id/tv_input"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="组网起爆"
+            android:textColor="@color/white"
+            style="@style/alltextstyle" />
+
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_bg_color" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_ture"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="全选正确"
+            android:textColor="@color/white"
+            style="@style/alltextstyle" />
+    </LinearLayout>
+
+</RelativeLayout>

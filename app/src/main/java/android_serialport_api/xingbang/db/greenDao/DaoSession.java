@@ -19,6 +19,7 @@ import android_serialport_api.xingbang.db.Denator_type;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.ErrLog;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.ShouQuan;
@@ -37,6 +38,7 @@ import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.ErrLogDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.db.greenDao.PaiDataDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
@@ -64,6 +66,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig detonatorTypeNewDaoConfig;
     private final DaoConfig errLogDaoConfig;
     private final DaoConfig messageBeanDaoConfig;
+    private final DaoConfig paiDataDaoConfig;
     private final DaoConfig projectDaoConfig;
     private final DaoConfig quYuDaoConfig;
     private final DaoConfig shouQuanDaoConfig;
@@ -82,6 +85,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DetonatorTypeNewDao detonatorTypeNewDao;
     private final ErrLogDao errLogDao;
     private final MessageBeanDao messageBeanDao;
+    private final PaiDataDao paiDataDao;
     private final ProjectDao projectDao;
     private final QuYuDao quYuDao;
     private final ShouQuanDao shouQuanDao;
@@ -126,6 +130,9 @@ public class DaoSession extends AbstractDaoSession {
         messageBeanDaoConfig = daoConfigMap.get(MessageBeanDao.class).clone();
         messageBeanDaoConfig.initIdentityScope(type);
 
+        paiDataDaoConfig = daoConfigMap.get(PaiDataDao.class).clone();
+        paiDataDaoConfig.initIdentityScope(type);
+
         projectDaoConfig = daoConfigMap.get(ProjectDao.class).clone();
         projectDaoConfig.initIdentityScope(type);
 
@@ -155,6 +162,7 @@ public class DaoSession extends AbstractDaoSession {
         detonatorTypeNewDao = new DetonatorTypeNewDao(detonatorTypeNewDaoConfig, this);
         errLogDao = new ErrLogDao(errLogDaoConfig, this);
         messageBeanDao = new MessageBeanDao(messageBeanDaoConfig, this);
+        paiDataDao = new PaiDataDao(paiDataDaoConfig, this);
         projectDao = new ProjectDao(projectDaoConfig, this);
         quYuDao = new QuYuDao(quYuDaoConfig, this);
         shouQuanDao = new ShouQuanDao(shouQuanDaoConfig, this);
@@ -173,6 +181,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(DetonatorTypeNew.class, detonatorTypeNewDao);
         registerDao(ErrLog.class, errLogDao);
         registerDao(MessageBean.class, messageBeanDao);
+        registerDao(PaiData.class, paiDataDao);
         registerDao(Project.class, projectDao);
         registerDao(QuYu.class, quYuDao);
         registerDao(ShouQuan.class, shouQuanDao);
@@ -193,6 +202,7 @@ public class DaoSession extends AbstractDaoSession {
         detonatorTypeNewDaoConfig.clearIdentityScope();
         errLogDaoConfig.clearIdentityScope();
         messageBeanDaoConfig.clearIdentityScope();
+        paiDataDaoConfig.clearIdentityScope();
         projectDaoConfig.clearIdentityScope();
         quYuDaoConfig.clearIdentityScope();
         shouQuanDaoConfig.clearIdentityScope();
@@ -243,6 +253,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public MessageBeanDao getMessageBeanDao() {
         return messageBeanDao;
+    }
+
+    public PaiDataDao getPaiDataDao() {
+        return paiDataDao;
     }
 
     public ProjectDao getProjectDao() {

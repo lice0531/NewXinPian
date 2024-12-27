@@ -120,4 +120,6 @@
     <dimen name="dp400">400dp</dimen>
 
     <dimen name="fanzhuan">15sp</dimen>
+
+    <dimen name="dialog_radius">15dp</dimen>
 </resources>

@@ -11,9 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
@@ -24,13 +22,13 @@ import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.db.greenDao.PaiDataDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
 import android_serialport_api.xingbang.utils.MmkvUtils;
-import android_serialport_api.xingbang.utils.Utils;
 
 /**
  * 管理GreenDao查询语句
@@ -45,6 +43,7 @@ public class GreenDaoMaster {
     private MessageBeanDao messageBeanDao;
     private DetonatorTypeNewDao detonatorTypeNewDao;
     private QuYuDao quyuDao;
+    private PaiDataDao paiDataDao;
     private ShouQuanDao mShouquanDao;
     private DenatorHis_DetailDao denatorHis_detailDao;
     private DenatorHis_MainDao denatorHis_mainDao;
@@ -60,6 +59,7 @@ public class GreenDaoMaster {
         this.denatorHis_mainDao = Application.getDaoSession().getDenatorHis_MainDao();
         this.mShouquanDao = Application.getDaoSession().getShouQuanDao();
         this.quyuDao = Application.getDaoSession().getQuYuDao();
+        this.paiDataDao = Application.getDaoSession().getPaiDataDao();
     }
 
 
@@ -675,6 +675,18 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
+    }
+
+    /**
+     * 查询雷管数量
+     * @return
+     */
+    public int queryDetonatorSize(String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list().size();
     }
 
     public List<DenatorBaseinfo> queryDetonatorRegionAsc() {
@@ -1502,9 +1514,9 @@ public class GreenDaoMaster {
      * 获取 该区域 最小序号 的延时
      *
      */
-    public int getPieceMaxPai() {
+    public int getPieceMaxPai(String piece) {
         int pai;
-        String sql = "select max(pai) from denatorBaseinfo  ";
+        String sql = "select max(pai) from denatorBaseinfo where piece = "+piece;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {
@@ -1526,7 +1538,7 @@ public class GreenDaoMaster {
      */
     public int getPieceMinNumDelay(String piece) {
         int delay;
-        String sql = "select min(delay) from denatorBaseinfo where  piece = "+piece;
+        String sql = "select min(delay) from denatorBaseinfo where piece = "+piece;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {
@@ -1536,6 +1548,75 @@ public class GreenDaoMaster {
             return delay;
         }else {
             Log.e("getPieceMinNumDelay", "获取最小序号 的延时: 0");
+            return 0;
+        }
+    }
+    /**
+     * 获取 该区域 最大的id
+     */
+    public int getPieceMaxqyid() {
+        int id;
+        String sql = "select max(qyid) from QuYu  ";
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            id = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceMinNumDelay", "获取最大序号 : "+id);
+            return id;
+        }else {
+            Log.e("getPieceMinNumDelay", "获取最小序号: 0");
+            return 0;
+        }
+    }
+
+    /**
+     * 从数据库表中拿数据
+     *
+     * @return
+     */
+    public static QuYu geQuyu(String quyuId) {
+
+        return getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Id.eq(quyuId)).unique();
+    }
+
+    /**
+     * 查询雷管 按排号查询
+     * 排号 1 2 3 4 5
+     */
+    public  List<DenatorBaseinfo> queryDetonatorPai(int pai) {
+        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+        result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .orderDesc(DenatorBaseinfoDao.Properties.Delay);
+        return result.list();
+    }
+
+    /**
+     * 查询雷管 按排号查询
+     * 排号 1 2 3 4 5
+     */
+    public  List<PaiData> queryPai(String qyId) {
+        QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder();
+        result = result.where(PaiDataDao.Properties.Qyid.eq(qyId));
+        return result.list();
+    }
+
+    /**
+     * 获取 该区域 最大的paiId
+     * @param qyid 区域号
+     */
+    public int getMaxPaiId(String qyid) {
+        int paiId;
+        String sql = "select max(paiId) from PaiData where qyid = "+qyid;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            paiId = cursor.getInt(0);
+            cursor.close();
+            Log.e("getMaxPaiId", "获取最大排号: "+paiId);
+            return paiId;
+        }else {
+            Log.e("getMaxPaiId", "获取最大排号: 0");
             return 0;
         }
     }

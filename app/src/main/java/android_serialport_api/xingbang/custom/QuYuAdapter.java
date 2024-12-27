@@ -17,27 +17,27 @@ import android_serialport_api.xingbang.db.QuYu;
 /**
  * 适配器
  */
-public class QuYuAdapter extends BaseQuickAdapter<QuYu, BaseViewHolder> {
+public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
 
     private static final int STATE_DEFAULT = 0;//默认状态
     int mEditMode = STATE_DEFAULT;
 
-    public QuYuAdapter(int layoutResId, @Nullable List<QuYu> data) {
+    public QuYuAdapter(int layoutResId, @Nullable List<QuYuData> data) {
         super(layoutResId, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, QuYu item) {
+    protected void convert(BaseViewHolder helper, QuYuData item) {
         int position = helper.getLayoutPosition();
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.toString() );
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.getDetonatorIdSup() );
         GreenDaoMaster master = new GreenDaoMaster();
-        int total=new GreenDaoMaster().queryDetonatorRegionDesc().size();
-        int maxPai = master.getPieceMaxPai();
-        int max = master.getPieceMaxNumDelay(item.getQyid());
-        int min = master.getPieceMinNumDelay(item.getQyid());
+        int total=new GreenDaoMaster().queryDetonatorSize(item.getId()+"");
+        int maxPai = master.getPieceMaxPai(item.getId()+"");
+        int max = master.getPieceMaxNumDelay(item.getId()+"");
+        int min = master.getPieceMinNumDelay(item.getId()+"");
 
-        helper.setText(R.id.qy_no, item.getName() + "");//
+        helper.setText(R.id.qy_no, item.getQyid() + "");//
         helper.setText(R.id.qy_txt_total, "共:" + total+"发");//
         helper.setText(R.id.qy_txt_totalPai, "共:" +maxPai+"排"+ total+"发");//
         helper.setText(R.id.qy_txt_minDealy, "最小延时:"+min );//

@@ -71,8 +71,8 @@ public class ZhuCeActivity_scan extends AppCompatActivity {
         childList.add(childList2);
         childList.add(childList3);
 
-        ZhuCeScanAdapter demoAdapter = new ZhuCeScanAdapter(groupList, childList);
-        zc_list.setAdapter(demoAdapter);
+//        ZhuCeScanAdapter demoAdapter = new ZhuCeScanAdapter(groupList, childList);
+//        zc_list.setAdapter(demoAdapter);
 
         //一级点击监听
         zc_list.setOnGroupClickListener((parent, v, groupPosition, id) -> {
