@@ -1758,4 +1758,16 @@ public class GreenDaoMaster {
             return 0;
         }
     }
+
+    /**
+     * 查询雷管数量
+     * @return
+     */
+    public int queryDetonatorSize(String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list().size();
+    }
 }
