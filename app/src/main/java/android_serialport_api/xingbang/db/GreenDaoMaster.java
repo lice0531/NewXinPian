@@ -824,21 +824,6 @@ public class GreenDaoMaster {
      * @param piece 区域号 1 2 3 4 5
      */
     public int getPieceMaxNumDelay(String piece) {
-//        // 倒叙查询
-//        List<DenatorBaseinfo> mList = queryDetonatorRegionDesc(piece);
-//
-//        // 如果有数据
-//        if (mList.size() > 0) {
-//            // 第一个雷管数据 该区域 最大序号 的延时
-//            int delay = mList.get(0).getDelay();
-//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: " + delay);
-//            return delay;
-//            // 如果没数据
-//        } else {
-//            Log.e("getPieceMaxNumDelay", "获取最大序号 的延时: 0");
-//            return 0;
-//        }
-
         int delay;
         String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
@@ -1649,22 +1634,22 @@ public class GreenDaoMaster {
     }
 
     /**
-     * 获取 该区域 最小序号 的延时
+     * 获取 该区域 最大排号
      *
      */
-    public int getPieceMaxPai(String piece) {
+    public int getPieceMaxPai(String qyid) {
         int pai;
-        String sql = "select max(pai) from denatorBaseinfo where piece = "+piece;
+        String sql = "select max(paiId) from PaiData where qyid = "+qyid;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {
             pai = cursor.getInt(0);
             cursor.close();
-            Log.e("getPieceMaxNumDelay", "获取当前区域最大段号: "+pai);
+            Log.e("getPieceMaxNumDelay", "获取当前区域最大排号: "+pai);
             return pai;
         }else {
-            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 1");
-            return 1;
+            Log.e("getPieceMaxNumDelay", "获取当前区域最大排号: 0");
+            return 0;
         }
 
     }
@@ -1709,7 +1694,7 @@ public class GreenDaoMaster {
     }
 
     /**
-     * 从数据库表中拿数据
+     * 查询对应的区域
      *
      * @return
      */
@@ -1717,10 +1702,17 @@ public class GreenDaoMaster {
 
         return getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Id.eq(quyuId)).unique();
     }
+    /**
+     * 查询对应的排
+     *
+     * @return
+     */
+    public static PaiData gePaiData(String paiId) {
+        return getDaoSession().getPaiDataDao().queryBuilder().where(PaiDataDao.Properties.Id.eq(paiId)).unique();
+    }
 
     /**
      * 查询雷管 按排号查询
-     * 排号 1 2 3 4 5
      */
     public  List<DenatorBaseinfo> queryDetonatorPai(int pai) {
         QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
@@ -1730,8 +1722,7 @@ public class GreenDaoMaster {
     }
 
     /**
-     * 查询雷管 按排号查询
-     * 排号 1 2 3 4 5
+     * 查询排
      */
     public  List<PaiData> queryPai(String qyId) {
         QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder();
@@ -1768,6 +1759,17 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list().size();
+    }
+
+    /**
+     * 查询雷管数量
+     * @return
+     */
+    public int queryDetonatorPaiSize(String paiId) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Pai.eq(paiId))
                 .list().size();
     }
 }

@@ -33,9 +33,9 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.getDetonatorIdSup() );
         GreenDaoMaster master = new GreenDaoMaster();
         int total=new GreenDaoMaster().queryDetonatorSize(item.getId()+"");
-        int maxPai = master.getPieceMaxPai(item.getId()+"");
-        int max = master.getPieceMaxNumDelay(item.getId()+"");
-        int min = master.getPieceMinNumDelay(item.getId()+"");
+        int maxPai = master.getPieceMaxPai(item.getQyid()+"");
+        int max = master.getPieceMaxNumDelay(item.getQyid()+"");
+        int min = master.getPieceMinNumDelay(item.getQyid()+"");
 
         helper.setText(R.id.qy_no, item.getQyid() + "");//
         helper.setText(R.id.qy_txt_total, "共:" + total+"发");//

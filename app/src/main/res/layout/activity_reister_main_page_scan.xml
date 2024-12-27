@@ -1670,32 +1670,29 @@
                         android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <TextView
                             style="@style/alltextstyle"
-                            android:layout_width="55dp"
-                            android:layout_height="30dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
                             android:background="@drawable/textview_border"
                             android:text="@string/text_list_Serial" />
 
                         <TextView
                             style="@style/alltextstyle"
-                            android:layout_width="60dp"
-                            android:layout_height="30dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
                             android:background="@drawable/textview_border"
                             android:text="@string/text_list_kong" />
 
-                        <TextView
-                            style="@style/alltextstyle"
-                            android:layout_width="70dp"
-                            android:layout_height="30dp"
-                            android:background="@drawable/textview_border"
-                            android:text="@string/text_list_delay" />
 
                         <LinearLayout
                             android:id="@+id/re_gkm"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
                             android:layout_height="wrap_content"
                             android:background="@drawable/textview_border">
 
@@ -1717,6 +1714,13 @@
                                 android:gravity="left"
                                 android:text="/UID" />
                         </LinearLayout>
+                        <TextView
+                            style="@style/alltextstyle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/textview_border"
+                            android:text="@string/text_list_delay" />
 
                     </LinearLayout>
 

@@ -467,7 +467,7 @@
     <string name="text_reister_tip3">请停止注册后再退出当前页面</string>
     <string name="text_reister_tip4">已选择 区域</string>
     <string name="text_reister_tip6">请修改雷管信息</string>
-    <string name="text_error_tip64">有延时为空,请先设置延时</string>
+    <string name="text_error_tip64">有延时为空,请先选择排</string>
     <string name="text_error_tip66">输入的日期格式不对</string>
     <string name="text_error_tip67">注册数量达到最大数量200</string>
     <string name="text_error_tip69">与</string>
@@ -674,7 +674,7 @@
     <string name="text_line_tip15">输入的管壳码重复</string>
     <string name="text_line_tip16">当前设置延时为空,请重新设置</string>
     <string name="text_line_tip17">正在与单片机通讯,请稍等一下再退出注册模式!</string>
-    <string name="text_line_tip18">当前起始延时为空,请重新设置</string>
+    <string name="text_line_tip18">当前起始延时为空,请选择对应的排进行注册</string>
     <string name="text_mx_zcsb">当前雷管为煤许产品,注册失败</string>
     <string name="text_fzts">翻转提示</string>
     <string name="text_ssfz">是否翻转当前段位延时</string>
