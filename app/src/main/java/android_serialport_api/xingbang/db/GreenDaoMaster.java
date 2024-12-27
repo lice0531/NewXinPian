@@ -1717,7 +1717,7 @@ public class GreenDaoMaster {
     public  List<DenatorBaseinfo> queryDetonatorPai(int pai) {
         QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
         result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
-                .orderDesc(DenatorBaseinfoDao.Properties.Delay);
+                .orderAsc(DenatorBaseinfoDao.Properties.Id);
         return result.list();
     }
 
