@@ -92,10 +92,13 @@ public class QuYuActivity extends BaseActivity {
         if (!TextUtils.isEmpty(pageFlag)) {
             if ("zhuce".equals(pageFlag)) {
                 layBottom.setVisibility(View.GONE);
-                titleAdd.setVisibility(View.VISIBLE);
             } else {
+                if ("testDenator".equals(pageFlag)) {
+                    tv_input.setText(getResources().getString(R.string.text_zwcs));
+                } else {
+                    tv_input.setText(getResources().getString(R.string.text_zwqb));
+                }
                 layBottom.setVisibility(View.VISIBLE);
-                titleAdd.setVisibility(View.GONE);
             }
         }
         mListData = new GreenDaoMaster().queryQuYu();
@@ -181,6 +184,10 @@ public class QuYuActivity extends BaseActivity {
                 carteQuYu();
                 break;
             case R.id.tv_check_all://全选
+                if (mListData.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_tjqy));
+                    return;
+                }
                 if (isSelectAll) {
                     tv_check_all.setText("取消全选");
                     isSelectAll = false;
@@ -194,6 +201,10 @@ public class QuYuActivity extends BaseActivity {
             case R.id.tv_input:
                 Log.e(TAG, "记录时间: "+lastClickTime );
                 Log.e(TAG, "点击时间: "+(System.currentTimeMillis() - lastClickTime) );
+                if (mListData.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_tjqy));
+                    return;
+                }
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
@@ -205,7 +216,7 @@ public class QuYuActivity extends BaseActivity {
                     }
                 }
                 if (qyIdList.isEmpty()) {
-                    show_Toast("请先选择区域");
+                    show_Toast(getResources().getString(R.string.text_selectqy));
                     return;
                 }
                 Intent intent = new Intent();

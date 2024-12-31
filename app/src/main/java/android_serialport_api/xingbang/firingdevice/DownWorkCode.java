@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -41,6 +42,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +85,7 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
@@ -109,14 +113,15 @@ import okhttp3.Response;
 import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, ShouQuanAdapter.InnerItemOnclickListener {
-    @BindView(R.id.ly_setUpdata)
-    LinearLayout lySetUpData;
+//    @BindView(R.id.ly_setUpdata)
+//    LinearLayout lySetUpData;
     @BindView(R.id.btn_down_return)
     Button btnDownReturn;
     @BindView(R.id.btn_down_inputOK)
@@ -190,13 +195,21 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     @BindView(R.id.textView10)
     TextView textView10;
     @BindView(R.id.setDelayTimeMainPage)
-    ScrollView setDelayTimeMainPage;
+    NestedScrollView setDelayTimeMainPage;
     @BindView(R.id.et_num)
     EditText etNum;
     @BindView(R.id.ll_num)
     LinearLayout llNum;
     @BindView(R.id.et_duan)
     EditText etDuan;
+    @BindView(R.id.add_gsxz)
+    Spinner addGsxz;
+    @BindView(R.id.ll_xmxx)
+    LinearLayout llXmxx;
+    @BindView(R.id.ll_dwxx)
+    LinearLayout llDwxx;
+    @BindView(R.id.btn_down_offline)
+    Button btnOffline;
     private ShouQuanAdapter mAdapter_sq;//授权
     private SQLiteDatabase db;
     private Handler mHandler_httpresult;
@@ -251,7 +264,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
     private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
     private TextView totalbar_title;
-
+    private String select_business;
+    private String TAG = "下载项目页面";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -297,7 +311,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
 //        loadMoreData_lg(currentPage);//查询所有雷管
 
-        mAdapter_sq = new ShouQuanAdapter(this, map_dl, R.layout.item_list_shouquan);
+        mAdapter_sq = new ShouQuanAdapter(this, map_dl, R.layout.item_list_shouquan_new);
         mAdapter_sq.setOnInnerItemOnClickListener(this);
         lvShouquan.setAdapter(mAdapter_sq);
         lvShouquan.setOnItemClickListener(this);
@@ -311,7 +325,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 //        mListView.setAdapter(list_adapter);
 //        getLoaderManager().initLoader(0, null, this);
-
+        SpinnerAdapter adapter= ArrayAdapter.createFromResource(this, R.array.gsxz_name,android.R.layout.simple_spinner_dropdown_item);
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new DetonatorAdapter_Paper<>(this, 4);
@@ -328,13 +342,34 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         edit_end_entproduceDate_ed.addTextChangedListener(end_2_watcher);
         edit_end_entAT1Bit_ed.addTextChangedListener(end_3_watcher);
         edit_end_entboxNoAndSerial_ed.addTextChangedListener(end_4_watcher);
+        initCardViewData();
+        SpinnerAdapter spAdapter= ArrayAdapter.createFromResource(this, R.array.gsxz_name,android.R.layout.simple_spinner_dropdown_item);
+        addGsxz.setAdapter(spAdapter);
+        addGsxz.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String[] delay = getResources().getStringArray(R.array.gsxz_name);
+                select_business = delay[i];
+                Log.e(TAG ,"公司性质选择的是:" + select_business);
+                if (i == 0) {
+                    llXmxx.setVisibility(View.GONE);
+                    llDwxx.setVisibility(View.VISIBLE);
+                } else {
+                    llXmxx.setVisibility(View.VISIBLE);
+                    llDwxx.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
-        initAutoComplete("history_htid", at_htid);//输入历史记录
-        initAutoComplete("history_xmbh", at_xmbh);
-        initAutoComplete("history_dwdm", at_dwdm);
-        initAutoComplete("history_bprysfz", at_bprysfz);
-        initAutoComplete("history_coordxy", at_coordxy);
-        initAutoComplete("history_projectName", at_projectName);//项目名称
+            }
+        });
+//        initAutoComplete("history_htid", at_htid);//输入历史记录
+//        initAutoComplete("history_xmbh", at_xmbh);
+//        initAutoComplete("history_dwdm", at_dwdm);
+//        initAutoComplete("history_bprysfz", at_bprysfz);
+//        initAutoComplete("history_coordxy", at_coordxy);
+//        initAutoComplete("history_projectName", at_projectName);//项目名称
         getFactoryCode();//获取厂家码
         if (factoryFeature != null && factoryFeature.trim().length() == 1) {
             edit_end_entAT1Bit_ed.setText(factoryFeature);
@@ -413,6 +448,30 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //        lgBean.setGzm("94242214050");
 //        lgBean.setGzmcwxx("0");
 //        GreenDaoMaster.updateLgState(lgBean);
+    }
+
+    private void initCardViewData() {
+        Project usedProject = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Selected.eq("true")).unique();
+        if (usedProject != null) {
+            at_projectName.setText(usedProject.getProject_name());
+            at_htid.setText(usedProject.getHtbh());
+            at_xmbh.setText(usedProject.getXmbh());
+            at_dwdm.setText(usedProject.getDwdm());
+            at_coordxy.setText(usedProject.getCoordxy());
+            String business = usedProject.getBusiness();
+            at_bprysfz.setText(usedProject.getBprysfz());
+            if (business.startsWith("非营业性")) {
+                addGsxz.setSelection(0);
+                llXmxx.setVisibility(View.GONE);
+                llDwxx.setVisibility(View.VISIBLE);
+                Log.e(TAG,"进来非营业性了。。");
+            } else {
+                llXmxx.setVisibility(View.VISIBLE);
+                llDwxx.setVisibility(View.GONE);
+                addGsxz.setSelection(1);
+                Log.e(TAG,"进来营业性了。。");
+            }
+        }
     }
 
     private void test() {
@@ -2381,7 +2440,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
 
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_down_workcode, R.id.btn_inputOk,
-            R.id.ly_setUpdata, R.id.btn_inputGKM, R.id.btn_location, R.id.btn_scanReister, R.id.btn_setdelay,
+            R.id.btn_inputGKM, R.id.btn_location, R.id.btn_scanReister, R.id.btn_setdelay,R.id.btn_down_offline,
             R.id.btn_clear_htid, R.id.btn_clear_xmbh, R.id.btn_clear_sfz, R.id.btn_clear_project_name})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -2564,7 +2623,10 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             case R.id.btn_clear_sfz:
                 deleteHistory("history_bprysfz", at_bprysfz);
                 break;
-
+            case R.id.btn_down_offline:
+                Intent offIntent = new Intent(this, DownOfflineActivity.class);
+                startActivity(offIntent);
+                break;
         }
     }
 

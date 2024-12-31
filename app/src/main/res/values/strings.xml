@@ -590,11 +590,11 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241122_4</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241231</string>
     //通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241122_4</string>
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241231</string>
     //华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241122_4</string>
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241231</string>
     //重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
@@ -1001,4 +1001,13 @@
     <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
     <string name="btn_fan">反</string>
     <string name="text_scxm">是否删除该项目?</string>
+    <string name="text_gl">管理</string>
+    <string name="text_xzxm">请先新增项目</string>
+    <string name="text_szxm">请先设置需要使用的项目</string>
+    <string name="text_xmxz_ts">友情提示：为保障项目能够顺利下载，请先点击列表中的项目，进入项目详情页面，选择并设置好您需要使用的项目。然后，再进行下载操作。</string>
+    <string name="text_xmewm_ts">友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描下面二维码快速完成项目信息新增！</string>
+    <string name="text_zwcs">组网测试</string>
+    <string name="text_zwqb">组网起爆</string>
+    <string name="text_tjqy">请先点击右上角加号添加区域</string>
+    <string name="text_selectqy">请先选择区域</string>
 </resources>

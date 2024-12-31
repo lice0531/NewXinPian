@@ -106,7 +106,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private List<Map<String, Object>> map_project = new ArrayList<Map<String, Object>>();
-    private TextView totalbar_title;
+    private TextView totalbar_title,tv_right;
     private boolean isDelete = true;//是否展示列表中的多选按钮
 
     @SuppressLint("MissingInflatedId")
@@ -121,33 +121,33 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         totalbar_title =  findViewById(R.id.title_text);
-        TextView tv_right = findViewById(R.id.title_right);
+        tv_right = findViewById(R.id.title_right);
         ImageView title_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         title_add.setVisibility(View.GONE);
         tv_right.setVisibility(View.VISIBLE);
-        tv_right.setText("管理");
+        tv_right.setText(getResources().getString(R.string.text_tip_delete));
         totalbar_title.setText("项目列表");
         iv_back.setOnClickListener(v -> finish());
         tv_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (map_project != null && map_project.size() > 0) {
-                    if (isDelete) {
-                        isDelete = false;
-                        mAdapter.showCheckBox(true);
-                        btnDelete.setVisibility(View.VISIBLE);
-                        tv_right.setText("取消");
-                        pnList.clear();
-                    } else {
-                        pnList.clear();
-                        isDelete = true;
-                        mAdapter.showCheckBox(false);
-                        btnDelete.setVisibility(View.GONE);
-                        tv_right.setText("管理");
-                    }
+                if (map_project.size() == 0) {
+                    show_Toast(getResources().getString(R.string.text_xzxm));
+                    return;
+                }
+                if (isDelete) {
+                    isDelete = false;
+                    mAdapter.showCheckBox(true);
+//                    btnDelete.setVisibility(View.VISIBLE);
+                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
+                    pnList.clear();
                 } else {
-                    show_Toast("请先新增项目");
+                    pnList.clear();
+                    isDelete = true;
+                    mAdapter.showCheckBox(false);
+//                    btnDelete.setVisibility(View.GONE);
+                    tv_right.setText(getResources().getString(R.string.text_tip_delete));
                 }
             }
         });
@@ -359,6 +359,16 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 //                hideInputKeyboard();
 //                break;
             case R.id.btn_down_offline:
+                // 判断集合中是否有 selected 为 true 的数据
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    // 判断 selected 字段是否为 "true"  判断是否正在使用中的项目
+                    boolean hasSelectedTrue = map_project.stream()
+                            .anyMatch(map -> "true".equals(map.get("selected")));
+                    if (!hasSelectedTrue) {
+                        show_Toast(getResources().getString(R.string.text_szxm));
+                        return;
+                    }
+                }
                 Intent intent = new Intent(this, DownOfflineActivity.class);
                 startActivity(intent);
                 break;
@@ -367,6 +377,20 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 startActivity(im);
                 break;
             case R.id.btn_down_project:
+                if (map_project.size() == 0) {
+                    show_Toast(getResources().getString(R.string.text_xzxm));
+                    return;
+                }
+                // 判断集合中是否有 selected 为 true 的数据
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    // 判断 selected 字段是否为 "true"  判断是否正在使用中的项目
+                    boolean hasSelectedTrue = map_project.stream()
+                            .anyMatch(map -> "true".equals(map.get("selected")));
+                    if (!hasSelectedTrue) {
+                        show_Toast(getResources().getString(R.string.text_szxm));
+                        return;
+                    }
+                }
                 String str7 = "下载";
                 Intent intent7 = new Intent(SaveProjectActivity.this, DownWorkCode.class);
                 intent7.putExtra("dataSend", str7);
@@ -384,6 +408,13 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 }
                 loadMoreData();
                 mAdapter.notifyDataSetChanged();
+                if (map_project.size() == 0) {
+                    pnList.clear();
+                    isDelete = true;
+                    mAdapter.showCheckBox(false);
+//                    btnDelete.setVisibility(View.GONE);
+                    tv_right.setText(getResources().getString(R.string.text_tip_delete));
+                }
                 break;
         }
     }

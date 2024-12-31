@@ -839,9 +839,9 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PT_TY_V2.1_241122_4</string>
-    <string name="app_version_name2">M900_PT_XJ_V2.1_241122_4</string>
-    <string name="app_version_name3">M900_PT_CQ_V2.1_241122_4</string>
+    <string name="app_version_name">M900_PT_TY_V2.1_241231</string>
+    <string name="app_version_name2">M900_PT_XJ_V2.1_241231</string>
+    <string name="app_version_name3">M900_PT_CQ_V2.1_241231</string>
     <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
@@ -990,5 +990,14 @@
     <string name="text_gy">A total of</string>
     <string name="text_hcf">Box duplication</string>
     <string name="text_scxm">Do you want to delete the project?</string>
+    <string name="text_gl">manage</string>
+    <string name="text_xzxm">Please add items first</string>
+    <string name="text_szxm">Please set the items you want to use first</string>
+    <string name="text_xmxz_ts">Friendly tip: In order to ensure that the project can download smoothly, please click the project in the list first, enter the project details page, select and set the project you need to use. Then, perform the download operation.</string>
+    <string name="text_xmewm_ts">Friendly tip: In order to ensure the accurate entry of project information, other devices of the unit can scan the following two-dimensional code on the interface of the new project to quickly complete the new project information!</string>
+    <string name="text_zwcs">Networking test</string>
+    <string name="text_zwqb">Networking detonation</string>
+    <string name="text_tjqy">Please click the plus sign in the upper right corner to add the area</string>
+    <string name="text_selectqy">Please select a region first</string>
     <string name="text_line_tip19">当前还未设置延时,请先选择排</string>
 </resources>

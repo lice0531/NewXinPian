@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sv_sp"
@@ -9,9 +9,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:paddingBottom="5dp"
-    android:scrollbars="none"
-    tools:ignore="MergeRootFrame">
+    android:paddingBottom="5dp">
 
     <include
         android:id="@+id/totalbar"
@@ -20,10 +18,9 @@
     <LinearLayout
         android:id="@+id/lltop"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/totalbar"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_margin="10dp"
         android:divider="@drawable/spacer_medium"
         android:orientation="horizontal"
         android:paddingTop="1dip">
@@ -46,7 +43,7 @@
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:text="离线下载"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_down_inputOK"
@@ -63,7 +60,6 @@
             style="@style/allbtntstyle"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:text="新增项目" />
 
@@ -78,241 +74,254 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ly_setUpdata"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                style="@style/alltextstyle"
-                android:layout_width="@dimen/downworkcode_pg_left"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="项目名称" />
-
-            <AutoCompleteTextView
-                android:id="@+id/down_at_project_name"
-                style="@style/alltextstyle"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/translucent"
-                android:gravity="center_vertical"
-                android:hint="项目名称"
-                android:padding="5dp" />
-
-            <Button
-                android:id="@+id/btn_clear_project_name"
-                style="@style/allbtntstyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="清空" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ll_1"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                style="@style/alltextstyle"
-                android:layout_width="@dimen/downworkcode_pg_left"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="合同编号" />
-
-            <AutoCompleteTextView
-                android:id="@+id/down_at_htid"
-                style="@style/alltextstyle"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/translucent"
-                android:digits="0123456789"
-                android:gravity="center_vertical"
-                android:hint="15位数字"
-                android:inputType="number"
-                android:maxLength="15"
-                android:padding="5dp" />
-
-            <Button
-                android:id="@+id/btn_clear_htid"
-                style="@style/allbtntstyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="清空" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_2"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                style="@style/alltextstyle"
-                android:layout_width="@dimen/downworkcode_pg_left"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="项目编号" />
-
-            <AutoCompleteTextView
-                android:id="@+id/down_at_xmbh"
-                style="@style/alltextstyle"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/translucent"
-                android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
-                android:gravity="center_vertical"
-                android:hint="15位数字或字母"
-                android:maxLength="15"
-                android:padding="5dp"
-                android:text="" />
-
-            <Button
-                android:id="@+id/btn_clear_xmbh"
-                style="@style/allbtntstyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="清空" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_3"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                style="@style/alltextstyle"
-                android:layout_width="@dimen/downworkcode_pg_left"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="单位代码" />
-
-            <AutoCompleteTextView
-                android:id="@+id/down_at_dwdm"
-                style="@style/alltextstyle"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/translucent"
-                android:digits="1234567890"
-                android:gravity="center_vertical"
-                android:hint="13位数字"
-                android:inputType="number"
-                android:maxLength="13"
-                android:padding="5dp" />
-
-            <Button
-                android:id="@+id/btn_clear_dwdm"
-                style="@style/allbtntstyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="清空" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_4"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/textView10"
-                style="@style/alltextstyle"
-                android:layout_width="@dimen/downworkcode_pg_left"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="经度纬度" />
-
-            <AutoCompleteTextView
-                android:id="@+id/down_at_coordxy"
-                style="@style/alltextstyle"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/translucent"
-                android:digits="1234567890.,"
-                android:gravity="center_vertical"
-                android:hint="只能输入数字和逗号"
-                android:inputType="number"
-                android:maxLength="22"
-                android:padding="5dp"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/btn_location"
-                style="@style/allbtntstyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="清空" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_5"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                style="@style/alltextstyle"
-                android:layout_width="@dimen/downworkcode_pg_left"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="身份证号" />
-
-            <AutoCompleteTextView
-                android:id="@+id/down_at_bprysfz"
-                style="@style/alltextstyle"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:background="@drawable/translucent"
-                android:digits="0123456789X"
-                android:gravity="center_vertical"
-                android:hint="爆破人员身份证"
-                android:maxLength="18"
-                android:padding="5dp"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/btn_clear_sfz"
-                style="@style/allbtntstyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="清空" />
-        </LinearLayout>
-
-    </LinearLayout>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_delete_project"
-        android:layout_below="@+id/lltop"
+        android:layout_height="match_parent"
         android:scrollbars="none">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lltop"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/blue_light_style"
+                android:padding="10dp"
+                android:text="@string/text_xmxz_ts"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/ly_setUpdata"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="@dimen/downworkcode_pg_left"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:text="项目名称" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/down_at_project_name"
+                        style="@style/alltextstyle"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:gravity="center_vertical"
+                        android:hint="项目名称"
+                        android:padding="5dp" />
+
+                    <Button
+                        android:id="@+id/btn_clear_project_name"
+                        style="@style/allbtntstyle"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="清空" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="@dimen/downworkcode_pg_left"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:text="合同编号" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/down_at_htid"
+                        style="@style/alltextstyle"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:digits="0123456789"
+                        android:gravity="center_vertical"
+                        android:hint="15位数字"
+                        android:inputType="number"
+                        android:maxLength="15"
+                        android:padding="5dp" />
+
+                    <Button
+                        android:id="@+id/btn_clear_htid"
+                        style="@style/allbtntstyle"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="清空" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="@dimen/downworkcode_pg_left"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:text="项目编号" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/down_at_xmbh"
+                        style="@style/alltextstyle"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                        android:gravity="center_vertical"
+                        android:hint="15位数字或字母"
+                        android:maxLength="15"
+                        android:padding="5dp"
+                        android:text="" />
+
+                    <Button
+                        android:id="@+id/btn_clear_xmbh"
+                        style="@style/allbtntstyle"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="清空" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="@dimen/downworkcode_pg_left"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:text="单位代码" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/down_at_dwdm"
+                        style="@style/alltextstyle"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:digits="1234567890"
+                        android:gravity="center_vertical"
+                        android:hint="13位数字"
+                        android:inputType="number"
+                        android:maxLength="13"
+                        android:padding="5dp" />
+
+                    <Button
+                        android:id="@+id/btn_clear_dwdm"
+                        style="@style/allbtntstyle"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="清空" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_4"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        style="@style/alltextstyle"
+                        android:layout_width="@dimen/downworkcode_pg_left"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:text="经度纬度" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/down_at_coordxy"
+                        style="@style/alltextstyle"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:digits="1234567890.,"
+                        android:gravity="center_vertical"
+                        android:hint="只能输入数字和逗号"
+                        android:inputType="number"
+                        android:maxLength="22"
+                        android:padding="5dp"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/btn_location"
+                        style="@style/allbtntstyle"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="清空" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_5"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        style="@style/alltextstyle"
+                        android:layout_width="@dimen/downworkcode_pg_left"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:text="身份证号" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/down_at_bprysfz"
+                        style="@style/alltextstyle"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/translucent"
+                        android:digits="0123456789X"
+                        android:gravity="center_vertical"
+                        android:hint="爆破人员身份证"
+                        android:maxLength="18"
+                        android:padding="5dp"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/btn_clear_sfz"
+                        style="@style/allbtntstyle"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:text="清空" />
+                </LinearLayout>
+
+            </LinearLayout>
+
             <android_serialport_api.xingbang.custom.MlistView
                 android:id="@+id/lv_project"
                 android:layout_width="match_parent"
@@ -322,7 +331,7 @@
                 android:layout_marginRight="10dp"
                 android:divider="@color/white"
                 android:dividerHeight="10dp" />
-        </RelativeLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <Button
@@ -334,9 +343,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:visibility="gone"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:text="删除项目" />
-</RelativeLayout>
+        android:text="删除项目"
+        android:visibility="gone" />
+</LinearLayout>

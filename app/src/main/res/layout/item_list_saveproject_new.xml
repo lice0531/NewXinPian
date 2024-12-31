@@ -79,7 +79,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:text="@string/text_tv_htbh"
-                            android:textColor="@color/text_sub"
+                            android:textColor="@color/text_content"
                             android:textSize="18sp" />
 
                         <TextView
@@ -106,7 +106,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/text_tv_xmbh"
-                            android:textColor="@color/text_sub"
+                            android:textColor="@color/text_content"
                             android:textSize="18sp" />
 
                         <TextView
@@ -134,7 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_tv_dwdm"
-                        android:textColor="@color/text_sub"
+                        android:textColor="@color/text_content"
                         android:textSize="18sp" />
 
                     <TextView
@@ -161,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/text_tv_jwd"
                         android:maxLines="2"
-                        android:textColor="@color/text_sub"
+                        android:textColor="@color/text_content"
                         android:textSize="18sp" />
 
                     <TextView
@@ -190,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/text_tv_sfz"
-                        android:textColor="@color/text_sub"
+                        android:textColor="@color/text_content"
                         android:textSize="18sp" />
 
                     <TextView

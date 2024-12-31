@@ -35,7 +35,7 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/blue_light_style"
             android:padding="10dp"
-            android:text="友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描下面二维码快速完成项目信息新增！"
+            android:text="@string/text_xmewm_ts"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
