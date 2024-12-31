@@ -783,7 +783,8 @@
                         android:layout_marginLeft="3dp"
                         android:background="@drawable/bt_mainpage_style"
                         android:text="@string/text_scan_sdsr"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:visibility="gone"/>
 
                     <Button
                         android:id="@+id/btn_inputOk"

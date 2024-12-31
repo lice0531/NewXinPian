@@ -396,7 +396,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            v.setBackgroundColor(Color.GREEN);
 
             paiChoice = groupPosition + 1;
-
+            Log.e(TAG, "根据选中排更新排号  paiChoice: "+paiChoice );
 
             GreenDaoMaster master = new GreenDaoMaster();
             int childList_size = master.queryDetonatorPai(paiChoice).size();
@@ -1975,7 +1975,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "当前段最小序号延时: " + delay_minNum);
         Log.e(TAG, "当前段最大延时参数: " + duan_new);
         Log.e(TAG, "当前段最大延时: " + delay_max);
-        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(kongChoice, mRegion);//获取该区域 最大序号的延时
+        Log.e(TAG, "当前段最大孔号 maxKong: " + maxKong);
+        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion,paiChoice);//获取该区域 最大duanNo
         Log.e("扫码", "获取 duanNo2: " + duanNo2);
         if (delay_max == 0 && duanNo2 == 0) {
             delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
@@ -2055,6 +2056,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         denatorBaseinfo.setDuan(duan_new);
         denatorBaseinfo.setDuanNo(1);
         denatorBaseinfo.setPai(paiChoice + "");
+        Log.e(TAG, "同孔  paiChoice: " + paiChoice);
         Log.e(TAG, "同孔  flag_t1: " + flag_t1);
         Log.e(TAG, "同孔  duanNo2: " + duanNo2);
         if (!flag_t1) {//同孔
@@ -2159,7 +2161,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
         Log.e("扫码", "kongChoice: " + kongChoice);
         Log.e("扫码", "mRegion: " + mRegion);
-        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(kongChoice, mRegion);//获取该区域 最大序号的延时
+        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion,paiChoice);//获取该区域 最大duanNo
         if (delay_max == 0 && duanNo2 == 0) {
             delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
@@ -2338,7 +2340,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxKong = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion,paiChoice);//获取该区域最大孔号
         int delay_max = new GreenDaoMaster().getPieceMaxNumDelay(duan_new, mRegion);//获取该区域 最大序号的延时
         int delay_minNum = new GreenDaoMaster().getPieceMinNumDelay(duan_old, mRegion);
-        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(kongChoice, mRegion);//获取该区域 最大序号的延时
+        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion,paiChoice);//获取该区域 最大duanNo
         if (delay_max == 0 && duanNo2 == 0) {
             delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
         }
@@ -2416,7 +2418,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
                 break;
             }
-            duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(paiChoice, mRegion);//获取该区域 最大序号的延时
+            duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion,paiChoice);//获取该区域 最大duanNo
 //            int duanNUM = getDuanNo(duan, mRegion);//也得做区域区分
             Log.e("手动输入3", "duanNo2: " + duanNo2);
             Log.e("手动输入3", "duan: " + duan_new);

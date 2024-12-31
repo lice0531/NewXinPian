@@ -115,7 +115,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder2 = (ViewHolder2) convertView.getTag();
         }
 
-        if(mChildPosition == childPosition) {
+        if(mChildPosition == childPosition && mGroupPosition == groupPosition) {
             viewHolder2.itme2_ll.setBackgroundColor(Color.GREEN);
             //这是关键部分 通过mGroupPosition 和 groupPosition 进行比对，然后再通过 mChildPosition 和 childPosition进行比对，就是你点击的那个Iten     写入你要实现的逻辑
         }else {

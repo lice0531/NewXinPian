@@ -1009,9 +1009,10 @@ public class GreenDaoMaster {
      *
      * @param piece 区域号 1 2 3 4 5
      */
-    public int getPaiMaxDuanNo(int sithole ,String piece) {
+    public int getPaiMaxDuanNo(int sithole ,String piece,int pai) {
+        Log.e("查询", "sithole: "+sithole +" piece: "+piece+" pai: "+pai);
         int duanNo;
-        String sql = "select max(duanNo) from denatorBaseinfo where sithole = "+sithole + " and piece = "+piece;
+        String sql = "select max(duanNo) from denatorBaseinfo where sithole = "+sithole + " and piece = "+piece+ " and pai = "+pai;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {
