@@ -56,6 +56,7 @@ import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.EncryptionUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.QRCodeUtils;
+import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.ThreeDES;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -104,6 +105,7 @@ public class ProjectManagerActivity extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         SQLiteStudioService.instance().start(this);
+        SoundPlayUtils.init(this);
         initData();
         //初始化扫码功能
         scan();
@@ -377,10 +379,8 @@ public class ProjectManagerActivity extends BaseActivity {
         }
         // 将解密后的字符串根据分号分割为字段
         String[] pairs = content.split(";");
-
         // 创建一个 Map 来存储键值对
         Map<String, String> fieldMap = new HashMap<>();
-
         // 遍历每个字段，将其按冒号分割为键值对
         for (String pair : pairs) {
             String[] keyValue = pair.split(":");
@@ -406,6 +406,7 @@ public class ProjectManagerActivity extends BaseActivity {
         Log.e(TAG,"coordxy: " + scoordxy);
         Log.e(TAG,"business: " + sbusiness);
         if (!TextUtils.isEmpty(sbusiness)) {
+            SoundPlayUtils.play(1);
             if (sbusiness.startsWith("非营业性")) {
                 addGsxz.setSelection(0);
                 llXmxx.setVisibility(View.GONE);
@@ -428,7 +429,6 @@ public class ProjectManagerActivity extends BaseActivity {
         public volatile boolean exit = false;
 
         public void run() {
-            int zeroCount = 0;
 
             while (!exit) {
                 try {

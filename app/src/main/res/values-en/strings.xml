@@ -997,4 +997,6 @@
     <string name="text_xmewm_ts">Friendly tip: In order to ensure the accurate entry of project information, other devices of the unit can scan the following two-dimensional code on the interface of the new project to quickly complete the new project information!</string>
     <string name="text_zwcs">Networking test</string>
     <string name="text_zwqb">Networking detonation</string>
+    <string name="text_tjqy">Please click the plus sign in the upper right corner to add the area</string>
+    <string name="text_selectqy">Please select a region first</string>
 </resources>

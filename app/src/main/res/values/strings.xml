@@ -1007,4 +1007,6 @@
     <string name="text_xmewm_ts">友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描下面二维码快速完成项目信息新增！</string>
     <string name="text_zwcs">组网测试</string>
     <string name="text_zwqb">组网起爆</string>
+    <string name="text_tjqy">请先点击右上角加号添加区域</string>
+    <string name="text_selectqy">请先选择区域</string>
 </resources>
