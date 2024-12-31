@@ -699,7 +699,8 @@
                     <Button
                         android:id="@+id/btn_pai"
                         style="@style/allbtntstyle"
-                        android:layout_width="85dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:layout_marginRight="4dp"
                         android:text="加排" />
@@ -707,14 +708,16 @@
                     <Button
                         android:id="@+id/btn_kong"
                         style="@style/allbtntstyle"
-                        android:layout_width="85dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:layout_marginRight="4dp"
                         android:text="加孔" />
                     <Button
                         android:id="@+id/btn_wei"
                         style="@style/allbtntstyle"
-                        android:layout_width="85dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:layout_marginRight="4dp"
                         android:text="加位" />
@@ -727,34 +730,14 @@
                         android:layout_marginRight="4dp"
                         android:text="@string/text_return" />
 
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/childReisterPageLineHeight"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center">
-
-                    <Button
-                        android:id="@+id/btn_singleReister"
-                        android:layout_width="85dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="4dp"
-                        android:background="@drawable/bt_mainpage_style"
-                        android:text="@string/text_singleReister"
-                        android:textColor="@color/bt_fg_base"
-                        android:textSize="@dimen/childReisterPageBtnFontSize"
-                        android:visibility="gone" />
-
                     <Button
                         android:id="@+id/btn_scanReister"
                         style="@style/allbtntstyle"
-                        android:layout_width="85dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
                         android:layout_height="50dp"
                         android:text="@string/text_reister_scanReister"
-                        android:textSize="20sp" />
+                        android:textSize="19sp" />
 
 
                     <Button
@@ -769,11 +752,34 @@
                     <Button
                         android:id="@+id/btn_setdelay"
                         style="@style/allbtntstyle"
-                        android:layout_width="85dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
                         android:text="@string/text_scan_xgys"
-                        android:textSize="20sp" />
+                        android:textSize="19sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/childReisterPageLineHeight"
+                    android:layout_marginTop="3dp"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/btn_singleReister"
+                        android:layout_width="85dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@drawable/bt_mainpage_style"
+                        android:text="@string/text_singleReister"
+                        android:textColor="@color/bt_fg_base"
+                        android:textSize="@dimen/childReisterPageBtnFontSize"
+                        android:visibility="gone" />
+
+
 
                     <Button
                         android:id="@+id/btn_single"
