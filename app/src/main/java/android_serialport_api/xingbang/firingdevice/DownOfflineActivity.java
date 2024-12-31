@@ -49,11 +49,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
@@ -82,20 +85,20 @@ public class DownOfflineActivity extends BaseActivity {
     Button btnOK;
     @BindView(R.id.edit_mima)
     EditText editMima;
-    @BindView(R.id.btn_clear_htid)
-    Button btnClearHtid;
+//    @BindView(R.id.btn_clear_htid)
+//    Button btnClearHtid;
     @BindView(R.id.ll_1)
     LinearLayout ll1;
-    @BindView(R.id.btn_clear_xmbh)
-    Button btnClearXmbh;
+//    @BindView(R.id.btn_clear_xmbh)
+//    Button btnClearXmbh;
     @BindView(R.id.ll_2)
     LinearLayout ll2;
-    @BindView(R.id.btn_clear_dwdm)
-    Button btnClearDwdm;
+//    @BindView(R.id.btn_clear_dwdm)
+//    Button btnClearDwdm;
     @BindView(R.id.ll_3)
     LinearLayout ll3;
-    @BindView(R.id.btn_clear_sfz)
-    Button btnClearSfz;
+//    @BindView(R.id.btn_clear_sfz)
+//    Button btnClearSfz;
     @BindView(R.id.ll_5)
     LinearLayout ll5;
     @BindView(R.id.ly_setUpdata)
@@ -108,6 +111,10 @@ public class DownOfflineActivity extends BaseActivity {
     AutoCompleteTextView dfAtDwdm;
     @BindView(R.id.df_at_bprysfz)
     AutoCompleteTextView dfAtBprysfz;
+    @BindView(R.id.ll_xmxx)
+    LinearLayout llXmxx;
+    @BindView(R.id.ll_dwxx)
+    LinearLayout llDwxx;
     private String path;
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
@@ -146,11 +153,30 @@ public class DownOfflineActivity extends BaseActivity {
             return false;
         });
 
-        dfAtHtid.addTextChangedListener(htbh_watcher);//长度监听
-        dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
-        dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
-        dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
+//        dfAtHtid.addTextChangedListener(htbh_watcher);//长度监听
+//        dfAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
+//        dfAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
+//        dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
         getUserMessage();//获取用户信息
+        initCardViewData();
+    }
+
+    private void initCardViewData() {
+        Project usedProject = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Selected.eq("true")).unique();
+        if (usedProject != null) {
+            dfAtHtid.setText(usedProject.getHtbh());
+            dfAtXmbh.setText(usedProject.getXmbh());
+            dfAtDwdm.setText(usedProject.getDwdm());
+            dfAtBprysfz.setText(usedProject.getBprysfz());
+            String business = usedProject.getBusiness();
+            if (business.startsWith("非营业性")) {
+                llXmxx.setVisibility(View.GONE);
+                llDwxx.setVisibility(View.VISIBLE);
+            } else {
+                llXmxx.setVisibility(View.VISIBLE);
+                llDwxx.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override

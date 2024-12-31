@@ -102,14 +102,14 @@ public class ShouQuanAdapter extends BaseAdapter implements OnClickListener{
             viewHolder.tv_err_sum.setText(list.get(position).get("errNum")+"发");
             viewHolder.tv_err_sum.setTextColor(Color.RED);
         }else {
-            viewHolder.tv_err_sum.setTextColor(Color.WHITE);
+            viewHolder.tv_err_sum.setTextColor(Color.BLACK);
             viewHolder.tv_err_sum.setText("0发");
         }
 
         if(list.get(position).get("qbzt").equals("已起爆")){
             viewHolder.tv_sq_qbzt.setTextColor(Color.RED);
         }else {
-            viewHolder.tv_sq_qbzt.setTextColor(Color.WHITE);
+            viewHolder.tv_sq_qbzt.setTextColor(Color.BLACK);
         }
 //        Log.e("adapter", "position: "+position);
 

@@ -94,6 +94,11 @@ public class QuYuActivity extends BaseActivity {
                 layBottom.setVisibility(View.GONE);
                 titleAdd.setVisibility(View.VISIBLE);
             } else {
+                if ("testDenator".equals(pageFlag)) {
+                    tv_input.setText(getResources().getString(R.string.text_zwcs));
+                } else {
+                    tv_input.setText(getResources().getString(R.string.text_zwqb));
+                }
                 layBottom.setVisibility(View.VISIBLE);
                 titleAdd.setVisibility(View.GONE);
             }

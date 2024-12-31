@@ -136,8 +136,7 @@ public class ProjectManagerActivity extends BaseActivity {
         iv_back.setOnClickListener(v -> finish());
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        SpinnerAdapter adapter;
-        adapter= ArrayAdapter.createFromResource(this, R.array.gsxz_name,android.R.layout.simple_spinner_dropdown_item);
+        SpinnerAdapter adapter= ArrayAdapter.createFromResource(this, R.array.gsxz_name,android.R.layout.simple_spinner_dropdown_item);
         addGsxz.setAdapter(adapter);
         addGsxz.setSelection(0);
         if (!TextUtils.isEmpty(pageFlag)) {
@@ -273,15 +272,20 @@ public class ProjectManagerActivity extends BaseActivity {
                                 e.printStackTrace();
                             }
                         }
-                        try {
-                            String res = ThreeDES.decryptThreeDESECB(scanResultStr.substring(7), key);
-                            Log.e(TAG,"设备扫码出来的内容是:" + res);
-                            Utils.writeLog("设备扫码解密后的结果是:" + res);
-                            getScanDataShow(res);
-                        } catch (Exception e) {
-                            Utils.writeLog("设备解密失败:" + e.getMessage().toString());
-                            Log.e(TAG,scanResultStr.substring(7) + "设备解密失败:" + e.getMessage().toString());
-                            throw new RuntimeException(e);
+                        if (scanResultStr != null && scanResultStr.length() > 7) {
+                            String result = scanResultStr.substring(7);
+                            try {
+                                String res = ThreeDES.decryptThreeDESECB(result, key);
+                                Log.e(TAG,"设备扫码出来的内容是:" + res);
+                                Utils.writeLog("设备扫码解密后的结果是:" + res);
+                                getScanDataShow(res);
+                            } catch (Exception e) {
+                                Utils.writeLog("设备解密失败:" + e.getMessage().toString());
+                                Log.e(TAG,result + "设备解密失败:" + e.getMessage().toString());
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            Log.e(TAG,"扫码结果长度不足7,不合规");
                         }
                     }
                 });
@@ -304,15 +308,20 @@ public class ProjectManagerActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
-                    try {
-                        String res = ThreeDES.decryptThreeDESECB(data.substring(7), key);
-                        Log.e(TAG, "默认扫码出来的内容是:" + res);
-                        getScanDataShow(res);
-                        Utils.writeLog("默认扫码出来解密后的结果是:" + res);
-                    } catch (Exception e) {
-                        Utils.writeLog("默认扫码出来解密后失败:" + e.getMessage().toString());
-                        Log.e(TAG, data.substring(7) + "默认解密失败:" + e.getMessage().toString());
-                        throw new RuntimeException(e);
+                    if (data != null && data.length() > 7) {
+                        String result = data.substring(7);
+                        try {
+                            String res = ThreeDES.decryptThreeDESECB(result, key);
+                            Log.e(TAG,"默认扫码出来的内容是:" + res);
+                            Utils.writeLog("默认扫码解密后的结果是:" + res);
+                            getScanDataShow(res);
+                        } catch (Exception e) {
+                            Utils.writeLog("默认解密失败:" + e.getMessage().toString());
+                            Log.e(TAG,result + "默认解密失败:" + e.getMessage().toString());
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        Log.e(TAG,"默认扫码结果长度不足7,不合规");
                     }
                 });
             }
@@ -576,7 +585,7 @@ public class ProjectManagerActivity extends BaseActivity {
         saveHistory("history_projectName", downAtProjectName);//保存输入的项目编号
         saveHistory("history_xmbh", downAtXmbh);//保存输入的项目编号
         saveHistory("history_htid", downAtHtid);//保存输入的合同编号
-        saveHistory("history_dwdm", downAtDwdm);//保存输入的合同编号
+        saveHistory("history_dwdm", downAtDwdm);//保存输入的单位代码
         saveHistory("history_bprysfz", downAtBprysfz);//保存输入的身份证号
         saveHistory("history_coordxy", downAtCoordxy);//保存输入的经纬度
         initAutoComplete("history_projectName", downAtProjectName);
