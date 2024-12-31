@@ -1809,4 +1809,15 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Pai.eq(paiId))
                 .list().size();
     }
+
+    /**
+     * 查询雷管数量
+     * @return
+     */
+    public DenatorBaseinfo serchDenatorIdForChoice(int paiChoice,int kongChoice) {
+        return mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Pai.eq(paiChoice))
+                .where(DenatorBaseinfoDao.Properties.Blastserial.eq(kongChoice)).unique();
+
+    }
 }

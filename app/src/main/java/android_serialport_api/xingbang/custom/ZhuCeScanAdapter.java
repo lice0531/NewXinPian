@@ -94,6 +94,8 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder1.itme_ll.setBackgroundResource(R.color.result_minor_text);
         }
 
+
+
         return convertView;
     }
 
@@ -107,13 +109,22 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder2.tv2_zc_id=convertView.findViewById(R.id.item2_id);
             viewHolder2.tv2_zc_delay=convertView.findViewById(R.id.item2_delay);
             viewHolder2.tv2_zc_status=convertView.findViewById(R.id.item2_status);
+            viewHolder2.itme2_ll=convertView.findViewById(R.id.item2_ll);
             convertView.setTag(viewHolder2);
         } else {
             viewHolder2 = (ViewHolder2) convertView.getTag();
         }
+
+        if(mChildPosition == childPosition) {
+            viewHolder2.itme2_ll.setBackgroundColor(Color.GREEN);
+            //这是关键部分 通过mGroupPosition 和 groupPosition 进行比对，然后再通过 mChildPosition 和 childPosition进行比对，就是你点击的那个Iten     写入你要实现的逻辑
+        }else {
+            viewHolder2.itme2_ll.setBackgroundResource(R.color.white);
+        }
         viewHolder2.tv2_zc_no.setText(
                 mChildList.get(groupPosition).get(childPosition).getPai()+"-"+
-                        mChildList.get(groupPosition).get(childPosition).getSithole());
+                        mChildList.get(groupPosition).get(childPosition).getSithole()
+                        +"-"+mChildList.get(groupPosition).get(childPosition).getDuan());
         //+"-"+mChildList.get(groupPosition).get(childPosition).getSitholeNum())
         viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getShellBlastNo());
         viewHolder2.tv2_zc_delay.setText(mChildList.get(groupPosition).get(childPosition).getDelay()+"");
@@ -133,8 +144,10 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         private TextView tv1_zc_startTime;
         private TextView tv1_zc_total;
         private LinearLayout itme_ll;
+
     }
     public class ViewHolder2 {
+        private LinearLayout itme2_ll;
         private TextView tv2_zc_no;
         private TextView tv2_zc_id;
         private TextView tv2_zc_delay;

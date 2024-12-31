@@ -1,35 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:orientation="horizontal"
     android:id="@+id/item1_ll"
+    android:layout_width="match_parent"
+
+    android:layout_height="wrap_content"
     android:background="@color/result_minor_text">
 
-    <TextView
-        android:id="@+id/item1_pai"
-        style="@style/alltextstyle"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:gravity="end|center_vertical"
-        android:textSize="18sp"
-        android:text="1排" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/item1_startTime"
-        style="@style/alltextstyle"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:textSize="18sp"
-        android:text="起始延时:50ms" />
-    <TextView
-        android:id="@+id/item1_total"
-        style="@style/alltextstyle"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:textSize="18sp"
-        android:text="数量:2发" />
+
+
+        <TextView
+            android:id="@+id/item1_pai"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            android:text="1排"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/item1_startTime"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="起始延时:50ms"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/item1_total"
+            style="@style/alltextstyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="数量:2发"
+            android:textSize="18sp" />
+        <CheckBox
+            android:id="@+id/pai_check"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:visibility="visible"
+            android:focusable="false"
+            />
+    </LinearLayout>
 </LinearLayout>

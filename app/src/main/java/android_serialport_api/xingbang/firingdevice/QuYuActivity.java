@@ -110,6 +110,11 @@ public class QuYuActivity extends BaseActivity {
         quyuAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
+
                 if ("zhuce".equals(pageFlag)) {
 //                loadingDialog.show();
                     String str1 = mListData.get(position).getId() + "";
@@ -187,10 +192,13 @@ public class QuYuActivity extends BaseActivity {
                 }
                 break;
             case R.id.tv_input:
+                Log.e(TAG, "记录时间: "+lastClickTime );
+                Log.e(TAG, "点击时间: "+(System.currentTimeMillis() - lastClickTime) );
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
+
                 for (QuYuData data : mQuYuList) {
                     if (data.isSelect()) {
                         qyIdList.add(data.getQyid());

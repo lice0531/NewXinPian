@@ -826,6 +826,13 @@ public class XingbangMain extends SerialPortActivity {
         switch (view.getId()) {
 
             case R.id.btn_main_reister://注册
+                //2次点击
+
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    return;
+                }
+                lastClickTime = System.currentTimeMillis();
+
                 close();//停止访问电流
                 String str1 = "注册";
                 Intent intent = new Intent(XingbangMain.this, QuYuActivity.class);//金建华
@@ -837,6 +844,8 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_test://测试
                 //2次点击
+                Log.e(TAG, "记录时间: "+lastClickTime );
+                Log.e(TAG, "点击时间: "+(System.currentTimeMillis() - lastClickTime) );
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
