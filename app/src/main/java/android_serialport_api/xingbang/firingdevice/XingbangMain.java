@@ -193,6 +193,7 @@ public class XingbangMain extends BaseActivity {
 
     @Override
     protected void onResume() {
+
         getPropertiesData();//重新读取备份数据会导致已修改的数据重置
         // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -205,6 +206,15 @@ public class XingbangMain extends BaseActivity {
         setTitleRegion();
         // 获取区域雷管数量
         getRegionNumber();
+        Log.e(TAG, "主板下电: " );
+        powerOffDevice(PIN_ADSL);//主板下电
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        powerOnDevice(PIN_ADSL);    // 上电
+        Log.e(TAG, "主板下电: " );// 初始化上电方式()
         super.onResume();
 
     }
@@ -248,7 +258,7 @@ public class XingbangMain extends BaseActivity {
                 pb_show = 0;
                 getUserMessage();//获取用户信息
                 GreenDaoMaster.setDenatorType();//四川默认值
-                GreenDaoMaster.setFactory();//四川默认值
+//                GreenDaoMaster.setFactory();//四川默认值
             }
         }.start();
         loadMoreData_all_lg();//查询雷管延时是否为0
