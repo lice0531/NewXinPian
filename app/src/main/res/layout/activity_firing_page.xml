@@ -24,7 +24,6 @@
         android:id="@+id/ll_firing_0"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
         android:orientation="vertical">
         <TextView
             android:layout_gravity="center"
@@ -49,7 +48,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:text="设置低压电压6V-12V(初始值为8.5V)"
             android:textSize="20sp"
             android:visibility="visible"/>
@@ -76,7 +75,7 @@
             android:visibility="visible"/>
         <TextView
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="设置高压电压10V-20V(初始值为16V)"
