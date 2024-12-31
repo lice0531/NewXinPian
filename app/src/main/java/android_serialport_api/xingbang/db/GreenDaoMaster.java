@@ -282,7 +282,7 @@ public class GreenDaoMaster {
     }
 
     /**
-     * 删除错误代码不等于FF的所有雷管
+     * 删除所有雷管
      */
     public void deleteLeiGuanFroPiace(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
@@ -938,10 +938,10 @@ public class GreenDaoMaster {
         if (cursor != null && cursor.moveToNext()) {
             delay = cursor.getInt(0);
             cursor.close();
-            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: "+delay);
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时1: "+delay);
             return delay;
         }else {
-            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时: 0");
+            Log.e("getPieceMaxNumDelay", "获取最小序号 的延时2: 0");
             return 0;
         }
 
@@ -982,10 +982,10 @@ public class GreenDaoMaster {
         if (cursor != null && cursor.moveToNext()) {
             duanNo = cursor.getInt(0);
             cursor.close();
-            Log.e("getPieceMaxNumDelay", "获取最大序号1: "+duanNo);
+            Log.e("getPieceMaxDuanNo", "获取最大序号1: "+duanNo);
             return duanNo;
         }else {
-            Log.e("getPieceMaxNumDelay", "获取最大序号2 的延时: 1");
+            Log.e("getPieceMaxDuanNo", "获取最大序号2 的延时: 1");
             return 1;
         }
 //        // 倒叙查询
@@ -1003,6 +1003,28 @@ public class GreenDaoMaster {
 //            return 0;
 //        }
     }
+
+    /**
+     * 获取 该段 最大序号 的段序号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPaiMaxDuanNo(int sithole ,String piece) {
+        int duanNo;
+        String sql = "select max(duanNo) from denatorBaseinfo where sithole = "+sithole + " and piece = "+piece;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            duanNo = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPaiMaxDuanNo", "获取最大序号1: "+duanNo);
+            return duanNo;
+        }else {
+            Log.e("getPaiMaxDuanNo", "获取最大序号2 的延时: 1");
+            return 1;
+        }
+    }
+
 
     /**
      * 删除生产数据中的雷管
@@ -1725,7 +1747,7 @@ public class GreenDaoMaster {
             Log.e("getPieceMinNumDelay", "获取最大序号 : "+id);
             return id;
         }else {
-            Log.e("getPieceMinNumDelay", "获取最小序号: 0");
+            Log.e("getPieceMinNumDelay", "获取最大序号: 0");
             return 0;
         }
     }
@@ -1737,7 +1759,7 @@ public class GreenDaoMaster {
      */
     public static QuYu geQuyu(String quyuId) {
 
-        return getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Id.eq(quyuId)).unique();
+        return getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Qyid.eq(quyuId)).unique();
     }
     /**
      * 查询对应的排
@@ -1745,7 +1767,7 @@ public class GreenDaoMaster {
      * @return
      */
     public static PaiData gePaiData(String paiId) {
-        return getDaoSession().getPaiDataDao().queryBuilder().where(PaiDataDao.Properties.Id.eq(paiId)).unique();
+        return getDaoSession().getPaiDataDao().queryBuilder().where(PaiDataDao.Properties.PaiId.eq(paiId)).unique();
     }
 
     /**
@@ -1820,4 +1842,82 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.Blastserial.eq(kongChoice)).unique();
 
     }
+
+    /**
+     * 删除所有区域
+     */
+    public void deleteQuYu() {
+        quyuDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 删除所有排
+     */
+    public void deletePai() {
+        paiDataDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 获取 该区域 该排 最大的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceAndPaiMaxDelay(String piece,int pai) {
+        int delay;
+        String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceAndPaiMaxDelay", "获取 该区域 该排 最大的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceAndPaiMaxDelay", "获取 该区域 该排 最大的延时: 0");
+            return 0;
+        }
+    }
+
+    /**
+     * 获取 该区域 该排 最小的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceAndPaiMinDelay(String piece,int pai) {
+        int delay;
+        String sql = "select min(delay) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceAndPaiMinDelay", "获取 该区域 该排 最小的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceAndPaiMinDelay", "获取 该区域 该排 最小的延时: 0");
+            return 0;
+        }
+    }
+
+    /**
+     * 获取 该区域 该排 最大的孔号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceAndPaiMaxKong(String piece,int pai) {
+        int sithole;
+        String sql = "select max(sithole) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            sithole = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceAndPaiMaxKong", "获取该区域 该排的 最大孔号: "+sithole);
+            return sithole;
+        }else {
+            Log.e("getPieceAndPaiMaxKong", "获取该区域 该排的 最大孔号: 0");
+            return 0;
+        }
+    }
+
 }

@@ -50,7 +50,7 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
             }
         });
         GreenDaoMaster master = new GreenDaoMaster();
-        int total=new GreenDaoMaster().queryDetonatorSize(item.getId()+"");
+        int total=new GreenDaoMaster().queryDetonatorSize(item.getQyid()+"");
         int maxPai = master.getPieceMaxPai(item.getQyid()+"");
         int max = master.getPieceMaxNumDelay(item.getQyid()+"");
         int min = master.getPieceMinNumDelay(item.getQyid()+"");

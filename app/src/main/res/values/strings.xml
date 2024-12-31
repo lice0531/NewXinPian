@@ -659,6 +659,7 @@
     <string name="text_alert_tip_gbkg">检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!</string>
     <string name="text_line_tip1">请等待电流电压显示出来后，再连接雷管!</string>
     <string name="text_line_tip2">当前设置延时为空,请重新设置</string>
+    <string name="text_line_tip19">当前还未设置延时,请先选择排</string>
     <string name="text_line_tip3">当前设置延时已超过最大延时</string>
     <string name="text_line_tip4">ms,请重新设置</string>
     <string name="text_line_tip5">当前设置延时已超过最大延时</string>

@@ -117,7 +117,7 @@ public class QuYuActivity extends BaseActivity {
 
                 if ("zhuce".equals(pageFlag)) {
 //                loadingDialog.show();
-                    String str1 = mListData.get(position).getId() + "";
+                    String str1 = mListData.get(position).getQyid() + "";
                     Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
                     intent.putExtra("quyuId", str1);
                     startActivity(intent);
@@ -249,9 +249,9 @@ public class QuYuActivity extends BaseActivity {
 //                    if (name.getText().length() > 0) {
 
                         QuYu quYu = new QuYu();
-//                        quYu.setName(name.getText().toString());
+                        quYu.setName((maxNo+1)+"");
                         quYu.setQyid((maxNo+1));
-//                        quYu.setStartDelay(startDelay.getText().toString());
+                        quYu.setStartDelay("0");
                         quYu.setKongDelay(kongDelay.getText().toString());
                         quYu.setPaiDelay(paiDelay.getText().toString());
                         getDaoSession().getQuYuDao().insert(quYu);

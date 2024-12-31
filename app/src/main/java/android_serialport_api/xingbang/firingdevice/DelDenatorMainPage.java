@@ -327,6 +327,8 @@ public class DelDenatorMainPage extends BaseActivity  {
                     }
                     if ( b.equals("123")) {
                         tipALLDelDenator();
+                        deleteQuYu();
+                        deletePai();
 //                        show_Toast(getResources().getString(R.string.text_his_scyscjl));
                     } else {
                         show_Toast(getResources().getString(R.string.text_mmcw));
@@ -391,6 +393,19 @@ public class DelDenatorMainPage extends BaseActivity  {
                 break;
         }
     }
+
+    private void deleteQuYu() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        Log.e(TAG, "全部删除:区域 " );
+        master.deleteQuYu();
+    }
+
+    private void deletePai() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        Log.e(TAG, "全部删除:排 " );
+        master.deletePai();
+    }
+
 
     private void xuhaosc(){
 
