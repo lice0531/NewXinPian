@@ -2272,7 +2272,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int duanNUM = getDuanNo(a, mRegion);//也得做区域区分
         Log.e("扫码", "duanNo2: " + duanNo2);
         maxNo++;
-        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().serchDenatorIdForChoice(paiChoice, kongChoice);
+
         DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
         denatorBaseinfo.setBlastserial(maxNo);
         denatorBaseinfo.setSithole((maxKong + 1) + "");
@@ -2337,7 +2337,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             charu = false;
         }
         denatorBaseinfo.setAuthorization(version);//雷管芯片型号
+        //查询选中的雷管是否管壳码为空
+        Log.e(TAG, "查询选中的雷管是否管壳码为空paiChoice: " +paiChoice);
+        Log.e(TAG, "查询选中的雷管是否管壳码为空kongChoice: " +kongChoice);
 
+        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().serchDenatorIdForChoice(paiChoice, kongChoice);
+        Log.e(TAG, "查询选中的雷管是否管壳码为空ShellBlastNo: " +denatorBaseinfo_choice.getShellBlastNo());
         if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
             Log.e(TAG, "denatorBaseinfo_choice.getShellBlastNo().length(): " + denatorBaseinfo_choice.getShellBlastNo().length());
 
