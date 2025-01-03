@@ -224,7 +224,7 @@
     <string name="text_reister_3b">3位</string>
     <string name="text_reister_5b">5位</string>
     <string name="text_reister_1b">1位</string>
-    <string name="text_reister_scanReister">扫码注册</string>
+    <string name="text_reister_scanReister">扫码</string>
     <string name="text_reister_scaning">正在扫码</string>
     <string name="text_reister_vol">当前电压:</string>
     <string name="text_reister_ele">当前电流:</string>

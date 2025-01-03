@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.custom;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.R2;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.models.ZhuCeListBean;
@@ -116,7 +119,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         }
 
         if(mChildPosition == childPosition && mGroupPosition == groupPosition) {
-            viewHolder2.itme2_ll.setBackgroundColor(Color.GREEN);
+            viewHolder2.itme2_ll.setBackgroundColor(Application.getContext().getResources().getColor(R.color.item_yellow));
             //这是关键部分 通过mGroupPosition 和 groupPosition 进行比对，然后再通过 mChildPosition 和 childPosition进行比对，就是你点击的那个Iten     写入你要实现的逻辑
         }else {
             viewHolder2.itme2_ll.setBackgroundResource(R.color.white);
@@ -137,6 +140,19 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    public void removeGroup(int groupPosition) {
+        mGroupList .remove(groupPosition);
+        mChildList.remove(groupPosition);
+    }
+
+    public void removeChild(int groupPosition, int childPosition) {
+//        Log.e("删除子项", "groupPosition: "+groupPosition );
+//        Log.e("删除子项", "childPosition: "+childPosition );
+//        Log.e("删除子项", "mChildList.get(groupPosition) "+ mChildList.get(groupPosition).toString() );
+//        Log.e("删除子项", "mChildList.get(groupPosition).get(childPosition): "+ mChildList.get(groupPosition).get(childPosition).toString() );
+        mChildList.get(groupPosition).remove(childPosition) ;
     }
 
     public class ViewHolder1 {

@@ -173,4 +173,5 @@
     <color name="list_view_item_org">#f8f8f8</color>
     <color name="list_view_item_white">#ffffff</color>
     <color name="background_tab_pressed">#e5e5e5</color>
+    <color name="item_yellow">#DAA520</color>
 </resources>
