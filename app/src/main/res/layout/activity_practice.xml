@@ -101,8 +101,11 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:orientation="vertical">
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
 
             <TextView
                 style="@style/alltextstyle"
@@ -116,7 +119,7 @@
             <Button
                 android:id="@+id/but_jilian"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
@@ -126,7 +129,7 @@
             <Button
                 android:id="@+id/but_jilian_wifi"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
@@ -140,7 +143,36 @@
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
             android:background="@color/label_color" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
+            <Button
+                android:id="@+id/but_shezhi"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:text="设置" />
 
+            <Button
+                android:id="@+id/but_chakan"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:text="查看雷管" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/label_color" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -219,21 +251,27 @@
         </LinearLayout>
 
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
 
             <Button
                 android:id="@+id/but_pre"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="90dp"
                 android:text="@string/text_fz_kscs" />
-
-        </RelativeLayout>
+            <Button
+                android:id="@+id/but_sendMsg"
+                style="@style/allbtntstyle"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="@string/text_fz_sjhc" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/but_test"
@@ -249,38 +287,18 @@
             android:layout_height="4dp"
             android:layout_marginTop="10dp"
             android:background="@color/label_color" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp">
-
-            <Button
-                android:id="@+id/but_sendMsg"
-                style="@style/allbtntstyle"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginStart="90dp"
-                android:text="@string/text_fz_sjhc" />
-
-        </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/label_color" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:orientation="vertical">
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:divider="@drawable/spacer_medium"
+            android:showDividers="middle">
             <Button
                 android:id="@+id/but_rizhi"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
                 android:text="上传日志" />
             <Button
                 android:visibility="gone"
@@ -294,11 +312,8 @@
             <Button
                 android:id="@+id/btn_detail_log"
                 style="@style/allbtntstyle"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
                 android:text="程序日志上传"
                 android:visibility="visible" />
         </LinearLayout>

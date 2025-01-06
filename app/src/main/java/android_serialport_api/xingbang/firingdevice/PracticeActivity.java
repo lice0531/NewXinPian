@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -125,7 +126,10 @@ public class PracticeActivity extends BaseActivity {
     Button butRizhi;
     @BindView(R.id.btn_detail_log)
     Button btnDetailLog;
-
+    @BindView(R.id.but_chakan)
+    Button butChakan;
+    @BindView(R.id.but_shezhi)
+    Button butShezhi;
     private DatabaseHelper mMyDatabaseHelper;
     private List<DenatorBaseinfo> list_uid = new ArrayList<>();
     private SQLiteDatabase db;
@@ -538,7 +542,7 @@ public class PracticeActivity extends BaseActivity {
 
     @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read,
             R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile,
-            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi,R.id.btn_detail_log})
+            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi,R.id.btn_detail_log,R.id.but_chakan, R.id.but_shezhi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -702,8 +706,74 @@ public class PracticeActivity extends BaseActivity {
             case R.id.but_test:
 //                startActivity(new Intent(this, TestActivity.class));
                 break;
+            case R.id.but_shezhi:
+                loginToSetEnv();
+                break;
+            case R.id.but_chakan:
+                startActivity(new Intent(this, QueryCurrentDetail.class));
+                break;
         }
     }
+
+    private void loginToSetEnv() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(PracticeActivity.this);
+        builder.setTitle(getString(R.string.text_alert_user));//"请输入用户名和密码"
+        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+        View view = LayoutInflater.from(PracticeActivity.this).inflate(R.layout.userlogindialog, null);
+        //    设置我们自己定义的布局文件作为弹出框的Content
+        builder.setView(view);
+        final EditText username = (EditText) view.findViewById(R.id.username);
+        final EditText password = (EditText) view.findViewById(R.id.password);
+        username.setInputType(InputType.TYPE_CLASS_TEXT);
+        username.setFocusable(true);
+        username.setFocusableInTouchMode(true);
+        username.requestFocus();
+        username.findFocus();
+
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String a = username.getText().toString().trim();
+            String b = password.getText().toString().trim();
+            if (a.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_username));
+//                    dialogOn(dialog);//取消按钮不可点击
+                return;
+            }
+            if (b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                return;
+            }
+            if (a.equals("xingbang") && b.equals("123456")) {
+                dialogOFF(dialog);
+                startActivity(new Intent(PracticeActivity.this, SetEnvMainActivity.class));
+                dialog.dismiss();
+                finish();
+            } else if (!a.equals("xingbang")) {
+                show_Toast(getString(R.string.text_main_yhmcw));
+                dialogOn(dialog);
+            } else if (!b.equals("123456")) {
+                show_Toast(getString(R.string.text_main_mmcw));
+                dialogOn(dialog);
+            } else {
+                show_Toast(getString(R.string.text_error_tip50));
+                dialogOn(dialog);
+//                    dialog.dismiss();
+            }
+
+            //  builder.
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            //builder.
+            dialogOFF(dialog);
+//                finish();
+            dialog.dismiss();
+        });
+
+
+        builder.show();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -845,15 +845,12 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_test://测试
                 //2次点击
-                Log.e(TAG, "记录时间: "+lastClickTime );
-                Log.e(TAG, "点击时间: "+(System.currentTimeMillis() - lastClickTime) );
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
-
-                queryBeian();
                 //验证是否授权
+                queryBeian();
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
                     initDialog_shouquan();
                     return;
@@ -898,9 +895,8 @@ public class XingbangMain extends SerialPortActivity {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
-                //
-                queryBeian();
                 //验证是否授权
+                queryBeian();
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
                     initDialog_shouquan();
                     return;
@@ -914,9 +910,6 @@ public class XingbangMain extends SerialPortActivity {
                         initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
                         return;
                     }
-//                    Log.e(TAG, "a: "+a);
-//                    Log.e(TAG, "time: "+time);
-//                    Log.e(TAG, "endTime: "+endTime);
                 }
 
                 String str5 = "起爆";
@@ -937,11 +930,8 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_query://查看
-                String str6 = "查看雷管";
                 close();//停止访问电流
-                Intent intent6 = new Intent(XingbangMain.this, QueryMainActivity.class);
-                intent6.putExtra("dataSend", str6);
-                startActivityForResult(intent6, 1);
+                startActivity(new Intent(XingbangMain.this, QueryHisDetail.class));
                 break;
 
             case R.id.btn_main_setevn://设置

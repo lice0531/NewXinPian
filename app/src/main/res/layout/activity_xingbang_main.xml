@@ -121,8 +121,19 @@
             android:divider="@drawable/spacer_medium"
             android:gravity="center"
             android:showDividers="middle">
-
             <Button
+                android:id="@+id/btn_main_downWorkCode"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:enabled="true"
+                android:gravity="center"
+                android:text="@string/text_main_xmgl"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize"
+                android:visibility="visible" />
+            <Button
+                android:visibility="gone"
                 android:id="@+id/btn_main_delayTime"
                 android:layout_width="@dimen/main_BT_Width"
                 android:layout_height="@dimen/main_BT_Height"
@@ -153,17 +164,7 @@
             android:gravity="center"
             android:showDividers="middle">
 
-            <Button
-                android:id="@+id/btn_main_downWorkCode"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:enabled="true"
-                android:gravity="center"
-                android:text="@string/text_main_xmgl"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize"
-                android:visibility="visible" />
+
 
             <Button
                 android:id="@+id/btn_main_test"
@@ -174,19 +175,6 @@
                 android:text="@string/text_main_wlcs"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="15dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
             <Button
                 android:id="@+id/btn_main_blast"
                 android:layout_width="@dimen/main_BT_Width"
@@ -198,6 +186,19 @@
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
 
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+
+
+
             <Button
                 android:id="@+id/btn_main_query"
                 android:layout_width="@dimen/main_BT_Width"
@@ -207,28 +208,6 @@
                 android:text="@string/text_main_ck"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="70dp"
-            android:layout_marginTop="15dp"
-            android:divider="@drawable/spacer_medium"
-            android:gravity="center"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/btn_main_setevn"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_sz"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
-
             <Button
                 android:id="@+id/btn_main_del"
                 android:layout_width="@dimen/main_BT_Width"
@@ -238,6 +217,47 @@
                 android:text="@string/text_main_sc"
                 android:textColor="@color/bt_fg_base"
                 android:textSize="@dimen/mainpageFontSize" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:divider="@drawable/spacer_medium"
+            android:gravity="center"
+            android:showDividers="middle">
+            <Button
+                android:id="@+id/btn_main_help"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_fzgn"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+            <Button
+                android:id="@+id/btn_main_exit"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_tc"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/btn_main_setevn"
+                android:layout_width="@dimen/main_BT_Width"
+                android:layout_height="@dimen/main_BT_Height"
+                android:background="@drawable/bt_mainpage_style"
+                android:gravity="center"
+                android:text="@string/text_main_sz"
+                android:textColor="@color/bt_fg_base"
+                android:textSize="@dimen/mainpageFontSize" />
+
+
 
         </LinearLayout>
 
@@ -249,26 +269,9 @@
             android:gravity="center"
             android:showDividers="middle">
 
-            <Button
-                android:id="@+id/btn_main_help"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_fzgn"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
 
 
-            <Button
-                android:id="@+id/btn_main_exit"
-                android:layout_width="@dimen/main_BT_Width"
-                android:layout_height="@dimen/main_BT_Height"
-                android:background="@drawable/bt_mainpage_style"
-                android:gravity="center"
-                android:text="@string/text_main_tc"
-                android:textColor="@color/bt_fg_base"
-                android:textSize="@dimen/mainpageFontSize" />
+
 
             <Button
                 android:id="@+id/btn_main_exit2"

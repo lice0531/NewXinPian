@@ -1788,9 +1788,10 @@ public class GreenDaoMaster {
     /**
      * 查询雷管 按排号查询
      */
-    public  List<DenatorBaseinfo> queryDetonatorPai(int pai) {
+    public  List<DenatorBaseinfo> queryDetonatorPai(String mRegion,int pai) {
         QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
         result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
                 .orderAsc(DenatorBaseinfoDao.Properties.Id);
         return result.list();
     }

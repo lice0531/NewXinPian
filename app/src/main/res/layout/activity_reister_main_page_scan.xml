@@ -762,6 +762,7 @@
                         android:layout_height="50dp"
                         android:text="@string/text_scan_sdsr"
                         android:textSize="19sp"
+                        android:visibility="gone"
                          />
 
 
@@ -831,8 +832,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
                 <LinearLayout
+                    android:id="@+id/ly_xinxi"
                     android:layout_width="fill_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
@@ -840,6 +841,7 @@
 
                     <TextView
                         android:id="@+id/txt_currentVolt"
+                        style="@style/alltextstyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -848,6 +850,7 @@
 
                     <TextView
                         android:id="@+id/txt_currentIC"
+                        style="@style/alltextstyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -859,10 +862,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/text_reister_tip1"
+                        android:text="已注册:"
                         android:textSize="18sp"
                         android:visibility="gone" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="fill_parent"

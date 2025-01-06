@@ -3956,8 +3956,7 @@ public class ReisterMainPage_line extends SerialPortActivity {
             case R.id.item_1:
             case R.id.item_2:
             case R.id.item_3:
-            case R.id.item_4:
-            case R.id.item_5:
+
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 

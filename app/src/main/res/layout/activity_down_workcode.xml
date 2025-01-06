@@ -395,6 +395,7 @@
                                 android:textSize="18sp" />
 
                             <Button
+                                android:visibility="gone"
                                 android:id="@+id/btn_clear_project_name"
                                 style="@style/allbtntstyle"
                                 android:layout_width="48dp"
@@ -474,6 +475,7 @@
                                     android:textSize="18sp" />
 
                                 <Button
+                                    android:visibility="gone"
                                     android:id="@+id/btn_clear_htid"
                                     style="@style/allbtntstyle"
                                     android:layout_width="48dp"
@@ -517,6 +519,7 @@
                                     android:textSize="18sp" />
 
                                 <Button
+                                    android:visibility="gone"
                                     android:id="@+id/btn_clear_xmbh"
                                     style="@style/allbtntstyle"
                                     android:layout_width="48dp"
@@ -605,6 +608,7 @@
                                 android:textSize="16sp" />
 
                             <Button
+                                android:visibility="gone"
                                 android:id="@+id/btn_location"
                                 style="@style/allbtntstyle"
                                 android:layout_width="48dp"
@@ -648,6 +652,7 @@
                                 android:textSize="16sp" />
 
                             <Button
+                                android:visibility="gone"
                                 android:id="@+id/btn_clear_sfz"
                                 style="@style/allbtntstyle"
                                 android:layout_width="48dp"

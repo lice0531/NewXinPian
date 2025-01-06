@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/item_1"
+        android:orderInCategory="1"
+        android:title="手动输入"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/item_2"
+        android:orderInCategory="2"
+        android:title="单发注册"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/item_3"
+        android:orderInCategory="3"
+        android:title="授权注册"
+        app:showAsAction="withText" />
+
+
+
+</menu>

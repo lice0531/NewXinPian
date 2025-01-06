@@ -94,12 +94,9 @@ public class SouSuoSQActivity extends BaseActivity {
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        sqrq = bundle.getString("sqrq");
-//        long time = (long) 5 * 86400000;
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        String format2 = simpleDateFormat.format(sqrq);
-//        String format1 = simpleDateFormat.format(format2+ time);
-//        Log.e("获取到有效期为", "format1: "+format1 );
+        if (bundle != null) {
+            sqrq = bundle.getString("sqrq");
+        }
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
