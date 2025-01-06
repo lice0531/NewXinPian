@@ -1917,7 +1917,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     paiData.setKongDelay(kongDelay.getText().toString());
                     paiData.setNeiDelay(neiDelay.getText().toString());
                     paiData.setDiJian(sw_dijian.isChecked());
-                    paiData.setSum("0");
                     getDaoSession().getPaiDataDao().update(paiData);
 
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
