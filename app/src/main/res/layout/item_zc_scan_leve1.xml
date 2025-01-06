@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:text="起始延时:50ms"
+            android:text="延时:50ms"
             android:textSize="18sp" />
 
         <TextView
@@ -40,6 +40,13 @@
             android:layout_weight="2"
             android:text="数量:2发"
             android:textSize="18sp" />
+        <ImageView
+            android:id="@+id/im_xiugai1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:background="@drawable/icon_xiugai"
+            />
         <CheckBox
             android:id="@+id/pai_check"
             android:layout_width="0dp"

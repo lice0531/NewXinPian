@@ -13,7 +13,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:text="新增区域设置"
+        android:text="@string/dialog_pai_title"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="单孔发数:"
+            android:text="@string/dialog_pai_dkfs"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -51,7 +51,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:text="发"
+            android:text="@string/dialog_pai_fa"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -68,7 +68,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="孔间模式:"
+            android:text="@string/dialog_pai_kjms"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -83,7 +83,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:gravity="center"
-                android:text="递增"
+                android:text="@string/dialog_pai_dz"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -101,7 +101,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:gravity="center"
-                android:text="递减"
+                android:text="@string/dialog_pai_dj"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -131,7 +131,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="起始延时:"
+            android:text="@string/dialog_pai_qsys"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -169,7 +169,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="孔间延时:"
+            android:text="@string/dialog_pai_kjys"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -207,7 +207,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="排间延时:"
+            android:text="@string/dialog_pai_pjys"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />

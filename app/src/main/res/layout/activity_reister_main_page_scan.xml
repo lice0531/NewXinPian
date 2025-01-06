@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container1"
@@ -12,6 +12,7 @@
     tools:ignore="MergeRootFrame">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -28,7 +29,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title">
 
         <LinearLayout
             android:id="@+id/container"
@@ -279,6 +281,7 @@
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cd_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -734,19 +737,32 @@
                         android:id="@+id/btn_scanReister"
                         style="@style/allbtntstyle"
                         android:layout_width="0dp"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:text="@string/text_reister_scanReister"
+                        android:layout_marginRight="4dp"
                         android:textSize="19sp" />
 
-
+                    <Button
+                        android:id="@+id/btn_inputOk"
+                        style="@style/allbtntstyle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@drawable/bt_mainpage_style"
+                        android:text="@string/text_sure"
+                        android:textSize="19sp"
+                        android:visibility="gone" />
                     <Button
                         android:id="@+id/btn_input"
                         style="@style/allbtntstyle"
-                        android:layout_width="100dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:text="@string/text_scan_sdsr"
-                        android:visibility="gone" />
+                        android:textSize="19sp"
+                         />
 
 
                     <Button
@@ -757,7 +773,8 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="3dp"
                         android:text="@string/text_scan_xgys"
-                        android:textSize="19sp" />
+                        android:textSize="19sp"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
 
@@ -777,7 +794,7 @@
                         android:text="@string/text_singleReister"
                         android:textColor="@color/bt_fg_base"
                         android:textSize="@dimen/childReisterPageBtnFontSize"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
 
 
@@ -790,18 +807,9 @@
                         android:background="@drawable/bt_mainpage_style"
                         android:text="@string/text_scan_sdsr"
                         android:textSize="20sp"
-                        android:visibility="gone"/>
+                        android:visibility="visible"/>
 
-                    <Button
-                        android:id="@+id/btn_inputOk"
-                        style="@style/allbtntstyle"
-                        android:layout_width="85dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="4dp"
-                        android:background="@drawable/bt_mainpage_style"
-                        android:text="@string/text_sure"
-                        android:textSize="20sp"
-                        android:visibility="gone" />
+
 
                     <Button
                         android:visibility="gone"
@@ -821,7 +829,7 @@
             <LinearLayout
                 android:id="@+id/ly_showData"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -945,9 +953,70 @@
                         android:layout_above="@+id/cl_bottom"
                         android:background="@color/white"
                         />
+
                 </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/lay_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_check_all"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="全选"
+            android:textColor="@color/white"
+            style="@style/alltextstyle"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_bg_color" />
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="删除"
+            android:textColor="@color/white"
+            style="@style/alltextstyle" />
+
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_bg_color" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_ture"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foreground="@drawable/bg_white"
+            android:gravity="center"
+            android:text="全选正确"
+            android:textColor="@color/white"
+            style="@style/alltextstyle" />
+    </LinearLayout>
+
+</RelativeLayout>

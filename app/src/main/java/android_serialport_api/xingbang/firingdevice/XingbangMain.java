@@ -438,6 +438,7 @@ public class XingbangMain extends SerialPortActivity {
         });
         iv_back.setOnClickListener(v -> finish());
         iv_back.setVisibility(View.GONE);
+        iv_add.setVisibility(View.GONE);
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
@@ -1152,28 +1153,28 @@ public class XingbangMain extends SerialPortActivity {
      * 设置标题区域
      */
     private void setTitleRegion() {
-        StringBuilder a = new StringBuilder();
-        if (mRegion1) {
-            a.append("1");
-        }
-        if (mRegion2) {
-            a.append(",2");
-        }
-        if (mRegion3) {
-            a.append(",3");
-        }
-        if (mRegion4) {
-            a.append(",4");
-        }
-        if (mRegion5) {
-            a.append(",5");
-        }
-        String str = getString(R.string.text_list_piace) + a;
+//        StringBuilder a = new StringBuilder();
+//        if (mRegion1) {
+//            a.append("1");
+//        }
+//        if (mRegion2) {
+//            a.append(",2");
+//        }
+//        if (mRegion3) {
+//            a.append(",3");
+//        }
+//        if (mRegion4) {
+//            a.append(",4");
+//        }
+//        if (mRegion5) {
+//            a.append(",5");
+//        }
+//        String str = getString(R.string.text_list_piace) + a;
         // 设置标题
-        getSupportActionBar().setTitle(mOldTitle + changjia + str);
+        getSupportActionBar().setTitle(mOldTitle + changjia );
         // 保存区域参数(单选的时候要放开,多选关闭)
 //        SPUtils.put(this, Constants_SP.RegionCode, mRegion);
-        totalbar_title.setText(mOldTitle + changjia + "/" + str);
+        totalbar_title.setText(mOldTitle + changjia );
     }
 
     /**

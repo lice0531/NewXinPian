@@ -1000,4 +1000,15 @@
     <string name="text_tjqy">Please click the plus sign in the upper right corner to add the area</string>
     <string name="text_selectqy">Please select a region first</string>
     <string name="text_line_tip19">当前还未设置延时,请先选择排</string>
+    <string name="text_shanchu">删除</string>
+    <string name="text_xgpxx">修改排信息</string>
+    <string name="dialog_pai_title">新增区域设置</string>
+    <string name="dialog_pai_dkfs">单孔发数:</string>
+    <string name="dialog_pai_kjms">孔间模式:</string>
+    <string name="dialog_pai_qsys">起始延时:</string>
+    <string name="dialog_pai_kjys">孔间延时:</string>
+    <string name="dialog_pai_pjys">排间延时:</string>
+    <string name="dialog_pai_dz">递增</string>
+    <string name="dialog_pai_dj">递减</string>
+    <string name="dialog_pai_fa">发</string>
 </resources>

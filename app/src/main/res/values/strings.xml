@@ -414,7 +414,7 @@
     <string name="text_scan_f2">排间延时</string>
     <string name="text_scan_df">单发</string>
     <string name="text_scan_xgys">修改延时</string>
-    <string name="text_scan_sdsr">手动输入</string>
+    <string name="text_scan_sdsr">手输</string>
     <string name="text_query_ck">查看雷管状态</string>
     <string name="text_query_history">起爆历史数据</string>
     <string name="text_query_px">排序</string>
@@ -1010,4 +1010,15 @@
     <string name="text_zwqb">组网起爆</string>
     <string name="text_tjqy">请先点击右上角加号添加区域</string>
     <string name="text_selectqy">请先选择区域</string>
+    <string name="text_shanchu">删除</string>
+    <string name="text_xgpxx">修改排信息</string>
+    <string name="dialog_pai_title">新增区域设置</string>
+    <string name="dialog_pai_dkfs">单孔发数:</string>
+    <string name="dialog_pai_kjms">孔间模式:</string>
+    <string name="dialog_pai_qsys">起始延时:</string>
+    <string name="dialog_pai_kjys">孔间延时:</string>
+    <string name="dialog_pai_pjys">排间延时:</string>
+    <string name="dialog_pai_dz">递增</string>
+    <string name="dialog_pai_dj">递减</string>
+    <string name="dialog_pai_fa">发</string>
 </resources>

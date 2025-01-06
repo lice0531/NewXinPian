@@ -135,5 +135,22 @@ public class PaiData {
         this.kongNum = kongNum;
     }
 
-
+    @Override
+    public String toString() {
+        return "PaiData{" +
+                "id=" + id +
+                ", paiId=" + paiId +
+                ", qyid=" + qyid +
+                ", sum='" + sum + '\'' +
+                ", delayMin='" + delayMin + '\'' +
+                ", delayMax='" + delayMax + '\'' +
+                ", shouquan='" + shouquan + '\'' +
+                ", startDelay='" + startDelay + '\'' +
+                ", kongDelay='" + kongDelay + '\'' +
+                ", neiDelay='" + neiDelay + '\'' +
+                ", paiDelay='" + paiDelay + '\'' +
+                ", kongNum=" + kongNum +
+                ", diJian=" + diJian +
+                '}';
+    }
 }

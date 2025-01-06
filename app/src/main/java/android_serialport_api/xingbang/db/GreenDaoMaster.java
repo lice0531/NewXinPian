@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.custom.DenatorBaseinfoSelect;
+import android_serialport_api.xingbang.custom.PaiDataSelect;
+import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
@@ -289,6 +292,14 @@ public class GreenDaoMaster {
         result.where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
+    /**
+     * 删除所有雷管
+     */
+    public void deletePaiFroPiace(String piece) {
+        QueryBuilder<PaiData> result = paiDataDao.queryBuilder();
+        result.where(PaiDataDao.Properties.PaiId.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
     public List<MessageBean> queryUsetMessgae() {
         QueryBuilder<MessageBean> result = messageBeanDao.queryBuilder();
         return result.where(MessageBeanDao.Properties.Id.eq(1)).list();
@@ -421,7 +432,7 @@ public class GreenDaoMaster {
 
     public static String getAllFromInfo() {
         List<DenatorBaseinfo> list = getDaoSession().getDenatorBaseinfoDao().loadAll();
-        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称,从芯片码,主延时参数,从延时参数,区域,段,段号\n";
+        String str = "ID,序号,孔号,管壳码,芯片码,延时,读取状态,状态名称,错误名称,错误代码,授权期限,备注,注册日期,桥丝状态,名称,从芯片码,主延时参数,从延时参数,区域,段,段号,翻转,排\n";
         String content;
         for (int i = 0; i < list.size(); i++) {
             content = list.get(i).getId() + "," + list.get(i).getBlastserial() + "," + list.get(i).getSithole() + ","
@@ -430,7 +441,8 @@ public class GreenDaoMaster {
                     + list.get(i).getErrorCode() + "," + list.get(i).getAuthorization() + "," + list.get(i).getRemark() + ","
                     + list.get(i).getRegdate() + "," + list.get(i).getWire() + "," + list.get(i).getName() + ","
                     + list.get(i).getDenatorIdSup() + "," + list.get(i).getZhu_yscs() + "," + list.get(i).getCong_yscs() + ","
-                    + list.get(i).getPiece() + "," + list.get(i).getDuan() + "," + list.get(i).getDuanNo() + "\n";
+                    + list.get(i).getPiece() + "," + list.get(i).getDuan() + "," + list.get(i).getDuanNo() + ","
+                    + list.get(i).getFanzhuan()+ list.get(i).getPai() + "\n";
             str = str + content;
         }
         return str;
@@ -1767,8 +1779,10 @@ public class GreenDaoMaster {
      *
      * @return
      */
-    public static PaiData gePaiData(String paiId) {
-        return getDaoSession().getPaiDataDao().queryBuilder().where(PaiDataDao.Properties.PaiId.eq(paiId)).unique();
+    public static PaiData gePaiData(String mRegion,String paiId) {
+        return getDaoSession().getPaiDataDao().queryBuilder()
+                .where(PaiDataDao.Properties.PaiId.eq(paiId))
+                .where(PaiDataDao.Properties.Qyid.eq(mRegion)).unique();
     }
 
     /**
@@ -1782,12 +1796,79 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 查询雷管 按排号查询
+     */
+    public  List<DenatorBaseinfoSelect> queryDetonatorPaiSelect(String mRegion,int pai) {
+        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+        result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderAsc(DenatorBaseinfoDao.Properties.Id);
+
+        List<DenatorBaseinfoSelect> mchildList = new ArrayList<>();
+        for (DenatorBaseinfo item : result.list()) {
+            DenatorBaseinfoSelect childData = new DenatorBaseinfoSelect();
+            childData.setId(item.getId());
+            childData.setBlastserial(item.getBlastserial());
+            childData.setSithole(item.getSithole());
+            childData.setShellBlastNo(item.getShellBlastNo());
+            childData.setDenatorId(item.getDenatorId());
+            childData.setDelay(item.getDelay());
+            childData.setRegdate(item.getRegdate());
+            childData.setStatusCode(item.getStatusCode());
+            childData.setStatusName(item.getStatusName());
+            childData.setErrorCode(item.getErrorCode());
+            childData.setErrorName(item.getErrorName());
+            childData.setAuthorization(item.getAuthorization());
+            childData.setRemark(item.getRemark());
+            childData.setWire(item.getWire());//桥丝状态
+            childData.setName(item.getName());
+            childData.setDenatorIdSup(item.getDenatorIdSup());
+            childData.setZhu_yscs(item.getZhu_yscs());
+            childData.setCong_yscs(item.getCong_yscs());
+            childData.setPiece(item.getPiece());
+            childData.setDuan(item.getDuan());
+            childData.setDuanNo(item.getDuanNo());
+            childData.setFanzhuan(item.getFanzhuan());
+            childData.setPai(item.getPai());
+            if (!mchildList.contains(childData)) {
+                mchildList.add(childData);
+            }
+        }
+        return mchildList;
+    }
+
+    /**
      * 查询排
      */
     public  List<PaiData> queryPai(String qyId) {
         QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder();
         result = result.where(PaiDataDao.Properties.Qyid.eq(qyId));
         return result.list();
+    }
+    public  List<PaiDataSelect> queryPaiSelect(String qyId) {
+        QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder();
+        result = result.where(PaiDataDao.Properties.Qyid.eq(qyId));
+        List<PaiDataSelect> mPaiList = new ArrayList<>();
+        for (PaiData item : result.list()) {
+            PaiDataSelect paiData = new PaiDataSelect();
+            paiData.setId(item.getId());
+            paiData.setPaiId(item.getPaiId());
+            paiData.setQyid(item.getQyid());
+            paiData.setSum(item.getSum());
+            paiData.setDelayMin(item.getDelayMin());
+            paiData.setDelayMax(item.getDelayMax());
+            paiData.setShouquan(item.getShouquan());
+            paiData.setStartDelay(item.getStartDelay());
+            paiData.setKongDelay(item.getKongDelay());
+            paiData.setNeiDelay(item.getNeiDelay());
+            paiData.setPaiDelay(item.getPaiDelay());
+            paiData.setKongNum(item.getKongNum());
+            paiData.setDiJian(item.getDiJian());
+            if (!mPaiList.contains(paiData)) {
+                mPaiList.add(paiData);
+            }
+        }
+        return mPaiList;
     }
 
     /**
@@ -1849,6 +1930,18 @@ public class GreenDaoMaster {
      */
     public void deleteQuYu() {
         quyuDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 删除所有区域
+     */
+    public void deleteQuYuForId(int id) {
+
+        QuYu entity= quyuDao
+                .queryBuilder()
+                .where(QuYuDao.Properties.Qyid.eq(id))
+                .unique();
+        quyuDao.delete(entity);
     }
 
     /**
@@ -1920,5 +2013,7 @@ public class GreenDaoMaster {
             return 0;
         }
     }
+
+
 
 }

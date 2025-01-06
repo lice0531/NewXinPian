@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,13 +23,19 @@ import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.models.ZhuCeListBean;
 
 public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
-    List<PaiData> mGroupList;//一级List
-    List<List<DenatorBaseinfo>> mChildList;//二级List
+    List<PaiDataSelect> mGroupList;//一级List
+    List<List<DenatorBaseinfoSelect>> mChildList;//二级List
     int mGroupPosition=-1;
     int mChildPosition=-1;
-    public ZhuCeScanAdapter(List<PaiData> groupList, List<List<DenatorBaseinfo>> childList){
+    private OnChildButtonClickListener listener;
+    private OngroupButtonClickListener listener_group;
+    private boolean checkBox_gone=true;
+    private boolean Uid_gone=true;
+    public ZhuCeScanAdapter(List<PaiDataSelect> groupList, List<List<DenatorBaseinfoSelect>> childList, OnChildButtonClickListener listener,OngroupButtonClickListener listener_group){
         mGroupList = groupList;
         mChildList = childList;
+        this.listener = listener;
+        this.listener_group = listener_group;
     }
 
     public void setSelcetPosition(int mGroupPosition,int mChildPosition){
@@ -35,6 +44,12 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
     }
 
+    public void setCheckBox(boolean set) {
+        checkBox_gone= set;
+    }
+    public void setUid(boolean set) {
+        checkBox_gone= set;
+    }
     @Override
     public int getGroupCount() {//返回第一级List长度
         return mGroupList.size();
@@ -64,6 +79,11 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
     public long getChildId(int groupPosition, int childPosition) {
         return groupPosition + childPosition;
     }
+
+    public void setNewChild(List<List<DenatorBaseinfoSelect>> childList){
+        mChildList = childList;
+        notifyDataSetChanged();
+    }
     /**
      * 指示在对基础数据进行更改时子ID和组ID是否稳定
      * @return
@@ -83,27 +103,51 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder1.tv1_zc_startTime=convertView.findViewById(R.id.item1_startTime);
             viewHolder1.tv1_zc_total=convertView.findViewById(R.id.item1_total);
             viewHolder1.itme_ll=convertView.findViewById(R.id.item1_ll);
+            viewHolder1.im_xiugai1=convertView.findViewById(R.id.im_xiugai1);
+            viewHolder1.pai_check=convertView.findViewById(R.id.pai_check);
             convertView.setTag(viewHolder1);
         } else {
             viewHolder1 = (ViewHolder1) convertView.getTag();
         }
         viewHolder1.tv1_zc_pai.setText(mGroupList.get(groupPosition).getPaiId()+"排");
-        viewHolder1.tv1_zc_startTime.setText("起始延时:"+mGroupList.get(groupPosition).getStartDelay()+"ms");
+        viewHolder1.tv1_zc_startTime.setText("延时:"+mGroupList.get(groupPosition).getDelayMin()+"~"+mGroupList.get(groupPosition).getDelayMax()+"ms");
         viewHolder1.tv1_zc_total.setText("数量:"+mGroupList.get(groupPosition).getSum());
+        if(checkBox_gone){
+            viewHolder1.pai_check.setVisibility(View.GONE);
+        }else {
+            viewHolder1.pai_check.setVisibility(View.VISIBLE);
+        }
         if(mGroupPosition == groupPosition) {
             viewHolder1.itme_ll.setBackgroundColor(Color.GREEN);
             //这是关键部分 通过mGroupPosition 和 groupPosition 进行比对，然后再通过 mChildPosition 和 childPosition进行比对，就是你点击的那个Iten     写入你要实现的逻辑
         }else {
             viewHolder1.itme_ll.setBackgroundResource(R.color.result_minor_text);
         }
-
-
+        viewHolder1.pai_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                for (int a=0 ;a<mChildList.get(groupPosition).size();a++){
+                    mChildList.get(groupPosition).get(a).setSelect(isChecked);
+                    Log.e("父控件", "mChildList.get(groupPosition).get(a)getShellBlastNo: "+mChildList.get(groupPosition).get(a).getShellBlastNo());
+                }
+                Log.e("父控件", "isChecked: "+isChecked);
+                notifyDataSetChanged();
+            }
+        });
+        viewHolder1.im_xiugai1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener_group.OngroupButtonClickListener(groupPosition);
+                }
+            }
+        });
 
         return convertView;
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent ) {
         ViewHolder2 viewHolder2;
         if (convertView == null) {
             viewHolder2 = new ViewHolder2();
@@ -113,6 +157,8 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder2.tv2_zc_delay=convertView.findViewById(R.id.item2_delay);
             viewHolder2.tv2_zc_status=convertView.findViewById(R.id.item2_status);
             viewHolder2.itme2_ll=convertView.findViewById(R.id.item2_ll);
+            viewHolder2.im_xiugai2=convertView.findViewById(R.id.im_xiugai2);
+            viewHolder2.kong_check=convertView.findViewById(R.id.kong_check);
             convertView.setTag(viewHolder2);
         } else {
             viewHolder2 = (ViewHolder2) convertView.getTag();
@@ -129,11 +175,37 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
                         mChildList.get(groupPosition).get(childPosition).getSithole()
                         +"-"+mChildList.get(groupPosition).get(childPosition).getDuanNo());
         //+"-"+mChildList.get(groupPosition).get(childPosition).getSitholeNum())
-        viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getShellBlastNo());
+        if(Uid_gone){
+            viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getShellBlastNo());
+        }else {
+            viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getDenatorId());
+        }
+
         viewHolder2.tv2_zc_delay.setText(mChildList.get(groupPosition).get(childPosition).getDelay()+"");
         viewHolder2.tv2_zc_status.setTextColor("异常".equals(mChildList.get(groupPosition).
                 get(childPosition).getStatusName()) ? Color.RED : Color.BLACK);
         viewHolder2.tv2_zc_status.setText(mChildList.get(groupPosition).get(childPosition).getStatusName());
+        if(checkBox_gone){
+            viewHolder2.kong_check.setVisibility(View.GONE);
+        }else {
+            viewHolder2.kong_check.setVisibility(View.VISIBLE);
+        }
+        viewHolder2.kong_check.setChecked(mChildList.get(groupPosition).get(childPosition).isSelect());
+        viewHolder2.kong_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mChildList.get(groupPosition).get(childPosition).setSelect(isChecked);
+            }
+        });
+        viewHolder2.im_xiugai2.setTag(childPosition); // 设置一个tag来识别按钮
+        viewHolder2.im_xiugai2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onChildButtonClick(groupPosition, childPosition);
+                }
+            }
+        });
         return convertView;
     }
 
@@ -155,11 +227,27 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         mChildList.get(groupPosition).remove(childPosition) ;
     }
 
+    private View.OnClickListener imageviewClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // 获取按钮在组和子项中的位置
+            int childPosition = (Integer) v.getTag();
+            Log.e("imageviewClickListener", "childPosition: "+childPosition );
+            // 处理按钮点击事件
+            // 例如：更新相应子项的数据，或者执行某些操作
+
+        }
+    };
+
+
     public class ViewHolder1 {
         private TextView tv1_zc_pai;
         private TextView tv1_zc_startTime;
         private TextView tv1_zc_total;
+        private ImageView im_xiugai1;
         private LinearLayout itme_ll;
+        private CheckBox pai_check;
+
 
     }
     public class ViewHolder2 {
@@ -168,5 +256,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         private TextView tv2_zc_id;
         private TextView tv2_zc_delay;
         private TextView tv2_zc_status;
+        private ImageView im_xiugai2;
+        private CheckBox kong_check;
     }
 }

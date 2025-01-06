@@ -39,6 +39,7 @@
             android:textSize="18sp" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/item2_status"
             style="@style/alltextstyle"
             android:layout_width="0dp"
@@ -46,6 +47,13 @@
             android:layout_weight="0.8"
             android:text="正常"
             android:textSize="18sp" />
+        <ImageView
+            android:id="@+id/im_xiugai2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:background="@drawable/icon_xiugai"
+            />
 
         <CheckBox
             android:id="@+id/kong_check"

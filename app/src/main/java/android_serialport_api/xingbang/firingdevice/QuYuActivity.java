@@ -31,6 +31,7 @@ import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.utils.MyAlertDialog;
+import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,6 +67,7 @@ public class QuYuActivity extends BaseActivity {
     private String TAG = "区域选择页面";
     private String qbxm_id = "-1";
     private String qbxm_name = "";
+    private boolean shanchu_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,15 +81,15 @@ public class QuYuActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            qbxm_id = !TextUtils.isEmpty((String)bundle.get("qbxm_id")) ?
-                    (String)bundle.get("qbxm_id") : "";
+            qbxm_id = !TextUtils.isEmpty((String) bundle.get("qbxm_id")) ?
+                    (String) bundle.get("qbxm_id") : "";
             qbxm_name = !TextUtils.isEmpty((String) bundle.get("qbxm_name")) ?
                     (String) bundle.get("qbxm_name") : "";
         } else {
             qbxm_id = "-1";
             qbxm_name = "";
         }
-        pageFlag = !TextUtils.isEmpty(intent.getStringExtra("pageFlag"))?
+        pageFlag = !TextUtils.isEmpty(intent.getStringExtra("pageFlag")) ?
                 intent.getStringExtra("pageFlag") : "";
         if (!TextUtils.isEmpty(pageFlag)) {
             if ("zhuce".equals(pageFlag)) {
@@ -107,65 +109,126 @@ public class QuYuActivity extends BaseActivity {
         rlQuyu.setLayoutManager(linearLayoutManager);
         quyuAdapter = new QuYuAdapter(R.layout.item_quyu, mQuYuList);
         rlQuyu.setAdapter(quyuAdapter);
-        if (!TextUtils.isEmpty(pageFlag) && !"zhuce".equals(pageFlag)) {
+        if (!TextUtils.isEmpty(pageFlag) && !"zhuce".equals(pageFlag)) {//
             quyuAdapter.showCheckBox(true);
         }
-        quyuAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
-                    return;
-                }
-                lastClickTime = System.currentTimeMillis();
+        quyuAdapter.setOnItemClickListener((adapter, view, position) -> {
+            if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                return;
+            }
+            lastClickTime = System.currentTimeMillis();
 
-                if ("zhuce".equals(pageFlag)) {
+            if ("zhuce".equals(pageFlag)) {
 //                loadingDialog.show();
-                    String str1 = mListData.get(position).getQyid() + "";
-                    Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
-                    intent.putExtra("quyuId", str1);
-                    startActivity(intent);
-                    finish();
+                String str1 = mListData.get(position).getQyid() + "";
+                Intent intent1 = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
+                intent1.putExtra("quyuId", str1);
+                startActivity(intent1);
+                finish();
 //                loadingDialog.close();
-                }
             }
         });
+
         quyuAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+
+                quyuAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                        if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                            return;
+                        }
+                        lastClickTime = System.currentTimeMillis();
+
+//                        if ("zhuce".equals(pageFlag)) {
+////                loadingDialog.show();
+//                            String str1 = mListData.get(position).getQyid() + "";
+//                            Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
+//                            intent.putExtra("quyuId", str1);
+//                            startActivity(intent);
+//                            finish();
+////                loadingDialog.close();
+//                        }
+                    }
+                });
+
+                shanchu_flag = true;
+                layBottom.setVisibility(View.VISIBLE);
+                tv_input.setText(R.string.text_shanchu);
+                quyuAdapter.showCheckBox(true);
+//                quyuAdapter.setNewData(mQuYuList);
+//                rlQuyu.setAdapter(quyuAdapter);
+
                 return false;
             }
         });
 
 
-        mHandle = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(@NonNull Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        mListData = new GreenDaoMaster().queryQuYu();
-                        mQuYuList.clear();
-                        Log.e("加载", "mListData.size(): " + mListData.size());
-                        for (QuYu item : mListData) {
-                            QuYuData qyData = new QuYuData();
-                            qyData.setId(item.getId());
-                            qyData.setQyid(item.getQyid());
-                            qyData.setName(item.getName());
-                            qyData.setKongDelay(item.getKongDelay());
-                            qyData.setPaiDelay(item.getPaiDelay());
-                            qyData.setStartDelay(item.getStartDelay());
-                            if (!mQuYuList.contains(qyData)) {
-                                mQuYuList.add(qyData);
-                            }
+        mHandle = new Handler(msg -> {
+            switch (msg.what) {
+                case 1:
+                    mListData = new GreenDaoMaster().queryQuYu();
+                    mQuYuList.clear();
+                    Log.e("加载", "mListData.size(): " + mListData.size());
+                    for (QuYu item : mListData) {
+                        QuYuData qyData = new QuYuData();
+                        qyData.setId(item.getId());
+                        qyData.setQyid(item.getQyid());
+                        qyData.setName(item.getName());
+                        qyData.setKongDelay(item.getKongDelay());
+                        qyData.setPaiDelay(item.getPaiDelay());
+                        qyData.setStartDelay(item.getStartDelay());
+                        if (!mQuYuList.contains(qyData)) {
+                            mQuYuList.add(qyData);
                         }
+                    }
 
-                        quyuAdapter.setNewData(mQuYuList);
-                        rlQuyu.setAdapter(quyuAdapter);
-                        break;
-                    case 2:
-                        break;
-                }
-                return false;
+                    quyuAdapter.setNewData(mQuYuList);
+                    rlQuyu.setAdapter(quyuAdapter);
+                    break;
+                case 2:
+                    shanchu_flag = false;
+                    layBottom.setVisibility(View.GONE);
+                    tv_input.setText(R.string.text_shanchu);
+                    quyuAdapter.showCheckBox(false);
+
+                    mListData = new GreenDaoMaster().queryQuYu();
+                    mQuYuList.clear();
+                    Log.e("加载", "mListData.size(): " + mListData.size());
+                    for (QuYu item : mListData) {
+                        QuYuData qyData = new QuYuData();
+                        qyData.setId(item.getId());
+                        qyData.setQyid(item.getQyid());
+                        qyData.setName(item.getName());
+                        qyData.setKongDelay(item.getKongDelay());
+                        qyData.setPaiDelay(item.getPaiDelay());
+                        qyData.setStartDelay(item.getStartDelay());
+                        if (!mQuYuList.contains(qyData)) {
+                            mQuYuList.add(qyData);
+                        }
+                    }
+                    quyuAdapter.setOnItemClickListener((adapter, view, position) -> {
+                        if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                            return;
+                        }
+                        lastClickTime = System.currentTimeMillis();
+
+                        if ("zhuce".equals(pageFlag)) {
+//                            loadingDialog.show();
+                            String str1 = mListData.get(position).getQyid() + "";
+                            Intent intent1 = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
+                            intent1.putExtra("quyuId", str1);
+                            startActivity(intent1);
+                            finish();
+//                            loadingDialog.close();
+                        }
+                    });
+                    quyuAdapter.setNewData(mQuYuList);
+                    rlQuyu.setAdapter(quyuAdapter);
+                    break;
             }
+            return false;
         });
 
         mHandle.sendMessage(mHandle.obtainMessage(1));
@@ -174,7 +237,8 @@ public class QuYuActivity extends BaseActivity {
     private boolean isSelectAll = true;//是否全选
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
-    @OnClick({R.id.title_back, R.id.title_add, R.id.tv_check_all,R.id.tv_input})
+
+    @OnClick({R.id.title_back, R.id.title_add, R.id.tv_check_all, R.id.tv_input})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.title_back://注册
@@ -199,8 +263,8 @@ public class QuYuActivity extends BaseActivity {
                 }
                 break;
             case R.id.tv_input:
-                Log.e(TAG, "记录时间: "+lastClickTime );
-                Log.e(TAG, "点击时间: "+(System.currentTimeMillis() - lastClickTime) );
+                Log.e(TAG, "记录时间: " + lastClickTime);
+                Log.e(TAG, "点击时间: " + (System.currentTimeMillis() - lastClickTime));
                 if (mListData.isEmpty()) {
                     show_Toast(getResources().getString(R.string.text_tjqy));
                     return;
@@ -219,25 +283,40 @@ public class QuYuActivity extends BaseActivity {
                     show_Toast(getResources().getString(R.string.text_selectqy));
                     return;
                 }
-                Intent intent = new Intent();
-                if ("testDenator".equals(pageFlag)) {
-                    //进入网检页面
-                    intent.setClass(QuYuActivity.this, TestDenatorActivity.class);
-                    intent.putIntegerArrayListExtra("qyList",qyIdList);
-                    intent.putExtra("dataSend", "测试");
+                if (shanchu_flag) {
+                    for (QuYuData data : mQuYuList) {
+                        if (data.isSelect()) {
+                            GreenDaoMaster master = new GreenDaoMaster();
+                            master.deleteQuYuForId(data.getQyid());
+                            master.deletePaiFroPiace(data.getQyid() + "");
+                            master.deleteLeiGuanFroPiace(data.getQyid() + "");
+                            show_Toast("删除成功");
+                        }
+                    }
+                    mHandle.sendMessage(mHandle.obtainMessage(2));
+                    Utils.saveFile();//把软存中的数据存入磁盘中
                 } else {
-                    //进入起爆页面
-                    intent.setClass(QuYuActivity.this, FiringMainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("qbxm_id", qbxm_id);
-                    bundle.putString("qbxm_name", qbxm_name);
-                    intent.putExtras(bundle);
-                    intent.putIntegerArrayListExtra("qyList",qyIdList);
-                    intent.putExtra("dataSend", "起爆");
+                    Intent intent = new Intent();
+                    if ("testDenator".equals(pageFlag)) {
+                        //进入网检页面
+                        intent.setClass(QuYuActivity.this, TestDenatorActivity.class);
+                        intent.putIntegerArrayListExtra("qyList", qyIdList);
+                        intent.putExtra("dataSend", "测试");
+                    } else {
+                        //进入起爆页面
+                        intent.setClass(QuYuActivity.this, FiringMainActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("qbxm_id", qbxm_id);
+                        bundle.putString("qbxm_name", qbxm_name);
+                        intent.putExtras(bundle);
+                        intent.putIntegerArrayListExtra("qyList", qyIdList);
+                        intent.putExtra("dataSend", "起爆");
+                    }
+                    startActivity(intent);
+                    Log.e(TAG, "区域页面多选结果:" + qyIdList.toString());
+                    finish();
                 }
-                startActivity(intent);
-                Log.e(TAG,"区域页面多选结果:" + qyIdList.toString());
-                finish();
+
                 break;
         }
     }
@@ -246,7 +325,7 @@ public class QuYuActivity extends BaseActivity {
 
         myDialog = new MyAlertDialog(this).builder();
         int maxNo = new GreenDaoMaster().getPieceMaxqyid();
-        myDialog.setTitle("新增区域"+(maxNo+1)+"设置")
+        myDialog.setTitle("新增区域" + (maxNo + 1) + "设置")
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", v -> {
 //                    EditText name = myDialog.getView().findViewById(R.id.et_name);
@@ -259,14 +338,14 @@ public class QuYuActivity extends BaseActivity {
                     Log.e("打印", "paiDelay: " + paiDelay);
 //                    if (name.getText().length() > 0) {
 
-                        QuYu quYu = new QuYu();
-                        quYu.setName((maxNo+1)+"");
-                        quYu.setQyid((maxNo+1));
-                        quYu.setStartDelay("0");
-                        quYu.setKongDelay(kongDelay.getText().toString());
-                        quYu.setPaiDelay(paiDelay.getText().toString());
-                        getDaoSession().getQuYuDao().insert(quYu);
-                        mHandle.sendMessage(mHandle.obtainMessage(1));
+                    QuYu quYu = new QuYu();
+                    quYu.setName((maxNo + 1) + "");
+                    quYu.setQyid((maxNo + 1));
+                    quYu.setStartDelay("0");
+                    quYu.setKongDelay(kongDelay.getText().toString());
+                    quYu.setPaiDelay(paiDelay.getText().toString());
+                    getDaoSession().getQuYuDao().insert(quYu);
+                    mHandle.sendMessage(mHandle.obtainMessage(1));
 //                    }
 
                 }).show();
