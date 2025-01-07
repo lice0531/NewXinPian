@@ -1908,10 +1908,11 @@ public class GreenDaoMaster {
      * 查询雷管数量
      * @return
      */
-    public int queryDetonatorPaiSize(String paiId) {
+    public int queryDetonatorPaiSize(String mRegion,String paiId) {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Pai.eq(paiId))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
                 .list().size();
     }
 

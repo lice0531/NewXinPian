@@ -2783,7 +2783,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void updataPaiData() {
         GreenDaoMaster master = new GreenDaoMaster();
-        int total = master.queryDetonatorPaiSize(paiChoice + "");
+        int total = master.queryDetonatorPaiSize(mRegion,paiChoice + "");
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
         int delay_minNum_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
 
