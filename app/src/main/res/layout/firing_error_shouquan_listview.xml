@@ -24,7 +24,7 @@
             android:background="@drawable/textview_border"
             style="@style/alltextstyle"
             android:textSize="18sp"
-            android:text="@string/text_dialog_xh" />
+            android:text="区域" />
         <TextView
             android:id="@+id/X_item_duan"
             android:layout_width="0dp"

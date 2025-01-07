@@ -53,8 +53,8 @@ public class ErrShouQuanListAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.X_item_no.setText(String.valueOf(list.get(position).getBlastserial()));//序号
-        viewHolder.X_item_duanNo.setText(list.get(position).getDuan()+"-"+list.get(position).getDuanNo());//段号
+        viewHolder.X_item_no.setText(String.valueOf(list.get(position).getPiece()));//序号
+        viewHolder.X_item_duanNo.setText(list.get(position).getPai()+"-"+list.get(position).getBlastserial()+"-"+list.get(position).getDuanNo());//段号
         viewHolder.X_item_shellno.setText((String) list.get(position).getShellBlastNo());//管壳码
         viewHolder.X_item_delay.setText(String.valueOf(list.get(position).getDelay()));//延时
 //        viewHolder.X_item_errorname.setText((String) list.get(position).get);//错误
