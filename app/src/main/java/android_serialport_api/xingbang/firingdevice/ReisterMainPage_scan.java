@@ -338,8 +338,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private List<List<DenatorBaseinfoSelect>> childList = new ArrayList<>();
     private ZhuCeScanAdapter demoAdapter;
     private int paiMax = 0;
-    private int paiChoice = 1;
-    private int kongChoice = 1;
+    private int paiChoice = 0;
+    private int kongChoice = 0;
     private MyAlertDialog myDialog;
     QuYu quYu_choice;
     PaiData choicepaiData;
@@ -766,11 +766,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     zcList.setAdapter(demoAdapter);
 
                     int groupCount = zcList.getCount();
-                    kongChoice = master.queryDetonatorPai(mRegion,paiChoice).size();
-                    paiChoice = groupCount;
+
+
                     Log.e(TAG, "paiChoice: "+paiChoice );
                     Log.e(TAG, "kongChoice: "+kongChoice );
                     if (paiMax != 0) {
+                        if(paiChoice==0){//初始化的时候,默认展开后一排,选中最后一发管
+                            paiChoice = groupCount;
+                        }
+                        kongChoice = master.queryDetonatorPai(mRegion,paiChoice).size();
                         demoAdapter.setSelcetPosition(paiChoice - 1, kongChoice - 1);
                         //默认展开
                         zcList.expandGroup(paiChoice - 1);
