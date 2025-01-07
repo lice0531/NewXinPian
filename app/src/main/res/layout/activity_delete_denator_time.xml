@@ -166,12 +166,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:visibility="gone"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
-                    android:text="@string/text_list_Serial"
+                    android:text="@string/text_list_piace"
                     style="@style/alltextstyle" />
 
                 <TextView

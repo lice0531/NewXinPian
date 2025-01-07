@@ -6,7 +6,7 @@
 
         <!-- 序号 -->
         <TextView
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/tv_blastserial"
             android:layout_width="50dp"
             android:layout_height="match_parent"

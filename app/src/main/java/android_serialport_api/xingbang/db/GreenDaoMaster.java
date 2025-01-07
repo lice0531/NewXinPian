@@ -289,15 +289,18 @@ public class GreenDaoMaster {
      */
     public void deleteLeiGuanFroPiace(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        result.where(DenatorBaseinfoDao.Properties.Piece.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
     }
 
     /**
-     * 删除所有雷管
+     * 删除选中区域的所有排
      */
-    public void deletePaiFroPiace(String piece) {
+    public void deletePaiFroPiace(String qyid) {
+        Log.e("删除选中区域的所有排", "qyid: "+qyid);
         QueryBuilder<PaiData> result = paiDataDao.queryBuilder();
-        result.where(PaiDataDao.Properties.PaiId.eq(piece)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(PaiDataDao.Properties.Qyid.eq(qyid)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     public List<MessageBean> queryUsetMessgae() {
@@ -798,7 +801,7 @@ public class GreenDaoMaster {
     public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
         return mDeantorBaseDao
                 .queryBuilder()
-                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderDesc(DenatorBaseinfoDao.Properties.Id)
                 .list();
     }
 

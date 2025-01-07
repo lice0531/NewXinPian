@@ -332,9 +332,9 @@ public class QuYuActivity extends BaseActivity {
                             master.deleteQuYuForId(data.getQyid());
                             master.deletePaiFroPiace(data.getQyid() + "");
                             master.deleteLeiGuanFroPiace(data.getQyid() + "");
-                            show_Toast("删除成功");
                         }
                     }
+                    show_Toast("删除成功");
                     mHandle.sendMessage(mHandle.obtainMessage(2));
                     Utils.saveFile();//把软存中的数据存入磁盘中
                 } else {
