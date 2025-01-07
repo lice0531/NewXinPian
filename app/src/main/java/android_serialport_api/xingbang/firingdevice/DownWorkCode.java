@@ -1100,7 +1100,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         pb_show = 1;
         runPbDialog();//loading画面
         final String key = "jadl12345678912345678912";
-        String url = Utils.httpurl_down_dl;//丹灵下载
+//        String url = Utils.httpurl_down_dl;//丹灵下载
+        String url = Utils.httpurl_down_test;//丹灵下载测试
         OkHttpClient client = new OkHttpClient();
 
         JSONObject object = new JSONObject();

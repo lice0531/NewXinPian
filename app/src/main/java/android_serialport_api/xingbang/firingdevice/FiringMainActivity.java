@@ -1583,7 +1583,7 @@ public class FiringMainActivity extends SerialPortActivity {
         for (DenatorBaseinfo d : list) {
             Map<String, Object> item = new HashMap<>();
             item.put("serialNo", d.getBlastserial());
-            item.put("konghao", d.getDuan() + "-" + d.getDuanNo());
+            item.put("konghao", d.getPai()+ "-" +d.getBlastserial() + "-" + d.getDuanNo());
             item.put("shellNo", d.getShellBlastNo());
             item.put("errorName", d.getErrorName());
             item.put("delay", d.getDelay());

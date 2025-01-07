@@ -35,15 +35,7 @@
             android:textSize="20sp"
             android:visibility="gone" />
 
-        <Button
-            android:id="@+id/btn_down_offline"
-            style="@style/allbtntstyle"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="1"
-            android:text="离线下载"
-            android:visibility="gone" />
+
 
         <Button
             android:id="@+id/btn_down_inputOK"
@@ -62,7 +54,15 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="新增项目" />
-
+        <Button
+            android:id="@+id/btn_down_offline"
+            style="@style/allbtntstyle"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:text="离线下载"
+             />
         <Button
             android:id="@+id/btn_down_project"
             style="@style/allbtntstyle"
@@ -70,7 +70,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
-            android:text="下载项目" />
+            android:text="在线下载" />
 
     </LinearLayout>
 

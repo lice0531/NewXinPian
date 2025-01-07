@@ -6,6 +6,7 @@
 
         <!-- 序号 -->
         <TextView
+            android:visibility="gone"
             android:id="@+id/tv_blastserial"
             android:layout_width="50dp"
             android:layout_height="match_parent"
@@ -15,7 +16,7 @@
         <!-- 孔号 -->
         <TextView
             android:id="@+id/tv_sithole"
-            android:layout_width="50dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:background="@drawable/a_bg_border_blue_1dp"
             style="@style/alltextstyle"/>
@@ -23,7 +24,7 @@
         <!-- 延时-->
         <TextView
             android:id="@+id/tv_delay"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
             android:background="@drawable/a_bg_border_blue_1dp"
             style="@style/alltextstyle"/>

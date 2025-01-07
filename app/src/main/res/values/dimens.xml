@@ -35,7 +35,7 @@
     <dimen name="main_BT_Height">60dp</dimen>
     <dimen name="main_BT_Width">150dp</dimen>
 
-    <dimen name="setenv_BT_Height">50dp</dimen>
+    <dimen name="setenv_BT_Height">35dp</dimen>
     <dimen name="setenv_BT_Width">120dp</dimen>
 
     <dimen name="test_pg_Left">100dp</dimen>

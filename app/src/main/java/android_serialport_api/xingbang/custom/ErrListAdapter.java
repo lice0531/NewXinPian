@@ -57,6 +57,7 @@ public class ErrListAdapter extends BaseAdapter {
         }
 
         viewHolder.X_item_no.setText((position + 1)+"");//雷管uid
+        viewHolder.X_item_no.setVisibility(View.GONE);
         viewHolder.X_item_duanNo.setText(list.get(position).get("konghao")+"");//雷管uid
         viewHolder.X_item_quyu.setText(list.get(position).get("piece")+"");//雷管uid
         viewHolder.X_item_shellno.setText((String) list.get(position).get("shellNo"));//管壳码

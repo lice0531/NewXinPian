@@ -166,6 +166,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
@@ -174,18 +175,18 @@
                     style="@style/alltextstyle" />
 
                 <TextView
-                    android:layout_width="50dp"
+                    android:layout_width="80dp"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:text="@string/text_list_kong"
                     style="@style/alltextstyle"/>
 
                 <TextView
-                    android:layout_width="50dp"
+                    style="@style/alltextstyle"
+                    android:layout_width="60dp"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
-                    android:text="@string/text_list_delay"
-                    style="@style/alltextstyle"/>
+                    android:text="@string/text_list_delay" />
 
                 <TextView
                     android:layout_width="120dp"

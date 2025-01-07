@@ -17,6 +17,7 @@
         android:id="@+id/ll_dialog_err"
         android:orientation="horizontal">
         <TextView
+            android:visibility="gone"
             android:id="@+id/X_item_no"
             android:layout_width="0dp"
             android:layout_height="match_parent"

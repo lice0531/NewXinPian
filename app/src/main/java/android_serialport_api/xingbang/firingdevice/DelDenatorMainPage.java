@@ -139,7 +139,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                     Log.e("liyi_1001", "更新视图 区域" + mRegion);
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     // 设置标题区域
@@ -502,9 +502,9 @@ public class DelDenatorMainPage extends BaseActivity  {
 
         String str;
         if (size == -1) {
-            str = getResources().getString(R.string.text_list_piace) + region;
+            str =" 所有"+ getResources().getString(R.string.text_list_piace) ;
         } else {
-            str = getResources().getString(R.string.text_list_piace) + region + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
+            str =" 所有"+ getResources().getString(R.string.text_list_piace)  + "(" + getResources().getString(R.string.text_main_sl) + ": " + size + ")";
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);

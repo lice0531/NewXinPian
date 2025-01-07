@@ -172,7 +172,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         }
         viewHolder2.tv2_zc_no.setText(
                 mChildList.get(groupPosition).get(childPosition).getPai()+"-"+
-                        mChildList.get(groupPosition).get(childPosition).getSithole()
+                        mChildList.get(groupPosition).get(childPosition).getBlastserial()
                         +"-"+mChildList.get(groupPosition).get(childPosition).getDuanNo());
         //+"-"+mChildList.get(groupPosition).get(childPosition).getSitholeNum())
         if(Uid_gone){

@@ -795,6 +795,12 @@ public class GreenDaoMaster {
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
+    public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
 
     /**
      * 查询雷管 区域倒序(序号)
@@ -818,26 +824,26 @@ public class GreenDaoMaster {
                 .list();
     }
 
-    public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
-        List<DenatorBaseinfo> mListData = new ArrayList<>();
-        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
-        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
-        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
-        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
-        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
-        if (mRegion5) {
-            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("5"));
-        }if (mRegion4) {
-            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("4"));
-        }if (mRegion3) {
-            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("3"));
-        }if (mRegion2) {
-            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("2"));
-        }if (mRegion1) {
-            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("1"));
-        }
-        return mListData;
-    }
+//    public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
+//        List<DenatorBaseinfo> mListData = new ArrayList<>();
+//        boolean mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);//是否选中区域1
+//        boolean mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);//是否选中区域2
+//        boolean mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);//是否选中区域3
+//        boolean mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);//是否选中区域4
+//        boolean mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);//是否选中区域5
+//        if (mRegion5) {
+//            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("5"));
+//        }if (mRegion4) {
+//            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("4"));
+//        }if (mRegion3) {
+//            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("3"));
+//        }if (mRegion2) {
+//            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("2"));
+//        }if (mRegion1) {
+//            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc("1"));
+//        }
+//        return mListData;
+//    }
 
     /**
      * 获取 该区域 最大序号
@@ -2013,7 +2019,7 @@ public class GreenDaoMaster {
      */
     public int getPieceAndPaiMaxKong(String piece,int pai) {
         int sithole;
-        String sql = "select max(sithole) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
+        String sql = "select max(blastserial) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {

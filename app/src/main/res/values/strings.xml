@@ -590,11 +590,11 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_241231</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_250107</string>
     //通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_241231</string>
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_250107</string>
     //华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_241231</string>
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_250107</string>
     //重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
@@ -659,7 +659,7 @@
     <string name="text_alert_tip_gbkg">检测到您的安全开关处于开启状态,请先关闭掌机右侧的安全开关,再进行检测!</string>
     <string name="text_line_tip1">请等待电流电压显示出来后，再连接雷管!</string>
     <string name="text_line_tip2">当前设置延时为空,请重新设置</string>
-    <string name="text_line_tip19">当前还未设置延时,请先选择排</string>
+    <string name="text_line_tip19">请先新建排,再进行注册</string>
     <string name="text_line_tip3">当前设置延时已超过最大延时</string>
     <string name="text_line_tip4">ms,请重新设置</string>
     <string name="text_line_tip5">当前设置延时已超过最大延时</string>
@@ -675,7 +675,7 @@
     <string name="text_line_tip15">输入的管壳码重复</string>
     <string name="text_line_tip16">当前设置延时为空,请重新设置</string>
     <string name="text_line_tip17">正在与单片机通讯,请稍等一下再退出注册模式!</string>
-    <string name="text_line_tip18">当前起始延时为空,请选择对应的排进行注册</string>
+    <string name="text_line_tip18">请先新建排,再进行注册,</string>
     <string name="text_mx_zcsb">当前雷管为煤许产品,注册失败</string>
     <string name="text_fzts">翻转提示</string>
     <string name="text_ssfz">是否翻转当前段位延时</string>

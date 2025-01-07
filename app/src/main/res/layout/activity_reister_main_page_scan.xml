@@ -977,6 +977,7 @@
         android:visibility="gone">
 
         <TextView
+            android:visibility="invisible"
             android:id="@+id/tv_check_all"
             android:layout_width="0dp"
             android:layout_height="match_parent"
