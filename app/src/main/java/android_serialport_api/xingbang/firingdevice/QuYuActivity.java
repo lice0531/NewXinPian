@@ -47,6 +47,8 @@ public class QuYuActivity extends BaseActivity {
     ImageView titleAdd;
     @BindView(R.id.title_right)
     TextView titleRight;
+    @BindView(R.id.title_delete)
+    ImageView titleDelete;
     @BindView(R.id.rl_quyu)
     RecyclerView rlQuyu;
     @BindView(R.id.lay_bottom)
@@ -68,6 +70,7 @@ public class QuYuActivity extends BaseActivity {
     private String qbxm_id = "-1";
     private String qbxm_name = "";
     private boolean shanchu_flag = false;
+    private boolean isDelete = true;//是否展示底部的多选删除按钮
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +94,11 @@ public class QuYuActivity extends BaseActivity {
         }
         pageFlag = !TextUtils.isEmpty(intent.getStringExtra("pageFlag")) ?
                 intent.getStringExtra("pageFlag") : "";
+        Log.e(TAG,"pageFlag: " + pageFlag);
         if (!TextUtils.isEmpty(pageFlag)) {
             if ("zhuce".equals(pageFlag)) {
+                titleDelete.setVisibility(View.VISIBLE);
+                titleDelete.setBackgroundResource(R.drawable.icon_delete);
                 layBottom.setVisibility(View.GONE);
             } else {
                 if ("testDenator".equals(pageFlag)) {
@@ -100,6 +106,7 @@ public class QuYuActivity extends BaseActivity {
                 } else {
                     tv_input.setText(getResources().getString(R.string.text_zwqb));
                 }
+                titleDelete.setVisibility(View.GONE);
                 layBottom.setVisibility(View.VISIBLE);
             }
         }
@@ -118,7 +125,7 @@ public class QuYuActivity extends BaseActivity {
             }
             lastClickTime = System.currentTimeMillis();
 
-            if ("zhuce".equals(pageFlag)) {
+            if ("zhuce".equals(pageFlag) && isDelete) {
 //                loadingDialog.show();
                 String str1 = mListData.get(position).getQyid() + "";
                 Intent intent1 = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
@@ -129,41 +136,63 @@ public class QuYuActivity extends BaseActivity {
             }
         });
 
-        quyuAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-
-                quyuAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                        if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
-                            return;
-                        }
-                        lastClickTime = System.currentTimeMillis();
-
-//                        if ("zhuce".equals(pageFlag)) {
-////                loadingDialog.show();
-//                            String str1 = mListData.get(position).getQyid() + "";
-//                            Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
-//                            intent.putExtra("quyuId", str1);
-//                            startActivity(intent);
-//                            finish();
-////                loadingDialog.close();
+//        quyuAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+//
+//                quyuAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                        if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+//                            return;
 //                        }
-                    }
-                });
-
-                shanchu_flag = true;
-                layBottom.setVisibility(View.VISIBLE);
-                tv_input.setText(R.string.text_shanchu);
-                quyuAdapter.showCheckBox(true);
-//                quyuAdapter.setNewData(mQuYuList);
-//                rlQuyu.setAdapter(quyuAdapter);
-
-                return false;
+//                        lastClickTime = System.currentTimeMillis();
+//
+////                        if ("zhuce".equals(pageFlag)) {
+//////                loadingDialog.show();
+////                            String str1 = mListData.get(position).getQyid() + "";
+////                            Intent intent = new Intent(QuYuActivity.this, ReisterMainPage_scan.class);
+////                            intent.putExtra("quyuId", str1);
+////                            startActivity(intent);
+////                            finish();
+//////                loadingDialog.close();
+////                        }
+//                    }
+//                });
+//
+//                shanchu_flag = true;
+//                layBottom.setVisibility(View.VISIBLE);
+//                tv_input.setText(R.string.text_shanchu);
+//                quyuAdapter.showCheckBox(true);
+////                quyuAdapter.setNewData(mQuYuList);
+////                rlQuyu.setAdapter(quyuAdapter);
+//
+//                return false;
+//            }
+//        });
+        titleDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+//                    return;
+//                }
+//                lastClickTime = System.currentTimeMillis();
+                if (isDelete) {
+                    isDelete = false;
+                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
+                    shanchu_flag = true;
+                    layBottom.setVisibility(View.VISIBLE);
+                    tv_input.setText(R.string.text_shanchu);
+                    quyuAdapter.showCheckBox(true);
+                } else {
+                    isDelete = true;
+                    titleDelete.setBackgroundResource(R.drawable.icon_delete);
+                    shanchu_flag = false;
+                    layBottom.setVisibility(View.GONE);
+                    quyuAdapter.showCheckBox(false);
+                }
             }
         });
-
 
         mHandle = new Handler(msg -> {
             switch (msg.what) {
@@ -226,12 +255,25 @@ public class QuYuActivity extends BaseActivity {
                     });
                     quyuAdapter.setNewData(mQuYuList);
                     rlQuyu.setAdapter(quyuAdapter);
+                    if (mQuYuList.size() == 0) {
+                        isDelete = true;
+                        titleDelete.setBackgroundResource(R.drawable.icon_delete);
+                        shanchu_flag = false;
+                        layBottom.setVisibility(View.GONE);
+                        quyuAdapter.showCheckBox(false);
+                        tv_check_all.setText(getResources().getString(R.string.text_qx));
+                        isSelectAll = true;
+                        setAllItemChecked(false);
+                    }
                     break;
             }
             return false;
         });
 
         mHandle.sendMessage(mHandle.obtainMessage(1));
+        if (mListData.isEmpty()) {
+            show_Toast(getResources().getString(R.string.text_tjqy));
+        }
     }
 
     private boolean isSelectAll = true;//是否全选
@@ -253,11 +295,11 @@ public class QuYuActivity extends BaseActivity {
                     return;
                 }
                 if (isSelectAll) {
-                    tv_check_all.setText("取消全选");
+                    tv_check_all.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
                     setAllItemChecked(true);
                 } else {
-                    tv_check_all.setText("全选");
+                    tv_check_all.setText(getResources().getString(R.string.text_qx));
                     isSelectAll = true;
                     setAllItemChecked(false);
                 }

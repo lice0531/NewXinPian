@@ -1011,4 +1011,6 @@
     <string name="dialog_pai_dz">递增</string>
     <string name="dialog_pai_dj">递减</string>
     <string name="dialog_pai_fa">发</string>
+    <string name="text_syxm">Use current project</string>
+    <string name="text_qxqx">Deselect all</string>
 </resources>

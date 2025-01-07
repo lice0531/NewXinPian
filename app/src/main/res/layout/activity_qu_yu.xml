@@ -55,7 +55,7 @@
             android:layout_weight="1"
             android:foreground="@drawable/bg_white"
             android:gravity="center"
-            android:text="组网起爆"
+            android:text="@string/text_zwqb"
             android:textColor="@color/white"
             style="@style/alltextstyle" />
 
