@@ -751,8 +751,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e(TAG, "刷新适配器--paiMax: " + paiMax);
                     for (int i = 1; i <= paiMax; i++) {
                         List<DenatorBaseinfoSelect> list_pai = master.queryDetonatorPaiSelect(mRegion,i);
-                        Log.e(TAG, "刷新适配器--list_pai: " + list_pai.toString());
-
                         childList.add(list_pai);
                     }
                     demoAdapter = new ZhuCeScanAdapter(groupList, childList, this, this);
@@ -804,21 +802,24 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e("liyi_1002", "更新视图 雷管数量" + mListData.size());
                     break;
 
-                // 电源显示
+                // 删除后,更新视图
                 case 1003:
-                    Log.e("liyi_1003", "更新视图 pai-1:" + (paiChoice-1));
-                    Log.e("liyi_1003", "更新视图 kongChoice-1:" + (kongChoice-1));
-                    Log.e("liyi_1003", "更新视图 选中雷管" + childList.get(paiChoice-1).get(kongChoice-1).getShellBlastNo());
-                    Log.e("liyi_1003", "更新视图 区域" + mRegion);
-                    Log.e("liyi_1003", "更新视图 雷管数量: " + mListData.size());
+                    //删除后更新选中孔号
+                    kongChoice =  new GreenDaoMaster().queryDetonatorPai(mRegion,paiChoice).size();
+                    Log.e("liyi_1003", "删除后,更新视图 pai:" + (paiChoice));//list里面需要减1,查询不用减1
+                    Log.e("liyi_1003", "删除后,更新视图 kongChoice-1:" + (kongChoice-1));
+                    Log.e("liyi_1003", "删除后,更新视图 选中雷管" + childList.get(paiChoice-1).get(kongChoice-1).getShellBlastNo());
+                    Log.e("liyi_1003", "删除后,更新视图 区域:" + mRegion);
+                    Log.e("liyi_1003", "删除后,更新视图 雷管数量: " + mListData.size());
                     //根据选择的排确定延时的值
-                    choicepaiData = GreenDaoMaster.gePaiData(mRegion,(paiChoice-1) + "");
+                    choicepaiData = GreenDaoMaster.gePaiData(mRegion,(paiChoice) + "");
                     //如果有默认排的话,就默认该排的延时
                     if (choicepaiData != null) {
                         start_delay_data = choicepaiData.getStartDelay();
                         f1_delay_data = choicepaiData.getKongDelay();
                         f2_delay_data = choicepaiData.getNeiDelay();
                         flag_jh_f1 = !choicepaiData.getDiJian();
+                        Log.e(TAG, "根据选中排更新是否递减  choicepaiData.getDiJian(): " + choicepaiData.getDiJian());
                         Log.e(TAG, "根据选中排更新是否递减  flag_jh_f1: " + flag_jh_f1);
                     }
 
@@ -2242,8 +2243,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int maxKong = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiChoice);//获取该区域最大孔号
         int delay_max = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
-        int delay_minNum = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
-        Log.e(TAG, "当前段最小序号延时: " + delay_minNum);
+        int delay_min = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
+        Log.e(TAG, "当前段最小序号延时: " + delay_min);
         Log.e(TAG, "当前段最大延时参数: " + duan_new);
         Log.e(TAG, "当前段最大延时: " + delay_max);
         Log.e(TAG, "当前段最大孔号 maxKong: " + maxKong);
@@ -2293,7 +2294,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
 
-        delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_minNum, duanNo2);
+        delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
         if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
@@ -2342,7 +2343,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         delay_add = f1;
                     }
                 }
-                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_minNum, tk_num);
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
                 Log.e("单发输入--插入延时", "delay_max: " + delay_max);
                 Log.e("单发输入--插入延时", "delay_add: " + delay_add);
 //                if(flag_t1&&delay==db_charu.getDelay()){
@@ -2631,6 +2632,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         delay_set = "f1";
         Log.e("扫码", "delay_set: " + delay_set);
 
+        Log.e("扫码", "是否递减 flag_jh_f1: " + flag_jh_f1);
         Log.e("扫码", "maxKong: " + maxKong);
         Log.e("扫码", "duanNo2: " + duanNo2);
         //判断延时是否超出范围
@@ -2749,6 +2751,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 //        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().serchDenatorIdForChoice(paiChoice, kongChoice);
         DenatorBaseinfo denatorBaseinfo_choice = null;
+
         if (childList.get(paiChoice - 1).size() > 0) {
             denatorBaseinfo_choice = childList.get(paiChoice - 1).get(kongChoice - 1);
         }
@@ -2970,76 +2973,70 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return reCount;
     }
 
-    private int getDelay(int maxNo, int delay, int start_delay, int f1, int tk_num, int f2, int delay_minNum, int duanNo2) {
+    private int getDelay(int maxNo, int delay_max, int start_delay, int f1, int tk_num, int f2, int delay_min, int duanNo2) {
         Log.e(TAG, "flag_jh_f1: " + flag_jh_f1);
         Log.e(TAG, "delay_set: " + delay_set);
         Log.e(TAG, "maxNo: " + maxNo);
-        Log.e(TAG, "delay: " + delay);
+        Log.e(TAG, "delay: " + delay_max);
         Log.e(TAG, "start_delay: " + start_delay);
-        Log.e(TAG, "delay_minNum: " + delay_minNum);
+        Log.e(TAG, "delay_minNum: " + delay_min);
         if (!flag_jh_f1) {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
-                    delay = start_delay - delay;
+                    delay_max = start_delay - delay_max;
                     Log.e(TAG, "start_delay: " + start_delay);
-                    Log.e(TAG, "delay: " + delay);
-                } else if (btn_start) {
-                    delay = start_delay;
+                    Log.e(TAG, "delay: " + delay_max);
                 } else {
                     if (flag_tk) {
-                        delay = delay - f1 * (tk_num + 1);
+                        delay_max = delay_min - f1 * (tk_num + 1);
                     } else {
-                        delay = delay - f1;
+                        delay_max = delay_min - f1;
                     }
 
                 }
             } else if (delay_set.equals("f2")) {//排间延时
                 if (maxNo == 0) {
-                    delay = delay + start_delay;
+                    delay_max = delay_max + start_delay;
                 } else {
                     if (flag_tk) {
-                        delay = delay_minNum + f2 * (tk_num + 1);
+                        delay_max = delay_min + f2 * (tk_num + 1);
                     } else {
-                        delay = delay_minNum + f2;
+                        delay_max = delay_min + f2;
                     }
                 }
             }
         } else {
             if (delay_set.equals("f1")) {//孔间延时
                 if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else if (btn_start) {
-                    delay = start_delay;
+                    delay_max = delay_max + start_delay;
                 } else {
                     if (flag_tk) {
-                        delay = delay + f1 * (tk_num + 1);
+                        delay_max = delay_max + f1 * (tk_num + 1);
                     } else {
-                        delay = delay + f1;
+                        delay_max = delay_max + f1;
                     }
 
                 }
                 Log.e(TAG, "开始延时: " + start_delay);
-                Log.e(TAG, "孔间延时: " + delay);
+                Log.e(TAG, "孔间延时: " + delay_max);
             } else if (delay_set.equals("f2")) {//孔内延时
 
                 if (maxNo == 0) {
-                    delay = delay + start_delay;
-                } else if (btn_start) {
-                    delay = start_delay;
-                } else {
+                    delay_max = delay_max + start_delay;
+                }  else {
                     if (flag_tk) {
-                        delay = delay_minNum + f2 * (tk_num + 1);
+                        delay_max = delay_min + f2 * (tk_num + 1);
                     } else {
-                        delay = delay_minNum + f2;
+                        delay_max = delay_min + f2;
                     }
                 }
-                Log.e(TAG, "孔内延时: " + delay);
+                Log.e(TAG, "孔内延时: " + delay_max);
             } else {
-                delay = start_delay;
+                delay_max = start_delay;
             }
         }
 
-        return delay;
+        return delay_max;
     }
 
     private int getDelay_charu(int start_delay, int f1, int f2, int maxNo, int delay_minNum, int tk_num) {

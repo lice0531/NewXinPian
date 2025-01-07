@@ -30,7 +30,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title">
+        android:layout_below="@+id/title"
+        android:layout_above="@id/lay_bottom"
+        >
 
         <LinearLayout
             android:id="@+id/container"
