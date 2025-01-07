@@ -691,6 +691,17 @@ public class GreenDaoMaster {
         mDeantorBaseDao.delete(entity);
     }
 
+    /**
+     * 删除某一发雷管
+     */
+    public void deleteDetonator(long id) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Id.eq(id))
+                .unique();
+        mDeantorBaseDao.delete(entity);
+    }
+
 
     /**
      * 查询全部雷管 正序(序号)

@@ -2329,7 +2329,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             duanNo2 = duanNo2 + 1;
             denatorBaseinfo.setSithole((maxKong) + "");
             denatorBaseinfo.setDuanNo((duanNo2));
-            denatorBaseinfo.setDelay(delay_start);
+            if(!flag_jh_f1){
+                denatorBaseinfo.setDelay(delay_min);
+            }else {
+                denatorBaseinfo.setDelay(delay_start);
+            }
+
         }
         int delay_add = 0;
         if (charu) {
@@ -3214,7 +3219,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 Log.e(TAG, "点击删除选中雷管: ");
                 for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
                     if (data.isSelect()) {
-                        new GreenDaoMaster().deleteDetonator(data.getShellBlastNo());
+                        if(data.getShellBlastNo().length()!=13){
+                            new GreenDaoMaster().deleteDetonator(data.getId());
+                        }else {
+                            new GreenDaoMaster().deleteDetonator(data.getShellBlastNo());
+                        }
+
                         Utils.writeRecord("--删除雷管:" + data.getShellBlastNo());
                         Log.e(TAG, "选中的雷管: " + data.getShellBlastNo());
                     }
@@ -3310,12 +3320,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_scanReister:
-                int d = getFan(duan_new);
-                if (d == 1) {
-                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
-                    return;
-                }
-                Log.e(TAG, "是否翻转: " + d);
+//                int d = getFan(duan_new);
+//                if (d == 1) {
+//                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
+//                    return;
+//                }
+//                Log.e(TAG, "是否翻转: " + d);
                 if (checkDelay()) return;
                 if (f1_delay_data.length() < 1 || f2_delay_data.length() < 1 || start_delay_data.length() < 1) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
