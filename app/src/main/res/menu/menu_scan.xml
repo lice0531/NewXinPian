@@ -18,6 +18,11 @@
         android:orderInCategory="3"
         android:title="授权注册"
         app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_4"
+        android:orderInCategory="4"
+        android:title="隧道模式"
+        app:showAsAction="withText" />
 
 
 

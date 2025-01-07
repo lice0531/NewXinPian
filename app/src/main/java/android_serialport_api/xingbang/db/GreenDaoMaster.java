@@ -2033,6 +2033,15 @@ public class GreenDaoMaster {
         }
     }
 
-
+    /**
+     * 删除某一排
+     */
+    public void deletepai(long id) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Id.eq(id))
+                .unique();
+        mDeantorBaseDao.delete(entity);
+    }
 
 }

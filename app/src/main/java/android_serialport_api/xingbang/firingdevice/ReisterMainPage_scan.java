@@ -1769,41 +1769,41 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            }
 //
 //        });
-        builder.setNeutralButton(getResources().getString(R.string.text_tip_delete), (dialog, which) -> {
-            dialog.dismiss();
-            AlertDialog dialog2 = new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
-                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
-                    //设置对话框的按钮
-                    .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
-                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
-                            } else {
-                                // TODO 开启进度条
-                                runPbDialog();
-                                new Thread(() -> {
-                                    // 删除某一发雷管
-                                    int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
-                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
-                                    Utils.writeRecord("--删除雷管:" + shellBlastNo);
-                                    AppLogUtils.writeAppLog("--删除雷管:" + shellBlastNo);
-                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
-                                    //更新每段雷管数量
-                                    Message msg = new Message();
-                                    msg.arg1 = duan_guan;
-                                    mHandler_showNum.sendMessage(msg);
-                                    // 区域 更新视图
-                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                                    pb_show = 0;
-                                }).start();
-                            }
-                        }
-                    }).create();
-            dialog2.show();
-        });
+//        builder.setNeutralButton(getResources().getString(R.string.text_tip_delete), (dialog, which) -> {
+//            dialog.dismiss();
+//            AlertDialog dialog2 = new AlertDialog.Builder(this)
+//                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+//                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
+//                    //设置对话框的按钮
+//                    .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+//                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
+//                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
+//                            } else {
+//                                // TODO 开启进度条
+//                                runPbDialog();
+//                                new Thread(() -> {
+//                                    // 删除某一发雷管
+//                                    int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
+//                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
+//                                    Utils.writeRecord("--删除雷管:" + shellBlastNo);
+//                                    AppLogUtils.writeAppLog("--删除雷管:" + shellBlastNo);
+////                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
+//                                    //更新每段雷管数量
+//                                    Message msg = new Message();
+//                                    msg.arg1 = duan_guan;
+//                                    mHandler_showNum.sendMessage(msg);
+//                                    // 区域 更新视图
+//                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//                                    pb_show = 0;
+//                                }).start();
+//                            }
+//                        }
+//                    }).create();
+//            dialog2.show();
+//        });
         builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
 //            int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
 //            Log.e(TAG, "a: "+a );
@@ -3241,6 +3241,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         switch (view.getId()) {
             case R.id.tv_delete:
                 Log.e(TAG, "点击删除选中雷管: ");
+//                for (PaiDataSelect data : groupList) {
+//                    if (data.isSelect()) {
+//                        new GreenDaoMaster().deletepai(data.getId());
+//                    }
+//                }
                 for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
                     if (data.isSelect()) {
                         if(data.getShellBlastNo().length()!=13){
@@ -3260,7 +3265,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_pai:
                 cartePai();
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
                 break;
             case R.id.btn_kong:
                 insertSingleDenator("");
@@ -3708,7 +3712,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     paiData.setDelayMax("0");
                     paiData.setSum("0");
                     getDaoSession().getPaiDataDao().insert(paiData);
-
+                    paiChoice=0;//重置选中的排
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
 //                    mHandle.sendMessage(mHandle.obtainMessage(1));
 //                    }
@@ -4501,7 +4505,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.item_3://授权注册
                 startActivity(new Intent(ReisterMainPage_scan.this, SouSuoSQActivity.class));
                 return true;
-//            case R.id.item_4:
+            case R.id.item_4:
+                startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));
+                return true;
 //            case R.id.item_5:
 //                // 区域 更新视图
 //                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));

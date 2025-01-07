@@ -624,13 +624,13 @@ public class ProjectManagerActivity extends BaseActivity {
         List<Project> newsList = LitePal.where("project_name = ?", name).find(Project.class);
         Log.e("项目保存", "newsList: " + newsList.toString());
         Log.e("项目保存", "size: " + newsList.size());
-        if (TextUtils.isEmpty(pageFlag)) {
-            if (newsList.size() > 0) {
-                return "项目名称重复";
-            } else {
-                return "";
-            }
-        }
+//        if (TextUtils.isEmpty(pageFlag)) {
+//            if (newsList.size() > 0) {
+//                return "项目名称重复";
+//            } else {
+//                return "";
+//            }
+//        }
         return "";
     }
 
