@@ -862,9 +862,9 @@ public class TestDenatorActivity extends SerialPortActivity {
                     Log.e(TAG, "大于参考值 ，部分错: stage=" + stage);
                 } else if (errtotal > 0 && busInfo != null && busInfo.getBusCurrentIa() > (denatorCount * cankaodianliu * 0.9) && busInfo.getBusCurrentIa() < (denatorCount * cankaodianliu * 1.1)) {
                     initDialog_tip(getString(R.string.text_test_tip9));
-                    stopXunHuan();//检测完成
+                    stopXunHuan(false);//检测完成
                 } else {
-                    stopXunHuan();//检测完成
+                    stopXunHuan(true);//检测完成
                 }
                 //(22/10/09)因浩宇反馈,有出现过错误数量为0,但是实际是有雷管错误的,所以再检测完后再获取一下错误数量
                 getErrorBlastCount();
@@ -1522,11 +1522,11 @@ public class TestDenatorActivity extends SerialPortActivity {
 //        ll_firing_errorNum_4.setTextColor(Color.GREEN);
     }
 
-    private void stopXunHuan() {
+    private void stopXunHuan(boolean isShowQbBtn) {
         endTest();
         ll_1.setVisibility(View.GONE);
         ll_2.setVisibility(View.VISIBLE);
-        btn_jixu.setVisibility(View.VISIBLE);
+        btn_jixu.setVisibility(isShowQbBtn ? View.VISIBLE : View.GONE);
         secondTxt.setText(R.string.text_test_tip4);
 //        byte[] initBuf2 = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_7("00");//36 在网读ID检测
 //        sendCmd(initBuf2);
@@ -1611,7 +1611,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         off(true);//重新检测
                         dialog1.dismiss();
                     }).setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
-                        stopXunHuan();
+                        stopXunHuan(false);
                     }).create();
             if (!TestDenatorActivity.this.isFinishing()) {//xActivity即为本界面的Activity
                 dialog.show();
@@ -1649,7 +1649,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                         off(true);//重新检测
                         dialog1.dismiss();
                     }).setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
-                        stopXunHuan();
+                        stopXunHuan(false);
                     }).create();
             dialog.show();
         }
@@ -1685,7 +1685,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             });
             builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
                 dialogOFF(dialog);
-                stopXunHuan();
+                stopXunHuan(false);
                 dialog.dismiss();
             });
             builder.setNegativeButton(getResources().getString(R.string.text_fir_dialog5), (dialog, which) -> {

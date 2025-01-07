@@ -292,7 +292,7 @@
                 android:layout_height="60dp"
                 android:layout_margin="15dp"
                 android:layout_marginRight="50dp"
-                android:text="设为当前项目"
+                android:text="@string/text_syxm"
                 android:textSize="20sp" />
 
             <RelativeLayout
