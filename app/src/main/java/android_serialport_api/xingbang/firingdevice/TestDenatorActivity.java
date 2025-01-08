@@ -139,7 +139,7 @@ public class TestDenatorActivity extends SerialPortActivity {
     private boolean isSerialPortClosed = false;//是否已关闭串口
     //最大线程数设置为2，队列最大能存2，使用主线程执行的拒绝策略
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>(2), new ThreadPoolExecutor.CallerRunsPolicy());
-    private ArrayList<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
+    private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
     //初始化
     //off()方法 true 获取全部雷管  flase 获取错误雷管
     private void initParam(boolean all_lg) {
@@ -190,7 +190,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         errorList = new LinkedList<>();
         getUserMessage();//放在前面
         initParam(false);//清空所有数据,要放在读取数据的方法之前
-        qyIdList = getIntent().getIntegerArrayListExtra("qyList");
+        qyIdList = new GreenDaoMaster().getSelectedQyIdList();
         initView();
         loadMoreData();//读取数据
         initHandler();
@@ -408,7 +408,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
         } else {
             intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
-            intent.putIntegerArrayListExtra("qyList",qyIdList);
+//            intent.putIntegerArrayListExtra("qyList",qyIdList);
         }
         intent.putExtra("dataSend", str5);
         startActivity(intent);

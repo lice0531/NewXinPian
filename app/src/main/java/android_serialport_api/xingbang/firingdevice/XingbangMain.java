@@ -836,10 +836,10 @@ public class XingbangMain extends SerialPortActivity {
 
                 close();//停止访问电流
                 String str1 = "注册";
-                Intent intent = new Intent(XingbangMain.this, QuYuActivity.class);//金建华
+                Intent intent = new Intent(XingbangMain.this, QuYuActivity2.class);//金建华
 //                Intent intent = new Intent(XingbangMain.this, ReisterMainPage_scan.class);//金建华
                 intent.putExtra("dataSend", str1);
-                intent.putExtra("pageFlag","zhuce");
+//                intent.putExtra("pageFlag","zhuce");
                 startActivityForResult(intent, 1);
                 break;
 
@@ -868,13 +868,13 @@ public class XingbangMain extends SerialPortActivity {
                 close();//停止访问电流
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
-//                Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);
-//                intent2.putExtra("dataSend", str2);
-//                startActivityForResult(intent2, 1);
-                Intent intent2 = new Intent(XingbangMain.this, QuYuActivity.class);//金建华
+                Intent intent2 = new Intent(XingbangMain.this, TestDenatorActivity.class);
                 intent2.putExtra("dataSend", str2);
-                intent2.putExtra("pageFlag","testDenator");
                 startActivityForResult(intent2, 1);
+//                Intent intent2 = new Intent(XingbangMain.this, QuYuActivity.class);//金建华
+//                intent2.putExtra("dataSend", str2);
+//                intent2.putExtra("pageFlag","testDenator");
+//                startActivityForResult(intent2, 1);
                 break;
 
             // 单发检测
@@ -920,9 +920,9 @@ public class XingbangMain extends SerialPortActivity {
                     intent5 = new Intent(this, VerificationActivity.class);
                 } else {
                     Log.e(TAG, "验证2: "+Yanzheng_sq);
-//                    intent5 = new Intent(this, FiringMainActivity.class);
-                    intent5 = new Intent(this, QuYuActivity.class);//金建华
-                    intent5.putExtra("pageFlag","firingMain");
+                    intent5 = new Intent(this, FiringMainActivity.class);
+//                    intent5 = new Intent(this, QuYuActivity.class);//金建华
+//                    intent5.putExtra("pageFlag","firingMain");
                 }
                 close();//停止访问电流
                 intent5.putExtra("dataSend", str5);

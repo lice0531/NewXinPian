@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -40,6 +42,8 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         int position = helper.getLayoutPosition();
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.toString() );
 //        Log.e(TAG, "item.getDetonatorIdSup(): "+item.getDetonatorIdSup() );
+        ConstraintLayout cl_top = helper.getView(R.id.cl_top);
+        cl_top.setBackgroundColor("true".equals(item.getSelected()) ? Color.GREEN : Color.WHITE);
         CheckBox cbIsSelected = helper.getView(R.id.cb_check);
         cbIsSelected.setVisibility(isShowCheck ? View.VISIBLE : View.GONE);
         cbIsSelected.setChecked(item.isSelect());
@@ -54,8 +58,12 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         int maxPai = master.getPieceMaxPai(item.getQyid()+"");
         int max = master.getPieceMaxNumDelay(item.getQyid()+"");
         int min = master.getPieceMinNumDelay(item.getQyid()+"");
-
-        helper.setText(R.id.qy_no, item.getQyid() + "");//
+        TextView tvNo = helper.getView(R.id.qy_no);
+        if ("true".equals(item.getSelected())) {
+            tvNo.setText(item.getQyid() + "\n已组网");
+        } else {
+            tvNo.setText(item.getQyid() + "");
+        }
         helper.setText(R.id.qy_txt_total, "共:" + total+"发");//
         helper.setText(R.id.qy_txt_totalPai, "共:" +maxPai+"排"+ total+"发");//
         helper.setText(R.id.qy_txt_minDealy, "最小延时:"+min );//
