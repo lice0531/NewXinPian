@@ -57,7 +57,7 @@ public class ProjectDetailActivity extends BaseActivity {
     RelativeLayout rlXmCode;
     private String select_business;
     private String TAG = "项目详情页面";
-    private String htbh = "", xmbh = "", coordxy = "", business = "", project_name = "", bprysfz = "", dwdm = "";
+    private String proId = "",htbh = "", xmbh = "", coordxy = "", business = "", project_name = "", bprysfz = "", dwdm = "";
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
     private TextView totalbar_title;
@@ -86,6 +86,8 @@ public class ProjectDetailActivity extends BaseActivity {
     }
 
     private void initData() {
+        proId = !TextUtils.isEmpty(getIntent().getStringExtra("proId")) ?
+                getIntent().getStringExtra("proId") : "";
         htbh = !TextUtils.isEmpty(getIntent().getStringExtra("htbh")) ?
                 getIntent().getStringExtra("htbh") : "";
         xmbh = !TextUtils.isEmpty(getIntent().getStringExtra("xmbh")) ?
@@ -119,6 +121,7 @@ public class ProjectDetailActivity extends BaseActivity {
             //如果是使用中的项目，进入项目编辑页面
             Intent intent = new Intent(this, ProjectManagerActivity.class);
             intent.putExtra("xmPageFlag", "detail");
+            intent.putExtra("proId", proId);
             intent.putExtra("htbh", htbh);
             intent.putExtra("dwdm", dwdm);
             intent.putExtra("xmbh", xmbh);
@@ -128,11 +131,11 @@ public class ProjectDetailActivity extends BaseActivity {
             intent.putExtra("bprysfz", bprysfz);
             startActivityForResult(intent,REQUEST_CODE);
         });
-        getErCode(project_name);
+        getErCode(proId);
     }
 
     private void getErCode(String pName) {
-        Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Project_name.eq(pName)).unique();
+        Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Id.eq(pName)).unique();
         String mPname = project.getProject_name();
         String mHtbh = project.getHtbh();
         String mXmbh = project.getXmbh();
@@ -161,17 +164,19 @@ public class ProjectDetailActivity extends BaseActivity {
                 + mBusiness;
         // 生成二维码
         Log.e(TAG,"加密前的项目信息:" + content);
-        final String key = "jadl12345678912345678912";
-        String ercontent = content.replace("\n", "");
-        try {
-            String encode = ThreeDES.encryptThreeDESECB(ercontent, key);
-            Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(encode);
-            ivXmCode.setImageBitmap(qrCodeBitmap);
-        } catch (Exception e) {
-            AppLogUtils.writeAppLog("二维码生成失败:" + e.getMessage().toString());
-            Log.e(TAG,"生成加密二维码失败:" + e.getMessage().toString());
-            throw new RuntimeException(e);
-        }
+        Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(content);
+        ivXmCode.setImageBitmap(qrCodeBitmap);
+//        final String key = "jadl12345678912345678912";
+//        String ercontent = content.replace("\n", "");
+//        try {
+//            String encode = ThreeDES.encryptThreeDESECB(ercontent, key);
+//            Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(encode);
+//            ivXmCode.setImageBitmap(qrCodeBitmap);
+//        } catch (Exception e) {
+//            AppLogUtils.writeAppLog("二维码生成失败:" + e.getMessage().toString());
+//            Log.e(TAG,"生成加密二维码失败:" + e.getMessage().toString());
+//            throw new RuntimeException(e);
+//        }
     }
 
     @OnClick({R.id.btn_set_project, R.id.rlXmCode})
@@ -206,7 +211,7 @@ public class ProjectDetailActivity extends BaseActivity {
             Application.getDaoSession().getProjectDao().update(beforeProject);
         }
         //接着将本项目改为使用中  起爆器只能有一个项目可以为使用中
-        Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Project_name.eq(project_name)).unique();
+        Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Id.eq(proId)).unique();
         project.setSelected("true");
         Application.getDaoSession().getProjectDao().update(project);
         finish();
@@ -231,10 +236,10 @@ public class ProjectDetailActivity extends BaseActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == 1) {
                 // 获取传递过来的数据
-                String pName = data.getStringExtra("projectName");
-                Log.e(TAG,"传值得到的项目名称:" + pName);
+                String pName = data.getStringExtra("proId");
+                Log.e(TAG,"传值得到的项目id:" + pName);
                 getErCode(pName);
-                project_name = pName;
+                proId = pName;
             }
         }
     }

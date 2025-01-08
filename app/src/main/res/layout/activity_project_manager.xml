@@ -266,18 +266,39 @@
                             android:textSize="20sp" />
 
                         <AutoCompleteTextView
-                            android:id="@+id/down_at_coordxy"
+                            android:id="@+id/down_at_coordx"
                             style="@style/alltextstyle"
                             android:layout_width="10dp"
                             android:layout_height="match_parent"
                             android:layout_weight="5"
                             android:digits="1234567890.,"
                             android:gravity="center_vertical"
-                            android:hint="@string/add_project_jwd_hint"
+                            android:hint="@string/add_project_jwd"
                             android:inputType="number"
                             android:maxLines="2"
                             android:padding="5dp"
                             android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="bottom"
+                            android:layout_marginBottom="3dp"
+                            android:text=","/>
+                        <AutoCompleteTextView
+                            android:id="@+id/down_at_coordy"
+                            style="@style/alltextstyle"
+                            android:layout_width="10dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+                            android:digits="1234567890.,"
+                            android:gravity="center_vertical"
+                            android:hint="@string/add_project_jwd"
+                            android:inputType="number"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:textSize="16sp" />
+
                     </LinearLayout>
 
                     <View

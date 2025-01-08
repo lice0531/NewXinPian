@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sv_sp"
@@ -75,6 +75,8 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:layout_below="@+id/lltop"
+        android:layout_above="@+id/btn_delete_project"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
@@ -93,6 +95,7 @@
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/blue_light_style"
                 android:padding="10dp"
+                android:visibility="gone"
                 android:text="@string/text_xmxz_ts"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -340,12 +343,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="10dp"
         android:text="删除项目"
         android:visibility="gone" />
-</LinearLayout>
+</RelativeLayout>

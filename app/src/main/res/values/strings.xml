@@ -385,6 +385,7 @@
     <string name="app_title">煋邦起爆系统   /</string>
     <string name="add_project_actv_hint">合同,项目,单位代码必填一项</string>
     <string name="add_project_jwd_hint">只能输入数字和逗号</string>
+    <string name="add_project_jwd">只能输入数字和.</string>
     <string name="qb_tip_err">错误:</string>
     <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
     <string name="text_qb_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
@@ -1001,11 +1002,12 @@
     <string name="text_his_sclg">请输入密码后,再进行删除雷管操作</string>
     <string name="btn_fan">反</string>
     <string name="text_scxm">是否删除该项目?</string>
+    <string name="text_scsyxm">是否删除选中的项目?</string>
     <string name="text_gl">管理</string>
     <string name="text_xzxm">请先新增项目</string>
     <string name="text_szxm">请先设置需要使用的项目</string>
     <string name="text_xmxz_ts">友情提示：为保障项目能够顺利下载，请先点击列表中的项目，进入项目详情页面，选择并设置好您需要使用的项目。然后，再进行下载操作。</string>
-    <string name="text_xmewm_ts">友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描下面二维码快速完成项目信息新增！</string>
+    <string name="text_xmewm_ts">友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描上面二维码快速完成项目信息新增！</string>
     <string name="text_zwcs">组网测试</string>
     <string name="text_zwqb">组网起爆</string>
     <string name="text_tjqy">请先点击右上角加号添加区域</string>
