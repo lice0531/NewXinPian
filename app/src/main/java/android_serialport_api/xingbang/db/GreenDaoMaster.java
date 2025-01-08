@@ -2047,6 +2047,27 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 获取 该区域 该排 最大的孔号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceAndPaiMinKong(String piece,int pai) {
+        int sithole;
+        String sql = "select min(blastserial) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            sithole = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceAndPaiMinKong", "获取该区域 该排的 最小孔号: "+sithole);
+            return sithole;
+        }else {
+            Log.e("getPieceAndPaiMinKong", "获取该区域 该排的 最小孔号: 0");
+            return 0;
+        }
+    }
+
+    /**
      * 删除某一排
      */
     public void deletepai(String piece,long id) {

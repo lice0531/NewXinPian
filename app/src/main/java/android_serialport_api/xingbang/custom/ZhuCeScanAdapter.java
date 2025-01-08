@@ -123,11 +123,9 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         }else {
             viewHolder1.itme_ll.setBackgroundResource(R.color.result_minor_text);
         }
-        Log.e("父控件", "更新视图 mGroupList.get(groupPosition).isSelect(): "+mGroupList.get(groupPosition).isSelect());
         viewHolder1.pai_check.setChecked(mGroupList.get(groupPosition).isSelect());
         viewHolder1.pai_check.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mGroupList.get(groupPosition).setSelect(isChecked);
-            Log.e("父控件", "OnChecked-isChecked: "+isChecked);
         });
         viewHolder1.im_xiugai1.setOnClickListener(v -> {
             if (listener != null) {
