@@ -295,6 +295,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         totalbar_title = findViewById(R.id.title_text);
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
+        iv_add.setVisibility(View.GONE);
         iv_add.setOnClickListener(v -> {
             choiceQuYu();
         });

@@ -65,18 +65,21 @@ public class ProjectErCodeActivity extends BaseActivity {
         String content = "htbh:" + htbh + ";xmbh:" + xmbh + ";project_name:" + project_name
                 + ";dwdm:" + dwdm + ";bprysfz:" + bprysfz + ";coordxy:" + coordxy + ";business:"
                 + business;
-        // 生成二维码
-        Log.e(TAG,"加密前的项目信息:" + content);
-        final String key = "jadl12345678912345678912";
-        String ercontent = content.replace("\n", "");
-        try {
-            String encode = ThreeDES.encryptThreeDESECB(ercontent, key);
-            Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(encode);
-            ivXmCode.setImageBitmap(qrCodeBitmap);
-        } catch (Exception e) {
-            Log.e(TAG,"生成加密二维码失败:" + e.getMessage().toString());
-            AppLogUtils.writeAppLog("二维码生成失败:" + e.getMessage().toString());
-            throw new RuntimeException(e);
-        }
+        // 生成二维码   注：暂时先不加密了
+//        Log.e(TAG,"加密前的项目信息:" + content);
+//        final String key = "jadl12345678912345678912";
+//        String ercontent = content.replace("\n", "");
+//        try {
+//            String encode = ThreeDES.encryptThreeDESECB(ercontent, key);
+//            Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(encode);
+//            ivXmCode.setImageBitmap(qrCodeBitmap);
+//        } catch (Exception e) {
+//            Log.e(TAG,"生成加密二维码失败:" + e.getMessage().toString());
+//            AppLogUtils.writeAppLog("二维码生成失败:" + e.getMessage().toString());
+//            throw new RuntimeException(e);
+//        }
+        Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(content);
+        ivXmCode.setImageBitmap(qrCodeBitmap);
+        AppLogUtils.writeAppLog("项目二维码生成的信息:" + content);
     }
 }

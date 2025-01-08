@@ -77,8 +77,10 @@ public class ProjectManagerActivity extends BaseActivity {
     AutoCompleteTextView downAtDwdm;
     @BindView(R.id.down_at_project_name)
     AutoCompleteTextView downAtProjectName;
-    @BindView(R.id.down_at_coordxy)
-    AutoCompleteTextView downAtCoordxy;
+    @BindView(R.id.down_at_coordx)
+    AutoCompleteTextView downAtCoordx;
+    @BindView(R.id.down_at_coordy)
+    AutoCompleteTextView downAtCoordy;
     @BindView(R.id.down_at_bprysfz)
     AutoCompleteTextView downAtBprysfz;
     @BindView(R.id.ll_xmxx)
@@ -88,7 +90,7 @@ public class ProjectManagerActivity extends BaseActivity {
     private String select_business;
     private String TAG = "项目管理页面";
     private String pageFlag = "";//根据不同情况进入页面显示右上角的文字不一样
-    private String htbh = "",xmbh = "",coordxy = "",business = "",project_name = "",bprysfz = "",dwdm = "";
+    private String proId = "",htbh = "",xmbh = "",coordxy = "",business = "",project_name = "",bprysfz = "",dwdm = "";
     private SQLiteDatabase db;
     private DatabaseHelper mMyDatabaseHelper;
     private TextView totalbar_title;
@@ -114,6 +116,8 @@ public class ProjectManagerActivity extends BaseActivity {
     private void initData() {
         pageFlag = !TextUtils.isEmpty(getIntent().getStringExtra("xmPageFlag")) ?
                 getIntent().getStringExtra("xmPageFlag") : "";
+        proId = !TextUtils.isEmpty(getIntent().getStringExtra("proId")) ?
+                getIntent().getStringExtra("proId") : "";
         htbh = !TextUtils.isEmpty(getIntent().getStringExtra("htbh")) ?
                 getIntent().getStringExtra("htbh") : "";
         xmbh = !TextUtils.isEmpty(getIntent().getStringExtra("xmbh")) ?
@@ -148,7 +152,13 @@ public class ProjectManagerActivity extends BaseActivity {
             downAtHtid.setText(htbh);
             downAtXmbh.setText(xmbh);
             downAtDwdm.setText(dwdm);
-            downAtCoordxy.setText(coordxy);
+            // 使用split方法将字符串按逗号分割
+            String[] coordinates = coordxy.split(",");
+            // 提取经度和纬度
+            String jd = coordinates[0];  // 经度
+            String wd = coordinates[1];   // 纬度
+            downAtCoordx.setText(jd);
+            downAtCoordy.setText(wd);
             downAtBprysfz.setText(bprysfz);
             if (business.startsWith("非营业性")) {
                 addGsxz.setSelection(0);
@@ -239,7 +249,8 @@ public class ProjectManagerActivity extends BaseActivity {
         initAutoComplete("history_htid", downAtHtid);
         initAutoComplete("history_xmbh", downAtXmbh);
         initAutoComplete("history_dwdm", downAtDwdm);
-        initAutoComplete("history_coordxy", downAtCoordxy);
+        initAutoComplete("history_coordx", downAtCoordx);
+        initAutoComplete("history_coordy", downAtCoordy);
         initAutoComplete("history_bprysfz", downAtBprysfz);
     }
 
@@ -276,16 +287,19 @@ public class ProjectManagerActivity extends BaseActivity {
                         }
                         if (scanResultStr != null && scanResultStr.length() > 7) {
                             String result = scanResultStr.substring(7);
-                            try {
-                                String res = ThreeDES.decryptThreeDESECB(result, key);
-                                Log.e(TAG,"设备扫码出来的内容是:" + res);
-                                Utils.writeLog("设备扫码解密后的结果是:" + res);
-                                getScanDataShow(res);
-                            } catch (Exception e) {
-                                Utils.writeLog("设备解密失败:" + e.getMessage().toString());
-                                Log.e(TAG,result + "设备解密失败:" + e.getMessage().toString());
-                                throw new RuntimeException(e);
-                            }
+                            getScanDataShow(result);
+                            Utils.writeLog("设备扫码解密后的结果是:" + result);
+                            AppLogUtils.writeAppLog("设备扫码解密后的结果是:" + result);
+//                            try {
+//                                String res = ThreeDES.decryptThreeDESECB(result, key);
+//                                Log.e(TAG,"设备扫码出来的内容是:" + res);
+//                                Utils.writeLog("设备扫码解密后的结果是:" + res);
+//                                getScanDataShow(res);
+//                            } catch (Exception e) {
+//                                Utils.writeLog("设备解密失败:" + e.getMessage().toString());
+//                                Log.e(TAG,result + "设备解密失败:" + e.getMessage().toString());
+//                                throw new RuntimeException(e);
+//                            }
                         } else {
                             Log.e(TAG,"扫码结果长度不足7,不合规");
                         }
@@ -312,16 +326,19 @@ public class ProjectManagerActivity extends BaseActivity {
                     }
                     if (data != null && data.length() > 7) {
                         String result = data.substring(7);
-                        try {
-                            String res = ThreeDES.decryptThreeDESECB(result, key);
-                            Log.e(TAG,"默认扫码出来的内容是:" + res);
-                            Utils.writeLog("默认扫码解密后的结果是:" + res);
-                            getScanDataShow(res);
-                        } catch (Exception e) {
-                            Utils.writeLog("默认解密失败:" + e.getMessage().toString());
-                            Log.e(TAG,result + "默认解密失败:" + e.getMessage().toString());
-                            throw new RuntimeException(e);
-                        }
+                        getScanDataShow(result);
+                        Utils.writeLog("默认扫码解密后的结果是:" + result);
+                        AppLogUtils.writeAppLog("设备扫码解密后的结果是:" + result);
+//                        try {
+//                            String res = ThreeDES.decryptThreeDESECB(result, key);
+//                            Log.e(TAG,"默认扫码出来的内容是:" + res);
+//                            Utils.writeLog("默认扫码解密后的结果是:" + res);
+//                            getScanDataShow(res);
+//                        } catch (Exception e) {
+//                            Utils.writeLog("默认解密失败:" + e.getMessage().toString());
+//                            Log.e(TAG,result + "默认解密失败:" + e.getMessage().toString());
+//                            throw new RuntimeException(e);
+//                        }
                     } else {
                         Log.e(TAG,"默认扫码结果长度不足7,不合规");
                     }
@@ -420,7 +437,18 @@ public class ProjectManagerActivity extends BaseActivity {
             downAtHtid.setText(shtbh);
             downAtXmbh.setText(sxmbh);
             downAtDwdm.setText(sdwdm);
-            downAtCoordxy.setText(scoordxy);
+            // 使用split方法将字符串按逗号分割
+            String[] coordinates = scoordxy.split(",");
+            // 提取经度和纬度
+            // 检查数组长度是否大于1，防止数组越界
+            if (coordinates.length > 1) {
+                String jd = coordinates[0];  // 经度
+                String wd = coordinates[1];   // 纬度
+                downAtCoordx.setText(jd);
+                downAtCoordy.setText(wd);
+            } else {
+                Log.e(TAG,"经纬度出错:" + scoordxy);
+            }
             downAtBprysfz.setText(sbprysfz);
         }
     }
@@ -462,7 +490,11 @@ public class ProjectManagerActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_down_inputOK:
                 hideInputKeyboard();//隐藏键盘
-                if (downAtCoordxy.getText().toString().trim().length() < 1) {
+                if (downAtCoordx.getText().toString().trim().length() < 1) {
+                    show_Toast(getResources().getString(R.string.text_down_err3));
+                    return;
+                }
+                if (downAtCoordy.getText().toString().trim().length() < 1) {
                     show_Toast(getResources().getString(R.string.text_down_err3));
                     return;
                 }
@@ -473,11 +505,12 @@ public class ProjectManagerActivity extends BaseActivity {
                 saveData();
                 break;
             case R.id.btn_down_ercode:
+                String jwd = downAtCoordx.getText().toString().trim() + "," + downAtCoordy.getText().toString().trim();
                 Intent intent = new Intent(this,ProjectErCodeActivity.class);
                 intent.putExtra("htbh",downAtHtid.getText().toString().trim());
                 intent.putExtra("dwdm",downAtDwdm.getText().toString().trim());
                 intent.putExtra("xmbh",downAtXmbh.getText().toString().trim());
-                intent.putExtra("coordxy",downAtCoordxy.getText().toString().trim());
+                intent.putExtra("coordxy",jwd);
                 intent.putExtra("business",select_business);
                 intent.putExtra("project_name",downAtProjectName.getText().toString().trim());
                 intent.putExtra("bprysfz",downAtBprysfz.getText().toString().trim());
@@ -541,12 +574,14 @@ public class ProjectManagerActivity extends BaseActivity {
             String a = downAtBprysfz.getText().toString().trim().replace(" ", "");
             String b = downAtHtid.getText().toString().trim().replace(" ", "");
             String c = downAtXmbh.getText().toString().trim().replace(" ", "");
-            String d = downAtCoordxy.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
+            String jd = downAtCoordx.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
+            String wd = downAtCoordy.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
+            String d = jd + "," + wd;
             String e = downAtDwdm.getText().toString().trim().replace(" ", "");
             String f = downAtProjectName.getText().toString().trim().replace(" ", "");
             if (!TextUtils.isEmpty(pageFlag)) {
                 //该操作是更新已保存的项目信息
-                Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Project_name.eq(project_name)).unique();
+                Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Id.eq(proId)).unique();
                 project.setBprysfz(a);
                 project.setHtbh(b);
                 project.setXmbh(c);
@@ -559,7 +594,7 @@ public class ProjectManagerActivity extends BaseActivity {
                 Utils.writeLog("项目管理页面更新项目信息成功");
                 if ("detail".equals(pageFlag)) {
                     Intent intent = new Intent();
-                    intent.putExtra("projectName",downAtProjectName.getText().toString().trim());
+                    intent.putExtra("proId",proId);
                     setResult(1,intent);
                     Log.e(TAG,"更新详情项目了");
                 }
@@ -587,12 +622,14 @@ public class ProjectManagerActivity extends BaseActivity {
         saveHistory("history_htid", downAtHtid);//保存输入的合同编号
         saveHistory("history_dwdm", downAtDwdm);//保存输入的单位代码
         saveHistory("history_bprysfz", downAtBprysfz);//保存输入的身份证号
-        saveHistory("history_coordxy", downAtCoordxy);//保存输入的经纬度
+        saveHistory("history_coordx", downAtCoordx);//保存输入的经度
+        saveHistory("history_coordy", downAtCoordy);//保存输入的纬度
         initAutoComplete("history_projectName", downAtProjectName);
         initAutoComplete("history_htid", downAtHtid);
         initAutoComplete("history_xmbh", downAtXmbh);
         initAutoComplete("history_dwdm", downAtDwdm);
-        initAutoComplete("history_coordxy", downAtCoordxy);
+        initAutoComplete("history_coordx", downAtCoordx);
+        initAutoComplete("history_coordy", downAtCoordy);
         initAutoComplete("history_bprysfz", downAtBprysfz);
     }
 
@@ -603,7 +640,8 @@ public class ProjectManagerActivity extends BaseActivity {
         String sfz = downAtBprysfz.getText().toString().trim().replace(" ", "");
         String htid = downAtHtid.getText().toString().trim().replace(" ", "");
         String xmbh = downAtXmbh.getText().toString().trim().replace(" ", "");
-        String coordxy = downAtCoordxy.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
+        String coordx = downAtCoordx.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
+        String coordy = downAtCoordy.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
         String dwdm = downAtDwdm.getText().toString().trim().replace(" ", "");
         String name = downAtProjectName.getText().toString().trim().replace(" ", "");
         if (htid.length() > 1 && htid.length() < 15) {
@@ -618,7 +656,10 @@ public class ProjectManagerActivity extends BaseActivity {
         if (name == null) {
             return "请输入项目名称";
         }
-        if (coordxy == null || coordxy.trim().length() < 8 || coordxy.indexOf(",") < 5) {
+        if (coordx == null || coordx.trim().length() < 5) {
+            return getResources().getString(R.string.text_down_tip11);
+        }
+        if (coordy == null || coordy.trim().length() < 5) {
             return getResources().getString(R.string.text_down_tip11);
         }
         List<Project> newsList = LitePal.where("project_name = ?", name).find(Project.class);
@@ -642,7 +683,8 @@ public class ProjectManagerActivity extends BaseActivity {
         downAtDwdm.clearFocus();
         downAtHtid.clearFocus();
         downAtXmbh.clearFocus();
-        downAtCoordxy.clearFocus();
+        downAtCoordx.clearFocus();
+        downAtCoordy.clearFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }

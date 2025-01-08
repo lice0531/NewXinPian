@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ import android_serialport_api.xingbang.custom.SaveProjectAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -126,7 +130,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         ImageView iv_back = findViewById(R.id.title_back);
         title_add.setVisibility(View.GONE);
         tv_right.setVisibility(View.VISIBLE);
-        tv_right.setText(getResources().getString(R.string.text_tip_delete));
+        tv_right.setText(getResources().getString(R.string.text_gl));
         totalbar_title.setText("项目列表");
         iv_back.setOnClickListener(v -> finish());
         tv_right.setOnClickListener(new View.OnClickListener() {
@@ -139,15 +143,15 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 if (isDelete) {
                     isDelete = false;
                     mAdapter.showCheckBox(true);
-//                    btnDelete.setVisibility(View.VISIBLE);
+                    btnDelete.setVisibility(View.VISIBLE);
                     tv_right.setText(getResources().getString(R.string.text_alert_cancel));
                     pnList.clear();
                 } else {
                     pnList.clear();
                     isDelete = true;
                     mAdapter.showCheckBox(false);
-//                    btnDelete.setVisibility(View.GONE);
-                    tv_right.setText(getResources().getString(R.string.text_tip_delete));
+                    btnDelete.setVisibility(View.GONE);
+                    tv_right.setText(getResources().getString(R.string.text_gl));
                 }
             }
         });
@@ -402,18 +406,33 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                     show_Toast("请先选中要删除的项目");
                     return;
                 }
-                Log.e("页面","选中的项目: " + pnList.toString());
-                for (String pn : pnList) {
-                    delShouQuan(pn);//删除方法
-                }
-                loadMoreData();
-                mAdapter.notifyDataSetChanged();
-                if (map_project.size() == 0) {
-                    pnList.clear();
-                    isDelete = true;
-                    mAdapter.showCheckBox(false);
-//                    btnDelete.setVisibility(View.GONE);
-                    tv_right.setText(getResources().getString(R.string.text_tip_delete));
+                //先弹出是否确认删除项目dialog  确定后执行删除操作
+                if (!SaveProjectActivity.this.isFinishing()) {
+                    AlertDialog dialog = new AlertDialog.Builder(SaveProjectActivity.this)
+                            .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题
+                            .setMessage(getResources().getString(R.string.text_scsyxm))//设置对话框的内容
+                            //设置对话框的按钮
+                            .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
+                                dialog1.dismiss();
+                            })
+                            .setPositiveButton(getString(R.string.text_dialog_qd), (dialog14, which) -> {
+                                Log.e("页面","选中的项目: " + pnList.toString());
+                                for (String pn : pnList) {
+                                    delShouQuan(pn);//删除方法
+                                }
+                                loadMoreData();
+                                mAdapter.notifyDataSetChanged();
+                                if (map_project.size() == 0) {
+                                    pnList.clear();
+                                    isDelete = true;
+                                    mAdapter.showCheckBox(false);
+                                    btnDelete.setVisibility(View.GONE);
+                                    tv_right.setText(getResources().getString(R.string.text_gl));
+                                }
+                                AppLogUtils.writeAppLog("点击了多选删除项目按钮");
+                            }).create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
                 }
                 break;
         }
@@ -433,6 +452,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             //如果是使用中的项目，进入项目编辑页面
             Intent intent = new Intent(this,ProjectManagerActivity.class);
             intent.putExtra("xmPageFlag","Y");
+            intent.putExtra("proId",map_project.get(position).get("id").toString());
             intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
             intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
             intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
@@ -444,6 +464,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         } else {
             //如果不是使用中的项目，进入项目详情页面
             Intent intent = new Intent(this,ProjectDetailActivity.class);
+            intent.putExtra("proId",map_project.get(position).get("id").toString());
             intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
             intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
             intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
