@@ -123,23 +123,15 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         }else {
             viewHolder1.itme_ll.setBackgroundResource(R.color.result_minor_text);
         }
-        viewHolder1.pai_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                for (int a=0 ;a<mChildList.get(groupPosition).size();a++){
-                    mChildList.get(groupPosition).get(a).setSelect(isChecked);
-                    Log.e("父控件", "mChildList.get(groupPosition).get(a)getShellBlastNo: "+mChildList.get(groupPosition).get(a).getShellBlastNo());
-                }
-                Log.e("父控件", "isChecked: "+isChecked);
-                notifyDataSetChanged();
-            }
+        Log.e("父控件", "更新视图 mGroupList.get(groupPosition).isSelect(): "+mGroupList.get(groupPosition).isSelect());
+        viewHolder1.pai_check.setChecked(mGroupList.get(groupPosition).isSelect());
+        viewHolder1.pai_check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mGroupList.get(groupPosition).setSelect(isChecked);
+            Log.e("父控件", "OnChecked-isChecked: "+isChecked);
         });
-        viewHolder1.im_xiugai1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener_group.OngroupButtonClickListener(groupPosition);
-                }
+        viewHolder1.im_xiugai1.setOnClickListener(v -> {
+            if (listener != null) {
+                listener_group.OngroupButtonClickListener(groupPosition);
             }
         });
 
@@ -191,19 +183,12 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder2.kong_check.setVisibility(View.VISIBLE);
         }
         viewHolder2.kong_check.setChecked(mChildList.get(groupPosition).get(childPosition).isSelect());
-        viewHolder2.kong_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mChildList.get(groupPosition).get(childPosition).setSelect(isChecked);
-            }
-        });
+        viewHolder2.kong_check.setOnCheckedChangeListener((buttonView, isChecked) ->
+                mChildList.get(groupPosition).get(childPosition).setSelect(isChecked));
         viewHolder2.im_xiugai2.setTag(childPosition); // 设置一个tag来识别按钮
-        viewHolder2.im_xiugai2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onChildButtonClick(groupPosition, childPosition);
-                }
+        viewHolder2.im_xiugai2.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onChildButtonClick(groupPosition, childPosition);
             }
         });
         return convertView;
@@ -220,25 +205,8 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
     }
 
     public void removeChild(int groupPosition, int childPosition) {
-//        Log.e("删除子项", "groupPosition: "+groupPosition );
-//        Log.e("删除子项", "childPosition: "+childPosition );
-//        Log.e("删除子项", "mChildList.get(groupPosition) "+ mChildList.get(groupPosition).toString() );
-//        Log.e("删除子项", "mChildList.get(groupPosition).get(childPosition): "+ mChildList.get(groupPosition).get(childPosition).toString() );
         mChildList.get(groupPosition).remove(childPosition) ;
     }
-
-    private View.OnClickListener imageviewClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // 获取按钮在组和子项中的位置
-            int childPosition = (Integer) v.getTag();
-            Log.e("imageviewClickListener", "childPosition: "+childPosition );
-            // 处理按钮点击事件
-            // 例如：更新相应子项的数据，或者执行某些操作
-
-        }
-    };
-
 
     public class ViewHolder1 {
         private TextView tv1_zc_pai;

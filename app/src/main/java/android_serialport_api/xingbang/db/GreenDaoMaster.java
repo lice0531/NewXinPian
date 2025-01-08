@@ -1929,11 +1929,21 @@ public class GreenDaoMaster {
      * @return
      */
     public int queryDetonatorPaiSize(String mRegion,String paiId) {
-        return mDeantorBaseDao
+        List<DenatorBaseinfo> list = mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Pai.eq(paiId))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
-                .list().size();
+                .list();
+        if(list!=null){
+            return mDeantorBaseDao
+                    .queryBuilder()
+                    .where(DenatorBaseinfoDao.Properties.Pai.eq(paiId))
+                    .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                    .list().size();
+        }else {
+            return 0;
+        }
+
     }
 
     /**
@@ -2039,12 +2049,13 @@ public class GreenDaoMaster {
     /**
      * 删除某一排
      */
-    public void deletepai(long id) {
-        DenatorBaseinfo entity = mDeantorBaseDao
+    public void deletepai(String piece,long id) {
+        Log.e("删除某一排", "piece: "+piece+" id:"+id );
+        PaiData entity = paiDataDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.Id.eq(id))
+                .where(PaiDataDao.Properties.Id.eq(id))
                 .unique();
-        mDeantorBaseDao.delete(entity);
+        paiDataDao.delete(entity);
     }
 
 }

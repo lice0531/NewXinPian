@@ -581,6 +581,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     @Override
                     public void onScanResult(boolean isSuccess, String scanResultStr) {
                         Log.e("扫码结果: ", "ScanResult:" + isSuccess + "|" + scanResultStr);
+
                         saoma(scanResultStr);
                     }
                 });
@@ -656,6 +657,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private void saoma(String data) {
+        if (checkDelay()) return;
         Log.e("扫码", "data: " + data);
 //            if (deleteList()) return;
         hideInputKeyboard();//隐藏光标
@@ -730,16 +732,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e("liyi_1001", "更新视图 pai:" + paiChoice);
                     Log.e("liyi_1001", "更新视图 区域:" + mRegion);
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
-                    //根据选择的排确定延时的值
-                    choicepaiData = GreenDaoMaster.gePaiData(mRegion,paiChoice + "");
-                    //如果有默认排的话,就默认该排的延时
-                    if (choicepaiData != null) {
-                        start_delay_data = choicepaiData.getStartDelay();
-                        f1_delay_data = choicepaiData.getKongDelay();
-                        f2_delay_data = choicepaiData.getNeiDelay();
-                        flag_jh_f1 = !choicepaiData.getDiJian();
-                        Log.e(TAG, "根据选中排更新是否递减  flag_jh_f1: " + flag_jh_f1);
-                    }
+
 
 
                     paiMax = new GreenDaoMaster().getMaxPaiId(mRegion);
@@ -781,6 +774,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         if (childList.get(paiChoice - 1).size() != 0) {
                             zcList.setSelectedChild(paiChoice - 1, kongChoice - 1, true);
                         }
+                    }
+
+                    //根据选择的排确定延时的值
+                    choicepaiData = GreenDaoMaster.gePaiData(mRegion,paiChoice + "");
+                    //如果有默认排的话,就默认该排的延时
+                    if (choicepaiData != null) {
+                        start_delay_data = choicepaiData.getStartDelay();
+                        f1_delay_data = choicepaiData.getKongDelay();
+                        f2_delay_data = choicepaiData.getNeiDelay();
+                        flag_jh_f1 = !choicepaiData.getDiJian();
+                        Log.e(TAG, "根据选中排更新是否递减  flag_jh_f1: " + flag_jh_f1);
                     }
 
                     //重置同孔标志
@@ -855,8 +859,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 //                    kongChoice = new GreenDaoMaster().queryDetonatorPai(paiChoice).size();
 //                    paiChoice = zcList.getCount();
-
+                    int groupCount2 = zcList.getCount();
                     if (paiMax != 0) {
+                        if(paiChoice==0){//初始化的时候,默认展开后一排,选中最后一发管
+                            paiChoice = groupCount2;
+                        }
                         demoAdapter.setSelcetPosition(paiChoice - 1, kongChoice - 1);
                         //默认展开
                         zcList.expandGroup(paiChoice - 1);
@@ -1940,6 +1947,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     paiData.setDiJian(sw_dijian.isChecked());
                     getDaoSession().getPaiDataDao().update(paiData);
 
+                    //递减,开始序号,结束序号,孔内雷管数,开始延时,孔内延时,孔间延时
+//                    setDalay(sw_dijian.isChecked(),);
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
 //                    mHandle.sendMessage(mHandle.obtainMessage(1));
 //                    }
@@ -2811,7 +2820,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
         int delay_minNum_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
 
-
+        Log.e(TAG, "updataPaiData  total: "+total );
         choicepaiData = GreenDaoMaster.gePaiData(mRegion,paiChoice + "");
         choicepaiData.setSum(total + "");
         choicepaiData.setDelayMin(delay_minNum_new + "");
@@ -3232,20 +3241,28 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     boolean flag_jh_f2 = true;//减号标志
     boolean btn_start = false;//减号标志
     boolean flag_tk = false;//跳孔标志
-
+    private boolean isSelectAll = true;//是否全选
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_JH_F1, R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
-            R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay, R.id.btn_start_delay, R.id.btn_pai, R.id.btn_kong, R.id.btn_wei, R.id.tv_delete
+            R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay, R.id.btn_start_delay, R.id.btn_pai, R.id.btn_kong, R.id.btn_wei, R.id.tv_delete, R.id.tv_check_all
     })
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.tv_check_all:
+                if (isSelectAll) {
+                    tv_check_all.setText(getResources().getString(R.string.text_qxqx));
+                    isSelectAll = false;
+                    setAllItemChecked(true);
+                } else {
+                    tv_check_all.setText(getResources().getString(R.string.text_qx));
+                    isSelectAll = true;
+                    setAllItemChecked(false);
+                }
+
+                break;
             case R.id.tv_delete:
                 Log.e(TAG, "点击删除选中雷管: ");
-//                for (PaiDataSelect data : groupList) {
-//                    if (data.isSelect()) {
-//                        new GreenDaoMaster().deletepai(data.getId());
-//                    }
-//                }
+
                 for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
                     if (data.isSelect()) {
                         if(data.getShellBlastNo().length()!=13){
@@ -3258,12 +3275,25 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "选中的雷管: " + data.getShellBlastNo());
                     }
                 }
-                //更新排数据
+                //先更新排数据,再删除排
                 updataPaiData();
-                check_gone=false;
+                Log.e(TAG, "groupList1: "+groupList.toString() );
+                for (PaiDataSelect data : groupList) {
+                    Log.e(TAG, "data.isSelect(): "+data.isSelect() );
+                    if (data.isSelect()) {
+
+                        new GreenDaoMaster().deletepai(mRegion,data.getId());
+                    }
+                }
+                paiChoice=0;//重置参数
+                check_gone=false;//重置参数
+                isSelectAll = true;//重置参数
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
                 break;
             case R.id.btn_pai:
+                if(paiChoice==0){
+                    paiChoice=1;
+                }
                 cartePai();
                 break;
             case R.id.btn_kong:
@@ -3669,11 +3699,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         EditText kongDelay = myDialog.getView().findViewById(R.id.txt_kongDelay);
         EditText neiDelay = myDialog.getView().findViewById(R.id.txt_paiDelay);
         SwitchButton sw_dijian = myDialog.getView().findViewById(R.id.sw_dijian);
-        int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiMax);//获取该区域 最大序号的延时
-        if (delay_max_new == 0) {
+        int delay_min_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
+        if (delay_min_new == 0) {
             startDelay.setText("0");
         } else {
-            startDelay.setText((delay_max_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
+            startDelay.setText((delay_min_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
         }
 
         kongDelay.setText(quYu_choice.getKongDelay());
@@ -3763,6 +3793,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private boolean checkDelay() {
+        Log.e(TAG, "扫码验证start_delay_data: "+start_delay_data );
+        Log.e(TAG, "f1_delay_data: "+f1_delay_data );
         if (f1_delay_data.toString().equals("")) {
             show_Toast(getResources().getString(R.string.text_line_tip19));
             Log.e("f2", reEtF2.getText().toString());
@@ -4800,4 +4832,228 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         GreenDaoMaster master = new GreenDaoMaster();
         return master.queryDetonatorTypeNew(denatorId);
     }
+
+
+    //区域全选和取消全选
+    private void setAllItemChecked(boolean isSelected) {
+//        if (quyuAdapter == null) return;
+        if (isSelected) {
+            for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
+                data.setSelect(true);
+            }
+        } else {
+            for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
+                data.setSelect(false);
+            }
+        }
+
+        if (isSelected) {
+            for (PaiDataSelect data : groupList) {
+                data.setSelect(true);
+            }
+        } else {
+            for (PaiDataSelect data : groupList) {
+                data.setSelect(false);
+            }
+        }
+        demoAdapter.notifyDataSetChanged();
+//        mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
+    }
+
+
+    private void setDalay( boolean dijia,String startNoStr,String endNoStr,String holeDeAmoStr,String startDelayStr,String holeinDelayStr,String holeBetweentStr) {
+        hideInputKeyboard();
+//        String startNo_txt=startNoTxt.getText().toString();
+//        String endNo_txt=endNoTxt.getText().toString();
+//        String startNo=mListData.get(Integer.parseInt(startNo_txt)-1).getBlastserial()+"";
+//        String endNo=mListData.get(Integer.parseInt(endNo_txt)-1).getBlastserial()+"";
+//
+//        //同孔不许改延时
+//        String sql = "SELECT duanNo,duan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNo+" and blastserial <= "+endNo+" order by blastserial";//+" order by htbh "
+//        Log.e("语句", "sql: "+sql );
+//        List<String> list_duanNo = new ArrayList<>();//
+//        Cursor cursor5 = getDaoSession().getDatabase().rawQuery(sql, null);
+//        if (cursor5 != null) {
+//            while (cursor5.moveToNext()) {
+//                int duanNo = cursor5.getInt(0);
+//                String duan = cursor5.getString(1);
+//                list_duanNo.add(duan+"-"+duanNo);
+//            }
+//            cursor5.close();
+//        }
+//        GreenDaoMaster master = new GreenDaoMaster();
+//        DenatorBaseinfo db_start =master.querylgForXh(startNo,mRegion);
+//        DenatorBaseinfo db_end =master.querylgForXh(endNo,mRegion);
+//        Log.e("末尾雷管", "db_end: "+db_end.toString());
+//        int a = new GreenDaoMaster().querylgNum(db_start.getDuanNo(), db_start.getDuan(), mRegion);
+//        int b = new GreenDaoMaster().querylgNum(db_end.getDuanNo(), db_end.getDuan(), mRegion);
+//        Log.e("同孔", "a: "+a);
+//        Log.e("同孔", "b: "+b);
+//        Log.e("同孔", "list_duanNo: "+list_duanNo);
+//        if(hasDuplicates(list_duanNo)||(a>1||b>1)){
+//            show_Toast(getResources().getString(R.string.text_setDelay_dialog3));
+//            return;
+//        }
+//
+//        //同孔不许改延时
+//        String sql2 = "SELECT fanzhuan FROM denatorBaseinfo  where piece = "+mRegion +" and blastserial >= "+startNo+" and blastserial <= "+endNo+" and fanzhuan = 0 order by blastserial";//+" order by htbh "
+//        Log.e("语句", "sql: "+sql );
+//        List<String> list_fanzhuan = new ArrayList<>();//
+//        Cursor cursor6 = getDaoSession().getDatabase().rawQuery(sql2, null);
+//        if (cursor6 != null) {
+//            while (cursor6.moveToNext()) {
+//                String fanzhuan = cursor6.getString(0);
+//                list_fanzhuan.add(fanzhuan);
+//            }
+//            cursor6.close();
+//        }
+//        if(list_fanzhuan.size()>1){
+//            show_Toast(getResources().getString(R.string.text_setDelay_dialog4));
+//            return;
+//        }
+
+        String checstr = checkData();
+        if (checstr == null || checstr.trim().length() < 1) {
+            int maxDelay = getComputerDenDelay(dijia,startNoStr,endNoStr,holeDeAmoStr,startDelayStr,holeinDelayStr,holeBetweentStr);
+            Log.e("延时1", "maxDelay: " + maxDelay);//9010
+            Log.e("延时2", "maxSecond: " + maxSecond);//5000
+            if (maxSecond >= 0  &&  maxSecond < maxDelay) {
+                show_Toast(getResources().getString(R.string.text_setDelay_dialog5)+maxSecond+getResources().getString(R.string.text_setDelay_dialog6));
+                return;
+            }
+            if (maxDelay < 0  ) {
+                show_Toast("延时不能小于0ms");
+                return;
+            }
+            pb_show = 1;
+            runPbDialog();
+            new Thread(() -> setDenatorDelay(dijia,startNoStr,endNoStr,holeDeAmoStr,startDelayStr,holeinDelayStr,holeBetweentStr)).start();
+            show_Toast(getString(R.string.text_error_tip36));
+        } else {
+            show_Toast(checstr);
+        }
+    }
+
+    /**
+     * 获取总延时值
+     */
+    private int getComputerDenDelay(boolean dijia,String startNoStr,String endNoStr,String holeDeAmoStr,String startDelayStr,String holeinDelayStr,String holeBetweentStr) {
+
+//        //起始序号
+//        String startNoStr = startNoTxt.getText().toString();
+//        //终点序号
+//        String endNoStr = endNoTxt.getText().toString();
+//        //孔内雷管数
+//        String holeDeAmoStr = holeDeAmoTxt.getText().toString();
+//        //开始延时
+//        String startDelayStr = startDelayTxt.getText().toString();
+//        //孔内延时
+//        String holeinDelayStr = holeinDelayTxt.getText().toString();
+//        //孔间延时
+//        String holeBetweentStr = holeBetweentTxt.getText().toString();
+
+        int start = Integer.parseInt(startNoStr);
+        int end = Integer.parseInt(endNoStr);
+        int holeDeAmo = Integer.parseInt(holeDeAmoStr);
+        int startDelay = Integer.parseInt(startDelayStr);
+        int holeinDelay = Integer.parseInt(holeinDelayStr);
+        int holeBetweent = Integer.parseInt(holeBetweentStr);
+        int holeLoop = 1;
+        int delayCount = startDelay;
+        for (int iLoop = start; iLoop < end; iLoop++) {
+
+            //int isExist = isDel(""+iLoop);
+
+            for (int i = 1; i <= holeDeAmo; i++) {
+                if(dijia){
+                    if (i < holeDeAmo) {
+                        delayCount += holeinDelay;
+                        iLoop++;
+                    }
+                }else {
+                    if (i < holeDeAmo) {
+                        delayCount -= holeinDelay;
+                        iLoop++;
+                    }
+                }
+
+                if (iLoop > end) break;
+            }
+            holeLoop++;
+            if(dijia){
+                delayCount += holeBetweent;
+            }else {
+                delayCount -= holeBetweent;
+            }
+
+        }
+        return delayCount;
+    }
+
+    private void setDenatorDelay(boolean dijia,String startNoStr,String endNoStr,String holeDeAmoStr,String startDelayStr,String holeinDelayStr,String holeBetweentStr) {
+
+//        //起始序号
+//        String startNoStr = startNoTxt.getText().toString();
+//        //终点序号
+//        String endNoStr = endNoTxt.getText().toString();
+//        //孔内雷管数
+//        String holeDeAmoStr = holeDeAmoTxt.getText().toString();
+//        //开始延时
+//        String startDelayStr = startDelayTxt.getText().toString();
+//        //孔内延时
+//        String holeinDelayStr = holeinDelayTxt.getText().toString();
+//        //孔间延时
+//        String holeBetweentStr = holeBetweentTxt.getText().toString();
+
+        int start = Integer.parseInt(startNoStr);
+        int end = Integer.parseInt(endNoStr);
+        int holeDeAmo = Integer.parseInt(holeDeAmoStr);
+        int startDelay = Integer.parseInt(startDelayStr);
+        int holeinDelay = Integer.parseInt(holeinDelayStr);
+        int holeBetweent = Integer.parseInt(holeBetweentStr);
+        int holeLoop = 1;
+        int delayCount = startDelay;
+        for (int iLoop = start; iLoop <= end; iLoop++) {
+
+            //int isExist = isDel(""+iLoop);
+
+            for (int i = 1; i <= holeDeAmo; i++) {
+                ContentValues values = new ContentValues();
+//				values.put("sithole", holeLoop);
+                values.put("delay", delayCount);
+
+                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? ", new String[]{String.valueOf(iLoop),mRegion});
+                if(dijia){
+                    if (i < holeDeAmo) {
+                        delayCount += holeinDelay;
+                        iLoop++;
+                    }
+                }else {
+                    if (i < holeDeAmo) {
+                        delayCount -= holeinDelay;
+                        iLoop++;
+                    }
+                }
+
+                if (iLoop > end) break;
+            }
+            holeLoop++;
+            if(dijia){
+                delayCount += holeBetweent;
+            }else {
+                delayCount -= holeBetweent;
+            }
+
+        }
+        pb_show = 0;
+        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+        Utils.saveFile();//把软存中的数据存入磁盘中
+//        getLoaderManager().restartLoader(1, null, SetDelayTime.this);
+        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+        AppLogUtils.writeAppLog("--设置延时:起始序号:"+startNoStr+",终点序号:"+endNoStr+",孔内雷管数:"+holeDeAmoStr
+                +",开始延时:"+startDelayStr+",孔内延时:"+holeinDelayStr+",孔间延时:"+holeBetweentStr);
+        Utils.writeRecord("--设置延时:起始序号:"+startNoStr+",终点序号:"+endNoStr+",孔内雷管数:"+holeDeAmoStr
+                +",开始延时:"+startDelayStr+",孔内延时:"+holeinDelayStr+",孔间延时:"+holeBetweentStr);
+    }
+
 }

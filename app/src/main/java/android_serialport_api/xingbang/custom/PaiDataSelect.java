@@ -15,4 +15,10 @@ public class PaiDataSelect extends PaiData {
         this.select = select;
     }
 
+    @Override
+    public String toString() {
+        return "PaiDataSelect{" +
+                "select=" + select +
+                '}';
+    }
 }
