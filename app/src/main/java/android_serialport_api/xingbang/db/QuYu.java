@@ -27,10 +27,12 @@ public class QuYu {
     private String kongDelay;
     @Property(nameInDb = "paiDelay")
     private String paiDelay;
-    @Generated(hash = 922467455)
+    @Property(nameInDb = "selected")
+    private String selected;
+    @Generated(hash = 787177764)
     public QuYu(Long id, int qyid, String name, String sum, String delayMin,
             String delayMax, String shouquan, String startDelay, String kongDelay,
-            String paiDelay) {
+            String paiDelay, String selected) {
         this.id = id;
         this.qyid = qyid;
         this.name = name;
@@ -41,10 +43,30 @@ public class QuYu {
         this.startDelay = startDelay;
         this.kongDelay = kongDelay;
         this.paiDelay = paiDelay;
+        this.selected = selected;
     }
     @Generated(hash = 206389652)
     public QuYu() {
     }
+//    @Generated(hash = 922467455)
+//    public QuYu(Long id, int qyid, String name, String sum, String delayMin,
+//            String delayMax, String shouquan, String startDelay, String kongDelay,
+//            String paiDelay,String selected) {
+//        this.id = id;
+//        this.qyid = qyid;
+//        this.name = name;
+//        this.sum = sum;
+//        this.delayMin = delayMin;
+//        this.delayMax = delayMax;
+//        this.shouquan = shouquan;
+//        this.startDelay = startDelay;
+//        this.kongDelay = kongDelay;
+//        this.paiDelay = paiDelay;
+//        this.selected = selected;
+//    }
+//    @Generated(hash = 206389652)
+//    public QuYu() {
+//    }
     public Long getId() {
         return this.id;
     }
@@ -105,6 +127,12 @@ public class QuYu {
     public void setPaiDelay(String paiDelay) {
         this.paiDelay = paiDelay;
     }
-   
 
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
+    }
 }

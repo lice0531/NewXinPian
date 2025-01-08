@@ -60,8 +60,10 @@ import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
@@ -256,7 +258,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isInterunptQb = false;
     private boolean isGyError = false;//如果弹出了高压充电失败或长时间处于高压的弹窗 就不再提示电流不稳定
     private boolean isHaveError = false;//子机是否出现异常情况弹窗
-    private ArrayList<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
+    private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -295,7 +297,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
         AppLogUtils.writeAppXBLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
         startFlag = 1;
-        qyIdList = getIntent().getIntegerArrayListExtra("qyList");
+        qyIdList = new GreenDaoMaster().getSelectedQyIdList();
         initParam();//重置参数
         initView();
         initHandle();

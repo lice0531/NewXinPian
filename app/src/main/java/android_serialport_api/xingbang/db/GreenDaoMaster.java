@@ -2079,4 +2079,18 @@ public class GreenDaoMaster {
         paiDataDao.delete(entity);
     }
 
+    /**
+     * 获取已组网的区域idList
+     */
+    public List<Integer> getSelectedQyIdList() {
+        // 创建查询条件，获取 selected == "true" 的所有记录
+        List<QuYu> quYuList = quyuDao.queryBuilder()
+                .where(QuYuDao.Properties.Selected.eq("true"))
+                .list();
+        List<Integer> qyidList = new ArrayList<>();
+        for (QuYu quYu : quYuList) {
+            qyidList.add(quYu.getQyid());
+        }
+        return qyidList;
+    }
 }

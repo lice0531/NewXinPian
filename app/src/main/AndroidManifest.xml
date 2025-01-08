@@ -40,7 +40,11 @@
             android:exported="false"
             android:label="区域管理"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity
+            android:name=".firingdevice.QuYuActivity2"
+            android:exported="false"
+            android:label="区域管理"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".firingdevice.RiZhiActivity"
             android:exported="false"
