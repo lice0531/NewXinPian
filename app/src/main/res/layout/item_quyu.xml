@@ -1,126 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:layout_margin="10dp"
+        android:orientation="horizontal"
         android:padding="6dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/totalbar"
-        app:layout_constraintVertical_bias="0.0"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="10dp"
-        >
-        <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:id="@+id/cl_top"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:layout_below="@+id/totalbar"
-            android:paddingTop="2dp"
-            android:id="@+id/cl_top"
-            android:paddingBottom="2dp"
-            android:background="@color/white">
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-<!--            <ImageView-->
-<!--                android:id="@+id/iv_check"-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginStart="4dp"-->
-<!--                android:background="@drawable/icon_choose_default"-->
-<!--                android:button="@null"-->
-<!--                android:visibility="gone"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.55" />-->
             <CheckBox
                 android:id="@+id/cb_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.55"/>
-            <TextView
-                android:id="@+id/qy_no"
-                style="@style/alltextstyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="区域1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.952"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.583" />
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/qy_txt_total"
-                style="@style/alltextstyle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="共:0发雷管"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.144"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.242" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/qy_txt_totalPai"
-                style="@style/alltextstyle"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/qy_txt_total"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="共:0发雷管"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/qy_txt_totalPai"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="共:0排0孔"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="共:0排0孔"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.14"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.892" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/qy_txt_minDealy"
-                style="@style/alltextstyle"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/qy_txt_minDealy"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="最小延时:0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/qy_txt_maxDealy"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="最大延时:0"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="最小延时:0"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.628"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.242" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/qy_txt_maxDealy"
-                style="@style/alltextstyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="最大延时:0"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.628"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.878" />
+                <TextView
+                    android:id="@+id/qy_no"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="区域1" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_yzw"
+                    style="@style/alltextstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="已组网"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 </LinearLayout>
