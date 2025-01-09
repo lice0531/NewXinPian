@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -1445,6 +1446,12 @@ public class GreenDaoMaster {
     /**
      * 查询生产库中雷管
      */
+    public List<DetonatorTypeNew> queryDetonatorShouQuan() {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
     public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt,String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()

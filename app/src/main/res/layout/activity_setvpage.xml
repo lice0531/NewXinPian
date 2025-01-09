@@ -128,8 +128,14 @@
             android:divider="@drawable/spacer_medium"
             android:gravity="center"
             android:showDividers="middle">
-
             <Button
+                android:id="@+id/btn_set_exit"
+                style="@style/allbtntstyle"
+                android:layout_width="@dimen/setenv_BT_Width"
+                android:layout_height="@dimen/setenv_BT_Height"
+                android:text="@string/xingbang_set_page_btn_exit" />
+            <Button
+                android:visibility="gone"
                 android:id="@+id/btn_set_ver"
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
@@ -153,19 +159,15 @@
             android:showDividers="middle">
 
             <Button
+
                 android:id="@+id/btn_upload"
                 style="@style/allbtntstyle"
                 android:layout_width="@dimen/setenv_BT_Width"
                 android:layout_height="@dimen/setenv_BT_Height"
                 android:text="@string/title_activity_practice"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
-            <Button
-                android:id="@+id/btn_set_exit"
-                style="@style/allbtntstyle"
-                android:layout_width="@dimen/setenv_BT_Width"
-                android:layout_height="@dimen/setenv_BT_Height"
-                android:text="@string/xingbang_set_page_btn_exit" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -124,12 +124,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder1.itme_ll.setBackgroundResource(R.color.result_minor_text);
         }
         final ViewHolder1 secondHolder = viewHolder1;
-        Log.e("pai_check", "groupPosition: "+groupPosition +" pai: "+mGroupList.get(groupPosition).getPaiId() +" mGroupList.get(groupPosition).isSelect():"+mGroupList.get(groupPosition).isSelect());
 
-//        secondHolder.pai_check.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            mGroupList.get(groupPosition).setSelect(isChecked);
-//            Log.e("OnCheckedChangeListener",  " groupPosition: "+groupPosition +"变化pai:"+mGroupList.get(groupPosition).getPaiId() );
-//        });
         viewHolder1.im_xiugai1.setOnClickListener(v -> {
             if (listener != null) {
                 listener_group.OngroupButtonClickListener(v,groupPosition);
@@ -142,12 +137,9 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
 
                 boolean isChecked =secondHolder.pai_check.isChecked();
-                Log.e("父控件-点击事件",isChecked+"");
                 mGroupList.get(groupPosition).setSelect(isChecked);
-                Log.e("父控件-点击事件", "groupList.get(groupPosition).isSelect(): " + mGroupList.get(groupPosition).isSelect());
                 for (int a = 0; a < mChildList.get(groupPosition).size(); a++) {//选中排的时候,同时选中所有子项
                     mChildList.get(groupPosition).get(a).setSelect(isChecked);
-                    Log.e("父控件", "mChildList.get(groupPosition).get(a)getShellBlastNo: " + mChildList.get(groupPosition).get(a).getShellBlastNo());
                 }
                 notifyDataSetChanged();
 

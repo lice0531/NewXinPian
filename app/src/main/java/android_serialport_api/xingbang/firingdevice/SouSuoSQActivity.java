@@ -76,7 +76,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
     private List<ShouQuanData> mList = new ArrayList<>();
     private Handler mHandler_UI = new Handler();     // UI处理
-    private String sqrq;
+    private String sqrq="";
     private static final int STATE_DEFAULT = 0;//默认状态
     private static final int STATE_EDIT = 1;//编辑状态
     private int mEditMode = STATE_DEFAULT;
@@ -107,8 +107,13 @@ public class SouSuoSQActivity extends BaseActivity {
             switch (msg.what) {
                 // 区域 更新视图
                 case 1:
-                    Log.e("查询", "msg.obj.toString(): " + msg.obj.toString());
-                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
+                    Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
+                    Log.e("授权查询", "授权日期sqrq: " + sqrq);
+                    if (sqrq.equals("")) {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+                    } else {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
+                    }
                     Log.e("查询", "mListData: " + mListData.toString());
                     if (mListData.size() == 0) {
                         show_Toast(getResources().getString(R.string.text_wzd));

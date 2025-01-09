@@ -917,15 +917,15 @@ public class XingbangMain extends SerialPortActivity {
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent5 = new Intent(this, VerificationActivity.class);
-                } else {
-                    Log.e(TAG, "验证2: "+Yanzheng_sq);
+//                if (Yanzheng.equals("验证")) {
+//                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                    intent5 = new Intent(this, VerificationActivity.class);
+//                } else {
+//                    Log.e(TAG, "验证2: "+Yanzheng_sq);
                     intent5 = new Intent(this, FiringMainActivity.class);
-//                    intent5 = new Intent(this, QuYuActivity.class);//金建华
+//                    intent5 = new Intent(this, QuYuActivity.class);
 //                    intent5.putExtra("pageFlag","firingMain");
-                }
+//                }
                 close();//停止访问电流
                 intent5.putExtra("dataSend", str5);
                 startActivityForResult(intent5, 1);

@@ -455,7 +455,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/setenv_BT_Height"
+                            android:layout_height="@dimen/setenv_down_ly_Height"
                             android:orientation="horizontal"
                             android:visibility="gone">
 
@@ -491,7 +491,7 @@
                             <LinearLayout
                                 android:id="@+id/ll_1"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/setenv_BT_Height"
+                                android:layout_height="@dimen/setenv_down_ly_Height"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -537,7 +537,7 @@
                             <LinearLayout
                                 android:id="@+id/ll_2"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/setenv_BT_Height"
+                                android:layout_height="@dimen/setenv_down_ly_Height"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -592,7 +592,7 @@
                             <LinearLayout
                                 android:id="@+id/ll_3"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/setenv_BT_Height"
+                                android:layout_height="@dimen/setenv_down_ly_Height"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -629,7 +629,7 @@
                         <LinearLayout
                             android:id="@+id/ll_4"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/setenv_BT_Height"
+                            android:layout_height="@dimen/setenv_down_ly_Height"
                             android:orientation="horizontal">
 
                             <TextView
@@ -676,7 +676,7 @@
                         <LinearLayout
                             android:id="@+id/ll_5"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/setenv_BT_Height"
+                            android:layout_height="@dimen/setenv_down_ly_Height"
                             android:orientation="horizontal">
 
                             <TextView
