@@ -995,8 +995,8 @@
     <string name="text_scsyqy">Do you want to delete the selected region?</string>
     <string name="text_scriz">Do you want to delete the current log?</string>
     <string name="text_gl">manage</string>
-    <string name="text_xzxm">Please add items first</string>
-    <string name="text_addxm">Please click the plus sign in the upper right corner to add an item</string>
+    <string name="text_xzxm">New item</string>
+    <string name="text_addxm">Please add items first</string>
     <string name="text_szxm">Please set the items you want to use first</string>
     <string name="text_xmxz_ts">Friendly tip: In order to ensure that the project can download smoothly, please click the project in the list first, enter the project details page, select and set the project you need to use. Then, perform the download operation.</string>
     <string name="text_xmewm_ts">Friendly tip: In order to ensure the accurate entry of project information, other devices of the unit can scan the following two-dimensional code on the interface of the new project to quickly complete the new project information!</string>
@@ -1004,7 +1004,15 @@
     <string name="text_zwqb">Networking detonation</string>
     <string name="text_zwcg">Networking success</string>
     <string name="text_qrzw">Confirm networking</string>
-    <string name="text_tjqy">Please click the plus sign in the upper right corner to add the area</string>
+    <string name="text_addqy">Add a region</string>
+    <string name="text_qygl">Regional management</string>
+    <string name="text_zw">networking</string>
+    <string name="text_bj">Editing</string>
+    <string name="text_xmgl">Project management</string>
+    <string name="text_xmxq">Project details</string>
+    <string name="text_xmm">Project QR code</string>
+    <string name="text_xmlb">Item list</string>
+    <string name="text_tjqy">Please add a region first</string>
     <string name="text_selectqy">Please select a region first</string>
     <string name="text_line_tip19">当前还未设置延时,请先选择排</string>
     <string name="text_shanchu">删除</string>

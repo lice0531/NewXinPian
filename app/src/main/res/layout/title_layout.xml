@@ -13,6 +13,7 @@
         android:id="@+id/title_back"
         android:layout_width="50dp"
         android:layout_height="30dp"
+        android:visibility="visible"
         android:layout_centerVertical="true"
         android:layout_marginEnd="19dp"
         android:src="@drawable/icon_back_white" />
@@ -26,7 +27,8 @@
         android:layout_marginLeft="10dp"
         android:textColor="@color/white"
         android:textSize="18sp"
-        tools:text="页面名称" />
+        tools:text="区域管理" />
+
     <TextView
         android:id="@+id/title_text"
         style="@style/alltextstyle"
@@ -34,6 +36,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:gravity="center"
+        android:visibility="visible"
         android:textColor="@color/white"
         android:textSize="18sp"
         tools:text="页面名称" />
@@ -55,10 +58,24 @@
         android:visibility="visible"
         android:src="@drawable/icon_jiahao_white"/>
     <TextView
-        android:id="@+id/title_right"
+        android:id="@+id/title_right1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text=""
+        android:text="组网管理"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_toLeftOf="@+id/title_right2"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_marginRight="15dp"
+        android:gravity="right|center_vertical"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_jiahao_white" />
+    <TextView
+        android:id="@+id/title_right2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="添加区域"
         android:textStyle="bold"
         android:visibility="gone"
         android:textSize="18sp"

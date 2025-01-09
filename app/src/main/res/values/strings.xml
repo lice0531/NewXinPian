@@ -1007,8 +1007,8 @@
     <string name="text_scsyqy">是否删除选中的区域?</string>
     <string name="text_scriz">是否删除当前日志?</string>
     <string name="text_gl">管理</string>
-    <string name="text_xzxm">请先新增项目</string>
-    <string name="text_addxm">请先点击右上角加号新增项目</string>
+    <string name="text_xzxm">新增项目</string>
+    <string name="text_addxm">请先新增项目</string>
     <string name="text_szxm">请先设置需要使用的项目</string>
     <string name="text_xmxz_ts">友情提示：为保障项目能够顺利下载，请先点击列表中的项目，进入项目详情页面，选择并设置好您需要使用的项目。然后，再进行下载操作。</string>
     <string name="text_xmewm_ts">友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描上面二维码快速完成项目信息新增！</string>
@@ -1016,7 +1016,15 @@
     <string name="text_zwqb">组网起爆</string>
     <string name="text_zwcg">组网成功</string>
     <string name="text_qrzw">确认组网</string>
-    <string name="text_tjqy">请先点击右上角加号添加区域</string>
+    <string name="text_addqy">添加区域</string>
+    <string name="text_qygl">区域管理</string>
+    <string name="text_zw">组网</string>
+    <string name="text_bj">编辑</string>
+    <string name="text_xmgl">项目管理</string>
+    <string name="text_xmxq">项目详情</string>
+    <string name="text_xmm">项目二维码</string>
+    <string name="text_xmlb">项目列表</string>
+    <string name="text_tjqy">请先添加区域</string>
     <string name="text_selectqy">请先选择区域</string>
     <string name="text_shanchu">删除</string>
     <string name="text_xgpxx">修改排信息</string>

@@ -45,7 +45,7 @@ public class QuYuActivity extends BaseActivity {
     TextView titleText;
     @BindView(R.id.title_add)
     ImageView titleAdd;
-    @BindView(R.id.title_right)
+    @BindView(R.id.title_right2)
     TextView titleRight;
     @BindView(R.id.title_delete)
     ImageView titleDelete;

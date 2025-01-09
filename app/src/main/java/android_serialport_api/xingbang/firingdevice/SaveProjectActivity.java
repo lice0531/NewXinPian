@@ -55,10 +55,16 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     ImageView titleBack;
     @BindView(R.id.title_text)
     TextView titleText;
+    @BindView(R.id.title_lefttext)
+    TextView title_lefttext;
     @BindView(R.id.title_add)
     ImageView titleAdd;
     @BindView(R.id.title_delete)
     ImageView titleDelete;
+    @BindView(R.id.title_right1)
+    TextView titleRight1;
+    @BindView(R.id.title_right2)
+    TextView titleRight2;
     @BindView(R.id.btn_down_return)
     Button btnDownReturn;
     @BindView(R.id.btn_down_inputOK)
@@ -137,9 +143,18 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 //        ImageView iv_back = findViewById(R.id.title_back);
 //        tv_right.setVisibility(View.VISIBLE);
 //        tv_right.setText(getResources().getString(R.string.text_gl));
+        titleBack.setVisibility(View.GONE);
         titleText.setText("项目列表");
-        titleDelete.setVisibility(View.VISIBLE);
-        titleDelete.setBackgroundResource(R.drawable.icon_setting);
+        titleText.setVisibility(View.GONE);
+        title_lefttext.setVisibility(View.VISIBLE);
+        title_lefttext.setText(getResources().getString(R.string.text_xmlb));
+        titleAdd.setVisibility(View.GONE);
+        titleRight1.setVisibility(View.VISIBLE);
+        titleRight2.setVisibility(View.VISIBLE);
+        titleRight1.setText(getResources().getString(R.string.text_gl));
+        titleRight2.setText(getResources().getString(R.string.text_xzxm));
+        titleDelete.setVisibility(View.GONE);
+//        titleDelete.setBackgroundResource(R.drawable.icon_setting);
 //        iv_back.setOnClickListener(v -> finish());
 //        tv_right.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -333,13 +348,14 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_clear_htid, R.id.btn_clear_xmbh,
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,
             R.id.btn_down_offline,R.id.btn_add_project,R.id.btn_down_project,R.id.btn_delete_project,
-            R.id.title_back,R.id.title_add,R.id.title_delete})
+            R.id.title_back,R.id.title_add,R.id.title_delete,R.id.title_right1,R.id.title_right2})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_back:
             case R.id.btn_down_return:
                 finish();
                 break;
+            case R.id.title_right1:
             case R.id.title_delete:
                 if (map_project.size() == 0) {
                     show_Toast(getResources().getString(R.string.text_addxm));
@@ -350,7 +366,8 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                     mAdapter.showCheckBox(true);
                     btnDelete.setVisibility(View.VISIBLE);
 //                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
-                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
+//                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
+                    titleRight1.setText(getResources().getString(R.string.text_dialog_qx));
                     pnList.clear();
                 } else {
                     pnList.clear();
@@ -358,7 +375,8 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                     mAdapter.showCheckBox(false);
                     btnDelete.setVisibility(View.GONE);
 //                    tv_right.setText(getResources().getString(R.string.text_gl));
-                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+//                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+                    titleRight1.setText(getResources().getString(R.string.text_gl));
                 }
                 break;
             case R.id.btn_down_inputOK:
@@ -410,6 +428,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 Intent intent = new Intent(this, DownOfflineActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.title_right2:
             case R.id.title_add:
             case R.id.btn_add_project:
                 Intent im = new Intent(this, ProjectManagerActivity.class);
@@ -463,7 +482,8 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                                     mAdapter.showCheckBox(false);
                                     btnDelete.setVisibility(View.GONE);
 //                                    tv_right.setText(getResources().getString(R.string.text_gl));
-                                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+//                                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+                                    titleRight1.setText(getResources().getString(R.string.text_gl));
                                 }
                                 AppLogUtils.writeAppLog("点击了多选删除项目按钮");
                             }).create();

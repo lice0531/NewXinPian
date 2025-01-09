@@ -46,10 +46,14 @@ public class QuYuActivity2 extends BaseActivity {
     TextView titleText;
     @BindView(R.id.title_add)
     ImageView titleAdd;
-    @BindView(R.id.title_right)
-    TextView titleRight;
+    @BindView(R.id.title_right1)
+    TextView titleRight1;
+    @BindView(R.id.title_right2)
+    TextView titleRight2;
     @BindView(R.id.title_delete)
     ImageView titleDelete;
+    @BindView(R.id.title_lefttext)
+    TextView title_lefttext;
     @BindView(R.id.rl_quyu)
     RecyclerView rlQuyu;
     @BindView(R.id.lay_bottom)
@@ -81,6 +85,7 @@ public class QuYuActivity2 extends BaseActivity {
         loadingDialog = new LoadingDialog(QuYuActivity2.this)
                 .setLoadingText("加载中...");
         titleText.setText("选择区域");
+        titleText.setVisibility(View.GONE);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
@@ -92,8 +97,16 @@ public class QuYuActivity2 extends BaseActivity {
             qbxm_id = "-1";
             qbxm_name = "";
         }
-        titleDelete.setVisibility(View.VISIBLE);
-        titleDelete.setBackgroundResource(R.drawable.icon_setting);
+        titleBack.setVisibility(View.GONE);
+        title_lefttext.setVisibility(View.VISIBLE);
+        title_lefttext.setText(getResources().getString(R.string.text_qygl));
+        titleRight1.setVisibility(View.VISIBLE);
+        titleRight2.setVisibility(View.VISIBLE);
+        titleRight1.setText(getResources().getString(R.string.text_zw));
+        titleRight2.setText(getResources().getString(R.string.text_addqy));
+        titleDelete.setVisibility(View.GONE);
+        titleAdd.setVisibility(View.GONE);
+//        titleDelete.setBackgroundResource(R.drawable.icon_setting);
         layBottom.setVisibility(View.GONE);
         mListData = new GreenDaoMaster().queryQuYu();
         // 线性布局
@@ -192,7 +205,8 @@ public class QuYuActivity2 extends BaseActivity {
                     quyuAdapter.setNewData(mQuYuList);
                     rlQuyu.setAdapter(quyuAdapter);
                     isDelete = true;
-                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+                    titleRight1.setText(getResources().getString(R.string.text_zw));
+//                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
                     layBottom.setVisibility(View.GONE);
                     quyuAdapter.showCheckBox(false);
                     tv_check_all.setText(getResources().getString(R.string.text_qx));
@@ -213,24 +227,32 @@ public class QuYuActivity2 extends BaseActivity {
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
 
-    @OnClick({R.id.title_back, R.id.title_add, R.id.title_delete,R.id.tv_check_all, R.id.tv_input,R.id.tv_sure})
+    @OnClick({R.id.title_back, R.id.title_add, R.id.title_right1,R.id.title_right2,R.id.title_delete,
+            R.id.tv_check_all, R.id.tv_input,R.id.tv_sure})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.title_back://注册
                 finish();
                 break;
-            case R.id.title_add://注册
+            case R.id.title_right2:
+            case R.id.title_add://添加区域
                 carteQuYu();
                 break;
-            case R.id.title_delete:
+            case R.id.title_right1:
+                if (mListData.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_tjqy));
+                    return;
+                }
                 if (isDelete) {
                     isDelete = false;
-                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
+                    titleRight1.setText(getResources().getString(R.string.text_dialog_qx));
+//                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
                     layBottom.setVisibility(View.VISIBLE);
                     quyuAdapter.showCheckBox(true);
                 } else {
                     isDelete = true;
-                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+                    titleRight1.setText(getResources().getString(R.string.text_zw));
+//                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
                     layBottom.setVisibility(View.GONE);
                     quyuAdapter.showCheckBox(false);
                 }
