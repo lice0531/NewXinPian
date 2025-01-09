@@ -83,7 +83,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private boolean editorStatus = false;//是否为编辑状态
     private int index = 0;//当前选中的item数
     private String mRegion;     // 区域
-
+    private String mOldTitle;   // 原标题
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,6 +153,38 @@ public class SouSuoSQActivity extends BaseActivity {
                         show_Toast(getResources().getString(R.string.text_pxsb));
                     }
                     break;
+                case 6:
+                    mListData.clear();
+                    if (sqrq.equals("")) {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan2();
+                    } else {
+                        mListData = new GreenDaoMaster().queryDetonatorShouQuan2(sqrq);
+                    }
+                    Log.e("查询", "mListData: " + mListData.toString());
+                    if (mListData.size() == 0) {
+                        show_Toast("未找到当前雷管");
+                    }
+                    setmOldTitle();
+                    mList.clear();
+                    Log.e("加载全部项目", "mListData.size(): " + mListData.size());
+                    for (DetonatorTypeNew item : mListData) {
+                        ShouQuanData shouQuanData = new ShouQuanData();
+                        shouQuanData.setId(item.getId());
+                        shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                        shouQuanData.setDetonatorId(item.getDetonatorId());
+                        shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                        shouQuanData.setCong_yscs(item.getCong_yscs());
+                        shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                        shouQuanData.setQibao(item.getQibao());
+                        shouQuanData.setTime(item.getTime());
+                        if (!mList.contains(shouQuanData)) {
+                            mList.add(shouQuanData);
+                        }
+                    }
+                    mAdapter2.setNewData(mList);
+                    mAdapter2.notifyDataSetChanged();
+                    hideInputKeyboard();//隐藏键盘,取消焦点
+                    break;
                 case 7:
                     show_Toast(getResources().getString(R.string.text_send_tip26));
                     break;
@@ -172,7 +204,10 @@ public class SouSuoSQActivity extends BaseActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
+    private void setmOldTitle() {
+        getSupportActionBar().setTitle(mOldTitle + "(共:" + mListData.size() + ")");
 
+    }
     /**
      * 创建菜单
      */
@@ -200,6 +235,8 @@ public class SouSuoSQActivity extends BaseActivity {
             case R.id.item_1:
                 updateEditState();
                 return true;
+            case R.id.item_2:
+                mHandler_UI.sendMessage(mHandler_UI.obtainMessage(6));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -264,10 +301,11 @@ public class SouSuoSQActivity extends BaseActivity {
                 setAllItemChecked();
                 break;
             case R.id.tv_input:
+
                 inputLeiGuan();
                 break;
             case R.id.tv_ture:
-                deleteCheckItem();
+//                deleteCheckItem();
                 break;
         }
     }
@@ -275,6 +313,7 @@ public class SouSuoSQActivity extends BaseActivity {
     //删除选中的item
     private void deleteCheckItem() {
         if (mAdapter2 == null) return;
+        if (mList == null) return;
         GreenDaoMaster master = new GreenDaoMaster();
 
         for (int i = mList.size() - 1; i >= 0; i--) {

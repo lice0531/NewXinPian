@@ -2428,7 +2428,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
-
+        //更新排数据
+        updataPaiData();
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
@@ -2631,7 +2632,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         //向数据库插入数据
         getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
-
+        //更新排数据
+        updataPaiData();
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
@@ -2875,6 +2877,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String shellNo = "";
         int flag = 0;
         PaiData paiData = groupList.get(paiChoice - 1);
+        Log.e(TAG, "手动输入 paiData.getKongDelay: "+paiData.getKongDelay() );
+        Log.e(TAG, "手动输入 paiData.getStartDelay: "+paiData.getStartDelay() );
         int start_delay = Integer.parseInt(paiData.getStartDelay());//开始延时
         int f1 = Integer.parseInt(paiData.getKongDelay());//f1延时
         int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
@@ -2885,7 +2889,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         int delay_max = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
         int delay_min = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
-
+        delay_set = "f1";//默认选中f1,f2留着同孔
+        Log.e("单发输入", "delay_set: " + delay_set);
 //        if (delay_max == 0 && duanNo2 == 0) {
 //            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
 //        }
@@ -2955,6 +2960,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
             delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
+            Log.e("手动输入-最终延时", "delay_max: " + delay_max);
             if (delay_max < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                 return -1;
@@ -3040,7 +3046,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             reCount++;
         }
 
-
+        //更新排数据
+        updataPaiData();
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         pb_show = 0;

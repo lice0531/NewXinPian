@@ -1033,4 +1033,6 @@
     <string name="text_qxqx">取消全选</string>
     <string name="text_xmxzxm">请先在项目管理中新增项目后，再进行授权操作</string>
     <string name="text_xmsyxm">请先在项目管理中设置好您需要使用的项目后，再进行授权操作</string>
+    <string name="sq_item_1">选择雷管</string>
+    <string name="sq_item_2">显示正确</string>
 </resources>

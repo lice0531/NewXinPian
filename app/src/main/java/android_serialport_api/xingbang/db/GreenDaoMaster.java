@@ -1472,7 +1472,21 @@ public class GreenDaoMaster {
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
-
+    public List<DetonatorTypeNew> queryDetonatorShouQuan2() {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Qibao.eq("雷管正常"))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
+    public List<DetonatorTypeNew> queryDetonatorShouQuan2(String sqrq) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Qibao.eq("雷管正常"))
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
     /**
      * 查询生产库中雷管
      */
