@@ -403,13 +403,13 @@ public class TestDenatorActivity extends SerialPortActivity {
         String str5 = "起爆";
         Log.e("验证2", "Yanzheng: " + Yanzheng);
         Intent intent;//金建华
-        if (Yanzheng.equals("验证")) {
-            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
-        } else {
+//        if (Yanzheng.equals("验证")) {
+//            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
+//        } else {
             intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
 //            intent.putIntegerArrayListExtra("qyList",qyIdList);
-        }
+//        }
         intent.putExtra("dataSend", str5);
         startActivity(intent);
     }

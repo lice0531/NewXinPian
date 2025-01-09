@@ -146,7 +146,21 @@ public class AppDetailLogActivity extends BaseActivity {
             public void onButtonClicked(View v, int position) {
                 switch (v.getId()) {
                     case R.id.bt_delete:
-                        deleteNormalLogs(normalLogList.get(position).getFilename(), normalLogList.get(position).getId());
+                        //先弹出是否确认删除项目dialog  确定后执行删除操作
+                        if (!AppDetailLogActivity.this.isFinishing()) {
+                            AlertDialog dialog = new AlertDialog.Builder(AppDetailLogActivity.this)
+                                    .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题
+                                    .setMessage(getResources().getString(R.string.text_scriz))//设置对话框的内容
+                                    //设置对话框的按钮
+                                    .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
+                                        dialog1.dismiss();
+                                    })
+                                    .setPositiveButton(getString(R.string.text_dialog_qd), (dialog14, which) -> {
+                                        deleteNormalLogs(normalLogList.get(position).getFilename(), normalLogList.get(position).getId());
+                                    }).create();
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.show();
+                        }
                         break;
                     case R.id.bt_upload:
                         if (equ_no.length() < 1) {
