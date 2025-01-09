@@ -66,6 +66,7 @@ import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
+import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -834,6 +835,7 @@ public class XingbangMain extends SerialPortActivity {
                 }
                 lastClickTime = System.currentTimeMillis();
 
+                if (!projectCheck()) return;
                 close();//停止访问电流
                 String str1 = "注册";
                 Intent intent = new Intent(XingbangMain.this, QuYuActivity2.class);//金建华
@@ -949,6 +951,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_downWorkCode://下载
+                if (!projectCheck()) return;
                 close();//停止访问电流
                 startActivity(new Intent(this, DownWorkCode.class));
                 break;
@@ -958,6 +961,41 @@ public class XingbangMain extends SerialPortActivity {
                 exit();//退出方法
                 break;
         }
+    }
+
+    //关于项目的校验：是否新增项目 是否有使用中的项目
+    private boolean projectCheck() {
+        GreenDaoMaster daoMaster = new GreenDaoMaster();
+        List<Project> list_pj = daoMaster.queryProject();
+        Log.e(TAG,"项目个数:" + list_pj.size());
+        if (list_pj.isEmpty()) {
+            AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
+                    .setTitle(getResources().getString(R.string.text_fir_dialog2))
+                    .setMessage(getResources().getString(R.string.text_xmxzxm))
+                    //设置对话框的按钮
+                    .setNeutralButton(getResources().getString(R.string.text_alert_sure), (dialog1, which) -> {
+                        dialog1.dismiss();
+                    })
+//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                    .create();
+            dialog.show();
+            return false;
+        }
+        List<Project> userProject = daoMaster.querySelectedProject();
+        if (userProject.isEmpty()) {
+            AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
+                    .setTitle(getResources().getString(R.string.text_fir_dialog2))
+                    .setMessage(getResources().getString(R.string.text_xmsyxm))
+                    //设置对话框的按钮
+                    .setNeutralButton(getResources().getString(R.string.text_alert_sure), (dialog1, which) -> {
+                        dialog1.dismiss();
+                    })
+//                        .setNeutralButton("确定", (dialog12, which) -> dialog12.dismiss())
+                    .create();
+            dialog.show();
+            return false;
+        }
+        return true;
     }
 
     /**

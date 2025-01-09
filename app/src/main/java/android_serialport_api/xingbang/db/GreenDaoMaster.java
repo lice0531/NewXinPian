@@ -780,6 +780,19 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 查询出已组网区域的雷管总数量
+     * @param idList: 已组网的区域id
+     * @return: 已组网区域的雷管总数量
+     */
+    public int queryDetonatorNumAscNew(List<Integer> idList) {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        for (int id : idList) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionAsc(String.valueOf(id)));
+        }
+        return mListData.size();
+    }
+
+    /**
      * 查询雷管 区域正序(序号)
      *
      * @param piece 区域号 1 2 3 4 5
@@ -2099,5 +2112,15 @@ public class GreenDaoMaster {
             qyidList.add(quYu.getQyid());
         }
         return qyidList;
+    }
+
+    /**
+     * 查询是否有使用中的项目
+     */
+    public List<Project> querySelectedProject() {
+        // 查询 selected 为 true 的记录
+        return mProjectDao.queryBuilder()
+                .where(ProjectDao.Properties.Selected.eq("true"))
+                .list();
     }
 }

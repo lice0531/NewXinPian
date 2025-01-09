@@ -51,7 +51,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SaveProjectActivity extends BaseActivity implements SaveProjectAdapter.InnerItemOnclickListener, AdapterView.OnItemClickListener {
-
+    @BindView(R.id.title_back)
+    ImageView titleBack;
+    @BindView(R.id.title_text)
+    TextView titleText;
+    @BindView(R.id.title_add)
+    ImageView titleAdd;
+    @BindView(R.id.title_delete)
+    ImageView titleDelete;
     @BindView(R.id.btn_down_return)
     Button btnDownReturn;
     @BindView(R.id.btn_down_inputOK)
@@ -123,38 +130,39 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         db = mMyDatabaseHelper.getReadableDatabase();
         AppLogUtils.writeAppLog("---进入项目列表页面----");
 // 标题栏
-        setSupportActionBar(findViewById(R.id.toolbar));
-        totalbar_title =  findViewById(R.id.title_text);
-        tv_right = findViewById(R.id.title_right);
-        ImageView title_add = findViewById(R.id.title_add);
-        ImageView iv_back = findViewById(R.id.title_back);
-        title_add.setVisibility(View.GONE);
-        tv_right.setVisibility(View.VISIBLE);
-        tv_right.setText(getResources().getString(R.string.text_gl));
-        totalbar_title.setText("项目列表");
-        iv_back.setOnClickListener(v -> finish());
-        tv_right.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (map_project.size() == 0) {
-                    show_Toast(getResources().getString(R.string.text_xzxm));
-                    return;
-                }
-                if (isDelete) {
-                    isDelete = false;
-                    mAdapter.showCheckBox(true);
-                    btnDelete.setVisibility(View.VISIBLE);
-                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
-                    pnList.clear();
-                } else {
-                    pnList.clear();
-                    isDelete = true;
-                    mAdapter.showCheckBox(false);
-                    btnDelete.setVisibility(View.GONE);
-                    tv_right.setText(getResources().getString(R.string.text_gl));
-                }
-            }
-        });
+//        setSupportActionBar(findViewById(R.id.toolbar));
+//        totalbar_title =  findViewById(R.id.title_text);
+//        tv_right = findViewById(R.id.title_right);
+//        ImageView title_add = findViewById(R.id.title_add);
+//        ImageView iv_back = findViewById(R.id.title_back);
+//        tv_right.setVisibility(View.VISIBLE);
+//        tv_right.setText(getResources().getString(R.string.text_gl));
+        titleText.setText("项目列表");
+        titleDelete.setVisibility(View.VISIBLE);
+        titleDelete.setBackgroundResource(R.drawable.icon_setting);
+//        iv_back.setOnClickListener(v -> finish());
+//        tv_right.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (map_project.size() == 0) {
+//                    show_Toast(getResources().getString(R.string.text_xzxm));
+//                    return;
+//                }
+//                if (isDelete) {
+//                    isDelete = false;
+//                    mAdapter.showCheckBox(true);
+//                    btnDelete.setVisibility(View.VISIBLE);
+//                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
+//                    pnList.clear();
+//                } else {
+//                    pnList.clear();
+//                    isDelete = true;
+//                    mAdapter.showCheckBox(false);
+//                    btnDelete.setVisibility(View.GONE);
+//                    tv_right.setText(getResources().getString(R.string.text_gl));
+//                }
+//            }
+//        });
 //        loadMoreData();
         mAdapter = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject_new);
         mAdapter.setOnInnerItemOnClickListener(this);
@@ -211,6 +219,9 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         super.onResume();
         loadMoreData();
         mAdapter.notifyDataSetChanged();
+        if (map_project.isEmpty()) {
+            show_Toast(getResources().getString(R.string.text_addxm));
+        }
     }
 
     //隐藏键盘
@@ -321,11 +332,34 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_clear_htid, R.id.btn_clear_xmbh,
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,
-            R.id.btn_down_offline,R.id.btn_add_project,R.id.btn_down_project,R.id.btn_delete_project})
+            R.id.btn_down_offline,R.id.btn_add_project,R.id.btn_down_project,R.id.btn_delete_project,
+            R.id.title_back,R.id.title_add,R.id.title_delete})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.title_back:
             case R.id.btn_down_return:
                 finish();
+                break;
+            case R.id.title_delete:
+                if (map_project.size() == 0) {
+                    show_Toast(getResources().getString(R.string.text_addxm));
+                    return;
+                }
+                if (isDelete) {
+                    isDelete = false;
+                    mAdapter.showCheckBox(true);
+                    btnDelete.setVisibility(View.VISIBLE);
+//                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
+                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
+                    pnList.clear();
+                } else {
+                    pnList.clear();
+                    isDelete = true;
+                    mAdapter.showCheckBox(false);
+                    btnDelete.setVisibility(View.GONE);
+//                    tv_right.setText(getResources().getString(R.string.text_gl));
+                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+                }
                 break;
             case R.id.btn_down_inputOK:
                 hideInputKeyboard();//隐藏键盘
@@ -376,13 +410,14 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 Intent intent = new Intent(this, DownOfflineActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.title_add:
             case R.id.btn_add_project:
                 Intent im = new Intent(this, ProjectManagerActivity.class);
                 startActivity(im);
                 break;
             case R.id.btn_down_project:
                 if (map_project.size() == 0) {
-                    show_Toast(getResources().getString(R.string.text_xzxm));
+                    show_Toast(getResources().getString(R.string.text_addxm));
                     return;
                 }
                 // 判断集合中是否有 selected 为 true 的数据
@@ -427,7 +462,8 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                                     isDelete = true;
                                     mAdapter.showCheckBox(false);
                                     btnDelete.setVisibility(View.GONE);
-                                    tv_right.setText(getResources().getString(R.string.text_gl));
+//                                    tv_right.setText(getResources().getString(R.string.text_gl));
+                                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
                                 }
                                 AppLogUtils.writeAppLog("点击了多选删除项目按钮");
                             }).create();

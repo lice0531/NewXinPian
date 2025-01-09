@@ -69,6 +69,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -84,8 +85,10 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
+import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.services.LocationService;
@@ -266,6 +269,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private TextView totalbar_title;
     private String select_business;
     private String TAG = "下载项目页面";
+    private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -607,7 +611,9 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     // 查询全部雷管 倒叙(序号)
 //                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    qyIdList = new GreenDaoMaster().getSelectedQyIdList();
+//                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     list_uid.clear();
@@ -616,7 +622,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     }
 
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+//                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegionNew(qyIdList, mListData.size());
                     break;
 
                 // 重新排序 更新视图
@@ -2805,6 +2812,30 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         totalbar_title.setText(mOldTitle + str);
         Log.e("liyi_Region", "已选择" + str);
     }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegionNew(List<Integer> idList, int size) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            String result = idList.stream()
+                    .map(String::valueOf)  // 转换为字符串
+                    .collect(Collectors.joining(","));
+            String str;
+            if (size == -1) {
+                str = getString(R.string.text_list_piace) + result;
+            } else {
+                str = getString(R.string.text_list_piace) + result + getString(R.string.text_gong) + size + ")";
+            }
+            // 设置标题
+            getSupportActionBar().setTitle(mOldTitle + str);
+
+            totalbar_title.setText(mOldTitle + str);
+            Log.e("liyi_Region", "已选择" + str);
+        }
+    }
+
+
 
     /***
      * 得到某段的总数

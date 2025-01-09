@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/totalbar"
         android:layout_margin="10dp"
+        android:visibility="gone"
         android:divider="@drawable/spacer_medium"
         android:orientation="horizontal"
         android:paddingTop="1dip">
@@ -53,6 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
+            android:visibility="gone"
             android:text="新增项目" />
         <Button
             android:visibility="gone"

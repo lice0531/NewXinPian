@@ -47,30 +47,38 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/addproject_heigh"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
                         <TextView
-                            style="@style/alltextstyle"
+                            android:id="@+id/textView1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/addproject_tv_left"
+                            style="@style/alltextstyle"
                             android:text="项目名称: "
-                            android:textSize="20sp" />
+                            android:layout_marginLeft="10dp"
+                            android:textSize="20sp"
+                            app:layout_constraintEnd_toStartOf="@id/down_at_project_name"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                         <TextView
                             android:id="@+id/down_at_project_name"
                             style="@style/alltextstyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="5"
+                            android:layout_width="0dp"
                             android:gravity="center_vertical"
-                            android:padding="5dp"
-                            android:textSize="18sp" />
-                    </LinearLayout>
+                            android:layout_height="wrap_content"
+                            android:maxHeight="200dp"
+                            android:text=""
+                            android:minHeight="60dp"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/textView1"
+                            app:layout_constraintTop_toTopOf="parent" />
 
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
