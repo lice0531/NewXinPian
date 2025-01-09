@@ -555,15 +555,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 XiuGaiPai(groupList.get(groupPosition));
                 break;
             case R.id.pai_check:
-                CheckBox checkBox = findViewById(view.getId());
-                Log.e("父控件-点击事件",checkBox.isChecked()+"");
-//                groupList.get(groupPosition).setSelect(checkBox.isChecked());
-                Log.e("父控件-点击事件", "groupList.get(groupPosition).isSelect(): " + groupList.get(groupPosition).isSelect());
-                for (int a = 0; a < childList.get(groupPosition).size(); a++) {//选中排的时候,同时选中所有子项
-                    childList.get(groupPosition).get(a).setSelect(groupList.get(groupPosition).isSelect());
-                    Log.e("父控件", "mChildList.get(groupPosition).get(a)getShellBlastNo: " + childList.get(groupPosition).get(a).getShellBlastNo());
-                }
-                zhuceAdapter.notifyDataSetChanged();
+//                CheckBox checkBox = findViewById(view.getId());
+//                boolean isChecked =checkBox.isChecked();
+//                Log.e("父控件-点击事件",isChecked+"");
+//                groupList.get(groupPosition).setSelect(isChecked);
+//                Log.e("父控件-点击事件", "groupList.get(groupPosition).isSelect(): " + groupList.get(groupPosition).isSelect());
+//                for (int a = 0; a < childList.get(groupPosition).size(); a++) {//选中排的时候,同时选中所有子项
+//                    childList.get(groupPosition).get(a).setSelect(isChecked);
+//                    Log.e("父控件", "mChildList.get(groupPosition).get(a)getShellBlastNo: " + childList.get(groupPosition).get(a).getShellBlastNo());
+//                }
+//                zhuceAdapter.notifyDataSetChanged();
                 break;
         }
 
@@ -1857,7 +1858,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             } else {
                 // 修改雷管延时
-                new GreenDaoMaster().updateDetonatorDelay(shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
+                new GreenDaoMaster().updateDetonatorDelay(info.getId(),shellBlastNo, Integer.parseInt(delay1), Integer.parseInt(et_duanNo.getText().toString()));
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
 
@@ -3736,7 +3737,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         EditText neiDelay = myDialog.getView().findViewById(R.id.txt_paiDelay);
         SwitchButton sw_dijian = myDialog.getView().findViewById(R.id.sw_dijian);
         int delay_min_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
-        if (delay_min_new == 0) {
+        Log.e(TAG, "paiMax: "+paiMax );
+        Log.e(TAG, "delay_min_new: "+delay_min_new );
+        Log.e(TAG, "quYu_choice.getPaiDelay(): "+quYu_choice.getPaiDelay() );
+        if (paiMax == 0) {
             startDelay.setText("0");
         } else {
             startDelay.setText((delay_min_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");

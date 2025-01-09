@@ -690,6 +690,17 @@ public class GreenDaoMaster {
         entity.setDuanNo(duanNo);
         mDeantorBaseDao.update(entity);
     }
+    public void updateDetonatorDelay(long id ,String shell, int delay,int duanNo) {
+        DenatorBaseinfo entity = mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Id.eq(id))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(shell))
+                .build()
+                .unique();
+        entity.setDelay(delay);
+        entity.setDuanNo(duanNo);
+        mDeantorBaseDao.update(entity);
+    }
     /**
      * 删除某一发雷管
      */

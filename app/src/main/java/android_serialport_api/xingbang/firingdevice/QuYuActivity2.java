@@ -363,8 +363,8 @@ public class QuYuActivity2 extends BaseActivity {
                     EditText paiDelay = myDialog.getView().findViewById(R.id.txt_paiDelay);
 //                    Log.e("打印", "name: " + name.getText());
 //                    Log.e("打印", "startDelay: " + startDelay);
-                    Log.e("打印", "kongDelay: " + kongDelay);
-                    Log.e("打印", "paiDelay: " + paiDelay);
+//                    Log.e("打印", "kongDelay: " + kongDelay);
+//                    Log.e("打印", "paiDelay: " + paiDelay);
 //                    if (name.getText().length() > 0) {
 
                     QuYu quYu = new QuYu();
