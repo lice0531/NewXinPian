@@ -994,6 +994,7 @@
     <string name="text_scsyxm">Do you want to delete the selected items?</string>
     <string name="text_gl">manage</string>
     <string name="text_xzxm">Please add items first</string>
+    <string name="text_addxm">Please click the plus sign in the upper right corner to add an item</string>
     <string name="text_szxm">Please set the items you want to use first</string>
     <string name="text_xmxz_ts">Friendly tip: In order to ensure that the project can download smoothly, please click the project in the list first, enter the project details page, select and set the project you need to use. Then, perform the download operation.</string>
     <string name="text_xmewm_ts">Friendly tip: In order to ensure the accurate entry of project information, other devices of the unit can scan the following two-dimensional code on the interface of the new project to quickly complete the new project information!</string>
@@ -1017,4 +1018,6 @@
     <string name="dialog_pai_fa">发</string>
     <string name="text_syxm">Use current project</string>
     <string name="text_qxqx">Deselect all</string>
+    <string name="text_xmxzxm">Please add a new item in the project management before authorization</string>
+    <string name="text_xmsyxm">Please set the project you need to use in project management before authorizing the operation</string>
 </resources>

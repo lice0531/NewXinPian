@@ -438,16 +438,18 @@ public class ProjectManagerActivity extends BaseActivity {
             downAtXmbh.setText(sxmbh);
             downAtDwdm.setText(sdwdm);
             // 使用split方法将字符串按逗号分割
-            String[] coordinates = scoordxy.split(",");
-            // 提取经度和纬度
-            // 检查数组长度是否大于1，防止数组越界
-            if (coordinates.length > 1) {
-                String jd = coordinates[0];  // 经度
-                String wd = coordinates[1];   // 纬度
-                downAtCoordx.setText(jd);
-                downAtCoordy.setText(wd);
-            } else {
-                Log.e(TAG,"经纬度出错:" + scoordxy);
+            if (!TextUtils.isEmpty(scoordxy)) {
+                String[] coordinates = scoordxy.split(",");
+                // 提取经度和纬度
+                // 检查数组长度是否大于1，防止数组越界
+                if (coordinates.length > 1) {
+                    String jd = coordinates[0];  // 经度
+                    String wd = coordinates[1];   // 纬度
+                    downAtCoordx.setText(jd);
+                    downAtCoordy.setText(wd);
+                } else {
+                    Log.e(TAG,"经纬度出错:" + scoordxy);
+                }
             }
             downAtBprysfz.setText(sbprysfz);
         }

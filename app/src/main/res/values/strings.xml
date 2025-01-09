@@ -1005,6 +1005,7 @@
     <string name="text_scsyxm">是否删除选中的项目?</string>
     <string name="text_gl">管理</string>
     <string name="text_xzxm">请先新增项目</string>
+    <string name="text_addxm">请先点击右上角加号新增项目</string>
     <string name="text_szxm">请先设置需要使用的项目</string>
     <string name="text_xmxz_ts">友情提示：为保障项目能够顺利下载，请先点击列表中的项目，进入项目详情页面，选择并设置好您需要使用的项目。然后，再进行下载操作。</string>
     <string name="text_xmewm_ts">友情提示：为保障项目信息录入准确，本单位其他设备可在新增项目界面扫描上面二维码快速完成项目信息新增！</string>
@@ -1027,4 +1028,6 @@
     <string name="dialog_pai_fa">发</string>
     <string name="text_syxm">使用当前项目</string>
     <string name="text_qxqx">取消全选</string>
+    <string name="text_xmxzxm">请先在项目管理中新增项目后，再进行授权操作</string>
+    <string name="text_xmsyxm">请先在项目管理中设置好您需要使用的项目后，再进行授权操作</string>
 </resources>

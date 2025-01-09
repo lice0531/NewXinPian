@@ -372,31 +372,34 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/setenv_BT_Height"
-                            android:orientation="horizontal">
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="horizontal">-->
 
-                            <TextView
-                                style="@style/alltextstyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/addproject_tv_left"
-                                android:text="项目名称: "
-                                android:textSize="20sp" />
+<!--                            <TextView-->
+<!--                                style="@style/alltextstyle"-->
+<!--                                android:layout_marginTop="5dp"-->
+<!--                                android:layout_marginBottom="5dp"                                android:layout_gravity="center_vertical"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="@dimen/addproject_tv_left"-->
+<!--                                android:text="项目名称: "-->
+<!--                                android:textSize="20sp" />-->
 
-                            <AutoCompleteTextView
-                                android:id="@+id/down_at_project_name"
-                                style="@style/alltextstyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="5"
-                                android:gravity="center_vertical"
-                                android:hint="项目名称"
-                                android:padding="5dp"
-                                android:textSize="18sp"
-                                android:background="@null"
-                                android:enabled="false"/>
+<!--                            <AutoCompleteTextView-->
+<!--                                android:id="@+id/down_at_project_name"-->
+<!--                                style="@style/alltextstyle"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_weight="5"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:hint="项目名称"-->
+<!--                                android:maxLines="5"-->
+<!--                                android:padding="5dp"-->
+<!--                                android:textSize="18sp"-->
+<!--                                android:background="@null"-->
+<!--                                android:enabled="false"/>-->
 
                             <Button
                                 android:visibility="gone"
@@ -407,7 +410,42 @@
                                 android:layout_marginRight="3dp"
                                 android:text="@string/text_down_tip6"
                                 android:textSize="18sp" />
-                        </LinearLayout>
+<!--                        </LinearLayout>-->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/alltextstyle"
+                                android:text="项目名称: "
+                                android:layout_marginLeft="10dp"
+                                android:textSize="20sp"
+                                app:layout_constraintEnd_toStartOf="@id/down_at_project_name"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                            <AutoCompleteTextView
+                                android:id="@+id/down_at_project_name"
+                                style="@style/alltextstyle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:maxHeight="200dp"
+                                android:text=""
+                                android:gravity="center_vertical"
+                                android:padding="5dp"
+                                android:minHeight="40dp"
+                                android:background="@null"
+                                android:textSize="18sp"
+                                android:enabled="false"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/textView1"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <View
                             android:layout_width="match_parent"
