@@ -1960,7 +1960,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e("新建排", "kongDelay: " + kongDelay.getText().toString());
                     Log.e("新建排", "neiDelay: " + neiDelay.getText().toString());
                     Log.e("新建排", "sw_dijian: " + sw_dijian.isChecked());
-                    paiData.setPaiId((maxPai + 1));
+//                    paiData.setPaiId((maxPai + 1));
                     paiData.setQyid(Integer.parseInt(mRegion));
                     paiData.setStartDelay(startDelay.getText().toString());
                     paiData.setKongNum(Integer.parseInt(kongSun.getText().toString()));
