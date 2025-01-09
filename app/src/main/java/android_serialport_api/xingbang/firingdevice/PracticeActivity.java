@@ -558,14 +558,14 @@ public class PracticeActivity extends BaseActivity {
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent9;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent9 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent9 = new Intent(this, VerificationActivity.class);
-                    intent9.putExtra("isJl","isYxjl");
-                } else {
+//                if (Yanzheng.equals("验证")) {
+//                    //Intent intent9 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                    intent9 = new Intent(this, VerificationActivity.class);
+//                    intent9.putExtra("isJl","isYxjl");
+//                } else {
                     Log.e(TAG, "验证2: "+Yanzheng_sq);
                     intent9 = new Intent(this, SyncActivityYouxian.class);
-                }
+//                }
 //                Intent intent9 = new Intent(this, SyncActivityYouxian.class);//有线
                 startActivity(intent9);
                 finish();
@@ -580,14 +580,14 @@ public class PracticeActivity extends BaseActivity {
                 String str = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent5;//金建华
-                if (Yanzheng.equals("验证")) {
-                    //Intent intent9 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                    intent5 = new Intent(this, VerificationActivity.class);
-                    intent5.putExtra("isJl","isRdjl");
-                } else {
+//                if (Yanzheng.equals("验证")) {
+//                    //Intent intent9 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                    intent5 = new Intent(this, VerificationActivity.class);
+//                    intent5.putExtra("isJl","isRdjl");
+//                } else {
                     Log.e(TAG, "验证2: "+Yanzheng_sq);
                     intent5 = new Intent(this, SyncActivity.class);
-                }
+//                }
 //                Intent intent5 = new Intent(this, SyncActivity2WIFI.class);//WIFI方式
 //                Intent intent5 = new Intent(this, SyncActivity.class);//热点方式
                 startActivity(intent5);

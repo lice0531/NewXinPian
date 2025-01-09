@@ -315,16 +315,16 @@ public class SyncActivity2WIFI extends BaseActivity {
                         show_Toast("收到起爆测试指令");
                         Log.e("接收消息", "收到起爆测试指令: " );
                         String str5 = "起爆";
-                        if (Yanzheng.equals("验证")) {
-                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-                            Intent intent5 = new Intent(SyncActivity2WIFI.this, VerificationActivity.class);//验证爆破范围页面
-                            intent5.putExtra("dataSend", str5);
-                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        } else {
+//                        if (Yanzheng.equals("验证")) {
+//                            //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
+//                            Intent intent5 = new Intent(SyncActivity2WIFI.this, VerificationActivity.class);//验证爆破范围页面
+//                            intent5.putExtra("dataSend", str5);
+//                            startActivityForResult(intent5, REQUEST_CODE_QIBAO);
+//                        } else {
                             Intent intent5 = new Intent(SyncActivity2WIFI.this, FiringMainActivity_hf.class);//金建华
                             intent5.putExtra("dataSend", str5);
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
-                        }
+//                        }
 //                        show_Toast("收到网络测试指令");
 //                        Intent intent = new Intent(SyncActivity2Net.this, TestDenatorActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_NET);

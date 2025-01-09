@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -86,7 +87,8 @@ public class QueryCurrentDetail extends BaseActivity {
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
     private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
-    private TextView totalbar_title;
+    private TextView totalbar_title,title_lefttext;
+    private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +108,16 @@ public class QueryCurrentDetail extends BaseActivity {
         mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
 
+        title_lefttext = findViewById(R.id.title_lefttext);
+        title_lefttext.setVisibility(View.VISIBLE);
+        title_lefttext.setText(getString(R.string.xingbang_main_page_btn_query_current));
         totalbar_title = findViewById(R.id.title_text);
-        totalbar_title.setText(getString(R.string.xingbang_main_page_btn_query_current));
+//        totalbar_title.setText(getString(R.string.xingbang_main_page_btn_query_current));
+        totalbar_title.setVisibility(View.GONE);
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
+        iv_back.setVisibility(View.GONE);
+        iv_add.setVisibility(View.GONE);
         iv_add.setOnClickListener(v -> {
             choiceQuYu();
         });
@@ -122,7 +130,7 @@ public class QueryCurrentDetail extends BaseActivity {
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
-        setTitleRegion(mRegion, -1);
+//        setTitleRegion(mRegion, -1);
 
         btn_return = (Button) findViewById(R.id.btn_del_return);
         btn_return.setOnClickListener(v -> {
@@ -170,7 +178,9 @@ public class QueryCurrentDetail extends BaseActivity {
                     // 查询全部雷管 倒叙(序号)
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
 //                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+//                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    qyIdList = new GreenDaoMaster().getSelectedQyIdList();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
                     mAdapter.setListData(mListData, 0);
                     txTotal.setText(getString(R.string.text_total) + mListData.size());
                     mAdapter.notifyDataSetChanged();
@@ -192,19 +202,22 @@ public class QueryCurrentDetail extends BaseActivity {
                         a.append(",5");
                     }
                     // 设置标题区域
-                    setTitleRegion(a.toString(), mListData.size());
+                    setTitleRegionNew(qyIdList,mListData.size());
+//                    setTitleRegion(a.toString(), mListData.size());
                     break;
                 case 1005://按管壳码排序
                     show_Toast(getResources().getString(R.string.text_err1));
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+//                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
 
                     // 设置标题区域
-                    setTitleRegion(mRegion, mListData.size());
+                    setTitleRegionNew(qyIdList,mListData.size());
+//                    setTitleRegion(mRegion, mListData.size());
                     break;
             }
             return false;
@@ -333,6 +346,27 @@ public class QueryCurrentDetail extends BaseActivity {
 //        SPUtils.put(this, Constants_SP.RegionCode, region);
 
         Log.e("liyi_Region", "已选择" + str);
+    }
+
+    /**
+     * 设置标题区域
+     */
+    private void setTitleRegionNew(List<Integer> idList, int size) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            String result = idList.stream()
+                    .map(String::valueOf)  // 转换为字符串
+                    .collect(Collectors.joining(","));
+            String str;
+            if (size == -1) {
+                str = getString(R.string.text_list_piace) + result;
+            } else {
+                str = getString(R.string.text_list_piace) + result + getString(R.string.text_gong) + size + ")";
+            }
+            // 设置标题
+            getSupportActionBar().setTitle(mOldTitle + str);
+            title_lefttext.setText(mOldTitle + str);
+            Log.e("liyi_Region", "已选择" + str);
+        }
     }
 
     private void choiceQuYu() {

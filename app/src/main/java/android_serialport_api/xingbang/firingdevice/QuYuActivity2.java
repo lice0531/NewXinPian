@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MyAlertDialog;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -269,38 +271,51 @@ public class QuYuActivity2 extends BaseActivity {
                     show_Toast(getResources().getString(R.string.text_selectqy));
                     return;
                 }
-                for (QuYuData data : mQuYuList) {
-                    if (data.isSelect()) {
-                        GreenDaoMaster master = new GreenDaoMaster();
-                        master.deleteQuYuForId(data.getQyid());
-                        master.deletePaiFroPiace(data.getQyid() + "");
-                        master.deleteLeiGuanFroPiace(data.getQyid() + "");
-                    }
+                if (!QuYuActivity2.this.isFinishing()) {
+                    AlertDialog dialog = new AlertDialog.Builder(QuYuActivity2.this)
+                            .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题
+                            .setMessage(getResources().getString(R.string.text_scsyqy))//设置对话框的内容
+                            //设置对话框的按钮
+                            .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
+                                dialog1.dismiss();
+                            })
+                            .setPositiveButton(getString(R.string.text_dialog_qd), (dialog14, which) -> {
+                                for (QuYuData data : mQuYuList) {
+                                    if (data.isSelect()) {
+                                        GreenDaoMaster master = new GreenDaoMaster();
+                                        master.deleteQuYuForId(data.getQyid());
+                                        master.deletePaiFroPiace(data.getQyid() + "");
+                                        master.deleteLeiGuanFroPiace(data.getQyid() + "");
+                                    }
+                                }
+                                if (mListData.size() > 0) {
+                                    QuYuDao qyDao = getDaoSession().getQuYuDao();
+                                    List<QuYu> selectedQy = qyDao.queryBuilder()
+                                            .where(QuYuDao.Properties.Selected.eq("true"))
+                                            .list();
+                                    //如果区域列表中没有找到 selected 为 "true" 的记录(即没有一个已组网的区域)
+                                    if (selectedQy.isEmpty()) {
+                                        // 获取第一条记录并更新其 selected 为 "true"
+                                        List<QuYu> allQuYuList = qyDao.loadAll();  // 获取所有记录
+                                        if (!allQuYuList.isEmpty()) {
+                                            QuYu firstQuYu = allQuYuList.get(0);  // 获取第一条记录
+                                            firstQuYu.setSelected("true");  // 设置 selected 字段为 "true"
+                                            // 更新该记录
+                                            qyDao.update(firstQuYu);  // 更新数据库中的记录
+                                            quyuAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                                show_Toast("删除成功");
+                                mHandle.sendMessage(mHandle.obtainMessage(2));
+                                qyIdList.clear();
+                                Utils.saveFile();//把软存中的数据存入磁盘中
+                                Log.e(TAG, "区域页面多选结果:" + qyIdList.toString());
+                                AppLogUtils.writeAppLog("点击了多选删除区域按钮");
+                            }).create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
                 }
-                if (mListData.size() > 0) {
-                    QuYuDao qyDao = getDaoSession().getQuYuDao();
-                    List<QuYu> selectedQy = qyDao.queryBuilder()
-                            .where(QuYuDao.Properties.Selected.eq("true"))
-                            .list();
-                    //如果区域列表中没有找到 selected 为 "true" 的记录(即没有一个已组网的区域)
-                    if (selectedQy.isEmpty()) {
-                        // 获取第一条记录并更新其 selected 为 "true"
-                        List<QuYu> allQuYuList = qyDao.loadAll();  // 获取所有记录
-                        if (!allQuYuList.isEmpty()) {
-                            QuYu firstQuYu = allQuYuList.get(0);  // 获取第一条记录
-                            firstQuYu.setSelected("true");  // 设置 selected 字段为 "true"
-                            // 更新该记录
-                            qyDao.update(firstQuYu);  // 更新数据库中的记录
-                            quyuAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-                show_Toast("删除成功");
-                mHandle.sendMessage(mHandle.obtainMessage(2));
-                qyIdList.clear();
-                Utils.saveFile();//把软存中的数据存入磁盘中
-                Log.e(TAG, "区域页面多选结果:" + qyIdList.toString());
-
                 break;
             case R.id.tv_sure:
                 if (mListData.isEmpty()) {

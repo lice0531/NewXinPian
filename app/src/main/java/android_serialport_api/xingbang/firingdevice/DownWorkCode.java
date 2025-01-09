@@ -266,7 +266,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     private Handler mHandler_0 = new Handler();     // UI处理
     private List<DenatorBaseinfo> mListData = new ArrayList<>();
     private boolean mRegion1, mRegion2, mRegion3, mRegion4, mRegion5 = true;//是否选中区域1,2,3,4,5
-    private TextView totalbar_title;
+    private TextView totalbar_title,title_lefttext;
     private String select_business;
     private String TAG = "下载项目页面";
     private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
@@ -296,9 +296,13 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
         mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
 
-        totalbar_title = findViewById(R.id.title_text);
         ImageView iv_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
+        totalbar_title = findViewById(R.id.title_text);
+        title_lefttext = findViewById(R.id.title_lefttext);
+        totalbar_title.setVisibility(View.GONE);
+        title_lefttext.setVisibility(View.VISIBLE);
+        iv_back.setVisibility(View.GONE);
         iv_add.setVisibility(View.GONE);
         iv_add.setOnClickListener(v -> {
             choiceQuYu();
@@ -2830,7 +2834,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             // 设置标题
             getSupportActionBar().setTitle(mOldTitle + str);
 
-            totalbar_title.setText(mOldTitle + str);
+            title_lefttext.setText(mOldTitle + str);
             Log.e("liyi_Region", "已选择" + str);
         }
     }
