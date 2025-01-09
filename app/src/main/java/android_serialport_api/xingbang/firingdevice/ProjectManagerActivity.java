@@ -134,11 +134,15 @@ public class ProjectManagerActivity extends BaseActivity {
                 getIntent().getStringExtra("business") : "";
         Log.e(TAG,"性质:" + business + "--pageFlag:" + pageFlag);
         totalbar_title =  findViewById(R.id.title_text);
-        TextView tv_right = findViewById(R.id.title_right);
+        TextView tv_right = findViewById(R.id.title_right2);
         ImageView title_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         title_add.setVisibility(View.GONE);
-        totalbar_title.setText("项目管理");
+        iv_back.setVisibility(View.GONE);
+        TextView title_lefttext = findViewById(R.id.title_lefttext);
+        title_lefttext.setVisibility(View.VISIBLE);
+        title_lefttext.setText(getResources().getString(R.string.text_xmgl));
+        totalbar_title.setVisibility(View.GONE);
         iv_back.setOnClickListener(v -> finish());
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));

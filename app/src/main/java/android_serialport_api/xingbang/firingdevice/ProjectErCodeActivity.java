@@ -44,7 +44,11 @@ public class ProjectErCodeActivity extends BaseActivity {
         ImageView title_add = findViewById(R.id.title_add);
         ImageView iv_back = findViewById(R.id.title_back);
         title_add.setVisibility(View.GONE);
-        totalbar_title.setText("项目二维码");
+        iv_back.setVisibility(View.GONE);
+        TextView title_lefttext = findViewById(R.id.title_lefttext);
+        title_lefttext.setVisibility(View.VISIBLE);
+        title_lefttext.setText(getResources().getString(R.string.text_xmm));
+        totalbar_title.setVisibility(View.GONE);
         iv_back.setOnClickListener(v -> finish());
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
