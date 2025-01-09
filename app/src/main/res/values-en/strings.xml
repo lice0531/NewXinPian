@@ -1022,4 +1022,5 @@
     <string name="text_qxqx">Deselect all</string>
     <string name="text_xmxzxm">Please add a new item in the project management before authorization</string>
     <string name="text_xmsyxm">Please set the project you need to use in project management before authorizing the operation</string>
+    <string name="text_his_sclg2">是否删除选中雷管</string>
 </resources>

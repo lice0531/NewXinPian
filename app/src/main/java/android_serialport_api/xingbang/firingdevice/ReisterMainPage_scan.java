@@ -83,6 +83,7 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.OnChildButtonClickListener;
 import android_serialport_api.xingbang.custom.OngroupButtonClickListener;
 import android_serialport_api.xingbang.custom.PaiDataSelect;
+import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.custom.ZhuCeScanAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.Defactory;
@@ -93,6 +94,7 @@ import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
+import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.services.MyLoad;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
@@ -442,11 +444,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
 //一级点击监听
         zcList.setOnGroupClickListener((parent, v, groupPosition, id) -> {
-            if (check_gone) {
-                check_gone = false;
-                // 刷新适配器
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-            }
+//            if (check_gone) {
+//                check_gone = false;
+//                // 刷新适配器
+//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//            }
 
 
             //如果你处理了并且消费了点击返回true,这是一个基本的防止onTouch事件向下或者向上传递的返回机制
@@ -3297,32 +3299,52 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             case R.id.tv_delete:
                 Log.e(TAG, "点击删除选中雷管: ");
 
-                for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
-                    if (data.isSelect()) {
-                        if (data.getShellBlastNo().length() != 13) {
-                            new GreenDaoMaster().deleteDetonator(data.getId());
-                        } else {
-                            new GreenDaoMaster().deleteDetonator(data.getShellBlastNo());
-                        }
+                if (!ReisterMainPage_scan.this.isFinishing()) {
+                    AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_scan.this)
+                            .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题
+                            .setMessage(getResources().getString(R.string.text_his_sclg2))//设置对话框的内容
+                            //设置对话框的按钮
+                            .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
+                                dialog1.dismiss();
+                            })
+                            .setPositiveButton(getString(R.string.text_dialog_qd), (dialog14, which) -> {
+                                for(int i=0;i<childList.size();i++){
+                                    for (DenatorBaseinfoSelect data : childList.get(i)) {
+                                        if (data.isSelect()) {
+                                            if (data.getShellBlastNo().length() != 13) {
+                                                new GreenDaoMaster().deleteDetonator(data.getId());
+                                            } else {
+                                                new GreenDaoMaster().deleteDetonator(data.getShellBlastNo());
+                                            }
 
-                        Utils.writeRecord("--删除雷管:" + data.getShellBlastNo());
-                        Log.e(TAG, "选中的雷管: " + data.getShellBlastNo());
-                    }
-                }
-                //先更新排数据,再删除排
-                updataPaiData();
-                Log.e(TAG, "groupList1: " + groupList.toString());
-                for (PaiDataSelect data : groupList) {
-                    Log.e(TAG, "data.isSelect(): " + data.isSelect());
-                    if (data.isSelect()) {
+                                            Utils.writeRecord("--删除雷管:" + data.getShellBlastNo());
+                                        }
+                                    }
+                                }
 
-                        new GreenDaoMaster().deletepai(mRegion, data.getId());
-                    }
+                                //先更新排数据,再删除排
+                                updataPaiData();
+                                Log.e(TAG, "groupList1: " + groupList.toString());
+                                for (PaiDataSelect data : groupList) {
+                                    if (data.isSelect()) {
+                                        new GreenDaoMaster().deletepai(mRegion, data.getId());
+                                    }
+                                }
+                                paiChoice = 0;//重置参数
+                                check_gone = false;//重置参数
+                                isSelectAll = true;//重置参数
+                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
+
+                                show_Toast("删除成功");
+                                Utils.saveFile();//把软存中的数据存入磁盘中
+                                AppLogUtils.writeAppLog("点击注册页面的多选删除雷管按钮");
+                            }).create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
                 }
-                paiChoice = 0;//重置参数
-                check_gone = false;//重置参数
-                isSelectAll = true;//重置参数
-                mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
+
+
+
                 break;
             case R.id.btn_pai:
                 if (paiChoice == 0) {
@@ -4875,12 +4897,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void setAllItemChecked(boolean isSelected) {
 //        if (quyuAdapter == null) return;
         if (isSelected) {
-            for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
-                data.setSelect(true);
+            for(int i=0;i<childList.size();i++){
+                for (DenatorBaseinfoSelect data : childList.get(i)) {
+                    data.setSelect(true);
+                }
             }
+
         } else {
-            for (DenatorBaseinfoSelect data : childList.get(paiChoice - 1)) {
-                data.setSelect(false);
+            for(int i=0;i<childList.size();i++){
+                for (DenatorBaseinfoSelect data : childList.get(i)) {
+                    data.setSelect(false);
+                }
             }
         }
 
