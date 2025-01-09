@@ -934,8 +934,9 @@ public class XingbangMain extends SerialPortActivity {
                 startActivity(new Intent(XingbangMain.this, QueryHisDetail.class));
                 break;
 
-            case R.id.btn_main_setevn://设置
-                loginToSetEnv();
+            case R.id.btn_main_setevn://项目管理
+                close();//停止访问电流
+                startActivity(new Intent(this, SaveProjectActivity.class));
                 break;
 
             case R.id.btn_main_help://辅助功能
@@ -949,14 +950,7 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_downWorkCode://下载
                 close();//停止访问电流
-//                String str7 = "下载";
-//                Intent intent7 = new Intent(XingbangMain.this, DownWorkCode.class);
-//                intent7.putExtra("dataSend", str7);
-//                startActivityForResult(intent7, 1);
-//            Intent intent7 = new Intent(XingbangMain.this, SetDelayTime.class);
-//            startActivity(intent7);
-                Intent intent7 = new Intent(this, SaveProjectActivity.class);
-                startActivity(intent7);
+                startActivity(new Intent(this, DownWorkCode.class));
                 break;
 
             case R.id.btn_main_exit://退出

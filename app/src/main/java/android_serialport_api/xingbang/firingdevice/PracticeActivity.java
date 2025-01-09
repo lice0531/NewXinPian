@@ -128,6 +128,8 @@ public class PracticeActivity extends BaseActivity {
     Button btnDetailLog;
     @BindView(R.id.but_chakan)
     Button butChakan;
+    @BindView(R.id.but_delete)
+    Button butDelete;
     @BindView(R.id.but_shezhi)
     Button butShezhi;
     private DatabaseHelper mMyDatabaseHelper;
@@ -542,7 +544,8 @@ public class PracticeActivity extends BaseActivity {
 
     @OnClick({R.id.but_pre, R.id.but_jilian, R.id.but_jilian_wifi, R.id.but_write, R.id.btn_read,
             R.id.btn_read_log, R.id.but_send, R.id.but_lianjie, R.id.but_receive, R.id.btn_openFile,
-            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi,R.id.btn_detail_log,R.id.but_chakan, R.id.but_shezhi})
+            R.id.but_version, R.id.but_test, R.id.but_sendMsg, R.id.but_rizhi,R.id.btn_detail_log,R.id.but_chakan,
+            R.id.but_delete, R.id.but_shezhi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.but_jilian://进入级联页面
@@ -711,6 +714,9 @@ public class PracticeActivity extends BaseActivity {
                 break;
             case R.id.but_chakan:
                 startActivity(new Intent(this, QueryCurrentDetail.class));
+                break;
+                case R.id.but_delete:
+                startActivity(new Intent(this, DelDenatorMainPage.class));
                 break;
         }
     }

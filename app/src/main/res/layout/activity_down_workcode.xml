@@ -91,16 +91,6 @@
                         android:text="@string/text_down_srxm"
                         android:textSize="20sp"
                         android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btn_down_workcode"
-                        style="@style/allbtntstyle"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:text="@string/text_down_bc"
-                        android:textSize="20sp" />
                     <Button
 
                         android:id="@+id/btn_down_offline"
@@ -111,7 +101,17 @@
                         android:textSize="20sp"
                         android:layout_weight="1"
                         android:text="离线下载"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
+                    <Button
+                        android:id="@+id/btn_down_workcode"
+                        style="@style/allbtntstyle"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:text="@string/text_down_bc"
+                        android:textSize="20sp" />
+
                 </LinearLayout>
 
                 <!--        <LinearLayout-->

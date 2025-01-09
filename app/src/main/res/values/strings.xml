@@ -385,7 +385,7 @@
     <string name="app_title">煋邦起爆系统   /</string>
     <string name="add_project_actv_hint">合同,项目,单位代码必填一项</string>
     <string name="add_project_jwd_hint">只能输入数字和逗号</string>
-    <string name="add_project_jwd">只能输入数字和.</string>
+    <string name="add_project_jwd">请输入数字和.</string>
     <string name="qb_tip_err">错误:</string>
     <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
     <string name="text_qb_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>
@@ -572,7 +572,7 @@
     <string name="text_down_tip3">13位数字</string>
     <string name="text_down_tip4">只能输入数字和逗号</string>
     <string name="text_down_tip5">爆破人员身份证</string>
-    <string name="text_down_tip6">清空</string>
+    <string name="text_down_tip6">清空授权</string>
     <string name="text_down_tip7">定位</string>
     <string name="text_down_srgkm">输入管壳码</string>
     <string name="text_down_srxm">输入项目</string>
@@ -601,11 +601,11 @@
     <string name="text_main_sbbh">设备编号：</string>
     <string name="text_main_dfzc">1.单发检测</string>
     <string name="text_main_zc">2.雷管注册</string>
-    <string name="text_main_xmgl">1.授权管理</string>
-    <string name="text_main_wlcs">3.网络测试</string>
-    <string name="text_main_qb">4.授时起爆</string>
-    <string name="text_main_ck">5.数据上传</string>
-    <string name="text_main_sz">7.设置</string>
+    <string name="text_main_xmgl">3.授权管理</string>
+    <string name="text_main_wlcs">4.网络测试</string>
+    <string name="text_main_qb">5.授时起爆</string>
+    <string name="text_main_ck">6.数据上传</string>
+    <string name="text_main_sz">1.项目管理</string>
     <string name="text_main_sc">6.删除</string>
     <string name="text_main_fzgn">7.辅助功能</string>
     <string name="text_main_tc">8.退出</string>

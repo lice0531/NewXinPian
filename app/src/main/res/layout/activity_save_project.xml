@@ -55,6 +55,7 @@
             android:layout_weight="1"
             android:text="新增项目" />
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_down_offline"
             style="@style/allbtntstyle"
             android:layout_width="0dp"
@@ -64,6 +65,7 @@
             android:text="离线下载"
              />
         <Button
+            android:visibility="gone"
             android:id="@+id/btn_down_project"
             style="@style/allbtntstyle"
             android:layout_width="0dp"

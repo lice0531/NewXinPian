@@ -293,6 +293,13 @@ public class GreenDaoMaster {
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
     }
+    /**
+     * 删除所有雷管
+     */
+    public void deleteAllLeiGuan() {
+        mDeantorBaseDao.deleteAll();
+        mDenatorBaseDao_all.deleteAll();
+    }
 
     /**
      * 删除选中区域的所有排
