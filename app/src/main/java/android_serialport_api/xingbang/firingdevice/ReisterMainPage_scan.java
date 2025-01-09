@@ -1983,6 +1983,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     //递减,开始序号,结束序号,孔内雷管数,开始延时,孔内延时,孔间延时
                     Log.e(TAG, "sw_dijian.isChecked(): " + sw_dijian.isChecked());
                     setDalay(!sw_dijian.isChecked(), startNoStr, endNoStr, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweentStr);
+
+                    //更新排数据
+                    updataPaiData();
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
 //                    mHandle.sendMessage(mHandle.obtainMessage(1));
 //                    }
