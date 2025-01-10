@@ -244,6 +244,7 @@ public class SetVoltageActivity extends LxrSerialPortActivity {
         iCcon.onDataSent(mBuffer);
         String str = Utils.bytesToHexFun(mBuffer);
         Log.e("高低压设置页面","发送命令" + str);
+        Utils.writeLog("->:" + str);
     }
 
     public static boolean isNumber(String str) {

@@ -1114,9 +1114,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         lxrTzScan();
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
-            scanBarThread.interrupt();
-            Log.e(TAG,"关闭扫码线程");
+            try {
+                scanBarThread.join();
+                Log.e(TAG,"关闭扫码线程");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+//        if (scanBarThread != null) {
+//            scanBarThread.exit = true;  // 终止线程thread
+//            scanBarThread.interrupt();
+//            Log.e(TAG,"关闭扫码线程");
+//        }
     }
 
     private int showDenatorSum() {
@@ -1219,6 +1228,7 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         iCcon.onDataSent(mBuffer);
         String str = Utils.bytesToHexFun(mBuffer);
         Log.e(TAG,"发送命令" + str);
+        Utils.writeLog("->:" + str);
     }
 
     public void displayInputKeyboard(View v, boolean hasFocus) {
@@ -1317,9 +1327,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
         mAutoScan_handler.removeCallbacksAndMessages(null);
         if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
-            scanBarThread.interrupt();
-            Log.e(TAG,"关闭扫码线程");
+            try {
+                scanBarThread.join();
+                Log.e(TAG,"关闭扫码线程");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+//        if (scanBarThread != null) {
+//            scanBarThread.exit = true;  // 终止线程thread
+//            scanBarThread.interrupt();
+//            Log.e(TAG,"关闭扫码线程");
+//        }
         closeSeialPort();
         Log.e(TAG,"关闭串口");
         Log.e("延时长度", "reEtF1.getText().length(): " + reEtF1.getText().length());
@@ -1683,16 +1702,20 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                 e.printStackTrace();
             }
         }
-        if (this.scanBarThread != null) {
+        if (scanBarThread != null) {
             scanBarThread.exit = true;  // 终止线程thread
-//            try {
-                scanBarThread.interrupt();
+            try {
+                scanBarThread.join();
                 Log.e(TAG,"关闭扫码线程");
-//            } catch (InterruptedException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+//        if (this.scanBarThread != null) {
+//            scanBarThread.exit = true;  // 终止线程thread
+//            scanBarThread.interrupt();
+//            Log.e(TAG,"关闭扫码线程");
+//        }
 
     }
 
@@ -2578,8 +2601,12 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     continueScanFlag = 1;
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
-                        scanBarThread.interrupt();
-                        Log.e(TAG,"关闭扫码线程");
+                        try {
+                            scanBarThread.join();
+                            Log.e(TAG,"关闭扫码线程");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
 //                    kaishiScan();
                     new Thread(new Runnable() {
@@ -2617,10 +2644,20 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     btnReisterScanStartSt.setEnabled(true);
 //                    tingzhiScan();
                     lxrTzScan();
+//                    if (scanBarThread != null) {
+//                        scanBarThread.exit = true;  // 终止线程thread
+//                        scanBarThread.interrupt();
+//                        Log.e(TAG,"关闭扫码线程");
+//                    }
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
-                        scanBarThread.interrupt();
-                        Log.e(TAG,"关闭扫码线程");
+                        try {
+                            scanBarThread.join();
+                            Log.e(TAG,"关闭扫码线程");
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
                 break;
@@ -2866,9 +2903,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     lxrTzScan();
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
-                        scanBarThread.interrupt();
-                        Log.e(TAG,"关闭扫码线程");
+                        try {
+                            scanBarThread.join();
+                            Log.e(TAG,"关闭扫码线程");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+//                    if (scanBarThread != null) {
+//                        scanBarThread.exit = true;  // 终止线程thread
+//                        scanBarThread.interrupt();
+//                        Log.e(TAG,"关闭扫码线程");
+//                    }
                 }
                 sanButtonFlag = 1;
                 break;
@@ -2889,9 +2935,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
                     lxrTzScan();
                     if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
-                        scanBarThread.interrupt();
-                        Log.e(TAG,"关闭扫码线程");
+                        try {
+                            scanBarThread.join();
+                            Log.e(TAG,"关闭扫码线程");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+//                    if (scanBarThread != null) {
+//                        scanBarThread.exit = true;  // 终止线程thread
+//                        scanBarThread.interrupt();
+//                        Log.e(TAG,"关闭扫码线程");
+//                    }
                 }
                 sanButtonFlag = 2;
                 break;
@@ -3714,9 +3769,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             lxrTzScan();
             if (scanBarThread != null) {
                 scanBarThread.exit = true;  // 终止线程thread
-                scanBarThread.interrupt();
-                Log.e(TAG,"关闭扫码线程");
+                try {
+                    scanBarThread.join();
+                    Log.e(TAG,"关闭扫码线程");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+//            if (scanBarThread != null) {
+//                scanBarThread.exit = true;  // 终止线程thread
+//                scanBarThread.interrupt();
+//                Log.e(TAG,"关闭扫码线程");
+//            }
 //            edit_end_entBF2Bit_en.setText("");
 //            edit_end_entproduceDate_ed.setText("");
 //            edit_end_entAT1Bit_ed.setText("");
@@ -3734,9 +3798,18 @@ public class ReisterMainPage_scan extends LxrSerialPortActivity implements Loade
             lxrTzScan();
             if (scanBarThread != null) {
                 scanBarThread.exit = true;  // 终止线程thread
-                scanBarThread.interrupt();
-                Log.e(TAG,"关闭扫码线程");
+                try {
+                    scanBarThread.join();
+                    Log.e(TAG,"关闭扫码线程");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+//            if (scanBarThread != null) {
+//                scanBarThread.exit = true;  // 终止线程thread
+//                scanBarThread.interrupt();
+//                Log.e(TAG,"关闭扫码线程");
+//            }
             btnReisterScanStartSt.setEnabled(true);
             btnScanReister.setEnabled(true);
         }

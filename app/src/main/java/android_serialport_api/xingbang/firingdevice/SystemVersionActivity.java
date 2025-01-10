@@ -208,6 +208,7 @@ public class SystemVersionActivity extends LxrSerialPortActivity {
         iCcon.onDataSent(mBuffer);
         String str = Utils.bytesToHexFun(mBuffer);
         Log.e("版本号页面","发送命令" + str);
+        Utils.writeLog("->:" + str);
     }
 
     public static boolean isNumber(String str) {

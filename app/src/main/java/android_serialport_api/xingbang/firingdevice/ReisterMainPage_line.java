@@ -2198,6 +2198,7 @@ public class ReisterMainPage_line extends LxrSerialPortActivity {
         iCcon.onDataSent(mBuffer);
         String str = Utils.bytesToHexFun(mBuffer);
         Log.e(TAG,"发送命令" + str);
+        Utils.writeLog("->:" + str);
     }
 
     //模拟

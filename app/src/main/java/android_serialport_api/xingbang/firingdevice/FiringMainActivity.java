@@ -1856,6 +1856,7 @@ public class FiringMainActivity extends LxrSerialPortActivity {
         iCcon.onDataSent(mBuffer);
         String str = Utils.bytesToHexFun(mBuffer);
         Log.e(TAG,"发送命令" + str);
+        Utils.writeLog("->:" + str);
     }
 
 
@@ -1999,6 +2000,7 @@ public class FiringMainActivity extends LxrSerialPortActivity {
         int pid = Process.myPid(); // 获取当前进程的ID
         int tid = Process.myTid(); // 获取当前线程的ID
         //pid + "-" + tid +
+        Log.e(TAG,"起爆页面收到cmd了:" + fromCommad);
         Utils.writeLog("<-:" + fromCommad);//找到问题可以把这个进程id去掉
 //        Log.e("返回命令--起爆页面", fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
@@ -2008,6 +2010,7 @@ public class FiringMainActivity extends LxrSerialPortActivity {
 //            Utils.writeLog("Firing reFrom:" + fromCommad);
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                Log.e(TAG,"起爆页面cmd不合规retrurn了:" + fromCommad);
                 return;
             } else {
                 String cmd = DefCommand.getCmd2(fromCommad);
@@ -2015,9 +2018,12 @@ public class FiringMainActivity extends LxrSerialPortActivity {
                     int localSize = fromCommad.length() / 2;
                     byte[] localBuf = Utils.hexStringToBytes(fromCommad);
                     doWithReceivData(cmd, localBuf);//处理cmd命令
+                    Log.e(TAG,"进入解析cmd的方法了:" + cmd);
 
                 }
             }
+        } else {
+            Log.e(TAG,"起爆页面cmd不合规:" + fromCommad);
         }
     }
 
@@ -2130,6 +2136,7 @@ public class FiringMainActivity extends LxrSerialPortActivity {
             sixCmdSerial = 3;
             Log.e(TAG, "33指令已返回,充电倒计时值twoCount:" + twoCount);
         } else if (DefCommand.CMD_3_DETONATE_5.equals(cmd)) {//34 起爆
+            Log.e(TAG,"收到34指令了");
             isGetQbResult = true;
             String fromCommad = Utils.bytesToHexFun(locatBuf);
             //C000340100ABCDC0
@@ -2164,7 +2171,7 @@ public class FiringMainActivity extends LxrSerialPortActivity {
                 } else {
                     deviceStatus = "06";//起爆结束
                     increase(11);//跳到第9阶段
-                    Log.e("increase", "9");
+                    Log.e(TAG,"increase:9");
                 }
             } else {
                 boolean isStopJl = checkIsStopJl();
@@ -3171,7 +3178,7 @@ public class FiringMainActivity extends LxrSerialPortActivity {
                             Log.e(TAG, "eightCmdFlag: "+eightCmdFlag);
                             Log.e(TAG, "eightCmdExchangePower8: "+eightCmdExchangePower);
                             if (eightCount >= 1) {
-                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
+//                                sendCmd(FourStatusCmd.setToXbCommon_Power_Status24_1("00", "01"));//40
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                                 Thread.sleep(1000);
                                 eightCount--;

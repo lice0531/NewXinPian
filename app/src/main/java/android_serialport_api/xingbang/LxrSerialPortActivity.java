@@ -30,10 +30,13 @@ import android.util.Log;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.sdk.devicemanager.ICcon;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -307,11 +310,37 @@ public abstract class LxrSerialPortActivity extends BaseActivity implements ICco
     public void onFail(String s, Status status) {
         Log.e(TAG, "LXR串口打开open failed");
     }
+    private ByteArrayOutputStream dataBuffer = new ByteArrayOutputStream();
 
     @Override
     public void onDataReceived(byte[] bytes) {
         String fromCommad = Utils.bytesToHexFun(bytes);
 //        Log.e(TAG, "LXR收到串口数据" + fromCommad);
-        onLxrDataReceived(bytes);
+//        onLxrDataReceived(bytes);
+        if (bytes == null || bytes.length == 0) {
+            return;
+        }
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        // 将接收到的数据添加到缓冲区
+        dataBuffer.write(bytes, 0, bytes.length);
+
+        // 3. 在子线程中异步处理数据，避免阻塞主线程
+        new Thread(() -> {
+            // 设置处理的阈值，例如数据长度达到一定值才进行处理
+            if (dataBuffer.size() >= 0) {
+                // 判断数据是否完整
+                byte[] fullData = dataBuffer.toByteArray();
+                if (completeValidCmd(Utils.bytesToHexFun(fullData)) == 0) {
+                    // 完整数据，进行处理
+                    onLxrDataReceived(fullData);
+                    // 清空缓冲区
+                    dataBuffer.reset();
+                }
+            }
+        }).start();
     }
 }
