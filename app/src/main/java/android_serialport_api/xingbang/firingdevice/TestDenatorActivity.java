@@ -177,7 +177,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         if (changjia.equals("CQ")) {
-            cankaodianliu = 15;
+            cankaodianliu = 17;
         } else {
             cankaodianliu = 16;
         }

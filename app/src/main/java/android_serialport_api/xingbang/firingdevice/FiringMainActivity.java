@@ -272,7 +272,7 @@ public class FiringMainActivity extends SerialPortActivity {
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
         if(changjia.equals("CQ")){
-            cankaodianliu=15;
+            cankaodianliu=17;
         }else {
             cankaodianliu=16;
         }
