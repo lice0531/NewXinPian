@@ -268,9 +268,9 @@ public class FiringMainActivity extends SerialPortActivity {
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
         if(changjia.equals("CQ")){
-            cankaodianliu=15;
-        }else {
             cankaodianliu=17;
+        }else {
+            cankaodianliu=16;
         }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -2662,8 +2662,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    Log.e("切换模式下", "显示view");
 //                    eightTxt.setText(getString(R.string.text_firing_qbz));
 //                } else {
-                    Log.e("case11", "显示起爆中view");
-                    eightTxt.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
+                Log.e("case11", "显示起爆中view");
+                eightTxt.setText(getString(R.string.text_firing_qbz) + elevenCount + "s");
 //                }
                 break;
             case 12:
@@ -3213,12 +3213,9 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (isJL) {
                                 isEnterQbDjs = true;
                             }
-                            Log.e(TAG, "进入case11了--elevenCount:" + elevenCount);
-//                            mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             Thread.sleep(1000);
-//                            Log.e(TAG, "case11开始sleep--elevenCount:" + elevenCount);
                             elevenCount--;
-                            Log.e(TAG, "case11开始递减了:" + elevenCount);
+                            Log.e(TAG, "进入case11了开始递减了:" + elevenCount);
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                            Log.e(TAG, "case11开始递减handler了--elevenCount:" + elevenCount);
                             if (elevenCount <= 0) {
@@ -3229,7 +3226,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             }
                             Utils.writeRecord(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
                             Utils.writeLog(MmkvUtils.getcode("ACode", "") + "子设备起爆中,elevenCount:" + elevenCount);
-                            Log.e(TAG, "正在放电阶段elevenCount:" + elevenCount);
+//                            Log.e(TAG, "正在放电阶段elevenCount:" + elevenCount);
                             break;
 
                         case 12://切换模式放电阶段
@@ -4378,20 +4375,21 @@ public class FiringMainActivity extends SerialPortActivity {
                     Log.e(TAG,"sendWaitQb级联--所有子设备显示起爆中view");
                     Utils.writeLog("所有子设备：" + MmkvUtils.getcode("ACode", "") + "显示起爆中view");
                 } else {
+                    increase(11);
                     Utils.writeLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
-                    Log.e(TAG,"级联已进入起爆倒计时，不再做处理");
+                    Log.e(TAG,"级联已进入起爆倒计时，不再做处理elevenCount:" + elevenCount);
                 }
             }
-        } else if (msg.equals("otherA5")) {
-            //A5起爆指令  说明是其他子设备收到了A5指令  此时需要关闭串口
-            if (!isQbFail && !isInterunptQb) {
-                if (otherA5) {
-                    otherA5 = false;
-                    EventBus.getDefault().post(new FirstEvent("otherClose"));
-                    Log.e(TAG,"其他子设备开始关串口执行起爆");
-                    Utils.writeLog("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
-                }
-            }
+//        } else if (msg.equals("otherA5")) {
+//            //A5起爆指令  说明是其他子设备收到了A5指令  此时需要关闭串口
+//            if (!isQbFail && !isInterunptQb) {
+//                if (otherA5) {
+//                    otherA5 = false;
+//                    EventBus.getDefault().post(new FirstEvent("otherClose"));
+//                    Log.e(TAG,"其他子设备开始关串口执行起爆");
+//                    Utils.writeLog("其他子设备" + MmkvUtils.getcode("ACode", "") + "开始关串口执行起爆");
+//                }
+//            }
         } else if (msg.equals("handleJx")) {
             Log.e(TAG,"handleJx的消息内容:" + event.getData() + "--当前阶段:" + stage);
             /**
