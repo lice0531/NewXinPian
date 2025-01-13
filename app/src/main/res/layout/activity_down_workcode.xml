@@ -109,7 +109,7 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="1"
-                        android:text="@string/text_down_bc"
+                        android:text="@string/text_zxxz"
                         android:textSize="20sp" />
 
                 </LinearLayout>

@@ -14,12 +14,14 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -51,7 +53,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SaveProjectActivity extends BaseActivity implements SaveProjectAdapter.InnerItemOnclickListener, AdapterView.OnItemClickListener {
+public class SaveProjectActivity extends BaseActivity implements SaveProjectAdapter.InnerItemOnclickListener,
+        AdapterView.OnItemClickListener {
     @BindView(R.id.title_back)
     ImageView titleBack;
     @BindView(R.id.title_text)
@@ -144,7 +147,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         title_lefttext.setVisibility(View.VISIBLE);
         title_lefttext.setText(getResources().getString(R.string.text_xmlb));
         titleAdd.setVisibility(View.GONE);
-        titleRight1.setVisibility(View.VISIBLE);
+        titleRight1.setVisibility(View.GONE);
         titleRight2.setVisibility(View.VISIBLE);
         titleRight1.setText(getResources().getString(R.string.text_gl));
         titleRight2.setText(getResources().getString(R.string.text_xzxm));
@@ -153,6 +156,18 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         mAdapter.setOnInnerItemOnClickListener(this);
         lvProject.setAdapter(mAdapter);
         lvProject.setOnItemClickListener(this);
+        lvProject.setLongClickable(true);
+        lvProject.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                isDelete = false;
+                mAdapter.showCheckBox(true);
+                layBottom.setVisibility(View.VISIBLE);
+                pnList.clear();
+                Log.e("长按事件","触发了");
+                return true;
+            }
+        });
         initAutoComplete("history_htid", at_htid);//输入历史记录
         initAutoComplete("history_projectName", at_projectName);//输入历史记录
         initAutoComplete("history_xmbh", at_xmbh);
@@ -317,14 +332,24 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,
             R.id.btn_down_offline, R.id.btn_add_project, R.id.btn_down_project, R.id.tv_delete_project,
             R.id.title_back, R.id.title_add, R.id.title_delete, R.id.title_right1, R.id.title_right2,
-            R.id.tv_check_all})
+            R.id.tv_check_all,R.id.tv_cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_back:
             case R.id.btn_down_return:
                 finish();
                 break;
+            case R.id.tv_cancel:
+                pnList.clear();
+                isDelete = true;
+                mAdapter.showCheckBox(false);
+                layBottom.setVisibility(View.GONE);
+                tvCheckAll.setText(getResources().getString(R.string.text_qx));
+                isSelectAll = true;
+                mAdapter.AllCheckBox(false);
+                break;
             case R.id.tv_check_all:
+                pnList.clear();
                 if (isSelectAll) {
                     tvCheckAll.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
@@ -404,6 +429,13 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.title_right2:
             case R.id.title_add:
             case R.id.btn_add_project:
+                isDelete = true;
+                mAdapter.showCheckBox(false);
+                isSelectAll = true;
+                mAdapter.AllCheckBox(false);
+                layBottom.setVisibility(View.GONE);
+                tvCheckAll.setText(getResources().getString(R.string.text_qx));
+                pnList.clear();
                 Intent im = new Intent(this, ProjectManagerActivity.class);
                 startActivity(im);
                 break;
@@ -452,7 +484,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                                 mAdapter.notifyDataSetChanged();
                                 pnList.clear();
                                 isDelete = true;
-                                mAdapter.AllCheckBox(false);
+//                                mAdapter.AllCheckBox(false);
                                 mAdapter.showCheckBox(false);
                                 layBottom.setVisibility(View.GONE);
                                 titleRight1.setText(getResources().getString(R.string.text_gl));
@@ -504,15 +536,48 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     }
 
     private List<String> pnList = new ArrayList<>();
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (isDelete) {
+            pnList.clear();
+            if ("true".equals(map_project.get(position).get("selected").toString())) {
+                //如果是使用中的项目，进入项目编辑页面
+                Intent intent = new Intent(this,ProjectManagerActivity.class);
+                intent.putExtra("xmPageFlag","Y");
+                intent.putExtra("proId",map_project.get(position).get("id").toString());
+                intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
+                intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
+                intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
+                intent.putExtra("coordxy",map_project.get(position).get("coordxy").toString());
+                intent.putExtra("business",map_project.get(position).get("business").toString());
+                intent.putExtra("project_name",map_project.get(position).get("project_name").toString());
+                intent.putExtra("bprysfz",map_project.get(position).get("bprysfz").toString());
+                startActivity(intent);
+            } else {
+                //如果不是使用中的项目，进入项目详情页面
+                Intent intent = new Intent(this,ProjectDetailActivity.class);
+                intent.putExtra("proId",map_project.get(position).get("id").toString());
+                intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
+                intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
+                intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
+                intent.putExtra("coordxy",map_project.get(position).get("coordxy").toString());
+                intent.putExtra("business",map_project.get(position).get("business").toString());
+                intent.putExtra("project_name",map_project.get(position).get("project_name").toString());
+                intent.putExtra("bprysfz",map_project.get(position).get("bprysfz").toString());
+                startActivity(intent);
+            }
+        }
+    }
+
     @Override
     public void itemViewClick(View v, int index,boolean isChecked) {
-        int position = index;
         if (v.getId() == R.id.cbIsSelected) {
             if (isChecked) {
                 //多选   选中的项目  可执行多条删除功能
-                pnList.add(map_project.get(position).get("project_name").toString());
+                pnList.add(map_project.get(index).get("project_name").toString());
             } else {
-                pnList.remove(map_project.get(position).get("project_name").toString());
+                pnList.remove(map_project.get(index).get("project_name").toString());
             }
         }
     }
@@ -558,11 +623,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
     protected void onStart() {
         /***
          * 发送初始化命令
@@ -574,7 +634,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         btnDownReturn.findFocus();
         super.onStart();
     }
-
     TextWatcher htbh_watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -615,6 +674,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             }
         }
     };
+
     TextWatcher sfz_watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

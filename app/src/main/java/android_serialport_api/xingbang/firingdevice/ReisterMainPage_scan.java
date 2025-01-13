@@ -256,6 +256,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     TextView tv_delete;
     @BindView(R.id.ly_xinxi)
     LinearLayout lyXinxi;
+    @BindView(R.id.tv_cancel)
+    TextView tv_cancel;
     private SimpleCursorAdapter adapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
@@ -1336,6 +1338,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void stopScan() {
         continueScanFlag = 0;
         btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
+        btnScanReister.setTextSize(23);
         btnSetdelay.setEnabled(true);
         btnInput.setEnabled(true);
         switch (Build.DEVICE) {
@@ -3289,7 +3292,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private boolean isSelectAll = true;//是否全选
 
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_JH_F1, R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
-            R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,
+            R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st,R.id.tv_cancel,
             R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay, R.id.btn_start_delay, R.id.btn_pai, R.id.btn_kong, R.id.btn_wei, R.id.tv_delete, R.id.tv_check_all
     })
     public void onViewClicked(View view) {
@@ -3305,6 +3308,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     setAllItemChecked(false);
                 }
 
+                break;
+            case R.id.tv_cancel:
+                zhuceAdapter.setCheckBox(true);
+                lay_bottom.setVisibility(View.GONE);
+                zhuceAdapter.notifyDataSetChanged();
+                tv_check_all.setText(getResources().getString(R.string.text_qx));
+                isSelectAll = true;
+                setAllItemChecked(false);
                 break;
             case R.id.tv_delete:
                 Log.e(TAG, "点击删除选中雷管: ");
@@ -3471,12 +3482,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     //kt50持续扫码线程
                     scanBarThread = new ScanBar();
                     scanBarThread.start();
-
+                    btnScanReister.setTextSize(19);
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scaning));//"正在扫码"
                     btnReisterScanStartEd.setEnabled(false);
                     btnReisterScanStartSt.setEnabled(false);
                 } else {
                     continueScanFlag = 0;
+                    btnScanReister.setTextSize(23);
                     btnScanReister.setText(getResources().getString(R.string.text_reister_scanReister));//"扫码注册"
                     btnReisterScanStartEd.setEnabled(true);
                     btnReisterScanStartSt.setEnabled(true);

@@ -87,6 +87,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.db.SysLog;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.models.DanLingBean;
@@ -2465,19 +2466,53 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 //                    lySetUpData.setVisibility(View.GONE);
 //                    btnDownReturn.setText("添加项目");
 //                }
+                int sqTotal = (int) getDaoSession().getDetonatorTypeNewDao().count();
+                AppLogUtils.writeAppLog("授权记录总数:" + sqTotal);
+                if (sqTotal < 1) {
+                    show_Toast(getResources().getString(R.string.text_his_zwsqsc));
+                    return;
+                }
                 AlertDialog dialog2 = new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.text_down_dialog1))//设置对话框的标题//"成功起爆"
                         .setMessage(getResources().getString(R.string.text_down_dialog2))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss())
+                        .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss())
                         .setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
                             dialog.dismiss();
-                            GreenDaoMaster.delAllMessage();//清空数据
-                            GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
-                            mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+                            AlertDialog.Builder builder = new AlertDialog.Builder(DownWorkCode.this);
+                            builder.setTitle(getResources().getString(R.string.text_queryHis_dialog12));//"请输入用户名和密码"
+                            View v = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_delete, null);
+                            TextView tvTitle = v.findViewById(R.id.tvTitle);
+                            tvTitle.setText(getResources().getString(R.string.text_his_qksqjl));
+                            builder.setView(v);
+                            final EditText password = v.findViewById(R.id.password);
+                            builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String b = password.getText().toString().trim();
+                                    if (b == null || b.trim().length() < 1) {
+                                        show_Toast(getString(R.string.text_alert_password));
+                                        return;
+                                    }
+                                    if (b.equals("123")) {
+                                        GreenDaoMaster.delAllMessage();//清空数据
+                                        GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
+                                        mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+                                    } else {
+                                        show_Toast(getResources().getString(R.string.text_mmcw));
+                                    }
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.setNeutralButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.show();
                         }).create();
                 dialog2.show();
-
                 break;
             case R.id.btn_down_inputOK://保存
 //                hideInputKeyboard();//隐藏键盘
@@ -2495,7 +2530,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                         .setTitle(getResources().getString(R.string.text_down_dialog4))//设置对话框的标题//"成功起爆"
                         .setMessage(getResources().getString(R.string.text_down_dialog5))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
-                        .setNegativeButton(getResources().getString(R.string.text_down_dialog6), (dialog1, which) -> dialog1.dismiss())
+                        .setNeutralButton(getResources().getString(R.string.text_down_dialog6), (dialog1, which) -> dialog1.dismiss())
                         .setPositiveButton(getResources().getString(R.string.text_down_dialog7), (dialog12, which) -> {
                             dialog12.dismiss();
                             if (checkMessage()) {//校验输入的项目信息是否和法
