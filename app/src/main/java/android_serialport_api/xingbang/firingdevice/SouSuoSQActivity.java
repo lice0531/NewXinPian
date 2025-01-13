@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,6 +85,8 @@ public class SouSuoSQActivity extends BaseActivity {
     private int index = 0;//当前选中的item数
     private String mRegion;     // 区域
     private String mOldTitle;   // 原标题
+    private String isShowZc = "";//用来判断是否需要展示“选择雷管”按钮进行注册
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +99,8 @@ public class SouSuoSQActivity extends BaseActivity {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             sqrq = bundle.getString("sqrq");
+            isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
+                    bundle.getString("isShowZc") : "";
         }
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
@@ -214,6 +219,10 @@ public class SouSuoSQActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sq2, menu);
+        MenuItem item1 = menu.findItem(R.id.item_1);
+        //如果是从项目管理模块进来的   暂时屏蔽“选择雷管”注册功能
+        item1.setVisible(TextUtils.isEmpty(isShowZc) ? true : false); // 显示特定菜单项
+        // 初始时确保菜单项是可见的
         return true;
     }
 

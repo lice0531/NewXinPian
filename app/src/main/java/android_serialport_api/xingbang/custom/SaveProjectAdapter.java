@@ -55,6 +55,13 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         isShowCheck = isShow;
         notifyDataSetChanged();
     }
+
+    private boolean isAllCheck = false;
+    public void AllCheckBox(boolean isAllChecked){
+        isAllCheck = isAllChecked;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return list.size();
@@ -102,6 +109,7 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         viewHolder.iv_used.setVisibility(("true".equals(list.get(position).get("selected").toString())
                 ? View.VISIBLE : View.GONE));
         viewHolder.cbIsSelected.setVisibility(isShowCheck ? View.VISIBLE : View.GONE);
+        viewHolder.cbIsSelected.setChecked(isAllCheck);
         if (list.get(position).get("business") == null) {
             viewHolder.tv_gsxz.setVisibility(View.GONE);
         } else {

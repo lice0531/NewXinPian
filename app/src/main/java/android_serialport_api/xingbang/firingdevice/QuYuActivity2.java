@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +33,7 @@ import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MyAlertDialog;
+import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,6 +99,7 @@ public class QuYuActivity2 extends BaseActivity {
             qbxm_id = "-1";
             qbxm_name = "";
         }
+        SoundPlayUtils.init(this);
         titleBack.setVisibility(View.GONE);
         title_lefttext.setVisibility(View.VISIBLE);
         title_lefttext.setText(getResources().getString(R.string.text_qygl));
@@ -124,31 +127,14 @@ public class QuYuActivity2 extends BaseActivity {
                 Intent intent1 = new Intent(QuYuActivity2.this, ReisterMainPage_scan.class);
                 intent1.putExtra("quyuId", str1);
                 startActivity(intent1);
-                finish();
+//                finish();
             }
         });
         mHandle = new Handler(msg -> {
             switch (msg.what) {
                 case 1:
+                    String result = (String) msg.obj;
                     mListData = new GreenDaoMaster().queryQuYu();
-//                    if (mListData.size() > 0) {
-//                        QuYuDao quYuDao = getDaoSession().getQuYuDao();
-//                        List<QuYu> quYuListWithTrueSelected = quYuDao.queryBuilder()
-//                                .where(QuYuDao.Properties.Selected.eq("true"))
-//                                .list();
-//                        //如果区域列表中没有找到 selected 为 "true" 的记录(即没有一个已组网的区域)
-//                        if (quYuListWithTrueSelected.isEmpty()) {
-//                            // 获取第一条记录并更新其 selected 为 "true"
-//                            List<QuYu> allQuYuList = quYuDao.loadAll();  // 获取所有记录
-//                            if (!allQuYuList.isEmpty()) {
-//                                QuYu firstQuYu = allQuYuList.get(0);  // 获取第一条记录
-//                                firstQuYu.setSelected("true");  // 设置 selected 字段为 "true"
-//                                // 更新该记录
-//                                quYuDao.update(firstQuYu);  // 更新数据库中的记录
-//                                quyuAdapter.notifyDataSetChanged();
-//                            }
-//                        }
-//                    }
                     mQuYuList.clear();
                     Log.e("加载", "mListData.size(): " + mListData.size());
                     for (QuYu item : mListData) {
@@ -164,9 +150,20 @@ public class QuYuActivity2 extends BaseActivity {
                             mQuYuList.add(qyData);
                         }
                     }
-
                     quyuAdapter.setNewData(mQuYuList);
                     rlQuyu.setAdapter(quyuAdapter);
+                    //新增区域后要有提示音
+                    if ("xz".equals(result)) {
+                        SoundPlayUtils.play(1);
+                    } else if ("zw".equals(result)) {
+                        isDelete = true;
+                        titleRight1.setText(getResources().getString(R.string.text_zw));
+                        layBottom.setVisibility(View.GONE);
+                        quyuAdapter.showCheckBox(false);
+                        tv_check_all.setText(getResources().getString(R.string.text_qx));
+                        isSelectAll = true;
+                        setAllItemChecked(false);
+                    }
                     break;
                 case 2:
                     layBottom.setVisibility(View.GONE);
@@ -199,25 +196,28 @@ public class QuYuActivity2 extends BaseActivity {
                         Intent intent1 = new Intent(QuYuActivity2.this, ReisterMainPage_scan.class);
                         intent1.putExtra("quyuId", str1);
                         startActivity(intent1);
-                        finish();
+//                        finish();
 //                            loadingDialog.close();
                     });
                     quyuAdapter.setNewData(mQuYuList);
                     rlQuyu.setAdapter(quyuAdapter);
                     isDelete = true;
                     titleRight1.setText(getResources().getString(R.string.text_zw));
-//                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
                     layBottom.setVisibility(View.GONE);
                     quyuAdapter.showCheckBox(false);
                     tv_check_all.setText(getResources().getString(R.string.text_qx));
                     isSelectAll = true;
                     setAllItemChecked(false);
+                    SoundPlayUtils.play(1);
                     break;
             }
             return false;
         });
-
-        mHandle.sendMessage(mHandle.obtainMessage(1));
+        Message msg = new Message();
+        msg.what = 1;
+        msg.obj = "cx";
+        mHandle.sendMessage(msg);
+//        mHandle.sendMessage(mHandle.obtainMessage(1));
         if (mListData.isEmpty()) {
             show_Toast(getResources().getString(R.string.text_tjqy));
         }
@@ -381,7 +381,11 @@ public class QuYuActivity2 extends BaseActivity {
                 // 批量更新选中的记录
                 qyDao.updateInTx(quyuList);
                 show_Toast(getResources().getString(R.string.text_zwcg));
-                mHandle.sendMessage(mHandle.obtainMessage(1));
+                Message msg = new Message();
+                msg.what = 1;
+                msg.obj = "zw";
+                mHandle.sendMessage(msg);
+//                mHandle.sendMessage(mHandle.obtainMessage(1));
                 qyIdList.clear();
                 break;
         }
@@ -416,7 +420,11 @@ public class QuYuActivity2 extends BaseActivity {
                         quYu.setSelected("false");
                     }
                     getDaoSession().getQuYuDao().insert(quYu);
-                    mHandle.sendMessage(mHandle.obtainMessage(1));
+                    Message msg = new Message();
+                    msg.what = 1;
+                    msg.obj = "xz";
+                    mHandle.sendMessage(msg);
+//                    mHandle.sendMessage(mHandle.obtainMessage(1));
 //                    }
 
                 }).show();

@@ -33,6 +33,7 @@ import com.scandecode.ScanDecode;
 import com.scandecode.inf.ScanInterface;
 import com.tencent.bugly.crashreport.CrashReport;
 
+import org.apache.commons.lang.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
@@ -53,11 +54,7 @@ import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
-import android_serialport_api.xingbang.utils.EncryptionUtils;
-import android_serialport_api.xingbang.utils.MyUtils;
-import android_serialport_api.xingbang.utils.QRCodeUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
-import android_serialport_api.xingbang.utils.ThreeDES;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -650,11 +647,17 @@ public class ProjectManagerActivity extends BaseActivity {
         String coordy = downAtCoordy.getText().toString().trim().replace("\n", "").replace("，", ",").replace(" ", "");
         String dwdm = downAtDwdm.getText().toString().trim().replace(" ", "");
         String name = downAtProjectName.getText().toString().trim().replace(" ", "");
-        if (htid.length() > 1 && htid.length() < 15) {
-            return "当前合同编号小于15位,请重新输入";
-        }
-        if (xmbh.length() > 1 && xmbh.length() < 15) {
-            return "当前项目编号小于15位,请重新输入";
+        if (select_business.startsWith("营业性")) {
+            if (htid.length() < 15) {
+                return "当前合同编号小于15位,请重新输入";
+            }
+            if (xmbh.length() < 15) {
+                return "当前项目编号小于15位,请重新输入";
+            }
+        } else {
+            if (dwdm.length() < 13) {
+                return "当前单位单位小于13位,请重新输入";
+            }
         }
         if (sfz == null || sfz.length() < 18) {
             return "请输入爆破员身份证";
@@ -668,6 +671,10 @@ public class ProjectManagerActivity extends BaseActivity {
         if (coordy == null || coordy.trim().length() < 5) {
             return getResources().getString(R.string.text_down_tip11);
         }
+
+//        if (StringUtils.isBlank(htid) && StringUtils.isBlank(xmbh) && StringUtils.isBlank(dwdm)) {
+//            return getResources().getString(R.string.text_down_err8);
+//        }
         List<Project> newsList = LitePal.where("project_name = ?", name).find(Project.class);
         Log.e("项目保存", "newsList: " + newsList.toString());
         Log.e("项目保存", "size: " + newsList.size());

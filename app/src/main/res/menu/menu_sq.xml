@@ -15,6 +15,7 @@
         android:id="@+id/item_2"
         android:orderInCategory="2"
         android:title="选择雷管"
+        android:visible="false"
         app:showAsAction="withText" />
 
 

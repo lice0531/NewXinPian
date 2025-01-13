@@ -341,6 +341,7 @@ public class ShouQuanActivity extends BaseActivity {
                 Intent intent = new Intent(this, SouSuoSQActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("sqrq", sqrq);//申请日期
+                bundle.putString("isShowZc","Y");//用来判断是否需要展示注册功能
                 intent.putExtras(bundle);
                 startActivity(intent);
 

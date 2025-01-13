@@ -40,6 +40,7 @@ import java.util.Set;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.custom.MlistView;
+import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.custom.SaveProjectAdapter;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
@@ -109,22 +110,24 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     Button btnClearProjectName;
     @BindView(R.id.btn_clear_dwdm)
     Button btnClearDwdm;
-//    @BindView(R.id.sv_sp)
-//    ScrollView svSp;
     @BindView(R.id.btn_down_offline)
     Button btnOffline;
     @BindView(R.id.btn_add_project)
     Button btnAddProject;
     @BindView(R.id.btn_down_project)
     Button btnDownProject;
-    @BindView(R.id.btn_delete_project)
-    Button btnDelete;
+    @BindView(R.id.tv_delete_project)
+    TextView tvDeleteProject;
+    @BindView(R.id.lay_bottom)
+    LinearLayout layBottom;
+    @BindView(R.id.tv_check_all)
+    TextView tvCheckAll;
     private SaveProjectAdapter mAdapter;
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private List<Map<String, Object>> map_project = new ArrayList<Map<String, Object>>();
-    private TextView totalbar_title,tv_right;
     private boolean isDelete = true;//是否展示列表中的多选按钮
+    private boolean isSelectAll = true;//是否全选
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -135,14 +138,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         AppLogUtils.writeAppLog("---进入项目列表页面----");
-// 标题栏
-//        setSupportActionBar(findViewById(R.id.toolbar));
-//        totalbar_title =  findViewById(R.id.title_text);
-//        tv_right = findViewById(R.id.title_right);
-//        ImageView title_add = findViewById(R.id.title_add);
-//        ImageView iv_back = findViewById(R.id.title_back);
-//        tv_right.setVisibility(View.VISIBLE);
-//        tv_right.setText(getResources().getString(R.string.text_gl));
         titleBack.setVisibility(View.GONE);
         titleText.setText("项目列表");
         titleText.setVisibility(View.GONE);
@@ -154,31 +149,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         titleRight1.setText(getResources().getString(R.string.text_gl));
         titleRight2.setText(getResources().getString(R.string.text_xzxm));
         titleDelete.setVisibility(View.GONE);
-//        titleDelete.setBackgroundResource(R.drawable.icon_setting);
-//        iv_back.setOnClickListener(v -> finish());
-//        tv_right.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (map_project.size() == 0) {
-//                    show_Toast(getResources().getString(R.string.text_xzxm));
-//                    return;
-//                }
-//                if (isDelete) {
-//                    isDelete = false;
-//                    mAdapter.showCheckBox(true);
-//                    btnDelete.setVisibility(View.VISIBLE);
-//                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
-//                    pnList.clear();
-//                } else {
-//                    pnList.clear();
-//                    isDelete = true;
-//                    mAdapter.showCheckBox(false);
-//                    btnDelete.setVisibility(View.GONE);
-//                    tv_right.setText(getResources().getString(R.string.text_gl));
-//                }
-//            }
-//        });
-//        loadMoreData();
         mAdapter = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject_new);
         mAdapter.setOnInnerItemOnClickListener(this);
         lvProject.setAdapter(mAdapter);
@@ -189,7 +159,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         initAutoComplete("history_dwdm", at_dwdm);
         initAutoComplete("history_bprysfz", at_bprysfz);
         initAutoComplete("history_coordxy", at_coordxy);
-
         at_htid.addTextChangedListener(htbh_watcher);//长度监听
         at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
         at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
@@ -344,16 +313,27 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         }
     }
 
-
     @OnClick({R.id.btn_down_return, R.id.btn_down_inputOK, R.id.btn_clear_htid, R.id.btn_clear_xmbh,
             R.id.btn_location, R.id.btn_clear_sfz, R.id.btn_clear_project_name, R.id.btn_clear_dwdm,
-            R.id.btn_down_offline,R.id.btn_add_project,R.id.btn_down_project,R.id.btn_delete_project,
-            R.id.title_back,R.id.title_add,R.id.title_delete,R.id.title_right1,R.id.title_right2})
+            R.id.btn_down_offline, R.id.btn_add_project, R.id.btn_down_project, R.id.tv_delete_project,
+            R.id.title_back, R.id.title_add, R.id.title_delete, R.id.title_right1, R.id.title_right2,
+            R.id.tv_check_all})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_back:
             case R.id.btn_down_return:
                 finish();
+                break;
+            case R.id.tv_check_all:
+                if (isSelectAll) {
+                    tvCheckAll.setText(getResources().getString(R.string.text_qxqx));
+                    isSelectAll = false;
+                    mAdapter.AllCheckBox(true);
+                } else {
+                    tvCheckAll.setText(getResources().getString(R.string.text_qx));
+                    isSelectAll = true;
+                    mAdapter.AllCheckBox(false);
+                }
                 break;
             case R.id.title_right1:
             case R.id.title_delete:
@@ -364,18 +344,14 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 if (isDelete) {
                     isDelete = false;
                     mAdapter.showCheckBox(true);
-                    btnDelete.setVisibility(View.VISIBLE);
-//                    tv_right.setText(getResources().getString(R.string.text_alert_cancel));
-//                    titleDelete.setBackgroundResource(R.drawable.icon_cancel);
+                    layBottom.setVisibility(View.VISIBLE);
                     titleRight1.setText(getResources().getString(R.string.text_dialog_qx));
                     pnList.clear();
                 } else {
                     pnList.clear();
                     isDelete = true;
                     mAdapter.showCheckBox(false);
-                    btnDelete.setVisibility(View.GONE);
-//                    tv_right.setText(getResources().getString(R.string.text_gl));
-//                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
+                    layBottom.setVisibility(View.GONE);
                     titleRight1.setText(getResources().getString(R.string.text_gl));
                 }
                 break;
@@ -411,9 +387,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.btn_clear_dwdm:
                 deleteHistory("history_dwdm", at_dwdm);
                 break;
-//            case R.id.sv_sp:
-//                hideInputKeyboard();
-//                break;
             case R.id.btn_down_offline:
                 // 判断集合中是否有 selected 为 true 的数据
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -455,6 +428,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 startActivityForResult(intent7, 1);
                 break;
             case R.id.btn_delete_project:
+            case R.id.tv_delete_project:
                 AppLogUtils.writeAppLog("点击了'删除项目'按钮执行多些删除项目操作");
                 if (pnList.isEmpty()) {
                     show_Toast("请先选中要删除的项目");
@@ -476,15 +450,12 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                                 }
                                 loadMoreData();
                                 mAdapter.notifyDataSetChanged();
-                                if (map_project.size() == 0) {
-                                    pnList.clear();
-                                    isDelete = true;
-                                    mAdapter.showCheckBox(false);
-                                    btnDelete.setVisibility(View.GONE);
-//                                    tv_right.setText(getResources().getString(R.string.text_gl));
-//                                    titleDelete.setBackgroundResource(R.drawable.icon_setting);
-                                    titleRight1.setText(getResources().getString(R.string.text_gl));
-                                }
+                                pnList.clear();
+                                isDelete = true;
+                                mAdapter.AllCheckBox(false);
+                                mAdapter.showCheckBox(false);
+                                layBottom.setVisibility(View.GONE);
+                                titleRight1.setText(getResources().getString(R.string.text_gl));
                                 AppLogUtils.writeAppLog("点击了多选删除项目按钮");
                             }).create();
                     dialog.setCanceledOnTouchOutside(false);
