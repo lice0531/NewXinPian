@@ -2856,18 +2856,37 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private void updataPaiData() {
         GreenDaoMaster master = new GreenDaoMaster();
-        int total = master.queryDetonatorPaiSize(mRegion, paiChoice + "");
+        int total = master.queryDetonatorPaiSize(mRegion, paiChoice + "");//有过
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
         int delay_minNum_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
 
         Log.e(TAG, "updataPaiData  total: " + total);
         choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
-        choicepaiData.setSum(total + "");
+        choicepaiData.setSum(total + "");//
         choicepaiData.setDelayMin(delay_minNum_new + "");
         choicepaiData.setDelayMax(delay_max_new + "");
 
         getDaoSession().getPaiDataDao().update(choicepaiData);
     }
+
+//    崩溃信息Attempt to invoke virtual method 'void android_serialport_api.xingbang.db.PaiData.setSum(java.lang.String)' on a null object reference
+//    java.lang.NullPointerException: Attempt to invoke virtual method 'void android_serialport_api.xingbang.db.PaiData.setSum(java.lang.String)' on a null object reference
+//    at android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan.updataPaiData(ReisterMainPage_scan.java:2816)
+//    at android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan.onViewClicked(ReisterMainPage_scan.java:3262)
+//    at android_serialport_api.xingbang.firingdevice.ReisterMainPage_scan_ViewBinding$21.doClick(ReisterMainPage_scan_ViewBinding.java:316)
+//    at butterknife.internal.DebouncingOnClickListener.onClick(DebouncingOnClickListener.java:26)
+//    at android.view.View.performClick(View.java:6603)
+//    at android.view.View.performClickInternal(View.java:6576)
+//    at android.view.View.access$3100(View.java:780)
+//    at android.view.View$PerformClick.run(View.java:26090)
+//    at android.os.Handler.handleCallback(Handler.java:873)
+//    at android.os.Handler.dispatchMessage(Handler.java:99)
+//    at android.os.Looper.loop(Looper.java:193)
+//    at android.app.ActivityThread.main(ActivityThread.java:6702)
+//    at java.lang.reflect.Method.invoke(Native Method)
+//    at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:493)
+//    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:911)
+
 
     /***
      * 注册方法
