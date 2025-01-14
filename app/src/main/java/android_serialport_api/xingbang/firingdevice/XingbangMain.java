@@ -835,7 +835,7 @@ public class XingbangMain extends SerialPortActivity {
                 }
                 lastClickTime = System.currentTimeMillis();
 
-                if (!projectCheck()) return;
+                if (!projectCheck(1)) return;
                 close();//停止访问电流
                 String str1 = "注册";
                 Intent intent = new Intent(XingbangMain.this, QuYuActivity2.class);//金建华
@@ -951,7 +951,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_downWorkCode://下载
-                if (!projectCheck()) return;
+                if (!projectCheck(2)) return;
                 close();//停止访问电流
                 startActivity(new Intent(this, DownWorkCode.class));
                 break;
@@ -964,14 +964,15 @@ public class XingbangMain extends SerialPortActivity {
     }
 
     //关于项目的校验：是否新增项目 是否有使用中的项目
-    private boolean projectCheck() {
+    private boolean projectCheck(int type) {
         GreenDaoMaster daoMaster = new GreenDaoMaster();
         List<Project> list_pj = daoMaster.queryProject();
-        Log.e(TAG,"项目个数:" + list_pj.size());
         if (list_pj.isEmpty()) {
+            String msg = (type == 1) ? getResources().getString(R.string.text_zcxzxm) :
+                    getResources().getString(R.string.text_xmxzxm);
             AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                     .setTitle(getResources().getString(R.string.text_fir_dialog2))
-                    .setMessage(getResources().getString(R.string.text_xmxzxm))
+                    .setMessage(msg)
                     //设置对话框的按钮
                     .setNeutralButton(getResources().getString(R.string.text_alert_sure), (dialog1, which) -> {
                         dialog1.dismiss();
@@ -983,9 +984,11 @@ public class XingbangMain extends SerialPortActivity {
         }
         List<Project> userProject = daoMaster.querySelectedProject();
         if (userProject.isEmpty()) {
+            String msg = (type == 1) ? getResources().getString(R.string.text_zcsqxm) :
+                    getResources().getString(R.string.text_xmsyxm);
             AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                     .setTitle(getResources().getString(R.string.text_fir_dialog2))
-                    .setMessage(getResources().getString(R.string.text_xmsyxm))
+                    .setMessage(msg)
                     //设置对话框的按钮
                     .setNeutralButton(getResources().getString(R.string.text_alert_sure), (dialog1, which) -> {
                         dialog1.dismiss();

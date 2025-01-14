@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.custom;
 
 import android.content.Context;
 import android.media.Image;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,10 +104,16 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
             viewHolder.ll_item_xmxx = convertView.findViewById(R.id.ll_item_xmxx);
             viewHolder.cbIsSelected = convertView.findViewById(R.id.cbIsSelected);
             viewHolder.iv_used = convertView.findViewById(R.id.iv_used);
+            viewHolder.ll_htid = convertView.findViewById(R.id.ll_htid);
+            viewHolder.ll_xmid = convertView.findViewById(R.id.ll_xmid);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.ll_xmid.setVisibility(TextUtils.isEmpty(list.get(position).get("xmbh").toString()) ?
+                View.GONE : View.VISIBLE);
+        viewHolder.ll_htid.setVisibility(TextUtils.isEmpty(list.get(position).get("htbh").toString()) ?
+                View.GONE : View.VISIBLE);
         viewHolder.tv_sp_name.setText(list.get(position).get("project_name").toString());
         viewHolder.tv_sp_htbh.setText(list.get(position).get("htbh").toString());
         viewHolder.tv_sp_xmbh.setText(list.get(position).get("xmbh").toString());
@@ -172,7 +179,7 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         private TextView tv_gsxz;
         private Button btn_del;
         private LinearLayout ly_sq;
-        private LinearLayout ll_item_xmxx;
+        private LinearLayout ll_item_xmxx,ll_htid,ll_xmid;
         private LinearLayout ll_item_dwxx;
         private CheckBox cbIsSelected;
         private ImageView iv_used;

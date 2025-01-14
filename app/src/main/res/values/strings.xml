@@ -973,7 +973,7 @@
     <string name="text_tv_dwdm">单位代码：</string>
     <string name="text_tv_xmbh">项目编号：</string>
     <string name="text_tv_htbh">合同编号：</string>
-    <string name="text_tv_gzmc">爆破工程名称：</string>
+    <string name="text_tv_gzmc">工程名称：</string>
     <string name="text_tv_djck">点击查看</string>
     <string name="text_tv_cwsl">错误数量：</string>
     <string name="text_tv_sqsj">申请时间：</string>
@@ -1046,6 +1046,8 @@
     <string name="text_qxqx">取消全选</string>
     <string name="text_xmxzxm">请先在项目管理中新增项目后，再进行授权操作</string>
     <string name="text_xmsyxm">请先在项目管理中设置好您需要使用的项目后，再进行授权操作</string>
+    <string name="text_zcxzxm">请先在项目管理中新增项目后，再进行注册操作</string>
+    <string name="text_zcsqxm">请先在项目管理中设置好您需要使用的项目后，再进行注册操作</string>
     <string name="sq_item_1">选择雷管</string>
     <string name="sq_item_2">显示正确</string>
 </resources>

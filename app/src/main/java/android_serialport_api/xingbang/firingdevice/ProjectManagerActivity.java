@@ -195,7 +195,7 @@ public class ProjectManagerActivity extends BaseActivity {
                                 if (!TextUtils.isEmpty(pageFlag) && "detail".equals(pageFlag)) {
                                     EventBus.getDefault().post(new FirstEvent("finishDetailPage"));
                                 }
-                                delShouQuan(project_name);//删除方法
+                                delShouQuan(proId,project_name);//删除方法
                                 AppLogUtils.writeAppLog("点击了删除项目");
                                 finish();
                             })
@@ -269,6 +269,7 @@ public class ProjectManagerActivity extends BaseActivity {
                 mScaner.registerScanCb(new ScanQrControl.IScan() {
                     @Override
                     public void onScanStart(int timeoutSec) {
+                        Log.e(TAG,timeoutSec + "超时了？");
                     }
 
                     @Override
@@ -302,6 +303,7 @@ public class ProjectManagerActivity extends BaseActivity {
 //                                throw new RuntimeException(e);
 //                            }
                         } else {
+                            show_Toast("扫码信息有误，请重新扫码");
                             Log.e(TAG,"扫码结果长度不足7,不合规");
                         }
                     }
@@ -502,7 +504,7 @@ public class ProjectManagerActivity extends BaseActivity {
                     return;
                 }
                 if (downAtBprysfz.getText().toString().trim().length() < 1) {
-                    show_Toast("人员证号不能为空!");
+                    show_Toast("当前爆破员身份证号小于18位,请重新输入");
                     return;
                 }
                 saveData();
@@ -522,9 +524,9 @@ public class ProjectManagerActivity extends BaseActivity {
         }
     }
 
-    private int delShouQuan(String project_name) {//删除雷管
-        String selection = "project_name = ?"; // 选择条件，给null查询所有
-        String[] selectionArgs = {project_name + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+    private int delShouQuan(String proId,String project_name) {//删除雷管
+        String selection = "id = ?"; // 选择条件，给null查询所有
+        String[] selectionArgs = {proId + ""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
         db.delete(DatabaseHelper.TABLE_NAME_PROJECT, selection, selectionArgs);
 
         SharedPreferences sp = getSharedPreferences("network_url", 0);
@@ -648,19 +650,25 @@ public class ProjectManagerActivity extends BaseActivity {
         String dwdm = downAtDwdm.getText().toString().trim().replace(" ", "");
         String name = downAtProjectName.getText().toString().trim().replace(" ", "");
         if (select_business.startsWith("营业性")) {
-            if (htid.length() < 15) {
+//            if (htid.length() < 15 || xmbh.length() < 15) {
+//                return "当前合同编号或项目编号小于15位,请重新输入";
+//            }
+            if (htid.length() >= 15 && xmbh.length() < 15) {
+                return "";
+            } else if (xmbh.length() >= 15 && htid.length() < 15) {
+                return "";
+            } else if (htid.length() < 15) {
                 return "当前合同编号小于15位,请重新输入";
-            }
-            if (xmbh.length() < 15) {
+            } else if (xmbh.length() < 15) {
                 return "当前项目编号小于15位,请重新输入";
             }
         } else {
             if (dwdm.length() < 13) {
-                return "当前单位单位小于13位,请重新输入";
+                return "当前单位代码小于13位,请重新输入";
             }
         }
         if (sfz == null || sfz.length() < 18) {
-            return "请输入爆破员身份证";
+            return "当前爆破员身份证号小于18位,请重新输入";
         }
         if (name == null) {
             return "请输入项目名称";
@@ -671,10 +679,6 @@ public class ProjectManagerActivity extends BaseActivity {
         if (coordy == null || coordy.trim().length() < 5) {
             return getResources().getString(R.string.text_down_tip11);
         }
-
-//        if (StringUtils.isBlank(htid) && StringUtils.isBlank(xmbh) && StringUtils.isBlank(dwdm)) {
-//            return getResources().getString(R.string.text_down_err8);
-//        }
         List<Project> newsList = LitePal.where("project_name = ?", name).find(Project.class);
         Log.e("项目保存", "newsList: " + newsList.toString());
         Log.e("项目保存", "size: " + newsList.size());

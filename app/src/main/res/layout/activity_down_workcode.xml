@@ -454,28 +454,6 @@
                             android:visibility="gone" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/setenv_down_ly_Height"
-                            android:orientation="horizontal"
-                            android:visibility="gone">
-
-                            <TextView
-                                style="@style/alltextstyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/addproject_tv_left"
-                                android:text="公司性质: "
-                                android:textSize="20sp" />
-
-                            <Spinner
-                                android:id="@+id/add_gsxz"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:spinnerMode="dropdown" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
                             android:id="@+id/ll_xmxx"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
