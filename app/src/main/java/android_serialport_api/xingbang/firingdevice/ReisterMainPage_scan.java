@@ -880,7 +880,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
                     //重置同孔标志
-//                    flag_t1 = true;
+                    flag_t1 = true;
                     break;
                 case 1005://按管壳码排序
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
@@ -2297,7 +2297,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "当前段最小序号延时: " + delay_min);
         Log.e(TAG, "当前段最大延时参数: " + duan_new);
         Log.e(TAG, "当前段最大延时: " + delay_max);
+        Log.e(TAG, "当前选择排号 paiChoice: " + paiChoice);
+        Log.e(TAG, "当前选择孔号 kongChoice: " + kongChoice);
         Log.e(TAG, "当前段最大孔号 maxKong: " + maxKong);
+        Log.e(TAG, "当前选择管 childList.get(paiChoice).get(kongChoice): " + childList.get(paiChoice-1).get(kongChoice-1).toString());
         int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         Log.e("扫码", "获取 duanNo2: " + duanNo2);
         if (delay_max == 0 && duanNo2 == 0) {
@@ -2385,10 +2388,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         }
         int delay_add = 0;
+        if(kongChoice!=maxKong){
+            charu=true;
+        }
         if (charu) {
+
+            db_charu =  childList.get(paiChoice-1).get(kongChoice-1);
+            int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
+
+            denatorBaseinfo.setSithole(konghao + "");
+            Log.e(TAG, "选中插入的雷管: " + db_charu.getShellBlastNo() + " 延时:" + db_charu.getDelay());
             Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
-            if (!flag_t1) {//同孔
-                denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
+            if (!flag_t1) {//插入位
+                denatorBaseinfo.setBlastserial(db_charu.getBlastserial());
+                denatorBaseinfo.setDuanNo((db_charu.getDuanNo()+1));
                 denatorBaseinfo.setDelay(db_charu.getDelay());
             } else {
                 if (!flag_jh_f1) {
@@ -2408,14 +2421,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    return -1;
 //                }
                 denatorBaseinfo.setDelay(delay_max);
-                denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                denatorBaseinfo.setBlastserial(konghao);
+                if(!flag_t1){
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                }else {
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
+                }
             }
 
-            Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getDuan());//插入雷管的后面所有雷管序号+1
+            Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getPai(),paiChoice);//插入雷管的后面所有雷管序号+1
             int xuhao = db_charu.getBlastserial() + 1;
-            int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
-            denatorBaseinfo.setBlastserial(konghao);
-            denatorBaseinfo.setSithole(konghao + "");
+
             denatorBaseinfo.setDuan(db_charu.getDuan());
 
             charu = false;
@@ -2604,18 +2620,25 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         delay_add = f1;
                     }
                 }
-                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
+//                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
+                delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, db_charu.getDuanNo());
                 Log.e("单发输入--插入延时", "delay_max: " + delay_max);
                 Log.e("单发输入--插入延时", "delay_add: " + delay_add);
+                Log.e("单发输入--插入flag_t1", "flag_t1: " + flag_t1);
 //                if(flag_t1&&delay==db_charu.getDelay()){
 //                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
 //                    return -1;
 //                }
                 denatorBaseinfo.setDelay(delay_max);
-                denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                if(!flag_t1){
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                }else {
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
+                }
+
             }
 
-            Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getDuan());//插入雷管的后面所有雷管序号+1
+            Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getPai(),paiChoice);//插入雷管的后面所有雷管序号+1
             int xuhao = db_charu.getBlastserial() + 1;
             int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
             denatorBaseinfo.setBlastserial(konghao);
@@ -2806,10 +2829,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
 
                 denatorBaseinfo.setDelay(delay_max);
-                denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                if(!flag_t1){
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                }else {
+                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
+                }
             }
 
-            Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getDuan());//插入雷管的后面所有雷管序号+1
+            Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getPai(),paiChoice);//插入雷管的后面所有雷管序号+1
             int xuhao = db_charu.getBlastserial() + 1;
             int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
             denatorBaseinfo.setBlastserial(konghao);
@@ -3045,10 +3072,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
 
                     denatorBaseinfo.setDelay(delay_max);
-                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                    if(!flag_t1){
+                        denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+                    }else {
+                        denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
+                    }
                 }
 
-                Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getDuan());//插入雷管的后面所有雷管序号+1
+                Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getPai(),paiChoice);//插入雷管的后面所有雷管序号+1
                 int xuhao = db_charu.getBlastserial() + 1;
                 int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
                 denatorBaseinfo.setBlastserial(konghao);

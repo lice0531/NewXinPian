@@ -662,9 +662,10 @@ public class GreenDaoMaster {
      * @param db 雷管信息
      */
     public void updateDetonator(DenatorBaseinfo db) {
+        Log.e("更新雷管信息", "db: "+db );
         DenatorBaseinfo entity = mDeantorBaseDao
                 .queryBuilder()
-                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(db.getShellBlastNo()))
+                .where(DenatorBaseinfoDao.Properties.Id.eq(db.getId()))
                 .build()
                 .unique();
 //        entity.setId(db.getId());
@@ -675,6 +676,7 @@ public class GreenDaoMaster {
         Log.e("更新数据", "getDuanNo: "+ db.getDuanNo());
         mDeantorBaseDao.update(entity);
     }
+
     /**
      * 修改雷管延时
      *
@@ -1875,7 +1877,7 @@ public class GreenDaoMaster {
         QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
         result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
-                .orderAsc(DenatorBaseinfoDao.Properties.Id);
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial);
 
         List<DenatorBaseinfoSelect> mchildList = new ArrayList<>();
         for (DenatorBaseinfo item : result.list()) {
@@ -2099,7 +2101,7 @@ public class GreenDaoMaster {
     }
 
     /**
-     * 获取 该区域 该排 最大的孔号
+     * 获取 该区域 该排 最小的孔号
      *
      * @param piece 区域号 1 2 3 4 5
      */

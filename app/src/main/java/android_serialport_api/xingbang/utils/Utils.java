@@ -1866,6 +1866,93 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
+    public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1,int delay_add,String pai_in,int paiChoice) {
+        boolean flag_t1_local = flag_t1;
+        String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and pai = "+paiChoice+" and blastserial > "+db_charu.getBlastserial();
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Long id = cursor.getLong(0);
+                int blastserial = cursor.getInt(1);
+                String sithole = cursor.getString(2);
+                String shellBlastNo = cursor.getString(3);//管壳号
+                String denatorId = cursor.getString(4);
+                int delay = cursor.getInt(5);
+                String statusCode = cursor.getString(6);
+                String statusName = cursor.getString(7);
+                String errorName = cursor.getString(8);
+                String errorCode = cursor.getString(9);
+                String authorization = cursor.getString(10);
+                String remark = cursor.getString(11);
+                String regdate = cursor.getString(12);
+                String wire = cursor.getString(13);
+                String name = cursor.getString(14);
+                String denatorIdSup = cursor.getString(15);
+                String zhu_yscs = cursor.getString(16);
+                String cong_yscs = cursor.getString(17);
+                String piece = cursor.getString(18);
+                int duan = cursor.getInt(19);
+                int duanNo = cursor.getInt(20);
+                String fanzhuan =  cursor.getString(21);
+                String pai =  cursor.getString(22);
+
+                DenatorBaseinfo lg = new DenatorBaseinfo();
+                lg.setId(id);
+
+                lg.setSithole(sithole);
+                lg.setShellBlastNo(shellBlastNo);
+                lg.setDenatorId(denatorId);
+                if(pai_in.equals(pai)){
+                    lg.setDelay(delay+delay_add);
+                }else {
+                    lg.setDelay(delay);
+                }
+
+                lg.setStatusCode(statusCode);
+                lg.setStatusName(statusName);
+                lg.setErrorName(errorName);
+                lg.setErrorCode(errorCode);
+                lg.setAuthorization(authorization);
+                lg.setRemark(remark);
+                lg.setRegdate(regdate);
+                lg.setWire(wire);
+                lg.setName(name);
+                lg.setDenatorIdSup(denatorIdSup);
+                lg.setZhu_yscs(zhu_yscs);
+                lg.setCong_yscs(cong_yscs);
+                lg.setPiece(piece);
+                lg.setDuan(duan);
+                lg.setDuanNo(duanNo);
+                Log.e("插入排序", "shellBlastNo: "+shellBlastNo );
+                Log.e("插入排序", "blastserial+1: "+(blastserial+1) );
+                Log.e("插入排序", "flag_t1_local: "+flag_t1_local );
+                if(pai_in.equals(pai)&&db_charu.getDuanNo()==duanNo){//同段的序号+1
+//                    if(!flag_t1_local){
+//                        lg.setDuanNo(duanNo+1);
+//                        flag_t1_local=true;
+//                    }else {
+//                        lg.setDuanNo(duanNo);
+//                    }
+
+                    if(!flag_t1){
+                        lg.setBlastserial(blastserial);
+                    }else {
+                        lg.setBlastserial(blastserial+1);
+                    }
+                }
+                Log.e("插入排序", "duanNo: "+duanNo );
+                lg.setFanzhuan(fanzhuan);
+//                getDaoSession().getDenatorBaseinfoDao().update(lg);
+                new GreenDaoMaster().updateDetonator(lg);
+                Log.e("插入排序", "lg: "+lg.toString());
+            }
+            cursor.close();
+        }
+    }
+
+    /**
+     * 重新排序雷管(段)
+     */
     public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1,int delay_add,int duan_in) {
         String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and blastserial > "+db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
@@ -1897,7 +1984,7 @@ public class Utils {
                 DenatorBaseinfo lg = new DenatorBaseinfo();
                 lg.setId(Long.valueOf(Integer.parseInt(id)+1));
                 lg.setBlastserial(blastserial+1);
-                lg.setSithole((Integer.parseInt(sithole)+1)+"");
+                lg.setSithole(sithole);
                 lg.setShellBlastNo(shellBlastNo);
                 lg.setDenatorId(denatorId);
                 if(duan_in==duan){
