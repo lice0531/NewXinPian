@@ -48,7 +48,7 @@
             <CheckBox
                 android:id="@+id/cbIsSelected"
                 android:layout_width="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_gravity="center_vertical"
                 android:layout_height="match_parent"/>
 

@@ -68,6 +68,7 @@ public class AppErrorLogAdapter extends RecyclerView.Adapter<AppErrorLogAdapter.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bt_delete.setVisibility(View.GONE);
         holder.fireDate.setTextSize(18);
         holder.txtstatus.setTextSize(18);
         holder.serialNo.setText((position+1)+"");

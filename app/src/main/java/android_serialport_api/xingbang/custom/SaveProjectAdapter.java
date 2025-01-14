@@ -35,6 +35,11 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         this.itemListId = itemListId;
     }
 
+    private boolean isInitAdapter = false;//判断是否是初始化适配器
+    public void initAdapter(boolean isInit) {
+        isInitAdapter = isInit;
+    }
+
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
@@ -53,12 +58,14 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
     private boolean isShowCheck = false;
     public void showCheckBox(boolean isShow){
         isShowCheck = isShow;
+        isInitAdapter = false;
         notifyDataSetChanged();
     }
 
     private boolean isAllCheck = false;
     public void AllCheckBox(boolean isAllChecked){
         isAllCheck = isAllChecked;
+        isInitAdapter = false;
         notifyDataSetChanged();
     }
 
@@ -109,7 +116,6 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         viewHolder.iv_used.setVisibility(("true".equals(list.get(position).get("selected").toString())
                 ? View.VISIBLE : View.GONE));
         viewHolder.cbIsSelected.setVisibility(isShowCheck ? View.VISIBLE : View.GONE);
-        viewHolder.cbIsSelected.setChecked(isAllCheck);
         if (list.get(position).get("business") == null) {
             viewHolder.tv_gsxz.setVisibility(View.GONE);
         } else {
@@ -124,6 +130,23 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         }
         viewHolder.btn_del.setTag(position);
         viewHolder.ly_sq.setTag(position);
+        /**
+         * Listview+checkbox会出现初始化时候自动触发setOnCheckedChangeListener,为避免该问题,
+         * 先移除监听再添加监听
+         */
+        if (isInitAdapter) {
+            viewHolder.cbIsSelected.setOnCheckedChangeListener(null);
+        }
+        viewHolder.cbIsSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mListener != null) {
+                    //确保position值有效
+                    mListener.itemViewClick(buttonView, position, isChecked);
+                }
+            }
+        });
+        viewHolder.cbIsSelected.setChecked(isAllCheck);
 //        viewHolder.btn_del.setOnClickListener(this);
 //        viewHolder.ly_sq.setOnClickListener(this);
 //        viewHolder.cbIsSelected.setOnClickListener(new OnClickListener() {
@@ -136,15 +159,6 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
 //                }
 //            }
 //        });
-        viewHolder.cbIsSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mListener != null) {
-                    //确保position值有效
-                    mListener.itemViewClick(buttonView, position,isChecked);
-                }
-            }
-        });
         return convertView;
     }
 

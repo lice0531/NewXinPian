@@ -155,6 +155,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
         mAdapter = new SaveProjectAdapter(this, map_project, R.layout.item_list_saveproject_new);
         mAdapter.setOnInnerItemOnClickListener(this);
         lvProject.setAdapter(mAdapter);
+        mAdapter.initAdapter(true);
         lvProject.setOnItemClickListener(this);
         lvProject.setLongClickable(true);
         lvProject.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -349,7 +350,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 mAdapter.AllCheckBox(false);
                 break;
             case R.id.tv_check_all:
-                pnList.clear();
+//                pnList.clear();
                 if (isSelectAll) {
                     tvCheckAll.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
@@ -466,6 +467,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                     show_Toast("请先选中要删除的项目");
                     return;
                 }
+                Log.e(TAG,pnList.toString());
                 //先弹出是否确认删除项目dialog  确定后执行删除操作
                 if (!SaveProjectActivity.this.isFinishing()) {
                     AlertDialog dialog = new AlertDialog.Builder(SaveProjectActivity.this)
@@ -536,6 +538,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     }
 
     private List<String> pnList = new ArrayList<>();
+    private String TAG = "项目列表页面";
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -573,11 +576,14 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
     @Override
     public void itemViewClick(View v, int index,boolean isChecked) {
         if (v.getId() == R.id.cbIsSelected) {
+            String pName =  map_project.get(index).get("project_name").toString();
             if (isChecked) {
                 //多选   选中的项目  可执行多条删除功能
-                pnList.add(map_project.get(index).get("project_name").toString());
+                if (!pnList.contains(pName)) {
+                    pnList.add(pName);
+                }
             } else {
-                pnList.remove(map_project.get(index).get("project_name").toString());
+                pnList.remove(pName);
             }
         }
     }
