@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
@@ -772,7 +773,23 @@ public class QueryHisDetail extends BaseActivity {
         final String key = "jadl12345678912345678912";
 //        String url = Utils.httpurl_upload_dl;//丹灵上传
         String url = Utils.httpurl_upload_test;//丹灵上传
-        OkHttpClient client = new OkHttpClient();
+
+        // 创建OkHttpClient.Builder对象
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        // 设置连接超时时间：50秒
+        builder.connectTimeout(50, TimeUnit.SECONDS);
+
+        // 设置读取超时时间：50秒
+        builder.readTimeout(50, TimeUnit.SECONDS);
+
+        // 设置写入超时时间：50秒
+        builder.writeTimeout(50, TimeUnit.SECONDS);
+
+        // 创建OkHttpClient实例
+        OkHttpClient client = builder.build();
+
+//        OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
         for (int i = 1; i < hisListData.size(); i++) {
