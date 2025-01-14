@@ -1019,11 +1019,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int maxPai =  new GreenDaoMaster().getPieceMaxPai(quYu_choice.getQyid() + "");
         int max =  new GreenDaoMaster().getPieceMaxNumDelay(quYu_choice.getQyid() + "");
         int min =  new GreenDaoMaster().getPieceMinNumDelay(quYu_choice.getQyid() + "");
+        int kong =  new GreenDaoMaster().querytotalKong(quYu_choice.getQyid() + "");
         qyNo.setText("区域:" + quYu_choice.getName());
         qyTxtMaxDealy.setText("最大延时:" + max);
         qyTxtMinDealy.setText("最小延时:" + min);
         qyTxtTotal.setText("共:" + total + "发");
-        qyTxtTotalPai.setText("共:" + maxPai + "排" + total + "孔");
+        qyTxtTotalPai.setText("共:" + maxPai + "排" + kong + "孔");
         Log.e(TAG, "区域name: " + quYu_choice.getName());
     }
 

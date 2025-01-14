@@ -51,6 +51,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/qy_txt_total"
                         style="@style/alltextstyle"
                         android:layout_width="wrap_content"
@@ -64,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="共:0排0孔"
-                        android:layout_marginLeft="10dp"
+
                         android:textSize="17sp" />
                 </LinearLayout>
                 <TextView

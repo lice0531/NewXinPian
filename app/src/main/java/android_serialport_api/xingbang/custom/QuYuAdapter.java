@@ -59,11 +59,12 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         int maxPai = master.getPieceMaxPai(item.getQyid()+"");
         int max = master.getPieceMaxNumDelay(item.getQyid()+"");
         int min = master.getPieceMinNumDelay(item.getQyid()+"");
+        int kong = master.querytotalKong(item.getQyid()+"");
         TextView tv_yzw = helper.getView(R.id.tv_yzw);
         tv_yzw.setVisibility("true".equals(item.getSelected()) ? View.VISIBLE : View.GONE);
         helper.setText(R.id.qy_no, item.getQyid() + "");//
-        helper.setText(R.id.qy_txt_total, "共:" + total+"发");//
-        helper.setText(R.id.qy_txt_totalPai, "共:" +maxPai+"排"+ total+"发");//
+        helper.setText(R.id.qy_txt_total, "共:" + kong+"孔");//
+        helper.setText(R.id.qy_txt_totalPai, "共:" +maxPai+"排"+ kong+"孔"+ total+"发");//
         helper.setText(R.id.qy_txt_minDealy, "最小延时:"+min );//
         helper.setText(R.id.qy_txt_maxDealy, "最大延时:"+max);//
         TextView qy_txt_Dealy = helper.getView(R.id.qy_txt_Dealy);
