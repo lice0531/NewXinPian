@@ -84,7 +84,7 @@ public class Utils {
 
     public static String httpurl_xb_his = "http://xbmonitor1.xingbangtech.com:800/XB/DataUpload";
 
-//    public static String httpurl_xb_leveup = "http://test.xingbangtech.com:666/HandSet/isRenew ";
+    //    public static String httpurl_xb_leveup = "http://test.xingbangtech.com:666/HandSet/isRenew ";
 //    public static String httpurl_xb_download = "http://test.xingbangtech.com:666/HandSet/DownloadVersion";
     private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -717,11 +717,13 @@ public class Utils {
 
         return dateString;
     }
+
     public static String getDateFormat(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         return formatter.format(date);
     }
+
     public static String getDateFormatToFileName2() {
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmss");
@@ -1726,7 +1728,7 @@ public class Utils {
 
 //        Log.e("排序雷管", "list_lg: " + list_lg.size());
         for (int d = 1; d < 41; d++) {
-            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion,d);
+            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, d);
             for (int i = 0; i < list_lg.size(); i++) {
                 DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
                 denatorBaseinfo.setId(list_lg.get(i).getId());
@@ -1751,14 +1753,14 @@ public class Utils {
                 denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
                 denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
                 DenatorBaseinfo lg2;
-                if(i>0){//从第二发开始,跟前一发对比延时
-                     lg2 = new GreenDaoMaster().querylg(list_lg.get(i-1).getShellBlastNo());
-                     if(list_lg.get(i).getDelay()==lg2.getDelay()&&list_lg.get(i).getDuanNo()==lg2.getDuanNo()){//如果和前一发延时一致,那么就设置
-                         denatorBaseinfo.setDuanNo(lg2.getDuanNo() );
-                     }else {
-                         denatorBaseinfo.setDuanNo((lg2.getDuanNo() + 1));
-                     }
-                }else {
+                if (i > 0) {//从第二发开始,跟前一发对比延时
+                    lg2 = new GreenDaoMaster().querylg(list_lg.get(i - 1).getShellBlastNo());
+                    if (list_lg.get(i).getDelay() == lg2.getDelay() && list_lg.get(i).getDuanNo() == lg2.getDuanNo()) {//如果和前一发延时一致,那么就设置
+                        denatorBaseinfo.setDuanNo(lg2.getDuanNo());
+                    } else {
+                        denatorBaseinfo.setDuanNo((lg2.getDuanNo() + 1));
+                    }
+                } else {
                     denatorBaseinfo.setDuanNo(1);
                 }
 
@@ -1771,13 +1773,13 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
-    public static void deleteData(String mRegion,int duan_del) {
+    public static void deleteData(String mRegion, int duan_del) {
 
 //        Log.e("排序雷管", "list_lg: " + list_lg.size());
 
         //重新排段号
         for (int d = 1; d < 41; d++) {
-            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion,d);
+            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAndDUanAsc(mRegion, d);
             for (int i = 0; i < list_lg.size(); i++) {
                 DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
                 denatorBaseinfo.setId(list_lg.get(i).getId());
@@ -1801,20 +1803,20 @@ public class Utils {
                 denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
                 denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
                 denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
-                Log.e("翻转", "list_lg.get(i).getFanzhuan(): "+list_lg.get(i).getFanzhuan() );
+                Log.e("翻转", "list_lg.get(i).getFanzhuan(): " + list_lg.get(i).getFanzhuan());
                 DenatorBaseinfo lg2;
-                if(list_lg.get(i).getDuan()==duan_del){//只重新排序对应段的雷管,其他段不变
-                    if(i>0){//从第二发开始,跟前一发对比延时
-                        lg2 = new GreenDaoMaster().querylg(list_lg.get(i-1).getShellBlastNo());
-                        if(list_lg.get(i).getDelay()==lg2.getDelay()&&list_lg.get(i).getDuanNo()==lg2.getDuanNo()){//如果和前一发延时一致,那么就设置
-                            denatorBaseinfo.setDuanNo(lg2.getDuanNo() );
-                        }else {
+                if (list_lg.get(i).getDuan() == duan_del) {//只重新排序对应段的雷管,其他段不变
+                    if (i > 0) {//从第二发开始,跟前一发对比延时
+                        lg2 = new GreenDaoMaster().querylg(list_lg.get(i - 1).getShellBlastNo());
+                        if (list_lg.get(i).getDelay() == lg2.getDelay() && list_lg.get(i).getDuanNo() == lg2.getDuanNo()) {//如果和前一发延时一致,那么就设置
+                            denatorBaseinfo.setDuanNo(lg2.getDuanNo());
+                        } else {
                             denatorBaseinfo.setDuanNo((lg2.getDuanNo() + 1));
                         }
-                    }else {
+                    } else {
                         denatorBaseinfo.setDuanNo(1);
                     }
-                }else {
+                } else {
                     denatorBaseinfo.setDuanNo(list_lg.get(i).getDuanNo());
                 }
 
@@ -1832,43 +1834,43 @@ public class Utils {
     public static void deleteDataforXuHao(String mRegion) {
 
 //        Log.e("排序雷管", "list_lg: " + list_lg.size());
-            List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
-            for (int i = 0; i < list_lg.size(); i++) {
-                DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
-                denatorBaseinfo.setId(list_lg.get(i).getId());
-                denatorBaseinfo.setBlastserial(i+1);
-                denatorBaseinfo.setSithole((i+1)+"");
-                denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
-                denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
-                denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
-                denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
-                denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
-                denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
-                denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
-                denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
-                denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
-                denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
-                denatorBaseinfo.setWire(list_lg.get(i).getWire());
-                denatorBaseinfo.setName(list_lg.get(i).getName());
-                denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
-                denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
-                denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
-                denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
-                denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
-                denatorBaseinfo.setDuanNo(list_lg.get(i).getDuanNo());
-                denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
+        List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion);
+        for (int i = 0; i < list_lg.size(); i++) {
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+            denatorBaseinfo.setId(list_lg.get(i).getId());
+            denatorBaseinfo.setBlastserial(i + 1);
+            denatorBaseinfo.setSithole((i + 1) + "");
+            denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
+            denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
+            denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
+            denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
+            denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
+            denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
+            denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
+            denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
+            denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
+            denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
+            denatorBaseinfo.setWire(list_lg.get(i).getWire());
+            denatorBaseinfo.setName(list_lg.get(i).getName());
+            denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
+            denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
+            denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
+            denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
+            denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+            denatorBaseinfo.setDuanNo(list_lg.get(i).getDuanNo());
+            denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
 
-                getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
-            }
+            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+        }
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**
      * 重新排序雷管(段)
      */
-    public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1,int delay_add,String pai_in,int paiChoice) {
+    public static void charuData(String mRegion, DenatorBaseinfo db_charu, boolean flag_t1, int delay_add, String pai_in, int paiChoice) {
         boolean flag_t1_local = flag_t1;
-        String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and pai = "+paiChoice+" and blastserial > "+db_charu.getBlastserial();
+        String sql = "select * from denatorBaseinfo where piece = " + mRegion + " and pai = " + paiChoice + " and blastserial > " + db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -1893,8 +1895,8 @@ public class Utils {
                 String piece = cursor.getString(18);
                 int duan = cursor.getInt(19);
                 int duanNo = cursor.getInt(20);
-                String fanzhuan =  cursor.getString(21);
-                String pai =  cursor.getString(22);
+                String fanzhuan = cursor.getString(21);
+                String pai = cursor.getString(22);
 
                 DenatorBaseinfo lg = new DenatorBaseinfo();
                 lg.setId(id);
@@ -1902,9 +1904,9 @@ public class Utils {
                 lg.setSithole(sithole);
                 lg.setShellBlastNo(shellBlastNo);
                 lg.setDenatorId(denatorId);
-                if(pai_in.equals(pai)){
-                    lg.setDelay(delay+delay_add);
-                }else {
+                if (pai_in.equals(pai)) {
+                    lg.setDelay(delay + delay_add);
+                } else {
                     lg.setDelay(delay);
                 }
 
@@ -1923,28 +1925,40 @@ public class Utils {
                 lg.setPiece(piece);
                 lg.setDuan(duan);
                 lg.setDuanNo(duanNo);
-                Log.e("插入排序", "shellBlastNo: "+shellBlastNo );
-                Log.e("插入排序", "blastserial+1: "+(blastserial+1) );
-                Log.e("插入排序", "flag_t1_local: "+flag_t1_local );
-                if(pai_in.equals(pai)&&db_charu.getDuanNo()==duanNo){//同段的序号+1
-//                    if(!flag_t1_local){
-//                        lg.setDuanNo(duanNo+1);
-//                        flag_t1_local=true;
-//                    }else {
-//                        lg.setDuanNo(duanNo);
-//                    }
-
-                    if(!flag_t1){
-                        lg.setBlastserial(blastserial);
-                    }else {
-                        lg.setBlastserial(blastserial+1);
-                    }
-                }
-                Log.e("插入排序", "duanNo: "+duanNo );
                 lg.setFanzhuan(fanzhuan);
+                Log.e("插入排序", "shellBlastNo: " + shellBlastNo);
+                Log.e("插入排序", "blastserial+1: " + (blastserial + 1));
+                Log.e("插入排序", "flag_t1_local: " + flag_t1_local);
+                Log.e("插入排序", "pai: " + pai);
+                Log.e("插入排序", "pai_in: " + pai_in);
+                Log.e("插入排序", "db_charu.getDuanNo(): " + db_charu.getDuanNo());
+                Log.e("插入排序", "duanNo: " + duanNo);
+
+                if (!flag_t1) {
+                    lg.setBlastserial(blastserial);
+                    if (db_charu.getBlastserial()==blastserial) {//同孔情况下,后续位号增加
+                        lg.setDuanNo(duanNo + 1);
+                    } else {
+                        lg.setDuanNo(duanNo);
+                    }
+                } else {
+                    lg.setBlastserial(blastserial + 1);
+                }
+
+
+
+//                if (pai_in.equals(pai) && db_charu.getDuanNo() == duanNo) {//同段的序号+1
+//                    if (!flag_t1) {
+//                        lg.setBlastserial(blastserial);
+//                    } else {
+//                        lg.setBlastserial(blastserial + 1);
+//                    }
+//                }
+                Log.e("插入排序", "duanNo: " + duanNo);
+
 //                getDaoSession().getDenatorBaseinfoDao().update(lg);
                 new GreenDaoMaster().updateDetonator(lg);
-                Log.e("插入排序", "lg: "+lg.toString());
+                Log.e("插入排序", "lg: " + lg.toString());
             }
             cursor.close();
         }
@@ -1953,8 +1967,8 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
-    public static void charuData(String mRegion,DenatorBaseinfo db_charu ,boolean flag_t1,int delay_add,int duan_in) {
-        String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and blastserial > "+db_charu.getBlastserial();
+    public static void charuData(String mRegion, DenatorBaseinfo db_charu, boolean flag_t1, int delay_add, int duan_in) {
+        String sql = "select * from denatorBaseinfo where piece = " + mRegion + " and blastserial > " + db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -1979,17 +1993,17 @@ public class Utils {
                 String piece = cursor.getString(18);
                 int duan = cursor.getInt(19);
                 int duanNo = cursor.getInt(20);
-                String fanzhuan =  cursor.getString(21);
+                String fanzhuan = cursor.getString(21);
 
                 DenatorBaseinfo lg = new DenatorBaseinfo();
-                lg.setId(Long.valueOf(Integer.parseInt(id)+1));
-                lg.setBlastserial(blastserial+1);
+                lg.setId(Long.valueOf(Integer.parseInt(id) + 1));
+                lg.setBlastserial(blastserial + 1);
                 lg.setSithole(sithole);
                 lg.setShellBlastNo(shellBlastNo);
                 lg.setDenatorId(denatorId);
-                if(duan_in==duan){
-                    lg.setDelay(delay+delay_add);
-                }else {
+                if (duan_in == duan) {
+                    lg.setDelay(delay + delay_add);
+                } else {
                     lg.setDelay(delay);
                 }
 
@@ -2008,18 +2022,18 @@ public class Utils {
                 lg.setPiece(piece);
                 lg.setDuan(duan);
                 lg.setDuanNo(duanNo);
-                if(db_charu.getDuan()==duan){//同段的序号+1
-                    if(!flag_t1){
+                if (db_charu.getDuan() == duan) {//同段的序号+1
+                    if (!flag_t1) {
                         lg.setDuanNo(duanNo);
-                    }else {
-                        lg.setDuanNo(duanNo+1);
+                    } else {
+                        lg.setDuanNo(duanNo + 1);
                     }
                 }
 
                 lg.setFanzhuan(fanzhuan);
 //                getDaoSession().getDenatorBaseinfoDao().update(lg);
                 new GreenDaoMaster().updateDetonator(lg);
-                Log.e("插入排序", "lg: "+lg.toString());
+                Log.e("插入排序", "lg: " + lg.toString());
             }
             cursor.close();
         }
@@ -2028,8 +2042,8 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
-    public static void jianshaoData(String mRegion, DenatorBaseinfo db_charu , boolean flag_t1, int delay_add, int duan_in) {
-        String sql ="select * from denatorBaseinfo where piece = "+mRegion+" and blastserial > "+db_charu.getBlastserial();
+    public static void jianshaoData(String mRegion, DenatorBaseinfo db_charu, boolean flag_t1, int delay_add, int duan_in) {
+        String sql = "select * from denatorBaseinfo where piece = " + mRegion + " and blastserial > " + db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -2054,17 +2068,17 @@ public class Utils {
                 String piece = cursor.getString(18);
                 int duan = cursor.getInt(19);
                 int duanNo = cursor.getInt(20);
-                String fanzhuan =  cursor.getString(21);
+                String fanzhuan = cursor.getString(21);
 
                 DenatorBaseinfo lg = new DenatorBaseinfo();
-                lg.setId(Long.valueOf(Integer.parseInt(id)-1));
-                lg.setBlastserial(blastserial-1);
-                lg.setSithole((Integer.parseInt(sithole)-1)+"");
+                lg.setId(Long.valueOf(Integer.parseInt(id) - 1));
+                lg.setBlastserial(blastserial - 1);
+                lg.setSithole((Integer.parseInt(sithole) - 1) + "");
                 lg.setShellBlastNo(shellBlastNo);
                 lg.setDenatorId(denatorId);
-                if(duan_in==duan){//相同段延时缩短
-                    lg.setDelay(delay-delay_add);
-                }else {
+                if (duan_in == duan) {//相同段延时缩短
+                    lg.setDelay(delay - delay_add);
+                } else {
                     lg.setDelay(delay);
                 }
 
@@ -2083,18 +2097,18 @@ public class Utils {
                 lg.setPiece(piece);
                 lg.setDuan(duan);
                 lg.setDuanNo(duanNo);
-                if(db_charu.getDuan()==duan){//同段的序号+1
-                    if(!flag_t1){
+                if (db_charu.getDuan() == duan) {//同段的序号+1
+                    if (!flag_t1) {
                         lg.setDuanNo(duanNo);
-                    }else {
-                        lg.setDuanNo(duanNo+1);
+                    } else {
+                        lg.setDuanNo(duanNo + 1);
                     }
                 }
 
                 lg.setFanzhuan(fanzhuan);
 //                getDaoSession().getDenatorBaseinfoDao().update(lg);
                 new GreenDaoMaster().updateDetonator(lg);
-                Log.e("插入排序", "lg: "+lg.toString());
+                Log.e("插入排序", "lg: " + lg.toString());
             }
             cursor.close();
         }
@@ -2803,6 +2817,7 @@ public class Utils {
         }
 
     }
+
     /***
      * 删除日志
      */
@@ -2860,20 +2875,20 @@ public class Utils {
         return "当前日志为空";
     }
 
-    public static  void deleteRiZhi(File file) {
+    public static void deleteRiZhi(File file) {
         if (file.isFile()) {
             file.delete();
             return;
         }
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             File[] childFiles = file.listFiles();
             if (childFiles == null || childFiles.length == 0) {
                 file.delete();
                 return;
             }
-            if(childFiles.length>60){
-                for (int i = 0; i < childFiles.length-5; i++) {
-                    Log.e("删除数据", "childFiles[i].getName()" +childFiles[i].getName());
+            if (childFiles.length > 60) {
+                for (int i = 0; i < childFiles.length - 5; i++) {
+                    Log.e("删除数据", "childFiles[i].getName()" + childFiles[i].getName());
                     deleteRiZhi(childFiles[i]);
                 }
             }
@@ -2886,21 +2901,22 @@ public class Utils {
     }
 
 
-        public static int duibi(String str1, String str2) {
-            int a =0;
+    public static int duibi(String str1, String str2) {
+        int a = 0;
 
-            // 比较两个字符串的长度
-            if (str1.length() == str2.length()) {
-                // 比较每一位字符
-                for (int i = 0; i < str1.length(); i++) {
-                    if (str1.charAt(i) == str2.charAt(i)) {
-                        a++;
-                    }
+        // 比较两个字符串的长度
+        if (str1.length() == str2.length()) {
+            // 比较每一位字符
+            for (int i = 0; i < str1.length(); i++) {
+                if (str1.charAt(i) == str2.charAt(i)) {
+                    a++;
                 }
             }
-            Log.e("对比UID", "相同字符个数: "+a );
-            return a;
         }
+        Log.e("对比UID", "相同字符个数: " + a);
+        return a;
+    }
+
     public static void dialogOn(DialogInterface dialog) {
         try {
             Field field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");

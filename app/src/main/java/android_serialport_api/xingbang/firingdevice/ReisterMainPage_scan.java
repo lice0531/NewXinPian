@@ -2304,7 +2304,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "当前选择排号 paiChoice: " + paiChoice);
         Log.e(TAG, "当前选择孔号 kongChoice: " + kongChoice);
         Log.e(TAG, "当前段最大孔号 maxKong: " + maxKong);
-        Log.e(TAG, "当前选择管 childList.get(paiChoice).get(kongChoice): " + childList.get(paiChoice-1).get(kongChoice-1).toString());
+        if( childList.get(paiChoice-1).size()>0){
+            Log.e(TAG, "当前选择管 childList.get(paiChoice).get(kongChoice): " + childList.get(paiChoice-1).get(kongChoice-1).toString());//没有雷管的时候会报错
+        }
         int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         Log.e("扫码", "获取 duanNo2: " + duanNo2);
         if (delay_max == 0 && duanNo2 == 0) {
@@ -2398,11 +2400,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (charu) {
 
             db_charu =  childList.get(paiChoice-1).get(kongChoice-1);
-            int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
+            int konghao = db_charu.getBlastserial() + 1;
 
             denatorBaseinfo.setSithole(konghao + "");
-            Log.e(TAG, "选中插入的雷管: " + db_charu.getShellBlastNo() + " 延时:" + db_charu.getDelay());
-            Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
+            Log.e(TAG, "插入--选中插入的雷管: " + db_charu.getShellBlastNo() + " 延时:" + db_charu.getDelay());
+            Log.e(TAG, "插入--插入孔前一发延时: " + db_charu.getDelay());
+            Log.e("插入--单发输入--插入孔号", "konghao: " + konghao);
             if (!flag_t1) {//插入位
                 denatorBaseinfo.setBlastserial(db_charu.getBlastserial());
                 denatorBaseinfo.setDuanNo((db_charu.getDuanNo()+1));
@@ -2418,8 +2421,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 }
                 delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
-                Log.e("单发输入--插入延时", "delay_max: " + delay_max);
-                Log.e("单发输入--插入延时", "delay_add: " + delay_add);
+                Log.e("插入--单发输入--插入延时", "delay_max: " + delay_max);
+                Log.e("插入--单发输入--插入延时", "delay_add: " + delay_add);
+
 //                if(flag_t1&&delay==db_charu.getDelay()){
 //                    show_Toast("没选同孔,不能设置跟选中雷管相同延时");
 //                    return -1;

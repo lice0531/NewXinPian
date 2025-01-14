@@ -2162,11 +2162,11 @@ public class GreenDaoMaster {
      */
     public int querytotalKong(String qyid){
         int maxPai=getMaxPaiId(qyid);
-        Log.e("查询区域有多少孔", "maxPai: "+maxPai );
+//        Log.e("查询区域有多少孔", "maxPai: "+maxPai );
         int total=0;
         for (int a =1;a<=maxPai;a++){
             total = total+ getPieceAndPaiMaxKong(qyid,a);
-            Log.e("查询区域有多少孔", a+"排孔数: "+total );
+//            Log.e("查询区域有多少孔", a+"排孔数: "+total );
         }
         return total;
     }
