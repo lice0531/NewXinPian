@@ -285,6 +285,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private EditText edit_end_entboxNoAndSerial_ed;//结束流水号
     private String singleShellNo;//单发注册
     private String lg_No;//重复雷管管壳码
+    private String lg_wei;//重复雷管管壳码的位号
+    private String lg_pai;//重复雷管管壳码的排号
     private String lg_Piece;//重复雷管区号
     private From42Power busInfo;
     private int continueScanFlag = 0;//是否继续扫码标志 0否1是
@@ -446,11 +448,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
 //一级点击监听
         zcList.setOnGroupClickListener((parent, v, groupPosition, id) -> {
-//            if (check_gone) {
+            if (!check_gone) {
 //                check_gone = false;
 //                // 刷新适配器
 //                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//            }
+
 
 
             //如果你处理了并且消费了点击返回true,这是一个基本的防止onTouch事件向下或者向上传递的返回机制
@@ -479,6 +481,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             Log.e(TAG, "start_delay_data:" + start_delay_data + " -f1_delay_data:" + f1_delay_data + "-f2_delay_data:" + f2_delay_data);
             Log.e(TAG, "1级监听-id:" + id + " -paiChoice:" + paiChoice + "-paiChoice:" + paiChoice);
+            }
             return false;
         });
         //二级点击监听
@@ -923,16 +926,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("已达到最大延时限制" + maxSecond + "ms");
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
-                show_Toast(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
+//                show_Toast(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
+                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) +lg_pai+"排"+ lg_No+"孔"+ lg_wei+"位"+ singleShellNo + getString(R.string.text_error_tip71));
+
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
-                MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
+//                MoveToPosition(linearLayoutManager, mListView, total - Integer.parseInt(lg_No));
             } else if (msg.what == 6) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_line_tip7));
             } else if (msg.what == 7) {
                 SoundPlayUtils.play(4);
-                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
+                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) +lg_pai+"排"+ lg_No+"孔"+ lg_wei+"位"+ singleShellNo + getString(R.string.text_error_tip71));
             } else if (msg.what == 8) {
                 SoundPlayUtils.play(4);
                 show_Toast(getString(R.string.text_error_tip64));
@@ -2939,6 +2944,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int start_delay = Integer.parseInt(paiData.getStartDelay());//开始延时
         int f1 = Integer.parseInt(paiData.getKongDelay());//f1延时
         int f2 = Integer.parseInt(String.valueOf(reEtF2.getText()));//f2延时
+        Log.e(TAG, "start_delay: " + start_delay);
+        Log.e(TAG, "f1: " + f1);
+        Log.e(TAG, "f2: " + f2);
 //        int maxNo = getMaxNumberNo();
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
@@ -2952,7 +2960,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
 //        }
         int delay_start = delay_max;
-        if (btn_start || maxNo == 0) {
+        if (btn_start || maxKong == 0) {
             delay_start = start_delay;
         }
         if (!flag_jh_f1 || !flag_jh_f2) {
@@ -3016,7 +3024,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
-            delay_max = getDelay(maxNo, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
+            delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
             Log.e("手动输入-最终延时", "delay_max: " + delay_max);
             if (delay_max < 0) {
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
@@ -3162,6 +3170,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
 
                 }
+                Log.e(TAG, "maxNo: " + maxNo);
                 Log.e(TAG, "开始延时: " + start_delay);
                 Log.e(TAG, "孔间延时: " + delay_max);
             } else if (delay_set.equals("f2")) {//孔内延时
@@ -3307,6 +3316,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("注册", "denatorBaseinfo: " + denatorBaseinfo.toString());
             lg_No = denatorBaseinfo.getBlastserial() + "";
             lg_Piece = denatorBaseinfo.getPiece();
+            lg_wei = denatorBaseinfo.getDuanNo()+"";
+            lg_pai = denatorBaseinfo.getPai()+"";
             return true;
         } else {
             return false;
@@ -3365,6 +3376,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.tv_cancel:
+
                 zhuceAdapter.setCheckBox(true);
                 lay_bottom.setVisibility(View.GONE);
                 zhuceAdapter.notifyDataSetChanged();
@@ -3410,7 +3422,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                 check_gone = false;//重置参数
                                 isSelectAll = true;//重置参数
                                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
-
+                                tv_check_all.setText(getResources().getString(R.string.text_qx));
                                 show_Toast("删除成功");
                                 Utils.saveFile();//把软存中的数据存入磁盘中
                                 AppLogUtils.writeAppLog("点击注册页面的多选删除雷管按钮");
