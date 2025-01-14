@@ -33,6 +33,8 @@
     <string name="text_queryHis_dialog9">Please confirm whether to delete the current record</string>
     <string name="text_queryHis_dialog10">confirm</string>
     <string name="text_queryHis_dialog11">This operation will clear the data in the current list. Do you want to delete it?</string>
+    <string name="text_queryHis_dialog12">Clear prompt</string>
+    <string name="text_his_qksqjl">Please enter the password before clearing the authorization operation</string>
     <string name="text_delete_tip12">This operation will delete the data in the table by sequence number. Do you want to delete it?</string>
     <string name="text_sctkgs">Please enter the number of jump holes</string>
     <string name="t_xingbang_main_page_btn_reister">Registration</string>
@@ -571,6 +573,7 @@
     <string name="text_down_srgkm">Input Shell Code</string>
     <string name="text_down_srxm">Input Project</string>
     <string name="text_down_bc">Save and Download</string>
+    <string name="text_zxxz">Download online</string>
     <string name="text_ver_tip1">Please select a project</string>
     <string name="text_ver_tip2">Priming</string>
     <string name="text_ver_tip3">Reposition</string>
@@ -840,9 +843,9 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PT_TY_V2.1_241231</string>
-    <string name="app_version_name2">M900_PT_XJ_V2.1_241231</string>
-    <string name="app_version_name3">M900_PT_CQ_V2.1_241231</string>
+    <string name="app_version_name">M900_PT_TY_V2.1_250110</string>
+    <string name="app_version_name2">M900_PT_TY_V2.1_250110</string>
+    <string name="app_version_name3">M900_PT_TY_V2.1_250110</string>
     <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
@@ -887,6 +890,7 @@
     <string name="text_his_scrcrz">Delete all uploaded daily logs</string>
     <string name="text_his_scbkrz">Delete all uploaded crash logs</string>
     <string name="text_his_zwsjsc">No data to delete</string>
+    <string name="text_his_zwsqsc">No authorization data to clear</string>
     <string name="text_jilianset_tip1">Tip:Automatically save after input</string>
     <string name="text_jilianset_tip2">No：</string>
     <string name="text_jilianset_tip3">Please enter a number with a length of 2 (e.g. 01,99)</string>

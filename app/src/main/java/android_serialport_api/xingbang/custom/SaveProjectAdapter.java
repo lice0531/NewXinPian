@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,7 +40,6 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         // TODO Auto-generated method stub
         mListener.itemClick(v);
     }
-
 
     public interface InnerItemOnclickListener {
         void itemClick(View v);
@@ -124,17 +124,25 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
         }
         viewHolder.btn_del.setTag(position);
         viewHolder.ly_sq.setTag(position);
-        viewHolder.btn_del.setOnClickListener(this);
-        viewHolder.ly_sq.setOnClickListener(this);
+//        viewHolder.btn_del.setOnClickListener(this);
+//        viewHolder.ly_sq.setOnClickListener(this);
+//        viewHolder.cbIsSelected.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                boolean isChecked = viewHolder.cbIsSelected.isChecked();
+//                if (mListener != null) {
+//                    //确保position值有效
+//                    mListener.itemViewClick(viewHolder.cbIsSelected, position, isChecked);
+//                }
+//            }
+//        });
         viewHolder.cbIsSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-                    if (mListener != null) {
-                        //确保position值有效
-                        mListener.itemViewClick(buttonView, position,isChecked);
-                    }
-//                }
+                if (mListener != null) {
+                    //确保position值有效
+                    mListener.itemViewClick(buttonView, position,isChecked);
+                }
             }
         });
         return convertView;
