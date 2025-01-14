@@ -123,14 +123,17 @@
                         android:orientation="vertical">
 
                         <View
+                            android:id="@+id/view_htid"
                             android:layout_width="match_parent"
                             android:layout_height="2dp"
                             android:background="@color/rangle_border_base"
                             android:visibility="visible" />
 
                         <LinearLayout
+                            android:id="@+id/ll_htid"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/addproject_heigh"
+                            android:visibility="visible"
                             android:orientation="horizontal">
 
                             <TextView
@@ -155,11 +158,15 @@
                         </LinearLayout>
 
                         <View
+                            android:id="@+id/view_xmid"
                             android:layout_width="match_parent"
                             android:layout_height="2dp"
+                            android:visibility="visible"
                             android:background="@color/rangle_border_base" />
 
                         <LinearLayout
+                            android:id="@+id/ll_xmid"
+                            android:visibility="visible"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/addproject_heigh"
                             android:orientation="horizontal">

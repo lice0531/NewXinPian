@@ -37,6 +37,14 @@ public class ProjectDetailActivity extends BaseActivity {
     TextView downAtXmbh;
     @BindView(R.id.down_at_htid)
     TextView downAtHtid;
+    @BindView(R.id.view_htid)
+    View view_htid;
+    @BindView(R.id.view_xmid)
+    View view_xmid;
+    @BindView(R.id.ll_htid)
+    LinearLayout ll_htid;
+    @BindView(R.id.ll_xmid)
+    LinearLayout ll_xmid;
     @BindView(R.id.down_at_dwdm)
     TextView downAtDwdm;
     @BindView(R.id.down_at_project_name)
@@ -156,6 +164,11 @@ public class ProjectDetailActivity extends BaseActivity {
             llXmxx.setVisibility(View.VISIBLE);
             llDwxx.setVisibility(View.GONE);
         }
+        Log.e(TAG,"htid:" + mHtbh + "--xmhb:" + mXmbh);
+        view_htid.setVisibility(TextUtils.isEmpty(mHtbh) ? View.GONE : View.VISIBLE);
+        ll_htid.setVisibility(TextUtils.isEmpty(mHtbh) ? View.GONE : View.VISIBLE);
+        view_xmid.setVisibility(TextUtils.isEmpty(mXmbh) ? View.GONE : View.VISIBLE);
+        ll_xmid.setVisibility(TextUtils.isEmpty(mXmbh) ? View.GONE : View.VISIBLE);
         downAtProjectName.setText(mPname);
         downAtHtid.setText(mHtbh);
         downAtXmbh.setText(mXmbh);

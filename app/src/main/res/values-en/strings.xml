@@ -962,7 +962,7 @@
     <string name="text_tv_dwdm">Unit code:</string>
     <string name="text_tv_xmbh">Project Number:</string>
     <string name="text_tv_htbh">Contract Number:</string>
-    <string name="text_tv_gzmc">Blasting project name:</string>
+    <string name="text_tv_gzmc">Project name:</string>
     <string name="text_tv_djck">Click to view</string>
     <string name="text_tv_cwsl">Number of errors:</string>
     <string name="text_tv_sqsj">Application Time:</string>
@@ -1035,6 +1035,8 @@
     <string name="text_qxqx">Deselect all</string>
     <string name="text_xmxzxm">Please add a new item in the project management before authorization</string>
     <string name="text_xmsyxm">Please set the project you need to use in project management before authorizing the operation</string>
+    <string name="text_zcxzxm">Please add a new item in project management before registering</string>
+    <string name="text_zcsqxm">Please set the project you need to use in project management before registering</string>
     <string name="text_his_sclg2">Do you want to remove the selected detonator?</string>
     <string name="sq_item_1">Select the detonator</string>
     <string name="sq_item_2">Display correctly</string>

@@ -21,6 +21,7 @@ import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -164,6 +165,8 @@ public class DownOfflineActivity extends BaseActivity {
     private void initCardViewData() {
         Project usedProject = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Selected.eq("true")).unique();
         if (usedProject != null) {
+            ll1.setVisibility(TextUtils.isEmpty(usedProject.getHtbh()) ? View.GONE : View.VISIBLE);
+            ll2.setVisibility(TextUtils.isEmpty(usedProject.getXmbh()) ? View.GONE : View.VISIBLE);
             dfAtHtid.setText(usedProject.getHtbh());
             dfAtXmbh.setText(usedProject.getXmbh());
             dfAtDwdm.setText(usedProject.getDwdm());
