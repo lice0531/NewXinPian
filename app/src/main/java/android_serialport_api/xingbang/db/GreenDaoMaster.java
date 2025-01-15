@@ -1800,6 +1800,17 @@ public class GreenDaoMaster {
 
     }
 
+    /**
+     * 获取 该区域 最大排号
+     *
+     */
+    public int getPaisum(String qyid) {
+        QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder();
+        result = result.where(PaiDataDao.Properties.Qyid.eq(qyid));
+        return result.list().size();
+
+    }
+
 
     /**
      * 获取 该区域 最小的延时

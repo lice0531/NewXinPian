@@ -431,6 +431,7 @@
     <string name="text_dialog_sc">删除</string>
     <string name="text_dialog_qd">确定</string>
     <string name="text_dialog_xgcg">\n修改成功</string>
+    <string name="text_dialog_xgcg2">修改成功</string>
     <string name="text_delay_sdsz">隧道</string>
     <string name="text_test_ckdl">参考电流</string>
     <string name="text_dialog_err">错误</string>

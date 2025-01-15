@@ -1804,22 +1804,29 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            }
 //
 //        });
-//        builder.setNeutralButton(getResources().getString(R.string.text_tip_delete), (dialog, which) -> {
-//            dialog.dismiss();
-//            AlertDialog dialog2 = new AlertDialog.Builder(this)
-//                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
-//                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
-//                    //设置对话框的按钮
-//                    .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
-//                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-//                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
-//                            } else {
-//                                // TODO 开启进度条
-//                                runPbDialog();
-//                                new Thread(() -> {
+        builder.setNeutralButton(getResources().getString(R.string.text_tip_delete), (dialog, which) -> {
+            dialog.dismiss();
+            AlertDialog dialog2 = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+                    .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
+                    //设置对话框的按钮
+                    .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
+                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
+                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
+                            } else {
+                                // TODO 开启进度条
+                                runPbDialog();
+                                new Thread(() -> {
+                                    if (info.getShellBlastNo().length() != 13) {
+                                        new GreenDaoMaster().deleteDetonator(info.getId());
+                                    } else {
+                                        new GreenDaoMaster().deleteDetonator(info.getShellBlastNo());
+                                    }
+                                    //先更新排数据,再删除排
+                                    updataPaiData();
 //                                    // 删除某一发雷管
 //                                    int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
 //                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
@@ -1830,15 +1837,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                                    Message msg = new Message();
 //                                    msg.arg1 = duan_guan;
 //                                    mHandler_showNum.sendMessage(msg);
-//                                    // 区域 更新视图
-//                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//                                    pb_show = 0;
-//                                }).start();
-//                            }
-//                        }
-//                    }).create();
-//            dialog2.show();
-//        });
+                                    // 区域 更新视图
+                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                                    pb_show = 0;
+                                }).start();
+                            }
+                        }
+                    }).create();
+            dialog2.show();
+        });
         builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
 //            int a = new GreenDaoMaster().querylgNum(info.getDuanNo(), info.getDuan(), mRegion);
 //            Log.e(TAG, "a: "+a );
@@ -1868,8 +1875,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 updataPaiData();
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                if(shellBlastNo.length()==0){
+                    show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg2));
+                }else {
+                    show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
+                }
 
-                show_Toast(shellBlastNo + getResources().getString(R.string.text_dialog_xgcg));
 
                 Utils.saveFile();
             }
@@ -2902,11 +2913,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         Log.e(TAG, "updataPaiData  total: " + total);
         choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
-        choicepaiData.setSum(total + "");//
-        choicepaiData.setDelayMin(delay_minNum_new + "");
-        choicepaiData.setDelayMax(delay_max_new + "");
+        if(choicepaiData!=null){
+            choicepaiData.setSum(total + "");//
+            choicepaiData.setDelayMin(delay_minNum_new + "");
+            choicepaiData.setDelayMax(delay_max_new + "");
 
-        getDaoSession().getPaiDataDao().update(choicepaiData);
+            getDaoSession().getPaiDataDao().update(choicepaiData);
+        }
+
     }
 
 //    崩溃信息Attempt to invoke virtual method 'void android_serialport_api.xingbang.db.PaiData.setSum(java.lang.String)' on a null object reference
@@ -3413,11 +3427,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                 //先更新排数据,再删除排
                                 updataPaiData();
                                 Log.e(TAG, "groupList1: " + groupList.toString());
-                                for (PaiDataSelect data : groupList) {
-                                    if (data.isSelect()) {
-                                        new GreenDaoMaster().deletepai(mRegion, data.getId());
+                                if(groupList.size()!=0){
+                                    for (PaiDataSelect data : groupList) {
+                                        if (data.isSelect()) {
+                                            new GreenDaoMaster().deletepai(mRegion, data.getId());
+                                        }
                                     }
                                 }
+
                                 paiChoice = 0;//重置参数
                                 check_gone = false;//重置参数
                                 isSelectAll = true;//重置参数

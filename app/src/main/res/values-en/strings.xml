@@ -427,6 +427,7 @@
     <string name="text_dialog_sc">Delete</string>
     <string name="text_dialog_qd">Determine</string>
     <string name="text_dialog_xgcg">\n Successfully modified</string>
+    <string name="text_dialog_xgcg2">\n Successfully modified</string>
     <string name="text_delay_sdsz">Tunnel Setup</string>
     <string name="text_test_ckdl">Reference current</string>
     <string name="text_dialog_err">Errors</string>

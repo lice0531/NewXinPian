@@ -56,7 +56,7 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         });
         GreenDaoMaster master = new GreenDaoMaster();
         int total=new GreenDaoMaster().queryDetonatorSize(item.getQyid()+"");
-        int maxPai = master.getPieceMaxPai(item.getQyid()+"");
+        int paisum = master.getPaisum(item.getQyid()+"");
         int max = master.getPieceMaxNumDelay(item.getQyid()+"");
         int min = master.getPieceMinNumDelay(item.getQyid()+"");
         int kong = master.querytotalKong(item.getQyid()+"");
@@ -64,7 +64,7 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         tv_yzw.setVisibility("true".equals(item.getSelected()) ? View.VISIBLE : View.GONE);
         helper.setText(R.id.qy_no, item.getQyid() + "");//
         helper.setText(R.id.qy_txt_total, "共:" + kong+"孔");//
-        helper.setText(R.id.qy_txt_totalPai, "共:" +maxPai+"排"+ kong+"孔"+ total+"发");//
+        helper.setText(R.id.qy_txt_totalPai, "共:" +paisum+"排"+ kong+"孔"+ total+"发");//
         helper.setText(R.id.qy_txt_minDealy, "最小延时:"+min );//
         helper.setText(R.id.qy_txt_maxDealy, "最大延时:"+max);//
         TextView qy_txt_Dealy = helper.getView(R.id.qy_txt_Dealy);
