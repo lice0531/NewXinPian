@@ -937,17 +937,18 @@
                         <TextView
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.8"
                             android:layout_height="match_parent"
                             android:background="@drawable/textview_border"
                             android:text="@string/text_list_delay" />
                         <TextView
                             style="@style/alltextstyle"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.6"
                             android:layout_height="match_parent"
                             android:background="@drawable/textview_border"
-                            android:text="编辑" />
+                            android:text="编辑"
+                            />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView

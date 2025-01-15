@@ -755,6 +755,7 @@ public class GreenDaoMaster {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
@@ -1884,6 +1885,19 @@ public class GreenDaoMaster {
     /**
      * 查询雷管 按排号查询
      */
+    public  List<DenatorBaseinfo> queryDetonatorPaiDesc(String mRegion,int pai) {
+        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+        result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderDesc(DenatorBaseinfoDao.Properties.Id);
+        return result.list();
+    }
+
+
+
+    /**
+     * 查询雷管 按排号查询
+     */
     public  List<DenatorBaseinfoSelect> queryDetonatorPaiSelect(String mRegion,int pai) {
         QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
         result = result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
@@ -1985,6 +1999,7 @@ public class GreenDaoMaster {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list().size();
     }
