@@ -22,6 +22,7 @@
         android:id="@+id/item_4"
         android:orderInCategory="4"
         android:title="隧道模式"
+        android:visible="false"
         app:showAsAction="withText" />
 
 
