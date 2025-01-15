@@ -452,7 +452,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 check_gone = false;
                 // 刷新适配器
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-                return false;
+                return true;
             }
 
             //如果你处理了并且消费了点击返回true,这是一个基本的防止onTouch事件向下或者向上传递的返回机制
