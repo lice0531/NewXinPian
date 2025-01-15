@@ -70,7 +70,6 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
 
 
         List<DenatorBaseinfo> list_detonatorBaseInfo = (List<DenatorBaseinfo>) mListData;
-
         DenatorBaseinfo detonatorBaseInfo = list_detonatorBaseInfo.get(position);
         holder.mTvBlastSerial.setText((list_detonatorBaseInfo.size() - position) + "");                 // 序号
         holder.mTvShellBlastNo.setText(detonatorBaseInfo.getShellBlastNo());   // 管壳号
@@ -96,7 +95,9 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
             }
         }
         holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
-        holder.mTvDuanNo.setText(detonatorBaseInfo.getDuan() + "-" + detonatorBaseInfo.getDuanNo());
+        holder.mTvDuanNo.setText(detonatorBaseInfo.getPai()+"-"+ detonatorBaseInfo.getBlastserial()
+                +"-"+detonatorBaseInfo.getDuanNo());
+//        holder.mTvDuanNo.setText(detonatorBaseInfo.getDuan() + "-" + detonatorBaseInfo.getDuanNo());
         holder.mTvPiace.setText(detonatorBaseInfo.getPiece());
         holder.mTvDelay.setText(detonatorBaseInfo.getDelay()+"");
         if (detonatorBaseInfo.getErrorCode().equals("FF")) {

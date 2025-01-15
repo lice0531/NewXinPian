@@ -233,6 +233,7 @@
     <string name="text_list_guan">shell code</string>
     <string name="text_list_delay">delay</string>
     <string name="text_list_state">login</string>
+    <string name="text_list_sum">sum</string>
     <string name="text_list_qibao_data">Detonating date</string>
     <string name="text_list_factory_name">Manufacturer\'s name</string>
     <string name="text_list_fac_num">factory code</string>

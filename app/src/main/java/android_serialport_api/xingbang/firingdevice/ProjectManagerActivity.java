@@ -94,7 +94,7 @@ public class ProjectManagerActivity extends BaseActivity {
     private ScanInterface scanDecode;
     private ScanQrControl mScaner = null;
     private ScanBar scanBarThread;
-
+    private int continueScanFlag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,19 +204,38 @@ public class ProjectManagerActivity extends BaseActivity {
                     dialog.show();
                 }
             } else {
-                AppLogUtils.writeAppLog("点击了扫码新增项目按钮");
+//                if (continueScanFlag == 0) {
+//                    continueScanFlag = 1;
+                AppLogUtils.writeAppLog("用户点击了扫码新增项目按钮");
                 if (scanBarThread != null) {
-                    scanBarThread.exit = true;  // 终止线程thread
-                    try {
-                        scanBarThread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        scanBarThread.exit = true;  // 终止线程thread
+                        try {
+                            scanBarThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
                 kaishiScan();
                 //kt50持续扫码线程
                 scanBarThread = new ScanBar();
                 scanBarThread.start();
+//                    tv_right.setText("正在扫码");//"正在扫码"
+//                } else {
+//                    AppLogUtils.writeAppLog("用户取消了扫码新增项目操作");
+//                    continueScanFlag = 0;
+//                    tv_right.setText("扫码新增项目");//"扫码注册"
+//                    tingzhiScan();
+//
+//                    if (scanBarThread != null) {
+//                        scanBarThread.exit = true;  // 终止线程thread
+//                        try {
+//                            scanBarThread.join();
+//                        } catch (InterruptedException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
             }
         });
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
@@ -269,7 +288,7 @@ public class ProjectManagerActivity extends BaseActivity {
                 mScaner.registerScanCb(new ScanQrControl.IScan() {
                     @Override
                     public void onScanStart(int timeoutSec) {
-                        Log.e(TAG,timeoutSec + "超时了？");
+//                        Log.e(TAG,timeoutSec + "超时了？");
                     }
 
                     @Override
@@ -277,6 +296,9 @@ public class ProjectManagerActivity extends BaseActivity {
                         Log.e("设备扫码结果: ", "ScanResult:" + isSuccess + "|" + scanResultStr);
                         Log.e(TAG,"设备扫码内容:" + scanResultStr);
                         Utils.writeLog("设备扫码出来项目信息是:" + scanResultStr);
+                        if (!scanResultStr.contains("project_name")) {
+                            show_Toast("当前二维码格式不正确，请重新扫描有效的项目二维码");
+                        }
                         tingzhiScan();
                         if (scanBarThread != null) {
                             scanBarThread.exit = true;  // 终止线程thread
@@ -303,7 +325,7 @@ public class ProjectManagerActivity extends BaseActivity {
 //                                throw new RuntimeException(e);
 //                            }
                         } else {
-                            show_Toast("扫码信息有误，请重新扫码");
+                            show_Toast("二维码信息有误，请重新扫描有效的项目二维码");
                             Log.e(TAG,"扫码结果长度不足7,不合规");
                         }
                     }
