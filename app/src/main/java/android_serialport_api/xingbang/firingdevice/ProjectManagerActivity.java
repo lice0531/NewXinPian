@@ -672,18 +672,41 @@ public class ProjectManagerActivity extends BaseActivity {
         String dwdm = downAtDwdm.getText().toString().trim().replace(" ", "");
         String name = downAtProjectName.getText().toString().trim().replace(" ", "");
         if (select_business.startsWith("营业性")) {
-//            if (htid.length() < 15 || xmbh.length() < 15) {
-//                return "当前合同编号或项目编号小于15位,请重新输入";
-//            }
-            if (htid.length() >= 15 && xmbh.length() < 15) {
-                return "";
-            } else if (xmbh.length() >= 15 && htid.length() < 15) {
-                return "";
-            } else if (htid.length() < 15) {
-                return "当前合同编号小于15位,请重新输入";
-            } else if (xmbh.length() < 15) {
-                return "当前项目编号小于15位,请重新输入";
+            // 1. 判断合同编号和项目编号是否同时为空
+            if (TextUtils.isEmpty(htid) && TextUtils.isEmpty(xmbh)) {
+                return "合同编号,项目编号不能同时为空，请重新输入";
             }
+
+            // 3. 如果只有一个为空，另一个的长度必须大于等于15
+            if (TextUtils.isEmpty(xmbh) && !TextUtils.isEmpty(htid)) {
+                if (htid.length() < 15) {
+                    return "当前项目编号小于15位，请重新输入";  // 项目编号小于15位
+                }
+                return "";  // 校验通过
+            }
+
+            if (!TextUtils.isEmpty(htid) && TextUtils.isEmpty(xmbh)) {
+                if (xmbh.length() < 15) {
+                    return "当前合同编号小于15位，请重新输入";  // 合同编号小于15位
+                }
+                return "";  // 校验通过
+            }
+
+            // 2. 判断合同编号和项目编号都不为空时，检查它们的长度
+            if (!TextUtils.isEmpty(htid) && !TextUtils.isEmpty(xmbh)) {
+                // 如果合同编号小于15位
+                if (htid.length() < 15) {
+                    return "当前合同编号小于15位，请重新输入";  // 合同编号小于15位
+                }
+                // 如果项目编号小于15位
+                if (xmbh.length() < 15) {
+                    return "当前项目编号小于15位，请重新输入";  // 项目编号小于15位
+                }
+                return "";  // 两者都大于等于15位，校验通过
+            }
+
+
+
         } else {
             if (dwdm.length() < 13) {
                 return "当前单位代码小于13位,请重新输入";

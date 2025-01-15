@@ -147,7 +147,7 @@
                             <TextView
                                 android:id="@+id/down_at_htid"
                                 style="@style/alltextstyle"
-                                android:layout_width="10dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="5"
                                 android:gravity="center_vertical"
@@ -182,7 +182,7 @@
                             <TextView
                                 android:id="@+id/down_at_xmbh"
                                 style="@style/alltextstyle"
-                                android:layout_width="10dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="5"
                                 android:gravity="center_vertical"
@@ -223,7 +223,7 @@
                             <TextView
                                 android:id="@+id/down_at_dwdm"
                                 style="@style/alltextstyle"
-                                android:layout_width="10dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="5"
                                 android:gravity="center_vertical"
@@ -255,12 +255,11 @@
                         <TextView
                             android:id="@+id/down_at_coordxy"
                             style="@style/alltextstyle"
-                            android:layout_width="10dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="5"
                             android:digits="1234567890.,"
                             android:gravity="center_vertical"
-                            android:maxLength="13"
                             android:maxLines="2"
                             android:padding="5dp"
                             android:textSize="16sp" />
@@ -287,7 +286,7 @@
                         <TextView
                             android:id="@+id/down_at_bprysfz"
                             style="@style/alltextstyle"
-                            android:layout_width="10dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="5"
                             android:gravity="center_vertical"

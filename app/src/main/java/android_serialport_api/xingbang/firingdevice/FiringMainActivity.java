@@ -1318,21 +1318,23 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
     private void zanting() {
-        Log.e(TAG, "暂停线程:-------------------- ");
-        firstThread.exit = true;
-        firstThread.interrupt();
-        try {
-            firstThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //由于加了暂停线程，停留在按起爆键超过5分钟时“长时间处于高压”的弹窗无法显示，所以屏蔽暂停线程代码
+//        Log.e(TAG, "暂停线程:-------------------- ");
+//        firstThread.exit = true;
+//        firstThread.interrupt();
+//        try {
+//            firstThread.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void jixu() {
-        Log.e(TAG, "继续线程:------------------ ");
-        firstThread = new ThreadFirst(allBlastQu);
-        firstThread.exit = false;
-        firstThread.start();
+        //由于加了暂停线程，停留在按起爆键超过5分钟时“长时间处于高压”的弹窗无法显示，所以屏蔽暂停后重启线程代码
+//        Log.e(TAG, "继续线程:------------------ ");
+//        firstThread = new ThreadFirst(allBlastQu);
+//        firstThread.exit = false;
+//        firstThread.start();
     }
 
     private void setIcView(int red) {
@@ -3113,7 +3115,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                                    Thread.sleep(1000);
                                     increase(7);
-//                                    Log.e("第7阶段-increase", "7");
+//                                    Log.e(TAG, "第7阶段-increase:7");
                                     MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
                                     zanting();
 //                                        break;
@@ -3130,7 +3132,7 @@ public class FiringMainActivity extends SerialPortActivity {
                                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                                    Thread.sleep(1000);
                                     increase(7);
-//                                    Log.e("第7阶段-increase", "7");
+//                                    Log.e(TAG,"到达最大值--第7阶段-increase:7");
                                     boolean isStopJl = checkIsStopJl();
                                     if (isStopJl) {
                                         xzqb();
@@ -3165,16 +3167,16 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (stage == 6) mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 7://1+5 等待阶段
-//                            Thread.sleep(1000);
-//                            sevenCount++;
-                            Log.e(TAG, "1+5 等待阶段sevenCount: " + sevenCount);
+                            Log.e(TAG, "进入case7了sevenCount--1+5 等待阶段sevenCount: " + sevenCount);
+                            Thread.sleep(1000);
+                            sevenCount++;
 //                            if (sevenDisplay == 0){}
 //                                mHandler_1.sendMessage(mHandler_1.obtainMessage());
 //                            sevenDisplay = 1;
                             if (keyFireCmd == 1) {
 
                                 increase(8);
-                                Log.e("increase", "8");
+                                Log.e(TAG,"increase:8");
                                 keyFireCmd = 0;
                                 eightCmdExchangePower = 1;
                             }
