@@ -94,6 +94,8 @@ public class SouSuoSQActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(findViewById(R.id.toolbar));
+        // 原标题
+        mOldTitle = getSupportActionBar().getTitle().toString();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();

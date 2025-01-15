@@ -165,7 +165,7 @@ public class QueryHisDetail extends BaseActivity {
         // 线性布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         denatorQueryHisListview.setLayoutManager(linearLayoutManager);
-        hisAdapter = new LoadHisDetailRecyclerAdapter(this, list_savedate);
+        hisAdapter = new LoadHisDetailRecyclerAdapter(this, list_savedate,Shangchuan);
         denatorQueryHisListview.setAdapter(hisAdapter);
         hisAdapter.setOnItemClickListener(new LoadHisDetailRecyclerAdapter.OnItemClickListener() {
             @Override

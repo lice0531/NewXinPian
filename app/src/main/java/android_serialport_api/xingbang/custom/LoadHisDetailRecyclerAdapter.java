@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoFireHisMain;
+import android_serialport_api.xingbang.utils.MmkvUtils;
 
 public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDetailRecyclerAdapter.ViewHolder> implements View.OnClickListener {
     private List<VoFireHisMain> list_his;
     private Context mContext;
+    private String mShangchuan;
     private OnItemClickListener onItemClickListener;//声明自定义的监听接口
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,9 +52,11 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
     }
 
 
-    public LoadHisDetailRecyclerAdapter(Context mContext, List<VoFireHisMain> list_his) {
+
+    public LoadHisDetailRecyclerAdapter(Context mContext, List<VoFireHisMain> list_his,String Shangchuan) {
         this.mContext = mContext;
         this.list_his = list_his;
+        this.mShangchuan = Shangchuan;
     }
     public void setDataSource(List<VoFireHisMain> list_his) {
         this.list_his = list_his;
@@ -67,10 +73,12 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Log.e("上传","Shangchuan:" + mShangchuan);
         holder.serialNo.setText((position+1)+"");
         holder.fireDate.setText(list_his.get(position).getBlastdate());
         holder.bt_delete.setTag(R.id.bt_delete, list_his.get(position).getBlastdate());
         holder.bt_upload.setTag(R.id.bt_upload,position);
+        holder.txtsum.setText(new GreenDaoMaster().queryHis(list_his.get(position).getBlastdate(),mShangchuan)+"");
         if("未上传".equals(list_his.get(position).getUploadStatus())){
             holder.txtstatus.setText(mContext.getString(R.string.text_query_up));	//"未上传"
             holder.bt_upload.setText(mContext.getString(R.string.text_query_uploda));//"上传"
@@ -103,6 +111,7 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
         private Button bt_upload;
         private Button bt_delete;
         private LinearLayout ly_his;
+        private TextView txtsum;
         public ViewHolder(View itemView, final OnItemClickListener onItemClickListener) {
             super(itemView);
             serialNo = itemView.findViewById(R.id.serialNo);
@@ -111,7 +120,7 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
             bt_upload = itemView.findViewById(R.id.bt_upload);
             bt_delete = itemView.findViewById(R.id.bt_delete);
             ly_his = itemView.findViewById(R.id.ly_his);
-
+            txtsum = itemView.findViewById(R.id.txtsum);
             bt_upload.setOnClickListener(view -> {
                 if (onItemClickListener != null) {
                     int position1 = getAdapterPosition();
