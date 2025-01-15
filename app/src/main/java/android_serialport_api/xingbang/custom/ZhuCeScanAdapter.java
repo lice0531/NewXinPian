@@ -30,7 +30,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
     private OnChildButtonClickListener listener;
     private OngroupButtonClickListener listener_group;
     private boolean checkBox_gone=true;
-    private boolean Uid_gone=true;
+    boolean Uid_gone=true;
     public ZhuCeScanAdapter(List<PaiDataSelect> groupList, List<List<DenatorBaseinfoSelect>> childList, OnChildButtonClickListener listener,OngroupButtonClickListener listener_group){
         mGroupList = groupList;
         mChildList = childList;
@@ -48,7 +48,7 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         checkBox_gone= set;
     }
     public void setUid(boolean set) {
-        checkBox_gone= set;
+        Uid_gone= set;
     }
     @Override
     public int getGroupCount() {//返回第一级List长度

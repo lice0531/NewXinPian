@@ -237,7 +237,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     @BindView(R.id.qy_txt_maxDealy)
     TextView qyTxtMaxDealy;
     @BindView(R.id.cl_top)
-    ConstraintLayout clTop;
+    LinearLayout clTop;
     @BindView(R.id.btn_pai)
     Button btnPai;
     @BindView(R.id.btn_kong)
@@ -448,12 +448,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         });
 //一级点击监听
         zcList.setOnGroupClickListener((parent, v, groupPosition, id) -> {
-            if (!check_gone) {
-//                check_gone = false;
-//                // 刷新适配器
-//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-
-
+            if (check_gone) {
+                check_gone = false;
+                // 刷新适配器
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+                return false;
+            }
 
             //如果你处理了并且消费了点击返回true,这是一个基本的防止onTouch事件向下或者向上传递的返回机制
 //            v.setBackgroundColor(Color.GREEN);
@@ -481,7 +481,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             Log.e(TAG, "start_delay_data:" + start_delay_data + " -f1_delay_data:" + f1_delay_data + "-f2_delay_data:" + f2_delay_data);
             Log.e(TAG, "1级监听-id:" + id + " -paiChoice:" + paiChoice + "-paiChoice:" + paiChoice);
-            }
+
             return false;
         });
         //二级点击监听
@@ -526,7 +526,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             zhuceAdapter.removeChild(groupPosition, childPosition);
         }
     }
-
+    //子点击时间
     @Override
     public void onChildButtonClick(int groupPosition, int childPosition) {
         // 处理按钮点击事件
@@ -537,7 +537,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "child: " + child);
         modifyBlastBaseInfo(child.getBlastserial(), child.getDelay(), child.getShellBlastNo(), child.getDenatorId(), child.getDuan(), child.getDuanNo(), child);
     }
-
+    //父点击时间
     @Override
     public void OngroupButtonClickListener(View view, int groupPosition) {
         switch (view.getId()) {
@@ -757,7 +757,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         childList.add(list_pai);
                     }
                     zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, this, this);
-
+                    Log.e(TAG, "是否显示选中框check_gone: "+check_gone );
                     //显示checkbox
                     if (check_gone) {
                         zhuceAdapter.setCheckBox(false);
@@ -766,6 +766,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         zhuceAdapter.setCheckBox(true);
                         lay_bottom.setVisibility(View.GONE);
                     }
+                    zhuceAdapter.setUid(switchUid);//是否显示UID
                     zcList.setAdapter(zhuceAdapter);
 
                     int groupCount = zcList.getCount();
@@ -777,7 +778,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         if (paiChoice == 0) {//初始化的时候,默认展开后一排,选中最后一发管
                             paiChoice = groupCount;
                         }
-                        kongChoice = master.queryDetonatorPai(mRegion, paiChoice).size();
+                        if (kongChoice == 0) {//初始化的时候,默认展开后一排,选中最后一发管
+                            kongChoice = master.queryDetonatorPai(mRegion, paiChoice).size();
+                        }
+
                         zhuceAdapter.setSelcetPosition(paiChoice - 1, kongChoice - 1);
                         //默认展开
                         zcList.expandGroup(paiChoice - 1);
@@ -940,7 +944,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) +lg_pai+"排"+ lg_No+"孔"+ lg_wei+"位"+ singleShellNo + getString(R.string.text_error_tip71));
             } else if (msg.what == 8) {
                 SoundPlayUtils.play(4);
-                show_Toast(getString(R.string.text_error_tip64));
+//                show_Toast(getString(R.string.text_error_tip64));
+                show_Toast(getString(R.string.text_line_tip19));
             } else if (msg.what == 9) {
                 decodeBar(msg.obj.toString());
             } else if (msg.what == 10) {
@@ -1069,22 +1074,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 text_uid.setTextColor(Color.BLACK);
                 text_gkm.setTextColor(Color.GREEN);
             }
-            //切换UID后再设置一下长按方法
-            mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_scan.this, a);
-            mListView.setLayoutManager(linearLayoutManager);
-            mListView.setAdapter(mAdapter);
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-            mAdapter.setOnItemLongClick(position -> {
-                DenatorBaseinfo info = mListData.get(position);
-                int no = info.getBlastserial();
-                int delay = info.getDelay();
-                String shellBlastNo = info.getShellBlastNo();
-                String denatorId = info.getDenatorId();
-                int duan = info.getDuan();
-                int duanNo = info.getDuanNo();
-                // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo, info);
-            });
+            //切换UID后再设置一下长按方法
+//            mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_scan.this, a);
+//            mListView.setLayoutManager(linearLayoutManager);
+//            mListView.setAdapter(mAdapter);
+
+//            mAdapter.setOnItemLongClick(position -> {
+//                DenatorBaseinfo info = mListData.get(position);
+//                int no = info.getBlastserial();
+//                int delay = info.getDelay();
+//                String shellBlastNo = info.getShellBlastNo();
+//                String denatorId = info.getDenatorId();
+//                int duan = info.getDuan();
+//                int duanNo = info.getDuanNo();
+//                // 序号 延时 管壳码
+//                modifyBlastBaseInfo(no, delay, shellBlastNo, denatorId, duan, duanNo, info);
+//            });
         });
 
 
@@ -3390,7 +3396,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.tv_cancel:
-
+                check_gone=false;
                 zhuceAdapter.setCheckBox(true);
                 lay_bottom.setVisibility(View.GONE);
                 zhuceAdapter.notifyDataSetChanged();
@@ -3785,11 +3791,36 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.btn_return:
-                closeThread();
-                Intent intentTemp = new Intent();
-                intentTemp.putExtra("backString", "");
-                setResult(1, intentTemp);
-                finish();
+//                closeThread();
+//                Intent intentTemp = new Intent();
+//                intentTemp.putExtra("backString", "");
+//                setResult(1, intentTemp);
+//                finish();
+
+
+                if (llStart.getVisibility() == View.GONE) {
+                    cd_title.setVisibility(View.GONE);
+                    llEnd.setVisibility(View.VISIBLE);
+                    llStart.setVisibility(View.VISIBLE);
+                    llNum.setVisibility(View.VISIBLE);
+                    btnReturn.setVisibility(View.VISIBLE);
+                    btnInputOk.setVisibility(View.VISIBLE);
+                    btnScanReister.setVisibility(View.GONE);
+                    lySetDelay.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.VISIBLE);
+                    btnInput.setText(getResources().getString(R.string.text_return));
+                } else {
+                    cd_title.setVisibility(View.VISIBLE);
+                    llEnd.setVisibility(View.GONE);
+                    llStart.setVisibility(View.GONE);
+                    llNum.setVisibility(View.GONE);
+                    btnInputOk.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.GONE);
+                    btnReturn.setVisibility(View.GONE);
+                    btnScanReister.setVisibility(View.VISIBLE);
+//                    lySetDelay.setVisibility(View.VISIBLE);
+                    btnInput.setText(getResources().getString(R.string.text_scan_sdsr));
+                }
                 break;
             case R.id.btn_singleReister:
                 hideInputKeyboard();
@@ -3862,6 +3893,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         EditText neiDelay = myDialog.getView().findViewById(R.id.txt_paiDelay);
         SwitchButton sw_dijian = myDialog.getView().findViewById(R.id.sw_dijian);
         int delay_min_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
+        int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
         Log.e(TAG, "paiMax: "+paiMax );
         Log.e(TAG, "delay_min_new: "+delay_min_new );
         Log.e(TAG, "quYu_choice.getPaiDelay(): "+quYu_choice.getPaiDelay() );
@@ -3909,9 +3941,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     getDaoSession().getPaiDataDao().insert(paiData);
                     paiChoice = 0;//重置选中的排
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
-//                    mHandle.sendMessage(mHandle.obtainMessage(1));
-//                    }
 
+                    SoundPlayUtils.play(1);
                 }).show();
     }
 
@@ -3961,17 +3992,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "扫码验证start_delay_data: " + start_delay_data);
         Log.e(TAG, "f1_delay_data: " + f1_delay_data);
         if (f1_delay_data.toString().equals("")) {
-            show_Toast(getResources().getString(R.string.text_line_tip19));
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             Log.e("f2", reEtF2.getText().toString());
             return true;
         }
         if (f2_delay_data.toString().equals("")) {
-            show_Toast(getResources().getString(R.string.text_line_tip19));
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+
             Log.e("f2", reEtF2.getText().toString());
             return true;
         }
         if (start_delay_data.length() == 0) {
-            show_Toast(getResources().getString(R.string.text_line_tip19));
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+
             return true;
         }
         if (maxSecond != 0) {
@@ -4662,9 +4695,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llEnd.setVisibility(View.VISIBLE);
                     llStart.setVisibility(View.VISIBLE);
                     llNum.setVisibility(View.VISIBLE);
+                    btnReturn.setVisibility(View.VISIBLE);
                     btnInputOk.setVisibility(View.VISIBLE);
                     btnScanReister.setVisibility(View.GONE);
                     lySetDelay.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.VISIBLE);
                     btnInput.setText(getResources().getString(R.string.text_return));
                 } else {
                     cd_title.setVisibility(View.VISIBLE);
@@ -4672,6 +4707,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     llStart.setVisibility(View.GONE);
                     llNum.setVisibility(View.GONE);
                     btnInputOk.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.GONE);
+                    btnReturn.setVisibility(View.GONE);
                     btnScanReister.setVisibility(View.VISIBLE);
 //                    lySetDelay.setVisibility(View.VISIBLE);
                     btnInput.setText(getResources().getString(R.string.text_scan_sdsr));
