@@ -435,6 +435,7 @@
     <string name="text_dialog_xgcg2">修改成功</string>
     <string name="text_delay_sdsz">隧道</string>
     <string name="text_test_ckdl">参考电流</string>
+    <string name="text_test_tvckdl">参考电流:</string>
     <string name="text_dialog_err">错误</string>
     <string name="text_test_dlgd">(电流过大)</string>
     <string name="text_test_dlpd">(电流偏大)</string>
@@ -643,8 +644,8 @@
     <string name="text_yjbbh">硬件版本号</string>
     <string name="text_czts">操作提示</string>
     <string name="text_mmcw">密码错误</string>
-    <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">有线级联设置</string>
-    <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">热点级联设置</string>
+    <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">有线级联</string>
+    <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">热点级联</string>
     <string name="title_activity_jl">级联</string>
     <string name="title_activity_jlsz">级联设置</string>
     <string name="text_dialog_tip">正在执行中</string>

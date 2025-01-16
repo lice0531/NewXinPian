@@ -431,6 +431,7 @@
     <string name="text_dialog_xgcg2">\n Successfully modified</string>
     <string name="text_delay_sdsz">Tunnel Setup</string>
     <string name="text_test_ckdl">Reference current</string>
+    <string name="text_test_tvckdl">Reference current:</string>
     <string name="text_dialog_err">Errors</string>
     <string name="text_test_dlgd">(Excessive current)</string>
     <string name="text_test_dlpd">(Excessive current)</string>
@@ -633,8 +634,8 @@
     <string name="text_yjbbh">Hardware version number</string>
     <string name="text_czts">Operation prompt</string>
     <string name="text_mmcw">Password error</string>
-    <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">Wired cascading Settings</string>
-    <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">Hotspot cascading Settings</string>
+    <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">Wired cascading</string>
+    <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">Hotspot cascading</string>
     <string name="title_activity_jl">Cascade</string>
     <string name="title_activity_jlsz">Cascade Settings</string>
     <string name="text_dialog_tip">Executing</string>

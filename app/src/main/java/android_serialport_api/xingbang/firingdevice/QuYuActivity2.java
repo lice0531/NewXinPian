@@ -171,6 +171,7 @@ public class QuYuActivity2 extends BaseActivity {
                         tv_check_all.setText(getResources().getString(R.string.text_qx));
                         isSelectAll = true;
                         setAllItemChecked(false);
+                        SoundPlayUtils.play(1);
                     }
                     break;
                 case 2:
