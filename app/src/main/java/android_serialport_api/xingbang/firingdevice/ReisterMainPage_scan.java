@@ -785,7 +785,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                         if (flag_zhuce) {
                             List<DenatorBaseinfo> list = master.queryDetonatorPaiDesc(mRegion, paiChoice);
-                            kongChoice = list.size();
+//                            kongChoice = list.size();
+                            kongChoice = list.get(0).getBlastserial();
                             Log.e(TAG, "新注册,光标移动到kongChoice: " + kongChoice);
                             flag_zhuce = false;
                         }
@@ -2534,7 +2535,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             denatorBaseinfo.setDuan(db_charu.getDuan());
 
-            charu = false;
+
         }
 
 
@@ -2561,7 +2562,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo_choice.setAuthorization(denatorBaseinfo.getAuthorization());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
         } else {
-            flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+            if(!charu){
+                flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+            }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         }
@@ -2573,6 +2576,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
+        charu = false;
+        flag_add = false;
         return 0;
     }
 
@@ -2764,7 +2769,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setSithole(konghao + "");
             denatorBaseinfo.setDuan(db_charu.getDuan());
 
-            charu = false;
+
         }
 
 
@@ -2776,21 +2781,26 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
 
         DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
-        Log.e(TAG, "paiChoice: " + paiChoice);
-        Log.e(TAG, "kongChoice: " + kongChoice);
+        Log.e(TAG, "单发注册paiChoice: " + paiChoice);
+        Log.e(TAG, "单发注册kongChoice: " + kongChoice);
+        Log.e(TAG, "childList.get(paiChoice - 1).size(): " + childList.get(paiChoice - 1).size());
+        Log.e(TAG, "单发注册flag_add: " + flag_add);
         if (childList.get(paiChoice - 1).size() > 0) {
             denatorBaseinfo_choice = childList.get(paiChoice - 1).get(kongChoice - 1);
+            Log.e(TAG, "单发注册denatorBaseinfo_choice.getShellBlastNo().length(): " + denatorBaseinfo_choice.getShellBlastNo().length());
         }
 
-        if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 && flag_add) {
-            flag_add = true;
+        if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 ) {
+
             denatorBaseinfo_choice.setDenatorId(denatorBaseinfo.getDenatorId());
             denatorBaseinfo_choice.setShellBlastNo(denatorBaseinfo.getShellBlastNo());
             denatorBaseinfo_choice.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
             denatorBaseinfo_choice.setAuthorization(denatorBaseinfo.getAuthorization());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
         } else {
-            flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+            if(!charu){
+                flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+            }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         }
@@ -2802,6 +2812,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         SoundPlayUtils.play(1);
         Utils.writeRecord("单发注册:--芯片码:" + detonatorId + "--延时:" + delay_max);
         AppLogUtils.writeAppLog("单发注册:--芯片码:" + detonatorId + "--延时:" + delay_max);
+        charu = false;
         return 0;
     }
 
@@ -2980,28 +2991,31 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setSithole(konghao + "");
             denatorBaseinfo.setDuan(db_charu.getDuan());
 
-            charu = false;
+
         }
 
         //查询选中的雷管是否管壳码为空
 
 //        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().serchDenatorIdForChoice(paiChoice, kongChoice);
         DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
-        Log.e(TAG, "paiChoice: " + paiChoice);
-        Log.e(TAG, "kongChoice: " + kongChoice);
+        Log.e(TAG, "扫码注册paiChoice: " + paiChoice);
+        Log.e(TAG, "扫码注册kongChoice: " + kongChoice);
+        Log.e(TAG, "childList.get(paiChoice - 1).size(): " + childList.get(paiChoice - 1).size());
+
         if (childList.get(paiChoice - 1).size() > 0) {
             denatorBaseinfo_choice = childList.get(paiChoice - 1).get(kongChoice - 1);
         }
 
-        if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 && flag_add) {
-            flag_add = true;
+        if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 ) {
             denatorBaseinfo_choice.setDenatorId(denatorBaseinfo.getDenatorId());
             denatorBaseinfo_choice.setShellBlastNo(denatorBaseinfo.getShellBlastNo());
             denatorBaseinfo_choice.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
             denatorBaseinfo_choice.setAuthorization(denatorBaseinfo.getAuthorization());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
         } else {
-            flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+            if(!charu){
+                flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+            }
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         }
@@ -3014,6 +3028,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        getLoaderManager().restartLoader(1, null, ReisterMainPage_scan.this);
         Utils.saveFile();//把闪存中的数据存入磁盘中
         SoundPlayUtils.play(1);
+        charu = false;
         return 0;
     }
 
