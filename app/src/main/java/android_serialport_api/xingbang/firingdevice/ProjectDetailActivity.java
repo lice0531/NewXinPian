@@ -111,7 +111,7 @@ public class ProjectDetailActivity extends BaseActivity {
                 getIntent().getStringExtra("coordxy") : "";
         business = !TextUtils.isEmpty(getIntent().getStringExtra("business")) ?
                 getIntent().getStringExtra("business") : "";
-        Log.e(TAG, "公司性质:" + business);
+        Log.e(TAG, "id:" + proId + "--公司性质:" + business + "--coordxy:" + coordxy);
         totalbar_title = findViewById(R.id.title_text);
         TextView tv_right = findViewById(R.id.title_right2);
         ImageView title_add = findViewById(R.id.title_add);
@@ -134,13 +134,13 @@ public class ProjectDetailActivity extends BaseActivity {
             Intent intent = new Intent(this, ProjectManagerActivity.class);
             intent.putExtra("xmPageFlag", "detail");
             intent.putExtra("proId", proId);
-            intent.putExtra("htbh", htbh);
-            intent.putExtra("dwdm", dwdm);
-            intent.putExtra("xmbh", xmbh);
-            intent.putExtra("coordxy", coordxy);
-            intent.putExtra("business", business);
-            intent.putExtra("project_name", project_name);
-            intent.putExtra("bprysfz", bprysfz);
+            intent.putExtra("htbh", downAtHtid.getText().toString().trim());
+            intent.putExtra("dwdm", downAtDwdm.getText().toString().trim());
+            intent.putExtra("xmbh", downAtXmbh.getText().toString().trim());
+            intent.putExtra("coordxy", downAtCoordxy.getText().toString().trim());
+            intent.putExtra("business", downAtGsxz.getText().toString().trim());
+            intent.putExtra("project_name", downAtProjectName.getText().toString().trim());
+            intent.putExtra("bprysfz", downAtBprysfz.getText().toString().trim());
             startActivityForResult(intent,REQUEST_CODE);
         });
         getErCode(proId);
@@ -174,6 +174,7 @@ public class ProjectDetailActivity extends BaseActivity {
         downAtXmbh.setText(mXmbh);
         downAtDwdm.setText(mDwdm);
         downAtCoordxy.setText(mCoordxy);
+        Log.e(TAG,"经纬度:" + mCoordxy + "tvv:" + downAtCoordxy.getText().toString().trim());
         downAtBprysfz.setText(mBprysfz);
         downAtGsxz.setText(mBusiness);
         String content = "htbh:" + mHtbh + ";xmbh:" + mXmbh + ";project_name:" + mPname
@@ -276,7 +277,6 @@ public class ProjectDetailActivity extends BaseActivity {
         if (db != null) db.close();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
-            Log.e(TAG,"EVENTBUS取消注册");
         }
     }
 }

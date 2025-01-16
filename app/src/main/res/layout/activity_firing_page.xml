@@ -282,7 +282,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="@string/text_test_ckdl"
+                android:text="@string/text_test_tvckdl"
                 style="@style/alltextstyle"/>
 
             <TextView
@@ -486,7 +486,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:layout_gravity="center"
-                android:text="@string/text_test_ckdl"
+                android:text="@string/text_test_tvckdl"
                 style="@style/alltextstyle" />
 
             <TextView

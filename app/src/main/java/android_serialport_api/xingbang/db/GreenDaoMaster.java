@@ -841,6 +841,19 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 查询所有已组网区域的雷管数据（按雷管id倒序排列）
+     * @param idList:区域页面多选的id
+     * @return
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionDescNew(List<Integer> idList) {
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        for (int id : idList) {
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc(String.valueOf(id)));
+        }
+        return mListData;
+    }
+
+    /**
      * 查询雷管 区域倒序(序号)
      *
      * @param piece 区域号 1 2 3 4 5

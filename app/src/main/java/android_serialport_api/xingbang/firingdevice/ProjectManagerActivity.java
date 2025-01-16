@@ -526,7 +526,7 @@ public class ProjectManagerActivity extends BaseActivity {
                     return;
                 }
                 if (downAtBprysfz.getText().toString().trim().length() < 1) {
-                    show_Toast("当前爆破员身份证号小于18位,请重新输入");
+                    show_Toast("爆破员身份证号不能为空,请重新输入");
                     return;
                 }
                 saveData();
@@ -583,20 +583,12 @@ public class ProjectManagerActivity extends BaseActivity {
      * 保存信息
      */
     private void saveData() {
-        Log.e(TAG, "选中项" + addGsxz.getSelectedItem());
         String checstr = checkData();
+        Log.e(TAG,"checstr长度:" + checstr.length());
         if (checstr.length()>0){
             show_Toast(checstr);
             return ;
         }
-//        int totalNum = LitePal.count(Project.class);//得到数据的总条数
-//        Logger.e("保存项目"+ "totalNum: "+totalNum );
-//        //如果总数大于20,删除第一个数据
-//        if(totalNum>=20){
-//            Project pro=LitePal.findFirst(Project.class);//获取第一条记录
-//            Logger.e("保存项目"+ "pro: "+pro.toString());
-//            pro.delete();
-//        }
         if (checstr == null || checstr.trim().length() < 1) {
             String a = downAtBprysfz.getText().toString().trim().replace(" ", "");
             String b = downAtHtid.getText().toString().trim().replace(" ", "");
@@ -618,7 +610,7 @@ public class ProjectManagerActivity extends BaseActivity {
                 project.setBusiness(select_business);
                 //先查询出之前使用中的项目，把状态改为未使用
                 Application.getDaoSession().getProjectDao().update(project);
-                Utils.writeLog("项目管理页面更新项目信息成功");
+                Utils.writeLog(select_business + "项目管理页面更新项目信息成功");
                 if ("detail".equals(pageFlag)) {
                     Intent intent = new Intent();
                     intent.putExtra("proId",proId);
@@ -637,7 +629,7 @@ public class ProjectManagerActivity extends BaseActivity {
                 project.setBusiness(select_business);
                 project.setSelected("false");
                 Application.getDaoSession().getProjectDao().insert(project);
-                Utils.writeLog("项目管理页面新增项目信息成功");
+                Utils.writeLog(select_business + "项目管理页面新增项目信息成功");
             }
             show_Toast("数据保存成功");
             finish();
@@ -664,6 +656,7 @@ public class ProjectManagerActivity extends BaseActivity {
      * 校验数据
      */
     private String checkData() {
+        String checkStr = "";
         String sfz = downAtBprysfz.getText().toString().trim().replace(" ", "");
         String htid = downAtHtid.getText().toString().trim().replace(" ", "");
         String xmbh = downAtXmbh.getText().toString().trim().replace(" ", "");
@@ -672,34 +665,49 @@ public class ProjectManagerActivity extends BaseActivity {
         String dwdm = downAtDwdm.getText().toString().trim().replace(" ", "");
         String name = downAtProjectName.getText().toString().trim().replace(" ", "");
         if (select_business.startsWith("营业性")) {
-//            if (htid.length() < 15 || xmbh.length() < 15) {
-//                return "当前合同编号或项目编号小于15位,请重新输入";
-//            }
-            if (htid.length() >= 15 && xmbh.length() < 15) {
-                return "";
-            } else if (xmbh.length() >= 15 && htid.length() < 15) {
-                return "";
-            } else if (htid.length() < 15) {
-                return "当前合同编号小于15位,请重新输入";
-            } else if (xmbh.length() < 15) {
-                return "当前项目编号小于15位,请重新输入";
+            // 判断合同编号和项目编号不能同时为空
+            if (TextUtils.isEmpty(htid) && TextUtils.isEmpty(xmbh)) {
+                checkStr = "合同编号和项目编号不能同时为空，请重新输入";
+            } else {
+                // 如果合同编号为空，项目编号长度必须大于等于15
+                if (TextUtils.isEmpty(htid) && !TextUtils.isEmpty(xmbh)) {
+                    if (xmbh.length() < 15) {
+                        checkStr = "当前项目编号小于15位，请重新输入"; // 项目编号小于15位
+                    }
+                }
+                // 如果项目编号为空，合同编号长度必须大于等于15
+                if (TextUtils.isEmpty(xmbh) && !TextUtils.isEmpty(htid)) {
+                    if (htid.length() < 15) {
+                        checkStr = "当前合同编号小于15位，请重新输入"; // 合同编号小于15位
+                    }
+                }
+                // 如果合同编号和项目编号都不为空，检查它们的长度
+                if (!TextUtils.isEmpty(htid) && !TextUtils.isEmpty(xmbh)) {
+                    if (htid.length() < 15) {
+                        checkStr = "当前合同编号小于15位，请重新输入"; // 合同编号小于15位
+                    }
+                    if (xmbh.length() < 15) {
+                        checkStr = "当前项目编号小于15位，请重新输入"; // 项目编号小于15位
+                    }
+                }
             }
         } else {
+            // 判断单位代码小于13位
             if (dwdm.length() < 13) {
-                return "当前单位代码小于13位,请重新输入";
+                checkStr = "当前单位代码小于13位,请重新输入";
             }
         }
-        if (sfz == null || sfz.length() < 18) {
-            return "当前爆破员身份证号小于18位,请重新输入";
-        }
         if (name == null) {
-            return "请输入项目名称";
+            checkStr =  "请输入项目名称";
         }
         if (coordx == null || coordx.trim().length() < 5) {
-            return getResources().getString(R.string.text_down_tip11);
+            checkStr =  getResources().getString(R.string.text_down_tip11);
         }
         if (coordy == null || coordy.trim().length() < 5) {
-            return getResources().getString(R.string.text_down_tip11);
+            checkStr =  getResources().getString(R.string.text_down_tip11);
+        }
+        if (sfz == null || sfz.length() < 18) {
+            checkStr =  "当前爆破员身份证号小于18位,请重新输入";
         }
         List<Project> newsList = LitePal.where("project_name = ?", name).find(Project.class);
         Log.e("项目保存", "newsList: " + newsList.toString());
@@ -711,7 +719,7 @@ public class ProjectManagerActivity extends BaseActivity {
 //                return "";
 //            }
 //        }
-        return "";
+        return checkStr;
     }
 
 
