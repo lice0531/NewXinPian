@@ -1,6 +1,7 @@
 package android_serialport_api.xingbang.custom;
 
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -61,6 +62,9 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         int min = master.getPieceMinNumDelay(item.getQyid()+"");
         int kong = master.querytotalKong(item.getQyid()+"");
         TextView tv_yzw = helper.getView(R.id.tv_yzw);
+        tv_yzw.setVisibility("true".equals(item.getSelected()) ? View.VISIBLE : View.GONE);
+        TextView tv_yqb = helper.getView(R.id.tv_yqb);
+        tv_yqb.setVisibility("true".equals(item.getIsQb()) ? View.VISIBLE : View.GONE);
         tv_yzw.setVisibility("true".equals(item.getSelected()) ? View.VISIBLE : View.GONE);
         helper.setText(R.id.qy_no, item.getQyid() + "");//
         helper.setText(R.id.qy_txt_total, "共:" + kong+"孔");//

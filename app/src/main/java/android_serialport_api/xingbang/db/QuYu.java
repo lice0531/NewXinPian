@@ -29,10 +29,14 @@ public class QuYu {
     private String paiDelay;
     @Property(nameInDb = "selected")
     private String selected;
-    @Generated(hash = 787177764)
+    //记录当前区域是否已起爆
+    @Property(nameInDb = "isQb")
+    private String isQb;
+
+    @Generated(hash = 213840535)
     public QuYu(Long id, int qyid, String name, String sum, String delayMin,
             String delayMax, String shouquan, String startDelay, String kongDelay,
-            String paiDelay, String selected) {
+            String paiDelay, String selected, String isQb) {
         this.id = id;
         this.qyid = qyid;
         this.name = name;
@@ -44,14 +48,16 @@ public class QuYu {
         this.kongDelay = kongDelay;
         this.paiDelay = paiDelay;
         this.selected = selected;
+        this.isQb = isQb;
     }
     @Generated(hash = 206389652)
     public QuYu() {
     }
-//    @Generated(hash = 922467455)
+
+    //    @Generated(hash = 787177764)
 //    public QuYu(Long id, int qyid, String name, String sum, String delayMin,
 //            String delayMax, String shouquan, String startDelay, String kongDelay,
-//            String paiDelay,String selected) {
+//            String paiDelay, String selected) {
 //        this.id = id;
 //        this.qyid = qyid;
 //        this.name = name;
@@ -134,5 +140,31 @@ public class QuYu {
 
     public void setSelected(String selected) {
         this.selected = selected;
+    }
+
+    public String getIsQb() {
+        return isQb;
+    }
+
+    public void setIsQb(String isQb) {
+        this.isQb = isQb;
+    }
+
+    @Override
+    public String toString() {
+        return "QuYu{" +
+                "id=" + id +
+                ", qyid=" + qyid +
+                ", name='" + name + '\'' +
+                ", sum='" + sum + '\'' +
+                ", delayMin='" + delayMin + '\'' +
+                ", delayMax='" + delayMax + '\'' +
+                ", shouquan='" + shouquan + '\'' +
+                ", startDelay='" + startDelay + '\'' +
+                ", kongDelay='" + kongDelay + '\'' +
+                ", paiDelay='" + paiDelay + '\'' +
+                ", selected='" + selected + '\'' +
+                ", isQb='" + isQb + '\'' +
+                '}';
     }
 }
