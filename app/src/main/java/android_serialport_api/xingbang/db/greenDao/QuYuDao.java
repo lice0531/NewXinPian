@@ -35,6 +35,7 @@ public class QuYuDao extends AbstractDao<QuYu, Long> {
         public final static Property KongDelay = new Property(8, String.class, "kongDelay", false, "kongDelay");
         public final static Property PaiDelay = new Property(9, String.class, "paiDelay", false, "paiDelay");
         public final static Property Selected = new Property(10, String.class, "selected", false, "selected");
+        public final static Property IsQb = new Property(11, String.class, "isQb", false, "isQb");
     }
 
 
@@ -60,7 +61,8 @@ public class QuYuDao extends AbstractDao<QuYu, Long> {
                 "\"startDelay\" TEXT," + // 7: startDelay
                 "\"kongDelay\" TEXT," + // 8: kongDelay
                 "\"paiDelay\" TEXT," + // 9: paiDelay
-                "\"selected\" TEXT);"); // 10: selected
+                "\"selected\" TEXT," + // 10: selected
+                "\"isQb\" TEXT);"); // 11: isQb
     }
 
     /** Drops the underlying database table. */
@@ -123,6 +125,11 @@ public class QuYuDao extends AbstractDao<QuYu, Long> {
         if (selected != null) {
             stmt.bindString(11, selected);
         }
+ 
+        String isQb = entity.getIsQb();
+        if (isQb != null) {
+            stmt.bindString(12, isQb);
+        }
     }
 
     @Override
@@ -179,6 +186,11 @@ public class QuYuDao extends AbstractDao<QuYu, Long> {
         if (selected != null) {
             stmt.bindString(11, selected);
         }
+ 
+        String isQb = entity.getIsQb();
+        if (isQb != null) {
+            stmt.bindString(12, isQb);
+        }
     }
 
     @Override
@@ -199,7 +211,8 @@ public class QuYuDao extends AbstractDao<QuYu, Long> {
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // startDelay
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // kongDelay
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // paiDelay
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // selected
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // selected
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // isQb
         );
         return entity;
     }
@@ -217,6 +230,7 @@ public class QuYuDao extends AbstractDao<QuYu, Long> {
         entity.setKongDelay(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setPaiDelay(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setSelected(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setIsQb(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     @Override

@@ -154,6 +154,7 @@ public class QuYuActivity2 extends BaseActivity {
                         qyData.setPaiDelay(item.getPaiDelay());
                         qyData.setStartDelay(item.getStartDelay());
                         qyData.setSelected(item.getSelected());
+                        qyData.setIsQb(item.getIsQb());
                         if (!mQuYuList.contains(qyData)) {
                             mQuYuList.add(qyData);
                         }
@@ -189,6 +190,7 @@ public class QuYuActivity2 extends BaseActivity {
                         qyData.setPaiDelay(item.getPaiDelay());
                         qyData.setStartDelay(item.getStartDelay());
                         qyData.setSelected(item.getSelected());
+                        qyData.setIsQb(item.getIsQb());
                         if (!mQuYuList.contains(qyData)) {
                             mQuYuList.add(qyData);
                         }
@@ -235,6 +237,7 @@ public class QuYuActivity2 extends BaseActivity {
         if (mListData.isEmpty()) {
             show_Toast(getResources().getString(R.string.text_tjqy));
         }
+        Log.e(TAG,"区域数据:" + mListData.toString());
         quyuAdapter.notifyDataSetChanged();
     }
 
@@ -327,6 +330,9 @@ public class QuYuActivity2 extends BaseActivity {
                                         master.updataPaiFroPiace(data.getQyid() + "");
                                     }
                                 }
+                                //只删除雷管时，选中的区域，“已组网”需消失
+                                GreenDaoMaster master = new GreenDaoMaster();
+                                master.cancelQyQbStataus(qyIdList);
                                 show_Toast("删除成功");
                                 mHandle.sendMessage(mHandle.obtainMessage(2));
                                 qyIdList.clear();

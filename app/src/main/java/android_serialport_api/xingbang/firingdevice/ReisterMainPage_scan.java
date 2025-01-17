@@ -3549,7 +3549,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.tv_delete:
                 Log.e(TAG, "点击删除选中雷管: ");
-
+                List<DenatorBaseinfoSelect> selectIdList = new ArrayList<>();
+                for (int i = 0; i < childList.size(); i++) {
+                    for (DenatorBaseinfoSelect data : childList.get(i)) {
+                        if (data.isSelect()) {
+                            selectIdList.add(data);
+                        }
+                    }
+                }
+                if (selectIdList.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_selectlg));
+                    return;
+                }
                 if (!ReisterMainPage_scan.this.isFinishing()) {
                     AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_scan.this)
                             .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题

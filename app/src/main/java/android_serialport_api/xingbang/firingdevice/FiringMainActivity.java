@@ -61,9 +61,11 @@ import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.QuYu;
+import android_serialport_api.xingbang.db.SysLog;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
+import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
@@ -1721,6 +1723,12 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
 
+    private void updateQyQbStatus() {
+
+    }
+
+
+
     /**
      * 保存起爆数据
      */
@@ -2144,6 +2152,9 @@ public class FiringMainActivity extends SerialPortActivity {
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
+            //批量更新区域状态为已起爆
+            GreenDaoMaster master =  new GreenDaoMaster();
+            master.updateQyQbStataus(qyIdList);
             AppLogUtils.writeAppLog("34已返回,生成起爆历史记录");
 //            saveFireResult_All();
             if (!qbxm_id.equals("-1")) {

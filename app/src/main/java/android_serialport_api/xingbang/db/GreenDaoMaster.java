@@ -2257,5 +2257,33 @@ public class GreenDaoMaster {
         }
     }
 
+    /**
+     * 根据区域id更新已起爆的区域状态为true
+     * @param idList
+     */
+    public void updateQyQbStataus(List<Integer> idList) {
+        // 执行批量更新
+        List<QuYu> quYuList = quyuDao.queryBuilder().where(QuYuDao.Properties.Qyid.in(idList)).list();  // 获取符合条件的记录
+        // 遍历并更新每条记录的isQb字段
+        for (QuYu quYu : quYuList) {
+            quYu.setIsQb("true");  // 设置isQb字段为true
+        }
+        // 批量保存更新后的记录
+        quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
+    }
 
+    /**
+     * 根据区域id更新已起爆的区域状态为true
+     * @param idList
+     */
+    public void cancelQyQbStataus(List<Integer> idList) {
+        // 执行批量更新
+        List<QuYu> quYuList = quyuDao.queryBuilder().where(QuYuDao.Properties.Qyid.in(idList)).list();  // 获取符合条件的记录
+        // 遍历并更新每条记录的isQb字段
+        for (QuYu quYu : quYuList) {
+            quYu.setIsQb("false");  // 设置isQb字段为true
+        }
+        // 批量保存更新后的记录
+        quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
+    }
 }
