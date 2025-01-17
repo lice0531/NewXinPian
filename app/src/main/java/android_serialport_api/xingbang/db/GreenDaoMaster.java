@@ -838,6 +838,21 @@ public class GreenDaoMaster {
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
+
+    /**
+     * 查询雷管 按组网区域倒序(序号)
+     * 空雷管不计入总数
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionDescNew(String piece) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
+
     public List<DenatorBaseinfo> queryDetonatorRegionDesc() {
         return mDeantorBaseDao
                 .queryBuilder()
@@ -853,7 +868,7 @@ public class GreenDaoMaster {
     public List<DenatorBaseinfo> queryDetonatorRegionDescNew(List<Integer> idList) {
         List<DenatorBaseinfo> mListData = new ArrayList<>();
         for (int id : idList) {
-            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDesc(String.valueOf(id)));
+            mListData.addAll(new GreenDaoMaster().queryDetonatorRegionDescNew(String.valueOf(id)));
         }
         return mListData;
     }

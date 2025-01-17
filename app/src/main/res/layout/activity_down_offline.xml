@@ -215,6 +215,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:cardCornerRadius="3dp"
+                    android:visibility="gone"
                     app:cardElevation="5dp"
                     app:contentPadding="0dp"
                     android:layout_marginBottom="5dp"
@@ -420,6 +421,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <TextView
