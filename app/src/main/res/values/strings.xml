@@ -1034,6 +1034,7 @@
     <string name="text_xmlb">项目列表</string>
     <string name="text_tjqy">请先添加区域</string>
     <string name="text_selectqy">请先选择区域</string>
+    <string name="text_selectlg">请先选择雷管</string>
     <string name="text_shanchu">删除</string>
     <string name="text_xgpxx">修改排信息</string>
     <string name="dialog_pai_title">新增区域设置</string>
