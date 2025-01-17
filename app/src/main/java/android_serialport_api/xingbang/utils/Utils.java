@@ -78,6 +78,7 @@ public class Utils {
 
     public static String httpurl_xb_upload = "http://xbmonitor1.xingbangtech.com:800/HandSet/QueryGK";
     public static String httpurl_xb_erweima = "http://xbmonitor1.xingbangtech.com:800/File/Ciphertext/";
+    public static String httpurl_xb_erweima_new = "http://test.xingbangtech.com:666/HandSet/DownloadCiphertext?qrcode=";
 
     public static String httpurl_xb_leveup = "http://xbmonitor1.xingbangtech.com:800/HandSet/isRenew ";
     public static String httpurl_xb_download = "http://xbmonitor1.xingbangtech.com:800/HandSet/DownloadVersion";

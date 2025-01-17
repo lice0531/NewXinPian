@@ -189,6 +189,11 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         }else {
             viewHolder2.tv2_zc_id.setText(mChildList.get(groupPosition).get(childPosition).getDenatorId());
         }
+        if(mChildList.get(groupPosition).get(childPosition).getErrorName().equals("雷管通信失败")){
+            viewHolder2.tv2_zc_id.setTextColor(Color.RED);
+        }else {
+            viewHolder2.tv2_zc_id.setTextColor(Color.BLACK);
+        }
 
         viewHolder2.tv2_zc_delay.setText(mChildList.get(groupPosition).get(childPosition).getDelay()+"");
         viewHolder2.tv2_zc_status.setTextColor("异常".equals(mChildList.get(groupPosition).

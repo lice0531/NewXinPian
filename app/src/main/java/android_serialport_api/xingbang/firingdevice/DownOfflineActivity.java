@@ -60,6 +60,7 @@ import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
+import android_serialport_api.xingbang.models.ErweimaBean;
 import android_serialport_api.xingbang.utils.AMapUtils;
 import android_serialport_api.xingbang.utils.LngLat;
 import android_serialport_api.xingbang.utils.MyUtils;
@@ -160,7 +161,7 @@ public class DownOfflineActivity extends BaseActivity {
 //        dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
         getUserMessage();//获取用户信息
         initCardViewData();
-        startQrCode();
+//        startQrCode();
     }
 
     private void initCardViewData() {
@@ -335,7 +336,9 @@ public class DownOfflineActivity extends BaseActivity {
 //            return;
 //        }
         try {
-            res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
+//            res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
+            res =json.replace("\\", "");
+            Log.e(TAG, "res: "+res );
 //            Utils.writeRecord("离线下载:" + res);
         } catch (IllegalArgumentException e) {
             show_Toast(getResources().getString(R.string.text_down_err12));
@@ -354,6 +357,7 @@ public class DownOfflineActivity extends BaseActivity {
 //            Utils.writeRecord("解密信息"+object1.toString());
             String cwxx = object1.getString("cwxx");
             String sqrq2=danLingBean.getSqrq();
+            Log.e(TAG, "sqrq2: "+sqrq2);
             long time2 = (long) 3 * 86400000;
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String yxq="";
@@ -834,7 +838,8 @@ public class DownOfflineActivity extends BaseActivity {
 
     private void upload_xingbang(String name) {
         Log.e("loding画面", "画面开始: " );
-        String url = Utils.httpurl_xb_erweima+name;//煋邦下载
+//        String url = Utils.httpurl_xb_erweima+name;//煋邦下载
+        String url = Utils.httpurl_xb_erweima_new+name;//煋邦下载
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -864,8 +869,10 @@ public class DownOfflineActivity extends BaseActivity {
                     mHandler_1.sendMessage(mHandler_1.obtainMessage(16));
                     return;
                 }
+                Gson gson = new Gson();
+                ErweimaBean erweimaBean = gson.fromJson(res, ErweimaBean.class);
                 Message msg = new Message();
-                msg.obj = res;
+                msg.obj = erweimaBean.getMsg();
                 msg.what=18;
                 mHandler_1.sendMessage(msg);
                 Log.e("网络请求返回", "response: " + response.toString());
