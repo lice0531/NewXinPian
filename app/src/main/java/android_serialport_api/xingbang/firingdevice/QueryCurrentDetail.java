@@ -180,7 +180,7 @@ public class QueryCurrentDetail extends BaseActivity {
 //                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
 //                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     qyIdList = new GreenDaoMaster().getSelectedQyIdList();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDescNew(qyIdList);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
                     mAdapter.setListData(mListData, 0);
                     txTotal.setText(getString(R.string.text_total) + mListData.size());
                     mAdapter.notifyDataSetChanged();
@@ -210,7 +210,7 @@ public class QueryCurrentDetail extends BaseActivity {
                     Log.e("扫码注册", "按管壳码排序flag: " + paixu_flag);
 //                    mListData = new GreenDaoMaster().queryDetonatorDesc();
 //                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDescNew(qyIdList);
+                    mListData = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
