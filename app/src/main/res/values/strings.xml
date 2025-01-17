@@ -1053,4 +1053,6 @@
     <string name="text_zcsqxm">请先在项目管理中设置好您需要使用的项目后，再进行注册操作</string>
     <string name="sq_item_1">选择雷管</string>
     <string name="sq_item_2">显示正确</string>
+    <string name="text_dialog_zsclg">只删除雷管</string>
+    <string name="text_dialog_qbsc">全部删除</string>
 </resources>

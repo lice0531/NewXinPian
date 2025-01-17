@@ -783,10 +783,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         if (kongChoice == 0) {//初始化的时候,默认展开后一排,选中最后一发管
                             kongChoice = master.queryDetonatorPai(mRegion, paiChoice).size();
                         }
+                        Log.e(TAG, "光标移动-flag_zhuce: "+flag_zhuce);
                         if (flag_zhuce) {
                             List<DenatorBaseinfo> list = master.queryDetonatorPaiDesc(mRegion, paiChoice);
-//                            kongChoice = list.size();
-                            kongChoice = list.get(0).getBlastserial();
+
+                            for (int a =0;a<childList.get(paiChoice-1).size();a++){//因为有同孔的存在,孔号不能代表在列表中的位置
+                                if(list.get(0).getId().equals(childList.get(paiChoice-1).get(a).getId())){
+                                    kongChoice = a+1;
+                                }
+                            }
+//                            kongChoice = list.size();//插入光标不对
+//                            kongChoice = list.get(0).getBlastserial();//同孔光标不对
                             Log.e(TAG, "新注册,光标移动到kongChoice: " + kongChoice);
                             flag_zhuce = false;
                         }
@@ -2341,7 +2348,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     /***
-     * 单发注册方法(扫码注册,单发输入会用到)
+     * 单发注册 方法(扫码注册,单发输入会用到)
      */
     private int insertSingleDenator(String shellNo) {
         int f = getFan(duan_new);
@@ -2396,7 +2403,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //            Log.e(TAG, "当前选择管 childList.get(paiChoice).get(kongChoice): " + childList.get(paiChoice - 1).get(kongChoice - 1).toString());//没有雷管的时候会报错
 //        }
         int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo((maxKong + 1), mRegion, paiChoice);//获取该区域 最大duanNo
-        Log.e("扫码", "获取 duanNo2: " + duanNo2);
+        Log.e("扫码", "获取当前孔的位数 duanNo2: " + duanNo2);
 //        if (delay_max == 0 && duanNo2 == 0) {
 //            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
 //        }
@@ -2562,9 +2569,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo_choice.setAuthorization(denatorBaseinfo.getAuthorization());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
         } else {
+            Log.e(TAG, "判断是否是插入 charu: "+charu );
             if(!charu){
-                flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+
             }
+            flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         }
@@ -2857,7 +2866,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e("扫码", "kongChoice: " + kongChoice);
         Log.e("扫码", "mRegion: " + mRegion);
         Log.e("扫码", "delay_max: " + delay_max);
-        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo((maxKong + 1), mRegion, paiChoice);//获取该区域 最大duanNo
+        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo((maxKong+1 ), mRegion, paiChoice);//获取该区域 最大duanNo
+        // 查询前一个区域,新雷管位为2,新雷管位0
+
 //        if (delay_max == 0 && duanNo2 == 0) {
 //            delay_max = new GreenDaoMaster().getPieceMaxNumDelay(mRegion);
 //        }
@@ -2944,13 +2955,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         } else {
             denatorBaseinfo.setAuthorization(version);//雷管芯片型号
         }
+//        Log.e("扫码-单孔多发判断", "---------------" );
+        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+//        Log.e("扫码-单孔多发判断", "flag_t1: " + flag_t1);
+//        Log.e("扫码-单孔多发判断", "kongSum: " + kongSum);
+//        Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
+//        Log.e("扫码-单孔多发判断", "maxKong: " + maxKong);
+        if (!flag_t1 || (kongSum >= 1+duanNo1 )) {//判断同孔
+            int kong = maxKong;
 
-        Log.e("扫码", "flag_t1: " + flag_t1);
-        if (!flag_t1 || (duanNo2 <= kongSum && duanNo2 == 1)) {//同孔
-            duanNo2 = duanNo2 + 1;
-            denatorBaseinfo.setSithole((maxKong) + "");
-            denatorBaseinfo.setBlastserial((maxKong));
-            denatorBaseinfo.setDuanNo((duanNo2));
+            if(duanNo1==0){
+                kong=maxKong+1;
+            }
+            Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
+            duanNo1 = duanNo1 + 1;
+            denatorBaseinfo.setSithole(kong+ "");
+            denatorBaseinfo.setBlastserial(kong);
+            denatorBaseinfo.setDuanNo((duanNo1));
             if (!flag_jh_f1) {
                 denatorBaseinfo.setDelay(delay_min);
             } else {
@@ -4143,9 +4164,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private boolean checkDelay() {
-        Log.e(TAG, "扫码验证start_delay_data: " + start_delay_data);
-        Log.e(TAG, "f1_delay_data: " + f1_delay_data);
-        if (f1_delay_data.toString().equals("")) {
+        Log.e(TAG, "扫码检测 paiChoice: "+paiChoice );
+        if (groupList.size()==0) {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+            return true;
+        }if (f1_delay_data.toString().equals("")) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             Log.e("f2", reEtF2.getText().toString());
             return true;
@@ -4892,7 +4915,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 return true;
             case R.id.item_3://授权注册
-                startActivity(new Intent(ReisterMainPage_scan.this, SouSuoSQActivity.class));
+                Intent intent = new Intent(this, SouSuoSQActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("paiChoice",paiChoice);//用来判断是否需要展示注册功能
+                bundle.putString("mRegion",mRegion);//用来判断是否需要展示注册功能
+                intent.putExtras(bundle);
+                startActivity(intent);
                 return true;
             case R.id.item_4:
                 startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));

@@ -78,6 +78,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private List<ShouQuanData> mList = new ArrayList<>();
     private Handler mHandler_UI = new Handler();     // UI处理
     private String sqrq="";
+    private int paiChoice=1;
     private static final int STATE_DEFAULT = 0;//默认状态
     private static final int STATE_EDIT = 1;//编辑状态
     private int mEditMode = STATE_DEFAULT;
@@ -86,7 +87,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private String mRegion;     // 区域
     private String mOldTitle;   // 原标题
     private String isShowZc = "";//用来判断是否需要展示“选择雷管”按钮进行注册
-
+    String TAG="授权注册";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,10 +101,17 @@ public class SouSuoSQActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            sqrq = bundle.getString("sqrq");
+            if(bundle.getString("sqrq")!=null){
+                sqrq = bundle.getString("sqrq");
+            }
+
+            paiChoice = bundle.getInt("paiChoice");
+            mRegion = bundle.getString("mRegion");
             isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
                     bundle.getString("isShowZc") : "";
         }
+        Log.e(TAG, "paiChoice: "+paiChoice);
+        Log.e(TAG, "mRegion: "+mRegion);
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
@@ -114,14 +122,15 @@ public class SouSuoSQActivity extends BaseActivity {
             switch (msg.what) {
                 // 区域 更新视图
                 case 1:
-                    Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
+
                     Log.e("授权查询", "授权日期sqrq: " + sqrq);
                     if (sqrq.equals("")) {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuan();
                     } else {
+//                        Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
                         mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
                     }
-                    Log.e("查询", "mListData: " + mListData.toString());
+                    Log.e("查询", "mListData.size: " + mListData.size());
                     if (mListData.size() == 0) {
                         show_Toast(getResources().getString(R.string.text_wzd));
                     }
@@ -200,6 +209,8 @@ public class SouSuoSQActivity extends BaseActivity {
             }
             return false;
         });
+
+        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
     }
 
 
@@ -375,7 +386,7 @@ public class SouSuoSQActivity extends BaseActivity {
     //注册选中的item
     private void inputLeiGuan() {
 
-        for (int i = mList.size() - 1; i >= 0; i--) {
+        for (int i = 0; i <mList.size(); i++) {
 
             if (mList.get(i).isSelect()) {
                 registerDetonator(mList.get(i));
@@ -427,32 +438,15 @@ public class SouSuoSQActivity extends BaseActivity {
             version = db.getDetonatorIdSup();
             yscs = db.getZhu_yscs();
         }
-        String delay = "";
-//        switch (duan) {
-//            case "1":
-//                delay = "0";
-//                break;
-//            case "2":
-//                delay = "25";
-//                break;
-//            case "3":
-//                delay = "50";
-//                break;
-//            case "4":
-//                delay = "75";
-//                break;
-//            case "5":
-//                delay = "100";
-//                break;
-//        }
+        int maxKong = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiChoice);//获取该区域最大孔号
         String duan = "1";
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
         Log.e("搜索", "duanNUM: "+duanNUM);
-        Log.e("搜索", "duanNUM: "+duanNUM);
+        Log.e("搜索", "maxKong: "+maxKong);
         maxNo++;
         DenatorBaseinfo denator = new DenatorBaseinfo();
-        denator.setBlastserial(maxNo);
-        denator.setSithole(maxNo + "");
+        denator.setBlastserial((maxKong + 1));
+        denator.setSithole((maxKong + 1) + "");
         denator.setDenatorId(db.getDetonatorId());
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
@@ -468,8 +462,9 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setErrorName("");
         denator.setWire("");
         denator.setPiece(mRegion);
-        denator.setDuanNo( (duanNUM + 1));//段序号
+        denator.setDuanNo(1);
         denator.setDuan(Integer.parseInt(duan));
+        denator.setPai(paiChoice+"");
         denator.setAuthorization(version);//导入默认是02版
 
         getDaoSession().getDenatorBaseinfoDao().insert(denator);

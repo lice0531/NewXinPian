@@ -1043,4 +1043,6 @@
     <string name="text_his_sclg2">Do you want to remove the selected detonator?</string>
     <string name="sq_item_1">Select the detonator</string>
     <string name="sq_item_2">Display correctly</string>
+    <string name="text_dialog_zsclg">只删除雷管</string>
+    <string name="text_dialog_qbsc">全部删除</string>
 </resources>
