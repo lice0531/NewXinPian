@@ -472,11 +472,11 @@ public class SendMsgActivity extends BaseActivity {
         Log.e(TAG, "duanNo:" + duanNo);
         if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
             reCount++;
-            Log.e(TAG, "检查有重复雷管了--跳出循环");
+            Log.e(TAG, "DenatorId检查有重复雷管了--跳出循环");
             return;
         }
         if (checkRepeatShellNo(a[2])) {//检查重复数据
-            Log.e(TAG, "检查有重复雷管了--跳出循环");
+            Log.e(TAG, "ShellNo检查有重复雷管了--跳出循环");
             reCount++;
             return;
         }

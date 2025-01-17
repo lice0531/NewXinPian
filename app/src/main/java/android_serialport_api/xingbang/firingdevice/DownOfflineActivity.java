@@ -160,6 +160,7 @@ public class DownOfflineActivity extends BaseActivity {
 //        dfAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
         getUserMessage();//获取用户信息
         initCardViewData();
+        startQrCode();
     }
 
     private void initCardViewData() {
@@ -258,13 +259,14 @@ public class DownOfflineActivity extends BaseActivity {
 
                     break;
                 case 18:
-                    String mima = editMima.getText().toString();//txt中的密文
+//                    String mima = editMima.getText().toString();//txt中的密文
                     String res = msg.obj.toString();
-                    if (mima.length() < 6) {
-                        show_Toast(getResources().getString(R.string.text_xzsb19));
-                    } else {
-                        insertData(res, mima);
-                    }
+//                    if (mima.length() < 6) {
+//                        show_Toast(getResources().getString(R.string.text_xzsb19));
+//                    } else {
+//                        insertData(res, mima);
+//                    }
+                    insertData(res, "");
                     break;
                 case 89:
                     show_Toast(getResources().getString(R.string.text_line_tip15));
@@ -324,14 +326,14 @@ public class DownOfflineActivity extends BaseActivity {
         String tv_xmbh = dfAtXmbh.getText().toString().trim().replace(" ", "");//项目编号
         String tv_dwdm = dfAtDwdm.getText().toString().trim();//单位代码 13位
         String tv_sfz = dfAtBprysfz.getText().toString().trim();//单位代码 13位
-        if (StringUtils.isBlank(tx_htid) && StringUtils.isBlank(tv_xmbh) && StringUtils.isBlank(tv_dwdm)) {
-            show_Toast(getResources().getString(R.string.text_down_err8));
-            return;
-        }
-        if (StringUtils.isBlank(tv_sfz)) {
-            show_Toast(getResources().getString(R.string.text_down_err11));
-            return;
-        }
+//        if (StringUtils.isBlank(tx_htid) && StringUtils.isBlank(tv_xmbh) && StringUtils.isBlank(tv_dwdm)) {
+//            show_Toast(getResources().getString(R.string.text_down_err8));
+//            return;
+//        }
+//        if (StringUtils.isBlank(tv_sfz)) {
+//            show_Toast(getResources().getString(R.string.text_down_err11));
+//            return;
+//        }
         try {
             res = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(json, Base64.DEFAULT)));
 //            Utils.writeRecord("离线下载:" + res);
@@ -695,13 +697,13 @@ public class DownOfflineActivity extends BaseActivity {
                 saveData();
 
                 String json = Utils.readOffline(textFilePath.getText().toString()).replace("\n", "");//txt中的密文
-                String mima = editMima.getText().toString();//txt中的密文
-                if (mima.length() < 6) {
-                    show_Toast(getResources().getString(R.string.text_xzsb19));
-                } else {
-                    insertData(json, mima);
-                }
-
+//                String mima = editMima.getText().toString();//txt中的密文
+//                if (mima.length() < 6) {
+//                    show_Toast(getResources().getString(R.string.text_xzsb19));
+//                } else {
+//                    insertData(json, mima);
+//                }
+                insertData(json, "");
                 break;
             case R.id.btn_scan:
                 saveData();

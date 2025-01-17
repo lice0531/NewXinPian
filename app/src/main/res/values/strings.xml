@@ -927,9 +927,9 @@
     <string name="text_lx1">本功能用于在网站下载的TXT密码文档生成一条新的下载记录</string>
     <string name="text_lx2">1.请输入在网站获取的6位密码</string>
     <string name="text_lx3">6位密码</string>
-    <string name="text_lx4">2.通过二维码获取离线文档</string>
+    <string name="text_lx4">1.通过二维码获取离线文档</string>
     <string name="text_lx5">打开摄像头扫码</string>
-    <string name="text_lx6">3.选择从网站下载的txt文件</string>
+    <string name="text_lx6">2.选择从网站下载的txt文件</string>
     <string name="text_sjyj">正在升级硬件程序,请稍等...</string>
     <string name="text_sjerror1">待开发</string>
     <string name="text_sjerror2">使用</string>
