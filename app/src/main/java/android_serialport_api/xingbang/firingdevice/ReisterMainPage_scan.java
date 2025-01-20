@@ -3549,16 +3549,40 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.tv_delete:
                 Log.e(TAG, "点击删除选中雷管: ");
-                List<DenatorBaseinfoSelect> selectIdList = new ArrayList<>();
-                for (int i = 0; i < childList.size(); i++) {
-                    for (DenatorBaseinfoSelect data : childList.get(i)) {
+                String checkStr = "";
+                List<DenatorBaseinfoSelect> selectChildIdList = new ArrayList<>();
+                List<PaiDataSelect> selectgroupIdList = new ArrayList<>();
+                if (groupList.size() != 0) {
+                    for (PaiDataSelect data : groupList) {
                         if (data.isSelect()) {
-                            selectIdList.add(data);
+                            selectgroupIdList.add(data);
                         }
                     }
                 }
-                if (selectIdList.isEmpty()) {
-                    show_Toast(getResources().getString(R.string.text_selectlg));
+                for (int i = 0; i < childList.size(); i++) {
+                    for (DenatorBaseinfoSelect data : childList.get(i)) {
+                        if (data.isSelect()) {
+                            selectChildIdList.add(data);
+                        }
+                    }
+                }
+                // 假设 PaiDataSelect 类有 getSum() 方法
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    //选中的数据中是否有没有雷管的排
+                    boolean haveNoChildPai = selectgroupIdList.stream()
+                            .anyMatch(item -> Integer.parseInt(item.getSum()) == 0);
+                    if (haveNoChildPai) {
+                        checkStr = "";
+                        Log.e(TAG, "当前有排没有子级数据");
+                    } else {
+                        Log.e(TAG, "当前排都有子级数据--选中的子机数量:" + selectChildIdList.size());
+                        if (selectChildIdList.isEmpty()) {
+                            checkStr = getResources().getString(R.string.text_selectlg);
+                        }
+                    }
+                }
+                if (checkStr.length() > 0) {
+                    show_Toast(checkStr);
                     return;
                 }
                 if (!ReisterMainPage_scan.this.isFinishing()) {

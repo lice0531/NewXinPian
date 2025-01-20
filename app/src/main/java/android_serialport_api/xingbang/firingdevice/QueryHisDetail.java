@@ -305,12 +305,12 @@ public class QueryHisDetail extends BaseActivity {
 
     //获取配置文件中的值
     private void getPropertiesData() {
-//        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
-        if(changjia.equals("XJ")){
-            Shangchuan="否";
-        }else {
-            Shangchuan="是";
-        }
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
+//        if(changjia.equals("XJ")){
+//            Shangchuan="否";
+//        }else {
+//            Shangchuan="是";
+//        }
         Log.e("是否上传错误雷管", "changjia: "+changjia );
         Log.e("是否上传错误雷管", "Shangchuan: "+Shangchuan );
         Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);

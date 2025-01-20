@@ -625,6 +625,7 @@
     <!--    <string name="tongyong">通用</string>-->
     <!--    <string name="chongqing">重庆</string>-->
     <!--    <string name="huafeng">华丰</string>-->
+    <string name="set_qzqb">是否强制起爆</string>
     <string name="set_shouquan">是否验证雷管已经授权</string>
     <string name="set_cdfj">是否开启充电复检功能</string>
     <string name="set_cdzdsj">设置充电最大时间/s</string>

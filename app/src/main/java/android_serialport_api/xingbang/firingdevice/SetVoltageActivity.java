@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,7 @@ import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FiveTestingCmd;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
+import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -302,6 +305,7 @@ public class SetVoltageActivity extends SerialPortActivity {
                 MmkvUtils.savecode("sys_ver_name",sys_ver_name);
                 MmkvUtils.savecode("sys_ver_position",position_save);
                 AppLogUtils.writeAppLog(sys_ver_name + "厂家已成功设置");
+                EventBus.getDefault().post(new FirstEvent("setChangJia",sys_ver_name));
                 show_Toast(getString(R.string.text_systip_1));
                 break;
         }

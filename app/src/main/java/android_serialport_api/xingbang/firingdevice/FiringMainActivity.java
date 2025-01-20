@@ -248,6 +248,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private float befor_dianliu = 0;
     private float befor_dianya = 0;
     private String changjia = "TY";
+    private String Shangchuan = "";
+    private String Qzqb = "";
     private String Fujian = "复检";
     private boolean isCasePeakWd, isCaseVoltageWd;//当前电流是否不稳定  当前电压是否不稳定
     private boolean isJL = false;//是否是从级联的指令进入的起爆页面
@@ -273,6 +275,10 @@ public class FiringMainActivity extends SerialPortActivity {
         getUserMessage();//获取用户信息
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
+        Qzqb = (String) MmkvUtils.getcode("Qzqb", "是");
+        Log.e(TAG,"是否强制起爆: " + Qzqb);
+        AppLogUtils.writeAppXBLog("是否强制起爆: " + Qzqb);
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
         if(changjia.equals("CQ")){
             cankaodianliu=17;
         }else {
@@ -297,7 +303,7 @@ public class FiringMainActivity extends SerialPortActivity {
         isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
         Log.e(TAG,"进入起爆页面");
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
-        AppLogUtils.writeAppXBLog("级联已进入起爆倒计时，不再做处理--elevenCount:" + elevenCount);
+        AppLogUtils.writeAppXBLog("起爆倒计时elevenCount:" + elevenCount);
         startFlag = 1;
         qyIdList = new GreenDaoMaster().getSelectedQyIdList();
         initParam();//重置参数
@@ -449,41 +455,48 @@ public class FiringMainActivity extends SerialPortActivity {
 //                return;
 //            }
             String err = ll_firing_errorAmount_4.getText().toString();
-            if (changjia.equals("XJ")) {
-                if (err.equals("0")) {
+            AppLogUtils.writeAppLog("检测结束，点继续按钮进行充电了");
+            if (err.equals("0")) {
 //                increase(33);//之前是4
-                    increase(6);//充电阶段
-                    duanlu_sun=0;
-//                version_1 = true;
-                } else {
-                    String isTestDenator = (String) MmkvUtils.getcode("isTestDenator", "");
-                    if (TextUtils.isEmpty(isTestDenator) || isTestDenator.equals("N")) {
-                        if (!isJL) {
-                            showErrorLgDialog(getResources().getString(R.string.text_qberr1), 1);
-                            //未网检就直接起爆且存在错误雷管只能退出  所以接收到级联指令也不操作
-                        } else {
-                            showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
-                            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
-                            xzqb();
-                            //XJ存在错误雷管 限制起爆
-                            sendXzqbData("01");
-                            deviceStatus = "21";
-                        }
-                    } else {
-                        showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
-                        //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
-                        xzqb();
-                        //XJ存在错误雷管 限制起爆
-                        sendXzqbData("01");
-                        deviceStatus = "21";
-                    }
-                }
-            } else {
-                list_dianliu.clear();
                 increase(6);//充电阶段
-                Log.e(TAG, "eightCount: " + eightCount);
+                duanlu_sun=0;
+//                version_1 = true;
+            } else {
+                if ("是".equals(Qzqb)) {
+                    Log.e(TAG,"有错误雷管:继续");
+                    list_dianliu.clear();
+                    increase(6);//充电阶段
+                    Log.e(TAG, "eightCount: " + eightCount);
+                } else {
+                    Log.e(TAG,"有错误雷管:不继续");
+                    haveErrLgNotQzqb();
+                }
             }
         });
+    }
+
+    private void haveErrLgNotQzqb() {
+        String isTestDenator = (String) MmkvUtils.getcode("isTestDenator", "");
+        if (TextUtils.isEmpty(isTestDenator) || isTestDenator.equals("N")) {
+            if (!isJL) {
+                showErrorLgDialog(getResources().getString(R.string.text_qberr1), 1);
+                //未网检就直接起爆且存在错误雷管只能退出  所以接收到级联指令也不操作
+            } else {
+                showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
+                //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
+                xzqb();
+                //XJ存在错误雷管 限制起爆
+                sendXzqbData("01");
+                deviceStatus = "21";
+            }
+        } else {
+            showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
+            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
+            xzqb();
+            //XJ存在错误雷管 限制起爆
+            sendXzqbData("01");
+            deviceStatus = "21";
+        }
     }
 
     private void xzqb(){
@@ -503,13 +516,20 @@ public class FiringMainActivity extends SerialPortActivity {
     //判断当前子机级联是否可以继续进行
     private boolean checkIsStopJl() {
         String err = ll_firing_errorAmount_4.getText().toString();
-        if (changjia.equals("XJ")) {
+//        if (changjia.equals("XJ")) {
+//            if (!err.equals("0")) {
+//                // 未网检就直接起爆且存在错误雷管只能退出，所以接收到级联指令也不操作
+//                Log.e(TAG, "错误数量:" + err);
+//                return true; // 厂家为"XJ":返回 true
+//            }
+//            Log.e(TAG, "厂家是:" + changjia);
+//        }
+        if ("否".equals(Qzqb)) {
             if (!err.equals("0")) {
                 // 未网检就直接起爆且存在错误雷管只能退出，所以接收到级联指令也不操作
                 Log.e(TAG, "错误数量:" + err);
                 return true; // 只有在这里返回 true
             }
-            Log.e(TAG, "厂家是:" + changjia);
         }
         return false; // 其他情况返回 false
     }
