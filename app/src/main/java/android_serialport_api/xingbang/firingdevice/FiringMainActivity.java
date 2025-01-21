@@ -1809,6 +1809,9 @@ public class FiringMainActivity extends SerialPortActivity {
             denatorHis_detail.setRemark(dbf.getRemark());
             denatorHis_detail.setBlastdate(fireDate);
             denatorHis_detail.setPiece(dbf.getPiece());
+            denatorHis_detail.setPai(dbf.getPai());
+            denatorHis_detail.setDuan(dbf.getDuan());
+            denatorHis_detail.setDuanNo(dbf.getDuanNo());
             getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
         }
 

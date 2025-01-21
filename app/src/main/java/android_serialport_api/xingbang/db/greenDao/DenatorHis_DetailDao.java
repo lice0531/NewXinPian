@@ -40,6 +40,9 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         public final static Property Blastdate = new Property(13, String.class, "blastdate", false, "blastdate");
         public final static Property Name = new Property(14, String.class, "name", false, "name");
         public final static Property Piece = new Property(15, String.class, "piece", false, "piece");
+        public final static Property Duan = new Property(16, int.class, "duan", false, "duan");
+        public final static Property DuanNo = new Property(17, int.class, "duanNo", false, "duanNo");
+        public final static Property Pai = new Property(18, String.class, "pai", false, "pai");
     }
 
 
@@ -70,7 +73,10 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
                 "\"regdate\" TEXT," + // 12: regdate
                 "\"blastdate\" TEXT," + // 13: blastdate
                 "\"name\" TEXT," + // 14: name
-                "\"piece\" TEXT);"); // 15: piece
+                "\"piece\" TEXT," + // 15: piece
+                "\"duan\" INTEGER NOT NULL ," + // 16: duan
+                "\"duanNo\" INTEGER NOT NULL ," + // 17: duanNo
+                "\"pai\" TEXT);"); // 18: pai
     }
 
     /** Drops the underlying database table. */
@@ -154,6 +160,13 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         if (piece != null) {
             stmt.bindString(16, piece);
         }
+        stmt.bindLong(17, entity.getDuan());
+        stmt.bindLong(18, entity.getDuanNo());
+ 
+        String pai = entity.getPai();
+        if (pai != null) {
+            stmt.bindString(19, pai);
+        }
     }
 
     @Override
@@ -231,6 +244,13 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         if (piece != null) {
             stmt.bindString(16, piece);
         }
+        stmt.bindLong(17, entity.getDuan());
+        stmt.bindLong(18, entity.getDuanNo());
+ 
+        String pai = entity.getPai();
+        if (pai != null) {
+            stmt.bindString(19, pai);
+        }
     }
 
     @Override
@@ -256,7 +276,10 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // regdate
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // blastdate
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // name
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // piece
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // piece
+            cursor.getInt(offset + 16), // duan
+            cursor.getInt(offset + 17), // duanNo
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18) // pai
         );
         return entity;
     }
@@ -279,6 +302,9 @@ public class DenatorHis_DetailDao extends AbstractDao<DenatorHis_Detail, Long> {
         entity.setBlastdate(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setName(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setPiece(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setDuan(cursor.getInt(offset + 16));
+        entity.setDuanNo(cursor.getInt(offset + 17));
+        entity.setPai(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
      }
     
     @Override
