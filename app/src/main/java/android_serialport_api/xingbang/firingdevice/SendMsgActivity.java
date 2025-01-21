@@ -47,6 +47,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -315,35 +316,42 @@ public class SendMsgActivity extends BaseActivity {
      * 新版本:发送过来的掌机是几个区域就创建几个新区域，雷管注册时:根据原区域的排数注册进新区域中对应排中
      * @param leiguan:接收到的雷管数据
      */
+    int registIndex;//用来记录注册了多少发雷管，数据互传结束再弹出导入成功toast信息
     private void createQuYu(String leiguan) {
         String[] mlg = leiguan.split(",");
-        //用来记录接收到的雷管数据中重复雷管的个数  若接收的雷管数据现有掌机已经全部已注册，便不再往下执行
+        List<String> uniqueLgList = new ArrayList<>(Arrays.asList(mlg));  // 使用列表来操作数据
         int cfLgIndex = 0;
-        for (int i = 0; i < mlg.length; i++) {
-            String shellNo = mlg[i];
+        for (int i = 0; i < uniqueLgList.size(); i++) {
+            String shellNo = uniqueLgList.get(i);
             String[] a = shellNo.split("#");
-            if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
+            if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) { // 检查重复数据
                 cfLgIndex++;
                 Log.e(TAG, "DenatorId当前第" + i + "条数据互传时检查有重复雷管了--跳出循环--index:" + cfLgIndex);
+                uniqueLgList.remove(i);  // 移除重复的雷管
+                i--;  // 确保索引位置正确，避免跳过元素
                 continue;
             }
-            if (checkRepeatShellNo(a[2])) {//检查重复数据
+            if (checkRepeatShellNo(a[2])) { // 检查重复数据
                 cfLgIndex++;
                 Log.e(TAG, "ShellNo当前第" + i + "条数据互传时检查有重复雷管了--跳出循环--index:" + cfLgIndex);
+                uniqueLgList.remove(i);  // 移除重复的雷管
+                i--;  // 确保索引位置正确，避免跳过元素
                 continue;
             }
         }
-        if (cfLgIndex == mlg.length) {
+        // 如果所有数据都已被移除（即全是重复的），则不再执行后续代码
+        if (uniqueLgList.isEmpty()) {
             mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));
             Log.e(TAG, "接收到的雷管已存在掌机中");
             return;
         }
-        String[] lg = leiguan.split(",");
-        Log.e(TAG, "雷管txt个数:" + lg.length);
         mQyListData = master.queryQuYu();
         int maxNo = master.getPieceMaxqyid();
-        for (int i = 0; i < lg.length; i++) {
-            String shellNo = lg[i];
+        String lastRegion = "";  // 用于存储上一个区域的信息，初始为空
+        //先去重，如果发过来的雷管已经在掌机中就不再注册，从接受的数据集中移除掉注册掌机中没有的雷管
+        // 如果还有未重复的数据，则继续处理
+//        int registIndex;//用来记录注册了多少发雷管，数据互传结束再弹出导入成功toast信息
+        for (String shellNo : uniqueLgList) {
             String[] a = shellNo.split("#");
             Log.e(TAG, "当前雷管字段的长度:" + a.length);
             if (a.length == 5) {
@@ -368,53 +376,51 @@ public class SendMsgActivity extends BaseActivity {
                 createPai(shellNo, 1, leiguan, qyId);
                 Log.e(TAG, "旧版本雷管注册--排号:" + qyId);
             } else {
-                Log.e(TAG, "当前雷管index:" + i);
                 //新版本M900有排，需要根据接收到的雷管排号进行注册
                 //得到现有最大区域id
                 // 判断当前雷管的差值和上一个雷管的差值
-                if (i == 0) {
+                // 计算差值并判断是否需要创建新区域
+                String currentRegion = a[7];  // 获取当前雷管的区域信息（即第7个字段）
+                // 如果当前区域和上一个区域不同，说明是新的区域
+                if (!currentRegion.equals(lastRegion)) {
+                    // 更新区域ID，可能是一个新的区域
                     maxNo = maxNo + 1;
-                } else {
-                    // 获取上一个雷管的差值
-                    String[] previousShellNo = lg[i - 1].split("#");
-                    int previousDifference = Math.abs(Integer.parseInt(previousShellNo[7]) - (maxNo + 1));
-                    int currentDifference = Math.abs(Integer.parseInt(a[7]) - (maxNo + 1));
-                    Log.e(TAG, "Integer.parseInt(a[7]):" + Integer.parseInt(a[7])
-                            + "--maxNo:" + (maxNo + 1));
-                    // 如果当前雷管的差值大于上一个雷管的差值，更新maxNo
-                    if (currentDifference > previousDifference) {
-                        maxNo++;
-                        Log.e(TAG, "需要创建新区域了--maxNo:" + maxNo);
-                    } else {
-                        Log.e(TAG, "不需要需要创建新区域--currentDifference:" + currentDifference
-                                + "--previousDifference:" + previousDifference);
+                    lastRegion = currentRegion;  // 更新上一个区域为当前区域
+                    // 创建新的区域对象
+                    Long currentQyid = Long.valueOf(maxNo);
+                    QuYu squYu = new QuYu();
+                    squYu.setName(String.valueOf(maxNo));
+                    squYu.setQyid(maxNo);
+                    squYu.setStartDelay("0");
+                    squYu.setKongDelay("0");
+                    squYu.setPaiDelay("0");
+                    // 检查该区域是否已经存在
+                    if (getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Qyid.eq(currentQyid)).count() == 0) {
+                        // 根据已有区域数据的大小设置是否选中
+                        List<QuYu> newQyListData = master.queryQuYu();
+                        if (newQyListData.size() < 1) {
+                            squYu.setSelected("true");
+                        } else {
+                            squYu.setSelected("false");
+                        }
+                        // 插入新区域到数据库
+                        getDaoSession().getQuYuDao().insert(squYu);
+                        Log.e(TAG, "新区域插入: " + squYu.getName());
                     }
                 }
-                // 创建新的区域，根据maxNo来生成区域ID
-                Long currentQyid = Long.valueOf(maxNo + 1);
-                QuYu squYu = new QuYu();
-                squYu.setName((maxNo + 1) + "");
-                squYu.setQyid((maxNo + 1));
-                squYu.setStartDelay("0");
-                squYu.setKongDelay("0");
-                squYu.setPaiDelay("0");
-                // 检查区域是否已经存在，避免重复插入
-                List<QuYu> newQyListData = master.queryQuYu();
-                if (getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Qyid.eq(currentQyid)).count() == 0) {
-                    // 根据mQyListData的大小来设置是否选中
-                    if (newQyListData.size() < 1) {
-                        squYu.setSelected("true");
-                    } else {
-                        squYu.setSelected("false");
-                    }
-                    // 插入当前区域
-                    getDaoSession().getQuYuDao().insert(squYu);
-                }
-                String qyId = String.valueOf(maxNo + 1);
-                String paiNo = a[5];
+                // 获取当前雷管的排号并进行注册
+                String qyId = String.valueOf(maxNo);
+                String paiNo = a[5];  // 排号
                 createPai(shellNo, Integer.parseInt(paiNo), leiguan, qyId);
-                Log.e(TAG, "第" + i + "次创建区域新版本雷管注册--区域id:" + qyId);
             }
+        }
+        if (registIndex == uniqueLgList.size()) {
+            pb_show = 0;
+            Message msg = new Message();
+            msg.what = 1002;
+            msg.arg1 = mlg.length;
+            mHandler_0.sendMessage(msg);
+            registIndex = 0;
         }
     }
 
@@ -522,11 +528,13 @@ public class SendMsgActivity extends BaseActivity {
 //            reCount++;
 //        }
         updataPaiData(Integer.parseInt(paiNo), qyId);
-        pb_show = 0;
-        Message msg = new Message();
-        msg.what = 1002;
-        msg.arg1 = lg.length;
-        mHandler_0.sendMessage(msg);
+//        pb_show = 0;
+//        Message msg = new Message();
+//        msg.what = 1002;
+//        msg.arg1 = lg.length;
+//        mHandler_0.sendMessage(msg);
+        registIndex++;
+        Log.e(TAG,"插入成功第" + registIndex + "条雷管数据");
 //        return reCount;
     }
 
