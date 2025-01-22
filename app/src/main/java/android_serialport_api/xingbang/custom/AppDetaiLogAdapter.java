@@ -24,7 +24,7 @@ public class AppDetaiLogAdapter extends RecyclerView.Adapter<AppDetaiLogAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // 创建新的定义列表元素UI的View
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_query_his, parent, false);
+                .inflate(R.layout.item_query_applog, parent, false);
         view.setOnClickListener(this);
         return new ViewHolder(view,onItemClickListener);
     }
@@ -113,7 +113,6 @@ public class AppDetaiLogAdapter extends RecyclerView.Adapter<AppDetaiLogAdapter.
             bt_upload = itemView.findViewById(R.id.bt_upload);
             bt_delete = itemView.findViewById(R.id.bt_delete);
             ly_his = itemView.findViewById(R.id.ly_his);
-
             bt_upload.setOnClickListener(view -> {
                 if (onItemClickListener != null) {
                     int position1 = getAdapterPosition();
