@@ -767,8 +767,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     groupList = master.queryPaiSelect(mRegion);
                     Log.e(TAG, "刷新适配器--groupList.size(): " + groupList.size());
                     Log.e(TAG, "刷新适配器--paiMax: " + paiMax);
-                    for (int i = paiMin; i <= paiMax; i++) {
-                        List<DenatorBaseinfoSelect> list_pai = master.queryDetonatorPaiSelect(mRegion, i);
+                    for (int i = 0; i < groupList.size(); i++) {
+                        List<DenatorBaseinfoSelect> list_pai = master.queryDetonatorPaiSelect(mRegion, groupList.get(i).getPaiId());
                         childList.add(list_pai);
                     }
                     zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, this, this);
@@ -892,10 +892,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     groupList = new GreenDaoMaster().queryPaiSelect(mRegion);
                     Log.e("liyi_1003", "刷新适配器--groupList.size(): " + groupList.size());
                     Log.e("liyi_1003", "刷新适配器--paiMax: " + paiMax);
-                    for (int i = paiMin; i <= paiMax; i++) {
-                        List<DenatorBaseinfoSelect> list_pai = new GreenDaoMaster().queryDetonatorPaiSelect(mRegion, i);
-                        Log.e("liyi_1003", "刷新适配器--list_pai: " + list_pai.toString());
-
+                    for (int i = 0; i < groupList.size(); i++) {
+                        List<DenatorBaseinfoSelect> list_pai = new GreenDaoMaster().queryDetonatorPaiSelect(mRegion, groupList.get(i).getPaiId());
                         childList.add(list_pai);
                     }
                     zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, this, this);
