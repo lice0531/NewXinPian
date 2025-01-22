@@ -40,6 +40,7 @@ import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -246,6 +247,36 @@ public class SouSuoSQActivity extends BaseActivity {
                 case 7:
                     show_Toast(getResources().getString(R.string.text_send_tip26));
                     break;
+                case 8:
+
+                    Log.e("授权查询", "授权日期sqrq: " + sqrq);
+                    Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
+                    mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
+
+                    Log.e("查询", "mListData.size: " + mListData.size());
+                    if (mListData.size() == 0) {
+                        show_Toast(getResources().getString(R.string.text_wzd));
+                    }
+                    mList.clear();
+                    Log.e("加载", "mListData.size(): " + mListData.size());
+                    for (DetonatorTypeNew item : mListData) {
+                        ShouQuanData shouQuanData = new ShouQuanData();
+                        shouQuanData.setId(item.getId());
+                        shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                        shouQuanData.setDetonatorId(item.getDetonatorId());
+                        shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                        shouQuanData.setCong_yscs(item.getCong_yscs());
+                        shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                        shouQuanData.setQibao(item.getQibao());
+                        shouQuanData.setTime(item.getTime());
+                        if (!mList.contains(shouQuanData)) {
+                            mList.add(shouQuanData);
+                        }
+                    }
+                    mAdapter2.setNewData(mList);
+                    mAdapter2.notifyDataSetChanged();
+                    hideInputKeyboard();//隐藏键盘,取消焦点
+                    break;
                 default:
                     break;
             }
@@ -353,7 +384,7 @@ public class SouSuoSQActivity extends BaseActivity {
             case R.id.ss_btn_ss:
                 String gkm = edit_gkm.getText().toString();
                 Message msg = new Message();
-                msg.what = 1;
+                msg.what = 8;
                 msg.obj = gkm;
                 mHandler_UI.sendMessage(msg);
                 break;
@@ -436,7 +467,7 @@ public class SouSuoSQActivity extends BaseActivity {
         updateEditState();
         String gkm = edit_gkm.getText().toString();
         Message msg = new Message();
-        msg.what = 1;
+        msg.what = 8;
         msg.obj = gkm;
         mHandler_UI.sendMessage(msg);
         mAdapter2.notifyDataSetChanged();
@@ -532,9 +563,27 @@ public class SouSuoSQActivity extends BaseActivity {
 
         getDaoSession().getDenatorBaseinfoDao().insert(denator);
 
-
+        updataPaiData();
     }
 
+    //更新排
+    private void updataPaiData() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        int total = master.queryDetonatorPaiSize(mRegion, paiChoice + "");//有过
+        int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
+        int delay_minNum_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
+
+        Log.e(TAG, "updataPaiData  total: " + total);
+        PaiData choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+        if (choicepaiData != null) {
+            choicepaiData.setSum(total + "");//
+            choicepaiData.setDelayMin(delay_minNum_new + "");
+            choicepaiData.setDelayMax(delay_max_new + "");
+
+            getDaoSession().getPaiDataDao().update(choicepaiData);
+        }
+
+    }
     /**
      * 得到最大序号
      */

@@ -2039,6 +2039,25 @@ public class GreenDaoMaster {
             return 0;
         }
     }
+    /**
+     * 获取 该区域 最大的paiId
+     * @param qyid 区域号
+     */
+    public int getMinPaiId(String qyid) {
+        int paiId;
+        String sql = "select min(paiId) from PaiData where qyid = "+qyid;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            paiId = cursor.getInt(0);
+            cursor.close();
+            Log.e("getMaxPaiId", "获取最大排号: "+paiId);
+            return paiId;
+        }else {
+            Log.e("getMaxPaiId", "获取最大排号: 0");
+            return 0;
+        }
+    }
 
     /**
      * 查询雷管数量
@@ -2080,6 +2099,13 @@ public class GreenDaoMaster {
      * @return
      */
     public DenatorBaseinfo serchDenatorIdForChoice(int paiChoice,int kongChoice) {
+        return mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Pai.eq(paiChoice))
+                .where(DenatorBaseinfoDao.Properties.Blastserial.eq(kongChoice)).unique();
+
+    }
+
+    public DenatorBaseinfo serchDenatorId(int paiChoice,int kongChoice) {
         return mDeantorBaseDao.queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Pai.eq(paiChoice))
                 .where(DenatorBaseinfoDao.Properties.Blastserial.eq(kongChoice)).unique();
@@ -2133,6 +2159,22 @@ public class GreenDaoMaster {
         }
     }
 
+    public int getPieceAndPaiAndKongMaxDelay(String piece,int pai,int kong) {
+        int delay;
+        String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai+" and blastserial = "+kong;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceAndPaiMaxDelay", "获取 该区域 该排 最大的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceAndPaiMaxDelay", "获取 该区域 该排 最大的延时: 0");
+            return 0;
+        }
+    }
+
     /**
      * 获取 该区域 该排 最小的延时
      *
@@ -2141,6 +2183,26 @@ public class GreenDaoMaster {
     public int getPieceAndPaiMinDelay(String piece,int pai) {
         int delay;
         String sql = "select min(delay) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai;
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            delay = cursor.getInt(0);
+            cursor.close();
+            Log.e("getPieceAndPaiMinDelay", "获取 该区域 该排 最小的延时: "+delay);
+            return delay;
+        }else {
+            Log.e("getPieceAndPaiMinDelay", "获取 该区域 该排 最小的延时: 0");
+            return 0;
+        }
+    }
+    /**
+     * 获取 该区域 该排 最小的延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPieceAndPaiAndKongMinDelay(String piece,int pai,int kong) {
+        int delay;
+        String sql = "select min(delay) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai+" and blastserial = "+kong;
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
 
         if (cursor != null && cursor.moveToNext()) {
