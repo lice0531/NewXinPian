@@ -306,6 +306,7 @@ public class SouSuoSQActivity extends BaseActivity {
         });
     }
 
+    private boolean isSelectAll = true;//是否全选
     @OnClick({R.id.tv_check_all, R.id.tv_input, R.id.tv_ture, R.id.ss_btn_ss, R.id.ss_btn_px})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -320,10 +321,28 @@ public class SouSuoSQActivity extends BaseActivity {
                 mHandler_UI.sendMessage(mHandler_UI.obtainMessage(4));
                 break;
             case R.id.tv_check_all:
-                setAllItemChecked();
+                if (isSelectAll) {
+                    tv_check_all.setText(getResources().getString(R.string.text_qxqx));
+                    isSelectAll = false;
+                    setAllItemChecked(true);
+                } else {
+                    tv_check_all.setText(getResources().getString(R.string.text_qx));
+                    isSelectAll = true;
+                    setAllItemChecked(false);
+                }
+//                setAllItemChecked();
                 break;
             case R.id.tv_input:
-
+                List<ShouQuanData> seleceList = new ArrayList<>();
+                for (ShouQuanData data : mList) {
+                    if (data.isSelect()) {
+                        seleceList.add(data);
+                    }
+                }
+                if (seleceList.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_selectlg));
+                    return;
+                }
                 inputLeiGuan();
                 break;
             case R.id.tv_ture:
@@ -451,8 +470,12 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setShellBlastNo(db.getShellBlastNo());
         denator.setZhu_yscs(yscs);
 //        denator.setDelay(Integer.parseInt(delay));//PT不更新延时
-        if (db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")) {
-            denator.setRegdate(db.getTime());
+        if (!TextUtils.isEmpty(db.getQibao())) {
+            if (db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")) {
+                denator.setRegdate(db.getTime());
+            } else {
+                denator.setRegdate(Utils.getDateFormat(new Date()));
+            }
         } else {
             denator.setRegdate(Utils.getDateFormat(new Date()));
         }
@@ -514,6 +537,23 @@ public class SouSuoSQActivity extends BaseActivity {
         mAdapter2.notifyDataSetChanged();
         index = mList.size();
 //        tvDelete.setText("删除(" + index + ")");
+    }
+
+    //区域全选和取消全选
+    private void setAllItemChecked(boolean isSelected) {
+        if (mAdapter2 == null) return;
+        if (isSelected) {
+            for (ShouQuanData data : mList) {
+                data.setSelect(true);
+            }
+        } else {
+            for (ShouQuanData data : mList) {
+                data.setSelect(false);
+            }
+        }
+        mAdapter2.setNewData(mList);
+        mAdapter2.notifyDataSetChanged();
+        index = mList.size();
     }
 
     //全部正确选中

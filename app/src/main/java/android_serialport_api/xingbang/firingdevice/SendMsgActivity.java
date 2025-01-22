@@ -319,6 +319,7 @@ public class SendMsgActivity extends BaseActivity {
     int registIndex;//用来记录注册了多少发雷管，数据互传结束再弹出导入成功toast信息
     private void createQuYu(String leiguan) {
         String[] mlg = leiguan.split(",");
+        Log.e(TAG, "接收到的雷管个数:" + mlg.length);
         List<String> uniqueLgList = new ArrayList<>(Arrays.asList(mlg));  // 使用列表来操作数据
         int cfLgIndex = 0;
         for (int i = 0; i < uniqueLgList.size(); i++) {
@@ -422,6 +423,7 @@ public class SendMsgActivity extends BaseActivity {
             mHandler_0.sendMessage(msg);
             registIndex = 0;
         }
+        Log.e(TAG,"去重后的个数:" + uniqueLgList.size() + "--当前插入条数:" + registIndex);
     }
 
     private void createPai(String shellNo,int paiNo,String leiguan,String qyId) {
