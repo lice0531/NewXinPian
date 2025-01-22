@@ -43,12 +43,18 @@ public class DenatorHis_Detail {
     private String name;
     @Property(nameInDb = "piece")
     private String piece;
-    @Generated(hash = 929310764)
+    @Property(nameInDb = "duan")
+    private int duan;
+    @Property(nameInDb = "duanNo")
+    private int duanNo;
+    @Property(nameInDb = "pai")
+    private String pai;
+    @Generated(hash = 561782127)
     public DenatorHis_Detail(Long id, int blastserial, String sithole,
             String shellBlastNo, String denatorId, int delay, String statusCode,
             String statusName, String errorName, String errorCode,
             String authorization, String remark, String regdate, String blastdate,
-            String name, String piece) {
+            String name, String piece, int duan, int duanNo, String pai) {
         this.id = id;
         this.blastserial = blastserial;
         this.sithole = sithole;
@@ -65,6 +71,9 @@ public class DenatorHis_Detail {
         this.blastdate = blastdate;
         this.name = name;
         this.piece = piece;
+        this.duan = duan;
+        this.duanNo = duanNo;
+        this.pai = pai;
     }
     @Generated(hash = 1925319946)
     public DenatorHis_Detail() {
@@ -166,6 +175,29 @@ public class DenatorHis_Detail {
         this.piece = piece;
     }
 
+    public int getDuan() {
+        return duan;
+    }
+
+    public void setDuan(int duan) {
+        this.duan = duan;
+    }
+
+    public int getDuanNo() {
+        return duanNo;
+    }
+
+    public void setDuanNo(int duanNo) {
+        this.duanNo = duanNo;
+    }
+
+    public String getPai() {
+        return pai;
+    }
+
+    public void setPai(String pai) {
+        this.pai = pai;
+    }
 
     @Override
     public String toString() {
@@ -186,6 +218,9 @@ public class DenatorHis_Detail {
                 ", blastdate='" + blastdate + '\'' +
                 ", name='" + name + '\'' +
                 ", piece='" + piece + '\'' +
+                ", duan=" + duan +
+                ", duanNo=" + duanNo +
+                ", pai='" + pai + '\'' +
                 '}';
     }
 }

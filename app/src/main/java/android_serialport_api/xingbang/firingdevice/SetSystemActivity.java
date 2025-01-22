@@ -23,6 +23,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -33,6 +34,10 @@ import butterknife.OnClick;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.annotation.NonNull;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class SetSystemActivity extends BaseActivity {
     @BindView(R.id.sw_yanzheng_sq)
@@ -45,6 +50,8 @@ public class SetSystemActivity extends BaseActivity {
     SwitchButton swYanzheng;
     @BindView(R.id.sw_shangchuan)
     SwitchButton swShangchuan;
+    @BindView(R.id.sw_qzqb)
+    SwitchButton swQzqb;
     @BindView(R.id.et_set_Preparation)
     EditText etSetPreparation;
     @BindView(R.id.set_languages)
@@ -65,6 +72,8 @@ public class SetSystemActivity extends BaseActivity {
     private String qiaosi_set = "";//是否检测桥丝
     private String Yanzheng = "";//是否验证地理位置
     private String Shangchuan = "";//是否上传错误雷管
+    private String changjia = "";
+    private String Qzqb = "";//是否强制起爆（起爆时有错误雷管是否继续）
     private String Qibaotime = "5";//设置起爆等待时间
     private String Yanzheng_sq = "";//是否验雷管已经授权
     private String Fujian = "";//是否复检
@@ -87,6 +96,8 @@ public class SetSystemActivity extends BaseActivity {
         Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
+        Qzqb = (String) MmkvUtils.getcode("Qzqb", "是");
+        changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         getUserMessage();
         Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
         Log.e("设置页面", "Shangchuan: " + Shangchuan);
@@ -107,6 +118,9 @@ public class SetSystemActivity extends BaseActivity {
         if (Shangchuan.equals("是")) {
             swShangchuan.setChecked(true);
         }
+        if (Qzqb.equals("是")) {
+            swQzqb.setChecked(true);
+        }
         etSetQibaotime.setText(Qibaotime);
         Handler_tip = new Handler(msg -> {
             Bundle b = msg.getData();
@@ -124,6 +138,14 @@ public class SetSystemActivity extends BaseActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     private void getUserMessage() {
@@ -199,7 +221,11 @@ public class SetSystemActivity extends BaseActivity {
                 } else {
                     message.setQiaosi_set("false");
                 }
-
+                if (swQzqb.isChecked()) {
+                    MmkvUtils.savecode("Qzqb", "是");
+                } else {
+                    MmkvUtils.savecode("Qzqb", "否");
+                }
                 int flag1 = 0, flag2 = 0, flag3 = 0;
                 if (!TextUtils.isEmpty(etSetPreparation.getText())&&Integer.parseInt(etSetPreparation.getText().toString())>47) {//准备时间
                     message.setPreparation_time(etSetPreparation.getText().toString());
@@ -257,10 +283,32 @@ public class SetSystemActivity extends BaseActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(FirstEvent event) {
+        if (!TextUtils.isEmpty(event.getMsg()) && "setChangJia".equals(event.getMsg())) {
+            changjia = event.getData();
+            MmkvUtils.savecode("sys_ver_name",changjia);
+            if(changjia.equals("XJ")) {
+                //厂家为XJ时，有错误雷管不能接续起爆  是否上传错误雷管:否
+                swQzqb.setChecked(false);
+                swShangchuan.setChecked(false);
+                MmkvUtils.savecode("Qzqb", "否");
+                MmkvUtils.savecode("Shangchuan", "否");
+            } else {
+                swQzqb.setChecked(true);
+                swShangchuan.setChecked(true);
+                MmkvUtils.savecode("Shangchuan", "是");
+                MmkvUtils.savecode("Qzqb", "是");
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
         if (db != null) db.close();
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 }

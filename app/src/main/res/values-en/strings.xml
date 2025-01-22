@@ -615,6 +615,7 @@
 <!--    <string name="tongyong">TY</string>-->
 <!--    <string name="chongqing">CQ</string>-->
 <!--    <string name="huafeng">HF</string>-->
+    <string name="set_qzqb">Whether to force detonation</string>
     <string name="set_shouquan">Have you verified that the detonator has been authorized</string>
     <string name="set_cdfj">Whether to enable the charge recheck function</string>
     <string name="set_cdzdsj">Setting the maximum charging time/s</string>
@@ -1013,6 +1014,7 @@
     <string name="text_qrzw">Confirm networking</string>
     <string name="text_addqy">Add a region</string>
     <string name="text_qygl">Regional management</string>
+    <string name="text_gdcz">More operations</string>
     <string name="text_dxscxm">Delete the project</string>
     <string name="text_zw">networking</string>
     <string name="text_bj">Editing</string>

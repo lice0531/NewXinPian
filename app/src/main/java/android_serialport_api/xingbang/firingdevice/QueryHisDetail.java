@@ -305,12 +305,12 @@ public class QueryHisDetail extends BaseActivity {
 
     //获取配置文件中的值
     private void getPropertiesData() {
-//        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
-        if(changjia.equals("XJ")){
-            Shangchuan="否";
-        }else {
-            Shangchuan="是";
-        }
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
+//        if(changjia.equals("XJ")){
+//            Shangchuan="否";
+//        }else {
+//            Shangchuan="是";
+//        }
         Log.e("是否上传错误雷管", "changjia: "+changjia );
         Log.e("是否上传错误雷管", "Shangchuan: "+Shangchuan );
         Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
@@ -540,7 +540,9 @@ public class QueryHisDetail extends BaseActivity {
         hisListData.clear();
         Map<String, Object> item = new HashMap<>();
         item.put("no", getString(R.string.text_list_Serial));//"序号"
-        item.put("serialNo", getString(R.string.text_list_Serial));//"序号"
+//        item.put("serialNo", getString(R.string.text_list_Serial));//"序号"
+        item.put("kongNo", getString(R.string.text_list_kong));//"孔号（pai-blastserial-duanNo）"
+        item.put("piece", getString(R.string.text_list_piace));//"区域"
         item.put("shellNo", getString(R.string.text_list_guan));//"管壳码"
         item.put("delay", "" + getString(R.string.text_list_delay));//"延时"
         item.put("errorName", getString(R.string.text_list_state));//"状态"
@@ -566,11 +568,17 @@ public class QueryHisDetail extends BaseActivity {
                 String shellNo = cursor.getString(3);//管壳号
                 String errorName = cursor.getString(8);//错误信息
                 int delay = cursor.getInt(5); //延时
+                String piece = cursor.getString(15); //区域
+                int duanNo = cursor.getInt(17); //段位号
+                String pai = cursor.getString(18); //排
+                String kongNo = pai + "-" + serialNo + "-" + duanNo;
                 item = new HashMap<>();
                 item.put("no", a);
-                item.put("serialNo", serialNo);
+//                item.put("serialNo", serialNo);
+                item.put("kongNo", kongNo);
                 item.put("shellNo", shellNo);
                 item.put("delay", "" + delay);
+                item.put("piece", "" + piece);
                 if (errorName == null || errorName.trim().length() < 1) errorName = " ";
                 item.put("errorName", errorName);
                 hisListData.add(item);
@@ -620,8 +628,9 @@ public class QueryHisDetail extends BaseActivity {
         if (count > 0) count -= 1;
         txtView.setText(getString(R.string.text_alert_tip4) + count);//"雷管总数:"
         SimpleAdapter adapter = new SimpleAdapter(QueryHisDetail.this, hisListData, R.layout.query_his_detail_item,
-                new String[]{"no", "shellNo", "delay", "errorName"},
-                new int[]{R.id.X_item_no, R.id.X_item_shellno, R.id.X_item_delay, R.id.X_item_errorname});
+                new String[]{"no", "kongNo","piece","shellNo", "delay", "errorName"},
+                new int[]{R.id.X_item_no, R.id.X_item_kongNo,R.id.X_item_piece,R.id.X_item_shellno,
+                        R.id.X_item_delay, R.id.X_item_errorname});
         // 给listview加入适配器
         listview.setAdapter(adapter);
 
