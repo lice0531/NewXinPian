@@ -1488,6 +1488,13 @@ public class GreenDaoMaster {
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
+    public List<DetonatorTypeNew> queryDetonatorShouQuan(String sqrq) {
+        return detonatorTypeNewDao
+                .queryBuilder()
+                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
+                .orderDesc(DetonatorTypeNewDao.Properties.Id)
+                .list();
+    }
     public List<DetonatorTypeNew> queryDetonatorShouQuan(String zt,String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()

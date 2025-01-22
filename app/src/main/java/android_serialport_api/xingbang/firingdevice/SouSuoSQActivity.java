@@ -118,6 +118,48 @@ public class SouSuoSQActivity extends BaseActivity {
         re_ss.setLayoutManager(linearLayoutManager);
         re_ss.setAdapter(mAdapter2);
 
+        initHandle();
+        if (sqrq.equals("")) {
+            mListData = new GreenDaoMaster().queryDetonatorShouQuan();
+            mList.clear();
+            Log.e("加载", "mListData.size(): " + mListData.size());
+            for (DetonatorTypeNew item : mListData) {
+                ShouQuanData shouQuanData = new ShouQuanData();
+                shouQuanData.setId(item.getId());
+                shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                shouQuanData.setDetonatorId(item.getDetonatorId());
+                shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                shouQuanData.setCong_yscs(item.getCong_yscs());
+                shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                shouQuanData.setQibao(item.getQibao());
+                shouQuanData.setTime(item.getTime());
+                if (!mList.contains(shouQuanData)) {
+                    mList.add(shouQuanData);
+                }
+            }
+        } else {
+            mListData = new GreenDaoMaster().queryDetonatorShouQuan(sqrq);
+            mList.clear();
+            Log.e("加载", "mListData.size(): " + mListData.size());
+            for (DetonatorTypeNew item : mListData) {
+                ShouQuanData shouQuanData = new ShouQuanData();
+                shouQuanData.setId(item.getId());
+                shouQuanData.setShellBlastNo(item.getShellBlastNo());
+                shouQuanData.setDetonatorId(item.getDetonatorId());
+                shouQuanData.setDetonatorIdSup(item.getDetonatorIdSup());
+                shouQuanData.setCong_yscs(item.getCong_yscs());
+                shouQuanData.setZhu_yscs(item.getZhu_yscs());
+                shouQuanData.setQibao(item.getQibao());
+                shouQuanData.setTime(item.getTime());
+                if (!mList.contains(shouQuanData)) {
+                    mList.add(shouQuanData);
+                }
+            }
+        }
+//        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
+    }
+
+    private void initHandle() {
         mHandler_UI = new Handler(msg -> {
             switch (msg.what) {
                 // 区域 更新视图
@@ -127,7 +169,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     if (sqrq.equals("")) {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuan();
                     } else {
-//                        Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
+                        Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
                         mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
                     }
                     Log.e("查询", "mListData.size: " + mListData.size());
@@ -209,8 +251,6 @@ public class SouSuoSQActivity extends BaseActivity {
             }
             return false;
         });
-
-        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
     }
 
 

@@ -871,10 +871,18 @@ public class DownOfflineActivity extends BaseActivity {
                 }
                 Gson gson = new Gson();
                 ErweimaBean erweimaBean = gson.fromJson(res, ErweimaBean.class);
-                Message msg = new Message();
-                msg.obj = erweimaBean.getMsg();
-                msg.what=18;
-                mHandler_1.sendMessage(msg);
+                if(erweimaBean.getStatus().equals("200")){
+                    Message msg = new Message();
+                    msg.obj = erweimaBean.getMsg();
+                    msg.what=18;
+                    mHandler_1.sendMessage(msg);
+                }else if(erweimaBean.getStatus().equals("401")){
+                    Message msg = new Message();
+                    msg.obj = erweimaBean.getMsg();
+                    msg.what=99;
+                    mHandler_1.sendMessage(msg);
+                }
+
                 Log.e("网络请求返回", "response: " + response.toString());
                 Log.e("网络请求返回", "res: " + res);
 //                Utils.writeRecord("---煋邦离线扫码返回:" + res);

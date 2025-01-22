@@ -343,9 +343,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private MyAlertDialog myDialog;
     QuYu quYu_choice;
     PaiData choicepaiData;
-    private String start_delay_data = "";
-    private String f1_delay_data = "";
-    private String f2_delay_data = "";
+    private String start_delay_data = "";//开始延时
+    private String f1_delay_data = "";//孔间延时
+    private String f2_delay_data = "";//孔内延时
     private int kongSum = 1;
     private boolean check_gone = false;
 
@@ -955,7 +955,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 4) {
                 SoundPlayUtils.play(4);
 //                show_Toast(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_No + getString(R.string.text_error_tip72) + singleShellNo + getString(R.string.text_error_tip71));
-                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_pai + "排" + lg_No + "孔" + lg_wei + "位" + singleShellNo + getString(R.string.text_error_tip71));
+                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_pai + "-" + lg_No + "-" + lg_wei + " " + singleShellNo + getString(R.string.text_error_tip71));
 
                 int total = showDenatorSum();
 //                reisterListView.setSelection(total - Integer.parseInt(lg_No));
@@ -965,7 +965,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast(getString(R.string.text_line_tip7));
             } else if (msg.what == 7) {
                 SoundPlayUtils.play(4);
-                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_pai + "排" + lg_No + "孔" + lg_wei + "位" + singleShellNo + getString(R.string.text_error_tip71));
+                show_Toast_long(getString(R.string.text_error_tip69) + lg_Piece + getString(R.string.text_error_tip70) + lg_pai + "-" + lg_No + "-" + lg_wei + " " + singleShellNo + getString(R.string.text_error_tip71));
             } else if (msg.what == 8) {
                 SoundPlayUtils.play(4);
 //                show_Toast(getString(R.string.text_error_tip64));
@@ -1400,21 +1400,36 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void clearText(){
         //厂家
         edit_start_entBF2Bit_st.getText().clear();
+        edit_start_entBF2Bit_st.setBackgroundResource(R.drawable.translucent);
         edit_end_entBF2Bit_en.getText().clear();
+        edit_end_entBF2Bit_en.setBackgroundResource(R.drawable.translucent);
         editScanChangjia.getText().clear();
+        editScanChangjia.setBackgroundResource(R.drawable.translucent);
         //日期
         edit_start_entproduceDate_st.getText().clear();
         edit_end_entproduceDate_ed.getText().clear();
         editScanRiqi.getText().clear();
+        edit_start_entproduceDate_st.setBackgroundResource(R.drawable.translucent);
+        edit_end_entproduceDate_ed.setBackgroundResource(R.drawable.translucent);
+        editScanRiqi.setBackgroundResource(R.drawable.translucent);
         //特征号
         edit_start_entAT1Bit_st.getText().clear();
         edit_end_entAT1Bit_ed.getText().clear();
         editScanTezheng.getText().clear();
+        edit_start_entAT1Bit_st.setBackgroundResource(R.drawable.translucent);
+        edit_end_entAT1Bit_ed.setBackgroundResource(R.drawable.translucent);
+        editScanTezheng.setBackgroundResource(R.drawable.translucent);
         //流水号
         edit_start_entboxNoAndSerial_st.getText().clear();
         edit_start_entboxNoAndSerial_st.getText().clear();
         editScanHehao.getText().clear();
-
+        editScanLiushui.getText().clear();
+        edit_start_entboxNoAndSerial_st.setBackgroundResource(R.drawable.translucent);
+        edit_start_entboxNoAndSerial_st.setBackgroundResource(R.drawable.translucent);
+        editScanHehao.setBackgroundResource(R.drawable.translucent);
+        editScanLiushui.setBackgroundResource(R.drawable.translucent);
+        //连续注册个数
+        etNum.getText().clear();
     }
 
     /**
@@ -2068,7 +2083,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     //起始序号
                     int startNoStr = new GreenDaoMaster().getPieceAndPaiMinKong(mRegion, paiData.getPaiId());
                     //终点序号
-                    int endNoStr = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiData.getPaiId());
+//                    int endNoStr = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiData.getPaiId());
+                    int endNoStr =childList.get(paiChoice-1).size();
                     //孔内雷管数
                     String holeDeAmoStr = kongSum.getText().toString();
                     //开始延时
@@ -2477,6 +2493,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "同孔  flag_t1: " + flag_t1);
         Log.e(TAG, "同孔  duanNo2: " + duanNo2);
         if (!flag_t1) {//同孔
+            duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo((maxKong), mRegion, paiChoice);//获取该区域 最大duanNo
             duanNo2 = duanNo2 + 1;
             denatorBaseinfo.setSithole((maxKong) + "");
             denatorBaseinfo.setBlastserial((maxKong));
@@ -2968,15 +2985,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 kong=maxKong+1;
             }
             Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
+            Log.e("扫码-单孔多发判断", "delay_min: " + delay_min);
+            Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
+            Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
+            Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
             duanNo1 = duanNo1 + 1;
             denatorBaseinfo.setSithole(kong+ "");
             denatorBaseinfo.setBlastserial(kong);
             denatorBaseinfo.setDuanNo((duanNo1));
-            if (!flag_jh_f1) {
-                denatorBaseinfo.setDelay(delay_min);
-            } else {
-                denatorBaseinfo.setDelay(delay_start);
+            if(duanNo1>1){
+                if (!flag_jh_f1) {//孔内是否递减
+                    denatorBaseinfo.setDelay((delay_min-Integer.parseInt(f2_delay_data)));
+                } else {
+                    denatorBaseinfo.setDelay((delay_start+Integer.parseInt(f2_delay_data)));
+                }
             }
+
 
         }
         int delay_add = 0;
@@ -3504,6 +3528,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             lg_No = list_lg.get(0).getBlastserial() + "";
             lg_Piece = list_lg.get(0).getPiece();
             singleShellNo = list_lg.get(0).getShellBlastNo();
+            lg_wei = list_lg.get(0).getDuanNo() + "";
+            lg_pai = list_lg.get(0).getPai() + "";
+            Log.e("检查重复的数据", "lg_No" + lg_No);
+            Log.e("检查重复的数据", "lg_Piece" + lg_Piece);
+            Log.e("检查重复的数据", "singleShellNo" + singleShellNo);
             return true;
         } else {
             return false;
@@ -3557,7 +3586,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                     }
                 }
-                if (selectIdList.isEmpty()) {
+                List<PaiDataSelect> selectGroupList = new ArrayList<>();
+                for (int i = 0; i < groupList.size(); i++) {
+                    if(groupList.get(i).isSelect()){
+                        selectGroupList.add(groupList.get(i));
+                    }
+//                    for (PaiDataSelect data : groupList.get(i)) {
+//                        if (data.isSelect()) {
+//                            selectGroupList.add(data);
+//                        }
+//                    }
+                }
+                if (selectIdList.isEmpty()&&selectGroupList.isEmpty()) {
                     show_Toast(getResources().getString(R.string.text_selectlg));
                     return;
                 }
@@ -5392,46 +5432,82 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private void setDenatorDelay(boolean dijia, int start, int end, String holeDeAmoStr, String startDelayStr, String holeinDelayStr, String holeBetweentStr) {
-        Log.e("设置延时", "dijia: " + dijia);
+        Log.e("设置延时", "递加 dijia: " + dijia);
         Log.e("设置延时", "start: " + start);
         Log.e("设置延时", "end: " + end);
-        Log.e("设置延时", "holeDeAmoStr: " + holeDeAmoStr);
-        Log.e("设置延时", "startDelayStr: " + startDelayStr);
-        Log.e("设置延时", "holeinDelayStr: " + holeinDelayStr);
-        Log.e("设置延时", "holeBetweentStr: " + holeBetweentStr);
+        Log.e("设置延时", "孔内雷管总数数holeDeAmoStr: " + holeDeAmoStr);
+        Log.e("设置延时", "开始延时startDelayStr: " + startDelayStr);
+        Log.e("设置延时", "孔内延时holeinDelayStr: " + holeinDelayStr);
+        Log.e("设置延时", "孔间延时holeBetweentStr: " + holeBetweentStr);
         int holeDeAmo = Integer.parseInt(holeDeAmoStr);
         int startDelay = Integer.parseInt(startDelayStr);
         int holeinDelay = Integer.parseInt(holeinDelayStr);
         int holeBetweent = Integer.parseInt(holeBetweentStr);
         int holeLoop = 1;
         int delayCount = startDelay;
-        for (int iLoop = start; iLoop <= end; iLoop++) {
-            for (int i = 1; i <= holeDeAmo; i++) {
+        List<DenatorBaseinfoSelect> list_lg = childList.get(paiChoice-1);
+        Log.e("设置延时", "选中排的雷管数量list_lg.size(): " + list_lg.size());
+        for (int i = 0; i < list_lg.size(); i++) {
+//            for (int i = 1; i <= holeDeAmo; i++) {
                 ContentValues values = new ContentValues();
 //				values.put("sithole", holeLoop);
                 values.put("delay", delayCount);
-                Log.e(TAG, "更新delay: " + delayCount);
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? and pai =? ", new String[]{String.valueOf(iLoop), mRegion, paiChoice + ""});
+                Log.e("设置延时", "list_lg.get(i).getShellBlastNo():"+list_lg.get(i).getShellBlastNo()+" 更新delay: " + delayCount);
+//                if(list_lg.get(i).getShellBlastNo().length()>1){
+//                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "shellBlastNo =? and piece =? and pai =? ", new String[]{list_lg.get(i).getShellBlastNo(), mRegion, paiChoice + ""});
+//                }else {
+                    db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(i).getId()+"", mRegion, paiChoice + ""});
+//                }
                 if (dijia) {
-                    if (i < holeDeAmo) {
-                        delayCount += holeinDelay;
-                        iLoop++;
+                    if(holeDeAmo!=1){
+                        if (list_lg.get(i).getDuanNo() < holeDeAmo) {
+                            delayCount += holeinDelay;
+                            Log.e("设置延时", "孔内延时: " + delayCount);
+//                        iLoop++;
+                        }else {
+                            delayCount += holeBetweent;
+                        }
+                    }else {
+                        if (list_lg.get(i).getDuanNo() >1) {
+                            delayCount = delayCount - holeBetweent + holeinDelay;
+                            Log.e("设置延时", "孔内延时: " + delayCount);
+                            values.put("delay", delayCount);
+                            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(i).getId()+"", mRegion, paiChoice + ""});
+//                        iLoop++;
+                        }else {
+                            delayCount += holeBetweent;
+                        }
                     }
+
                 } else {
-                    if (i < holeDeAmo) {
-                        delayCount -= holeinDelay;
-                        iLoop++;
+                    if(holeDeAmo!=1){
+                        if (list_lg.get(i).getDuanNo() < holeDeAmo) {
+                            delayCount -= holeinDelay;
+//                        iLoop++;
+                        }else {
+                            delayCount -= holeBetweent;
+                        }
+                    }else {
+                        if (list_lg.get(i).getDuanNo() >1) {
+                            delayCount =delayCount + holeBetweent - holeinDelay;
+                            values.put("delay", delayCount);
+                            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(i).getId()+"", mRegion, paiChoice + ""});
+//                        iLoop++;
+                        }else {
+                            delayCount -= holeBetweent;
+                        }
                     }
+
                 }
 
-                if (iLoop > end) break;
-            }
-            holeLoop++;
-            if (dijia) {
-                delayCount += holeBetweent;
-            } else {
-                delayCount -= holeBetweent;
-            }
+//                if (iLoop > end) break;
+//            }
+
+//            if (dijia) {
+//                delayCount += holeBetweent;
+//            } else {
+//                delayCount -= holeBetweent;
+//            }
 
         }
         pb_show = 0;
