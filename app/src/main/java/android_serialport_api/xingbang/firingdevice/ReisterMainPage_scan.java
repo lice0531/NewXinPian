@@ -1307,7 +1307,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
         setTitleRegion(mRegion, -1);
-
+        titleBack.setVisibility(View.GONE);
+        title_lefttext.setVisibility(View.VISIBLE);
+        titleRight2.setVisibility(View.VISIBLE);
+        titleRight2.setText(getResources().getString(R.string.text_gdcz));
+        titleAdd.setVisibility(View.GONE);
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter = new DetonatorAdapter_Paper<>(this, 4);
@@ -3561,11 +3565,94 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private boolean isSelectAll = true;//是否全选
 
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_JH_F1, R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
-            R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st, R.id.tv_cancel,
+            R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st, R.id.tv_cancel,R.id.title_right2,
             R.id.btn_ReisterScanStart_ed, R.id.btn_addDelay, R.id.btn_start_delay, R.id.btn_pai, R.id.btn_kong, R.id.btn_wei, R.id.tv_delete, R.id.tv_check_all
     })
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.title_right2:
+                // 创建一个对话框
+                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popView = inflater.inflate(R.layout.layout_reigst_more, null);
+                // 创建 PopupWindow
+                PopupWindow popupWindow = new PopupWindow(popView,
+                        400,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        true);
+                // 显示 PopupWindow 在 TextView 下方
+                // 手动输入
+                TextView item_1 = popView.findViewById(R.id.item_1);
+                // 单发注册
+                TextView item_2 = popView.findViewById(R.id.item_2);
+                // 授权注册
+                TextView item_3 = popView.findViewById(R.id.item_3);
+                // 隧道模式
+                TextView item_4 = popView.findViewById(R.id.item_4);
+                // 创建三个按钮并添加到布局中
+                item_1.setOnClickListener(v -> {
+                    popupWindow.dismiss();
+                    clearText();
+                    if (llStart.getVisibility() == View.GONE) {
+                        cd_title.setVisibility(View.GONE);
+                        llEnd.setVisibility(View.VISIBLE);
+                        llStart.setVisibility(View.VISIBLE);
+                        llNum.setVisibility(View.VISIBLE);
+                        btnReturn.setVisibility(View.VISIBLE);
+                        btnInputOk.setVisibility(View.VISIBLE);
+                        btnScanReister.setVisibility(View.GONE);
+                        lySetDelay.setVisibility(View.GONE);
+                        llSingle.setVisibility(View.VISIBLE);
+                        btnInput.setText(getResources().getString(R.string.text_return));
+                    } else {
+                        cd_title.setVisibility(View.VISIBLE);
+                        llEnd.setVisibility(View.GONE);
+                        llStart.setVisibility(View.GONE);
+                        llNum.setVisibility(View.GONE);
+                        btnInputOk.setVisibility(View.GONE);
+                        llSingle.setVisibility(View.GONE);
+                        btnReturn.setVisibility(View.GONE);
+                        btnScanReister.setVisibility(View.VISIBLE);
+//                    lySetDelay.setVisibility(View.VISIBLE);
+                        btnInput.setText(getResources().getString(R.string.text_scan_sdsr));
+                    }
+                });
+                item_2.setOnClickListener(v -> {
+                    popupWindow.dismiss();
+                    hideInputKeyboard();
+                    if (checkDelay()) return;
+                    if (isSingleReisher) {
+                        show_Toast(getResources().getString(R.string.text_line_tip1));
+                        btnInputOk.setEnabled(false);
+                        btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
+                        isSingleReisher = false;
+                        lyXinxi.setVisibility(View.VISIBLE);
+                        closeThread();
+                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+
+                    } else {
+                        lyXinxi.setVisibility(View.GONE);
+                        btnInputOk.setEnabled(true);
+                        txtCurrentIC.setTextColor(Color.BLACK);
+                        isSingleReisher = true;
+                        // 13 退出注册模式
+                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+                    }
+                });
+                item_3.setOnClickListener(v -> {
+                    popupWindow.dismiss();
+                    Intent intent = new Intent(this, SouSuoSQActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("paiChoice",paiChoice);//用来判断是否需要展示注册功能
+                    bundle.putString("mRegion",mRegion);//用来判断是否需要展示注册功能
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                });
+                item_4.setOnClickListener(v -> {
+                    popupWindow.dismiss();
+                    startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));
+                });
+                popupWindow.showAsDropDown(titleRight2);
+                break;
             case R.id.tv_check_all:
                 if (isSelectAll) {
                     tv_check_all.setText(getResources().getString(R.string.text_qxqx));
@@ -5060,6 +5147,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
         // 设置标题
         getSupportActionBar().setTitle(mOldTitle + str);
+        title_lefttext.setText(mOldTitle + str);
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, region);
 

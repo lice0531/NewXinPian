@@ -458,16 +458,9 @@ public class SendMsgActivity extends BaseActivity {
         //第二种 2条
         String[] lg = leiguan.split(",");
         Log.e(TAG, "接收到的雷管个数:" + lg.length);
-//        String shellNo;
         int maxNo = master.getPieceMaxNum(qyId);
         int maxKong = master.getPieceAndPaiMaxKong(qyId, Integer.parseInt(paiNo));//获取该区域最大孔号
         Log.e(TAG, "maxKong:" + maxKong);
-        //获取该区域 最大序号的延时
-//        int delay_max = master.getPieceAndPaiMaxDelay(qyId, paiChoice);
-
-        int reCount = 0;
-//        for (int i = lg.length; i > 0; i--) {
-//            shellNo = lg[i - 1];
         String[] a = shellNo.split("#");
         Log.e("分割", "a.length: " + a.length);
         Log.e("分割", "a[3]" + a[3]);
@@ -479,13 +472,11 @@ public class SendMsgActivity extends BaseActivity {
         }
         Log.e(TAG, "duanNo:" + duanNo);
         if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
-            reCount++;
             Log.e(TAG, "DenatorId检查有重复雷管了--跳出循环");
             return;
         }
         if (checkRepeatShellNo(a[2])) {//检查重复数据
             Log.e(TAG, "ShellNo检查有重复雷管了--跳出循环");
-            reCount++;
             return;
         }
         if (a[0].equals("无")) {
@@ -496,20 +487,29 @@ public class SendMsgActivity extends BaseActivity {
 //            denator.setBlastserial(maxKong);
 //            denator.setSithole(maxKong + "");
         if (a.length == 5) {
-            denator.setBlastserial((maxKong + 1));
-            denator.setSithole((maxKong + 1) + "");
+            if (!a[3].contains("-")) {
+                denator.setBlastserial((duanNo + 1));
+                denator.setSithole((duanNo + 1) + "");
+            } else {
+                denator.setBlastserial(Integer.parseInt(duan[1]));
+                denator.setSithole(duan[1]);
+            }
+            denator.setDuan(1);
+            denator.setDuanNo(1);
         } else {
+            denator.setDuan(Integer.parseInt(duan[0]));
             denator.setBlastserial(Integer.parseInt(a[6]));
             denator.setSithole(a[6]);
+            if (!a[3].contains("-")) {
+                denator.setDuanNo((duanNo + 1));
+            } else {
+                denator.setDuanNo(Integer.parseInt(duan[1]));
+            }
         }
         denator.setDenatorId(a[0]);
         denator.setShellBlastNo(a[2]);
-        denator.setDuan(Integer.parseInt(duan[0]));
-        if (!a[3].contains("-")) {
-            denator.setDuanNo((duanNo + 1));
-        } else {
-            denator.setDuanNo(Integer.parseInt(duan[1]));
-        }
+
+
         denator.setDelay(Integer.parseInt(a[1]));
         denator.setRegdate(Utils.getDateFormat(new Date()));
         denator.setStatusCode("02");
@@ -537,7 +537,6 @@ public class SendMsgActivity extends BaseActivity {
 //        mHandler_0.sendMessage(msg);
         registIndex++;
         Log.e(TAG,"插入成功第" + registIndex + "条雷管数据");
-//        return reCount;
     }
 
     private void updataPaiData(int paiNo,String qyId) {

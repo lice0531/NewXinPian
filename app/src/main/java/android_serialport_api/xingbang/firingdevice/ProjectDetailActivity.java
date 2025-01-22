@@ -24,10 +24,9 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
-import android_serialport_api.xingbang.services.sendmessge.MessageEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.QRCodeUtils;
-import android_serialport_api.xingbang.utils.ThreeDES;
+import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -78,6 +77,7 @@ public class ProjectDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_detail);
         ButterKnife.bind(this);
+        SoundPlayUtils.init(this);
         AppLogUtils.writeAppLog("--进入到项目详情页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
@@ -232,6 +232,7 @@ public class ProjectDetailActivity extends BaseActivity {
         Project project = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Id.eq(proId)).unique();
         project.setSelected("true");
         Application.getDaoSession().getProjectDao().update(project);
+        SoundPlayUtils.play(1);
         finish();
     }
 

@@ -100,6 +100,7 @@ public class ProjectManagerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_manager);
         ButterKnife.bind(this);
+        SoundPlayUtils.init(this);
         AppLogUtils.writeAppLog("--进入到项目管理页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
@@ -196,6 +197,7 @@ public class ProjectManagerActivity extends BaseActivity {
                                     EventBus.getDefault().post(new FirstEvent("finishDetailPage"));
                                 }
                                 delShouQuan(proId,project_name);//删除方法
+                                SoundPlayUtils.play(1);
                                 AppLogUtils.writeAppLog("点击了删除项目");
                                 finish();
                             })

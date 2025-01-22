@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -226,13 +227,36 @@ public class QueryHisDetail extends BaseActivity {
                                 .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
                                 .setMessage(getResources().getString(R.string.text_queryHis_dialog9))//设置对话框的内容"本次任务成功起爆！"
                                 //设置对话框的按钮
-                                .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
+                                .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
                                 .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog12, which) -> {
-                                    String t = (String) v.getTag(R.id.bt_delete);
-                                    if (delHisInfo(t) == 0) {
-                                        show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
-                                    }
                                     dialog12.dismiss();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
+                                    builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+                                    View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                                    TextView tvTitle = view.findViewById(R.id.tvTitle);
+                                    tvTitle.setText("请输入密码后,再进行删除记录操作");
+                                    builder.setView(view);
+                                    final EditText password = view.findViewById(R.id.password);
+                                    builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String b = password.getText().toString().trim();
+                                            if (b == null || b.trim().length() < 1) {
+                                                show_Toast(getString(R.string.text_alert_password));
+                                                return;
+                                            }
+                                            if (b.equals("123")) {
+                                                String t = (String) v.getTag(R.id.bt_delete);
+                                                if (delHisInfo(t) == 0) {
+                                                    show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
+                                                }
+                                            } else {
+                                                show_Toast(getResources().getString(R.string.text_mmcw));
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
                                 }).create();
                         dialog.show();
 

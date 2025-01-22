@@ -405,10 +405,11 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             initView();//把输入框颜色初始化
         });
 
-        at_htid.addTextChangedListener(htbh_watcher);//长度监听
-        at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
-        at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
-        at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
+        //目前都是不可修改的设置项  所以不再根据字数设置背景显示
+//        at_htid.addTextChangedListener(htbh_watcher);//长度监听
+//        at_xmbh.addTextChangedListener(xmbh_watcher);//长度监听
+//        at_dwdm.addTextChangedListener(dwdm_watcher);//长度监听
+//        at_bprysfz.addTextChangedListener(sfz_watcher);//长度监听
 
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
