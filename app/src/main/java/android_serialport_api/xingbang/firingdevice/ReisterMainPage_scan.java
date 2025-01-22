@@ -885,13 +885,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
                     paiMax = new GreenDaoMaster().getMaxPaiId(mRegion);
+                    paiMin = new GreenDaoMaster().getMinPaiId(mRegion);
                     groupList.clear();
                     childList.clear();
 
                     groupList = new GreenDaoMaster().queryPaiSelect(mRegion);
                     Log.e("liyi_1003", "刷新适配器--groupList.size(): " + groupList.size());
                     Log.e("liyi_1003", "刷新适配器--paiMax: " + paiMax);
-                    for (int i = 1; i <= paiMax; i++) {
+                    for (int i = paiMin; i <= paiMax; i++) {
                         List<DenatorBaseinfoSelect> list_pai = new GreenDaoMaster().queryDetonatorPaiSelect(mRegion, i);
                         Log.e("liyi_1003", "刷新适配器--list_pai: " + list_pai.toString());
 
