@@ -179,7 +179,7 @@ public class PracticeActivity extends BaseActivity {
         db = mMyDatabaseHelper.getReadableDatabase();
         Log.e("本机ip", "ip:: " + getlocalip());
         textAndroidIp.setText(getResources().getString(R.string.text_sendMsg_ip) + getlocalip());
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Log.e(TAG, "Yanzheng: " + Yanzheng);

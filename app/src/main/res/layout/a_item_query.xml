@@ -13,20 +13,20 @@
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />
-    <!-- 序号 -->
+    <!-- 区域 -->
+    <TextView
+        android:id="@+id/tv_piace"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        style="@style/alltextstyle" />
+    <!-- 孔号 -->
     <TextView
         android:id="@+id/tv_duanNo"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:textSize="18sp"
-        android:layout_height="match_parent"
-        android:background="@drawable/a_bg_border_blue_1dp"
-        style="@style/alltextstyle" />
-    <!-- 序号 -->
-    <TextView
-        android:id="@+id/tv_piace"
-        android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
         android:background="@drawable/a_bg_border_blue_1dp"
         style="@style/alltextstyle" />

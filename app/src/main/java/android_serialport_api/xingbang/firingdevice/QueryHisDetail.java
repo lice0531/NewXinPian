@@ -565,8 +565,8 @@ public class QueryHisDetail extends BaseActivity {
         Map<String, Object> item = new HashMap<>();
         item.put("no", getString(R.string.text_list_Serial));//"序号"
 //        item.put("serialNo", getString(R.string.text_list_Serial));//"序号"
-        item.put("kongNo", getString(R.string.text_list_kong));//"孔号（pai-blastserial-duanNo）"
         item.put("piece", getString(R.string.text_list_piace));//"区域"
+        item.put("kongNo", getString(R.string.text_list_kong));//"孔号（pai-blastserial-duanNo）"
         item.put("shellNo", getString(R.string.text_list_guan));//"管壳码"
         item.put("delay", "" + getString(R.string.text_list_delay));//"延时"
         item.put("errorName", getString(R.string.text_list_state));//"状态"
@@ -652,8 +652,8 @@ public class QueryHisDetail extends BaseActivity {
         if (count > 0) count -= 1;
         txtView.setText(getString(R.string.text_alert_tip4) + count);//"雷管总数:"
         SimpleAdapter adapter = new SimpleAdapter(QueryHisDetail.this, hisListData, R.layout.query_his_detail_item,
-                new String[]{"no", "kongNo","piece","shellNo", "delay", "errorName"},
-                new int[]{R.id.X_item_no, R.id.X_item_kongNo,R.id.X_item_piece,R.id.X_item_shellno,
+                new String[]{"no", "piece","kongNo","shellNo", "delay", "errorName"},
+                new int[]{R.id.X_item_no, R.id.X_item_piece,R.id.X_item_kongNo,R.id.X_item_shellno,
                         R.id.X_item_delay, R.id.X_item_errorname});
         // 给listview加入适配器
         listview.setAdapter(adapter);
