@@ -2066,10 +2066,10 @@ public class GreenDaoMaster {
         if (cursor != null && cursor.moveToNext()) {
             paiId = cursor.getInt(0);
             cursor.close();
-            Log.e("getMaxPaiId", "获取最大排号: "+paiId);
+            Log.e("getMaxPaiId", "获取最小排号: "+paiId);
             return paiId;
         }else {
-            Log.e("getMaxPaiId", "获取最大排号: 0");
+            Log.e("getMaxPaiId", "获取最小排号: 0");
             return 0;
         }
     }
