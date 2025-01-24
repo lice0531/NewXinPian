@@ -17,6 +17,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -268,6 +269,23 @@ public class XingbangMain extends SerialPortActivity {
                 getUserMessage();//获取用户信息
                 GreenDaoMaster.setDenatorType();//延时最大值默认值
 //                GreenDaoMaster.setFactory();//厂家码默认值
+                String isModitySettings = (String) MmkvUtils.getcode("isModitySettings","");
+                if (TextUtils.isEmpty(isModitySettings)) {
+                    /**
+                     * 如未修改过系统设置  默认进来是否验证雷管已授权都为是
+                     * 是否强制起爆  是否上传错误雷管都根据厂家来设置
+                     */
+                    MmkvUtils.savecode("Yanzheng_sq", "验证");
+                    if(changjia.equals("XJ")) {
+                        //厂家为XJ时，有错误雷管不能接续起爆  是否上传错误雷管:否
+                        MmkvUtils.savecode("Qzqb", "否");
+                        MmkvUtils.savecode("Shangchuan", "否");
+                    } else {
+                        MmkvUtils.savecode("Shangchuan", "是");
+                        MmkvUtils.savecode("Qzqb", "是");
+                    }
+                }
+                Log.e(TAG,"是否修改过系统设置:" + isModitySettings);
             }
         }.start();
         loadMoreData_all_lg();//查询雷管延时是否为0
