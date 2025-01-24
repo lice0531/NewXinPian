@@ -463,39 +463,31 @@ public class FiringMainActivity extends SerialPortActivity {
 //                version_1 = true;
             } else {
                 if ("是".equals(Qzqb)) {
-                    Log.e(TAG,"有错误雷管:继续");
-                    list_dianliu.clear();
-                    increase(6);//充电阶段
-                    Log.e(TAG, "eightCount: " + eightCount);
+                    haveErrLgNotQzqb(true);
                 } else {
                     Log.e(TAG,"有错误雷管:不继续");
-                    haveErrLgNotQzqb();
+                    haveErrLgNotQzqb(false);
                 }
             }
         });
     }
 
-    private void haveErrLgNotQzqb() {
+    private void haveErrLgNotQzqb(boolean isContinue) {
         String isTestDenator = (String) MmkvUtils.getcode("isTestDenator", "");
         if (TextUtils.isEmpty(isTestDenator) || isTestDenator.equals("N")) {
             if (!isJL) {
-                showErrorLgDialog(getResources().getString(R.string.text_qberr1), 1);
+                showErrorLgDialog(getResources().getString(R.string.text_qberr1),isContinue);
                 //未网检就直接起爆且存在错误雷管只能退出  所以接收到级联指令也不操作
             } else {
-                showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
-                //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
-                xzqb();
-                //XJ存在错误雷管 限制起爆
-                sendXzqbData("01");
-                deviceStatus = "21";
+                showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
             }
         } else {
-            showErrorLgDialog(getResources().getString(R.string.text_qberr2), 2);
-            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
-            xzqb();
-            //XJ存在错误雷管 限制起爆
-            sendXzqbData("01");
-            deviceStatus = "21";
+            showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
+//            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
+//            xzqb();
+//            //XJ存在错误雷管 限制起爆
+//            sendXzqbData("01");
+//            deviceStatus = "21";
         }
     }
 
@@ -542,31 +534,42 @@ public class FiringMainActivity extends SerialPortActivity {
         builder.create().show();
     }
 
-    private void showErrorLgDialog(String content, int type) {
+    private void showErrorLgDialog(String content,boolean isContinue) {
         TextView view = new TextView(this);
         view.setTextSize(25);
         view.setTextColor(Color.RED);
         view.setText(content);
         view.setTypeface(null, Typeface.BOLD);
-        AlertDialog dialog = new Builder(FiringMainActivity.this)
-                .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
-                .setView(view)
-                //设置对话框的按钮
-//                        .setPositiveButton("继续", (dialog2, which) -> {
-//                            //检测两次
-////                          increase(33);//之前是4
-//                            increase(6);//充电阶段
-////                            version_1 = true;
-//                        })
-                .setPositiveButton(R.string.text_qd, (dialog2, which) -> {
-                    //这里明确下需求后再确定要不要退出当前页面
-//                    dialog2.dismiss();
-//                    if (type == 1) {
-//                        MmkvUtils.savecode("isTestDenator","N");
-//                        finish();
-//                    }
-                })
-                .create();
+        AlertDialog dialog;
+        if (isContinue) {
+            //可以强制起爆: 有错误雷管可以继续
+            dialog = new Builder(FiringMainActivity.this)
+                    .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
+                    .setView(view)
+                    .setNeutralButton(R.string.text_dialog_qx, (dialog2, which) -> {
+
+                    })
+                    .setPositiveButton(R.string.text_firing_jixu, (dialog2, which) -> {
+                        Log.e(TAG,"有错误雷管:继续");
+                        list_dianliu.clear();
+                        increase(6);//充电阶段
+                        Log.e(TAG, "eightCount: " + eightCount);
+                    })
+                    .create();
+        } else {
+            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
+            xzqb();
+            //XJ存在错误雷管 限制起爆
+            sendXzqbData("01");
+            deviceStatus = "21";
+            //不能强制起爆: 有错误雷管不继续
+            dialog = new Builder(FiringMainActivity.this)
+                    .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
+                    .setView(view)
+                    .setNeutralButton(R.string.text_qd, (dialog2, which) -> {
+                    })
+                    .create();
+        }
         dialog.show();
     }
 

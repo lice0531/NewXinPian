@@ -94,7 +94,7 @@ public class SetSystemActivity extends BaseActivity {
         Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");
         Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "否");
         Qibaotime = (String) MmkvUtils.getcode("Qibaotime", "5");
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
         Fujian = (String) MmkvUtils.getcode("Fujian", "不复检");
         Qzqb = (String) MmkvUtils.getcode("Qzqb", "是");
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
@@ -223,8 +223,10 @@ public class SetSystemActivity extends BaseActivity {
                 }
                 if (swQzqb.isChecked()) {
                     MmkvUtils.savecode("Qzqb", "是");
+                    MmkvUtils.savecode("Shangchuan", "是");
                 } else {
                     MmkvUtils.savecode("Qzqb", "否");
+                    MmkvUtils.savecode("Shangchuan", "否");
                 }
                 int flag1 = 0, flag2 = 0, flag3 = 0;
                 if (!TextUtils.isEmpty(etSetPreparation.getText())&&Integer.parseInt(etSetPreparation.getText().toString())>47) {//准备时间
@@ -288,6 +290,9 @@ public class SetSystemActivity extends BaseActivity {
         if (!TextUtils.isEmpty(event.getMsg()) && "setChangJia".equals(event.getMsg())) {
             changjia = event.getData();
             MmkvUtils.savecode("sys_ver_name",changjia);
+            //验证雷管收否授权: 默认都为是
+            swYanzheng_sq.setChecked(true);
+            MmkvUtils.savecode("Yanzheng_sq", "验证");
             if(changjia.equals("XJ")) {
                 //厂家为XJ时，有错误雷管不能接续起爆  是否上传错误雷管:否
                 swQzqb.setChecked(false);

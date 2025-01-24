@@ -25,7 +25,7 @@ public class AppErrorLogAdapter extends RecyclerView.Adapter<AppErrorLogAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // 创建新的定义列表元素UI的View
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_query_his, parent, false);
+                .inflate(R.layout.item_query_applog, parent, false);
         view.setOnClickListener(this);
         return new ViewHolder(view,onItemClickListener);
     }

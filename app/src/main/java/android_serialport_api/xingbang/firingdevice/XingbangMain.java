@@ -213,7 +213,7 @@ public class XingbangMain extends SerialPortActivity {
     protected void onRestart() {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         try {
@@ -236,7 +236,7 @@ public class XingbangMain extends SerialPortActivity {
         ButterKnife.bind(this);
         SQLiteStudioService.instance().start(this);
 
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
         Log.e(TAG, "验证授权Yanzheng_sq: " + Yanzheng_sq);
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         Log.e(TAG, "changjia: " + changjia);
@@ -410,7 +410,8 @@ public class XingbangMain extends SerialPortActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         GreenDaoMaster master = new GreenDaoMaster();
-        list_shou = master.queryLeiGuan(format1, mRegion);
+        List<Integer> qyIdList = master.getSelectedQyIdList();
+        list_shou = master.queryLeiGuanZqRegion(format1, qyIdList);
         Yanzheng_sq_size = list_shou.size();
         Log.e(TAG, "超过授权日期list_shou: " + list_shou.size());
         Log.e(TAG, "超过授权日期list_shou: " + list_shou.toString());

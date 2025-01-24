@@ -760,7 +760,7 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
-                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai)
                 .list();
     }
 
@@ -1633,7 +1633,22 @@ public class GreenDaoMaster {
         Log.e("查询超时的雷管", "time: "+time );
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         return result.where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
-                .where(DenatorBaseinfoDao.Properties.Regdate.lt(time)).list();
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
+                .where(DenatorBaseinfoDao.Properties.Regdate.lt(time))
+                .orderAsc(DenatorBaseinfoDao.Properties.Pai)
+                .list();
+    }
+
+    /**
+     * 查询已组网区域超时的雷管
+     */
+    public  List<DenatorBaseinfo> queryLeiGuanZqRegion(String time,List<Integer> idList) {
+        Log.e("查询超时的雷管", "time: "+time );
+        List<DenatorBaseinfo> mListData = new ArrayList<>();
+        for (int id : idList) {
+            mListData.addAll(new GreenDaoMaster().queryLeiGuan(time,String.valueOf(id)));
+        }
+        return mListData;
     }
 
     /**
