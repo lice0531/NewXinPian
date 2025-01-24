@@ -80,7 +80,7 @@ public class SetSystemActivity extends BaseActivity {
     private DatabaseHelper mMyDatabaseHelper;
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
-
+    private String TAG = "系统设置页面";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,10 +99,11 @@ public class SetSystemActivity extends BaseActivity {
         Qzqb = (String) MmkvUtils.getcode("Qzqb", "是");
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         getUserMessage();
-        Log.e("设置页面", "qiaosi_set: " + qiaosi_set);
-        Log.e("设置页面", "Shangchuan: " + Shangchuan);
-        Log.e("设置页面", "Yanzheng_sq: " + Yanzheng_sq);
-        Log.e("设置页面", "Fujian: " + Fujian);
+        Log.e(TAG, "qiaosi_set: " + qiaosi_set);
+        Log.e(TAG, "Shangchuan: " + Shangchuan);
+        Log.e(TAG, "是否验证雷管已授权:: " + Yanzheng_sq);
+        Log.e(TAG, "Fujian: " + Fujian);
+        Log.e(TAG,"是否强制起爆:" + Qzqb);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -194,6 +195,10 @@ public class SetSystemActivity extends BaseActivity {
                 break;
             case R.id.set_save://保存设置
                 MessageBean message = GreenDaoMaster.getAllFromInfo_bean();
+                /**
+                 * 在这里判断是否修改过设置   只要点了保存  就默认已经修改过系统设置   所有的设置项就按照保存的来
+                 */
+                MmkvUtils.savecode("isModitySettings", "是");
                 if (swYanzheng.isChecked()) {
                     MmkvUtils.savecode("Yanzheng", "验证");
                 } else {
@@ -293,6 +298,7 @@ public class SetSystemActivity extends BaseActivity {
             //验证雷管收否授权: 默认都为是
             swYanzheng_sq.setChecked(true);
             MmkvUtils.savecode("Yanzheng_sq", "验证");
+            MmkvUtils.savecode("isModitySettings", "是");
             if(changjia.equals("XJ")) {
                 //厂家为XJ时，有错误雷管不能接续起爆  是否上传错误雷管:否
                 swQzqb.setChecked(false);

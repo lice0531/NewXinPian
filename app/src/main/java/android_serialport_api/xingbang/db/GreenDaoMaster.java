@@ -13,9 +13,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.custom.DenatorBaseinfoSelect;
@@ -2253,6 +2255,25 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 获取 该区域 该排 最大的孔号
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getKongCount(String piece,int pai) {
+        //先查询出所有雷管  由于孔和位的blastserial一致，所以如果遇到一样的blastserial就只计1个雷管
+       List<DenatorBaseinfo> list = mDeantorBaseDao.queryBuilder()
+        .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+               .where(DenatorBaseinfoDao.Properties.Pai.eq(pai)).list();
+        // 使用 Set 来去重 blastSerial，确保相同的 blastSerial 只计数一次
+        Set<Integer> uniqueBlastSerials = new HashSet<>();
+        for (DenatorBaseinfo item : list) {
+            uniqueBlastSerials.add(item.getBlastserial());
+        }
+        // 获取去重后的数量
+        return uniqueBlastSerials.size();
+    }
+
+    /**
      * 获取 该区域 该排 最小的孔号
      *
      * @param piece 区域号 1 2 3 4 5
@@ -2318,6 +2339,21 @@ public class GreenDaoMaster {
         int total=0;
         for (int a =1;a<=maxPai;a++){
             total = total+ getPieceAndPaiMaxKong(qyid,a);
+//            Log.e("查询区域有多少孔", a+"排孔数: "+total );
+        }
+        return total;
+    }
+
+    /**
+     * 查询区域有多少孔
+     * 之前是查询每个区域最大孔号  目前改为：查询现有区域所有的孔数量
+     */
+    public int querytotalKongNew(String qyid){
+        int maxPai=getMaxPaiId(qyid);
+//        Log.e("查询区域有多少孔", "maxPai: "+maxPai );
+        int total=0;
+        for (int a =1;a<=maxPai;a++){
+            total = total+ getKongCount(qyid,a);
 //            Log.e("查询区域有多少孔", a+"排孔数: "+total );
         }
         return total;

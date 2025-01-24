@@ -60,7 +60,7 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         int paisum = master.getPaisum(item.getQyid()+"");
         int max = master.getPieceMaxNumDelay(item.getQyid()+"");
         int min = master.getPieceMinNumDelay(item.getQyid()+"");
-        int kong = master.querytotalKong(item.getQyid()+"");
+        int kong = master.querytotalKongNew(item.getQyid()+"");
         TextView tv_yzw = helper.getView(R.id.tv_yzw);
         tv_yzw.setVisibility("true".equals(item.getSelected()) ? View.VISIBLE : View.GONE);
         TextView tv_yqb = helper.getView(R.id.tv_yqb);
