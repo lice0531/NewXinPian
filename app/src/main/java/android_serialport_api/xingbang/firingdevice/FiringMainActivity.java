@@ -480,19 +480,14 @@ public class FiringMainActivity extends SerialPortActivity {
                 //未网检就直接起爆且存在错误雷管只能退出  所以接收到级联指令也不操作
             } else {
                 showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
-                //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
-                xzqb();
-                //XJ存在错误雷管 限制起爆
-                sendXzqbData("01");
-                deviceStatus = "21";
             }
         } else {
             showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
-            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
-            xzqb();
-            //XJ存在错误雷管 限制起爆
-            sendXzqbData("01");
-            deviceStatus = "21";
+//            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
+//            xzqb();
+//            //XJ存在错误雷管 限制起爆
+//            sendXzqbData("01");
+//            deviceStatus = "21";
         }
     }
 
@@ -562,6 +557,11 @@ public class FiringMainActivity extends SerialPortActivity {
                     })
                     .create();
         } else {
+            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
+            xzqb();
+            //XJ存在错误雷管 限制起爆
+            sendXzqbData("01");
+            deviceStatus = "21";
             //不能强制起爆: 有错误雷管不继续
             dialog = new Builder(FiringMainActivity.this)
                     .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题

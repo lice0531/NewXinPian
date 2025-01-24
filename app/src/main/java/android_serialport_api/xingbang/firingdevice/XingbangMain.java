@@ -859,15 +859,15 @@ public class XingbangMain extends SerialPortActivity {
                     return;
                 }
 
-//                long time = System.currentTimeMillis();
-//                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-//                if (time - endTime < 180000) {//第二次启动时间不重置
-//                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-//                    if (a >= 0 && a < 180000) {
-//                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "组网");
-//                        return;
-//                    }
-//                }
+                long time = System.currentTimeMillis();
+                long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+                if (time - endTime < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+                    if (a >= 0 && a < 180000) {
+                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "组网");
+                        return;
+                    }
+                }
                 close();//停止访问电流
                 Log.e("测试页面", "测试: ");
                 String str2 = "测试";
@@ -904,16 +904,16 @@ public class XingbangMain extends SerialPortActivity {
                     initDialog_shouquan();
                     return;
                 }
-//                time = System.currentTimeMillis();
-//                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
-//
-//                if (time - endTime < 180000) {//第二次启动时间不重置
-//                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
-//                    if (a >= 0 &&  a < 180000) {
-//                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
-//                        return;
-//                    }
-//                }
+                time = System.currentTimeMillis();
+                endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
+
+                if (time - endTime < 180000) {//第二次启动时间不重置
+                    int a = (int) (180000 - (time - endTime)) / 1000 + 5;
+                    if (a >= 0 &&  a < 180000) {
+                        initDialog_fangdian(getString(R.string.text_main_tip1), a, "起爆");
+                        return;
+                    }
+                }
 
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
