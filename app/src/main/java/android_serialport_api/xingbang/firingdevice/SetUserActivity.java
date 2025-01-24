@@ -33,10 +33,14 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.services.UserLoad;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -103,7 +107,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
                 ListView lr = (ListView) v;
                 LinearLayout myte = (LinearLayout) lr.getChildAt(0);
-                TextView dd = (TextView) myte.getChildAt(1);
+                TextView dd = (TextView) myte.getChildAt(0);
                 menu.setHeaderIcon(R.drawable.icon);
                 menu.setHeaderTitle(dd.getText().toString());
                 menu.add(0, 1, 3, "删除");
@@ -135,8 +139,14 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
             	  String prex = "";
             	  String user_name = et_user_name.getText().toString();
           		  String user_pw = et_user_pw.getText().toString();
-          		  
-          		  insertDenator(user_name,user_pw);
+
+				  GreenDaoMaster master = new GreenDaoMaster();
+				  List<UserMain> list = master.queryAllUser();
+				  if(list.size()==0){
+					  insertDenator(user_name,user_pw);
+				  }else {
+					  show_Toast("只能设置一名用户");
+				  }
           		 
               }else{
 				  show_Toast(checstr);
@@ -226,11 +236,8 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
         String Temp="";
         switch (item.getItemId()) {
             case 1:
-                Temp="删除";
-                String whereClause="id=?";  
-                String[] whereArgs={String.valueOf(id)};  
-                db.delete(DatabaseHelper.TABLE_USER_MAIN, whereClause, whereArgs);  
-                getLoaderManager().restartLoader(1, null, SetUserActivity.this);
+				Temp="删除";
+				DeleteUser(id);
                 break;
             case 2:
             	this.modifyBlastBaseInfo(id);
@@ -239,7 +246,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
             default:
                 break;
         }
-		show_Toast(Temp+"处理");
+//		show_Toast(Temp+"处理");
         return super.onContextItemSelected(item);
     }
 	/***
@@ -265,55 +272,122 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 	}
 	private void modifyBlastBaseInfo(int id){
 		AlertDialog.Builder builder = new AlertDialog.Builder(SetUserActivity.this);
-       // builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle("修改密码信息");
-        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
-        View view = LayoutInflater.from(SetUserActivity.this).inflate(R.layout.usermodifydialog, null);
-        //    设置我们自己定义的布局文件作为弹出框的Content
-        builder.setView(view);
-        
-        final EditText username = (EditText)view.findViewById(R.id.username);
-        final EditText password = (EditText)view.findViewById(R.id.password);
-        username.setEnabled(false);
-        String selection = "id = ?"; // 选择条件，给null查询所有  
-        String[] selectionArgs = {id+""};//选择条件参数,会把选择条件中的？替换成这个数组中的值  
-        Cursor cursor = db.query(DatabaseHelper.TABLE_USER_MAIN, null, selection, selectionArgs, null, null, null);  
-        if(cursor != null && cursor.moveToFirst()){ 
-            String name = cursor.getString(1);  
-            String age = cursor.getString(2);  
-            username.setText(name);
-            password.setText(age);
-            cursor.close();
-        }
-        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                String a = username.getText().toString().trim();
-                String b = password.getText().toString().trim();
-                modifyPw(a,b);
-                getLoaderManager().restartLoader(1, null, SetUserActivity.this);
-                //    将输入的用户名和密码打印出来
-				show_Toast("修改成功");
-            }
-        });
-        builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                
-            }
-        });
-        builder.show();
+		// builder.setIcon(R.drawable.ic_launcher);
+		builder.setTitle("修改密码信息");
+		//    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+		View view = LayoutInflater.from(SetUserActivity.this).inflate(R.layout.usermodifydialog, null);
+		//    设置我们自己定义的布局文件作为弹出框的Content
+		builder.setView(view);
+
+		final EditText username = (EditText)view.findViewById(R.id.username);
+		final EditText password = (EditText)view.findViewById(R.id.password);
+		final EditText password_old = (EditText)view.findViewById(R.id.password_old);
+		username.setEnabled(false);
+		String selection = "id = ?"; // 选择条件，给null查询所有
+		String[] selectionArgs = {id+""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+		Cursor cursor = db.query(DatabaseHelper.TABLE_USER_MAIN, null, selection, selectionArgs, null, null, null);
+		if(cursor != null && cursor.moveToFirst()){
+			String name = cursor.getString(1);
+			String age = cursor.getString(2);
+			username.setText(name);
+//            password.setText(age);
+			cursor.close();
+		}
+		builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				String a = username.getText().toString().trim();
+				String b = password.getText().toString().trim();
+				String c = password_old.getText().toString().trim();
+				if(checkRepeatUser(a,c)){
+					modifyPw(a,b);
+					show_Toast("修改成功");
+				}else {
+					show_Toast("旧密码错误,请重新输入");
+				}
+
+				getLoaderManager().restartLoader(1, null, SetUserActivity.this);
+				//    将输入的用户名和密码打印出来
+
+			}
+		});
+		builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+
+			}
+		});
+		builder.show();
 	}
-	
+
+
+	private void DeleteUser(int id){
+		AlertDialog.Builder builder = new AlertDialog.Builder(SetUserActivity.this);
+		// builder.setIcon(R.drawable.ic_launcher);
+		builder.setTitle("删除用户信息");
+		//    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+		View view = LayoutInflater.from(SetUserActivity.this).inflate(R.layout.usermodifydialog, null);
+		//    设置我们自己定义的布局文件作为弹出框的Content
+		builder.setView(view);
+
+		final EditText username = (EditText)view.findViewById(R.id.username);
+		final EditText password = (EditText)view.findViewById(R.id.password);
+		final EditText password_old = (EditText)view.findViewById(R.id.password_old);
+		password.setVisibility(View.GONE);
+		username.setEnabled(false);
+		String selection = "id = ?"; // 选择条件，给null查询所有
+		String[] selectionArgs = {id+""};//选择条件参数,会把选择条件中的？替换成这个数组中的值
+		Cursor cursor = db.query(DatabaseHelper.TABLE_USER_MAIN, null, selection, selectionArgs, null, null, null);
+		if(cursor != null && cursor.moveToFirst()){
+			String name = cursor.getString(1);
+			String age = cursor.getString(2);
+			username.setText(name);
+//            password.setText(age);
+			cursor.close();
+		}
+		builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				String a = username.getText().toString().trim();
+				String b = password.getText().toString().trim();
+				String c = password_old.getText().toString().trim();
+				if(checkRepeatUser(a,c)){
+					String whereClause="id=?";
+					String[] whereArgs={String.valueOf(id)};
+					db.delete(DatabaseHelper.TABLE_USER_MAIN, whereClause, whereArgs);
+					getLoaderManager().restartLoader(1, null, SetUserActivity.this);
+					show_Toast("删除成功");
+				}else {
+					show_Toast("旧密码错误,请重新输入");
+				}
+
+				getLoaderManager().restartLoader(1, null, SetUserActivity.this);
+				//    将输入的用户名和密码打印出来
+
+			}
+		});
+		builder.setNegativeButton(getString(R.string.text_alert_cancel), new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+
+			}
+		});
+		builder.show();
+	}
+
 	public int modifyPw(String name,String pw){
 		ContentValues values = new ContentValues();	       		
    		values.put("upassword", pw);   				       		
    		db.update(DatabaseHelper.TABLE_USER_MAIN, values, "uname=?", new String[]{""+name});
-        Utils.saveFile();//把软存中的数据存入磁盘中
+//        Utils.saveFile();//把软存中的数据存入磁盘中
    		return 1;
 	}
 	/**
@@ -335,6 +409,22 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 		}else{
 			//if(cursor != null)cursor.close();
 			return 0;
+		}
+	}
+
+	/**
+	 * 检查是否存在数据
+	 * @param userName
+	 * @param password
+	 * @return
+	 */
+	public boolean checkRepeatUser(String userName,String password){
+		GreenDaoMaster master = new GreenDaoMaster();
+		UserMain userMain = master.queryUser(userName,password);
+		if(userMain != null){
+			return true;
+		}else{
+			return false;
 		}
 	}
 }

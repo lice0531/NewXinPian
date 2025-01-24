@@ -1086,17 +1086,23 @@ public class XingbangMain extends BaseActivity {
                     Intent intent5;//金建华
                     if (str5.equals("组网")) {
                         intent5 = new Intent(this, TestDenatorActivity.class);
+                        intent5.putExtra("dataSend", str5);
+                        startActivityForResult(intent5, 1);
                     } else {
-                        Log.e("验证2", "Yanzheng: " + Yanzheng);
-                        if (Yanzheng.equals("验证")) {
-                            intent5 = new Intent(this, VerificationActivity.class);
-                        } else {
-                            intent5 = new Intent(this, FiringMainActivity.class);
+                        GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
+                        List<UserMain> userMainList=master.queryAllUser();
+                        if(userMainList.size()!=0){
+                            loginToFiring();
+                        }else {
+                            toFiring();
                         }
+//                        Log.e("验证2", "Yanzheng: " + Yanzheng);
+//                        if (Yanzheng.equals("验证")) {
+//                            intent5 = new Intent(this, VerificationActivity.class);
+//                        } else {
+//                            intent5 = new Intent(this, FiringMainActivity.class);
+//                        }
                     }
-
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
                     mOffTime.cancel();
                 })
                 .create();

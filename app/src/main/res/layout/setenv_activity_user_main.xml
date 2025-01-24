@@ -156,7 +156,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"
                     android:gravity="center"
@@ -164,6 +164,7 @@
                     android:textSize="@dimen/childPageBtnFontSize" />
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="fill_parent"
                     android:layout_height="30dp"
                     android:background="@drawable/textview_border"

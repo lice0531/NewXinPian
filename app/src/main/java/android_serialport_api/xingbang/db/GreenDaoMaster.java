@@ -115,6 +115,13 @@ public class GreenDaoMaster {
         QueryBuilder<UserMain> result = mUserDao.queryBuilder();
         return result.list();
     }
+
+    public UserMain queryUser(String name,String password) {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        UserMain userMain = result.where(UserMainDao.Properties.Uname.eq(name))
+                .where(UserMainDao.Properties.Upassword.eq(password)).unique();
+        return userMain;
+    }
     /**
      * 查询错误雷管
      */
