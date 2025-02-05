@@ -476,13 +476,25 @@ public class FiringMainActivity extends SerialPortActivity {
         String isTestDenator = (String) MmkvUtils.getcode("isTestDenator", "");
         if (TextUtils.isEmpty(isTestDenator) || isTestDenator.equals("N")) {
             if (!isJL) {
-                showErrorLgDialog(getResources().getString(R.string.text_qberr1),isContinue);
+                if (isContinue) {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr6),isContinue);
+                } else {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr1),isContinue);
+                }
                 //未网检就直接起爆且存在错误雷管只能退出  所以接收到级联指令也不操作
+            } else {
+                if (isContinue) {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr5), isContinue);
+                } else {
+                    showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
+                }
+            }
+        } else {
+            if (isContinue) {
+                showErrorLgDialog(getResources().getString(R.string.text_qberr5), isContinue);
             } else {
                 showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
             }
-        } else {
-            showErrorLgDialog(getResources().getString(R.string.text_qberr2), isContinue);
 //            //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
 //            xzqb();
 //            //XJ存在错误雷管 限制起爆
@@ -1756,69 +1768,74 @@ public class FiringMainActivity extends SerialPortActivity {
      * 保存起爆数据
      */
     public synchronized void saveFireResult() {
-        int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
+        if (denatorCount > 0) {
+            int totalNum = (int) getDaoSession().getDenatorBaseinfoDao().count();//得到数据的总条数
 //        Log.e(TAG, "saveFireResult-雷管总数totalNum: " + totalNum);
-        if (totalNum < 1) return;
-        //如果总数大于30,删除第一个数据
-        int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
+            if (totalNum < 1) return;
+            //如果总数大于30,删除第一个数据
+            int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
-        if (hisTotalNum > 30) {
+            if (hisTotalNum > 30) {
 //            String time = loadHisMainData();
-            String time = getFirstTime();
-            Message message = new Message();
-            message.obj = time;
-            mHandler_tip.sendMessage(message);
+                String time = getFirstTime();
+                Message message = new Message();
+                message.obj = time;
+                mHandler_tip.sendMessage(message);
 
-        }
-        String xy[] = pro_coordxy.split(",");//经纬度
-        int maxNo = getHisMaxNumberNo();
-        maxNo++;
-        String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
-        DenatorHis_Main his = new DenatorHis_Main();
-        his.setBlastdate(fireDate);
-        his.setUploadStatus("未上传");
-        his.setRemark("已起爆");
-        his.setEqu_no(equ_no);
-        his.setUserid(qbxm_name);
-        his.setPro_htid(pro_htid);
-        his.setPro_xmbh(pro_xmbh);
-        his.setPro_dwdm(pro_dwdm);
-        his.setSerialNo(Integer.parseInt(qbxm_id));
-        his.setLog(Utils.readLog(Utils.getDate(new Date())));
-        if (pro_coordxy.length() > 4) {
-            his.setLongitude(xy[0]);
-            his.setLatitude(xy[1]);
-        }
-        getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
-        Utils.deleteRecord();//删除日志
+            }
+            String xy[] = pro_coordxy.split(",");//经纬度
+            int maxNo = getHisMaxNumberNo();
+            maxNo++;
+            String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
+            DenatorHis_Main his = new DenatorHis_Main();
+            his.setBlastdate(fireDate);
+            his.setUploadStatus("未上传");
+            his.setRemark("已起爆");
+            his.setEqu_no(equ_no);
+            his.setUserid(qbxm_name);
+            his.setPro_htid(pro_htid);
+            his.setPro_xmbh(pro_xmbh);
+            his.setPro_dwdm(pro_dwdm);
+            his.setSerialNo(Integer.parseInt(qbxm_id));
+            his.setLog(Utils.readLog(Utils.getDate(new Date())));
+            if (pro_coordxy.length() > 4) {
+                his.setLongitude(xy[0]);
+                his.setLatitude(xy[1]);
+            }
+            getDaoSession().getDenatorHis_MainDao().insert(his);//插入起爆历史记录主表
+            Utils.deleteRecord();//删除日志
 //        Utils.deleteRecord_cmd();//删除cmd日志,删之前要保存到历史记录里面
 
-        List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
-        GreenDaoMaster master = new GreenDaoMaster();
-        for (DenatorBaseinfo dbf : list) {
-            master.updateDetonatorTypezt(dbf.getShellBlastNo(), "已起爆");//更新授权库中状态
+            List<DenatorBaseinfo> list = new GreenDaoMaster().queryDetonatorRegionAscNew(qyIdList);
+            GreenDaoMaster master = new GreenDaoMaster();
+            for (DenatorBaseinfo dbf : list) {
+                master.updateDetonatorTypezt(dbf.getShellBlastNo(), "已起爆");//更新授权库中状态
 
-            DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
-            denatorHis_detail.setBlastserial(dbf.getBlastserial());
-            denatorHis_detail.setSithole(dbf.getSithole());
-            denatorHis_detail.setShellBlastNo(dbf.getShellBlastNo());
-            denatorHis_detail.setDenatorId(dbf.getDenatorId());
-            denatorHis_detail.setDelay(dbf.getDelay());
-            denatorHis_detail.setStatusName(dbf.getStatusName());
-            denatorHis_detail.setStatusCode(dbf.getStatusCode());
-            denatorHis_detail.setErrorName(dbf.getErrorName());
-            denatorHis_detail.setErrorCode(dbf.getErrorCode());
-            denatorHis_detail.setAuthorization(dbf.getAuthorization());
-            denatorHis_detail.setRemark(dbf.getRemark());
-            denatorHis_detail.setBlastdate(fireDate);
-            denatorHis_detail.setPiece(dbf.getPiece());
-            denatorHis_detail.setPai(dbf.getPai());
-            denatorHis_detail.setDuan(dbf.getDuan());
-            denatorHis_detail.setDuanNo(dbf.getDuanNo());
-            getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
+                DenatorHis_Detail denatorHis_detail = new DenatorHis_Detail();
+                denatorHis_detail.setBlastserial(dbf.getBlastserial());
+                denatorHis_detail.setSithole(dbf.getSithole());
+                denatorHis_detail.setShellBlastNo(dbf.getShellBlastNo());
+                denatorHis_detail.setDenatorId(dbf.getDenatorId());
+                denatorHis_detail.setDelay(dbf.getDelay());
+                denatorHis_detail.setStatusName(dbf.getStatusName());
+                denatorHis_detail.setStatusCode(dbf.getStatusCode());
+                denatorHis_detail.setErrorName(dbf.getErrorName());
+                denatorHis_detail.setErrorCode(dbf.getErrorCode());
+                denatorHis_detail.setAuthorization(dbf.getAuthorization());
+                denatorHis_detail.setRemark(dbf.getRemark());
+                denatorHis_detail.setBlastdate(fireDate);
+                denatorHis_detail.setPiece(dbf.getPiece());
+                denatorHis_detail.setPai(dbf.getPai());
+                denatorHis_detail.setDuan(dbf.getDuan());
+                denatorHis_detail.setDuanNo(dbf.getDuanNo());
+                getDaoSession().getDenatorHis_DetailDao().insert(denatorHis_detail);//插入起爆历史雷管记录表
+            }
+
+            Utils.saveFile();//把软存中的数据存入磁盘中
+        } else {
+            Log.e(TAG,"雷管数量为0,不再生成起爆历史记录");
+            AppLogUtils.writeAppLog("雷管数量为0,不再生成起爆历史记录");
         }
-
-        Utils.saveFile();//把软存中的数据存入磁盘中
     }
 
     /**

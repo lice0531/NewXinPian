@@ -813,6 +813,8 @@
     <string name="text_qberr2">There is a faulty detonator. It cannot detonate</string>
     <string name="text_qberr3">The current version supports only 0-F,</string>
     <string name="text_qberr4">the detonator is out of range</string>
+    <string name="text_qberr5">There is an error detonator, please confirm whether to continue the forced detonation</string>
+    <string name="text_qberr6">There are incorrect detonators. Please check the wiring and network first. Do you want to forcibly detonate</string>
     <string name="text_xl">Line</string>
     <string name="text_dy">Voltage</string>
     <string name="text_dl">Electric current</string>

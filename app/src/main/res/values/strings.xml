@@ -827,6 +827,8 @@
     <string name="text_qberr2">存在错误雷管,不能进行起爆</string>
     <string name="text_qberr3">当前版本只支持0-F,</string>
     <string name="text_qberr4">雷管超出范围</string>
+    <string name="text_qberr5">存在错误雷管,请确认是否继续强制起爆</string>
+    <string name="text_qberr6">存在错误雷管,请先检查线路并进行网络检测,是否继续强制起爆</string>
     <string name="text_xl">线路</string>
     <string name="text_dy">电压</string>
     <string name="text_dl">电流</string>
