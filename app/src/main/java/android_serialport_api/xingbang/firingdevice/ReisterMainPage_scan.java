@@ -837,10 +837,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "设置默认选中-childListChoice: " + childListChoice);
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
-                        zcList.expandGroup(groupListChoice - 1);
-                        if (childList.get(groupListChoice - 1).size() != 0) {
-                            zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+                        zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
+                        if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+                            zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
                         }
+//                        zcList.expandGroup(groupListChoice - 1);
+//                        if (childList.get(groupListChoice - 1).size() != 0) {
+//                            zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+//                        }
                     }
 
                     //根据选择的排确定延时的值
@@ -893,6 +897,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    Log.e("liyi_1003", "删除后,更新视图 选中雷管" + childList.get(paiChoice-1).get(childListChoice-1).getShellBlastNo());
                     Log.e("liyi_1003", "删除后,更新视图 区域:" + mRegion);
                     Log.e("liyi_1003", "删除后,更新视图 雷管数量: " + mListData.size());
+                    Log.e(TAG,"groupListChoice:" + groupListChoice);
                     //根据选择的排确定延时的值
                     choicepaiData = GreenDaoMaster.gePaiData(mRegion, (paiChoice) + "");
                     //如果有默认排的话,就默认该排的延时
@@ -942,10 +947,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
-                        zcList.expandGroup(groupListChoice - 1);
-                        if (childList.get(groupListChoice - 1).size() != 0) {
-                            zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+                        zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
+                        Log.e("adapter删除操作","groupSize:" + zhuceAdapter
+                                .getGroupCount() + "--childSize:" + childList.get(zhuceAdapter.getGroupCount() - 1).size());
+                        if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+                            zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1,childListChoice - 1);
+                            zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
+                            Log.e("adapter删除操作","groupIndex:" + (zhuceAdapter.getGroupCount() -1));
                         }
+//                        zcList.expandGroup(groupListChoice - 1);
+//                        if (childList.get(groupListChoice - 1).size() != 0) {
+//                            zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+//                        }
                     }
 
 
@@ -2556,6 +2569,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e("插入--单发输入--插入标志", "kongChoice: " + kongChoice);
         Log.e("插入--单发输入--插入标志", "maxKong: " + maxKong);
         Log.e("插入--单发输入--插入标志", "total: " + total);
+        Log.e("插入--单发输入--插入标志", "groupListChoice: " + groupListChoice
+        + "--childListChoice:" + childListChoice);
         Log.e("插入--单发输入--插入标志", "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
         if (charu) {
 
