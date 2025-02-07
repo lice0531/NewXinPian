@@ -809,6 +809,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e(TAG, "groupListChoice: " + groupListChoice);
                     Log.e(TAG, "childListChoice: " + childListChoice);
                     if (paiMax != 0) {
+                        Log.e("handler1001","groupCount:" + groupCount +
+                                "--groupListChoice:" + groupListChoice + "--paiMax:" + paiMax);
                         if (groupListChoice == 0) {//初始化的时候,默认展开后一排,选中最后一发管
                             groupListChoice = groupCount;
                             paiChoice=groupList.get(groupListChoice-1).getPaiId();
@@ -837,13 +839,29 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "设置默认选中-childListChoice: " + childListChoice);
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
-                        zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
-                        if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
-                            zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
+                        if (groupListChoice >= groupCount) {
+                            zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
+                            if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+                                zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childListChoice - 1);
+                                zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
+                            }
+                        } else {
+                            zcList.expandGroup(groupListChoice - 1);
+                            if (childList.get(groupListChoice - 1).size() != 0) {
+                                zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+                            }
                         }
-//                        zcList.expandGroup(groupListChoice - 1);
-//                        if (childList.get(groupListChoice - 1).size() != 0) {
-//                            zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+//                        if (groupListChoice >= paiMax) {
+//                            zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
+//                            if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+//                                zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childListChoice - 1);
+//                                zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
+//                            }
+//                        } else {
+//                            zcList.expandGroup(groupListChoice - 1);
+//                            if (childList.get(groupListChoice - 1).size() != 0) {
+//                                zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+//                            }
 //                        }
                     }
 
@@ -941,24 +959,29 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    paiChoice = zcList.getCount();
                     int groupCount2 = zcList.getCount();
                     if (paiMax != 0) {
+                        Log.e("handler1003","groupCount:" + groupCount2 +
+                                "--groupListChoice:" + groupListChoice + "--paiMax:" + paiMax);
                         if (groupListChoice == 0) {//初始化的时候,默认展开后一排,选中最后一发管
                             groupListChoice = groupCount2;
                             paiChoice=groupList.get(groupListChoice-1).getPaiId();
                         }
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
-                        zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
-                        Log.e("adapter删除操作","groupSize:" + zhuceAdapter
-                                .getGroupCount() + "--childSize:" + childList.get(zhuceAdapter.getGroupCount() - 1).size());
-                        if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
-                            zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1,childListChoice - 1);
-                            zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
-                            Log.e("adapter删除操作","groupIndex:" + (zhuceAdapter.getGroupCount() -1));
+                        if (groupListChoice >= groupCount2) {
+                            zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
+                            Log.e("adapter删除操作", "groupSize:" + zhuceAdapter
+                                    .getGroupCount() + "--childSize:" + childList.get(zhuceAdapter.getGroupCount() - 1).size());
+                            if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+                                zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childListChoice - 1);
+                                zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
+                                Log.e("adapter删除操作", "groupIndex:" + (zhuceAdapter.getGroupCount() - 1));
+                            }
+                        } else {
+                            zcList.expandGroup(groupListChoice - 1);
+                            if (childList.get(groupListChoice - 1).size() != 0) {
+                                zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+                            }
                         }
-//                        zcList.expandGroup(groupListChoice - 1);
-//                        if (childList.get(groupListChoice - 1).size() != 0) {
-//                            zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
-//                        }
                     }
 
 
