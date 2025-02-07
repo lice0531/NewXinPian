@@ -2307,6 +2307,19 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 根据PaiData表中的paiId、qyid去雷管表中查询当前区域当前排是否还有雷管
+     * @param paiId: 排id
+     * @param qyid: 区域id
+     * @return
+     */
+    public long queryLgByPai(int paiId,int qyid) {
+        return mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Pai.eq(String.valueOf(paiId)))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(String.valueOf(qyid)))
+                .count();
+    }
+
+    /**
      * 获取已组网的区域idList
      */
     public List<Integer> getSelectedQyIdList() {

@@ -3792,7 +3792,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                 if (groupList.size() != 0) {
                                     for (PaiDataSelect data : groupList) {
                                         if (data.isSelect()) {
-                                            new GreenDaoMaster().deletepai(mRegion, data.getId());
+                                            GreenDaoMaster daoMaster = new GreenDaoMaster();
+                                            //查询出当前排是否还有雷管
+                                            long lgCount = daoMaster.queryLgByPai(data.getPaiId(),data.getQyid());
+                                            Log.e(TAG,"Pai表qyId:" + data.getQyid() + "--paiId:"
+                                                    + data.getPaiId() + "--雷管数量:" + lgCount);
+                                            if (lgCount < 1) {
+                                                daoMaster.deletepai(mRegion, data.getId());
+                                            }
                                         }
                                     }
                                 }
