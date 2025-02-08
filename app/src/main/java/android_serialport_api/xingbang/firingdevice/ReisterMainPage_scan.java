@@ -3660,6 +3660,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 // 创建三个按钮并添加到布局中
                 item_1.setOnClickListener(v -> {
                     popupWindow.dismiss();
+                    btnInputOk.setEnabled(true);
+                    isSingleReisher = false;
                     clearText();
                     if (llStart.getVisibility() == View.GONE) {
                         cd_title.setVisibility(View.GONE);
