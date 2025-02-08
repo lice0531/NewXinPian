@@ -293,7 +293,7 @@ public class SendMsgActivity extends BaseActivity {
      */
     public boolean checkRepeatDenatorId(String denatorId) {
         List<DenatorBaseinfo> denatorBaseinfo = master.checkRepeatdenatorId(denatorId);
-        Log.e("检查重复的芯片码", "数量: "+denatorBaseinfo.size() );
+        Log.e("检查重复的芯片码", denatorId + "--数量: "+denatorBaseinfo.size() );
         if (denatorBaseinfo.size() > 0) {
             return true;
         } else {
@@ -471,7 +471,7 @@ public class SendMsgActivity extends BaseActivity {
             duanNo = master.getPieceMaxDuanNo(Integer.parseInt(duan[0]), qyId);//获取该区域 最大序号的延时;
         }
         Log.e(TAG, "duanNo:" + duanNo);
-        if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) {//检查重复数据
+        if (!a[0].equals("无") && !a[0].equals("") && checkRepeatDenatorId(a[0])) {//检查重复数据
             Log.e(TAG, "DenatorId检查有重复雷管了--跳出循环");
             return;
         }
@@ -919,6 +919,7 @@ public class SendMsgActivity extends BaseActivity {
 //            executorService.shutdownNow();
         }
         super.onDestroy();
+        registIndex = 0;
     }
 
     //隐藏键盘
