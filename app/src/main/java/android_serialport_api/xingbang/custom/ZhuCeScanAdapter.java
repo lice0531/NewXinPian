@@ -205,8 +205,16 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
             viewHolder2.kong_check.setVisibility(View.VISIBLE);
         }
         viewHolder2.kong_check.setChecked(mChildList.get(groupPosition).get(childPosition).isSelect());
-        viewHolder2.kong_check.setOnCheckedChangeListener((buttonView, isChecked) ->
-                mChildList.get(groupPosition).get(childPosition).setSelect(isChecked));
+        viewHolder2.kong_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = viewHolder2.kong_check.isChecked();
+                mChildList.get(groupPosition).get(childPosition).setSelect(isChecked);
+                notifyDataSetChanged();
+            }
+        });
+//        viewHolder2.kong_check.setOnCheckedChangeListener((buttonView, isChecked) ->
+//                mChildList.get(groupPosition).get(childPosition).setSelect(isChecked));
         viewHolder2.im_xiugai2.setTag(childPosition); // 设置一个tag来识别按钮
         viewHolder2.im_xiugai2.setOnClickListener(v -> {
             if (listener != null) {
