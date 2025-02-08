@@ -476,20 +476,25 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
             //如果你处理了并且消费了点击返回true,这是一个基本的防止onTouch事件向下或者向上传递的返回机制
 //            v.setBackgroundColor(Color.GREEN);
-            Log.e(TAG, "根据选中排更新排号  1paiChoice: " + paiChoice);
-            Log.e(TAG, "根据选中排更新排号  1kongChoice: " + kongChoice);
-            Log.e(TAG, "根据选中排更新排号  1groupListChoice: " + groupListChoice);
-            Log.e(TAG, "根据选中排更新排号  1childListChoice: " + childListChoice);
-            if (groupListChoice != groupPosition + 1) {
-                kongChoice = new GreenDaoMaster().queryDetonatorPai(mRegion, paiChoice).size();
+            Log.e(TAG, "根据选中排更新排号  1 paiChoice: " + paiChoice);
+            Log.e(TAG, "根据选中排更新排号  1 kongChoice: " + kongChoice);
+            Log.e(TAG, "根据选中排更新排号  1 groupListChoice: " + groupListChoice);
+            Log.e(TAG, "根据选中排更新排号  1 childListChoice: " + childListChoice);
+
+            if (groupListChoice != groupPosition + 1) {//当更换排之后
+                kongChoice = new GreenDaoMaster().queryDetonatorPai(mRegion, groupList.get(groupPosition).getPaiId()).size();
+                Log.e(TAG, "----根据选中排更新排号--更换排  mRegion, groupList.get(groupPosition).getPaiId(): " + groupList.get(groupPosition).getPaiId());
+                Log.e(TAG, "----根据选中排更新排号--更换排  kongChoice: " + kongChoice);
+                childListChoice=kongChoice-1;
             }
             groupListChoice=groupPosition + 1;
             paiChoice = groupList.get(groupListChoice-1).getPaiId();
 
-            Log.e(TAG, "根据选中排更新排号  2paiChoice: " + paiChoice);
-            Log.e(TAG, "根据选中排更新排号  2kongChoice: " + kongChoice);
-            Log.e(TAG, "根据选中排更新排号  2groupListChoice: " + groupListChoice);
-            Log.e(TAG, "根据选中排更新排号  2childListChoice: " + childListChoice);
+
+            Log.e(TAG, "根据选中排更新排号  2 paiChoice: " + paiChoice);
+            Log.e(TAG, "根据选中排更新排号  2 kongChoice: " + kongChoice);
+            Log.e(TAG, "根据选中排更新排号  2 groupListChoice: " + groupListChoice);
+            Log.e(TAG, "根据选中排更新排号  2 childListChoice: " + childListChoice);
 
             GreenDaoMaster master = new GreenDaoMaster();
             int childList_size = master.queryDetonatorPai(mRegion, paiChoice).size();
@@ -516,9 +521,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
                 //如果你处理了并且消费了点击返回true
                 kongChoice = childPosition + 1;
+                childListChoice=childPosition+1;
                 DenatorBaseinfo info = childList.get(groupPosition).get(childPosition);
                 zhuceAdapter.setSelcetPosition(groupPosition, childPosition);
-                Log.e(TAG, "2级监听--点击position: " + childPosition + "info.getBlastserial()" + info.getBlastserial());
+                Log.e(TAG, "2级监听--点击position: " + childPosition + "----info.排号:" +info.getPai()+"-"+ info.getBlastserial()+"-"+info.getDuanNo());
+                Log.e(TAG, "2级监听--groupListChoice: " + groupListChoice);
+                Log.e(TAG, "2级监听--childListChoice: " + childListChoice);
                 // 序号 延时 管壳码
 //            modifyBlastBaseInfo(no, delay, shellBlastNo);
 //                modifyBlastBaseInfo(info, groupPosition,childPosition);//序号,孔号,延时,管壳码
@@ -2592,12 +2600,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e("插入--单发输入--插入标志", "kongChoice: " + kongChoice);
         Log.e("插入--单发输入--插入标志", "maxKong: " + maxKong);
         Log.e("插入--单发输入--插入标志", "total: " + total);
-        Log.e("插入--单发输入--插入标志", "groupListChoice: " + groupListChoice
-        + "--childListChoice:" + childListChoice);
+        Log.e("插入--单发输入--插入标志", "groupListChoice: " + groupListChoice + "--childListChoice:" + childListChoice);
         Log.e("插入--单发输入--插入标志", "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
         if (charu) {
-
+            Log.e("插入--单发输入--插入标志", "childList.get(groupListChoice - 1): " + childList.get(groupListChoice - 1));
             db_charu = childList.get(groupListChoice - 1).get(childListChoice - 1);
+            Log.e("插入--单发输入--插入标志", "db_charu: " + db_charu.toString());
             int konghao = db_charu.getBlastserial() + 1;
 
             denatorBaseinfo.setSithole(konghao + "");
@@ -2608,6 +2616,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 denatorBaseinfo.setBlastserial(db_charu.getBlastserial());
                 denatorBaseinfo.setDuanNo((db_charu.getDuanNo() + 1));
                 denatorBaseinfo.setDelay(db_charu.getDelay());
+                Log.e("插入--单发输入--插入孔号", "konghao: " + konghao);
             } else {
                 if (!flag_jh_f1) {
                     if (delay_set.equals("f1")) {
@@ -2628,11 +2637,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                }
                 denatorBaseinfo.setDelay(delay_max);
                 denatorBaseinfo.setBlastserial(konghao);
-                if (!flag_t1) {
-                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
-                } else {
-                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
-                }
+//                if (!flag_t1) {//
+//                    denatorBaseinfo.setDuanNo(db_charu.getDuanNo() + 1);
+//                } else {
+                    denatorBaseinfo.setDuanNo(1);//加孔都是从序号1开始
+//                }
             }
 
             Utils.charuData(mRegion, db_charu, flag_t1, delay_add, db_charu.getPai(), paiChoice);//插入雷管的后面所有雷管序号+1
@@ -4293,7 +4302,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         SwitchButton sw_dijian = myDialog.getView().findViewById(R.id.sw_dijian);
         int delay_min_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiMax);//获取该区域 前一排的最大延时
-        PaiData paimax = GreenDaoMaster.gePaiData(mRegion, paiMax+"");
+        PaiData paiData1 = GreenDaoMaster.gePaiData(mRegion, paiMax+"");
         int paiDelay= Integer.parseInt(quYu_choice.getPaiDelay());
         Log.e(TAG, "paiMax: " + paiMax);
         Log.e(TAG, "delay_min_new: " + delay_min_new);
@@ -4301,7 +4310,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (paiMax == 0) {
             startDelay.setText("0");
         } else {
-            startDelay.setText((Integer.parseInt(paimax.getStartDelay()) + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
+            startDelay.setText((delay_min_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
         }
         sw_dijian.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
@@ -4310,7 +4319,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     if (paiMax == 0) {
                         startDelay.setText(delay_max_new + "");
                     } else {
-                        startDelay.setText((delay_max_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
+                            startDelay.setText((delay_max_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
                     }
                 } else {
                     if (paiMax == 0) {
