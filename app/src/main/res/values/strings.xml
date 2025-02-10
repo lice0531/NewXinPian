@@ -758,6 +758,7 @@
     <string name="text_down_dialog5">请确认项目编号,地理位置等信息输入无误后,点击确认下载</string>
     <string name="text_down_dialog6">再次确认</string>
     <string name="text_down_dialog7">确认下载</string>
+    <string name="text_down_dialog8">请确定项目信息输入无误后点击确认下载</string>
     <string name="text_ycnr">隐藏内容</string>
     <string name="text_down_show1">定位中,请稍等</string>
     <string name="text_down_show2">清空历史成功</string>

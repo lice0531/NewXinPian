@@ -744,6 +744,7 @@
     <string name="text_down_dialog5">Please confirm that the project number, geographical location, and other information have been entered correctly, and then click to confirm the download</string>
     <string name="text_down_dialog6">Reconfirm</string>
     <string name="text_down_dialog7">confirm download</string>
+    <string name="text_down_dialog8">Please make sure that the project information is entered correctly and click Confirm download</string>
     <string name="text_ycnr">Hidden content</string>
     <string name="text_down_show1">Positioning, please wait a moment</string>
     <string name="text_down_show2">Clear History Successfully</string>

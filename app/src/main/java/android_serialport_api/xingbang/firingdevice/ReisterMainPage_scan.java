@@ -796,7 +796,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         List<DenatorBaseinfoSelect> list_pai = master.queryDetonatorPaiSelect(mRegion, groupList.get(i).getPaiId());
                         childList.add(list_pai);
                     }
-                    zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, this, this);
+                    zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, quYu_choice.getQyid() + "",this, this);
                     Log.e(TAG, "是否显示选中框check_gone: " + check_gone);
                     //显示checkbox
                     if (check_gone) {
@@ -959,7 +959,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         List<DenatorBaseinfoSelect> list_pai = new GreenDaoMaster().queryDetonatorPaiSelect(mRegion, groupList.get(i).getPaiId());
                         childList.add(list_pai);
                     }
-                    zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, this, this);
+                    zhuceAdapter = new ZhuCeScanAdapter(groupList, childList, quYu_choice.getQyid() + "",this, this);
 
                     //显示checkbox
                     if (check_gone) {
@@ -2050,6 +2050,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                                    Message msg = new Message();
 //                                    msg.arg1 = duan_guan;
 //                                    mHandler_showNum.sendMessage(msg);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            show_Toast(getResources().getString(R.string.text_del_ok));
+                                        }
+                                    });
                                     // 区域 更新视图
                                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));//删除后更新视图
                                     pb_show = 0;
@@ -2761,6 +2767,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return -1;
         }
 
+        if (checkRepeatdenatorId(detonatorId)) {//判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+            return -1;
+        }
 //        String denatorId = serchDenatorId(shellNo);
         DetonatorTypeNew detonatorTypeNew = serchDenatorForDetonatorTypeNew(detonatorId);
         //判断芯片码(要传13位芯片码,不要传8位的,里有截取方法)//判断8位芯片码
@@ -3933,7 +3943,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                     }
                                 }
                                 if (delete_sum > 0) {
-                                    show_Toast("删除成功");
+                                    show_Toast(getResources().getString(R.string.text_del_ok));
                                 }
                                 int a = new GreenDaoMaster().getPaisum(mRegion);
                                 int total = new GreenDaoMaster().queryDetonatorPaiSize(mRegion, paiChoice + "");//有过

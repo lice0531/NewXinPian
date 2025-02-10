@@ -298,6 +298,7 @@ public class ProjectManagerActivity extends BaseActivity {
                         Log.e("设备扫码结果: ", "ScanResult:" + isSuccess + "|" + scanResultStr);
                         Log.e(TAG,"设备扫码内容:" + scanResultStr);
                         Utils.writeLog("设备扫码出来项目信息是:" + scanResultStr);
+                        AppLogUtils.writeAppLog("设备扫码出来项目信息是:" + scanResultStr);
                         if (!scanResultStr.contains("project_name")) {
                             show_Toast("当前二维码格式不正确，请重新扫描有效的项目二维码");
                         }
@@ -312,7 +313,12 @@ public class ProjectManagerActivity extends BaseActivity {
                             }
                         }
                         if (scanResultStr != null && scanResultStr.length() > 7) {
-                            String result = scanResultStr.substring(7);
+                            String result = "";
+                            if (scanResultStr.startsWith("project_name")) {
+                                result = scanResultStr;
+                            } else {
+                                result = scanResultStr.substring(7);
+                            }
                             getScanDataShow(result);
                             Utils.writeLog("设备扫码解密后的结果是:" + result);
                             AppLogUtils.writeAppLog("设备扫码解密后的结果是:" + result);

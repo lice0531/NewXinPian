@@ -19,6 +19,7 @@ import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.R2;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
+import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.models.ZhuCeListBean;
 
@@ -31,9 +32,11 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
     private OngroupButtonClickListener listener_group;
     private boolean checkBox_gone=true;
     boolean Uid_gone=true;
-    public ZhuCeScanAdapter(List<PaiDataSelect> groupList, List<List<DenatorBaseinfoSelect>> childList, OnChildButtonClickListener listener,OngroupButtonClickListener listener_group){
+    private String mRegion = "";
+    public ZhuCeScanAdapter(List<PaiDataSelect> groupList, List<List<DenatorBaseinfoSelect>> childList,String region,OnChildButtonClickListener listener,OngroupButtonClickListener listener_group){
         mGroupList = groupList;
         mChildList = childList;
+        this.mRegion = region;
         this.listener = listener;
         this.listener_group = listener_group;
     }
@@ -109,9 +112,12 @@ public class ZhuCeScanAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder1 = (ViewHolder1) convertView.getTag();
         }
+        int total = new GreenDaoMaster().queryDetonatorByPaiSize(mRegion,
+                mGroupList.get(groupPosition).getPaiId() + "");
         viewHolder1.tv1_zc_pai.setText(mGroupList.get(groupPosition).getPaiId()+"排");
         viewHolder1.tv1_zc_startTime.setText("延时:"+mGroupList.get(groupPosition).getDelayMin()+"~"+mGroupList.get(groupPosition).getDelayMax()+"ms");
-        viewHolder1.tv1_zc_total.setText("数量:"+mGroupList.get(groupPosition).getSum());
+//        viewHolder1.tv1_zc_total.setText("数量:"+mGroupList.get(groupPosition).getSum());
+        viewHolder1.tv1_zc_total.setText("数量:"+total);
         if(checkBox_gone){
             viewHolder1.pai_check.setVisibility(View.GONE);
         }else {

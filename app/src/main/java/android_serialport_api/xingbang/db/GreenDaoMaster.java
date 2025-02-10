@@ -1512,8 +1512,7 @@ public class GreenDaoMaster {
     public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm,String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()
-                .where(DetonatorTypeNewDao.Properties.Time.eq(sqrq))
-                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
+                .whereOr(DetonatorTypeNewDao.Properties.Time.eq(sqrq),DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
@@ -2087,6 +2086,29 @@ public class GreenDaoMaster {
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list().size();
+    }
+
+    /**
+     * 查询当前区域当前排雷管数量
+     * @param piece:区域id
+     * @param paiId:排id
+     * @return
+     */
+    public int queryDetonatorByPaiSize(String piece,String paiId) {
+        List<DenatorBaseinfo> list  = mDeantorBaseDao.queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+        if(list != null){
+            return mDeantorBaseDao.queryBuilder()
+                    .where(DenatorBaseinfoDao.Properties.Pai.eq(paiId))
+                    .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
+                    .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                    .list().size();
+        } else {
+            return 0;
+        }
     }
 
     /**

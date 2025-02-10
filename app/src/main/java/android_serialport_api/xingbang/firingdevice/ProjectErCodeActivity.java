@@ -66,7 +66,7 @@ public class ProjectErCodeActivity extends BaseActivity {
                 getIntent().getStringExtra("coordxy") : "";
         business = !TextUtils.isEmpty(getIntent().getStringExtra("business")) ?
                 getIntent().getStringExtra("business") : "";
-        String content = "htbh:" + htbh + ";xmbh:" + xmbh + ";project_name:" + project_name
+        String content = "project_name:" + project_name + ";htbh:" + htbh + ";xmbh:" + xmbh
                 + ";dwdm:" + dwdm + ";bprysfz:" + bprysfz + ";coordxy:" + coordxy + ";business:"
                 + business;
         // 生成二维码   注：暂时先不加密了

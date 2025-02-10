@@ -2529,7 +2529,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 hideInputKeyboard();//隐藏键盘,取消焦点
                 AlertDialog dialog = new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.text_down_dialog4))//设置对话框的标题//"成功起爆"
-                        .setMessage(getResources().getString(R.string.text_down_dialog5))//设置对话框的内容"本次任务成功起爆！"
+                        .setMessage(getResources().getString(R.string.text_down_dialog8))//设置对话框的内容"本次任务成功起爆！"
                         //设置对话框的按钮
                         .setNeutralButton(getResources().getString(R.string.text_down_dialog6), (dialog1, which) -> dialog1.dismiss())
                         .setPositiveButton(getResources().getString(R.string.text_down_dialog7), (dialog12, which) -> {

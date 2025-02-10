@@ -382,7 +382,7 @@ public class SouSuoSQActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ss_btn_ss:
-                String gkm = edit_gkm.getText().toString();
+                String gkm = edit_gkm.getText().toString().trim();
                 Message msg = new Message();
                 msg.what = 8;
                 msg.obj = gkm;

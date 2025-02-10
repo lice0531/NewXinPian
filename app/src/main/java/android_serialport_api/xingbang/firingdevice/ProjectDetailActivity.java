@@ -1,4 +1,6 @@
 package android_serialport_api.xingbang.firingdevice;
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,11 +19,16 @@ import androidx.annotation.Nullable;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
+
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
@@ -177,11 +184,12 @@ public class ProjectDetailActivity extends BaseActivity {
         Log.e(TAG,"经纬度:" + mCoordxy + "tvv:" + downAtCoordxy.getText().toString().trim());
         downAtBprysfz.setText(mBprysfz);
         downAtGsxz.setText(mBusiness);
-        String content = "htbh:" + mHtbh + ";xmbh:" + mXmbh + ";project_name:" + mPname
+        String content = "project_name:" + mPname + ";htbh:" + mHtbh + ";xmbh:" + mXmbh
                 + ";dwdm:" + mDwdm + ";bprysfz:" + mBprysfz + ";coordxy:" + mCoordxy + ";business:"
                 + mBusiness;
         // 生成二维码
         Log.e(TAG,"加密前的项目信息:" + content);
+        AppLogUtils.writeAppLog("项目二维码加密前的结信息是:" + content);
         Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(content);
         ivXmCode.setImageBitmap(qrCodeBitmap);
 //        final String key = "jadl12345678912345678912";
@@ -233,6 +241,16 @@ public class ProjectDetailActivity extends BaseActivity {
         project.setSelected("true");
         Application.getDaoSession().getProjectDao().update(project);
         SoundPlayUtils.play(1);
+        List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
+        if (message.size() > 0) {
+            MessageBean msgBean = new MessageBean();
+            msgBean.setPro_bprysfz(project.getBprysfz());
+            msgBean.setPro_htid(project.getHtbh());
+            msgBean.setPro_xmbh(project.getXmbh());
+            msgBean.setPro_dwdm(project.getDwdm());
+            msgBean.setPro_coordxy(project.getCoordxy());
+            Application.getDaoSession().getMessageBeanDao().update(msgBean);
+        }
         finish();
     }
 
