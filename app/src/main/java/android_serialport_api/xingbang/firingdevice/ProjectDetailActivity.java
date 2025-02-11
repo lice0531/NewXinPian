@@ -242,14 +242,19 @@ public class ProjectDetailActivity extends BaseActivity {
         Application.getDaoSession().getProjectDao().update(project);
         SoundPlayUtils.play(1);
         List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
-        if (message.size() > 0) {
-            MessageBean msgBean = new MessageBean();
+        // 步骤 2: 检查是否查询到数据
+        if (message != null && !message.isEmpty()) {
+            // 取出查询到的第一条数据
+            MessageBean msgBean = message.get(0);
             msgBean.setPro_bprysfz(project.getBprysfz());
             msgBean.setPro_htid(project.getHtbh());
             msgBean.setPro_xmbh(project.getXmbh());
             msgBean.setPro_dwdm(project.getDwdm());
             msgBean.setPro_coordxy(project.getCoordxy());
             Application.getDaoSession().getMessageBeanDao().update(msgBean);
+        } else {
+            // 如果没有查询到数据
+            Log.e(TAG,"message表中无数据");
         }
         finish();
     }

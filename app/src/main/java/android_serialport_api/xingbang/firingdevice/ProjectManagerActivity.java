@@ -2,6 +2,8 @@ package android_serialport_api.xingbang.firingdevice;
 
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -51,6 +53,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
 import android_serialport_api.xingbang.utils.AppLogUtils;
@@ -619,6 +622,23 @@ public class ProjectManagerActivity extends BaseActivity {
                 //先查询出之前使用中的项目，把状态改为未使用
                 Application.getDaoSession().getProjectDao().update(project);
                 Utils.writeLog(select_business + "项目管理页面更新项目信息成功");
+                if ("true".equals(project.getSelected())) {
+                    List<MessageBean> message = getDaoSession().getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Id.eq((long) 1)).list();
+                    // 步骤 2: 检查是否查询到数据
+                    if (message != null && !message.isEmpty()) {
+                        // 取出查询到的第一条数据
+                        MessageBean msgBean = message.get(0);
+                        msgBean.setPro_bprysfz(project.getBprysfz());
+                        msgBean.setPro_htid(project.getHtbh());
+                        msgBean.setPro_xmbh(project.getXmbh());
+                        msgBean.setPro_dwdm(project.getDwdm());
+                        msgBean.setPro_coordxy(project.getCoordxy());
+                        Application.getDaoSession().getMessageBeanDao().update(msgBean);
+                    } else {
+                        // 如果没有查询到数据
+                        Log.e(TAG,"message表中无数据");
+                    }
+                }
                 if ("detail".equals(pageFlag)) {
                     Intent intent = new Intent();
                     intent.putExtra("proId",proId);

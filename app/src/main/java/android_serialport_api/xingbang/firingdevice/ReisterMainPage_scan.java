@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -1517,13 +1518,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private void clearText() {
-        //厂家
-        edit_start_entBF2Bit_st.getText().clear();
-        edit_start_entBF2Bit_st.setBackgroundResource(R.drawable.translucent);
-        edit_end_entBF2Bit_en.getText().clear();
-        edit_end_entBF2Bit_en.setBackgroundResource(R.drawable.translucent);
-        editScanChangjia.getText().clear();
-        editScanChangjia.setBackgroundResource(R.drawable.translucent);
+        if (TextUtils.isEmpty(factoryCode)) {
+            //厂家
+            edit_start_entBF2Bit_st.getText().clear();
+            edit_start_entBF2Bit_st.setBackgroundResource(R.drawable.translucent);
+            edit_end_entBF2Bit_en.getText().clear();
+            edit_end_entBF2Bit_en.setBackgroundResource(R.drawable.translucent);
+            editScanChangjia.getText().clear();
+            editScanChangjia.setBackgroundResource(R.drawable.translucent);
+            //特征号
+            edit_start_entAT1Bit_st.getText().clear();
+            edit_end_entAT1Bit_ed.getText().clear();
+            editScanTezheng.getText().clear();
+            edit_start_entAT1Bit_st.setBackgroundResource(R.drawable.translucent);
+            edit_end_entAT1Bit_ed.setBackgroundResource(R.drawable.translucent);
+            editScanTezheng.setBackgroundResource(R.drawable.translucent);
+        }
         //日期
         edit_start_entproduceDate_st.getText().clear();
         edit_end_entproduceDate_ed.getText().clear();
@@ -1531,13 +1541,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         edit_start_entproduceDate_st.setBackgroundResource(R.drawable.translucent);
         edit_end_entproduceDate_ed.setBackgroundResource(R.drawable.translucent);
         editScanRiqi.setBackgroundResource(R.drawable.translucent);
-        //特征号
-        edit_start_entAT1Bit_st.getText().clear();
-        edit_end_entAT1Bit_ed.getText().clear();
-        editScanTezheng.getText().clear();
-        edit_start_entAT1Bit_st.setBackgroundResource(R.drawable.translucent);
-        edit_end_entAT1Bit_ed.setBackgroundResource(R.drawable.translucent);
-        editScanTezheng.setBackgroundResource(R.drawable.translucent);
         //流水号
         edit_start_entboxNoAndSerial_st.getText().clear();
         edit_start_entboxNoAndSerial_st.getText().clear();

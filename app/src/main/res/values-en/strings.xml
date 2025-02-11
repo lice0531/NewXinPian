@@ -850,9 +850,9 @@
     <string name="text_dlyc4">The current is short circuit, please check whether there is a short circuit, leakage and other conditions, remove the problem, and test again.</string>
     <string name="text_dlyc5">The current of the detonator has abnormal fluctuations, which may be caused by the abnormal bus line. Please check the line and detonate after confirming that it is correct.</string>
     <string name="text_dlyc6">The current line is unstable, please check the line, is it forced to detonate!</string>
-    <string name="app_version_name">M900_PT_TY_V2.1_250110</string>
-    <string name="app_version_name2">M900_PT_TY_V2.1_250110</string>
-    <string name="app_version_name3">M900_PT_TY_V2.1_250110</string>
+    <string name="app_version_name">M900_PT_TY_V2.1_250211</string>
+    <string name="app_version_name2">M900_PT_TY_V2.1_250211</string>
+    <string name="app_version_name3">M900_PT_TY_V2.1_250211</string>
     <string name="text_xpwfh">The chip write command did not return</string>
     <string name="text_cfd">Resending the No</string>
     <string name="text_fjd">Recheck the No</string>
@@ -885,7 +885,7 @@
     <string name="text_send_tip28">Import successful, there are duplicate data registrations</string>
     <string name="text_send_tip29">Incomplete data</string>
     <string name="text_zccg">Registered successfully</string>
-    <string name="text_srrq">You can enter a date or partial case code</string>
+    <string name="text_srrq">You can enter partial case code</string>
     <string name="text_ss">Search</string>
     <string name="text_qx">Select all</string>
     <string name="text_qxzq">Select all correct</string>
@@ -923,6 +923,7 @@
     <string name="text_lx4">1. Get offline document through qr code</string>
     <string name="text_lx5">Turn on the camera and scan the code</string>
     <string name="text_lx6">2. Select the. txt file downloaded from the website</string>
+    <string name="text_lx7">Get offline document through qr code</string>
     <string name="text_sjyj">Upgrading hardware program, please wait...</string>
     <string name="text_sjerror1">To be developed</string>
     <string name="text_sjerror2">Use</string>

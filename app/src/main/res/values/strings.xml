@@ -597,11 +597,11 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_250208</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_250211</string>
     //通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_250208</string>
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_250211</string>
     //华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_250208</string>
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_250211</string>
     //重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
@@ -896,7 +896,7 @@
     <string name="text_send_tip28">导入成功,有数据注册重复</string>
     <string name="text_send_tip29">数据不完整</string>
     <string name="text_zccg">注册成功</string>
-    <string name="text_srrq">可输入日期或部分管壳码</string>
+    <string name="text_srrq">可输入部分管壳码</string>
     <string name="text_ss">搜索</string>
     <string name="text_qx">全选</string>
     <string name="text_qxzq">全选正确</string>
@@ -934,6 +934,7 @@
     <string name="text_lx4">1.通过二维码获取离线文档</string>
     <string name="text_lx5">打开摄像头扫码</string>
     <string name="text_lx6">2.选择从网站下载的txt文件</string>
+    <string name="text_lx7">通过二维码获取离线文档</string>
     <string name="text_sjyj">正在升级硬件程序,请稍等...</string>
     <string name="text_sjerror1">待开发</string>
     <string name="text_sjerror2">使用</string>
