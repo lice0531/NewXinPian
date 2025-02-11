@@ -1775,7 +1775,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //如果总数大于30,删除第一个数据
             int hisTotalNum = (int) getDaoSession().getDenatorHis_MainDao().count();//得到雷管表数据的总条数
 //        Log.e(TAG, "saveFireResult-历史记录条目数hisTotalNum: " + hisTotalNum);
-            if (hisTotalNum > 30) {
+            if (hisTotalNum > 80) {
 //            String time = loadHisMainData();
                 String time = getFirstTime();
                 Message message = new Message();
