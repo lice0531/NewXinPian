@@ -117,45 +117,57 @@ public class DetonatorTypeNew implements Comparable<DetonatorTypeNew>{
                 '}';
     }
 
+
     @Override
-    public int compareTo(DetonatorTypeNew denator) {//5390418012345
-        // 返回值0代表相等，1表示大于，-1表示小于；
-        if(denator.getShellBlastNo().contains("A6")){
-            return -1;
+    public int compareTo(DetonatorTypeNew denator) {
+        // 检查 null
+        if (denator == null) {
+            throw new NullPointerException("Cannot compare with null");
         }
-        if(shellBlastNo.contains("A6")){
-            return -1;
+
+        // 获取管壳码
+        String shellBlastNo1 = this.shellBlastNo;
+        String shellBlastNo2 = denator.getShellBlastNo();
+
+        // 处理 A6 开头的特殊情况
+        boolean isA6_1 = shellBlastNo1.startsWith("A6");
+        boolean isA6_2 = shellBlastNo2.startsWith("A6");
+
+        if (isA6_1 && isA6_2) {
+            return 0; // 如果都以 A6 开头，视为相等
+        } else if (isA6_1) {
+            return -1; // 如果当前对象以 A6 开头，优先排序
+        } else if (isA6_2) {
+            return 1; // 如果参数对象以 A6 开头，参数对象优先
         }
-        if(shellBlastNo.length()!=13){
-            return 1;
+
+        // 检查长度是否为 13
+        if (shellBlastNo1.length() != 13 || shellBlastNo2.length() != 13) {
+            // 如果长度不为 13，视为无效数据，当前对象优先
+            return shellBlastNo1.length() == 13 ? -1 : 1;
         }
-        if(denator.getShellBlastNo().length()!=13){
-            return 1;
-        }
+
+        // 解析日期部分
         SimpleDateFormat md = new SimpleDateFormat("MMdd");
         Date date1 = null;
         Date date2 = null;
         try {
-            date1 = md.parse(shellBlastNo.substring(3, 7));
-            date2 = md.parse(denator.getShellBlastNo().substring(3, 7));
+            date1 = md.parse(shellBlastNo1.substring(3, 7));
+            date2 = md.parse(shellBlastNo2.substring(3, 7));
         } catch (ParseException e) {
-            e.printStackTrace();
+            // 如果日期解析失败，视为无效数据，当前对象优先
+            return shellBlastNo1.substring(3, 7).compareTo(shellBlastNo2.substring(3, 7));
         }
 
-        int liushui1 = Integer.parseInt(shellBlastNo.substring(8));
-        int liushui2 = Integer.parseInt(denator.getShellBlastNo().substring(8));
-        if (date1.before(date2)) {
-            return -1;
-        } else if (date1.after(date2)) {
-            return 1;
-        } else {
-            if (liushui1 > liushui2) {
-                return 1;
-            } else if (liushui1 < liushui2) {
-                return -1;
-            } else {
-                return 0;
-            }
+        // 比较日期
+        int dateCompare = date1.compareTo(date2);
+        if (dateCompare != 0) {
+            return dateCompare;
         }
+
+        // 比较流水号
+        int liushui1 = Integer.parseInt(shellBlastNo1.substring(8));
+        int liushui2 = Integer.parseInt(shellBlastNo2.substring(8));
+        return Integer.compare(liushui1, liushui2);
     }
 }
