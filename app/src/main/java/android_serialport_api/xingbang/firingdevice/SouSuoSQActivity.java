@@ -37,6 +37,7 @@ import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.ChaKan_SQAdapter;
 import android_serialport_api.xingbang.custom.DataAdapter;
 import android_serialport_api.xingbang.custom.ShouQuanData;
+import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
@@ -89,6 +90,8 @@ public class SouSuoSQActivity extends BaseActivity {
     private String mOldTitle;   // 原标题
     private String isShowZc = "";//用来判断是否需要展示“选择雷管”按钮进行注册
     String TAG="授权注册";
+    private String factoryCode = "";//厂家代码
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +127,7 @@ public class SouSuoSQActivity extends BaseActivity {
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
         re_ss.setLayoutManager(linearLayoutManager);
         re_ss.setAdapter(mAdapter2);
-
+        getFactoryCode();
         initHandle();
         if (sqrq.equals("")) {
             mListData = new GreenDaoMaster().queryDetonatorShouQuan();
@@ -164,6 +167,15 @@ public class SouSuoSQActivity extends BaseActivity {
             }
         }
 //        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
+    }
+
+    private void getFactoryCode() {
+        GreenDaoMaster master = new GreenDaoMaster();
+        List<Defactory> list = master.queryDefactoryToIsSelected("是");
+        if (list.size() > 0) {
+            factoryCode = list.get(0).getDeEntCode();
+        }
+        Log.e("厂家管码", "factoryCode: " + factoryCode);
     }
 
     private void initHandle() {
@@ -282,6 +294,9 @@ public class SouSuoSQActivity extends BaseActivity {
                     mAdapter2.setNewData(mList);
                     mAdapter2.notifyDataSetChanged();
                     hideInputKeyboard();//隐藏键盘,取消焦点
+                    break;
+                case 9:
+                    show_Toast(getResources().getString(R.string.text_error_tip1));
                     break;
                 default:
                     break;
@@ -481,7 +496,6 @@ public class SouSuoSQActivity extends BaseActivity {
 
     //注册选中的item
     private void inputLeiGuan() {
-
         for (int i = 0; i <mList.size(); i++) {
 
             if (mList.get(i).isSelect()) {
@@ -540,6 +554,13 @@ public class SouSuoSQActivity extends BaseActivity {
         String f2_delay_data = paiData.getNeiDelay();
         int delay_start = delay_max;
         Log.e(TAG, "当前段最大延时1: " + delay_max);
+
+        String facCode = Utils.getDetonatorShellToFactoryCodeStr(db.getShellBlastNo());
+        //雷管信息有误，管厂码不正确，请检查
+        if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.indexOf(facCode) < 0) {
+            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(9));
+            return;
+        }
 
         delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
         Log.e(TAG, "计算后的延时: " + delay_max);
