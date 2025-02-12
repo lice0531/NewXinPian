@@ -768,6 +768,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (data.length() == 13) {
                 barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                 insertSingleDenator(barCode);
+            } else if (data.length() == 14) {
+                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(12));
             }
             hideInputKeyboard();//隐藏光标
         }
