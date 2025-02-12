@@ -63,10 +63,9 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
-import android_serialport_api.xingbang.cmd.OneReisterCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.LoadingDialog;
-import android_serialport_api.xingbang.custom.PaiDataSelect;
+import android_serialport_api.xingbang.custom.SendMsgDenatorData;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
@@ -117,7 +116,6 @@ public class SendMsgActivity extends BaseActivity {
     private GreenDaoMaster master;
     private String TAG = "数据互传页面";
     private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,8 +216,15 @@ public class SendMsgActivity extends BaseActivity {
 //                    String str = getResources().getString(R.string.text_list_piace) + mRegion + "(" + getResources().getString(R.string.text_main_sl) + ": " + mListData.size() + ")";
                     setTitleRegionNew(qyIdList, mListData.size());
                     AppLogUtils.writeAppXBLog("数据互传成功导入" + msg.arg1 + "发雷管");
+                    show_Toast(getString(R.string.text_sendMsg_dr) + registIndex+ getString(R.string.text_sendMsg_lgcg));
+                    registIndex = 0;
 //                    setTitleRegion(mRegion, mListData.size());
-                    show_Toast(getString(R.string.text_sendMsg_dr) + msg.arg1+ getString(R.string.text_sendMsg_lgcg));
+//                    show_Toast(getString(R.string.text_sendMsg_dr) + msg.arg1+ getString(R.string.text_sendMsg_lgcg));
+                    //数据互传结束后:如果区域中最小排大于1  就依次新建排  例如区域1中最小的排是3 就新建1、2排
+                    List<QuYu> qyList = getDaoSession().getQuYuDao().queryBuilder().list();
+                    for (QuYu quYu : qyList) {
+                        addPaiNoForArea(quYu.getQyid());
+                    }
                     break;
                 case 1:
                     show_Toast(msg.obj.toString());
@@ -264,6 +269,53 @@ public class SendMsgActivity extends BaseActivity {
         list_uid = master.queryDetonatorRegionAscNew(qyIdList);
         denatorCount = list_uid.size();
         setTitleRegionNew(qyIdList,list_uid.size());
+        getSendMsgDenatorData();
+    }
+
+    List<SendMsgDenatorData> sendDataList = new ArrayList<>();
+    private void getSendMsgDenatorData() {
+        String qyKongDelay = "";
+        String qyPaiDelay = "";
+        String paiKongDelay = "";
+        String paiNeiDelay = "";
+        String paiStartDelay = "";
+        boolean paiDiJian = false;
+        for (DenatorBaseinfo denatorInfo : list_uid) {
+            QuYu quYu = master.geQuyu(denatorInfo.getPiece());
+            if (quYu != null) {
+                qyKongDelay = quYu.getKongDelay();
+                qyPaiDelay = quYu.getPaiDelay();
+            } else {
+                Log.e(TAG,"查询区域延时--没有找到对应的记录");
+            }
+            PaiData paiData = master.gePaiData(denatorInfo.getPiece(),denatorInfo.getPai());
+            if (paiData != null) {
+                paiKongDelay = paiData.getKongDelay();
+                paiStartDelay = paiData.getStartDelay();
+                paiNeiDelay =  paiData.getNeiDelay();
+                paiDiJian = paiData.getDiJian();
+            } else {
+                Log.e(TAG,"查询排延时--没有找到对应的记录");
+            }
+            SendMsgDenatorData sendDenatorData = new SendMsgDenatorData();
+            sendDenatorData.setQyKongDelay(qyKongDelay);
+            sendDenatorData.setQyPaiDelay(qyPaiDelay);
+            sendDenatorData.setPaiStartDelay(paiStartDelay);
+            sendDenatorData.setPaiKongDelay(paiKongDelay);
+            sendDenatorData.setPaiNeiDelay(paiNeiDelay);
+            sendDenatorData.setPaiDiJian(paiDiJian);
+            sendDenatorData.setSithole(denatorInfo.getSithole());
+            sendDenatorData.setShellBlastNo(denatorInfo.getShellBlastNo());
+            sendDenatorData.setDenatorId(denatorInfo.getDenatorId());
+            sendDenatorData.setDelay(denatorInfo.getDelay());
+            sendDenatorData.setZhu_yscs(denatorInfo.getZhu_yscs());
+            sendDenatorData.setPiece(denatorInfo.getPiece());
+            sendDenatorData.setDuan(denatorInfo.getDuan());
+            sendDenatorData.setDuanNo(denatorInfo.getDuanNo());
+            sendDenatorData.setPai(denatorInfo.getPai());
+            sendDataList.add(sendDenatorData);
+        }
+        Log.e(TAG,"需要互传的数据条数为:" + sendDataList.size());
     }
 
     //导出数据
@@ -325,7 +377,7 @@ public class SendMsgActivity extends BaseActivity {
         for (int i = 0; i < uniqueLgList.size(); i++) {
             String shellNo = uniqueLgList.get(i);
             String[] a = shellNo.split("#");
-            if (!a[0].equals("无") && checkRepeatDenatorId(a[0])) { // 检查重复数据
+            if (!a[0].equals("无") && !a[0].equals("") && checkRepeatDenatorId(a[0])) { // 检查重复数据
                 cfLgIndex++;
                 Log.e(TAG, "DenatorId当前第" + i + "条数据互传时检查有重复雷管了--跳出循环--index:" + cfLgIndex);
                 uniqueLgList.remove(i);  // 移除重复的雷管
@@ -374,7 +426,7 @@ public class SendMsgActivity extends BaseActivity {
                 String qyId = String.valueOf(maxNo + 1);
                 Log.e(TAG, "创建区域:" + qyId);
                 //旧版本M900没有排，接收到的雷管直接默认注册在第一排就行
-                createPai(shellNo, 1, leiguan, qyId);
+                createPai(shellNo, 1, leiguan, qyId,a);
                 Log.e(TAG, "旧版本雷管注册--排号:" + qyId);
             } else {
                 //新版本M900有排，需要根据接收到的雷管排号进行注册
@@ -393,8 +445,8 @@ public class SendMsgActivity extends BaseActivity {
                     squYu.setName(String.valueOf(maxNo));
                     squYu.setQyid(maxNo);
                     squYu.setStartDelay("0");
-                    squYu.setKongDelay("0");
-                    squYu.setPaiDelay("0");
+                    squYu.setKongDelay(a[8]);
+                    squYu.setPaiDelay(a[9]);
                     // 检查该区域是否已经存在
                     if (getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Qyid.eq(currentQyid)).count() == 0) {
                         // 根据已有区域数据的大小设置是否选中
@@ -412,21 +464,56 @@ public class SendMsgActivity extends BaseActivity {
                 // 获取当前雷管的排号并进行注册
                 String qyId = String.valueOf(maxNo);
                 String paiNo = a[5];  // 排号
-                createPai(shellNo, Integer.parseInt(paiNo), leiguan, qyId);
+                createPai(shellNo, Integer.parseInt(paiNo), leiguan, qyId,a);
             }
         }
-        if (registIndex == uniqueLgList.size()) {
+        if (registIndex >= uniqueLgList.size()) {
             pb_show = 0;
             Message msg = new Message();
             msg.what = 1002;
             msg.arg1 = mlg.length;
             mHandler_0.sendMessage(msg);
-            registIndex = 0;
         }
         Log.e(TAG,"去重后的个数:" + uniqueLgList.size() + "--当前插入条数:" + registIndex);
     }
 
-    private void createPai(String shellNo,int paiNo,String leiguan,String qyId) {
+    private void addPaiNoForArea(int qyId) {
+        Log.e(TAG, "开始补充区域 " + qyId + "中的缺失排号");
+        // 获取该区域内的最小排号
+        Integer minPaiNo = getDaoSession().getPaiDataDao()
+                .queryBuilder()
+                .where(PaiDataDao.Properties.Qyid.eq(qyId))
+                .orderAsc(PaiDataDao.Properties.PaiId)
+                .limit(1)
+                .unique()
+                .getPaiId();
+        // 如果最小排号大于 1，补充排号
+        if (minPaiNo != null && minPaiNo > 1) {
+            for (int i = 1; i < minPaiNo; i++) {
+                boolean isExistPai = getDaoSession().getPaiDataDao().queryBuilder()
+                        .where(PaiDataDao.Properties.PaiId.eq(i))
+                        .where(PaiDataDao.Properties.Qyid.eq(qyId))
+                        .count() > 0;
+
+                if (!isExistPai) {
+                    PaiData paiData = new PaiData();
+                    paiData.setPaiId(i);
+                    paiData.setQyid(qyId);
+                    paiData.setKongNum(1);
+                    paiData.setStartDelay("0");
+                    paiData.setKongDelay("0");
+                    paiData.setNeiDelay("0");
+                    paiData.setDiJian(false);
+
+                    getDaoSession().getPaiDataDao().insert(paiData);
+                    Log.e(TAG, "为区域 " + qyId + " 创建缺失的排号: " + i);
+                }
+            }
+        } else {
+            Log.e(TAG, "区域 " + qyId + " 的最小排号为 1，不需要创建缺失排号");
+        }
+    }
+    private void createPai(String shellNo,int paiNo,String leiguan,String qyId,String[] a) {
         Log.e(TAG, shellNo + "--创建排:" + paiNo);
         boolean isExistPai = getDaoSession().getPaiDataDao().queryBuilder()
                 .where(PaiDataDao.Properties.PaiId.eq(paiNo))
@@ -437,14 +524,21 @@ public class SendMsgActivity extends BaseActivity {
             PaiData paiData = new PaiData();
             paiData.setPaiId(paiNo);
             paiData.setQyid(Integer.parseInt(qyId));
-            paiData.setStartDelay("0");
             paiData.setKongNum(1);
-            paiData.setKongDelay("0");
-            paiData.setNeiDelay("0");
-            paiData.setDiJian(false);
-            paiData.setDelayMin("0");
-            paiData.setDelayMax("0");
-            paiData.setSum("0");
+            if (a.length == 5) {
+                paiData.setStartDelay("0");
+                paiData.setKongDelay("0");
+                paiData.setNeiDelay("0");
+                paiData.setDiJian(false);
+            } else {
+                paiData.setStartDelay(a[10]);
+                paiData.setKongDelay(a[11]);
+                paiData.setNeiDelay(a[12]);
+                paiData.setDiJian(Boolean.parseBoolean(a[13]));
+            }
+//            paiData.setDelayMin("0");
+//            paiData.setDelayMax("0");
+//            paiData.setSum("0");
             getDaoSession().getPaiDataDao().insert(paiData);
             Log.e(TAG, "新版M900当前排号:" + paiNo + "不存在，创建排号");
         }
@@ -530,11 +624,6 @@ public class SendMsgActivity extends BaseActivity {
 //            reCount++;
 //        }
         updataPaiData(Integer.parseInt(paiNo), qyId);
-//        pb_show = 0;
-//        Message msg = new Message();
-//        msg.what = 1002;
-//        msg.arg1 = lg.length;
-//        mHandler_0.sendMessage(msg);
         registIndex++;
         Log.e(TAG,"插入成功第" + registIndex + "条雷管数据");
     }
@@ -692,37 +781,77 @@ public class SendMsgActivity extends BaseActivity {
                                 show_Toast(getString(R.string.text_practice_tip6));
                                 return;
                             }
-                            for (int i = 0; i < list_uid.size(); i++) {//芯片码#延时#管壳码#段位-段号#延时参数
+                            long qySize = getDaoSession().getQuYuDao().queryBuilder().count();
+                            //旧版本M900是没有区域表的，所以用区域表的数量来判断新旧版本
+                            if (qySize > 0) {
+                                Log.e(TAG,"新版本数据互传");
+                                for (SendMsgDenatorData sendDenatorData : sendDataList) {
+                                    sb.append((sendDenatorData.getDenatorId() + "").
+                                            replace("null", "无") +
+                                            "#" + sendDenatorData.getDelay() + "#" +
+                                            sendDenatorData.getShellBlastNo() + "#" +
+                                            sendDenatorData.getDuan() + "-" + sendDenatorData
+                                            .getDuanNo() + "#" + (sendDenatorData.getZhu_yscs()
+                                            + "").replace("null", "无") +
+                                            "#" + (sendDenatorData.getPai() + "")
+                                            .replace("null", "无")
+                                            + "#" + (sendDenatorData.getSithole() + "")
+                                            .replace("null", "无")+ "#" +
+                                            (sendDenatorData.getPiece() + "").replace
+                                                    ("null", "无") + "#"
+                                            + sendDenatorData.getQyKongDelay() + "#" +
+                                            sendDenatorData.getQyPaiDelay() + "#" +
+                                                    sendDenatorData.getPaiStartDelay() + "#" +
+                                            sendDenatorData.getPaiKongDelay() + "#"
+                                            + sendDenatorData.getPaiNeiDelay() + "#" +
+                                            sendDenatorData.isPaiDiJian() + ",");
+                                }
+                            } else {
+                                Log.e(TAG,"旧版本数据互传");
+                                //旧版本数据互传
+                                for (int i = 0; i < list_uid.size(); i++) {//芯片码#延时#管壳码#段位-段号#延时参数
 //                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
-                                if (TextUtils.isEmpty(list_uid.get(i).getPai())) {
                                     sb.append((list_uid.get(i).getDenatorId() + "")
                                             .replace("null", "无")
                                             + "#" + list_uid.get(i).getDelay() + "#"
                                             + list_uid.get(i).getShellBlastNo() + "#"
-                                            +list_uid.get(i).getDuan()+"-"+ list_uid.get(i)
+                                            + list_uid.get(i).getDuan() + "-" + list_uid.get(i)
                                             .getDuanNo() + "#" + (list_uid.get(i)
                                             .getZhu_yscs() + "").replace("null",
                                             "无") + ",");
-                                } else {
-                                    sb.append((list_uid.get(i).getDenatorId() + "").
-                                            replace("null", "无") +
-                                            "#" + list_uid.get(i).getDelay() + "#" +
-                                            list_uid.get(i).getShellBlastNo() + "#" +
-                                            list_uid.get(i).getDuan() + "-" + list_uid.get(i)
-                                            .getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs()
-                                            + "").replace("null", "无") +
-                                            "#" + (list_uid.get(i).getPai() + "").replace
-                                            ("null", "无") + "#" +
-                                            (list_uid.get(i).getSithole() + "").
-                                                    replace("null", "无")+ "#" +
-                                            (list_uid.get(i).getPiece() + "").
-                                                    replace("null", "无") + ",");
                                 }
+                            }
+//                            for (int i = 0; i < list_uid.size(); i++) {//芯片码#延时#管壳码#段位-段号#延时参数
+////                    if (list_uid.get(i).getShellBlastNo().length() == 13 && list_uid.get(i).getDenatorId() !=null) {
+//                                if (TextUtils.isEmpty(list_uid.get(i).getPai())) {
+//                                    sb.append((list_uid.get(i).getDenatorId() + "")
+//                                            .replace("null", "无")
+//                                            + "#" + list_uid.get(i).getDelay() + "#"
+//                                            + list_uid.get(i).getShellBlastNo() + "#"
+//                                            +list_uid.get(i).getDuan()+"-"+ list_uid.get(i)
+//                                            .getDuanNo() + "#" + (list_uid.get(i)
+//                                            .getZhu_yscs() + "").replace("null",
+//                                            "无") + ",");
+//                                } else {
+//                                    sb.append((list_uid.get(i).getDenatorId() + "").
+//                                            replace("null", "无") +
+//                                            "#" + list_uid.get(i).getDelay() + "#" +
+//                                            list_uid.get(i).getShellBlastNo() + "#" +
+//                                            list_uid.get(i).getDuan() + "-" + list_uid.get(i)
+//                                            .getDuanNo() + "#" + (list_uid.get(i).getZhu_yscs()
+//                                            + "").replace("null", "无") +
+//                                            "#" + (list_uid.get(i).getPai() + "").replace
+//                                            ("null", "无") + "#" +
+//                                            (list_uid.get(i).getSithole() + "").
+//                                                    replace("null", "无")+ "#" +
+//                                            (list_uid.get(i).getPiece() + "").
+//                                                    replace("null", "无") + ",");
+//                                }
 //                    } else {
 //                        sb.append(list_uid.get(i).getShellBlastNo() + "#" + list_uid.get(i).getDelay() + ",");
 //                    }
 
-                            }
+//                            }
                             String ip = textIpStart.getText().toString() + textSetviceIp.getText().toString();
                             if (TextUtils.isEmpty(ip)) {
                                 show_Toast(getString(R.string.text_practice_tip7));
@@ -913,13 +1042,19 @@ public class SendMsgActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        registIndex = 0;
+    }
+
+    @Override
     protected void onDestroy() {
         if (executorService != null && (!executorService.isShutdown())) {
             executorService.shutdown();
 //            executorService.shutdownNow();
         }
-        super.onDestroy();
         registIndex = 0;
+        super.onDestroy();
     }
 
     //隐藏键盘
