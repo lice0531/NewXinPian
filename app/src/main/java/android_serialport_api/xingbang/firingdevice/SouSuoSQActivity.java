@@ -108,11 +108,17 @@ public class SouSuoSQActivity extends BaseActivity {
 
             paiChoice = bundle.getInt("paiChoice");
             mRegion = bundle.getString("mRegion");
+            delay_set = bundle.getString("delay_set");
+            flag_jh_f1=bundle.getBoolean("flag_jh_f1");
+            flag_jh_f2=bundle.getBoolean("flag_jh_f2");
+            btn_start=bundle.getBoolean("btn_start");
+            flag_tk=bundle.getBoolean("flag_tk");
             isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
                     bundle.getString("isShowZc") : "";
         }
-        Log.e(TAG, "paiChoice: "+paiChoice);
-        Log.e(TAG, "mRegion: "+mRegion);
+        Log.e(TAG, "传递的值paiChoice: "+paiChoice);
+        Log.e(TAG, "传递的值mRegion: "+mRegion);
+        Log.e(TAG, "传递的值delay_set: "+delay_set);
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
@@ -498,7 +504,7 @@ public class SouSuoSQActivity extends BaseActivity {
      */
     private void registerDetonator(ShouQuanData db) {
         boolean chongfu = false;
-        int maxNo = getMaxNumberNo();
+//        int maxNo = getMaxNumberNo();
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
         if (db.getShellBlastNo().length() < 13) {
 
@@ -519,8 +525,24 @@ public class SouSuoSQActivity extends BaseActivity {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
             return;
         }
+        PaiData paiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+        int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
+        int maxKong = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiChoice);//获取该区域最大孔号
+        int total = new GreenDaoMaster().queryDetonatorPaiSize(mRegion, paiChoice + "");//获取该区域最大孔号
+        int delay_max = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiChoice);//获取该区域 最大序号的延时
+        int delay_min = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
+        int duanNo2 = new GreenDaoMaster().getPaiMaxDuanNo((maxKong + 1), mRegion, paiChoice);//获取该区域 最大duanNo
+        int start_delay = Integer.parseInt(paiData.getStartDelay());//开始延时
+        int f1 = Integer.parseInt(paiData.getKongDelay());//f1延时
+        int f2 = 0;//f2延时(好像用不上了)
+        int tk_num = 0;
+        int kongSum = paiData.getKongNum();
+        String f2_delay_data = paiData.getNeiDelay();
+        int delay_start = delay_max;
+        Log.e(TAG, "当前段最大延时1: " + delay_max);
 
-
+        delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
+        Log.e(TAG, "计算后的延时: " + delay_max);
         String version = null;
         String yscs = null;
         if (db.getDetonatorId() != null) {
@@ -528,7 +550,7 @@ public class SouSuoSQActivity extends BaseActivity {
             version = db.getDetonatorIdSup();
             yscs = db.getZhu_yscs();
         }
-        int maxKong = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiChoice);//获取该区域最大孔号
+
         String duan = "1";
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
         Log.e("搜索", "duanNUM: "+duanNUM);
@@ -550,6 +572,7 @@ public class SouSuoSQActivity extends BaseActivity {
         } else {
             denator.setRegdate(Utils.getDateFormat(new Date()));
         }
+        denator.setDelay(delay_max);
         denator.setStatusCode("02");
         denator.setStatusName("已注册");
         denator.setErrorCode("00");
@@ -561,9 +584,119 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setPai(paiChoice+"");
         denator.setAuthorization(version);//导入默认是02版
 
+        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+        if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
+            int kong = maxKong;
+
+            if (duanNo1 == 0) {
+                kong = maxKong + 1;
+            }
+            Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
+            Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
+            Log.e("扫码-单孔多发判断", "delay_min: " + delay_min);
+            Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
+            duanNo1 = duanNo1 + 1;
+            denator.setSithole(kong + "");
+            denator.setBlastserial(kong);
+            denator.setDuanNo((duanNo1));
+            if (duanNo1 > 1) {
+                if (!flag_jh_f1) {//孔内是否递减
+                    denator.setDelay((delay_min - Integer.parseInt(f2_delay_data)));
+                } else {
+                    denator.setDelay((delay_start + Integer.parseInt(f2_delay_data)));
+                }
+            }
+        }
+
         getDaoSession().getDenatorBaseinfoDao().insert(denator);
 
         updataPaiData();
+    }
+    int flag1 = 0;
+    int flag2 = 0;
+    boolean flag_t1 = true;//同孔标志
+    boolean flag_jh_f1 = true;//减号标志
+    boolean flag_jh_f2 = true;//减号标志
+    boolean btn_start = false;//减号标志
+    boolean flag_tk = false;//跳孔标志
+    private String delay_set = "f1";//是f1还是f2
+    private int getDelay(int maxNo, int delay_max, int start_delay, int f1, int tk_num, int f2, int delay_min, int duanNo2) {
+        Log.e(TAG, "是否递减--flag_jh_f1: " + flag_jh_f1);
+        Log.e(TAG, "孔间还是排间delay_set: " + delay_set);
+        Log.e(TAG, "maxNo: " + maxNo);
+        Log.e(TAG, "delay: " + delay_max);
+        Log.e(TAG, "start_delay: " + start_delay);
+        Log.e(TAG, "delay_minNum: " + delay_min);
+        Log.e(TAG, "tk_num: " + tk_num);
+        Log.e(TAG, "----------------: ");
+        if (!flag_jh_f1) {
+            Log.e(TAG, "getDelay: " + 1);
+            if (delay_set.equals("f1")) {//孔间延时
+                Log.e(TAG, "getDelay: " + 11);
+                if (maxNo == 0) {
+                    Log.e(TAG, "getDelay: " + 111);
+                    delay_max = start_delay - delay_max;
+                    Log.e(TAG, "start_delay: " + start_delay);
+                    Log.e(TAG, "delay: " + delay_max);
+                } else {
+                    Log.e(TAG, "getDelay: " + 112);
+                    if (flag_tk) {
+                        Log.e(TAG, "getDelay: " + 1121);
+                        delay_max = delay_min - f1 * (tk_num + 1);
+                    } else {
+                        Log.e(TAG, "getDelay: " + 1122);
+                        delay_max = delay_min - f1;
+                    }
+
+                }
+            } else if (delay_set.equals("f2")) {//排间延时
+                Log.e(TAG, "getDelay: " + 12);
+                if (maxNo == 0) {
+                    Log.e(TAG, "getDelay: " + 121);
+                    delay_max = delay_max + start_delay;
+                } else {
+                    Log.e(TAG, "getDelay: " + 122);
+                    if (flag_tk) {
+                        delay_max = delay_min + f2 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_min + f2;
+                    }
+                }
+            }
+        } else {
+            Log.e(TAG, "getDelay: " + 2);
+            if (delay_set.equals("f1")) {//孔间延时
+                if (maxNo == 0) {
+                    delay_max = delay_max + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_max + f1 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_max + f1;
+                    }
+
+                }
+                Log.e(TAG, "maxNo: " + maxNo);
+                Log.e(TAG, "开始延时: " + start_delay);
+                Log.e(TAG, "孔间延时: " + delay_max);
+            } else if (delay_set.equals("f2")) {//孔内延时
+
+                if (maxNo == 0) {
+                    delay_max = delay_max + start_delay;
+                } else {
+                    if (flag_tk) {
+                        delay_max = delay_min + f2 * (tk_num + 1);
+                    } else {
+                        delay_max = delay_min + f2;
+                    }
+                }
+                Log.e(TAG, "孔内延时: " + delay_max);
+            } else {
+                delay_max = start_delay;
+            }
+        }
+
+        return delay_max;
     }
 
     //更新排

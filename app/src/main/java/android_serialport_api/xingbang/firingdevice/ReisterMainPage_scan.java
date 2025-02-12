@@ -315,7 +315,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int isCorrectReisterFea = 0; //是否正确的管厂码
     private int maxSecond = 0;//最大秒数
     private int pb_show = 0;
-    private String delay_set = "0";//是f1还是f2
+    private String delay_set = "f1";//是f1还是f2
     private String selectDenatorId;//选择的管壳码
     //这是注册了一个观察者模式
     public static final Uri uri = Uri.parse("content://android_serialport_api.xingbang.denatorBaseinfo");
@@ -2632,7 +2632,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
             Log.e("扫码-单孔多发判断", "delay_min: " + delay_min);
             Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
-            Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
             Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
             duanNo1 = duanNo1 + 1;
             denatorBaseinfo.setSithole(kong + "");
@@ -2718,13 +2717,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
         Log.e(TAG, "更新排数据 paiChoice: " + paiChoice);
         Log.e(TAG, "更新排数据 kongChoice: " + kongChoice);
+        Log.e(TAG, "更新排数据 flag_add: " + flag_add);
         if (childList.get(groupListChoice - 1).size() > 0) {
             denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);
         }
 
         if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 && flag_add) {
             Log.e(TAG, "更新排数据 getBlastserial: " + denatorBaseinfo_choice.getBlastserial());
-            flag_add = true;
+//            flag_add = true;
             denatorBaseinfo_choice.setDenatorId(denatorBaseinfo.getDenatorId());
             denatorBaseinfo_choice.setShellBlastNo(denatorBaseinfo.getShellBlastNo());
             denatorBaseinfo_choice.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
@@ -2733,9 +2733,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         } else {
             Log.e(TAG, "判断是否是插入 charu: " + charu);
             if (!charu) {
-
+                flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
             }
-            flag_zhuce = true;//标记新注册,使光标移动到新的雷管上
+
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denatorBaseinfo);
         }
@@ -2748,7 +2748,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         charu = false;
-        flag_add = false;
+        flag_add = true;
         return 0;
     }
 
@@ -3832,6 +3832,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Bundle bundle = new Bundle();
                     bundle.putInt("paiChoice", paiChoice);//用来判断是否需要展示注册功能
                     bundle.putString("mRegion", mRegion);//用来判断是否需要展示注册功能
+                    bundle.putBoolean("flag_jh_f1",flag_jh_f1);
+                    bundle.putBoolean("flag_jh_f2",flag_jh_f2);
+                    bundle.putBoolean("btn_start",btn_start);
+                    bundle.putBoolean("flag_tk",flag_tk);
+                    bundle.putString("delay_set",delay_set);
+                    Log.e(TAG, "传给搜索界面delay_set: "+delay_set );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 });
