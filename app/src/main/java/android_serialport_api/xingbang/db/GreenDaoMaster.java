@@ -1512,7 +1512,8 @@ public class GreenDaoMaster {
     public List<DetonatorTypeNew> queryDetonatorShouQuanForGkm(String gkm,String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()
-                .whereOr(DetonatorTypeNewDao.Properties.Time.eq(sqrq),DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
+                .where(DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
+//                .whereOr(DetonatorTypeNewDao.Properties.Time.eq(sqrq),DetonatorTypeNewDao.Properties.ShellBlastNo.like("%" + gkm+"%"))
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
@@ -2011,7 +2012,9 @@ public class GreenDaoMaster {
         return result.list();
     }
     public  List<PaiDataSelect> queryPaiSelect(String qyId) {
-        QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder();
+        QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao()
+                .queryBuilder()
+                .orderAsc(PaiDataDao.Properties.PaiId);  // 排号升序排序;
         result = result.where(PaiDataDao.Properties.Qyid.eq(qyId));
         List<PaiDataSelect> mPaiList = new ArrayList<>();
         for (PaiData item : result.list()) {
