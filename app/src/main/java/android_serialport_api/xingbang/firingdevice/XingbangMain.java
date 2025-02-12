@@ -869,6 +869,8 @@ public class XingbangMain extends SerialPortActivity {
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
+                if (!projectCheck(1)) return;
+
                 lastClickTime = System.currentTimeMillis();
                 //验证是否授权
                 queryBeian();
@@ -915,6 +917,8 @@ public class XingbangMain extends SerialPortActivity {
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
+                if (!projectCheck(1)) return;
+
                 lastClickTime = System.currentTimeMillis();
                 //验证是否授权
                 queryBeian();

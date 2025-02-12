@@ -185,7 +185,8 @@ public class QueryHisDetail extends BaseActivity {
                         String jd = list_savedate.get(pos).getLongitude();//经度
                         String wd = list_savedate.get(pos).getLatitude();//纬度
                         String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
-                        String qbxm_name = list_savedate.get(pos).getUserid();//项目名称
+                        String qbxm_name = list_savedate.get(pos).getProjectName();//项目名称
+                        pro_bprysfz = list_savedate.get(pos).getUserid();//身份证
                         String log = list_savedate.get(pos).getLog();//日志
 //                        mAdapter.notifyDataSetChanged();
                         getHisDetailList(blastdate, 0);//获取起爆历史详细信息
@@ -204,6 +205,9 @@ public class QueryHisDetail extends BaseActivity {
                         Log.e("上传-经纬度", "jd: "+jd );
                         if (pro_coordxy.length() < 2 && jd == null) {
                             show_Toast(getResources().getString(R.string.text_his_jwdwk));
+                            return;
+                        }if (equ_no.length() < 1 ) {
+                            show_Toast(getResources().getString(R.string.text_down_err2));
                             return;
                         }
 
@@ -287,6 +291,7 @@ public class QueryHisDetail extends BaseActivity {
             }
         };
         mHandler_tip = new Handler(msg -> {
+
             switch (msg.what){
                 case 1:
                     show_Toast(getResources().getString(R.string.text_xzsb16));
@@ -301,7 +306,37 @@ public class QueryHisDetail extends BaseActivity {
                     show_Toast(getResources().getString(R.string.text_uploda_tip3));
                     break;
                 case 5:
-                    show_Toast(msg.obj.toString());
+                    String tip ="";
+                    switch (msg.obj.toString()){
+                        case "0":
+                            tip="成功";
+                            break;
+                        case "1":
+                            tip="非法的申请信息";
+                            break;
+                        case "2":
+                            tip="未找到该起爆器设备信息";
+                            break;
+                        case "3":
+                            tip="该起爆器未设置作业任务";
+                            break;
+                        case "4":
+                            tip="起爆器在黑名单中";
+                            break;
+                        case "5":
+                            tip="起爆位置不在起爆区域内";
+                            break;
+                        case "6":
+                            tip="起爆位置在禁爆区域内";
+                            break;
+                        case "7":
+                            tip="该起爆器已注销/报废";
+                            break;
+                        case "8":
+                            tip="禁爆任务";
+                            break;
+                    }
+                    show_Toast(tip);
                     break;
             }
             return false;
@@ -433,7 +468,8 @@ public class QueryHisDetail extends BaseActivity {
             item.setRemark(list.get(i).getRemark());
             item.setSerialNo(list.get(i).getSerialNo() + "");
             item.setUploadStatus(list.get(i).getUploadStatus());
-            item.setUserid(list.get(i).getUserid());
+            item.setUserid(list.get(i).getPro_bprysfz());
+            item.setProjectName(list.get(i).getUserid());
             item.setId(list.get(i).getId() + "");
             item.setProjectNo(list.get(i).getPro_htid());
             item.setDwdm(list.get(i).getPro_dwdm());
@@ -863,11 +899,21 @@ public class QueryHisDetail extends BaseActivity {
             } else {
                 object.put("htid", pro_htid);//合同编号
             }
+            if (dwdm != null) {
+                object.put("dwdm", dwdm);//合同编号
+            } else {
+                object.put("dwdm", pro_dwdm);//单位代码
+            }
+            if (xmbh != null) {
+                object.put("xmbh", xmbh);//合同编号
+            } else {
+                object.put("xmbh", pro_xmbh);//项目编号
+            }
             object.put("bpsj", "20"+blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
-            object.put("dwdm", pro_dwdm);//单位代码
-            object.put("xmbh", pro_xmbh);//项目编号
+
+
             Log.e("上传信息", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -914,19 +960,23 @@ public class QueryHisDetail extends BaseActivity {
 
                     } else if (success.equals("fail")) {
                         String cwxx = object.getString("cwxx");
-                        if (cwxx.equals("1")) {
-                            Message msg = new Message();
-                            msg.what=3;
-                            msg.obj=cwxx;
-                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-                        } else if (cwxx.equals("2")) {
-                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-                        } else {
-                            Message msg = new Message();
-                            msg.what=5;
-                            msg.obj=cwxx;
-                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
-                        }
+                        Message msg = new Message();
+                        msg.what=5;
+                        msg.obj=cwxx;
+                        mHandler_tip.sendMessage(msg);
+//                        if (cwxx.equals("1")) {
+//                            Message msg = new Message();
+//                            msg.what=3;
+//                            msg.obj=cwxx;
+//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
+//                        } else if (cwxx.equals("2")) {
+//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+//                        } else {
+//                            Message msg = new Message();
+//                            msg.what=5;
+//                            msg.obj=cwxx;
+//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
+//                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -10,6 +10,7 @@ public class VoFireHisMain {
 	private String longitude;//经度坐标   
 	private String latitude;//纬度    
 	private String userid;//操作人
+	private String projectName;//项目名称
 	private String firedNo;//起爆器编号
 	private String serialNo;//序号
 	private String remark;
@@ -17,6 +18,14 @@ public class VoFireHisMain {
 	private String dwdm;//单位代码
 	private String xmbh;//项目编号
 	private String log;//日志
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
 	public String getId() {
 		return id;

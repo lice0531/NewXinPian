@@ -60,10 +60,12 @@ import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.SysLog;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
+import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
@@ -202,6 +204,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private String pro_xmbh = "";//项目编号
     private String pro_coordxy = "";//经纬度
     private String pro_dwdm = "";//单位代码
+    private String pro_name = "";//项目名称
     private int ChongDian_time;//充电时间
     private int JianCe_time;//准备时间
     private int Qibaotime;//起爆倒计时时间
@@ -1433,6 +1436,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (message.size() > 0) {
             pro_bprysfz = message.get(0).getPro_bprysfz();
             pro_htid = message.get(0).getPro_htid();
+
             pro_xmbh = message.get(0).getPro_xmbh();
             equ_no = message.get(0).getEqu_no();
             pro_coordxy = message.get(0).getPro_coordxy();
@@ -1786,16 +1790,17 @@ public class FiringMainActivity extends SerialPortActivity {
             String xy[] = pro_coordxy.split(",");//经纬度
             int maxNo = getHisMaxNumberNo();
             maxNo++;
-            String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
+            Project usedProject = Application.getDaoSession().getProjectDao().queryBuilder().where(ProjectDao.Properties.Selected.eq("true")).unique();            String fireDate = hisInsertFireDate;//Utils.getDateFormatToFileName();
             DenatorHis_Main his = new DenatorHis_Main();
             his.setBlastdate(fireDate);
             his.setUploadStatus("未上传");
             his.setRemark("已起爆");
             his.setEqu_no(equ_no);
-            his.setUserid(qbxm_name);
+            his.setUserid(usedProject.getProject_name());
             his.setPro_htid(pro_htid);
             his.setPro_xmbh(pro_xmbh);
             his.setPro_dwdm(pro_dwdm);
+            his.setPro_bprysfz(usedProject.getBprysfz());
             his.setSerialNo(Integer.parseInt(qbxm_id));
             his.setLog(Utils.readLog(Utils.getDate(new Date())));
             if (pro_coordxy.length() > 4) {
@@ -2909,11 +2914,11 @@ public class FiringMainActivity extends SerialPortActivity {
                             break;
 
                         case 2://
-                            Log.e(TAG, "----------------------------: " );
-                            Log.e(TAG, "oneCount_panduan: "+oneCount_panduan );
-                            Log.e(TAG, "oneCount: "+oneCount );
-                            Log.e(TAG, "oneCount_max: "+oneCount_max );
-                            Log.e(TAG, "JianCe_time: "+JianCe_time );
+//                            Log.e(TAG, "----------------------------: " );
+//                            Log.e(TAG, "oneCount_panduan: "+oneCount_panduan );
+//                            Log.e(TAG, "oneCount: "+oneCount );
+//                            Log.e(TAG, "oneCount_max: "+oneCount_max );
+//                            Log.e(TAG, "JianCe_time: "+JianCe_time );
                             //发出进入起爆模式命令  准备测试计时器    报错
                             if (oneCount >= oneCount_max && secondCmdFlag == 0) {//
                                 if (list_dianliu.size() > 5 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {

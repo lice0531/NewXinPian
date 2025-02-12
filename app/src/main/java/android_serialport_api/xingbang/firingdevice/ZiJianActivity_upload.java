@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -248,8 +249,27 @@ public class ZiJianActivity_upload extends SerialPortActivity {
 
                     @Override
                     public void onFinish() {
-//                        show_Toast("所有权限申请完成");
-                        ziJianThread.start();
+                        //对比时间
+                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String format1 = sd.format(new Date(System.currentTimeMillis() ));//当前时间
+                        String time =(String) MmkvUtils.getcode("time","2024-11-20 12:00:00");
+                        try {
+                            Date date1 = sd.parse(format1);//当前日期
+                            Date date2 = sd.parse(time);//有网记录时间
+                            if(date1.compareTo(date2)>0){
+                                //过期
+                                ziJianThread.start();
+                                Log.e(TAG, "当前时间大于记录时间: " );
+                            }else {
+                                createDialog();
+                                //大于
+                                Log.e(TAG, "当前时间小于记录时间: " );
+                            }
+                        } catch (ParseException | java.text.ParseException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
 
                     @Override
@@ -336,17 +356,17 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                 case 1:
                     tvZjNum.setText(firstCount + "s");
                     break;
-                case 2:
-
-                    Log.e("自检", "version: " + version);
-                    Log.e("自检", "version_cloud: " + version_cloud);
-                    if (version_cloud != null && !version_cloud.contains(version)) {
-                        ziJianThread.exit = true;
-                        createDialog();
-
-
-                    }
-                    break;
+//                case 2:
+//
+//                    Log.e("自检", "version: " + version);
+//                    Log.e("自检", "version_cloud: " + version_cloud);
+//                    if (version_cloud != null && !version_cloud.contains(version)) {
+//                        ziJianThread.exit = true;
+//                        createDialog();
+//
+//
+//                    }
+//                    break;
             }
 
             return false;
@@ -450,28 +470,23 @@ public class ZiJianActivity_upload extends SerialPortActivity {
     /***
      * 建立对话框
      */
+    /***
+     * 建立对话框
+     */
     public void createDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("升级提醒");//"说明"
-        builder.setMessage("检测到有新的硬件程序版本,请确定您当前的网络环境稳定,建议在WIFI环境或者稳定的4G网络热点下再进行更新,是否进行更新?");
-        builder.setPositiveButton("进行更新", (dialog, which) -> {
-//            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
-            finish();
-            Intent intent = new Intent(this, UpgradeActivity.class);
-            intent.putExtra("dataSend", BinName);
-            startActivity(intent);
-            dialog.dismiss();
-        });
-//        builder.setNeutralButton("退出", (dialog, which) -> {
-//            dialog.dismiss();
+        builder.setTitle("系统提醒");//"说明"
+        builder.setMessage("检测系统时间被修改,联网更新时间后,再进入程序");
+//        builder.setPositiveButton("进行更新", (dialog, which) -> {
+//
 //            finish();
+//            dialog.dismiss();
 //        });
-        builder.setNegativeButton("进入程序", (dialog, which) -> {
-            finish();
-            Intent intent = new Intent(this, XingbangMain.class);
-            startActivity(intent);
+        builder.setNeutralButton("退出", (dialog, which) -> {
             dialog.dismiss();
+            finish();
         });
+
         builder.create().show();
     }
 

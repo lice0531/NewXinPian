@@ -33,15 +33,17 @@ public class DenatorHis_Main {
     private String pro_htid;
     @Property(nameInDb = "pro_dwdm")
     private String pro_dwdm;
+    @Property(nameInDb = "pro_bprysfz")
+    private String pro_bprysfz;
     @Property(nameInDb = "remark")
     private String remark;
     @Property(nameInDb = "log")
     private String log;
-    @Generated(hash = 960757556)
+    @Generated(hash = 78378197)
     public DenatorHis_Main(Long id, String blastdate, String uploadStatus,
             String longitude, String latitude, String userid, String equ_no,
             int serialNo, String pro_xmbh, String pro_htid, String pro_dwdm,
-            String remark, String log) {
+            String pro_bprysfz, String remark, String log) {
         this.id = id;
         this.blastdate = blastdate;
         this.uploadStatus = uploadStatus;
@@ -53,6 +55,7 @@ public class DenatorHis_Main {
         this.pro_xmbh = pro_xmbh;
         this.pro_htid = pro_htid;
         this.pro_dwdm = pro_dwdm;
+        this.pro_bprysfz = pro_bprysfz;
         this.remark = remark;
         this.log = log;
     }
@@ -155,5 +158,11 @@ public class DenatorHis_Main {
                 ", remark='" + remark + '\'' +
                 ", log='" + log + '\'' +
                 '}';
+    }
+    public String getPro_bprysfz() {
+        return this.pro_bprysfz;
+    }
+    public void setPro_bprysfz(String pro_bprysfz) {
+        this.pro_bprysfz = pro_bprysfz;
     }
 }
