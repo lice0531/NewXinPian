@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -76,23 +78,40 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
         holder.mTvShellBlastNo.setText(detonatorBaseInfo.getShellBlastNo());   // 管壳号
         holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
         if (mIndex == 1) {
-
-            if (position != 0&&!detonatorBaseInfo.getShellBlastNo().startsWith("A6")) {
+            if (position != 0 && !detonatorBaseInfo.getShellBlastNo().startsWith("A6")) {
+                // 提取shellBlastNo中的数字部分
+                long currentBlastNo = extractNumber(detonatorBaseInfo.getShellBlastNo());
                 DenatorBaseinfo detonatorBaseInfo2 = list_detonatorBaseInfo.get(position - 1);
-                int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(12));//5340821A00001
-                int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(12));//5340821A00001
-                if (b - a != 1) {
-                    Log.e("对比", "detonatorBaseInfo.getShellBlastNo(): " + detonatorBaseInfo.getShellBlastNo());
-                    Log.e("对比", "detonatorBaseInfo2.getShellBlastNo(): " + detonatorBaseInfo2.getShellBlastNo());
-                    if ((a == 9 && b == 0)) {
-                        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
-                    } else {
-                        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
-                    }
+                long previousBlastNo = extractNumber(detonatorBaseInfo2.getShellBlastNo());
 
+                // 输出提取的数字，检查是否正确
+                Log.d("Debug", "当前管壳: " + currentBlastNo + ", 上一个管壳: " + previousBlastNo);
+
+                // 调整判断条件，差值大于或等于1
+//                if (Math.abs(currentBlastNo - previousBlastNo) > 1) {
+                if ((currentBlastNo - previousBlastNo) > 1) {
+                    // 差值大于或等于1，背景色为红色
+                    holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
                 } else {
+                    // 差值小于1，背景色为蓝色
                     holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
                 }
+//                DenatorBaseinfo detonatorBaseInfo2 = list_detonatorBaseInfo.get(position - 1);
+//
+//                int a = Integer.parseInt(detonatorBaseInfo.getShellBlastNo().substring(12));//5340821A00001
+//                int b = Integer.parseInt(detonatorBaseInfo2.getShellBlastNo().substring(12));//5340821A00001
+//                if (b - a != 1) {
+//                    Log.e("对比", "detonatorBaseInfo.getShellBlastNo(): " + detonatorBaseInfo.getShellBlastNo());
+//                    Log.e("对比", "detonatorBaseInfo2.getShellBlastNo(): " + detonatorBaseInfo2.getShellBlastNo());
+//                    if ((a == 9 && b == 0)) {
+//                        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
+//                    } else {
+//                        holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_red_2);
+//                    }
+//
+//                } else {
+//                    holder.mLl_item.setBackgroundResource(R.drawable.a_bg_border_blue_1dp);
+//                }
             }
         }
         holder.mTvStatus.setText(detonatorBaseInfo.getErrorName());
@@ -137,6 +156,14 @@ public class DetonatorAdapter_Query<T> extends RecyclerView.Adapter<DetonatorAda
 
 
     }
+
+    // 提取ShellBlastNo中的数字部分
+    public long extractNumber(String shellBlastNo) {
+        // 正则表达式，匹配字符串中的数字
+        String numberString = shellBlastNo.replaceAll("\\D", ""); // 去掉非数字字符
+        return numberString.isEmpty() ? 0 : Long.parseLong(numberString); // 将数字字符串转换为长整型
+    }
+
 
     @Override
     public int getItemCount() {
