@@ -14,15 +14,6 @@
         android:textSize="15sp"
         android:text="@string/text_help_xuhao" />
     <TextView
-        android:id="@+id/X_item_duanNo"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/textview_border"
-        style="@style/alltextstyle"
-        android:textSize="15sp"
-        android:text="@string/text_list_kong" />
-    <TextView
         android:id="@+id/X_item_quyu"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -31,6 +22,15 @@
         style="@style/alltextstyle"
         android:textSize="15sp"
         android:text="@string/text_list_piace" />
+    <TextView
+        android:id="@+id/X_item_duanNo"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/textview_border"
+        style="@style/alltextstyle"
+        android:textSize="15sp"
+        android:text="@string/text_list_kong" />
     <TextView
         android:id="@+id/X_item_shellno"
         android:layout_width="0dp"

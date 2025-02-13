@@ -455,10 +455,10 @@
     <string name="text_fz_kscs">Quick test current</string>
     <string name="text_fz_sjhc">Data exchange</string>
     <string name="text_fz_qchc">Clear Cache</string>
-    <string name="text_test_tip5">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection。</string>
-    <string name="text_test_tip6">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection。</string>
-    <string name="text_test_tip7">Check the list of incorrect detonators. It is suspected that some of the detonator connecting wires are disconnected. Please check if there are any situations such as disconnected detonator connecting wires and incorrect input of the shell code. After checking, click the continue button to proceed with the detection!</string>
-    <string name="text_test_tip8">Please replace the incorrect detonator. It is suspected that some detonators may have water ingress or mud ingress. After checking for any errors, click to continue with the detection。</string>
+    <string name="text_test_tip5">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection</string>
+    <string name="text_test_tip6">Please check if there are short circuits such as water ingress and mud ingress in the wire clamp and other parts. After confirming that there are no errors, click to continue the inspection</string>
+    <string name="text_test_tip7">Check the list of wrong detonators. The suspected part of the detonator connection line is disconnected. Please check whether the detonator connection line is disconnected or the shell code is incorrectly entered!</string>
+    <string name="text_test_tip8">Please replace the incorrect detonator. It is suspected that some detonators may have water ingress or mud ingress. After checking for any errors, click to continue with the detection</string>
     <string name="text_test_tip9">Suspected that some detonators have entered incorrect detonator numbers. Please check if the detonator numbers are entered correctly!</string>
     <string name="text_test_tip10">Please check if the wiring is connected correctly</string>
     <string name="text_test_tip11">Discharging</string>
@@ -635,6 +635,8 @@
     <string name="text_yjbbh">Hardware version number</string>
     <string name="text_czts">Operation prompt</string>
     <string name="text_mmcw">Password error</string>
+    <string name="text_scsq">Authorization records have been deleted</string>
+    <string name="text_qksq">Authorization records have been cleared</string>
     <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">Wired cascading</string>
     <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">Hotspot cascading</string>
     <string name="title_activity_jl">Cascade</string>

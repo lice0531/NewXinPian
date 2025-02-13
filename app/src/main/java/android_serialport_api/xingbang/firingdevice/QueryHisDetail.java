@@ -227,13 +227,13 @@ public class QueryHisDetail extends BaseActivity {
 
                         break;
                     case R.id.bt_delete:
-                        AlertDialog dialog = new AlertDialog.Builder(QueryHisDetail.this)
-                                .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
-                                .setMessage(getResources().getString(R.string.text_queryHis_dialog9))//设置对话框的内容"本次任务成功起爆！"
-                                //设置对话框的按钮
-                                .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
-                                .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog12, which) -> {
-                                    dialog12.dismiss();
+//                        AlertDialog dialog = new AlertDialog.Builder(QueryHisDetail.this)
+//                                .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题//"成功起爆"
+//                                .setMessage(getResources().getString(R.string.text_queryHis_dialog9))//设置对话框的内容"本次任务成功起爆！"
+//                                //设置对话框的按钮
+//                                .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
+//                                .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog12, which) -> {
+//                                    dialog12.dismiss();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
                                     builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
                                     View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
@@ -261,8 +261,8 @@ public class QueryHisDetail extends BaseActivity {
                                         }
                                     });
                                     builder.show();
-                                }).create();
-                        dialog.show();
+//                                }).create();
+//                        dialog.show();
 
                         break;
                 }

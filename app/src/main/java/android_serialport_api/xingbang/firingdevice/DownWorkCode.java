@@ -1865,17 +1865,17 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         int position = (int) v.getTag();
         switch (v.getId()) {
             case R.id.btn_del_sq://删除按钮
-                TextView textview = new TextView(this);
-                textview.setTextSize(25);
-                textview.setTextColor(Color.RED);
-                textview.setText( getResources().getString(R.string.text_down_tip19));
-                textview.setTypeface(null, Typeface.BOLD);
-                AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题
-                        .setView(textview)
-                        //设置对话框的按钮
-                        .setPositiveButton(getResources().getString(R.string.text_verify), (dialog3, which) -> {
-                            dialog3.dismiss();
+//                TextView textview = new TextView(this);
+//                textview.setTextSize(25);
+//                textview.setTextColor(Color.RED);
+//                textview.setText( getResources().getString(R.string.text_down_tip19));
+//                textview.setTypeface(null, Typeface.BOLD);
+//                AlertDialog dialog2 = new AlertDialog.Builder(this)
+//                        .setTitle(getResources().getString(R.string.text_queryHis_dialog1))//设置对话框的标题
+//                        .setView(textview)
+//                        //设置对话框的按钮
+//                        .setPositiveButton(getResources().getString(R.string.text_verify), (dialog3, which) -> {
+//                            dialog3.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(DownWorkCode.this);
                             builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
                             View view = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_delete, null);
@@ -1899,7 +1899,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                             map_dl.remove(position);
                                         }
                                         mAdapter_sq.notifyDataSetChanged();
-                                        show_Toast("已删除授权记录");
+                                        show_Toast(getResources().getString(R.string.text_scsq));
                                     } else {
                                         show_Toast(getResources().getString(R.string.text_mmcw));
                                     }
@@ -1907,12 +1907,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                 }
                             });
                             builder.show();
-                        })
-                        .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog3, which) -> {
-                            dialog3.dismiss();
-                        })
-                        .create();
-                dialog2.show();
+//                        })
+//                        .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog3, which) -> {
+//                            dialog3.dismiss();
+//                        })
+//                        .create();
+//                dialog2.show();
                 break;
             case R.id.ly_sq://
             case R.id.tv_chakan_sq:
@@ -2467,19 +2467,19 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                     show_Toast(getResources().getString(R.string.text_his_zwsqsc));
                     return;
                 }
-                TextView textview = new TextView(this);
-                textview.setTextSize(25);
-                textview.setTextColor(Color.RED);
-                textview.setText( getResources().getString(R.string.text_down_dialog2));
-                textview.setTypeface(null, Typeface.BOLD);
-                AlertDialog dialog2 = new AlertDialog.Builder(this)
-                        .setTitle(getResources().getString(R.string.text_down_dialog1))
-//                        .setMessage(getResources().getString(R.string.text_down_dialog2))
-                        .setView(textview)
-                        //设置对话框的按钮
-                        .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss())
-                        .setPositiveButton(getResources().getString(R.string.text_verify), (dialog, which) -> {
-                            dialog.dismiss();
+//                TextView textview = new TextView(this);
+//                textview.setTextSize(25);
+//                textview.setTextColor(Color.RED);
+//                textview.setText( getResources().getString(R.string.text_down_dialog2));
+//                textview.setTypeface(null, Typeface.BOLD);
+//                AlertDialog dialog2 = new AlertDialog.Builder(this)
+//                        .setTitle(getResources().getString(R.string.text_down_dialog1))
+////                        .setMessage(getResources().getString(R.string.text_down_dialog2))
+//                        .setView(textview)
+//                        //设置对话框的按钮
+//                        .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss())
+//                        .setPositiveButton(getResources().getString(R.string.text_verify), (dialog, which) -> {
+//                            dialog.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(DownWorkCode.this);
                             builder.setTitle(getResources().getString(R.string.text_queryHis_dialog12));//"请输入用户名和密码"
                             View v = LayoutInflater.from(DownWorkCode.this).inflate(R.layout.userlogindialog_delete, null);
@@ -2499,6 +2499,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                         GreenDaoMaster.delAllMessage();//清空数据
                                         GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
                                         mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
+                                        show_Toast(getResources().getString(R.string.text_qksq));
                                     } else {
                                         show_Toast(getResources().getString(R.string.text_mmcw));
                                     }
@@ -2512,8 +2513,8 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                 }
                             });
                             builder.show();
-                        }).create();
-                dialog2.show();
+//                        }).create();
+//                dialog2.show();
                 break;
             case R.id.btn_down_inputOK://保存
 //                hideInputKeyboard();//隐藏键盘
