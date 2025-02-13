@@ -846,17 +846,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             Log.e(TAG, "新注册,光标移动到childListChoice: " + childListChoice);
                             flag_zhuce = false;
                         }
+                        if (!flag_add&&childListChoice+1< childList.get(groupListChoice-1).size()) {//除了在最新的管后面加孔,光标放到新注册的这发
+                            flag_add = true;
+                            childListChoice=childListChoice+1;
+                        }
                         Log.e(TAG, "设置默认选中-groupListChoice: " + groupListChoice);
                         Log.e(TAG, "设置默认选中-childListChoice: " + childListChoice);
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
                         if (groupListChoice >= groupCount) {
+                            Log.e(TAG, "光标选中1: " );
                             zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
                             if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
                                 zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childListChoice - 1);
                                 zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
                             }
                         } else {
+                            Log.e(TAG, "光标选中2: " );
                             zcList.expandGroup(groupListChoice - 1);
                             if (childList.get(groupListChoice - 1).size() != 0) {
                                 zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
@@ -991,6 +997,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             Log.e("adapter删除操作", "groupSize:" + zhuceAdapter
                                     .getGroupCount() + "--childSize:" + childList.get(zhuceAdapter.getGroupCount() - 1).size());
                             if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+                                Log.e(TAG, "光标选中3: " );
                                 zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childListChoice - 1);
                                 zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
                                 Log.e("adapter删除操作", "groupIndex:" + (zhuceAdapter.getGroupCount() - 1));
@@ -2750,7 +2757,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         charu = false;
-        flag_add = true;
+
         return 0;
     }
 
