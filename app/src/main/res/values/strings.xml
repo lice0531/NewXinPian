@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="app_name">煋邦科技KT50起爆器</string>
+    <string name="app_name">煋邦科技起爆器</string>
     <string name="error_configuration">请先配置你的串口.</string>
     <string name="error_security">您没有串行端口的读/写权限.</string>
     <string name="error_unknown">未知原因无法打开串口.</string>
@@ -645,6 +645,8 @@
     <string name="text_yjbbh">硬件版本号</string>
     <string name="text_czts">操作提示</string>
     <string name="text_mmcw">密码错误</string>
+    <string name="text_scsq">已删除授权记录</string>
+    <string name="text_qksq">已清空授权记录</string>
     <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">有线级联</string>
     <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">热点级联</string>
     <string name="title_activity_jl">级联</string>

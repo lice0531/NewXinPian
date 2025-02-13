@@ -207,6 +207,7 @@
                 android:layout_gravity="center_horizontal"
                 android:ems="1"
                 android:text="未爆破"
+                android:visibility="gone"
                 android:textColor="@color/black"
                 android:textSize="28sp" />
 

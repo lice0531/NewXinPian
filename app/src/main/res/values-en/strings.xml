@@ -635,6 +635,8 @@
     <string name="text_yjbbh">Hardware version number</string>
     <string name="text_czts">Operation prompt</string>
     <string name="text_mmcw">Password error</string>
+    <string name="text_scsq">Authorization records have been deleted</string>
+    <string name="text_qksq">Authorization records have been cleared</string>
     <string name="text_fz_yxjl" tools:ignore="DuplicateDefinition">Wired cascading</string>
     <string name="text_fz_rdjl" tools:ignore="DuplicateDefinition">Hotspot cascading</string>
     <string name="title_activity_jl">Cascade</string>
