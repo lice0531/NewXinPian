@@ -78,6 +78,7 @@ import android_serialport_api.xingbang.models.DownloadVersionBean;
 import android_serialport_api.xingbang.models.IsRenewBean;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.utils.upload.FTP;
@@ -384,6 +385,12 @@ public class XingbangMain extends SerialPortActivity {
 //        Log.e(TAG, "DefCommand.getCmd2(fromCommad): "+DefCommand.getCmd2(cmd) );
 //        Log.e(TAG, "DefCommand.decodeCommand(fromCommad): "+DefCommand.decodeCommand(cmd) );
 
+        if (NetUtils.haveNetWork(this)) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String format1 = simpleDateFormat.format(new Date(System.currentTimeMillis() ));
+            Log.e("记录时间", "format1: "+format1 );
+            MmkvUtils.savecode("time",format1);
+        }
     }
     @Override
     protected void onResume() {

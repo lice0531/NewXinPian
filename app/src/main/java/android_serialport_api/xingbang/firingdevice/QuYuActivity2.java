@@ -322,24 +322,24 @@ public class QuYuActivity2 extends BaseActivity {
                             .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
                                 dialog1.dismiss();
                             })
-                            .setNegativeButton(R.string.text_dialog_zsclg, (dialog1, which) -> {
-                                for (QuYuData data : mQuYuList) {
-                                    if (data.isSelect()) {
-                                        GreenDaoMaster master = new GreenDaoMaster();
-                                        master.deleteLeiGuanFroPiace(data.getQyid() + "");
-                                        master.updataPaiFroPiace(data.getQyid() + "");
-                                    }
-                                }
-                                //只删除雷管时，选中的区域，“已组网”需消失
-                                GreenDaoMaster master = new GreenDaoMaster();
-                                master.cancelQyQbStataus(qyIdList);
-                                show_Toast("删除成功");
-                                mHandle.sendMessage(mHandle.obtainMessage(2));
-                                qyIdList.clear();
-                                Utils.saveFile();//把软存中的数据存入磁盘中
-                                Log.e(TAG, "区域页面多选结果:" + qyIdList.toString());
-                                AppLogUtils.writeAppLog("点击了多选删除区域按钮");
-                            } )
+//                            .setNegativeButton(R.string.text_dialog_zsclg, (dialog1, which) -> {
+//                                for (QuYuData data : mQuYuList) {
+//                                    if (data.isSelect()) {
+//                                        GreenDaoMaster master = new GreenDaoMaster();
+//                                        master.deleteLeiGuanFroPiace(data.getQyid() + "");
+//                                        master.updataPaiFroPiace(data.getQyid() + "");
+//                                    }
+//                                }
+//                                //只删除雷管时，选中的区域，“已组网”需消失
+//                                GreenDaoMaster master = new GreenDaoMaster();
+//                                master.cancelQyQbStataus(qyIdList);
+//                                show_Toast("删除成功");
+//                                mHandle.sendMessage(mHandle.obtainMessage(2));
+//                                qyIdList.clear();
+//                                Utils.saveFile();//把软存中的数据存入磁盘中
+//                                Log.e(TAG, "区域页面多选结果:" + qyIdList.toString());
+//                                AppLogUtils.writeAppLog("点击了多选删除区域按钮");
+//                            } )
                             .setPositiveButton(R.string.text_dialog_qbsc, (dialog14, which) -> {
                                 for (QuYuData data : mQuYuList) {
                                     if (data.isSelect()) {
