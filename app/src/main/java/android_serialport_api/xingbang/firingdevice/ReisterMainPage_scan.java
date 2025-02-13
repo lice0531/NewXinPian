@@ -831,6 +831,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             kongChoice = childListChoice;//??先这么写看看
                         }
                         Log.e(TAG, "光标移动-flag_zhuce: " + flag_zhuce);
+                        //注册新雷管,光标挪到最后一位
                         if (flag_zhuce) {
                             List<DenatorBaseinfo> list = master.queryDetonatorPaiDesc(mRegion, paiChoice);
 
@@ -846,7 +847,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             Log.e(TAG, "新注册,光标移动到childListChoice: " + childListChoice);
                             flag_zhuce = false;
                         }
-                        if (!flag_add&&childListChoice+1< childList.get(groupListChoice-1).size()) {//除了在最新的管后面加孔,光标放到新注册的这发
+                        //除了在最新的管后面加孔,光标放到新注册的这发
+                        if (!flag_add&&childListChoice+1< childList.get(groupListChoice-1).size()) {
                             flag_add = true;
                             childListChoice=childListChoice+1;
                         }
@@ -1762,7 +1764,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     protected void onResume() {
         //         获取 区域参数
 //        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
-
+        flag_zhuce=true;//光标挪动到最后一位
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1007));
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
         super.onResume();

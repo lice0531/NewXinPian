@@ -1134,7 +1134,7 @@ public class GreenDaoMaster {
      */
     public void deleteTypeLeiGuan(String time) {
         QueryBuilder<DetonatorTypeNew> result = detonatorTypeNewDao.queryBuilder();
-        result.where(DetonatorTypeNewDao.Properties.Time.like(time)).buildDelete().executeDeleteWithoutDetachingEntities();
+        result.where(DetonatorTypeNewDao.Properties.Time.le(time)).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     /**
@@ -1562,7 +1562,7 @@ public class GreenDaoMaster {
                 .build()
                 .unique();
         Log.e("更新生产库中的起爆状态", "shell: "+shell );
-        if(entity!=null){
+        if(entity!=null&&!entity.equals("雷管正常")&&!entity.equals("雷管已使用")){
             Log.e("更新生产库中的起爆状态", "entity: "+entity.toString() );
             entity.setQibao(qibao);
             detonatorTypeNewDao.update(entity);
