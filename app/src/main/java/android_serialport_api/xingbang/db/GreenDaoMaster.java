@@ -1569,7 +1569,7 @@ public class GreenDaoMaster {
                 .build()
                 .unique();
         Log.e("更新生产库中的起爆状态", "shell: "+shell );
-        if(entity!=null&&!entity.equals("雷管正常")&&!entity.equals("雷管已使用")){
+        if(entity!=null&&entity.equals("雷管正常")){
             Log.e("更新生产库中的起爆状态", "entity: "+entity.toString() );
             entity.setQibao(qibao);
             detonatorTypeNewDao.update(entity);
