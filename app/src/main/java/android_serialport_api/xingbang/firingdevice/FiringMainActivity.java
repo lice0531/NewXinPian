@@ -41,6 +41,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android_serialport_api.xingbang.Application;
+import android_serialport_api.xingbang.BuildConfig;
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
@@ -279,6 +280,7 @@ public class FiringMainActivity extends SerialPortActivity {
         Utils.writeRecord("开始测试,雷管总数为" + denatorCount);
 //        elevenCount = getMaxDelay() / 1000 + 1;
         elevenCount = getRegionMaxDelay() / 1000 + 1;
+        Log.e(TAG, "getRegionMaxDelay() : " + getRegionMaxDelay() );
         Log.e(TAG, "elevenCount: " + elevenCount);
         Log.e(TAG, "isTestDenator: " + MmkvUtils.getcode("isTestDenator", ""));
         //给主机发消息告知已进入起爆页面
@@ -1008,6 +1010,12 @@ public class FiringMainActivity extends SerialPortActivity {
      */
     private void initParam() {
         Qibaotime = Integer.parseInt((String) MmkvUtils.getcode("Qibaotime", "5"));
+        mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
+        mRegion1 = (boolean) MmkvUtils.getcode("mRegion1", true);
+        mRegion2 = (boolean) MmkvUtils.getcode("mRegion2", true);
+        mRegion3 = (boolean) MmkvUtils.getcode("mRegion3", true);
+        mRegion4 = (boolean) MmkvUtils.getcode("mRegion4", true);
+        mRegion5 = (boolean) MmkvUtils.getcode("mRegion5", true);
         FiringMainActivity.stage = 0;
         writeVo = null;
         firstWaitCount = 3;
@@ -2220,7 +2228,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
                 break;
             case 11://给范总加的起爆后的放电阶段
-                Log.e("进入放电阶段", "显示起爆中view");
+                Log.e("进入放电阶段", "显示起爆中-elevenCount"+elevenCount);
                 btn_return8.setVisibility(View.GONE);
                 if (isSendWaitQb) {
                     Log.e("切换模式下", "显示view");
@@ -3634,19 +3642,82 @@ public class FiringMainActivity extends SerialPortActivity {
      * 找到所有选中区域雷管的最大延时并比较，最后得到最大延时
      * @return：最大延时（作为起爆结束倒计时时间）
      */
-    private int getRegionMaxDelay() {
-        int maxDelay = 0;  // 初始值为0，表示没有延时数据
+//    private int getRegionMaxDelay() {
+//        int maxDelay = 0;  // 初始值为0，表示没有延时数据
+//        List<String> selectedRegions = new ArrayList<>();
+//        Log.e(TAG, "mRegion1: "+mRegion1 );
+//        Log.e(TAG, "mRegion2: "+mRegion2 );
+//        Log.e(TAG, "mRegion3: "+mRegion3 );
+//        Log.e(TAG, "mRegion4: "+mRegion4 );
+//        Log.e(TAG, "mRegion5: "+mRegion5 );
+//        if (mRegion1) selectedRegions.add("1");
+//        if (mRegion2) selectedRegions.add("2");
+//        if (mRegion3) selectedRegions.add("3");
+//        if (mRegion4) selectedRegions.add("4");
+//        if (mRegion5) selectedRegions.add("5");
+//        if (selectedRegions.isEmpty()) {
+//            return maxDelay; // 如果没有选中任何区域，直接返回0
+//        }
+//        // 构建 SQL 查询，使用 IN 查询多个区域
+//        StringBuilder queryBuilder = new StringBuilder("select max(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece IN (");
+//        for (int i = 0; i < selectedRegions.size(); i++) {
+//            queryBuilder.append("?");
+//            if (i < selectedRegions.size() - 1) {
+//                queryBuilder.append(",");
+//            }
+//        }
+//        queryBuilder.append(")");
+//        Log.e(TAG, "selectedRegions.toArray(new String[0]): "+selectedRegions.toString());
+//        // 执行查询
+//        Cursor cursor = db.rawQuery(queryBuilder.toString(), selectedRegions.toArray(new String[0]));
+//        if (cursor != null && cursor.moveToNext()) {
+//            if (!cursor.isNull(0)) {
+//                maxDelay = cursor.getInt(0);
+//                Log.e(TAG, "所有选中区域的最大延时为: " + maxDelay);
+//            } else {
+//                Log.e(TAG, "数据库获取到的最大延时为null");
+//            }
+//            cursor.close();
+//        } else {
+//            Log.e(TAG, "查询出错或无数据");
+//        }
+//        return maxDelay;  // 返回选中区域的最大延时
+//    }
+
+
+    private Integer getRegionMaxDelay() {
+        Integer maxDelay = 0; // 使用 Integer 表示可能没有数据
         List<String> selectedRegions = new ArrayList<>();
+
+        // 记录日志（仅在调试模式下）
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "mRegion1: " + mRegion1);
+            Log.e(TAG, "mRegion2: " + mRegion2);
+            Log.e(TAG, "mRegion3: " + mRegion3);
+            Log.e(TAG, "mRegion4: " + mRegion4);
+            Log.e(TAG, "mRegion5: " + mRegion5);
+        }
+
+        // 添加选中的区域
         if (mRegion1) selectedRegions.add("1");
         if (mRegion2) selectedRegions.add("2");
         if (mRegion3) selectedRegions.add("3");
         if (mRegion4) selectedRegions.add("4");
         if (mRegion5) selectedRegions.add("5");
+
+        // 如果没有选中任何区域，直接返回
         if (selectedRegions.isEmpty()) {
-            return maxDelay; // 如果没有选中任何区域，直接返回0
+            return maxDelay;
         }
-        // 构建 SQL 查询，使用 IN 查询多个区域
-        StringBuilder queryBuilder = new StringBuilder("select max(delay) from " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " where piece IN (");
+
+        // 检查数据库是否初始化
+        if (db == null) {
+            Log.e(TAG, "数据库未初始化");
+            return maxDelay;
+        }
+
+        // 构建 SQL 查询
+        StringBuilder queryBuilder = new StringBuilder("SELECT MAX(delay) FROM " + DatabaseHelper.TABLE_NAME_DENATOBASEINFO + " WHERE piece IN (");
         for (int i = 0; i < selectedRegions.size(); i++) {
             queryBuilder.append("?");
             if (i < selectedRegions.size() - 1) {
@@ -3654,20 +3725,28 @@ public class FiringMainActivity extends SerialPortActivity {
             }
         }
         queryBuilder.append(")");
+
         // 执行查询
-        Cursor cursor = db.rawQuery(queryBuilder.toString(), selectedRegions.toArray(new String[0]));
-        if (cursor != null && cursor.moveToNext()) {
-            if (!cursor.isNull(0)) {
-                maxDelay = cursor.getInt(0);
-                Log.e(TAG, "所有选中区域的最大延时为: " + maxDelay);
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery(queryBuilder.toString(), selectedRegions.toArray(new String[0]));
+            if (cursor != null && cursor.moveToNext()) {
+                if (!cursor.isNull(0)) {
+                    maxDelay = cursor.getInt(0);
+                    Log.e(TAG, "所有选中区域的最大延时为: " + maxDelay);
+                } else {
+                    Log.e(TAG, "数据库获取到的最大延时为null");
+                }
             } else {
-                Log.e(TAG, "数据库获取到的最大延时为null");
+                Log.e(TAG, "查询出错或无数据");
             }
-            cursor.close();
-        } else {
-            Log.e(TAG, "查询出错或无数据");
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        return maxDelay;  // 返回选中区域的最大延时
+
+        return maxDelay;
     }
 
     /**
