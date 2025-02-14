@@ -1043,10 +1043,14 @@
     <string name="dialog_pai_fa">发</string>
     <string name="text_syxm">Use current project</string>
     <string name="text_qxqx">Deselect all</string>
-    <string name="text_xmxzxm">Please add a new item in the project management before authorization</string>
-    <string name="text_xmsyxm">Please set the project you need to use in project management before authorizing the operation</string>
+    <string name="text_sqxzxm">Please add a new item in the project management before authorization</string>
+    <string name="text_sqzsxm">Please set the project you need to use in project management before authorizing the operation</string>
     <string name="text_zcxzxm">Please add a new item in project management before registering</string>
-    <string name="text_zcsqxm">Please set the project you need to use in project management before registering</string>
+    <string name="text_zcszxm">Please set the project you need to use in project management before registering</string>
+    <string name="text_csxzxm">Add a new item in project management before performing the test</string>
+    <string name="text_csszxm">Please set the project you need to use in project management before testing</string>
+    <string name="text_qbxzxm">Please add a new item in the project management before initiating the operation</string>
+    <string name="text_qbszxm">Please set the item you need to use in project management before initiating the detonation operation</string>
     <string name="text_his_sclg2">Do you want to remove the selected detonator?</string>
     <string name="sq_item_1">Select the detonator</string>
     <string name="sq_item_2">Display correctly</string>

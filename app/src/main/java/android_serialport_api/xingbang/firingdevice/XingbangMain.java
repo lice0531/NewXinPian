@@ -876,10 +876,9 @@ public class XingbangMain extends SerialPortActivity {
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
-                if (!projectCheck(1)) return;
+                if (!projectCheck(3)) return;
 
                 lastClickTime = System.currentTimeMillis();
-                if (!projectCheck(1)) return;
                 //验证是否授权
                 queryBeian();
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -925,10 +924,9 @@ public class XingbangMain extends SerialPortActivity {
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
-                if (!projectCheck(1)) return;
+                if (!projectCheck(4)) return;
 
                 lastClickTime = System.currentTimeMillis();
-                if (!projectCheck(1)) return;
                 //验证是否授权
                 queryBeian();
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -1000,8 +998,21 @@ public class XingbangMain extends SerialPortActivity {
         GreenDaoMaster daoMaster = new GreenDaoMaster();
         List<Project> list_pj = daoMaster.queryProject();
         if (list_pj.isEmpty()) {
-            String msg = (type == 1) ? getResources().getString(R.string.text_zcxzxm) :
-                    getResources().getString(R.string.text_xmxzxm);
+            String msg = "";
+            switch (type) {
+                case 1:
+                    msg = getResources().getString(R.string.text_zcxzxm);
+                    break;
+                case 2:
+                    msg = getResources().getString(R.string.text_sqxzxm);
+                    break;
+                case 3:
+                    msg = getResources().getString(R.string.text_csxzxm);
+                    break;
+                case 4:
+                    msg = getResources().getString(R.string.text_qbxzxm);
+                    break;
+            }
             AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                     .setTitle(getResources().getString(R.string.text_fir_dialog2))
                     .setMessage(msg)
@@ -1016,8 +1027,21 @@ public class XingbangMain extends SerialPortActivity {
         }
         List<Project> userProject = daoMaster.querySelectedProject();
         if (userProject.isEmpty()) {
-            String msg = (type == 1) ? getResources().getString(R.string.text_zcsqxm) :
-                    getResources().getString(R.string.text_xmsyxm);
+            String msg = "";
+            switch (type) {
+                case 1:
+                    msg = getResources().getString(R.string.text_zcszxm);
+                    break;
+                case 2:
+                    msg = getResources().getString(R.string.text_sqzsxm);
+                    break;
+                case 3:
+                    msg = getResources().getString(R.string.text_csszxm);
+                    break;
+                case 4:
+                    msg = getResources().getString(R.string.text_qbszxm);
+                    break;
+            }
             AlertDialog dialog = new AlertDialog.Builder(XingbangMain.this)
                     .setTitle(getResources().getString(R.string.text_fir_dialog2))
                     .setMessage(msg)

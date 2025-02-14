@@ -1056,10 +1056,14 @@
     <string name="dialog_pai_fa">发</string>
     <string name="text_syxm">使用当前项目</string>
     <string name="text_qxqx">取消全选</string>
-    <string name="text_xmxzxm">请先在项目管理中新增项目后，再进行授权操作</string>
-    <string name="text_xmsyxm">请先在项目管理中设置好您需要使用的项目后，再进行授权操作</string>
+    <string name="text_sqxzxm">请先在项目管理中新增项目后，再进行授权操作</string>
+    <string name="text_sqzsxm">请先在项目管理中设置好您需要使用的项目后，再进行授权操作</string>
     <string name="text_zcxzxm">请先在项目管理中新增项目后，再进行注册操作</string>
-    <string name="text_zcsqxm">请先在项目管理中设置好您需要使用的项目后，再进行注册操作</string>
+    <string name="text_zcszxm">请先在项目管理中设置好您需要使用的项目后，再进行注册操作</string>
+    <string name="text_csxzxm">请先在项目管理中新增项目后，再进行测试操作</string>
+    <string name="text_csszxm">请先在项目管理中设置好您需要使用的项目后，再进行测试操作</string>
+    <string name="text_qbxzxm">请先在项目管理中新增项目后，再进行起爆操作</string>
+    <string name="text_qbszxm">请先在项目管理中设置好您需要使用的项目后，再进行起爆操作</string>
     <string name="sq_item_1">选择雷管</string>
     <string name="sq_item_2">显示正确</string>
     <string name="text_dialog_zsclg">只删除雷管</string>
