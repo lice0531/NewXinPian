@@ -2742,7 +2742,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo_choice.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
             denatorBaseinfo_choice.setAuthorization(denatorBaseinfo.getAuthorization());
             getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
-        } else if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
+        } else if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13&&kongChoice == total) {
             Log.e(TAG, "更新排数据 getBlastserial: " + denatorBaseinfo_choice.getBlastserial());
             denatorBaseinfo_choice.setDenatorId(denatorBaseinfo.getDenatorId());
             denatorBaseinfo_choice.setShellBlastNo(denatorBaseinfo.getShellBlastNo());
