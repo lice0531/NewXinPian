@@ -182,7 +182,8 @@ public class XingbangMain extends BaseActivity {
     protected void onRestart() {
         MessageBean messageBean = GreenDaoMaster.getAllFromInfo_bean();
         equ_no = messageBean.getEqu_no();
-        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "不验证");
+        Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
+        Log.e(TAG, "onRestart-Yanzheng_sq: "+Yanzheng_sq );
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -262,6 +263,8 @@ public class XingbangMain extends BaseActivity {
 //        initFTP();              // 初始化FTP
 
         Yanzheng_sq = (String) MmkvUtils.getcode("Yanzheng_sq", "验证");
+        Log.e(TAG, "onCreate-Yanzheng_sq: "+Yanzheng_sq );
+
         app_version_name=getString(R.string.app_version_name);
         getleveup();
 
@@ -752,6 +755,8 @@ public class XingbangMain extends BaseActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
+                Log.e(TAG, "Yanzheng_sq: "+Yanzheng_sq);
+                Log.e(TAG, "Yanzheng_sq_size: "+Yanzheng_sq_size);
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
