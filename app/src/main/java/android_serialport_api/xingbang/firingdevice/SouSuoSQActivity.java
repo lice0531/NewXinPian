@@ -118,6 +118,11 @@ public class SouSuoSQActivity extends BaseActivity {
             flag_jh_f2=bundle.getBoolean("flag_jh_f2");
             btn_start=bundle.getBoolean("btn_start");
             flag_tk=bundle.getBoolean("flag_tk");
+            Log.e(TAG, "mRegion: "+mRegion );
+            Log.e(TAG, "paiChoice: "+paiChoice );
+            Log.e(TAG, "kongChoice: "+kongChoice );
+            DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKong(mRegion, paiChoice,kongChoice);
+            Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice );
             isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
                     bundle.getString("isShowZc") : "";
         }
@@ -498,7 +503,13 @@ public class SouSuoSQActivity extends BaseActivity {
 
     //注册选中的item
     private void inputLeiGuan() {
-        if(mList.size()==1){
+        int a =0;//选中数量
+        for (int i = 0; i <mList.size(); i++) {
+            if (mList.get(i).isSelect()) {
+                a++;
+            }
+        }
+        if(a==1){
             for (int i = 0; i <mList.size(); i++) {
                 if (mList.get(i).isSelect()) {
                     registerDetonator(mList.get(i),true);
@@ -638,10 +649,11 @@ public class SouSuoSQActivity extends BaseActivity {
                 }
             }
         }
-        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKong(mRegion, paiChoice,kongChoice);;
-        if (flag) {
-            Log.e(TAG, "更新排数据 getBlastserial: " + denatorBaseinfo_choice.getBlastserial());
-//            flag_add = true;
+        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKong(mRegion, paiChoice,kongChoice);
+        Log.e(TAG, "flag: "+flag );
+        Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice.toString() );
+        if (flag && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
+            Log.e(TAG, "更新排数据 雷管孔号: " + denatorBaseinfo_choice.getPai()+"-"+ denatorBaseinfo_choice.getBlastserial() +"-"+denatorBaseinfo_choice.getDuanNo());
             denatorBaseinfo_choice.setDenatorId(denator.getDenatorId());
             denatorBaseinfo_choice.setShellBlastNo(denator.getShellBlastNo());
             denatorBaseinfo_choice.setZhu_yscs(denator.getZhu_yscs());
@@ -651,8 +663,6 @@ public class SouSuoSQActivity extends BaseActivity {
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
         }
-//        getDaoSession().getDenatorBaseinfoDao().insert(denator);
-
         updataPaiData();
     }
     int flag1 = 0;
