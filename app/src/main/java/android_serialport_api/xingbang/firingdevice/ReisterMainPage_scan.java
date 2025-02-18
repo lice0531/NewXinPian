@@ -368,6 +368,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private volatile int zhuce_Flag = 0;//单发检测时发送40的标识
     private boolean flag_zhuce = false;//是否新注册
     private boolean flag_add = true;//是否加排或孔
+    private boolean flag_saoma = false;//是否加排或孔
     private boolean flag_delete = true;//是否删除
 
     @Override
@@ -766,6 +767,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
 
             } else if (data.length() == 13) {
+                flag_saoma=true;
                 barCode = getContinueScanBlastNo(data);//VR:1;SC:5600508H09974;
                 Log.e(TAG, "barCode: " + barCode);
                 insertSingleDenator(barCode);
@@ -1774,7 +1776,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
-        if (db != null) db.close();
+        if (db != null) {
+            db.close();
+        }
         if (tipDlg != null) {
             tipDlg.dismiss();
             tipDlg = null;
@@ -2337,6 +2341,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             else this.revCmd = "";
             String realyCmd1 = DefCommand.decodeCommand(fromCommad);
             if ("-1".equals(realyCmd1) || "-2".equals(realyCmd1)) {
+                Log.e(TAG, "命令错误: " );
                 return;
             } else {
                 String cmd = DefCommand.getCmd(fromCommad);
@@ -2519,7 +2524,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             return -1;
         }
         Log.e(TAG, "start_delay_data: " + start_delay_data);
-        if (start_delay_data.length() == 0) {
+        if (start_delay_data.length() == 0||groupList.size()==0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
@@ -2734,16 +2739,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (childList.get(groupListChoice - 1).size() > 0) {
             denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);
         }
-        if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 && flag_add) {
+        if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13 && (flag_add||flag_saoma)) {
             Log.e(TAG, "更新排数据 getBlastserial: " + denatorBaseinfo_choice.getBlastserial());
 //            flag_add = true;
-            denatorBaseinfo_choice.setDenatorId(denatorBaseinfo.getDenatorId());
-            denatorBaseinfo_choice.setShellBlastNo(denatorBaseinfo.getShellBlastNo());
-            denatorBaseinfo_choice.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
-            denatorBaseinfo_choice.setAuthorization(denatorBaseinfo.getAuthorization());
-            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
-        } else if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13&&kongChoice == total) {
-            Log.e(TAG, "更新排数据 getBlastserial: " + denatorBaseinfo_choice.getBlastserial());
             denatorBaseinfo_choice.setDenatorId(denatorBaseinfo.getDenatorId());
             denatorBaseinfo_choice.setShellBlastNo(denatorBaseinfo.getShellBlastNo());
             denatorBaseinfo_choice.setZhu_yscs(denatorBaseinfo.getZhu_yscs());
@@ -2767,6 +2765,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Utils.writeRecord("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         AppLogUtils.writeAppLog("单发注册:--管壳码:" + shellNo + "--延时:" + delay_max);
         charu = false;
+        flag_saoma = false;
 
         return 0;
     }
@@ -2784,7 +2783,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e("扫码", "单发注册方法1: ");
 
         Log.e(TAG, "start_delay_data: " + start_delay_data);
-        if (start_delay_data.length() == 0) {
+        if (start_delay_data.length() == 0||groupList.size()==0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return -1;
         }
@@ -3035,7 +3034,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(12));
             return -1;
         }
-//        if (start_delay_data.length() == 0) {
+//        if (start_delay_data.length() == 0||groupList.size()==0) {
 //            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
 //            return -1;
 //        }
@@ -3662,6 +3661,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             cursor.close();
             return maxDelay;
         }
+        if (cursor != null) {
+            cursor.close();
+        }
         return 0;
     }
 
@@ -3678,6 +3680,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int maxDelay = cursor.getInt(5);
             cursor.close();
             return maxDelay;
+        }
+        if (cursor != null) {
+            cursor.close();
         }
         return 0;
     }
@@ -4094,7 +4099,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                }
 //                Log.e(TAG, "是否翻转: " + d);
                 if (checkDelay()) return;
-                if (f1_delay_data.length() < 1 || f2_delay_data.length() < 1 || start_delay_data.length() < 1) {
+                if (f1_delay_data.length() < 1 || f2_delay_data.length() < 1 || start_delay_data.length() < 1||groupList.size()==0) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
                     break;
                 }
@@ -4255,7 +4260,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_inputOk:
-                if (f1_delay_data.length() < 1 || start_delay_data.length() < 1 || f2_delay_data.length() < 1) {
+                if (f1_delay_data.length() < 1 || start_delay_data.length() < 1 || f2_delay_data.length() < 1||groupList.size()==0) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
                     break;
                 }
@@ -4580,9 +4585,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("f2", reEtF2.getText().toString());
             return true;
         }
-        if (start_delay_data.length() == 0) {
+        if (start_delay_data.length() == 0||groupList.size()==0) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
-
             return true;
         }
         if (maxSecond != 0) {
