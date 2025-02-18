@@ -462,8 +462,6 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             msg.obj = output.toString();
             busHandler.sendMessage(msg);
 
-            Log.e("销毁", "onDestroy: " );
-
         }
     }
 

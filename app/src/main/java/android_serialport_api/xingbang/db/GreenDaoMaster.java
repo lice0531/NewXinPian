@@ -1958,6 +1958,16 @@ public class GreenDaoMaster {
                 .orderDesc(DenatorBaseinfoDao.Properties.Id);
         return result.list();
     }
+    /**
+     * 查询雷管 按区域,排号,孔号查询
+     */
+    public  DenatorBaseinfo queryDetonatorPaiAndKong(String mRegion,int pai,int kong) {
+        QueryBuilder<DenatorBaseinfo> result = getDaoSession().getDenatorBaseinfoDao().queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Blastserial.eq(kong))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .unique();
+    }
 
 
 

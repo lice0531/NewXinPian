@@ -81,6 +81,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private Handler mHandler_UI = new Handler();     // UI处理
     private String sqrq="";
     private int paiChoice=1;
+    private int kongChoice = 0;
     private static final int STATE_DEFAULT = 0;//默认状态
     private static final int STATE_EDIT = 1;//编辑状态
     private int mEditMode = STATE_DEFAULT;
@@ -110,6 +111,7 @@ public class SouSuoSQActivity extends BaseActivity {
             }
 
             paiChoice = bundle.getInt("paiChoice");
+            kongChoice = bundle.getInt("kongChoice");
             mRegion = bundle.getString("mRegion");
             delay_set = bundle.getString("delay_set");
             flag_jh_f1=bundle.getBoolean("flag_jh_f1");
@@ -496,12 +498,20 @@ public class SouSuoSQActivity extends BaseActivity {
 
     //注册选中的item
     private void inputLeiGuan() {
-        for (int i = 0; i <mList.size(); i++) {
-
-            if (mList.get(i).isSelect()) {
-                registerDetonator(mList.get(i));
+        if(mList.size()==1){
+            for (int i = 0; i <mList.size(); i++) {
+                if (mList.get(i).isSelect()) {
+                    registerDetonator(mList.get(i),true);
+                }
+            }
+        }else {
+            for (int i = 0; i <mList.size(); i++) {
+                if (mList.get(i).isSelect()) {
+                    registerDetonator(mList.get(i),false);
+                }
             }
         }
+
         updateEditState();
         show_Toast("注册成功");
 //        String gkm = edit_gkm.getText().toString();
@@ -516,7 +526,7 @@ public class SouSuoSQActivity extends BaseActivity {
     /**
      * 注册雷管
      */
-    private void registerDetonator(ShouQuanData db) {
+    private void registerDetonator(ShouQuanData db,Boolean flag) {
         boolean chongfu = false;
 //        int maxNo = getMaxNumberNo();
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
@@ -628,8 +638,20 @@ public class SouSuoSQActivity extends BaseActivity {
                 }
             }
         }
-
-        getDaoSession().getDenatorBaseinfoDao().insert(denator);
+        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKong(mRegion, paiChoice,kongChoice);;
+        if (flag) {
+            Log.e(TAG, "更新排数据 getBlastserial: " + denatorBaseinfo_choice.getBlastserial());
+//            flag_add = true;
+            denatorBaseinfo_choice.setDenatorId(denator.getDenatorId());
+            denatorBaseinfo_choice.setShellBlastNo(denator.getShellBlastNo());
+            denatorBaseinfo_choice.setZhu_yscs(denator.getZhu_yscs());
+            denatorBaseinfo_choice.setAuthorization(denator.getAuthorization());
+            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
+        } else {
+            //向数据库插入数据
+            getDaoSession().getDenatorBaseinfoDao().insert(denator);
+        }
+//        getDaoSession().getDenatorBaseinfoDao().insert(denator);
 
         updataPaiData();
     }
