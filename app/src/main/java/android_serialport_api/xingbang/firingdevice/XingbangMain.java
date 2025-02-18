@@ -270,8 +270,8 @@ public class XingbangMain extends SerialPortActivity {
                 getUserMessage();//获取用户信息
                 GreenDaoMaster.setDenatorType();//延时最大值默认值
 //                GreenDaoMaster.setFactory();//厂家码默认值
-//                String isModitySettings = (String) MmkvUtils.getcode("isModitySettings","");
-                String isModitySettings = (String)SPUtils.get(XingbangMain.this,"isModitySettings","");
+                String isModitySettings = (String) MmkvUtils.getcode("isModitySettings","");
+//                String isModitySettings = (String)SPUtils.get(XingbangMain.this,"isModitySettings","");
                 if (TextUtils.isEmpty(isModitySettings)) {
                     /**
                      * 如未修改过系统设置  默认进来是否验证雷管已授权都为是
@@ -846,7 +846,7 @@ public class XingbangMain extends SerialPortActivity {
     }
 
     //全局定义
-    private long lastClickTime = 0L;
+    private long zclastClickTime = 0L,wjlastClickTime = 0L,qblastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 2000; // 快速点击间隔
 
     @OnClick({R.id.btn_main_reister, R.id.btn_main_test, R.id.btn_main_delayTime, R.id.btn_main_del, R.id.btn_main_blast, R.id.btn_main_query, R.id.btn_main_setevn, R.id.btn_main_help, R.id.btn_main_downWorkCode, R.id.btn_main_exit})
@@ -857,11 +857,11 @@ public class XingbangMain extends SerialPortActivity {
             case R.id.btn_main_reister://注册
                 //2次点击
 
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                if (System.currentTimeMillis() - zclastClickTime < FAST_CLICK_DELAY_TIME) {
                     show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
                 }
-                lastClickTime = System.currentTimeMillis();
+                zclastClickTime = System.currentTimeMillis();
 
                 if (!projectCheck(1)) return;
                 close();//停止访问电流
@@ -875,13 +875,13 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_test://测试
                 //2次点击
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                if (System.currentTimeMillis() - wjlastClickTime < FAST_CLICK_DELAY_TIME) {
                     show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
                 }
+                wjlastClickTime = System.currentTimeMillis();
                 if (!projectCheck(3)) return;
 
-                lastClickTime = System.currentTimeMillis();
                 //验证是否授权
                 queryBeian();
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -924,13 +924,13 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                if (System.currentTimeMillis() - qblastClickTime < FAST_CLICK_DELAY_TIME) {
                     show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
                 }
+                qblastClickTime = System.currentTimeMillis();
                 if (!projectCheck(4)) return;
 
-                lastClickTime = System.currentTimeMillis();
                 //验证是否授权
                 queryBeian();
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {

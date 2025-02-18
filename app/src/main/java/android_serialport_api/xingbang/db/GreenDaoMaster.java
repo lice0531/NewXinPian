@@ -1568,8 +1568,8 @@ public class GreenDaoMaster {
                 .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(shell))
                 .build()
                 .unique();
-        Log.e("更新生产库中的起爆状态", "shell: "+shell );
-        if(entity!=null&&entity.getQibao().equals("雷管正常")){
+        Log.e("更新生产库中的起爆状态", "shell: " + shell);
+        if(entity!=null&& (!TextUtils.isEmpty(entity.getQibao()) && entity.getQibao().equals("雷管正常"))){
             Log.e("更新生产库中的起爆状态", "entity: "+entity.toString() );
             entity.setQibao(qibao);
             detonatorTypeNewDao.update(entity);
