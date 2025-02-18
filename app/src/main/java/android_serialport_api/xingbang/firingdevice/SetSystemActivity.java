@@ -20,6 +20,7 @@ import java.util.List;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
+import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
@@ -199,6 +200,7 @@ public class SetSystemActivity extends BaseActivity {
                  * 在这里判断是否修改过设置   只要点了保存  就默认已经修改过系统设置   所有的设置项就按照保存的来
                  */
                 MmkvUtils.savecode("isModitySettings", "是");
+                SPUtils.put(this,"isModitySettings", "是");
                 if (swYanzheng.isChecked()) {
                     MmkvUtils.savecode("Yanzheng", "验证");
                 } else {
@@ -299,6 +301,7 @@ public class SetSystemActivity extends BaseActivity {
             swYanzheng_sq.setChecked(true);
             MmkvUtils.savecode("Yanzheng_sq", "验证");
             MmkvUtils.savecode("isModitySettings", "是");
+            SPUtils.put(this,"isModitySettings", "是");
             if(changjia.equals("XJ")) {
                 //厂家为XJ时，有错误雷管不能接续起爆  是否上传错误雷管:否
                 swQzqb.setChecked(false);

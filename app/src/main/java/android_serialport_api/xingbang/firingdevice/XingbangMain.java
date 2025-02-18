@@ -270,7 +270,8 @@ public class XingbangMain extends SerialPortActivity {
                 getUserMessage();//获取用户信息
                 GreenDaoMaster.setDenatorType();//延时最大值默认值
 //                GreenDaoMaster.setFactory();//厂家码默认值
-                String isModitySettings = (String) MmkvUtils.getcode("isModitySettings","");
+//                String isModitySettings = (String) MmkvUtils.getcode("isModitySettings","");
+                String isModitySettings = (String)SPUtils.get(XingbangMain.this,"isModitySettings","");
                 if (TextUtils.isEmpty(isModitySettings)) {
                     /**
                      * 如未修改过系统设置  默认进来是否验证雷管已授权都为是
@@ -857,6 +858,7 @@ public class XingbangMain extends SerialPortActivity {
                 //2次点击
 
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
@@ -874,6 +876,7 @@ public class XingbangMain extends SerialPortActivity {
             case R.id.btn_main_test://测试
                 //2次点击
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
                 }
                 if (!projectCheck(3)) return;
@@ -922,6 +925,7 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_blast://起爆
                 if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
+                    show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
                 }
                 if (!projectCheck(4)) return;
