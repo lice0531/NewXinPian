@@ -999,14 +999,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
                         if (groupListChoice >= groupCount2) {//进行了删排操作
+                            childListChoice=childList.get(zhuceAdapter.getGroupCount() - 1).size();
+                            groupListChoice=zhuceAdapter.getGroupCount();
                             zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
                             Log.e("adapter删除操作", "groupSize:" + zhuceAdapter.getGroupCount() + "--childSize:" + childList.get(zhuceAdapter.getGroupCount() - 1).size());
-
-                            if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
+//                            if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
                                 Log.e(TAG, "光标选中3: "+"groupIndex:" + (zhuceAdapter.getGroupCount() - 1)+" childListChoice - 1:"+(childListChoice - 1));
-                                zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childList.get(zhuceAdapter.getGroupCount() - 1).size() - 1);
-                                zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childList.get(zhuceAdapter.getGroupCount() - 1).size() - 1, true);
-                            }
+                                zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
+                                zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
+//                            }
                         } else {
                             zcList.expandGroup(groupListChoice - 1);
                             if (childList.get(groupListChoice - 1).size() != 0) {
