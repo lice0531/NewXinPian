@@ -189,7 +189,7 @@ public class ProjectDetailActivity extends BaseActivity {
                 + mBusiness;
         // 生成二维码
         Log.e(TAG,"加密前的项目信息:" + content);
-        AppLogUtils.writeAppLog("项目二维码加密前的结信息是:" + content);
+        AppLogUtils.writeAppLog("项目二维码加密前的信息是:" + content);
         Bitmap qrCodeBitmap = QRCodeUtils.generateQRCode(content);
         ivXmCode.setImageBitmap(qrCodeBitmap);
 //        final String key = "jadl12345678912345678912";
