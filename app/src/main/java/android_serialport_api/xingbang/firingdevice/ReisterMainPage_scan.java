@@ -933,7 +933,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
-                        if (delete_pai) {//进行了删排操作
+                        if (delete_pai) {//进行了删排操作,光标挪到最后一排,最后一发
                             delete_pai=false;
                             childListChoice=childList.get(zhuceAdapter.getGroupCount() - 1).size();
                             groupListChoice=zhuceAdapter.getGroupCount();
