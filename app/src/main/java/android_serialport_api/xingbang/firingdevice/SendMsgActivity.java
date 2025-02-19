@@ -480,37 +480,37 @@ public class SendMsgActivity extends BaseActivity {
     private void addPaiNoForArea(int qyId) {
         Log.e(TAG, "开始补充区域 " + qyId + "中的缺失排号");
         // 获取该区域内的最小排号
-        Integer minPaiNo = getDaoSession().getPaiDataDao()
+        PaiData minPaiData = getDaoSession().getPaiDataDao()
                 .queryBuilder()
                 .where(PaiDataDao.Properties.Qyid.eq(qyId))
                 .orderAsc(PaiDataDao.Properties.PaiId)
                 .limit(1)
-                .unique()
-                .getPaiId();
-        // 如果最小排号大于 1，补充排号
-        if (minPaiNo != null && minPaiNo > 1) {
-            for (int i = 1; i < minPaiNo; i++) {
-                boolean isExistPai = getDaoSession().getPaiDataDao().queryBuilder()
-                        .where(PaiDataDao.Properties.PaiId.eq(i))
-                        .where(PaiDataDao.Properties.Qyid.eq(qyId))
-                        .count() > 0;
-
-                if (!isExistPai) {
-                    PaiData paiData = new PaiData();
-                    paiData.setPaiId(i);
-                    paiData.setQyid(qyId);
-                    paiData.setKongNum(1);
-                    paiData.setStartDelay("0");
-                    paiData.setKongDelay("0");
-                    paiData.setNeiDelay("0");
-                    paiData.setDiJian(false);
-
-                    getDaoSession().getPaiDataDao().insert(paiData);
-                    Log.e(TAG, "为区域 " + qyId + " 创建缺失的排号: " + i);
+                .unique();
+        if (minPaiData != null) {
+            Integer minPaiNo = minPaiData.getPaiId();
+            // 如果最小排号大于 1，补充排号
+            if (minPaiNo != null && minPaiNo > 1) {
+                for (int i = 1; i < minPaiNo; i++) {
+                    boolean isExistPai = getDaoSession().getPaiDataDao().queryBuilder()
+                            .where(PaiDataDao.Properties.PaiId.eq(i))
+                            .where(PaiDataDao.Properties.Qyid.eq(qyId))
+                            .count() > 0;
+                    if (!isExistPai) {
+                        PaiData paiData = new PaiData();
+                        paiData.setPaiId(i);
+                        paiData.setQyid(qyId);
+                        paiData.setKongNum(1);
+                        paiData.setStartDelay("0");
+                        paiData.setKongDelay("0");
+                        paiData.setNeiDelay("0");
+                        paiData.setDiJian(false);
+                        getDaoSession().getPaiDataDao().insert(paiData);
+                        Log.e(TAG, "为区域 " + qyId + " 创建缺失的排号: " + i);
+                    }
                 }
+            } else {
+                Log.e(TAG, "区域" + qyId + "的最小排号为" + minPaiNo + ",不需要创建缺失排号");
             }
-        } else {
-            Log.e(TAG, "区域 " + qyId + " 的最小排号为 1，不需要创建缺失排号");
         }
     }
     private void createPai(String shellNo,int paiNo,String leiguan,String qyId,String[] a) {

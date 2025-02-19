@@ -139,7 +139,7 @@
                     <TextView
                         android:id="@+id/text_gkm1"
                         style="@style/alltextstyle"
-                        android:gravity="right"
+                        android:gravity="center"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="30dp"
@@ -153,6 +153,7 @@
                         android:layout_weight="1"
                         android:layout_height="30dp"
                         android:text="/UID"
+                        android:visibility="gone"
                         android:textSize="@dimen/childPageLabelFontSize"/>
                 </LinearLayout>
 
