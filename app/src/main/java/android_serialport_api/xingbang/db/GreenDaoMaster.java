@@ -753,7 +753,7 @@ public class GreenDaoMaster {
 
 
     /**
-     * 查询雷管 区域正序(序号)
+     * 查询雷管 按区域、排正序排列
      *
      * @param piece 区域号 1 2 3 4 5
      */
@@ -761,6 +761,17 @@ public class GreenDaoMaster {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
+                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai)
+                .list();
+    }
+
+    /**
+     * 查询ShellBlastNo不为空的所有雷管  按区域、排正序排列
+     */
+    public List<DenatorBaseinfo> queryAllDetonator() {
+        return mDeantorBaseDao
+                .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
                 .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai)
                 .list();

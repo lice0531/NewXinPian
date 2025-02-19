@@ -115,24 +115,25 @@ public class SouSuoSQActivity extends BaseActivity {
             if(bundle.getString("sqrq")!=null){
                 sqrq = bundle.getString("sqrq");
             }
-
-            paiChoice = bundle.getInt("paiChoice");
-            kongChoice = bundle.getInt("kongChoice");
-            mRegion = bundle.getString("mRegion");
-            delay_set = bundle.getString("delay_set");
-            flag_jh_f1=bundle.getBoolean("flag_jh_f1");
-            flag_jh_f2=bundle.getBoolean("flag_jh_f2");
-            btn_start=bundle.getBoolean("btn_start");
-            flag_tk=bundle.getBoolean("flag_tk");
-            weiChoice = bundle.getInt("weiChoice");
-            Log.e(TAG, "mRegion: "+mRegion );
-            Log.e(TAG, "paiChoice: "+paiChoice );
-            Log.e(TAG, "kongChoice: "+kongChoice );
-            Log.e(TAG,"weiChoice:" + weiChoice);
-            DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice,kongChoice,weiChoice);
-            Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice );
             isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
                     bundle.getString("isShowZc") : "";
+            if (TextUtils.isEmpty(bundle.getString("isShowZc"))) {
+                paiChoice = bundle.getInt("paiChoice");
+                kongChoice = bundle.getInt("kongChoice");
+                mRegion = bundle.getString("mRegion");
+                delay_set = bundle.getString("delay_set");
+                flag_jh_f1=bundle.getBoolean("flag_jh_f1");
+                flag_jh_f2=bundle.getBoolean("flag_jh_f2");
+                btn_start=bundle.getBoolean("btn_start");
+                flag_tk=bundle.getBoolean("flag_tk");
+                weiChoice = bundle.getInt("weiChoice");
+                Log.e(TAG, "mRegion: "+mRegion );
+                Log.e(TAG, "paiChoice: "+paiChoice );
+                Log.e(TAG, "kongChoice: "+kongChoice );
+                Log.e(TAG,"weiChoice:" + weiChoice);
+                DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice,kongChoice,weiChoice);
+                Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice );
+            }
         }
         Log.e(TAG, "传递的值paiChoice: "+paiChoice);
         Log.e(TAG, "传递的值mRegion: "+mRegion);
