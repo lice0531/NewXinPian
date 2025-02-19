@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +37,7 @@ import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.custom.ChaKan_SQAdapter;
 import android_serialport_api.xingbang.custom.DataAdapter;
+import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.Defactory;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
@@ -78,7 +80,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private DataAdapter mAdapter2;
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
     private List<ShouQuanData> mList = new ArrayList<>();
-    private Handler mHandler_UI = new Handler();     // UI处理
+    private Handler mHandler_UI = new Handler(Looper.getMainLooper());     // UI处理
     private String sqrq="";
     private int paiChoice=1;
     private int kongChoice = 0;
@@ -92,6 +94,10 @@ public class SouSuoSQActivity extends BaseActivity {
     private String isShowZc = "";//用来判断是否需要展示“选择雷管”按钮进行注册
     String TAG="授权注册";
     private String factoryCode = "";//厂家代码
+    private int pb_show = 0;
+    private LoadingDialog tipDlg = null;
+    private Handler mHandler2;
+    private int weiChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,10 +124,12 @@ public class SouSuoSQActivity extends BaseActivity {
             flag_jh_f2=bundle.getBoolean("flag_jh_f2");
             btn_start=bundle.getBoolean("btn_start");
             flag_tk=bundle.getBoolean("flag_tk");
+            weiChoice = bundle.getInt("weiChoice");
             Log.e(TAG, "mRegion: "+mRegion );
             Log.e(TAG, "paiChoice: "+paiChoice );
             Log.e(TAG, "kongChoice: "+kongChoice );
-            DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKong(mRegion, paiChoice,kongChoice);
+            Log.e(TAG,"weiChoice:" + weiChoice);
+            DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice,kongChoice,weiChoice);
             Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice );
             isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
                     bundle.getString("isShowZc") : "";
@@ -186,11 +194,16 @@ public class SouSuoSQActivity extends BaseActivity {
     }
 
     private void initHandle() {
+        mHandler2 = new Handler(msg -> {
+            //显示或隐藏loding界面
+            if (pb_show == 1 && tipDlg != null) tipDlg.show();
+            if (pb_show == 0 && tipDlg != null) tipDlg.dismiss();
+            return false;
+        });
         mHandler_UI = new Handler(msg -> {
             switch (msg.what) {
                 // 区域 更新视图
                 case 1:
-
                     Log.e("授权查询", "授权日期sqrq: " + sqrq);
                     if (sqrq.equals("")) {
                         mListData = new GreenDaoMaster().queryDetonatorShouQuan();
@@ -223,10 +236,10 @@ public class SouSuoSQActivity extends BaseActivity {
                     hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 2:
-                    show_Toast(getResources().getString(R.string.text_lgvf));
+                    showUiToast(getResources().getString(R.string.text_lgvf));
                     break;
                 case 3:
-                    show_Toast(getResources().getString(R.string.text_cdcw));
+                    showUiToast(getResources().getString(R.string.text_cdcw));
                     break;
                 case 4:
                     try {
@@ -270,10 +283,9 @@ public class SouSuoSQActivity extends BaseActivity {
                     hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 7:
-                    show_Toast(getResources().getString(R.string.text_send_tip26));
+                    showUiToast(getResources().getString(R.string.text_send_tip26));
                     break;
                 case 8:
-
                     Log.e("授权查询", "授权日期sqrq: " + sqrq);
                     Log.e("授权查询", "管壳码Gkm: " + msg.obj.toString());
                     mListData = new GreenDaoMaster().queryDetonatorShouQuanForGkm(msg.obj.toString(), sqrq);
@@ -303,7 +315,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 9:
-                    show_Toast(getResources().getString(R.string.text_error_tip1));
+                    showUiToast(getResources().getString(R.string.text_error_tip1));
                     break;
                 default:
                     break;
@@ -312,6 +324,9 @@ public class SouSuoSQActivity extends BaseActivity {
         });
     }
 
+    private void showUiToast(String msg) {
+        mHandler_UI.post(() -> show_Toast(msg));
+    }
 
     //隐藏键盘
     public void hideInputKeyboard() {
@@ -450,6 +465,32 @@ public class SouSuoSQActivity extends BaseActivity {
         }
     }
 
+    private void runPbDialog() {
+        pb_show = 1;
+        //  builder = showPbDialog();
+        tipDlg = new LoadingDialog(this);
+        Context context = tipDlg.getContext();
+        int divierId = context.getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = tipDlg.findViewById(divierId);
+//        divider.setBackgroundColor(Color.TRANSPARENT);
+        //tipDlg.setMessage("正在操作,请等待...").show();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                mHandler2.sendMessage(mHandler2.obtainMessage());
+                try {
+                    while (pb_show == 1) {
+                        Thread.sleep(100);
+                    }
+                    mHandler2.sendMessage(mHandler2.obtainMessage());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     //删除选中的item
     private void deleteCheckItem() {
         if (mAdapter2 == null) return;
@@ -503,39 +544,53 @@ public class SouSuoSQActivity extends BaseActivity {
 
     //注册选中的item
     private void inputLeiGuan() {
-        int a =0;//选中数量
-        for (int i = 0; i <mList.size(); i++) {
-            if (mList.get(i).isSelect()) {
-                a++;
-            }
-        }
-        if(a==1){
-            for (int i = 0; i <mList.size(); i++) {
-                if (mList.get(i).isSelect()) {
-                    registerDetonator(mList.get(i),true);
+        // 在主线程显示加载框
+        pb_show = 1;
+        runPbDialog();
+        // 创建后台线程执行任务
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int a = 0; // 选中数量
+                for (int i = 0; i < mList.size(); i++) {
+                    if (mList.get(i).isSelect()) {
+                        a++;
+                    }
                 }
-            }
-        }else {
-            for (int i = 0; i <mList.size(); i++) {
-                if (mList.get(i).isSelect()) {
-                    registerDetonator(mList.get(i),false);
-                }
-            }
-        }
 
-        updateEditState();
-        show_Toast("注册成功");
-//        String gkm = edit_gkm.getText().toString();
-//        Message msg = new Message();
-//        msg.what=1;
-//        msg.obj=gkm;
-//        mHandler_UI.sendMessage(msg);
-        mAdapter2.notifyDataSetChanged();
+                // 根据选中的数量执行不同操作
+                if (a == 1) {
+                    for (int i = 0; i < mList.size(); i++) {
+                        if (mList.get(i).isSelect()) {
+                            registerDetonator(mList.get(i), true);  // 注册操作
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < mList.size(); i++) {
+                        if (mList.get(i).isSelect()) {
+                            registerDetonator(mList.get(i), false);  // 注册操作
+                        }
+                    }
+                }
+
+                // 在主线程更新UI
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateEditState();  // 更新编辑状态
+                        pb_show = 0;  // 隐藏加载框
+                        show_Toast("注册成功");  // 显示成功消息
+                        mAdapter2.notifyDataSetChanged();  // 更新适配器
+                    }
+                });
+            }
+        }).start();  // 启动后台线程
     }
-
 
     /**
      * 注册雷管
+     * @param db
+     * @param flag:true(单发雷管授权注册  需注册到对应孔或位) false(多发雷管授权注册  直接注册到列表最后即可)
      */
     private void registerDetonator(ShouQuanData db,Boolean flag) {
         boolean chongfu = false;
@@ -649,19 +704,24 @@ public class SouSuoSQActivity extends BaseActivity {
                 }
             }
         }
-        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKong(mRegion, paiChoice,kongChoice);
+        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice,kongChoice,weiChoice);
         Log.e(TAG, "flag: "+flag );
-        Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice.toString() );
-        if (flag && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
-            Log.e(TAG, "更新排数据 雷管孔号: " + denatorBaseinfo_choice.getPai()+"-"+ denatorBaseinfo_choice.getBlastserial() +"-"+denatorBaseinfo_choice.getDuanNo());
-            denatorBaseinfo_choice.setDenatorId(denator.getDenatorId());
-            denatorBaseinfo_choice.setShellBlastNo(denator.getShellBlastNo());
-            denatorBaseinfo_choice.setZhu_yscs(denator.getZhu_yscs());
-            denatorBaseinfo_choice.setAuthorization(denator.getAuthorization());
-            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
-        } else {
+        if (denatorBaseinfo_choice == null) {
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
+        } else {
+            Log.e(TAG, "denatorBaseinfo_choice: " + denatorBaseinfo_choice.toString());
+            if (flag && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
+                Log.e(TAG, "更新排数据 雷管孔号: " + denatorBaseinfo_choice.getPai() + "-" + denatorBaseinfo_choice.getBlastserial() + "-" + denatorBaseinfo_choice.getDuanNo());
+                denatorBaseinfo_choice.setDenatorId(denator.getDenatorId());
+                denatorBaseinfo_choice.setShellBlastNo(denator.getShellBlastNo());
+                denatorBaseinfo_choice.setZhu_yscs(denator.getZhu_yscs());
+                denatorBaseinfo_choice.setAuthorization(denator.getAuthorization());
+                getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo_choice);
+            } else {
+                //向数据库插入数据
+                getDaoSession().getDenatorBaseinfoDao().insert(denator);
+            }
         }
         updataPaiData();
     }
@@ -842,5 +902,14 @@ public class SouSuoSQActivity extends BaseActivity {
         mAdapter2.setNewData(mList);
         mAdapter2.notifyDataSetChanged();
         index = mList.size();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (tipDlg != null) {
+            tipDlg.dismiss();
+            tipDlg = null;
+        }
     }
 }

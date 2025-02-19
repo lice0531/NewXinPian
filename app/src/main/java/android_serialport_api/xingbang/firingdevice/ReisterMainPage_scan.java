@@ -355,6 +355,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private int childListChoice = 0;
     private int groupListChoice = 0;
     private int kongChoice = 0;
+    private int weiChoice = 0;
     private MyAlertDialog myDialog;
     QuYu quYu_choice;
     PaiData choicepaiData;
@@ -453,11 +454,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 paiChoice = groupList.get(groupListChoice - 1).getPaiId();
                 if (childListChoice > 0) {
                     kongChoice = childList.get(groupListChoice - 1).get(childListChoice - 1).getBlastserial();
+                    weiChoice = childList.get(groupListChoice - 1).get(childListChoice - 1).getDuanNo();
                 }
                 Log.e("长按item", "更新视图 groupListChoice:" + (groupListChoice));
                 Log.e("长按item", "更新视图 childListChoice:" + (childListChoice));
                 Log.e("长按item", "更新视图 pai:" + (paiChoice));
                 Log.e("长按item", "更新视图 kongChoice:" + (kongChoice));
+                Log.e("长按item", "更新视图 weiChoice:" + (weiChoice));
                 // 刷新适配器
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));
 
@@ -817,18 +820,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                 zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
                             }
                         }
-//                        if (groupListChoice >= paiMax) {
-//                            zcList.expandGroup(zhuceAdapter.getGroupCount() - 1);
-//                            if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {
-//                                zhuceAdapter.setSelcetPosition(zhuceAdapter.getGroupCount() - 1, childListChoice - 1);
-//                                zcList.setSelectedChild(zhuceAdapter.getGroupCount() - 1, childListChoice - 1, true);
-//                            }
-//                        } else {
-//                            zcList.expandGroup(groupListChoice - 1);
-//                            if (childList.get(groupListChoice - 1).size() != 0) {
-//                                zcList.setSelectedChild(groupListChoice - 1, childListChoice - 1, true);
-//                            }
-//                        }
                     }
 
                     //根据选择的排确定延时的值
@@ -3764,16 +3755,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                     popupWindow.dismiss();
                     if (checkDelay()) return;
+                    int mKong = 0;
+                    int mWei = 0;
+                    if (childListChoice > 0) {
+                        mKong = childList.get(groupListChoice - 1).get(childListChoice - 1).getBlastserial();
+                        mWei = childList.get(groupListChoice - 1).get(childListChoice - 1).getDuanNo();
+                    }
                     Intent intent = new Intent(this, SouSuoSQActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("paiChoice", paiChoice);//用来判断是否需要展示注册功能
-                    bundle.putInt("kongChoice", kongChoice);//用来判断是否需要展示注册功能
+                    bundle.putInt("kongChoice", mKong);//用来判断是否需要展示注册功能
                     bundle.putString("mRegion", mRegion);//用来判断是否需要展示注册功能
                     bundle.putBoolean("flag_jh_f1", flag_jh_f1);
                     bundle.putBoolean("flag_jh_f2", flag_jh_f2);
                     bundle.putBoolean("btn_start", btn_start);
                     bundle.putBoolean("flag_tk", flag_tk);
                     bundle.putString("delay_set", delay_set);
+                    bundle.putInt("weiChoice", mWei);
                     Log.e(TAG, "传给搜索界面delay_set: " + delay_set);
                     intent.putExtras(bundle);
                     startActivity(intent);
