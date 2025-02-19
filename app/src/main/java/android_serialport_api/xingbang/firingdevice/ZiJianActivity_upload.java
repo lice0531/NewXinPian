@@ -256,15 +256,15 @@ public class ZiJianActivity_upload extends SerialPortActivity {
                         try {
                             Date date1 = sd.parse(format1);//当前日期
                             Date date2 = sd.parse(time);//有网记录时间
-//                            if(date1.compareTo(date2)>0){
+                            if(date1.compareTo(date2)>0){
                                 //过期
                                 ziJianThread.start();
                                 Log.e(TAG, "当前时间大于记录时间: " );
-//                            }else {
-//                                createDialog();
-//                                //大于
-//                                Log.e(TAG, "当前时间小于记录时间: " );
-//                            }
+                            }else {
+                                createDialog();
+                                //大于
+                                Log.e(TAG, "当前时间小于记录时间: " );
+                            }
                         } catch (ParseException | java.text.ParseException e) {
                             e.printStackTrace();
                         }

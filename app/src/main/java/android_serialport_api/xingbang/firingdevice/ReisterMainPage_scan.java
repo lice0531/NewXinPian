@@ -3130,7 +3130,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
 
         if (childList.get(groupListChoice - 1).size() > 0) {
-            denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);
+            denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);//有为0的情况
         }
 
         if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
