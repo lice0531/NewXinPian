@@ -3759,7 +3759,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     if (checkDelay()) return;
                     int mKong = 0;
                     int mWei = 0;
-                    if (childListChoice > 0) {
+                    //防止当前排没数据时 授权注册崩溃问题
+                    if (childListChoice > 0 && childList.get(groupListChoice - 1).size() > 0) {
                         mKong = childList.get(groupListChoice - 1).get(childListChoice - 1).getBlastserial();
                         mWei = childList.get(groupListChoice - 1).get(childListChoice - 1).getDuanNo();
                     }
