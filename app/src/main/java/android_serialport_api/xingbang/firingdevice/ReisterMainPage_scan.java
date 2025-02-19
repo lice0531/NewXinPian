@@ -933,7 +933,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                         zhuceAdapter.setSelcetPosition(groupListChoice - 1, childListChoice - 1);
                         //默认展开
-                        if (groupListChoice >= groupCount2) {//进行了删排操作
+                        if (delete_pai) {//进行了删排操作
+                            delete_pai=false;
                             childListChoice=childList.get(zhuceAdapter.getGroupCount() - 1).size();
                             groupListChoice=zhuceAdapter.getGroupCount();
                             paiChoice = groupList.get(groupListChoice - 1).getPaiId();
@@ -3673,6 +3674,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     boolean btn_start = false;//减号标志
     boolean flag_tk = false;//跳孔标志
     private boolean isSelectAll = true;//是否全选
+    private boolean delete_pai = false;//是否删除排
 
     @OnClick({R.id.btn_scanReister, R.id.btn_f1, R.id.btn_f2, R.id.btn_tk_F1, R.id.btn_JH_F1, R.id.btn_JH_F2, R.id.btn_tk, R.id.btn_setdelay, R.id.btn_input, R.id.btn_single,
             R.id.btn_inputOk, R.id.btn_return, R.id.btn_singleReister, R.id.btn_ReisterScanStart_st, R.id.tv_cancel, R.id.title_right2,
@@ -3902,7 +3904,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                                 check_gone = false;//重置参数
                                 isSelectAll = true;//重置参数
-
+                                delete_pai=true;
                                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
                                 tv_check_all.setText(getResources().getString(R.string.text_qx));
 
@@ -5561,7 +5563,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
         }
         zhuceAdapter.notifyDataSetChanged();
-//        mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));// 区域 更新视图
     }
 
 
