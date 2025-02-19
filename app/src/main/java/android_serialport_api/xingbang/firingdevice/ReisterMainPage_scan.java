@@ -783,7 +783,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         //注册新雷管,光标挪到最后一位
                         if (flag_zhuce) {
                             List<DenatorBaseinfo> list = master.queryDetonatorPaiDesc(mRegion, paiChoice);
-
+                            //(新注册越界??)
                             for (int a = 0; a < childList.get(groupListChoice - 1).size(); a++) {//因为有同孔的存在,孔号不能代表在列表中的位置
                                 if (list.get(0).getId().equals(childList.get(groupListChoice - 1).get(a).getId())) {
                                     kongChoice = a + 1;
