@@ -139,7 +139,8 @@ public class DelDenatorMainPage extends BaseActivity  {
                     Log.e("liyi_1001", "更新视图 区域" + mRegion);
                     Log.e("liyi_1001", "更新视图 雷管数量: " + mListData.size());
                     // 查询全部雷管 倒叙(序号)
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
+                    mListData = new GreenDaoMaster().queryAllDetonator();
+//                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc();
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     // 设置标题区域
@@ -149,13 +150,15 @@ public class DelDenatorMainPage extends BaseActivity  {
                 // 重新排序 更新视图
                 case 1002:
                     // 雷管孔号排序 并 重新查询
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryAllDetonator();
+//                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     break;
 
                 case 1005://按管壳码排序
-                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
+                    mListData = new GreenDaoMaster().queryAllDetonator();
+//                    mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
                     Collections.sort(mListData);
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
