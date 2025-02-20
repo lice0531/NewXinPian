@@ -1346,29 +1346,25 @@ public class XingbangMain extends SerialPortActivity {
                     dialog.cancel();
                     mOffTime.cancel();
                 })
-//                .setNegativeButton(getString(R.string.text_firing_jixu), (dialog2, which) -> {
-//                    dialog2.dismiss();
-//                    Intent intent5;//金建华
-//                    close();//停止访问电流
-//                    if (str5.equals("组网")) {
-////                        intent5 = new Intent(this, TestDenatorActivity.class);
-//                        intent5 = new Intent(this, QuYuActivity.class);//金建华
-//                        intent5.putExtra("pageFlag","firingMain");
-//                    } else {
-//                        Log.e("验证2", "Yanzheng: " + Yanzheng);
+                .setNegativeButton(getString(R.string.text_firing_jixu), (dialog2, which) -> {
+                    dialog2.dismiss();
+                    Intent intent5;//金建华
+                    close();//停止访问电流
+                    if (str5.equals("组网")) {
+                        intent5 = new Intent(this, TestDenatorActivity.class);
+                    } else {
+                        Log.e("验证2", "Yanzheng: " + Yanzheng);
 //                        if (Yanzheng.equals("验证")) {
 //                            intent5 = new Intent(this, VerificationActivity.class);
 //                        } else {
-//                            intent5 = new Intent(this, QuYuActivity.class);//金建华
-//                            intent5.putExtra("pageFlag","firingMain");
-////                            intent5 = new Intent(this, FiringMainActivity.class);
+                            intent5 = new Intent(this, FiringMainActivity.class);
 //                        }
-//                    }
-//
-//                    intent5.putExtra("dataSend", str5);
-//                    startActivityForResult(intent5, 1);
-//                    mOffTime.cancel();
-//                })
+                    }
+
+                    intent5.putExtra("dataSend", str5);
+                    startActivityForResult(intent5, 1);
+                    mOffTime.cancel();
+                })
                 .create();
         mDialog.show();
         mDialog.setCanceledOnTouchOutside(false);
