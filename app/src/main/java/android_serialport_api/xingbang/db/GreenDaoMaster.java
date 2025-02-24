@@ -1246,6 +1246,33 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
+    public List<DenatorBaseinfo> queryLeiguanPai(int pai, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
+    public List<DenatorBaseinfo> queryLeiguanPaiDesc(int pai, String mRegion) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        return result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
+    /***
+     * @param pai
+     * @return
+     */
+    public List<DenatorBaseinfo> queryLeiguanPai(int pai, String mRegion,String fz) {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        Log.e("查询", "段位雷管: ");
+        return result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
+                .where(DenatorBaseinfoDao.Properties.Fanzhuan.eq(fz))
+                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
+    }
     public List<DenatorBaseinfo> queryLeiguanDuanDesc(int duan, String mRegion) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         return result.where(DenatorBaseinfoDao.Properties.Duan.eq(duan))
@@ -1266,6 +1293,7 @@ public class GreenDaoMaster {
                 .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
+
 
     public List<DenatorBaseinfo> queryLeiguanDuanforDelay(int duan, String mRegion) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();

@@ -29,11 +29,13 @@ public class MyAlertDialog {
     private LinearLayout ll_start;
     private LinearLayout ll_kong;
     private LinearLayout ll_dijian;
+    private LinearLayout ll_fanzhuan;
     private TextView txt_title;
     private TextView txt_pai;
     private TextView txt_msg;
     private Button btn_neg;
     private Button btn_pos;
+    private Button btn_fanzhuan;
     private ImageView img_line;
     private Display display;
     private boolean showTitle = false;
@@ -59,10 +61,12 @@ public class MyAlertDialog {
         ll_start = (LinearLayout) view.findViewById(R.id.ll_start);
         ll_kong = (LinearLayout) view.findViewById(R.id.ll_fa);
         ll_dijian = (LinearLayout) view.findViewById(R.id.ll_dijian);
+        ll_fanzhuan = (LinearLayout) view.findViewById(R.id.ll_fanzhuan);
         txt_title = (TextView) view.findViewById(R.id.txt_title);
         txt_pai = (TextView) view.findViewById(R.id.txt_pai);
         btn_neg = (Button) view.findViewById(R.id.btn_neg);
         btn_pos = (Button) view.findViewById(R.id.btn_pos);
+        btn_fanzhuan = (Button) view.findViewById(R.id.btn_fanzhuan);
         img_line = (ImageView) view.findViewById(R.id.img_line);
         setGone();
         dialog = new Dialog(context, R.style.AlertDialogStyle);
