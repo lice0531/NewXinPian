@@ -510,7 +510,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int childList_size = master.queryDetonatorPai(mRegion, paiChoice).size();
             zhuceAdapter.setSelcetPosition(groupPosition, childList_size - 1);
             //根据选择的排确定延时的值
-            choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+            choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
             //如果有默认排的话,就默认该排的延时
             if (choicepaiData != null) {
                 start_delay_data = choicepaiData.getStartDelay();
@@ -826,7 +826,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
 
                     //根据选择的排确定延时的值
-                    choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+                    choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
                     //如果有默认排的话,就默认该排的延时
                     if (choicepaiData != null) {
                         start_delay_data = choicepaiData.getStartDelay();
@@ -885,7 +885,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e("liyi_1003", "删除后,更新视图 雷管数量: " + mListData.size());
                     Log.e(TAG, "groupListChoice:" + groupListChoice);
                     //根据选择的排确定延时的值
-                    choicepaiData = GreenDaoMaster.gePaiData(mRegion, (paiChoice) + "");
+                    choicepaiData = GreenDaoMaster.getPaiData(mRegion, (paiChoice) + "");
                     //如果有默认排的话,就默认该排的延时
                     if (choicepaiData != null) {
                         start_delay_data = choicepaiData.getStartDelay();
@@ -984,7 +984,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "更新排数据 updataPaiData  total: " + total2);
                         Log.e(TAG, "更新排数据 updataPaiData  delay_max_new: " + delay_max_new);
                         Log.e(TAG, "更新排数据 updataPaiData  delay_minNum_new: " + delay_minNum_new);
-                        choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiId + "");
+                        choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiId + "");
                         if (choicepaiData != null) {
                             choicepaiData.setSum(total2 + "");//
                             choicepaiData.setDelayMin(delay_minNum_new + "");
@@ -2132,10 +2132,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         } else {
             startDelay.setText((delay_max_new + Integer.parseInt(quYu_choice.getPaiDelay())) + "");
         }
+        choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
+        Log.e(TAG, "choicepaiData: "+choicepaiData.toString() );
+        Log.e(TAG, "choicepaiData.getFanZhuan(): "+choicepaiData.getFanZhuan() );
+        if(choicepaiData.getFanZhuan()==1){
+            btn_fanzhuan.setBackgroundResource(R.drawable.bt_mainpage_style_green);
+        }else {
+            btn_fanzhuan.setBackgroundResource(R.drawable.bt_mainpage_style);
+        }
+
         btn_fanzhuan.setOnClickListener(v -> {
-            Log.e(TAG, "翻转按钮: " );
             myDialog.dismiss();
-            fanzhuan(paiChoice);
+//            fanzhuan(paiChoice);
+            fanzhuan(paiChoice,choicepaiData.getFanZhuan());
         });
         sw_dijian.setOnCheckedChangeListener((view, isChecked) -> {
             if (sw_dijian.isChecked()) {
@@ -2157,6 +2166,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 .setStart()
                 .setFa()
                 .setDijian()
+                .setFanZhuan()
                 .setpaiText("孔内延时")
                 .setCancelable(false)
                 .setNegativeButton("取消", new View.OnClickListener() {
@@ -3545,12 +3555,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "更新排数据 updataPaiData  total: " + total);
         Log.e(TAG, "更新排数据 updataPaiData  delay_max_new: " + delay_max_new);
         Log.e(TAG, "更新排数据 updataPaiData  delay_minNum_new: " + delay_minNum_new);
-        choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+        choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
         if (choicepaiData != null) {
             choicepaiData.setSum(total + "");//
             choicepaiData.setDelayMin(delay_minNum_new + "");
             choicepaiData.setDelayMax(delay_max_new + "");
 
+            getDaoSession().getPaiDataDao().update(choicepaiData);
+        }
+
+    }
+    private void updataPaiDataFanZhuan(int fanzhuan) {
+        Log.e(TAG, "更新翻转状态: "+fanzhuan );
+        choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
+        if (choicepaiData != null) {
+            choicepaiData.setFanZhuan(fanzhuan);
             getDaoSession().getPaiDataDao().update(choicepaiData);
         }
 
@@ -4376,7 +4395,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         int delay_min_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiMax);//获取该区域 前一排的最大延时
-        PaiData paiData1 = GreenDaoMaster.gePaiData(mRegion, paiMax + "");
+        PaiData paiData1 = GreenDaoMaster.getPaiData(mRegion, paiMax + "");
         int paiDelay = Integer.parseInt(quYu_choice.getPaiDelay());
         Log.e(TAG, "paiMax: " + paiMax);
         Log.e(TAG, "delay_min_new: " + delay_min_new);
@@ -4441,6 +4460,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     paiData.setDelayMin("0");
                     paiData.setDelayMax("0");
                     paiData.setSum("0");
+                    paiData.setFanZhuan(0);
                     getDaoSession().getPaiDataDao().insert(paiData);
                     groupListChoice = 0;//重置选中的排
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
@@ -5379,6 +5399,214 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
 
+    private void fanzhuan(int paiChoice, int fz) {
+        Log.e("注册页面", "翻转: ");
+        AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_scan.this)
+                .setTitle(getResources().getString(R.string.text_fzts))//设置对话框的标题//"成功起爆"
+                .setMessage(getResources().getString(R.string.text_ssfz))//设置对话框的内容"本次任务成功起爆！"
+                //设置对话框的按钮
+                .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
+                .setPositiveButton(getResources().getString(R.string.text_verify), (dialog1, which) -> {
+
+
+                    GreenDaoMaster master = new GreenDaoMaster();
+                    DaoSession session = getDaoSession();
+                    List<DenatorBaseinfo> list_up;//翻转前
+                    List<DenatorBaseinfo> list2;//翻转后
+                    List<DenatorBaseinfo> list5;//翻转后
+                    String strSql;//除了序号最小的所有重复雷管
+                    String strSql2;//序号最小的重复雷管
+                    String strSql3;//所有不重复延时
+                    String strSql4;//所有不重复孔号
+                    String sql;//所有延时列表
+                    int fz_flag=0;
+                    Log.e(TAG, "fz: " + fz);
+                    if (fz == 0) {//翻转
+                        list_up = master.queryLeiguanPai(paiChoice, mRegion);
+                        list2 = master.queryLeiguanPai(paiChoice, mRegion);
+//                        list5 = master.queryLeiguanPaiDesc(paiChoice, mRegion);
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " group by delay order by sithole desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
+                        sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by sithole";//+" order by htbh "
+                        strSql4 = "SELECT  blastserial FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " group by blastserial order by blastserial desc";//所有不重复孔号
+                        fz_flag=1;
+
+                    } else {//复位
+                        Log.e(TAG, "复位==============: " );
+                        list_up = master.queryLeiguanPai(paiChoice, mRegion, fz+"");
+                        list2 = master.queryLeiguanPai(paiChoice, mRegion, fz+"");
+//                        list5 = master.queryLeiguanPai(paiChoice, mRegion);
+                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MAX(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MAX(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
+                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" group by delay order by sithole asc";
+                        sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by sithole";//+" order by htbh "
+                        strSql4 = "SELECT  blastserial FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+"  group by blastserial order by blastserial desc";//所有不重复孔号
+                        fz_flag=0;
+
+                    }
+
+
+
+                    List<DenatorBaseinfo> list3 = getList(strSql);//除了序号最小的所有重复雷管
+
+                    List<DenatorBaseinfo> list4 = getList(strSql2);//序号最小的重复雷管
+
+                    List<Map<String, Object>> list_delay = new ArrayList<>();//所有不重复延时
+
+                    Cursor cursor3 = session.getDatabase().rawQuery(strSql3, null);
+                    if (cursor3 != null) {
+                        while (cursor3.moveToNext()) {
+                            int delay = cursor3.getInt(0);
+                            int blastserial = cursor3.getInt(1);
+                            Map<String, Object> item = new HashMap<String, Object>();
+                            item.put("delay", delay);
+                            item.put("blastserial", blastserial);
+                            list_delay.add(item);
+                        }
+                        cursor3.close();
+                    }
+                    List<Integer> list_duanNo = new ArrayList<>();//
+
+                    Cursor cursor4 = session.getDatabase().rawQuery(strSql4, null);
+                    if (cursor4 != null) {
+                        while (cursor4.moveToNext()) {
+                            int duanNo = cursor4.getInt(0);
+                            list_duanNo.add(duanNo);
+                        }
+                        cursor4.close();
+                    }
+                    List<Integer> list_alldelay = new ArrayList<>();//
+                    Cursor cursor5 = session.getDatabase().rawQuery(sql, null);
+                    if (cursor5 != null) {
+                        while (cursor5.moveToNext()) {
+                            int delay = cursor5.getInt(0);
+                            list_alldelay.add(delay);
+                        }
+                        cursor5.close();
+                    }
+
+                    Log.e(TAG, "list_alldelay: " + list_alldelay.toString());
+                    if (!isIncreasing(list_alldelay) && !isDecreasing(list_alldelay)) {
+                        show_Toast(getResources().getString(R.string.text_xgys));
+                        return;
+                    }
+
+                    Log.e(TAG, paiChoice + "排 雷管list_up: " + list_up.toString());
+                    Log.e(TAG, "翻转后的列表list2: " + list2.toString());
+                    Log.e(TAG, "除了序号最小的所有重复雷管list3: " + list3.toString());
+                    Log.e(TAG, "序号最小的重复雷管list4: " + list4.toString());
+                    Log.e(TAG, "list_delay: " + list_delay.toString());
+                    Log.e(TAG, "list_duanNo: " + list_duanNo.toString());
+//                    Log.e(TAG, "判断: "+list.contains(list3.get(0)) );
+//                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
+                    //遍历List并比较元素是否相等，判断是否包含"apple"元素
+
+                    for (int i = 0; i < list_up.size(); i++) {
+                        Log.e(TAG, "开始----------------: ");
+                        DenatorBaseinfo lg = list_up.get(i);
+                        Log.e(TAG, "第" + i + "发管: " + lg.toString());
+
+                        boolean contains = false;//包含在 除了序号最小的所有重复雷管
+                        for (DenatorBaseinfo db : list3) {
+                            if (db.getId().equals(lg.getId())) {
+                                contains = true;
+                                break;
+                            }
+                        }
+                        boolean contains2 = false;//包含在 序号最小的所有重复雷管
+                        for (DenatorBaseinfo db : list4) {
+                            if (db.getId().equals(lg.getId())) {
+                                contains2 = true;
+                                break;
+                            }
+                        }
+
+                        Log.e(TAG, "是否 包含在 除了序号最小的所有重复雷管: " + contains);//list3是否包含当前雷管
+                        Log.e(TAG, "最大序号的(i-1)=" + (i - 1));
+                        int delay = 0;
+                        if (contains) {//包含在 除了序号最小的所有重复雷管  list2
+                            DenatorBaseinfo lg2;
+                            if (i == 0) {
+                                lg2 = master.querylg(list2.get(i).getShellBlastNo());
+                            } else {
+                                Log.e(TAG, "最大序号的list2.get(i-1):" + list2.get(i - 1).getShellBlastNo());
+                                Log.e(TAG, "最大序号的list2.get(i-1):" + list2.get(i - 1).getBlastserial());
+                                lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
+                            }
+
+
+                            Log.e(TAG, "最大序号的list2.get(i)" + list2.get(i).getShellBlastNo());
+                            Log.e(TAG, "最大序号的list2.get(i)" + list2.get(i).getBlastserial());
+                            Log.e(TAG, "最大序号的lg2.getShellBlastNo()" + lg2.getShellBlastNo());
+                            Log.e(TAG, "最大序号的lg2.getDuanNo()" + lg2.getBlastserial());
+                            lg.setDelay(lg2.getDelay());
+                            if(fz==0){
+                                lg.setBlastserial(lg2.getBlastserial());
+                                Log.e(TAG, "翻转最终孔号1:" + lg2.getBlastserial());
+                            }else {
+                                lg.setBlastserial(lg2.getBlastserial()-1);
+                                Log.e(TAG, "翻转最终孔号2:" + lg2.getBlastserial());
+                            }
+//                            if (i != 0 && list2.get(i - 1).getDuanNo() == list2.get(i).getDuanNo()) {//同孔,获取前一发孔号
+//                            lg.setBlastserial(lg2.getBlastserial());
+//                            } else {//不同孔,在前一发的基础上加1
+//                                lg.setBlastserial(list_duanNo.get(0));
+//                                Log.e(TAG, "翻转最终孔号2:" + list_duanNo.get(0));
+//                                list_duanNo.remove(0);
+//                            }
+
+                        } else {//不包含
+                            Log.e(TAG, "是否 包含在 序号最小的所有重复雷管2: " + contains2);//list4是否包含当前雷管
+                            Log.e(TAG, "翻转最终孔号3:" + list_duanNo.size());
+                            Log.e(TAG, "翻转最终孔号3:" + list_duanNo.get(0));
+                            Log.e(TAG, "所有不重复延时-list_delay.get(0): " + list_delay.get(0));
+                            lg.setBlastserial(list_duanNo.get(0));
+                            delay=(Integer) list_delay.get(0).get("delay");
+
+                            //清除list第一条数据
+                            list_delay.remove(0);
+                            list_duanNo.remove(0);
+                        }
+
+                        lg.setFanzhuan(fz_flag + "");
+
+                        Log.e(TAG, "list2: "+list2.toString() );
+                        if (i > 0) {
+                            int delau_up = master.querylg(list2.get(i - 1).getShellBlastNo()).getDelay();//前一发雷管的延时
+                            int delay_1 = list2.get(i - 1).getDelay();
+                            int delay_2 = list2.get(i).getDelay();
+                            Log.e(TAG, "delay_1: "+delay_1 );
+                            Log.e(TAG, "delay_2: "+delay_2 );
+                            delay = delau_up - (delay_2 - delay_1);
+                            Log.e(TAG, "新方法 翻转后,前一发的管壳码: " + list2.get(i - 1).getShellBlastNo() + "--delay=" + list2.get(i - 1).getDelay());
+                            Log.e(TAG, "新方法 翻转后,前一发的延时delau_up: " + delau_up);
+                            Log.e(TAG, "新方法 翻转前,前一发延时delay_1   gkm: " + list2.get(i - 1).getShellBlastNo() + "-delay=" + list2.get(i - 1).getDelay());
+                            Log.e(TAG, "新方法 翻转前,当前延时delay_2   gkm: " + list2.get(i).getShellBlastNo() + "-delay=" + list2.get(i).getDelay());
+                        }
+//                        else {
+////                            delay = list_up.get(list_up.size() - 1).getDelay();
+////                            delay = (Integer) list_delay.get(0).get("delay");
+//
+//                        }
+                        Log.e(TAG, "新方法获取的第" + i + "发" + lg.getShellBlastNo() + "--delay: " + delay);
+                        lg.setDelay(delay);
+                        getDaoSession().getDenatorBaseinfoDao().update(lg);
+
+                        Log.e(TAG, "结束----------------: ");
+                    }
+                    show_Toast(getResources().getString(R.string.text_fzwc));
+                    updataPaiDataFanZhuan(fz_flag);//更新翻转状态
+                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//                    setBtnColor(duan);
+
+                }).create();
+
+        dialog.show();
+    }
+
+
+
     private void setFan() {
         n1 = (int) MmkvUtils.getcode(mRegion + "n1", 0);
         n2 = (int) MmkvUtils.getcode(mRegion + "n2", 0);
@@ -5737,192 +5965,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
 
-    private void fanzhuan(int paiChoice, int fz) {
-        Log.e("注册页面", "翻转: ");
-        AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_scan.this)
-                .setTitle(getResources().getString(R.string.text_fzts))//设置对话框的标题//"成功起爆"
-                .setMessage(getResources().getString(R.string.text_ssfz))//设置对话框的内容"本次任务成功起爆！"
-                //设置对话框的按钮
-                .setNegativeButton(getResources().getString(R.string.text_alert_cancel), (dialog12, which) -> dialog12.dismiss())
-                .setPositiveButton(getResources().getString(R.string.text_verify), (dialog1, which) -> {
-
-                    GreenDaoMaster master = new GreenDaoMaster();
-                    DaoSession session = getDaoSession();
-                    List<DenatorBaseinfo> list_up;//翻转前
-                    List<DenatorBaseinfo> list2;//翻转后
-                    List<DenatorBaseinfo> list5;//翻转后
-                    String strSql;//除了序号最小的所有重复雷管
-                    String strSql2;//序号最小的重复雷管
-                    String strSql3;//所有不重复延时
-                    String strSql4;//所有不重复孔号
-                    String sql;//所有延时列表
-                    Log.e(TAG, "fz: " + fz);
-                    if (fz == 0) {//翻转
-                        list_up = master.queryLeiguanPai(paiChoice, mRegion);
-                        list2 = master.queryLeiguanPai(paiChoice, mRegion);
-                        list5 = master.queryLeiguanPaiDesc(paiChoice, mRegion);
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MIN(blastserial) FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + paiChoice + " and piece = " + mRegion + " group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
-                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + paiChoice + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
-                        strSql4 = "SELECT  duanNo FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " group by duanNo order by duanNo desc";//所有不重复孔号
-                    } else {//复位
-                        list_up = master.queryLeiguanPai(paiChoice, mRegion, "0");
-                        list2 = master.queryLeiguanPai(paiChoice, mRegion, "0");
-                        list5 = master.queryLeiguanPai(paiChoice, mRegion);
-                        strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial NOT IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = 0 GROUP BY delay HAVING COUNT(*) > 1) AND blastserial IN (SELECT MAX(blastserial) FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , duanNo FROM denatorBaseinfo where duan =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = 0 group by delay order by blastserial asc";
-                        sql = "SELECT delay FROM denatorBaseinfo  where duan =" + paiChoice + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
-                        strSql4 = "SELECT  duanNo FROM denatorBaseinfo where duan = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = 0  group by duanNo order by duanNo desc";//所有不重复孔号
-                    }
-
-
-
-                    List<DenatorBaseinfo> list3 = getList(strSql);//除了序号最小的所有重复雷管
-
-                    List<DenatorBaseinfo> list4 = getList(strSql2);//序号最小的重复雷管
-
-                    List<Map<String, Object>> list_delay = new ArrayList<>();//所有不重复延时
-
-                    Cursor cursor3 = session.getDatabase().rawQuery(strSql3, null);
-                    if (cursor3 != null) {
-                        while (cursor3.moveToNext()) {
-                            int delay = cursor3.getInt(0);
-                            String duanNo = cursor3.getString(1);
-                            Map<String, Object> item = new HashMap<String, Object>();
-                            item.put("delay", delay);
-                            item.put("duanNo", duanNo);
-                            list_delay.add(item);
-                        }
-                        cursor3.close();
-                    }
-                    List<Integer> list_duanNo = new ArrayList<>();//
-
-                    Cursor cursor4 = session.getDatabase().rawQuery(strSql4, null);
-                    if (cursor4 != null) {
-                        while (cursor4.moveToNext()) {
-                            int duanNo = cursor4.getInt(0);
-                            list_duanNo.add(duanNo);
-                        }
-                        cursor4.close();
-                    }
-                    List<Integer> list_alldelay = new ArrayList<>();//
-                    Cursor cursor5 = session.getDatabase().rawQuery(sql, null);
-                    if (cursor5 != null) {
-                        while (cursor5.moveToNext()) {
-                            int delay = cursor5.getInt(0);
-                            list_alldelay.add(delay);
-                        }
-                        cursor5.close();
-                    }
-
-                    Log.e(TAG, "list_alldelay: " + list_alldelay.toString());
-                    if (!isIncreasing(list_alldelay) && !isDecreasing(list_alldelay)) {
-                        show_Toast(getResources().getString(R.string.text_xgys));
-                        return;
-                    }
-
-                    Log.e(TAG, paiChoice + "段 雷管list_up: " + list_up.toString());
-                    Log.e(TAG, "翻转后的列表list2: " + list2.toString());
-                    Log.e(TAG, "除了序号最小的所有重复雷管list3: " + list3.toString());
-                    Log.e(TAG, "序号最小的重复雷管list4: " + list4.toString());
-                    Log.e(TAG, "list_delay: " + list_delay.toString());
-                    Log.e(TAG, "list_duanNo: " + list_duanNo.toString());
-//                    Log.e(TAG, "判断: "+list.contains(list3.get(0)) );
-//                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
-                    //遍历List并比较元素是否相等，判断是否包含"apple"元素
-
-                    for (int i = 0; i < list_up.size(); i++) {
-                        Log.e(TAG, "开始----------------: ");
-                        DenatorBaseinfo lg = list_up.get(i);
-                        Log.e(TAG, "第" + i + "发管: " + lg.toString());
-
-                        boolean contains = false;//包含在 除了序号最小的所有重复雷管
-                        for (DenatorBaseinfo db : list3) {
-                            if (db.getId().equals(lg.getId())) {
-                                contains = true;
-                                break;
-                            }
-                        }
-                        boolean contains2 = false;//包含在 序号最小的所有重复雷管
-                        for (DenatorBaseinfo db : list4) {
-                            if (db.getId().equals(lg.getId())) {
-                                contains2 = true;
-                                break;
-                            }
-                        }
-
-                        Log.e(TAG, "是否 包含在 除了序号最小的所有重复雷管: " + contains);//list3是否包含当前雷管
-                        Log.e(TAG, "最大序号的(i-1)=" + (i - 1));
-                        if (contains) {//包含在 除了序号最小的所有重复雷管  list2
-                            DenatorBaseinfo lg2;
-                            if (i == 0) {
-                                lg2 = master.querylg(list2.get(i).getShellBlastNo());
-                            } else {
-                                Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getShellBlastNo());
-                                Log.e(TAG, "最大序号的list2.get(i-1)" + list2.get(i - 1).getDuanNo());
-                                lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
-                            }
-
-
-                            Log.e(TAG, "最大序号的list2.get(i)" + list2.get(i).getShellBlastNo());
-                            Log.e(TAG, "最大序号的list2.get(i)" + list2.get(i).getDuanNo());
-                            Log.e(TAG, "最大序号的lg2.getDuanNo()" + lg2.getDuanNo());
-                            lg.setDelay(lg2.getDelay());
-
-                            if (i != 0 && list2.get(i - 1).getDuanNo() == list2.get(i).getDuanNo()) {//同孔,获取前一发孔号
-                                lg.setDuanNo(lg2.getDuanNo());
-                                Log.e(TAG, "翻转最终孔号1:" + lg2.getDuanNo());
-                            } else {//不同孔,在前一发的基础上加1
-                                lg.setDuanNo(list_duanNo.get(0));
-                                Log.e(TAG, "翻转最终孔号2:" + list_duanNo.get(0));
-                                list_duanNo.remove(0);
-                            }
-
-                        } else {//不包含
-                            Log.e(TAG, "是否 包含在 序号最小的所有重复雷管2: " + contains2);//list4是否包含当前雷管
-                            Log.e(TAG, "翻转最终孔号3:" + list_duanNo.size());
-                            Log.e(TAG, "翻转最终孔号3:" + list_duanNo.get(0));
-                            Log.e(TAG, "所有不重复延时-list_delay.get(0): " + list_delay.get(0));
-                            lg.setDuanNo(list_duanNo.get(0));
-                            lg.setDelay((Integer) list_delay.get(0).get("delay"));
-
-                            //清除list第一条数据
-                            list_delay.remove(0);
-                            list_duanNo.remove(0);
-                        }
-
-                        lg.setFanzhuan(fz + "");
-
-                        int delay = 0;
-                        if (i > 0) {
-                            int delau_up = master.querylg(list2.get(i - 1).getShellBlastNo()).getDelay();//前一发雷管的延时
-                            int delay_1 = list2.get(i - 1).getDelay();
-                            int delay_2 = list2.get(i).getDelay();
-                            delay = delau_up + (delay_1 - delay_2);
-                            Log.e(TAG, "新方法 翻转后,前一发的管壳码: " + list2.get(i - 1).getShellBlastNo() + "--delay=" + list2.get(i - 1).getDelay());
-                            Log.e(TAG, "新方法 翻转后,前一发的延时delau_up: " + delau_up);
-                            Log.e(TAG, "新方法 翻转前,前一发延时delay_1: " + list2.get(i - 1).getShellBlastNo() + "-delay=" + list2.get(i - 1).getDelay());
-                            Log.e(TAG, "新方法 翻转前,当前延时delay_2: " + list2.get(i).getShellBlastNo() + "-delay=" + list2.get(i).getDelay());
-                        } else {
-                            delay = list_up.get(list_up.size() - 1).getDelay();
-
-                        }
-                        Log.e(TAG, "新方法获取的第" + i + "发" + lg.getShellBlastNo() + "--delay: " + delay);
-                        lg.setDelay(delay);
-                        getDaoSession().getDenatorBaseinfoDao().update(lg);
-
-                        Log.e(TAG, "结束----------------: ");
-                    }
-                    show_Toast(getResources().getString(R.string.text_fzwc));
-//                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-//                    setBtnColor(duan);
-
-                }).create();
-
-        dialog.show();
-    }
 
     private List<DenatorBaseinfo> getList(String sql) {
         List<DenatorBaseinfo> list_db = new ArrayList<>();
@@ -5952,6 +5994,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 String piece = cursor.getString(18);
                 int duan = cursor.getInt(19);
                 int duanNo = cursor.getInt(20);
+                String fanzhuan = cursor.getString(21);
+                String pai = cursor.getString(22);
 
                 DenatorBaseinfo lg = new DenatorBaseinfo();
                 lg.setId(Long.valueOf(id));
@@ -5975,6 +6019,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 lg.setPiece(piece);
                 lg.setDuan(duan);
                 lg.setDuanNo(duanNo);
+                lg.setFanzhuan(fanzhuan);
+                lg.setPai(pai);
                 list_db.add(lg);
             }
             cursor.close();
@@ -5988,11 +6034,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     public static boolean isIncreasing(List<Integer> list) {
         for (int i = 1; i < list.size(); i++) {
             if (list.get(i) < list.get(i - 1)) {
-                Log.e("递增", "false: ");
+//                Log.e("递增", "false: ");
                 return false;
             }
         }
-        Log.e("递增", "true: ");
+//        Log.e("递增", "true: ");
         return true;
     }
 
@@ -6001,15 +6047,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     public static boolean isDecreasing(List<Integer> list) {
         for (int i = 1; i < list.size(); i++) {
-            Log.e("递减", "list.get(i): " + list.get(i));
-            Log.e("递减", "list.get(i - 1): " + list.get(i - 1));
-            Log.e("递减", "list.get(i) >= list.get(i - 1): " + (list.get(i) >= list.get(i - 1)));
+//            Log.e("递减", "list.get(i): " + list.get(i));
+//            Log.e("递减", "list.get(i - 1): " + list.get(i - 1));
+//            Log.e("递减", "list.get(i) >= list.get(i - 1): " + (list.get(i) >= list.get(i - 1)));
             if (list.get(i) > list.get(i - 1)) {
-                Log.e("递减", "false: ");
+//                Log.e("递减", "false: ");
                 return false;
             }
         }
-        Log.e("递减", "true: ");
+//        Log.e("递减", "true: ");
         return true;
     }
 

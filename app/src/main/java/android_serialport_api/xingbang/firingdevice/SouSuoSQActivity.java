@@ -616,7 +616,7 @@ public class SouSuoSQActivity extends BaseActivity {
             mHandler_UI.sendMessage(mHandler_UI.obtainMessage(2));
             return;
         }
-        PaiData paiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+        PaiData paiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
         int maxNo = new GreenDaoMaster().getPieceMaxNum(mRegion);//获取该区域最大序号
         int maxKong = new GreenDaoMaster().getPieceAndPaiMaxKong(mRegion, paiChoice);//获取该区域最大孔号
         int total = new GreenDaoMaster().queryDetonatorPaiSize(mRegion, paiChoice + "");//获取该区域最大孔号
@@ -821,7 +821,7 @@ public class SouSuoSQActivity extends BaseActivity {
         int delay_minNum_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiChoice);
 
         Log.e(TAG, "updataPaiData  total: " + total);
-        PaiData choicepaiData = GreenDaoMaster.gePaiData(mRegion, paiChoice + "");
+        PaiData choicepaiData = GreenDaoMaster.getPaiData(mRegion, paiChoice + "");
         if (choicepaiData != null) {
             choicepaiData.setSum(total + "");//
             choicepaiData.setDelayMin(delay_minNum_new + "");

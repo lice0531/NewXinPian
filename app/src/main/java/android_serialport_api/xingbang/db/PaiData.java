@@ -35,10 +35,13 @@ public class PaiData {
     private int kongNum;
     @Property(nameInDb = "diJian")
     private boolean diJian;
-    @Generated(hash = 854914857)
+    @Property(nameInDb = "fanZhuan")
+    private int fanZhuan;
+    @Generated(hash = 1357801272)
     public PaiData(Long id, int paiId, int qyid, String sum, String delayMin,
             String delayMax, String shouquan, String startDelay, String kongDelay,
-            String neiDelay, String paiDelay, int kongNum, boolean diJian) {
+            String neiDelay, String paiDelay, int kongNum, boolean diJian,
+            int fanZhuan) {
         this.id = id;
         this.paiId = paiId;
         this.qyid = qyid;
@@ -52,6 +55,7 @@ public class PaiData {
         this.paiDelay = paiDelay;
         this.kongNum = kongNum;
         this.diJian = diJian;
+        this.fanZhuan = fanZhuan;
     }
     @Generated(hash = 1436589176)
     public PaiData() {
@@ -67,6 +71,12 @@ public class PaiData {
     }
     public void setPaiId(int paiId) {
         this.paiId = paiId;
+    }
+    public int getQyid() {
+        return this.qyid;
+    }
+    public void setQyid(int qyid) {
+        this.qyid = qyid;
     }
     public String getSum() {
         return this.sum;
@@ -116,11 +126,11 @@ public class PaiData {
     public void setPaiDelay(String paiDelay) {
         this.paiDelay = paiDelay;
     }
-    public int getQyid() {
-        return this.qyid;
+    public int getKongNum() {
+        return this.kongNum;
     }
-    public void setQyid(int qyid) {
-        this.qyid = qyid;
+    public void setKongNum(int kongNum) {
+        this.kongNum = kongNum;
     }
     public boolean getDiJian() {
         return this.diJian;
@@ -128,11 +138,11 @@ public class PaiData {
     public void setDiJian(boolean diJian) {
         this.diJian = diJian;
     }
-    public int getKongNum() {
-        return this.kongNum;
+    public int getFanZhuan() {
+        return this.fanZhuan;
     }
-    public void setKongNum(int kongNum) {
-        this.kongNum = kongNum;
+    public void setFanZhuan(int fanZhuan) {
+        this.fanZhuan = fanZhuan;
     }
 
     @Override
@@ -151,6 +161,7 @@ public class PaiData {
                 ", paiDelay='" + paiDelay + '\'' +
                 ", kongNum=" + kongNum +
                 ", diJian=" + diJian +
+                ", fanZhuan=" + fanZhuan +
                 '}';
     }
 }

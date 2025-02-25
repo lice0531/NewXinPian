@@ -12,17 +12,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.custom.DenatorBaseinfoSelect;
 import android_serialport_api.xingbang.custom.PaiDataSelect;
-import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
@@ -39,9 +35,7 @@ import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
-import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
-import android_serialport_api.xingbang.utils.Utils;
 
 /**
  * 管理GreenDao查询语句
@@ -1266,11 +1260,11 @@ public class GreenDaoMaster {
      */
     public List<DenatorBaseinfo> queryLeiguanPai(int pai, String mRegion,String fz) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
-        Log.e("查询", "段位雷管: ");
+        Log.e("查询", "段位雷管: pai"+pai+"  mRegion:"+mRegion+"  fz:"+fz);
         return result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
                 .where(DenatorBaseinfoDao.Properties.Fanzhuan.eq(fz))
-                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
     public List<DenatorBaseinfo> queryLeiguanDuanDesc(int duan, String mRegion) {
@@ -1970,7 +1964,7 @@ public class GreenDaoMaster {
      *
      * @return
      */
-    public static PaiData gePaiData(String mRegion,String paiId) {
+    public static PaiData getPaiData(String mRegion, String paiId) {
         return getDaoSession().getPaiDataDao().queryBuilder()
                 .where(PaiDataDao.Properties.PaiId.eq(paiId))
                 .where(PaiDataDao.Properties.Qyid.eq(mRegion)).unique();

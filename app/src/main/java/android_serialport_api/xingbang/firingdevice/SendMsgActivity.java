@@ -21,14 +21,11 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.litepal.LitePal;
 
@@ -58,7 +55,6 @@ import java.util.stream.Collectors;
 
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
-import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.a_new.Constants_SP;
 import android_serialport_api.xingbang.a_new.SPUtils;
 import android_serialport_api.xingbang.cmd.DefCommand;
@@ -73,7 +69,6 @@ import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.greenDao.PaiDataDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
-import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -288,7 +283,7 @@ public class SendMsgActivity extends BaseActivity {
             } else {
                 Log.e(TAG,"查询区域延时--没有找到对应的记录");
             }
-            PaiData paiData = master.gePaiData(denatorInfo.getPiece(),denatorInfo.getPai());
+            PaiData paiData = master.getPaiData(denatorInfo.getPiece(),denatorInfo.getPai());
             if (paiData != null) {
                 paiKongDelay = paiData.getKongDelay();
                 paiStartDelay = paiData.getStartDelay();
@@ -635,7 +630,7 @@ public class SendMsgActivity extends BaseActivity {
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(qyId, paiNo);//获取该区域 最大序号的延时
         int delay_minNum_new = new GreenDaoMaster().getPieceAndPaiMinDelay(qyId, paiNo);
         Log.e(TAG, "updataPaiData  total: " + total);
-        PaiData choicepaiData = GreenDaoMaster.gePaiData(qyId, paiNo + "");
+        PaiData choicepaiData = GreenDaoMaster.getPaiData(qyId, paiNo + "");
         if(choicepaiData!=null){
             choicepaiData.setSum(total + "");//
             choicepaiData.setDelayMin(delay_minNum_new + "");

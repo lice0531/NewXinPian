@@ -1929,21 +1929,28 @@ public class Utils {
                 lg.setFanzhuan(fanzhuan);
                 Log.e("插入排序", "shellBlastNo: " + shellBlastNo);
                 Log.e("插入排序", "blastserial+1: " + (blastserial + 1));
+                Log.e("插入排序", "db_charu.getBlastserial(): " + db_charu.getBlastserial());
+                Log.e("插入排序", "sithole: " + sithole);
+                Log.e("插入排序", "db_charu.getSithole(): " + db_charu.getSithole());
                 Log.e("插入排序", "flag_t1_local: " + flag_t1_local);
                 Log.e("插入排序", "pai: " + pai);
                 Log.e("插入排序", "pai_in: " + pai_in);
                 Log.e("插入排序", "db_charu.getDuanNo(): " + db_charu.getDuanNo());
                 Log.e("插入排序", "duanNo: " + duanNo);
+                Log.e("插入排序", "flag_t1: " + flag_t1);
 
                 if (!flag_t1) {
                     lg.setBlastserial(blastserial);
-                    if (db_charu.getBlastserial()==blastserial) {//同孔情况下,后续位号增加
+                    lg.setSithole((Integer.parseInt(sithole)+1)+"");
+                    if (db_charu.getSithole().equals(sithole)) {//同孔情况下,后续位号增加
                         lg.setDuanNo(duanNo + 1);
+
                     } else {
                         lg.setDuanNo(duanNo);
                     }
                 } else {
                     lg.setBlastserial(blastserial + 1);
+
                 }
 
 

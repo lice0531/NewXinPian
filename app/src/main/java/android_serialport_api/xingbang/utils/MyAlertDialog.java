@@ -42,6 +42,7 @@ public class MyAlertDialog {
     private boolean showStart = false;
     private boolean showFa = false;
     private boolean showDijian = false;
+    private boolean showFanZhuan = false;
     private boolean showMsg = false;
     private boolean showPosBtn = false;
     private boolean showNegBtn = false;
@@ -87,6 +88,7 @@ public class MyAlertDialog {
             ll_start.setVisibility(View.GONE);
             ll_kong.setVisibility(View.GONE);
             ll_dijian.setVisibility(View.GONE);
+            ll_fanzhuan.setVisibility(View.GONE);
 //            txt_msg.setVisibility(View.GONE);
             btn_neg.setVisibility(View.GONE);
             btn_pos.setVisibility(View.GONE);
@@ -139,6 +141,13 @@ public class MyAlertDialog {
      */
     public MyAlertDialog setDijian() {
         showDijian = true;
+        return this;
+    }/**
+     * 设置title
+     * @return
+     */
+    public MyAlertDialog setFanZhuan() {
+        showFanZhuan = true;
         return this;
     }
 
@@ -269,6 +278,9 @@ public class MyAlertDialog {
         }
         if (showDijian) {
             ll_dijian.setVisibility(View.VISIBLE);
+        }
+        if (showFanZhuan) {
+            ll_fanzhuan.setVisibility(View.VISIBLE);
         }
 
         if (showMsg) {
