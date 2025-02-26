@@ -146,8 +146,8 @@ public class MyAlertDialog {
      * 设置title
      * @return
      */
-    public MyAlertDialog setFanZhuan() {
-        showFanZhuan = true;
+    public MyAlertDialog setFanZhuan(boolean showfz) {
+        showFanZhuan = showfz;
         return this;
     }
 

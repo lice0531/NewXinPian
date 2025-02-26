@@ -1051,6 +1051,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 13) {
                 SoundPlayUtils.play(4);
                 show_Toast("延时不能小于0ms");
+                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
             } else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
                 show_Toast("共有" + xiangHao_errNum + "盒重复");
@@ -2161,12 +2162,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         kongDelay.setText(paiData.getKongDelay());
         neiDelay.setText(paiData.getNeiDelay());
         sw_dijian.setChecked(paiData.getDiJian());
+
         myDialog.setGone()
                 .setTitle("修改" + paiData.getPaiId() + "排设置")
                 .setStart()
                 .setFa()
                 .setDijian()
-                .setFanZhuan()
+                .setFanZhuan(!paiData.getDiJian())
                 .setpaiText("孔内延时")
                 .setCancelable(false)
                 .setNegativeButton("取消", new View.OnClickListener() {
@@ -2176,7 +2178,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 })
                 .setPositiveButton("确定", v -> {
-
+                    Log.e(TAG, "choicepaiData.getFanZhuan(): "+choicepaiData.getFanZhuan() );
+                    if(choicepaiData.getFanZhuan()==1){
+                       show_Toast("当前排处去翻转状态,请复位后再进行修改操作.");
+                       return;
+                    }
 
 //                    Log.e("打印", "name: " + name.getText());
                     Log.e("更新排", "kongSun: " + kongSum.getText().toString());
@@ -3962,10 +3968,19 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 creatPai();
                 break;
             case R.id.btn_kong://加孔
+                if(choicepaiData.getFanZhuan()==1){
+                    show_Toast("翻转后的排不能注册,请复位后再进行注册");
+                    return;
+                }
+
                 flag_add = false;
                 insertSingleDenator("");
                 break;
             case R.id.btn_wei:
+                if(choicepaiData.getFanZhuan()==1){
+                    show_Toast("翻转后的排不能注册,请复位后再进行注册");
+                    return;
+                }
                 flag_add = false;
                 flag_t1 = false;
                 insertSingleDenator("");
@@ -4392,7 +4407,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         EditText kongDelay = myDialog.getView().findViewById(R.id.txt_kongDelay);
         EditText neiDelay = myDialog.getView().findViewById(R.id.txt_paiDelay);
         SwitchButton sw_dijian = myDialog.getView().findViewById(R.id.sw_dijian);
-
+        LinearLayout ll_fanzhuan = myDialog.getView().findViewById(R.id.ll_fanzhuan);
         int delay_min_new = new GreenDaoMaster().getPieceAndPaiMinDelay(mRegion, paiMax);//获取该区域 前一排的最小延时
         int delay_max_new = new GreenDaoMaster().getPieceAndPaiMaxDelay(mRegion, paiMax);//获取该区域 前一排的最大延时
         PaiData paiData1 = GreenDaoMaster.getPaiData(mRegion, paiMax + "");
@@ -4400,6 +4415,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "paiMax: " + paiMax);
         Log.e(TAG, "delay_min_new: " + delay_min_new);
         Log.e(TAG, "quYu_choice.getPaiDelay(): " + quYu_choice.getPaiDelay());
+
+        ll_fanzhuan.setVisibility(View.GONE);
+
         if (paiMax == 0) {
             startDelay.setText("0");
         } else {
@@ -4410,6 +4428,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 if (sw_dijian.isChecked()) {
+
                     if (paiMax == 0) {
                         startDelay.setText(delay_max_new + "");
                     } else {
@@ -5428,7 +5447,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
                         strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " group by delay order by sithole desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
-                        sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by sithole";//+" order by htbh "
+                        sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
                         strSql4 = "SELECT  blastserial FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " group by blastserial order by blastserial desc";//所有不重复孔号
                         fz_flag=1;
 
@@ -5439,8 +5458,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                        list5 = master.queryLeiguanPai(paiChoice, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MAX(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MAX(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" group by delay order by sithole asc";
-                        sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by sithole";//+" order by htbh "
+                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" group by delay order by sithole desc";
+                        sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
                         strSql4 = "SELECT  blastserial FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+"  group by blastserial order by blastserial desc";//所有不重复孔号
                         fz_flag=0;
 
@@ -5502,6 +5521,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                    Log.e(TAG, "判断: "+list.contains(list2.get(0)) );
                     //遍历List并比较元素是否相等，判断是否包含"apple"元素
 
+                    if( list_delay.size()!=list_duanNo.size()){
+                        show_Toast("当前延时为1孔多发,且延时不同,不能进行翻转.");
+                        return;
+                    }
+
                     for (int i = 0; i < list_up.size(); i++) {
                         Log.e(TAG, "开始----------------: ");
                         DenatorBaseinfo lg = list_up.get(i);
@@ -5542,10 +5566,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             Log.e(TAG, "最大序号的lg2.getDuanNo()" + lg2.getBlastserial());
                             lg.setDelay(lg2.getDelay());
                             if(fz==0){
-                                lg.setBlastserial(lg2.getBlastserial());
+//                                lg.setBlastserial(lg2.getBlastserial());
                                 Log.e(TAG, "翻转最终孔号1:" + lg2.getBlastserial());
                             }else {
-                                lg.setBlastserial(lg2.getBlastserial()-1);
+//                                lg.setBlastserial(lg2.getBlastserial()-1);
                                 Log.e(TAG, "翻转最终孔号2:" + lg2.getBlastserial());
                             }
 //                            if (i != 0 && list2.get(i - 1).getDuanNo() == list2.get(i).getDuanNo()) {//同孔,获取前一发孔号
@@ -5561,7 +5585,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             Log.e(TAG, "翻转最终孔号3:" + list_duanNo.size());
                             Log.e(TAG, "翻转最终孔号3:" + list_duanNo.get(0));
                             Log.e(TAG, "所有不重复延时-list_delay.get(0): " + list_delay.get(0));
-                            lg.setBlastserial(list_duanNo.get(0));
+//                            lg.setBlastserial(list_duanNo.get(0));
                             delay=(Integer) list_delay.get(0).get("delay");
 
                             //清除list第一条数据
