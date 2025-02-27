@@ -2982,11 +2982,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (!flag_jh_f1 || !flag_jh_f2) {
             if (delay_set.equals("f1")) {
                 if (maxSecond != 0 && start_delay - f1 < 0) {//
+                    Log.e(TAG, "insertSingleDenator_2: 1" );
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
             } else if (delay_set.equals("f2")) {
                 if (maxSecond != 0 && start_delay - f2 < 0) {//
+                    Log.e(TAG, "insertSingleDenator_2: 2" );
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
                     return -1;
                 }
@@ -3009,8 +3011,21 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
+        //
+        DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
+//        Log.e(TAG, "扫码注册paiChoice: " + paiChoice);
+//        Log.e(TAG, "扫码注册kongChoice: " + kongChoice);
+//        Log.e(TAG, "扫码注册groupListChoice: " + groupListChoice);
+//        Log.e(TAG, "扫码注册childListChoice: " + childListChoice);
+//        Log.e(TAG, "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
+
+        if (childList.get(groupListChoice - 1).size() > 0) {
+            denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);//有为0的情况
+        }
+
         delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
-        if (delay_max < 0) {//
+        if (delay_max < 0 && denatorBaseinfo_choice != null&& denatorBaseinfo_choice.getShellBlastNo().length() == 13) {//
+            Log.e(TAG, "insertSingleDenator_2: 3" );
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
         }
@@ -3123,16 +3138,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         //查询选中的雷管是否管壳码为空
 
 //        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().serchDenatorIdForChoice(paiChoice, kongChoice);
-        DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
-        Log.e(TAG, "扫码注册paiChoice: " + paiChoice);
-        Log.e(TAG, "扫码注册kongChoice: " + kongChoice);
-        Log.e(TAG, "扫码注册groupListChoice: " + groupListChoice);
-        Log.e(TAG, "扫码注册childListChoice: " + childListChoice);
-        Log.e(TAG, "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
-
-        if (childList.get(groupListChoice - 1).size() > 0) {
-            denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);//有为0的情况
-        }
 
         if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
             flag_add = true;
