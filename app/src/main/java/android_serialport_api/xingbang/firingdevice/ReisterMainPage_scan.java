@@ -780,7 +780,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         }
                         if (childListChoice == 0) {//初始化的时候,默认展开后一排,选中最后一发管
                             childListChoice = master.queryDetonatorPai(mRegion, paiChoice).size();
-                            kongChoice = childListChoice;//??先这么写看看
+                            kongChoice = childListChoice;//
                         }
                         Log.e(TAG, "光标移动-flag_zhuce: " + flag_zhuce);
                         //注册新雷管,光标挪到最后一位
@@ -5491,7 +5491,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                        list5 = master.queryLeiguanPaiDesc(paiChoice, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MIN(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MIN(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " group by delay order by sithole desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序
+                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " group by delay order by blastserial desc";//之前是id,但是插入雷管翻转延时不对,改为按序号排序,最好按sithole来,但是sithole现在逻辑不多
                         sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
                         strSql4 = "SELECT  blastserial FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " group by blastserial order by blastserial desc";//所有不重复孔号
                         fz_flag=1;
@@ -5503,7 +5503,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                        list5 = master.queryLeiguanPai(paiChoice, mRegion);
                         strSql = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" GROUP BY delay HAVING COUNT(*) > 1) AND id NOT IN (SELECT MAX(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
                         strSql2 = "SELECT * FROM denatorBaseinfo a WHERE (a.delay) IN (SELECT delay FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" GROUP BY delay HAVING COUNT(*) > 1) AND id IN (SELECT MAX(id) FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " GROUP BY delay HAVING COUNT(*)>1)";
-                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" group by delay order by sithole desc";
+                        strSql3 = "SELECT  delay , blastserial FROM denatorBaseinfo where pai =" + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+" group by delay order by blastserial desc";
                         sql = "SELECT delay FROM denatorBaseinfo  where pai =" + paiChoice + " and piece = " + mRegion + " order by blastserial";//+" order by htbh "
                         strSql4 = "SELECT  blastserial FROM denatorBaseinfo where pai = " + paiChoice + " and piece = " + mRegion + " and fanzhuan = "+fz+"  group by blastserial order by blastserial desc";//所有不重复孔号
                         fz_flag=0;
@@ -5597,11 +5597,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         if (contains) {//包含在 除了序号最小的所有重复雷管  list2
                             DenatorBaseinfo lg2;
                             if (i == 0) {
-                                lg2 = master.querylg(list2.get(i).getShellBlastNo());
+                                lg2 = master.querylg_id(list2.get(i).getId());
                             } else {
                                 Log.e(TAG, "最大序号的list2.get(i-1):" + list2.get(i - 1).getShellBlastNo());
                                 Log.e(TAG, "最大序号的list2.get(i-1):" + list2.get(i - 1).getBlastserial());
-                                lg2 = master.querylg(list2.get(i - 1).getShellBlastNo());
+                                lg2 = master.querylg_id(list2.get(i - 1).getId());
                             }
 
 
@@ -5642,7 +5642,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                         Log.e(TAG, "list2: "+list2.toString() );
                         if (i > 0) {
-                            int delau_up = master.querylg(list2.get(i - 1).getShellBlastNo()).getDelay();//前一发雷管的延时
+                            int delau_up = master.querylg_id(list2.get(i - 1).getId()).getDelay();//前一发雷管的延时
                             int delay_1 = list2.get(i - 1).getDelay();
                             int delay_2 = list2.get(i).getDelay();
                             Log.e(TAG, "delay_1: "+delay_1 );

@@ -122,6 +122,9 @@ public class GreenDaoMaster {
     public DenatorBaseinfo querylg(String gkm) {
         return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.ShellBlastNo.eq(gkm)).unique();
     }
+    public DenatorBaseinfo querylg_id(Long id) {
+        return mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.Id.eq(id)).unique();
+    }
     /**
      * 查询所有雷管
      *
