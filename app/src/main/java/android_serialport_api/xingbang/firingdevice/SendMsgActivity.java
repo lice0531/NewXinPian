@@ -276,7 +276,7 @@ public class SendMsgActivity extends BaseActivity {
         String paiStartDelay = "";
         boolean paiDiJian = false;
         for (DenatorBaseinfo denatorInfo : list_uid) {
-            QuYu quYu = master.geQuyu(denatorInfo.getPiece());
+            QuYu quYu = master.getQuyu(denatorInfo.getPiece());
             if (quYu != null) {
                 qyKongDelay = quYu.getKongDelay();
                 qyPaiDelay = quYu.getPaiDelay();

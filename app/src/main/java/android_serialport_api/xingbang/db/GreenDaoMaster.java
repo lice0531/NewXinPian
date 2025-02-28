@@ -2074,7 +2074,7 @@ public class GreenDaoMaster {
      *
      * @return
      */
-    public static QuYu geQuyu(String quyuId) {
+    public static QuYu getQuyu(String quyuId) {
 
         return getDaoSession().getQuYuDao().queryBuilder().where(QuYuDao.Properties.Qyid.eq(quyuId)).unique();
     }

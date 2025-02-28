@@ -392,7 +392,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Bundle bundle = intent.getExtras();
         mRegion = (String) bundle.get("quyuId");
         Log.e(TAG, "区域 mRegion: " + mRegion);
-        quYu_choice = GreenDaoMaster.geQuyu(mRegion);
+        quYu_choice = GreenDaoMaster.getQuyu(mRegion);
         Log.e(TAG, "区域 quYu_choice: " + quYu_choice);
 
         init();
