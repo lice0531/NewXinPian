@@ -3735,23 +3735,24 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     popupWindow.dismiss();
                     hideInputKeyboard();
                     if (checkDelay()) return;
-//                    if (isSingleReisher) {
-//                        show_Toast(getResources().getString(R.string.text_line_tip1));
-//                        btnInputOk.setEnabled(false);
-//                        btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
-//                        isSingleReisher = false;
-//                        lyXinxi.setVisibility(View.VISIBLE);
-//                        closeThread();
-//                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-//
-//                    } else {
-//                        lyXinxi.setVisibility(View.GONE);
-//                        btnInputOk.setEnabled(true);
-//                        txtCurrentIC.setTextColor(Color.BLACK);
-//                        isSingleReisher = true;
-//                        // 13 退出注册模式
-//                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
-//                    }
+                    if (isSingleReisher) {
+                        show_Toast(getResources().getString(R.string.text_line_tip1));
+                        btnInputOk.setEnabled(false);
+                        btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
+                        isSingleReisher = false;
+                        lyXinxi.setVisibility(View.VISIBLE);
+                        closeThread();
+                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+
+                    } else {
+                        lyXinxi.setVisibility(View.GONE);
+                        btnInputOk.setEnabled(true);
+                        txtCurrentIC.setTextColor(Color.BLACK);
+                        isSingleReisher = true;
+                        // 13 退出注册模式
+                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+                    }
+                    /*//单发注册雷管可导入到雷管表中  功能暂屏蔽 待后续使用
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -3781,7 +3782,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     bundle.putInt("weiChoice", mWei);
                     Log.e(TAG, "传给搜索界面delay_set: " + delay_set);
                     intent.putExtras(bundle);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 });
                 item_3.setOnClickListener(v -> {
 
