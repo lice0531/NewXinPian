@@ -1052,6 +1052,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 SoundPlayUtils.play(4);
                 show_Toast("延时不能小于0ms");
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+            } else if (msg.what == 14) {
+                SoundPlayUtils.play(4);
+                show_Toast("处于翻转状态的排不能注册,请复位后再进行注册");
             } else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
                 show_Toast("共有" + xiangHao_errNum + "盒重复");
@@ -1945,6 +1948,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      * 修改雷管延期 弹窗
      */
     private void modifyBlastBaseInfo(int no, int delay, final String shellBlastNo, final String denatorId, final int duan, final int duanNo, DenatorBaseinfo info) {
+        if(choicepaiData.getFanZhuan()==1){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.delaymodifydialog, null);
         builder.setView(view);
@@ -3043,8 +3050,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
+
+        DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
+//        Log.e(TAG, "扫码注册paiChoice: " + paiChoice);
+//        Log.e(TAG, "扫码注册kongChoice: " + kongChoice);
+//        Log.e(TAG, "扫码注册groupListChoice: " + groupListChoice);
+//        Log.e(TAG, "扫码注册childListChoice: " + childListChoice);
+//        Log.e(TAG, "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
+
+        if (childList.get(groupListChoice - 1).size() > 0) {
+            denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);//有为0的情况
+        }
+
         delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
-        if (delay_max < 0) {//
+        if (delay_max < 0&& denatorBaseinfo_choice != null&& denatorBaseinfo_choice.getShellBlastNo().length() == 13) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
             return -1;
         }
@@ -3157,16 +3176,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         //查询选中的雷管是否管壳码为空
 
 //        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().serchDenatorIdForChoice(paiChoice, kongChoice);
-        DenatorBaseinfo denatorBaseinfo_choice = null;//Index: 5, Size: 4
-        Log.e(TAG, "扫码注册paiChoice: " + paiChoice);
-        Log.e(TAG, "扫码注册kongChoice: " + kongChoice);
-        Log.e(TAG, "扫码注册groupListChoice: " + groupListChoice);
-        Log.e(TAG, "扫码注册childListChoice: " + childListChoice);
-        Log.e(TAG, "childList.get(groupListChoice - 1).size(): " + childList.get(groupListChoice - 1).size());
 
-        if (childList.get(groupListChoice - 1).size() > 0) {
-            denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);//有为0的情况
-        }
 
         if (denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() < 13) {
             flag_add = true;
@@ -3969,7 +3979,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_kong://加孔
                 if(choicepaiData.getFanZhuan()==1){
-                    show_Toast("翻转后的排不能注册,请复位后再进行注册");
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
                     return;
                 }
 
@@ -3978,7 +3988,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.btn_wei:
                 if(choicepaiData.getFanZhuan()==1){
-                    show_Toast("翻转后的排不能注册,请复位后再进行注册");
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
                     return;
                 }
                 flag_add = false;
@@ -4535,6 +4545,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (groupList.size() == 0) {
             Log.e(TAG, "扫码检测 没有排: ");
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
+            return true;
+        }
+        if(choicepaiData.getFanZhuan()==1){
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
             return true;
         }
         if (f1_delay_data.toString().equals("")) {
