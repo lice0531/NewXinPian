@@ -580,7 +580,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     public void run() {
                         updateEditState();  // 更新编辑状态
                         pb_show = 0;  // 隐藏加载框
-                        show_Toast("注册成功");  // 显示成功消息
+                        show_Toast(getResources().getString(R.string.text_zccg));  // 显示成功消息
                         mAdapter2.notifyDataSetChanged();  // 更新适配器
                     }
                 });

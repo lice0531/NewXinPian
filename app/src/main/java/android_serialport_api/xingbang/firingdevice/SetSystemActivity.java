@@ -68,6 +68,10 @@ public class SetSystemActivity extends BaseActivity {
     private int Preparation_time;//准备时间
     @BindView(R.id.et_set_qibaotime)
     EditText etSetQibaotime;
+    @BindView(R.id.set_ssqbta)
+    Button set_ssqbta;//设置手势起爆
+    @BindView(R.id.sw_shoushi)
+    SwitchButton sw_shoushi;
     private int ChongDian_time;//准备时间
     private int JianCe_time;//准备时间
     private String qiaosi_set = "";//是否检测桥丝
@@ -82,6 +86,7 @@ public class SetSystemActivity extends BaseActivity {
     private SQLiteDatabase db;
     private Handler Handler_tip = null;//提示信息
     private String TAG = "系统设置页面";
+    private String ShouShi = "";//是否打开了图形起爆功能
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +128,10 @@ public class SetSystemActivity extends BaseActivity {
         if (Qzqb.equals("是")) {
             swQzqb.setChecked(true);
         }
+        ShouShi = (String) MmkvUtils.getcode("ShouShi", "否");
+        if (ShouShi.equals("是")) {
+            sw_shoushi.setChecked(true);
+        }
         etSetQibaotime.setText(Qibaotime);
         Handler_tip = new Handler(msg -> {
             Bundle b = msg.getData();
@@ -161,7 +170,7 @@ public class SetSystemActivity extends BaseActivity {
         etSetJiancetime.setText(JianCe_time + "");
     }
 
-    @OnClick({R.id.set_languages, R.id.set_save, R.id.set_Voltage})
+    @OnClick({R.id.set_languages, R.id.set_save, R.id.set_Voltage,R.id.set_ssqbta})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.set_Voltage://设置电压
@@ -193,6 +202,10 @@ public class SetSystemActivity extends BaseActivity {
                 break;
             case R.id.set_languages://设置语言
                 SetLanguageActivity.enter(SetSystemActivity.this);
+                break;
+            case R.id.set_ssqbta:
+                Intent intent = new Intent(SetSystemActivity.this, ShouShiActivity.class);
+                startActivity(intent);
                 break;
             case R.id.set_save://保存设置
                 MessageBean message = GreenDaoMaster.getAllFromInfo_bean();
@@ -234,6 +247,12 @@ public class SetSystemActivity extends BaseActivity {
                 } else {
                     MmkvUtils.savecode("Qzqb", "否");
                     MmkvUtils.savecode("Shangchuan", "否");
+                }
+                //手势解锁
+                if (sw_shoushi.isChecked()) {
+                    MmkvUtils.savecode("ShouShi", "是");
+                } else {
+                    MmkvUtils.savecode("ShouShi", "否");
                 }
                 int flag1 = 0, flag2 = 0, flag3 = 0;
                 if (!TextUtils.isEmpty(etSetPreparation.getText())&&Integer.parseInt(etSetPreparation.getText().toString())>47) {//准备时间

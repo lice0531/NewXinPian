@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/item_data"
+        android:layout_width="95dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp">
+
+        <CheckBox
+            android:id="@+id/iv_check"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/check_itemlist"
+            android:button="@null"
+            android:visibility="invisible" />
+        <!-- 序号 -->
+        <TextView
+            android:id="@+id/tv_blastserial"
+            style="@style/alltextstyle"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:gravity="left|center_vertical"
+            android:text="@string/text_list_Serial"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <!-- 延时-->
+    <TextView
+        android:id="@+id/tv_delay"
+        style="@style/alltextstyle"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        android:text="@string/text_list_delay"
+        android:textSize="18sp" />
+    <!-- 管壳号-->
+    <TextView
+        android:id="@+id/tv_shellBlastNo"
+        style="@style/alltextstyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/a_bg_border_blue_1dp"
+        android:text="@string/text_gkm"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6"
+        android:background="@drawable/a_bg_border_blue_1dp">
+
+        <ImageView
+            android:id="@+id/iv_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/icon_xiugai" />
+    </RelativeLayout>
+
+
+</LinearLayout>

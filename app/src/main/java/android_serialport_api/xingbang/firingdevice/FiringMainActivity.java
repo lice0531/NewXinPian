@@ -76,9 +76,16 @@ import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.CommonDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
+import android_serialport_api.xingbang.utils.shoushi.PatternHelper;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
+
+import androidx.annotation.NonNull;
+
+import com.github.ihsg.patternlocker.OnPatternChangeListener;
+import com.github.ihsg.patternlocker.PatternLockerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -90,7 +97,12 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class FiringMainActivity extends SerialPortActivity {
-
+    @BindView(R.id.pattern_lock_view)
+    PatternLockerView patternLockView;
+    @BindView(R.id.textMsg)
+    TextView textMsg;
+    @BindView(R.id.ll_firing_return_7)
+    LinearLayout ll_firing_return_7;
     private Button btn_return1;
     private Button btn_return2;
     private Button btn_return4;
@@ -149,7 +161,7 @@ public class FiringMainActivity extends SerialPortActivity {
     private volatile int firstWaitCount = 3;//第一阶段计时
     private int oneCount = 0;//低压时间
     private int oneCount_panduan = 0;//低压合格次数
-    private volatile int oneCount_max = 20;
+    private volatile int oneCount_max = 20;//10发以内雷管，检测时间:低压15秒  高压20秒
     private int twoCount = 0;//高压时间
     private int twoCount_panduan = 0;//高压时间
     private volatile int sixExchangeCount = 25;//第6阶最大时间
@@ -266,6 +278,8 @@ public class FiringMainActivity extends SerialPortActivity {
     private boolean isGyError = false;//如果弹出了高压充电失败或长时间处于高压的弹窗 就不再提示电流不稳定
     private boolean isHaveError = false;//子机是否出现异常情况弹窗
     private List<Integer> qyIdList = new ArrayList<>();//用户多选的区域id
+    PatternHelper helper = new PatternHelper();
+    private String ShouShi = "";//是否打开了图形起爆功能
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -473,6 +487,48 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         });
+        //密码锁
+        patternLockView.setOnPatternChangedListener(new OnPatternChangeListener() {
+            @Override
+            public void onStart(@NonNull PatternLockerView patternLockerView) {
+                //根据需要添加业务逻辑
+            }
+
+            @Override
+            public void onChange(@NonNull PatternLockerView patternLockerView, @NonNull List<Integer> list) {
+                //根据需要添加业务逻辑
+            }
+
+            @Override
+            public void onComplete(@NonNull PatternLockerView patternLockerView, @NonNull List<Integer> list) {
+                //根据需要添加业务逻辑
+                boolean isOk = isPatternOk(list);
+                patternLockerView.updateStatus(!isOk);
+                textMsg.setText(helper.getMessage());
+                if (isOk) {
+                    increase(8);//起爆
+                    Log.e("increase", "8");
+                    keyFireCmd = 0;
+                    eightCmdExchangePower = 1;
+                }
+            }
+
+            @Override
+            public void onClear(@NonNull PatternLockerView patternLockerView) {
+                //根据需要添加业务逻辑
+//                finishIfNeeded();
+            }
+        });
+
+        if(ShouShi.equals("是")){
+            patternLockView.setVisibility(View.VISIBLE);
+            textMsg.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isPatternOk(List<Integer> list) {
+        helper.validateForChecking(list);
+        return helper.isOk();
     }
 
     private void haveErrLgNotQzqb(boolean isContinue) {
@@ -1429,6 +1485,7 @@ public class FiringMainActivity extends SerialPortActivity {
         reThirdWriteCount = 0;
         totalerrorNum = 0;
         errorNumJl = 0;
+        oneCount_max = (denatorCount <= 10) ? 15 : 20;
     }
 
     private void getUserMessage() {
@@ -1714,6 +1771,9 @@ public class FiringMainActivity extends SerialPortActivity {
         tv__qb_dianliu_2.setText(denatorCount * cankaodianliu + "μA");
         if (denatorCount <= 200) {
             gaoya_cankaoSun = 25;
+            if (denatorCount <= 10) {
+                sixExchangeCount = 20;
+            }
         } else if (  denatorCount < 300) {
             gaoya_cankaoSun = 30;
             sixExchangeCount = 30;
@@ -2200,9 +2260,9 @@ public class FiringMainActivity extends SerialPortActivity {
             //获取起爆时间,中爆上传用到了时间,会根据日期截取对应的位数,如果修改日期格式,要同时修改中爆上传方法
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
-            //批量更新区域状态为已起爆
-            GreenDaoMaster master =  new GreenDaoMaster();
-            master.updateQyQbStataus(qyIdList);
+            //批量更新区域状态为已起爆   该功能屏蔽暂时不做了
+//            GreenDaoMaster master =  new GreenDaoMaster();
+//            master.updateQyQbStataus(qyIdList);
             AppLogUtils.writeAppLog("34已返回,生成起爆历史记录");
 //            saveFireResult_All();
             if (!qbxm_id.equals("-1")) {
@@ -2303,7 +2363,7 @@ public class FiringMainActivity extends SerialPortActivity {
             //处理返回的起爆模式命令
 //            secondCmdFlag = 1;
 //            thirdWriteCount = 0;
-//            increase(3);w
+//            increase(3);
 //            firstThread.exit=false;
 //            firstThread.run();
 //            increase(5);
@@ -2923,7 +2983,7 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (oneCount >= oneCount_max && secondCmdFlag == 0) {//
                                 if (list_dianliu.size() > 5 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) < 20 && list_dianliu.get(list_dianliu.size() - 1) - list_dianliu.get(list_dianliu.size() - 5) > -20) {
                                     oneCount_panduan++;
-                                    Log.e(TAG, "oneCount_panduan: "+oneCount_panduan );
+                                    Log.e(TAG, "oneCount_max:" + oneCount_max + "--oneCount_panduan: "+oneCount_panduan );
                                     if(oneCount_panduan>=5){
                                         cankao_ic_diya = busInfo.getBusCurrentIa();//低压参考电流值
                                         byte[] powerCmd = ThreeFiringCmd.setToXbCommon_FiringExchange("00");//0038充电
@@ -3122,7 +3182,8 @@ public class FiringMainActivity extends SerialPortActivity {
                                 secondCmdFlag = 1;
                                 thirdWriteCount = 0;
                                 increase(3);
-                                Log.e("第3阶段-increase", "3");
+                                Log.e("第3阶段-increase", "3--oneCount:" + oneCount
+                                + "--oneCount_max:" + oneCount_max);
                             }
                             oneCount++;
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());

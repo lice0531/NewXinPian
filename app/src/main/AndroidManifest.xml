@@ -147,6 +147,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- 自检页面 -->
         <activity
+            android:name=".firingdevice.ShouShiActivity"
+            android:exported="false"
+            android:label="@string/ssqbtx"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".firingdevice.SingleRegisterActivity"
+            android:exported="false"
+            android:label="@string/text_singleReister"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".firingdevice.ZiJianActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"

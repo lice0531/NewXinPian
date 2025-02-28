@@ -628,6 +628,7 @@
     <string name="set_qzqb">是否强制起爆</string>
     <string name="set_shouquan">是否验证雷管已经授权</string>
     <string name="set_cdfj">是否开启充电复检功能</string>
+    <string name="set_dktxqb">是否打开图形起爆功能</string>
     <string name="set_cdzdsj">设置充电最大时间/s</string>
     <string name="set_ddqbsj">设置1+3组合键后的起爆等待时间/s</string>
     <string name="set_cxss">程序设置</string>
@@ -1069,4 +1070,12 @@
     <string name="text_dialog_zsclg">只删除雷管</string>
     <string name="text_dialog_qbsc">全部删除</string>
     <string name="text_qwcfdj">请勿重复点击，稍等2秒</string>
+    <string name="scqbmm">请输入起爆用户名和密码!</string>
+    <string name="ssqbta">设置手势起爆图案</string>
+    <string name="ssqbtx">设置起爆图形</string>
+    <string name="sytaqb">使用设置的图案起爆</string>
+    <string name="drzclb">导入注册列表</string>
+    <string name="text_line_pd">偏大</string>
+    <string name="text_jczxlg">检测在线雷管</string>
+    <string name="text_tzjc">停止检测</string>
 </resources>

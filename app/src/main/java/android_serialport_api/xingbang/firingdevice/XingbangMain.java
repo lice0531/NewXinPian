@@ -68,6 +68,7 @@ import android_serialport_api.xingbang.cmd.ThreeFiringCmd;
 import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.custom.ErrShouQuanListAdapter;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
@@ -947,22 +948,14 @@ public class XingbangMain extends SerialPortActivity {
                         return;
                     }
                 }
-
-                String str5 = "起爆";
-                Log.e("验证2", "Yanzheng: " + Yanzheng);
-                Intent intent5;//金建华
-//                if (Yanzheng.equals("验证")) {
-//                    //Intent intent5 = new Intent(XingbangMain.this, XingBangApproveActivity.class);//人脸识别环节
-//                    intent5 = new Intent(this, VerificationActivity.class);
-//                } else {
-//                    Log.e(TAG, "验证2: "+Yanzheng_sq);
-                    intent5 = new Intent(this, FiringMainActivity.class);
-//                    intent5 = new Intent(this, QuYuActivity.class);
-//                    intent5.putExtra("pageFlag","firingMain");
-//                }
+                GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
+                List<UserMain> userMainList = master.queryAllUser();
+                if (userMainList.size() != 0) {
+                    loginToFiring();
+                } else {
+                    toFiring();
+                }
                 close();//停止访问电流
-                intent5.putExtra("dataSend", str5);
-                startActivityForResult(intent5, 1);
                 break;
 
             case R.id.btn_main_query://查看
@@ -995,6 +988,69 @@ public class XingbangMain extends SerialPortActivity {
                 exit();//退出方法
                 break;
         }
+    }
+
+    private void loginToFiring() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(XingbangMain.this);
+        //  builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("请输入起爆用户名和密码!");//"请输入用户名和密码"
+        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+        View view = LayoutInflater.from(XingbangMain.this).inflate(R.layout.userlogindialog, null);
+        //    设置我们自己定义的布局文件作为弹出框的Content
+        builder.setView(view);
+        final EditText username = (EditText) view.findViewById(R.id.username);
+        final EditText password = (EditText) view.findViewById(R.id.password);
+        username.setInputType(InputType.TYPE_CLASS_TEXT);
+        // username.setText("xingbang");
+        username.setFocusable(true);
+        username.setFocusableInTouchMode(true);
+        username.requestFocus();
+        username.findFocus();
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String a = username.getText().toString().trim();
+            String b = password.getText().toString().trim();
+            if (a.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_username));
+//                    dialogOn(dialog);//取消按钮不可点击
+                return;
+            }
+            if (b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                return;
+            }
+            GreenDaoMaster master = new GreenDaoMaster();
+            List<UserMain> userMainList = master.queryUser(a);
+            if (userMainList.size() == 0) {
+                show_Toast("用户名为空");
+            } else {
+                if (b.equals(userMainList.get(0).getUpassword())) {
+                    toFiring();
+                    dialog.dismiss();
+                    dialogOFF(dialog);
+                } else {
+                    show_Toast("密码错误");
+                    dialogOn(dialog);
+                }
+            }
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
+    private void toFiring() {
+        String str5 = "起爆";
+        Intent intent5;//金建华
+//        if (Yanzheng.equals("验证")) {
+//            intent5 = new Intent(this, VerificationActivity.class);
+//        } else {
+            intent5 = new Intent(this, FiringMainActivity.class);
+//        }
+        intent5.putExtra("dataSend", str5);
+        startActivityForResult(intent5, 1);
     }
 
     //关于项目的校验：是否新增项目 是否有使用中的项目
@@ -1350,21 +1406,20 @@ public class XingbangMain extends SerialPortActivity {
                 })
                 .setNegativeButton(getString(R.string.text_firing_jixu), (dialog2, which) -> {
                     dialog2.dismiss();
-                    Intent intent5;//金建华
                     close();//停止访问电流
                     if (str5.equals("组网")) {
-                        intent5 = new Intent(this, TestDenatorActivity.class);
+                        Intent intent5 = new Intent(this, TestDenatorActivity.class);
+                        intent5.putExtra("dataSend", str5);
+                        startActivityForResult(intent5, 1);
                     } else {
-                        Log.e("验证2", "Yanzheng: " + Yanzheng);
-//                        if (Yanzheng.equals("验证")) {
-//                            intent5 = new Intent(this, VerificationActivity.class);
-//                        } else {
-                            intent5 = new Intent(this, FiringMainActivity.class);
-//                        }
+                        GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
+                        List<UserMain> userMainList = master.queryAllUser();
+                        if(userMainList.size() != 0){
+                            loginToFiring();
+                        }else {
+                            toFiring();
+                        }
                     }
-
-                    intent5.putExtra("dataSend", str5);
-                    startActivityForResult(intent5, 1);
                     mOffTime.cancel();
                 })
                 .create();

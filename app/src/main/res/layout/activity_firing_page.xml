@@ -816,20 +816,35 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
             android:gravity="center"
             android:orientation="vertical">
-
             <TextView
                 android:id="@+id/ll_txt_firing_7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 style="@style/alltextstyle"
+                android:layout_width="wrap_content"
+                android:layout_height="75dp"
                 android:text="@string/text_firing_tip5"
-                android:textSize="30sp" />
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/textMsg"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/sytaqb"
+                style="@style/alltextstyle"
+                />
+
+            <com.github.ihsg.patternlocker.PatternLockerView
+                android:visibility="gone"
+                android:id="@+id/pattern_lock_view"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                />
+
             <Button
                 android:visibility="gone"
                 android:id="@+id/btn_fir"
@@ -841,9 +856,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_firing_return_7"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:divider="@drawable/spacer_medium"
             android:gravity="center"
             android:showDividers="middle">

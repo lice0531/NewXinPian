@@ -2,7 +2,7 @@
 <litepal>
     <dbname value="denatorSys" />
 
-    <version value="30" />
+    <version value="31" />
 
     <list>
         <mapping class="com.android_serialport_api.xingbang.db.denatorBaseinfo"/>
@@ -17,6 +17,8 @@
         <mapping class="com.android_serialport_api.xingbang.db.ShouQuan"/>
         <mapping class="com.android_serialport_api.xingbang.db.Project"/>
         <mapping class="com.android_serialport_api.xingbang.db.Message"/>
+        <mapping class="com.android_serialport_api.xingbang.db.SingleRegisterDenator"/>
+
     </list>
 
     <!--

@@ -14,10 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +56,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.models.VoBlastModel;
@@ -399,7 +402,18 @@ public class TestDenatorActivity extends SerialPortActivity {
                 isSerialPortClosed = true;
             }
         }).start();
+        GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
+        List<UserMain> userMainList = master.queryAllUser();
+        if (userMainList.size() != 0) {
+            loginToFiring();
+        } else {
+            toFiring();
+        }
+    }
+
+    private void toFiring() {
         finish();
+        String Yanzheng = (String) MmkvUtils.getcode("Yanzheng", "验证");//是否验证地理位置
         String str5 = "起爆";
         Log.e("验证2", "Yanzheng: " + Yanzheng);
         Intent intent;//金建华
@@ -408,10 +422,59 @@ public class TestDenatorActivity extends SerialPortActivity {
 //            intent = new Intent(TestDenatorActivity.this, VerificationActivity.class);
 //        } else {
             intent = new Intent(TestDenatorActivity.this, FiringMainActivity.class);
-//            intent.putIntegerArrayListExtra("qyList",qyIdList);
 //        }
         intent.putExtra("dataSend", str5);
         startActivity(intent);
+    }
+    private void loginToFiring() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TestDenatorActivity.this);
+        //  builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("请输入起爆用户名和密码!");//"请输入用户名和密码"
+        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+        View view = LayoutInflater.from(TestDenatorActivity.this).inflate(R.layout.userlogindialog, null);
+        //    设置我们自己定义的布局文件作为弹出框的Content
+        builder.setView(view);
+        final EditText username = (EditText) view.findViewById(R.id.username);
+        final EditText password = (EditText) view.findViewById(R.id.password);
+        username.setInputType(InputType.TYPE_CLASS_TEXT);
+        // username.setText("xingbang");
+        username.setFocusable(true);
+        username.setFocusableInTouchMode(true);
+        username.requestFocus();
+        username.findFocus();
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String a = username.getText().toString().trim();
+            String b = password.getText().toString().trim();
+            if (a.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_username));
+//                    dialogOn(dialog);//取消按钮不可点击
+                return;
+            }
+            if (b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                return;
+            }
+            GreenDaoMaster master = new GreenDaoMaster();
+            List<UserMain> userMainList = master.queryUser(a);
+            if (userMainList.size() == 0) {
+                show_Toast(getString(R.string.text_main_yhmcw));
+            } else {
+                if (b.equals(userMainList.get(0).getUpassword())) {
+                    toFiring();
+                    dialog.dismiss();
+                    dialogOFF(dialog);
+                } else {
+                    show_Toast(getString(R.string.text_main_mmcw));
+                    dialogOn(dialog);
+                }
+            }
+        });
+        builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialogOFF(dialog);
+            dialog.dismiss();
+        });
+        builder.show();
     }
 
     private void getDenatorType() {
