@@ -371,7 +371,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private boolean flag_add = true;//是否加排或孔
     private boolean flag_saoma = false;//是否加排或孔
     private boolean flag_delete = true;//是否删除
-
+    private boolean isSerialPortClosed = false;//是否已关闭串口
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -3735,23 +3735,53 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     popupWindow.dismiss();
                     hideInputKeyboard();
                     if (checkDelay()) return;
-                    if (isSingleReisher) {
-                        show_Toast(getResources().getString(R.string.text_line_tip1));
-                        btnInputOk.setEnabled(false);
-                        btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
-                        isSingleReisher = false;
-                        lyXinxi.setVisibility(View.VISIBLE);
-                        closeThread();
-                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-
-                    } else {
-                        lyXinxi.setVisibility(View.GONE);
-                        btnInputOk.setEnabled(true);
-                        txtCurrentIC.setTextColor(Color.BLACK);
-                        isSingleReisher = true;
-                        // 13 退出注册模式
-                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+//                    if (isSingleReisher) {
+//                        show_Toast(getResources().getString(R.string.text_line_tip1));
+//                        btnInputOk.setEnabled(false);
+//                        btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
+//                        isSingleReisher = false;
+//                        lyXinxi.setVisibility(View.VISIBLE);
+//                        closeThread();
+//                        sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+//
+//                    } else {
+//                        lyXinxi.setVisibility(View.GONE);
+//                        btnInputOk.setEnabled(true);
+//                        txtCurrentIC.setTextColor(Color.BLACK);
+//                        isSingleReisher = true;
+//                        // 13 退出注册模式
+//                        sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+//                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mApplication.closeSerialPort();
+                            Log.e(TAG, "调用mApplication.closeSerialPort()开始关闭串口了。。");
+                            mSerialPort = null;
+                            isSerialPortClosed = true;
+                        }
+                    }).start();
+                    int mKong = 0;
+                    int mWei = 0;
+                    //防止当前排没数据时 授权注册崩溃问题
+                    if (childListChoice > 0 && childList.get(groupListChoice - 1).size() > 0) {
+                        mKong = childList.get(groupListChoice - 1).get(childListChoice - 1).getBlastserial();
+                        mWei = childList.get(groupListChoice - 1).get(childListChoice - 1).getDuanNo();
                     }
+                    Intent intent = new Intent(this, SingleRegisterActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("paiChoice", paiChoice);//用来判断是否需要展示注册功能
+                    bundle.putInt("kongChoice", mKong);//用来判断是否需要展示注册功能
+                    bundle.putString("mRegion", mRegion);//用来判断是否需要展示注册功能
+                    bundle.putBoolean("flag_jh_f1", flag_jh_f1);
+                    bundle.putBoolean("flag_jh_f2", flag_jh_f2);
+                    bundle.putBoolean("btn_start", btn_start);
+                    bundle.putBoolean("flag_tk", flag_tk);
+                    bundle.putString("delay_set", delay_set);
+                    bundle.putInt("weiChoice", mWei);
+                    Log.e(TAG, "传给搜索界面delay_set: " + delay_set);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 });
                 item_3.setOnClickListener(v -> {
 

@@ -22,7 +22,6 @@ import java.util.Set;
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.custom.DenatorBaseinfoSelect;
 import android_serialport_api.xingbang.custom.PaiDataSelect;
-import android_serialport_api.xingbang.custom.QuYuData;
 import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfo_allDao;
@@ -36,12 +35,12 @@ import android_serialport_api.xingbang.db.greenDao.PaiDataDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.SingleRegisterDenatorDao;
 import android_serialport_api.xingbang.db.greenDao.SysLogDao;
+import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
-import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
-import android_serialport_api.xingbang.utils.Utils;
 
 /**
  * 管理GreenDao查询语句
@@ -62,6 +61,8 @@ public class GreenDaoMaster {
     private DenatorHis_MainDao denatorHis_mainDao;
     private SysLogDao sysLogDao;
     private ErrLogDao errLogDao;
+    private UserMainDao mUserDao;
+    private SingleRegisterDenatorDao mSingleRegisterDao;
 
     public GreenDaoMaster() {
         this.mDefactoryDao = Application.getDaoSession().getDefactoryDao();
@@ -77,6 +78,8 @@ public class GreenDaoMaster {
         this.paiDataDao = Application.getDaoSession().getPaiDataDao();
         this.sysLogDao = Application.getDaoSession().getSysLogDao();
         this.errLogDao = Application.getDaoSession().getErrLogDao();
+        this.mUserDao = Application.getDaoSession().getUserMainDao();
+        this.mSingleRegisterDao = Application.getDaoSession().getSingleRegisterDenatorDao();
     }
 
 
@@ -409,6 +412,26 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 查询单发注册列表中的重复芯片码
+     */
+    public List<SingleRegisterDenator> checkRepeatSrDenatorId(String detonatorId) {
+        return mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.DetonatorId.like("%" + detonatorId))
+                .list();//0209为李斌改的不用4字节的首字节进行的模糊查询
+    }
+
+    /**
+     * 查询单发注册列表中的重复雷管
+     */
+    public List<SingleRegisterDenator> checkRepeatSrShellNo(String ShellBlastNo) {
+        return mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.ShellBlastNo.eq(ShellBlastNo))
+                .list();
+    }
+
+    /**
      * 查询注册列表中的重复雷管
      */
     public List<DenatorBaseinfo> checkRepeatShellNo(String ShellBlastNo) {
@@ -663,6 +686,22 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 修改单发注册雷管表中当前雷管的延时
+     *
+     * @param shell 管壳号
+     * @param delay 延时
+     */
+    public void updateSrDetonatorDelay(String shell, int delay) {
+        SingleRegisterDenator entity = mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.ShellBlastNo.eq(shell))
+                .build()
+                .unique();
+        entity.setDelay(delay);
+        mSingleRegisterDao.update(entity);
+    }
+
+    /**
      * 修改雷管延时
      *
      * @param db 雷管信息
@@ -722,6 +761,17 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 删除单发注册雷管表中某一发雷管
+     */
+    public void deleteSrDetonator(String shell) {
+        SingleRegisterDenator entity = mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.ShellBlastNo.eq(shell))
+                .unique();
+        mSingleRegisterDao.delete(entity);
+    }
+
+    /**
      * 删除某一发雷管
      */
     public void deleteDetonator(long id) {
@@ -732,6 +782,16 @@ public class GreenDaoMaster {
         mDeantorBaseDao.delete(entity);
     }
 
+    /**
+     * 删除单发注册表中某一发雷管
+     */
+    public void deleteSrDetonator(long id) {
+        SingleRegisterDenator entity = mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.Id.eq(id))
+                .unique();
+        mSingleRegisterDao.delete(entity);
+    }
 
     /**
      * 查询全部雷管 正序(序号)
@@ -853,6 +913,30 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 查询单发注册雷管表中的雷管数据  倒序(序号)
+     *
+     */
+    public List<SingleRegisterDenator> querySrDetonatorAllDesc() {
+        return mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.ShellBlastNo.notEq(""))
+                .orderDesc(SingleRegisterDenatorDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
+     * 查询单发注册雷管表中的雷管数据  正序(序号)
+     *
+     */
+    public List<SingleRegisterDenator> querySrDetonatorAllAsc() {
+        return mSingleRegisterDao
+                .queryBuilder()
+                .where(SingleRegisterDenatorDao.Properties.ShellBlastNo.notEq(""))
+                .orderAsc(SingleRegisterDenatorDao.Properties.Blastserial)
+                .list();
+    }
+
+    /**
      * 查询雷管 按组网区域倒序(序号)
      * 空雷管不计入总数
      * @param piece 区域号 1 2 3 4 5
@@ -947,6 +1031,27 @@ public class GreenDaoMaster {
             // 如果没数据
         } else {
             Log.e("getPieceMaxNum", "获取最大序号: 0");
+            return 0;
+        }
+    }
+
+    /**
+     * 获取 单发注册雷管表中的最大序号
+     *
+     */
+    public int getSrDenatorMaxNum() {
+        // 倒叙查询
+        List<SingleRegisterDenator> mList = querySrDetonatorAllDesc();
+
+        // 如果有数据
+        if (mList.size() > 0) {
+            // 第一个雷管数据是最大序号
+            int num = mList.get(0).getBlastserial();
+            Log.e("单发注册雷管表getPieceMaxNum", "获取最大序号: " + num);
+            return num;
+            // 如果没数据
+        } else {
+            Log.e("单发注册雷管表getPieceMaxNum", "获取最大序号: 0");
             return 0;
         }
     }
@@ -1508,6 +1613,17 @@ public class GreenDaoMaster {
                 .orderDesc(DetonatorTypeNewDao.Properties.Id)
                 .list();
     }
+
+    /**
+     * 查询生产库中雷管
+     */
+    public List<SingleRegisterDenator> querySrDetonatorAll() {
+        return mSingleRegisterDao
+                .queryBuilder()
+                .orderDesc(SingleRegisterDenatorDao.Properties.Id)
+                .list();
+    }
+
     public List<DetonatorTypeNew> queryDetonatorShouQuan(String sqrq) {
         return detonatorTypeNewDao
                 .queryBuilder()
@@ -2474,5 +2590,23 @@ public class GreenDaoMaster {
         }
         // 批量保存更新后的记录
         quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
+    }
+
+    public List<UserMain> queryAllUser() {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        return result.list();
+    }
+
+    public List<UserMain> queryUser(String name) {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        result = result.where(UserMainDao.Properties.Uname.eq(name));
+        return result.list();
+    }
+
+    public UserMain queryUser(String name,String password) {
+        QueryBuilder<UserMain> result = mUserDao.queryBuilder();
+        UserMain userMain = result.where(UserMainDao.Properties.Uname.eq(name))
+                .where(UserMainDao.Properties.Upassword.eq(password)).unique();
+        return userMain;
     }
 }

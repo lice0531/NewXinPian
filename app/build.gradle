@@ -126,10 +126,12 @@ dependencies {
     //RecyclerView适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
     implementation 'com.github.ForgetAll:LoadingDialog:v1.1.2'
+    //手势解锁
+    implementation 'com.github.ihsg:PatternLocker:2.5.4'
 }
 
 greendao {
-    schemaVersion 30 //数据库版本号
+    schemaVersion 31 //数据库版本号
     targetGenDir 'src/main/java'
     // 设置DaoMaster、DaoSession、Dao 包名
     daoPackage 'android_serialport_api.xingbang.db.greenDao'

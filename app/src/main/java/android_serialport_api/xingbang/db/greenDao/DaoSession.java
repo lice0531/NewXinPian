@@ -23,6 +23,7 @@ import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.db.ShouQuan;
+import android_serialport_api.xingbang.db.SingleRegisterDenator;
 import android_serialport_api.xingbang.db.SysLog;
 import android_serialport_api.xingbang.db.Temporary_database;
 import android_serialport_api.xingbang.db.UserMain;
@@ -42,6 +43,7 @@ import android_serialport_api.xingbang.db.greenDao.PaiDataDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.QuYuDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.SingleRegisterDenatorDao;
 import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.db.greenDao.Temporary_databaseDao;
 import android_serialport_api.xingbang.db.greenDao.UserMainDao;
@@ -70,6 +72,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig projectDaoConfig;
     private final DaoConfig quYuDaoConfig;
     private final DaoConfig shouQuanDaoConfig;
+    private final DaoConfig singleRegisterDenatorDaoConfig;
     private final DaoConfig sysLogDaoConfig;
     private final DaoConfig temporary_databaseDaoConfig;
     private final DaoConfig userMainDaoConfig;
@@ -89,6 +92,7 @@ public class DaoSession extends AbstractDaoSession {
     private final ProjectDao projectDao;
     private final QuYuDao quYuDao;
     private final ShouQuanDao shouQuanDao;
+    private final SingleRegisterDenatorDao singleRegisterDenatorDao;
     private final SysLogDao sysLogDao;
     private final Temporary_databaseDao temporary_databaseDao;
     private final UserMainDao userMainDao;
@@ -142,6 +146,9 @@ public class DaoSession extends AbstractDaoSession {
         shouQuanDaoConfig = daoConfigMap.get(ShouQuanDao.class).clone();
         shouQuanDaoConfig.initIdentityScope(type);
 
+        singleRegisterDenatorDaoConfig = daoConfigMap.get(SingleRegisterDenatorDao.class).clone();
+        singleRegisterDenatorDaoConfig.initIdentityScope(type);
+
         sysLogDaoConfig = daoConfigMap.get(SysLogDao.class).clone();
         sysLogDaoConfig.initIdentityScope(type);
 
@@ -166,6 +173,7 @@ public class DaoSession extends AbstractDaoSession {
         projectDao = new ProjectDao(projectDaoConfig, this);
         quYuDao = new QuYuDao(quYuDaoConfig, this);
         shouQuanDao = new ShouQuanDao(shouQuanDaoConfig, this);
+        singleRegisterDenatorDao = new SingleRegisterDenatorDao(singleRegisterDenatorDaoConfig, this);
         sysLogDao = new SysLogDao(sysLogDaoConfig, this);
         temporary_databaseDao = new Temporary_databaseDao(temporary_databaseDaoConfig, this);
         userMainDao = new UserMainDao(userMainDaoConfig, this);
@@ -185,6 +193,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(Project.class, projectDao);
         registerDao(QuYu.class, quYuDao);
         registerDao(ShouQuan.class, shouQuanDao);
+        registerDao(SingleRegisterDenator.class, singleRegisterDenatorDao);
         registerDao(SysLog.class, sysLogDao);
         registerDao(Temporary_database.class, temporary_databaseDao);
         registerDao(UserMain.class, userMainDao);
@@ -206,6 +215,7 @@ public class DaoSession extends AbstractDaoSession {
         projectDaoConfig.clearIdentityScope();
         quYuDaoConfig.clearIdentityScope();
         shouQuanDaoConfig.clearIdentityScope();
+        singleRegisterDenatorDaoConfig.clearIdentityScope();
         sysLogDaoConfig.clearIdentityScope();
         temporary_databaseDaoConfig.clearIdentityScope();
         userMainDaoConfig.clearIdentityScope();
@@ -269,6 +279,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ShouQuanDao getShouQuanDao() {
         return shouQuanDao;
+    }
+
+    public SingleRegisterDenatorDao getSingleRegisterDenatorDao() {
+        return singleRegisterDenatorDao;
     }
 
     public SysLogDao getSysLogDao() {

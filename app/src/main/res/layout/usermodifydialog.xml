@@ -3,18 +3,23 @@
     android:layout_width="match_parent"
     android:background="#ffffff"
     android:layout_height="match_parent" >
-    
-    <EditText 
+
+    <EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/text_user_username"/>
-    
+        android:hint="用户名"/>
+    <EditText
+        android:id="@+id/password_old"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
+        android:hint="旧密码"/>
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/username"
-        android:hint="@string/text_user_password"/>
+        android:layout_below="@id/password_old"
+        android:hint="新密码"/>
 
 </RelativeLayout>
