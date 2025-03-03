@@ -1292,6 +1292,7 @@ public class Utils {
         date = Utils.getyyMMddHHmmssToDateFormat(date);
         if ((server_type != null && "2".equals(server_type.trim()))) {//中爆网
             String rev = netParamCheck(1, pro_bprysfz, pro_htid, pro_xmbh, pro_coordxy, server_type, equ_no, serverIpStr, server_portStr, server_httpStr, hisInsertFireDate);
+            Log.e("中爆上传", "rev: "+rev );
             if (rev != null) {
                 showToast(context, "上传数据设置错误！1-" + rev, 3000);
                 return "1";
