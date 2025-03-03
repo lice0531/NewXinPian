@@ -1883,6 +1883,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             tvTitle.setText("请输入密码后,再进行删除授权操作");
                             builder.setView(view);
                             final EditText password = view.findViewById(R.id.password);
+                            password.setHint(getResources().getString(R.string.text_mmts));
                             builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -2487,6 +2488,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                             tvTitle.setText(getResources().getString(R.string.text_his_qksqjl));
                             builder.setView(v);
                             final EditText password = v.findViewById(R.id.password);
+                            password.setHint(getResources().getString(R.string.text_mmts));
                             builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

@@ -90,6 +90,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
+            android:visibility="gone"
             android:textSize="18sp"
             android:textStyle="bold"
             android:text="删除" />

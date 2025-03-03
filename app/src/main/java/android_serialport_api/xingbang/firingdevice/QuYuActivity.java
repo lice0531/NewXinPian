@@ -331,7 +331,7 @@ public class QuYuActivity extends BaseActivity {
                             GreenDaoMaster master = new GreenDaoMaster();
                             master.deleteQuYuForId(data.getQyid());
                             master.deletePaiFroPiace(data.getQyid() + "");
-                            master.deleteLeiGuanFroPiace(data.getQyid() + "");
+                            master.deleteLeiGuanFroPiece(data.getQyid() + "");
                         }
                     }
                     show_Toast("删除成功");

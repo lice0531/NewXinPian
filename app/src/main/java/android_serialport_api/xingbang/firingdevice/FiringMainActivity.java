@@ -323,6 +323,7 @@ public class FiringMainActivity extends SerialPortActivity {
         AppLogUtils.writeAppXBLog("起爆倒计时elevenCount:" + elevenCount);
         startFlag = 1;
         qyIdList = new GreenDaoMaster().getSelectedQyIdList();
+        ShouShi = (String) MmkvUtils.getcode("ShouShi", "否");
         initParam();//重置参数
         initView();
         initHandle();
@@ -1822,12 +1823,6 @@ public class FiringMainActivity extends SerialPortActivity {
     }
 
 
-    private void updateQyQbStatus() {
-
-    }
-
-
-
     /**
      * 保存起爆数据
      */
@@ -2261,8 +2256,8 @@ public class FiringMainActivity extends SerialPortActivity {
             hisInsertFireDate = Utils.getDateFormatLong(new Date());//记录的起爆时间(可以放到更新ui之后,这样会显得快一点)
             saveFireResult();
             //批量更新区域状态为已起爆   该功能屏蔽暂时不做了
-//            GreenDaoMaster master =  new GreenDaoMaster();
-//            master.updateQyQbStataus(qyIdList);
+            GreenDaoMaster master =  new GreenDaoMaster();
+            master.updateQyQbStataus(qyIdList);
             AppLogUtils.writeAppLog("34已返回,生成起爆历史记录");
 //            saveFireResult_All();
             if (!qbxm_id.equals("-1")) {
