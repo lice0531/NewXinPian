@@ -294,7 +294,7 @@ public class GreenDaoMaster {
     /**
      * 根据区域删除所有雷管
      */
-    public void deleteLeiGuanFroPiace(String piece) {
+    public void deleteLeiGuanFroPiece(String piece) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         result.where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .buildDelete()
@@ -813,7 +813,7 @@ public class GreenDaoMaster {
 
 
     /**
-     * 查询雷管 按区域、排正序排列
+     * 查询雷管 按区域、排、序号正序排列
      *
      * @param piece 区域号 1 2 3 4 5
      */
@@ -822,18 +822,20 @@ public class GreenDaoMaster {
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
-                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai)
+                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai,
+                        DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
 
     /**
-     * 查询ShellBlastNo不为空的所有雷管  按区域、排正序排列
+     * 查询ShellBlastNo不为空的所有雷管  按区域、排、序号正序排列
      */
     public List<DenatorBaseinfo> queryAllDetonator() {
         return mDeantorBaseDao
                 .queryBuilder()
                 .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
-                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai)
+                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai,
+                        DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
 
@@ -2634,6 +2636,22 @@ public class GreenDaoMaster {
         // 批量保存更新后的记录
         quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
     }
+
+    /**
+     * 根据区域id更新已起爆的区域状态为true
+     * @param idList
+     */
+    public void setQyZwStataus(List<Integer> idList,String zwStatus) {
+        // 执行批量更新
+        List<QuYu> quYuList = quyuDao.queryBuilder().where(QuYuDao.Properties.Qyid.in(idList)).list();  // 获取符合条件的记录
+        // 遍历并更新每条记录的isQb字段
+        for (QuYu quYu : quYuList) {
+            quYu.setSelected(zwStatus);
+        }
+        // 批量保存更新后的记录
+        quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
+    }
+
 
     public List<UserMain> queryAllUser() {
         QueryBuilder<UserMain> result = mUserDao.queryBuilder();

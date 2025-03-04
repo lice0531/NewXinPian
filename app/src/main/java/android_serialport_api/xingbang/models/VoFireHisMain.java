@@ -18,7 +18,16 @@ public class VoFireHisMain {
 	private String dwdm;//单位代码
 	private String xmbh;//项目编号
 	private String log;//日志
+	private boolean select = false;//多选删除历史记录时使用该字段  记录当前记录表是否被选中
 
+
+	public boolean isSelect() {
+		return select;
+	}
+
+	public void setSelect(boolean select) {
+		this.select = select;
+	}
 	public String getProjectName() {
 		return projectName;
 	}

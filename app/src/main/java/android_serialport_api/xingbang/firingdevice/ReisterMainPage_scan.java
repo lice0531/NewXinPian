@@ -1024,7 +1024,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             choicepaiData.setSum(total2 + "");//
                             choicepaiData.setDelayMin(delay_minNum_new + "");
                             choicepaiData.setDelayMax(delay_max_new + "");
-
+                            Log.e("更新排延时","注册页面1007--min:" + delay_minNum_new +
+                                    "--max:" + delay_max_new);
                             getDaoSession().getPaiDataDao().update(choicepaiData);
                         }
                     }
@@ -4099,7 +4100,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 if (paiChoice == 0) {
                     paiChoice = 1;
                 }
-                creatPai();
+                createPai();
                 break;
             case R.id.btn_kong://加孔
                 if (choicepaiData.getFanZhuan() == 1) {
@@ -4532,7 +4533,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         }
     }
 
-    private void creatPai() {
+    private void createPai() {
 
         myDialog = new MyAlertDialog(this).builder();
         int maxPai = new GreenDaoMaster().getMaxPaiId(mRegion);

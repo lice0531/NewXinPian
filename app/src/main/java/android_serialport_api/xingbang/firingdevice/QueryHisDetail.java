@@ -57,7 +57,6 @@ import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
-import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
@@ -82,7 +81,7 @@ import okhttp3.Response;
 import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 
 /**
  * 查看历史记录
@@ -99,6 +98,14 @@ public class QueryHisDetail extends BaseActivity {
     RecyclerView denatorQueryHisListview;
     @BindView(R.id.denator_del_mainpage)
     LinearLayout denatorDelMainpage;
+    @BindView(R.id.lay_bottom)
+    LinearLayout layBottom;
+    @BindView(R.id.tv_input)
+    TextView tv_input;
+    @BindView(R.id.tv_check_all)
+    TextView tv_check_all;
+    @BindView(R.id.tv_cancel)
+    TextView tv_cancel;
     private List<VoFireHisMain> list_savedate = new ArrayList<>();
     private int totalNum;//总的数据条数
     private int pageSize = 600;//每页显示的数据
@@ -166,8 +173,28 @@ public class QueryHisDetail extends BaseActivity {
         // 线性布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         denatorQueryHisListview.setLayoutManager(linearLayoutManager);
-        hisAdapter = new LoadHisDetailRecyclerAdapter(this, list_savedate,Shangchuan);
+        hisAdapter = new LoadHisDetailRecyclerAdapter(R.layout.item_query_his,list_savedate);
         denatorQueryHisListview.setAdapter(hisAdapter);
+        hisAdapter.setStatus(this,Shangchuan);
+        hisAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                layBottom.setVisibility(View.VISIBLE);
+                hisAdapter.showCheckBox(true);
+                return true;
+            }
+        });
+        hisAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                VoFireHisMain vo = list_savedate.get(position);
+                if (vo != null) {
+                    createDialog(vo);//
+                } else {
+                    show_Toast(getString(R.string.text_error_tip54));
+                }
+            }
+        });
         hisAdapter.setOnItemClickListener(new LoadHisDetailRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onButtonClicked(View v, int position) {
@@ -177,17 +204,17 @@ public class QueryHisDetail extends BaseActivity {
                             show_Toast(getResources().getString(R.string.text_jcwl));
                             return;
                         }
-                        int pos = (Integer) v.getTag(R.id.bt_upload);//位置
-                        String blastdate = list_savedate.get(pos).getBlastdate();//日期
-                        String htbh = list_savedate.get(pos).getProjectNo();//合同编号
-                        String dwdm = list_savedate.get(pos).getDwdm();//单位代码
-                        String xmbh = list_savedate.get(pos).getXmbh();//项目编号
-                        String jd = list_savedate.get(pos).getLongitude();//经度
-                        String wd = list_savedate.get(pos).getLatitude();//纬度
-                        String qbxm_id = list_savedate.get(pos).getSerialNo();//项目编号
-                        String qbxm_name = list_savedate.get(pos).getProjectName();//项目名称
-                        pro_bprysfz = list_savedate.get(pos).getUserid();//身份证
-                        String log = list_savedate.get(pos).getLog();//日志
+//                        int pos = (Integer) v.getTag(R.id.bt_upload);//位置
+                        String blastdate = list_savedate.get(position).getBlastdate();//日期
+                        String htbh = list_savedate.get(position).getProjectNo();//合同编号
+                        String dwdm = list_savedate.get(position).getDwdm();//单位代码
+                        String xmbh = list_savedate.get(position).getXmbh();//项目编号
+                        String jd = list_savedate.get(position).getLongitude();//经度
+                        String wd = list_savedate.get(position).getLatitude();//纬度
+                        String qbxm_id = list_savedate.get(position).getSerialNo();//项目编号
+                        String qbxm_name = list_savedate.get(position).getProjectName();//项目名称
+                        pro_bprysfz = list_savedate.get(position).getUserid();//身份证
+                        String log = list_savedate.get(position).getLog();//日志
 //                        mAdapter.notifyDataSetChanged();
                         getHisDetailList(blastdate, 0);//获取起爆历史详细信息
                         if (blastdate == null || blastdate.trim().length() < 8) {
@@ -218,12 +245,12 @@ public class QueryHisDetail extends BaseActivity {
                         pb_show = 1;
                         runPbDialog();//loading画面
                         if (server_type1.equals("1")) {
-                            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+                            upload(blastdate, position, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
                         }
                         if (server_type2.equals("2")) {
-                            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
+                            performUp(blastdate, position, htbh, jd, wd);//中爆上传
                         }
-                        upload_xingbang(blastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
+                        upload_xingbang(blastdate, position, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
 
                         break;
                     case R.id.bt_delete:
@@ -1078,8 +1105,8 @@ public class QueryHisDetail extends BaseActivity {
         });
     }
 
-
-    @OnClick({R.id.btn_del_return, R.id.btn_del_all})
+    private boolean isSelectAll = true;//是否全选
+    @OnClick({R.id.btn_del_return, R.id.btn_del_all,R.id.tv_check_all, R.id.tv_input,R.id.tv_cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_del_return:
@@ -1110,7 +1137,79 @@ public class QueryHisDetail extends BaseActivity {
                 dialog.show();
 
                 break;
+            case R.id.tv_cancel:
+                layBottom.setVisibility(View.GONE);
+                hisAdapter.showCheckBox(false);
+                break;
+            case R.id.tv_check_all://全选
+                if (isSelectAll) {
+                    tv_check_all.setText(getResources().getString(R.string.text_qxqx));
+                    isSelectAll = false;
+                    setAllItemChecked(true);
+                } else {
+                    tv_check_all.setText(getResources().getString(R.string.text_qx));
+                    isSelectAll = true;
+                    setAllItemChecked(false);
+                }
+                break;
+            case R.id.tv_input:
+                if (list_savedate.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_selectjl));
+                    return;
+                }
+                List<VoFireHisMain> selectList = new ArrayList<>();
+                for (VoFireHisMain hisMain : list_savedate) {
+                    if (hisMain.isSelect()) {
+                        selectList.add(hisMain);
+                    }
+                }
+                if (selectList.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_selectjl));
+                    return;
+                }
+                if (!QueryHisDetail.this.isFinishing()) {
+                    AlertDialog sAialog = new AlertDialog.Builder(QueryHisDetail.this)
+                            .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题
+                            .setMessage(getResources().getString(R.string.text_sclsjl))//设置对话框的内容
+                            //设置对话框的按钮
+                            .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
+                                dialog1.dismiss();
+                            })
+                            .setNegativeButton(R.string.text_tip_delete, (dialog1, which) -> {
+                                for (VoFireHisMain data : selectList) {
+                                    if (data.isSelect()) {
+                                        GreenDaoMaster master = new GreenDaoMaster();
+                                        master.deleteType(data.getBlastdate());//删除生产数据中对应的雷管
+                                        master.deleteForHis(data.getBlastdate());
+                                        master.deleteForDetail(data.getBlastdate());
+                                    }
+                                }
+                                show_Toast("删除成功");
+                                loadMoreData(currentPage);//读取数据
+                                showLoadMore();
+                                dialog1.dismiss();
+                                AppLogUtils.writeAppLog("点击了多选删除起爆历史记录按钮");
+                            }).create();
+                    sAialog.setCanceledOnTouchOutside(false);
+                    sAialog.show();
+                }
+                break;
         }
+    }
+
+    //区域全选和取消全选
+    private void setAllItemChecked(boolean isSelected) {
+        if (hisAdapter == null) return;
+        if (isSelected) {
+            for (VoFireHisMain data : list_savedate) {
+                data.setSelect(true);
+            }
+        } else {
+            for (VoFireHisMain data : list_savedate) {
+                data.setSelect(false);
+            }
+        }
+        hisAdapter.notifyDataSetChanged();
     }
 
 

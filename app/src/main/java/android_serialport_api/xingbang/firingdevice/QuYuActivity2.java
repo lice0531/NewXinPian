@@ -176,6 +176,24 @@ public class QuYuActivity2 extends BaseActivity {
                     }
                     break;
                 case 2:
+                    if (mListData.size() > 0) {
+                        QuYuDao qyDao = getDaoSession().getQuYuDao();
+                        List<QuYu> selectedQy = qyDao.queryBuilder()
+                                .where(QuYuDao.Properties.Selected.eq("true"))
+                                .list();
+                        //如果区域列表中没有找到已组网（selected字段为"true"）的区域，就设置列表中第一个区域为 组网区域
+                        if (selectedQy.isEmpty()) {
+                            // 获取第一条记录并更新其 selected 为 "true"
+                            List<QuYu> allQuYuList = qyDao.loadAll();
+                            if (!allQuYuList.isEmpty()) {
+                                QuYu firstQuYu = allQuYuList.get(0);
+                                firstQuYu.setSelected("true");
+                                // 更新该记录
+                                qyDao.update(firstQuYu);
+                                quyuAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
                     layBottom.setVisibility(View.GONE);
                     quyuAdapter.showCheckBox(false);
                     mListData = new GreenDaoMaster().queryQuYu();
@@ -195,21 +213,6 @@ public class QuYuActivity2 extends BaseActivity {
                             mQuYuList.add(qyData);
                         }
                     }
-
-                    quyuAdapter.setOnItemClickListener((adapter, view, position) -> {
-                        if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
-                            return;
-                        }
-                        lastClickTime = System.currentTimeMillis();
-
-//                            loadingDialog.show();
-                        String str1 = mListData.get(position).getQyid() + "";
-                        Intent intent1 = new Intent(QuYuActivity2.this, ReisterMainPage_scan.class);
-                        intent1.putExtra("quyuId", str1);
-                        startActivity(intent1);
-//                        finish();
-//                            loadingDialog.close();
-                    });
                     quyuAdapter.setNewData(mQuYuList);
                     rlQuyu.setAdapter(quyuAdapter);
                     isDelete = true;
@@ -326,13 +329,16 @@ public class QuYuActivity2 extends BaseActivity {
                                 for (QuYuData data : mQuYuList) {
                                     if (data.isSelect()) {
                                         GreenDaoMaster master = new GreenDaoMaster();
-                                        master.deleteLeiGuanFroPiace(data.getQyid() + "");
+                                        master.deleteLeiGuanFroPiece(data.getQyid() + "");
                                         master.updataPaiFroPiace(data.getQyid() + "");
                                     }
                                 }
-                                //只删除雷管时，选中的区域，“已组网”需消失
+                                //只删除雷管时，选中的区域，“已组网”、”已起爆“需消失
                                 GreenDaoMaster master = new GreenDaoMaster();
+                                //取消区域”已起爆“状态
                                 master.cancelQyQbStataus(qyIdList);
+                                //取消区域”已组网“状态
+                                master.setQyZwStataus(qyIdList,"false");
                                 show_Toast("删除成功");
                                 mHandle.sendMessage(mHandle.obtainMessage(2));
                                 qyIdList.clear();
@@ -346,27 +352,9 @@ public class QuYuActivity2 extends BaseActivity {
                                         GreenDaoMaster master = new GreenDaoMaster();
                                         master.deleteQuYuForId(data.getQyid());
                                         master.deletePaiFroPiace(data.getQyid() + "");
-                                        master.deleteLeiGuanFroPiace(data.getQyid() + "");
+                                        master.deleteLeiGuanFroPiece(data.getQyid() + "");
 
 
-                                    }
-                                }
-                                if (mListData.size() > 0) {
-                                    QuYuDao qyDao = getDaoSession().getQuYuDao();
-                                    List<QuYu> selectedQy = qyDao.queryBuilder()
-                                            .where(QuYuDao.Properties.Selected.eq("true"))
-                                            .list();
-                                    //如果区域列表中没有找到 selected 为 "true" 的记录(即没有一个已组网的区域)
-                                    if (selectedQy.isEmpty()) {
-                                        // 获取第一条记录并更新其 selected 为 "true"
-                                        List<QuYu> allQuYuList = qyDao.loadAll();  // 获取所有记录
-                                        if (!allQuYuList.isEmpty()) {
-                                            QuYu firstQuYu = allQuYuList.get(0);  // 获取第一条记录
-                                            firstQuYu.setSelected("true");  // 设置 selected 字段为 "true"
-                                            // 更新该记录
-                                            qyDao.update(firstQuYu);  // 更新数据库中的记录
-                                            quyuAdapter.notifyDataSetChanged();
-                                        }
                                     }
                                 }
                                 show_Toast("删除成功");

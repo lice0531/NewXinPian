@@ -1006,6 +1006,7 @@
     <string name="text_scxm">Do you want to delete the project?</string>
     <string name="text_scsyxm">Do you want to delete the selected items?</string>
     <string name="text_scsyqy">Do you want to delete the selected region?</string>
+    <string name="text_sclsjl">Whether to delete the selected history?</string>
     <string name="text_scriz">Do you want to delete the current log?</string>
     <string name="text_gl">manage</string>
     <string name="text_xzxm">New item</string>
@@ -1030,6 +1031,7 @@
     <string name="text_tjqy">Please add a region first</string>
     <string name="text_selectqy">Please select a region first</string>
     <string name="text_selectlg">Please choose the detonator</string>
+    <string name="text_selectjl">Please select history first</string>
     <string name="text_line_tip19">The delay is not set at present, please select the row first</string>
     <string name="text_shanchu">Delete</string>
     <string name="text_xgpxx">Edit Row info</string>
@@ -1066,4 +1068,5 @@
     <string name="text_line_pd">Over sized</string>
     <string name="text_jczxlg">Detect online detonators</string>
     <string name="text_tzjc">Stop detection</string>
+    <string name="text_mmts">Tip: Password 123</string>
 </resources>
