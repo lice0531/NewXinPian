@@ -1358,11 +1358,14 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
-    public List<DenatorBaseinfo> queryLeiguanPaiDesc(int pai, String mRegion) {
+    /**
+    * 获取最新注册雷管的序号
+    * */
+    public List<DenatorBaseinfo> queryLeiguanPaiDesc(String mRegion,int pai) {
         QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
         return result.where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
                 .where(DenatorBaseinfoDao.Properties.Piece.eq(mRegion))
-                .orderDesc(DenatorBaseinfoDao.Properties.Blastserial)
+                .orderDesc(DenatorBaseinfoDao.Properties.Id)
                 .list();//.orderAsc(DenatorBaseinfoDao.Properties.Delay)
     }
     /***
@@ -2265,7 +2268,19 @@ public class GreenDaoMaster {
                 .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
                 .list().size();
     }
-
+    /**
+     * 查询雷管数量
+     * @return
+     */
+    public int queryDetonatorForBlastserial(String piece,int pai,int blastserial) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.Blastserial.eq(blastserial))
+                .orderAsc(DenatorBaseinfoDao.Properties.Blastserial)
+                .list().size();
+    }
     /**
      * 查询当前区域当前排雷管数量
      * @param piece:区域id

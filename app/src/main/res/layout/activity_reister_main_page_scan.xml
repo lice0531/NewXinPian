@@ -724,10 +724,11 @@
                         android:id="@+id/btn_kong"
                         style="@style/allbtntstyle"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:layout_marginRight="4dp"
+                        android:layout_weight="1"
                         android:text="加孔" />
+
                     <Button
                         android:id="@+id/btn_wei"
                         style="@style/allbtntstyle"

@@ -183,6 +183,11 @@ public class SouSuoSQActivity extends BaseActivity {
             }
         }
 //        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
+
+        Log.e(TAG, "写返回参数: " );
+        Intent intentTemp = new Intent();
+        intentTemp.putExtra("backString", "");
+        setResult(2, intentTemp); // 设置结果码和返回数据
     }
 
     private void getFactoryCode() {
@@ -912,5 +917,7 @@ public class SouSuoSQActivity extends BaseActivity {
             tipDlg.dismiss();
             tipDlg = null;
         }
+
+        finish();
     }
 }
