@@ -19,7 +19,7 @@ import android_serialport_api.xingbang.db.greenDao.SysLogDao;
  * 存储程序详细日志
  */
 public class AppLogUtils {
-    private static final long MAX_FILE_SIZE = 1048576; // 1MB
+    private static final long MAX_FILE_SIZE = 10485760; // 10MB
     private static final String LOG_DIRECTORY; // 日志文件目录
     private static final String LOG_XBDIRECTORY; // 日志文件目录
     private static SimpleDateFormat updateTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

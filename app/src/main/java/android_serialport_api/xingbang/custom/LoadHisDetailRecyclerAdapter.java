@@ -1,48 +1,85 @@
 package android_serialport_api.xingbang.custom;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
-
 import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.models.VoFireHisMain;
-import android_serialport_api.xingbang.utils.MmkvUtils;
-
-public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDetailRecyclerAdapter.ViewHolder> implements View.OnClickListener {
+public class LoadHisDetailRecyclerAdapter extends BaseQuickAdapter<VoFireHisMain, BaseViewHolder> {
     private List<VoFireHisMain> list_his;
     private Context mContext;
     private String mShangchuan;
     private OnItemClickListener onItemClickListener;//声明自定义的监听接口
 
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // 创建新的定义列表元素UI的View
-        View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_query_his, parent, false);
-        view.setOnClickListener(this);
-        return new ViewHolder(view,onItemClickListener);
-    }
-    //提供set方法
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public LoadHisDetailRecyclerAdapter(int layoutResId, @Nullable List<VoFireHisMain> data) {
+        super(layoutResId, data);
     }
 
     @Override
-    public void onClick(View v) {
-        if (list_his!=null){
-            //这里使用getTag方法获取position
-            onItemClickListener.onItemClick(v,(int)v.getTag());
+    protected void convert(@NonNull BaseViewHolder holder, VoFireHisMain item) {
+        Log.e("上传","Shangchuan:" + mShangchuan);
+        int position = holder.getLayoutPosition();
+        holder.setText(R.id.serialNo,(position+1)+"");
+        holder.setText(R.id.fireDate,item.getBlastdate());
+        Button bt_delete = holder.getView(R.id.bt_delete);
+        Button bt_upload = holder.getView(R.id.bt_upload);
+        holder.setText(R.id.txtsum,new GreenDaoMaster().queryHis(item.getBlastdate(),mShangchuan)+"");
+        if("未上传".equals(item.getUploadStatus())){
+            holder.setText(R.id.txtstatus,mContext.getString(R.string.text_query_up));	//"未上传"
+            bt_upload.setText(mContext.getString(R.string.text_query_uploda));//"上传"
+            holder.setBackgroundRes(R.id.ly_his,R.drawable.textview_border_green);
+//            holder.setBackgroundRes(R.id.serialNo,R.drawable.textview_border_green);
+            holder.setBackgroundRes(R.id.fireDate,R.drawable.textview_border_green);
+            holder.setBackgroundRes(R.id.txtstatus,R.drawable.textview_border_green);
+        }else{
+            holder.setText(R.id.txtstatus,mContext.getString(R.string.text_query_uploaded));//"已上传"
+            bt_upload.setText(mContext.getString(R.string.text_query_chong));//"重传"
+            holder.setBackgroundRes(R.id.ly_his,R.drawable.textview_border_red);
+//            holder.setBackgroundRes(R.id.serialNo,R.drawable.textview_border_red);
+            holder.setBackgroundRes(R.id.fireDate,R.drawable.textview_border_red);
+            holder.setBackgroundRes(R.id.txtstatus,R.drawable.textview_border_red);
         }
+        holder.itemView.setTag(position);
+        CheckBox iv_check = holder.getView(R.id.iv_check);
+        iv_check.setVisibility(isShowCheck ? View.VISIBLE : View.INVISIBLE);
+        iv_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                item.setSelect(isChecked);
+            }
+        });
+        iv_check.setChecked(item.isSelect());
+        bt_upload.setOnClickListener(view -> {
+            if (onItemClickListener != null) {
+                //确保position值有效
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener.onButtonClicked(view, position);
+                }
+            }
+        });
+
+        bt_delete.setOnClickListener(view -> {
+            if (onItemClickListener != null) {
+                //确保position值有效
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener.onButtonClicked(view, position);
+                }
+            }
+        });
+    }
+
+    //提供set方法
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     //定义接口
@@ -51,95 +88,19 @@ public class LoadHisDetailRecyclerAdapter extends RecyclerView.Adapter<LoadHisDe
         void onItemClick(View view,int position);
     }
 
-
-
-    public LoadHisDetailRecyclerAdapter(Context mContext, List<VoFireHisMain> list_his,String Shangchuan) {
-        this.mContext = mContext;
-        this.list_his = list_his;
-        this.mShangchuan = Shangchuan;
-    }
     public void setDataSource(List<VoFireHisMain> list_his) {
         this.list_his = list_his;
         notifyDataSetChanged();
     }
 
-
-    /**
-     * 通过 ViewHolder 来绑定数据
-     *
-     * @param holder
-     * @param position
-     */
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.e("上传","Shangchuan:" + mShangchuan);
-        holder.serialNo.setText((position+1)+"");
-        holder.fireDate.setText(list_his.get(position).getBlastdate());
-        holder.bt_delete.setTag(R.id.bt_delete, list_his.get(position).getBlastdate());
-        holder.bt_upload.setTag(R.id.bt_upload,position);
-        holder.txtsum.setText(new GreenDaoMaster().queryHis(list_his.get(position).getBlastdate(),mShangchuan)+"");
-        if("未上传".equals(list_his.get(position).getUploadStatus())){
-            holder.txtstatus.setText(mContext.getString(R.string.text_query_up));	//"未上传"
-            holder.bt_upload.setText(mContext.getString(R.string.text_query_uploda));//"上传"
-            holder.ly_his.setBackgroundResource(R.drawable.textview_border_green);
-            holder.serialNo.setBackgroundResource(R.drawable.textview_border_green);
-            holder.fireDate.setBackgroundResource(R.drawable.textview_border_green);
-            holder.txtstatus.setBackgroundResource(R.drawable.textview_border_green);
-        }else{
-            holder.txtstatus.setText(mContext.getString(R.string.text_query_uploaded));//"已上传"
-            holder.bt_upload.setText(mContext.getString(R.string.text_query_chong));//"重传"
-            holder.ly_his.setBackgroundResource(R.drawable.textview_border_red);
-            holder.serialNo.setBackgroundResource(R.drawable.textview_border_red);
-            holder.fireDate.setBackgroundResource(R.drawable.textview_border_red);
-            holder.txtstatus.setBackgroundResource(R.drawable.textview_border_red);
-        }
-        holder.itemView.setTag(position);
-
+    public void setStatus(Context context,String Shangchuan) {
+        this.mContext = context;
+        this.mShangchuan = Shangchuan;
     }
 
-    @Override
-    public int getItemCount() {
-        return list_his.size();
-    }
-
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView serialNo;
-        private TextView fireDate;
-        private TextView txtstatus;
-        private Button bt_upload;
-        private Button bt_delete;
-        private LinearLayout ly_his;
-        private TextView txtsum;
-        public ViewHolder(View itemView, final OnItemClickListener onItemClickListener) {
-            super(itemView);
-            serialNo = itemView.findViewById(R.id.serialNo);
-            fireDate = itemView.findViewById(R.id.fireDate);
-            txtstatus = itemView.findViewById(R.id.txtstatus);
-            bt_upload = itemView.findViewById(R.id.bt_upload);
-            bt_delete = itemView.findViewById(R.id.bt_delete);
-            ly_his = itemView.findViewById(R.id.ly_his);
-            txtsum = itemView.findViewById(R.id.txtsum);
-            bt_upload.setOnClickListener(view -> {
-                if (onItemClickListener != null) {
-                    int position1 = getAdapterPosition();
-                    //确保position值有效
-                    if (position1 != RecyclerView.NO_POSITION) {
-                        onItemClickListener.onButtonClicked(view, position1);
-                    }
-                }
-            });
-
-            bt_delete.setOnClickListener(view -> {
-                if (onItemClickListener != null) {
-                    int position1 = getAdapterPosition();
-                    //确保position值有效
-                    if (position1 != RecyclerView.NO_POSITION) {
-                        onItemClickListener.onButtonClicked(view, position1);
-                    }
-                }
-            });
-        }
+    private boolean isShowCheck = false;
+    public void showCheckBox(boolean isShow){
+        isShowCheck = isShow;
+        notifyDataSetChanged();
     }
 }

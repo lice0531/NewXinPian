@@ -1020,6 +1020,7 @@
     <string name="text_scxm">是否删除该项目?</string>
     <string name="text_scsyxm">是否删除选中的项目?</string>
     <string name="text_scsyqy">是否删除选中的区域?</string>
+    <string name="text_sclsjl">是否删除选中的历史记录?</string>
     <string name="text_scriz">是否删除当前日志?</string>
     <string name="text_gl">管理</string>
     <string name="text_xzxm">新增项目</string>
@@ -1044,6 +1045,7 @@
     <string name="text_tjqy">请先添加区域</string>
     <string name="text_selectqy">请先选择区域</string>
     <string name="text_selectlg">请先选择雷管</string>
+    <string name="text_selectjl">请先选择历史记录</string>
     <string name="text_shanchu">删除</string>
     <string name="text_xgpxx">修改排信息</string>
     <string name="dialog_pai_title">新增区域设置</string>
