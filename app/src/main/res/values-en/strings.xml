@@ -1069,4 +1069,9 @@
     <string name="text_jczxlg">Detect online detonators</string>
     <string name="text_tzjc">Stop detection</string>
     <string name="text_mmts">Tip: Password 123</string>
+    <string name="text_plsc">Batch upload</string>
+    <string name="text_scts">Upload prompt</string>
+    <string name="text_scshjl">Do you want to upload the selected initiation record?</string>
+    <string name="text_scjs">Upload completed</string>
+    <string name="text_nodata">There is currently no data to upload</string>
 </resources>

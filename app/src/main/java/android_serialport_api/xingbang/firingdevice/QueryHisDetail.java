@@ -29,23 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import android_serialport_api.xingbang.Application;
 import android_serialport_api.xingbang.BaseActivity;
 import android_serialport_api.xingbang.R;
@@ -53,17 +47,16 @@ import android_serialport_api.xingbang.custom.LoadHisDetailRecyclerAdapter;
 import android_serialport_api.xingbang.custom.LoadHisFireAdapter;
 import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
-import android_serialport_api.xingbang.db.DenatorHis_Detail;
 import android_serialport_api.xingbang.db.DenatorHis_Main;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
-import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.MyUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
+import android_serialport_api.xingbang.utils.OkhttpClientUtils;
 import android_serialport_api.xingbang.utils.PropertiesUtil;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -106,6 +99,8 @@ public class QueryHisDetail extends BaseActivity {
     TextView tv_check_all;
     @BindView(R.id.tv_cancel)
     TextView tv_cancel;
+    @BindView(R.id.tv_upload)
+    TextView tv_upload;
     private List<VoFireHisMain> list_savedate = new ArrayList<>();
     private int totalNum;//总的数据条数
     private int pageSize = 600;//每页显示的数据
@@ -140,6 +135,14 @@ public class QueryHisDetail extends BaseActivity {
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
     private String changjia = "TY";
+    private String TAG = "起爆历史记录上传页面";
+    private boolean upload_all = false;//是否为多选上传
+    List<String> dateList = new ArrayList<>();//未上传日期
+    private int uploadIndex = 0;//还有多少条数据需要一键上传
+    private int isDlUploadSuccess = 0;//丹灵是否上传成功 0:未上传  200:上传成功  201:上传失败
+    private int isZbUploadSuccess = 0;//中爆是否上传成功 0:未上传  200:上传成功  201:上传失败
+    private int isXbUploadSuccess = 0;//煋邦是否上传成功 0:未上传  200:上传成功  201:上传失败
+    Handler openHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -366,6 +369,24 @@ public class QueryHisDetail extends BaseActivity {
                             break;
                     }
                     show_Toast(tip);
+                    break;
+                case 6:
+                    UploadResult rt = (UploadResult) msg.obj;
+                    Log.e(TAG,"上传结果已返回isDlUploadSuccess:" + isDlUploadSuccess +
+                            "--isXbUploadSuccess:" + isXbUploadSuccess);
+                    if (isDlUploadSuccess == 200 ) {
+                        uploadIndex ++;
+                        isDlUploadSuccess = 0;
+                        isXbUploadSuccess = 0;
+                        uploadNext(dateList,uploadIndex);
+                        //准备丹灵和煋邦都传成功,再更新按钮颜色(未完成)//&& isXbUploadSuccess == 200
+//                        uploadIndexMoni ++;
+//                        uploadNextMoni(stringList,uploadIndexMoni);
+                    }
+                    break;
+                case 7:
+                    String res = (String) msg.obj;
+                    show_Toast(res);
                     break;
             }
             return false;
@@ -875,19 +896,21 @@ public class QueryHisDetail extends BaseActivity {
 //        String url = Utils.httpurl_upload_test;//丹灵上传
 
         // 创建OkHttpClient.Builder对象
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//
+//        // 设置连接超时时间：50秒
+//        builder.connectTimeout(50, TimeUnit.SECONDS);
+//
+//        // 设置读取超时时间：50秒
+//        builder.readTimeout(50, TimeUnit.SECONDS);
+//
+//        // 设置写入超时时间：50秒
+//        builder.writeTimeout(50, TimeUnit.SECONDS);
+//
+//        // 创建OkHttpClient实例
+//        OkHttpClient client = builder.build();
 
-        // 设置连接超时时间：50秒
-        builder.connectTimeout(50, TimeUnit.SECONDS);
-
-        // 设置读取超时时间：50秒
-        builder.readTimeout(50, TimeUnit.SECONDS);
-
-        // 设置写入超时时间：50秒
-        builder.writeTimeout(50, TimeUnit.SECONDS);
-
-        // 创建OkHttpClient实例
-        OkHttpClient client = builder.build();
+        OkHttpClient client = OkhttpClientUtils.getInstance();
 
 //        OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
@@ -972,6 +995,7 @@ public class QueryHisDetail extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
+                isDlUploadSuccess = 200;
                 try {
                     if (!server_type2.equals("2")) {
                         pb_show = 0;
@@ -1009,6 +1033,17 @@ public class QueryHisDetail extends BaseActivity {
 //                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
 //                        }
                     }
+                    if(upload_all){
+                        //等待一段时间
+                        // 延时3秒后执行的操作
+                        openHandler.postDelayed(() -> {
+                            Message msg = new Message();
+                            msg.what = 6;
+                            UploadResult result = new UploadResult();
+                            msg.obj = result;
+                            mHandler_tip.sendMessage(msg);
+                        }, 500);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1021,7 +1056,8 @@ public class QueryHisDetail extends BaseActivity {
         final String key = "jadl12345678912345678912";
         String url = Utils.httpurl_xb_his;//公司服务器上传
 
-        OkHttpClient client = new OkHttpClient();
+//        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = OkhttpClientUtils.getInstance();
         JSONObject object = new JSONObject();
         ArrayList<String> list_uid = new ArrayList<>();
         for (int i = 1; i < hisListData.size(); i++) {
@@ -1105,13 +1141,14 @@ public class QueryHisDetail extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e("上传", "返回: " + response.toString());
                 pb_show = 0;
+                isXbUploadSuccess = 200;
             }
         });
     }
 
     private boolean isSelectAll = true;//是否全选
 
-    @OnClick({R.id.btn_del_return, R.id.btn_del_all, R.id.tv_check_all, R.id.tv_input, R.id.tv_cancel})
+    @OnClick({R.id.btn_del_return, R.id.btn_del_all, R.id.tv_check_all, R.id.tv_input, R.id.tv_cancel,R.id.tv_upload})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_del_return:
@@ -1140,12 +1177,10 @@ public class QueryHisDetail extends BaseActivity {
                             showLoadMore();
                         }).create();
                 dialog.show();
-
                 break;
             case R.id.tv_cancel:
                 layBottom.setVisibility(View.GONE);
                 hisAdapter.showCheckBox(false);
-                layBottom.setVisibility(View.GONE);
                 tv_check_all.setText(getResources().getString(R.string.text_qx));
                 isSelectAll = true;
                 setAllItemChecked(false);
@@ -1181,6 +1216,7 @@ public class QueryHisDetail extends BaseActivity {
                 View v = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
                 builder.setView(v);
                 final EditText password = v.findViewById(R.id.password);
+                builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog2, which) -> dialog2.dismiss());
                 builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog1, which) -> {
 
                     String b = password.getText().toString().trim();
@@ -1205,7 +1241,6 @@ public class QueryHisDetail extends BaseActivity {
                         loadMoreData(currentPage);//读取数据
                         showLoadMore();
                         AppLogUtils.writeAppLog("点击了多选删除起爆历史记录按钮");
-                        layBottom.setVisibility(View.GONE);
                         hisAdapter.showCheckBox(false);
                         layBottom.setVisibility(View.GONE);
                         tv_check_all.setText(getResources().getString(R.string.text_qx));
@@ -1216,10 +1251,143 @@ public class QueryHisDetail extends BaseActivity {
                     }
                     dialog1.dismiss();
                 });
-                builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog2, which) -> dialog2.dismiss());
                 builder.show();
                 break;
+            case R.id.tv_upload:
+                if (list_savedate.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_selectjl));
+                    return;
+                }
+                List<VoFireHisMain> sList = new ArrayList<>();
+                for (VoFireHisMain hisMain : list_savedate) {
+                    if (hisMain.isSelect()) {
+                        sList.add(hisMain);
+                    }
+                }
+                if (sList.isEmpty()) {
+                    show_Toast(getResources().getString(R.string.text_selectjl));
+                    return;
+                }
+                AlertDialog dialog2 = new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.text_scts))
+                        .setMessage(getResources().getString(R.string.text_scshjl))
+                        //设置对话框的按钮
+                        .setNeutralButton(getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
+                        .setPositiveButton(getString(R.string.text_alert_sure), (dialog12, which) -> {
+                            dialog12.dismiss();
+                            dateList.clear();
+                            List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
+                            for (int i = list_savedate.size() - 1; i >= 0; i--) {
+                                if (list_savedate.get(i).isSelect()) {
+                                    Log.e(TAG, "选中的id: " + i);
+                                    Log.e(TAG, "list_savedate.get(i).getBlastdate(): " + list_savedate.get(i).getBlastdate());
+                                    dateList.add(i + "");
+                                }
+                            }
+                            upload_all = true;
+//                        for (DenatorHis_Main his:list) {
+//                            if(his.getUploadStatus().equals("未上传")){
+//                                dateList.add(his.getBlastdate());
+//                            }
+//                        }
+                            if (dateList.size() > 0) {
+                                Log.e("一键上传", "未上传的date集合:" + dateList.toString());
+                                uploadNext(dateList, uploadIndex);
+                            } else {
+                                show_Toast(getResources().getString(R.string.text_nodata));
+                            }
+                            layBottom.setVisibility(View.GONE);
+                            hisAdapter.showCheckBox(false);
+                            tv_check_all.setText(getResources().getString(R.string.text_qx));
+                            isSelectAll = true;
+                            setAllItemChecked(false);
+                            loadMoreData(currentPage);//读取数据
+                            showLoadMore();
+                        }).create();
+                dialog2.show();
+                break;
         }
+    }
+
+    // 递归方法，逐个上传数据
+    private void uploadNext(List<String> dateList, int index) {
+//        if(index>0){
+//            show_Toast("第"+index+"条上传成功");
+//        }
+        if (index >= dateList.size()) {
+            upload_all = false;
+            Log.e("一键上传", "一键上传--所有数据已全部上传");
+            show_Toast(getResources().getString(R.string.text_scjs));
+            uploadIndex = 0;//重置上传下标
+            pb_show = 0;
+            mHandler_2.sendMessage(mHandler_2.obtainMessage());
+            return;
+        }
+//        Log.e("一键上传","isDlUploadSuccess:" + isDlUploadSuccess + "--isXbUploadSuccess:" + isXbUploadSuccess);
+        String data = dateList.get(index);
+        uploadQbData(Integer.parseInt(dateList.get(index)));
+        Log.e(TAG, "dateList.size(): "+dateList.size() );
+
+    }
+
+    private void uploadQbData(int position) {
+        if (!NetUtils.haveNetWork(Application.getContext())) {
+            show_Toast(getResources().getString(R.string.text_jcwl));
+            return;
+        }
+        int pos = position;//位置
+        Log.e(TAG, "数组下标pos: "+pos );
+        String blastdate = list_savedate.get(pos).getBlastdate();//日期
+        String htbh = list_savedate.get(pos).getProjectNo();//合同编号
+        String dwdm = list_savedate.get(pos).getDwdm();//单位代码
+        String xmbh = list_savedate.get(pos).getXmbh();//项目编号
+        String jd = list_savedate.get(pos).getLongitude();//经度
+        String wd = list_savedate.get(pos).getLatitude();//纬度
+        String qbxm_id = list_savedate.get(pos).getXmbh();//项目编号
+        String qbxm_name = list_savedate.get(pos).getUserid();//项目名称
+        String log = list_savedate.get(pos).getLog();//日志
+//                        mAdapter.notifyDataSetChanged();
+        getHisDetailList(blastdate, 0);//获取起爆历史详细信息
+        if (blastdate == null || blastdate.trim().length() < 8) {
+            int count = getBlastModelCount();
+            if (count < 1) {
+                show_Toast(getResources().getString(R.string.text_error_tip55));
+                return;
+            }
+            String fireDate = Utils.getDateFormatLong(new Date());
+            saveFireResult(fireDate);
+            blastdate = fireDate;
+        }
+//                        Utils.writeRecord("项目上传信息:" + list_savedate.get(pos));
+        Log.e(TAG + "上传-经纬度", "pro_coordxy: " + pro_coordxy);
+        Log.e(TAG + "上传-经纬度", "jd: " + jd);
+        if (pro_coordxy.length() < 2 && (jd == null || wd == null)) {
+            show_Toast(getResources().getString(R.string.text_his_jwdwk));
+            return;
+        }
+        if (server_type2.equals("0") && server_type1.equals("0")) {
+            show_Toast(getResources().getString(R.string.text_his_scwz));
+        }
+//                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
+        //跟单独上传重复,下周再调
+//        pb_show = 1;
+//        mHandler_2.sendMessage(mHandler_2.obtainMessage());
+//        runPbDialog();//loading画面
+
+        if (server_type1.equals("1")) {
+            upload(blastdate, pos, htbh, jd, wd, xmbh, dwdm);//丹灵上传信息
+        }
+        if (server_type2.equals("2")) {
+            performUp(blastdate, pos, htbh, jd, wd);//中爆上传
+        }
+        String finalBlastdate = blastdate;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                upload_xingbang(finalBlastdate, pos, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
+            }
+        }).start();
+
     }
 
     //区域全选和取消全选
@@ -1261,7 +1429,6 @@ public class QueryHisDetail extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
             case R.id.item_1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
                 builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
@@ -1269,7 +1436,6 @@ public class QueryHisDetail extends BaseActivity {
                 builder.setView(view);
                 final EditText password = view.findViewById(R.id.password);
                 builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
-
                     String b = password.getText().toString().trim();
                     if (b == null || b.trim().length() < 1) {
                         show_Toast(getString(R.string.text_alert_password));
@@ -1287,7 +1453,6 @@ public class QueryHisDetail extends BaseActivity {
                                 master.deleteForDetail(his.getBlastdate());
                             }
                         }
-
                         show_Toast(getResources().getString(R.string.text_his_scyscjl));
                     } else {
                         show_Toast(getResources().getString(R.string.text_mmcw));
@@ -1297,13 +1462,31 @@ public class QueryHisDetail extends BaseActivity {
                     dialog.dismiss();
                 });
                 builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> dialog.dismiss());
-
-
                 builder.show();
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class UploadResult {
+        private int dlReslut;
+        private int xbResult;
+
+        public int getDlReslut() {
+            return dlReslut;
+        }
+
+        public void setDlReslut(int dlReslut) {
+            this.dlReslut = dlReslut;
+        }
+
+        public int getXbResult() {
+            return xbResult;
+        }
+
+        public void setXbResult(int xbResult) {
+            this.xbResult = xbResult;
         }
     }
 }

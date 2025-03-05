@@ -128,6 +128,8 @@ dependencies {
     implementation 'com.github.ForgetAll:LoadingDialog:v1.1.2'
     //手势解锁
     implementation 'com.github.ihsg:PatternLocker:2.5.4'
+// 添加 WorkManager 依赖
+    implementation "androidx.work:work-runtime:2.6.0"
 }
 
 greendao {

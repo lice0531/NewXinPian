@@ -78,6 +78,7 @@ import android_serialport_api.xingbang.db.MessageBean;
 import android_serialport_api.xingbang.models.DownloadVersionBean;
 import android_serialport_api.xingbang.models.IsRenewBean;
 import android_serialport_api.xingbang.utils.AppLogUtils;
+import android_serialport_api.xingbang.utils.FileDeletionWorker;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.NetUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -101,6 +102,9 @@ import static android_serialport_api.xingbang.Application.getContext;
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
 import androidx.annotation.NonNull;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import org.apache.commons.net.ftp.FTPFile;
 import org.json.JSONException;
@@ -393,6 +397,11 @@ public class XingbangMain extends SerialPortActivity {
             Log.e("记录时间", "format1: "+format1 );
             MmkvUtils.savecode("time",format1);
         }
+        // 创建一次性任务
+        OneTimeWorkRequest fileDeletionRequest = new OneTimeWorkRequest.Builder
+                (FileDeletionWorker.class).build();
+        // 将任务提交给 WorkManager
+        WorkManager.getInstance(this).enqueue(fileDeletionRequest);
     }
     @Override
     protected void onResume() {
