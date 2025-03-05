@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -43,6 +45,8 @@ import android_serialport_api.xingbang.custom.MyRecyclerView;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.db.PaiData;
+import android_serialport_api.xingbang.db.QuYu;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -653,9 +657,8 @@ public class SetDelayTime_suidao extends BaseActivity {
                                     for (int i = 1; i < 21; i++) {
                                         setSuidaoDelayTime(i);
                                         // 区域 更新视图
-                                        mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-
                                     }
+                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                                 }).start();
 
                                 //进行清零
@@ -766,6 +769,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                 break;
             case 2:
                 if (etDuanTotal2.getText().length() != 0 && Integer.parseInt(etDuanTotal2.getText().toString()) > 0) {
+
                     totalNum = totalNum + Integer.parseInt(etDuanTotal2.getText().toString());
                     dangqianNum = totalNum - Integer.parseInt(etDuanTotal2.getText().toString());
                     Log.e("延时", "totalNum: " + totalNum);
@@ -1040,13 +1044,47 @@ public class SetDelayTime_suidao extends BaseActivity {
     }
 
     private void setSuidaoDelay(int dangqianNum, int totalNum, int totaldelay, int duan) {
+        PaiData pai_sj = new GreenDaoMaster().queryPai(mRegion,duan);
+        if(pai_sj==null){
+            int maxPai = new GreenDaoMaster().getMaxPaiId(mRegion);
+            QuYu quYu_choice = GreenDaoMaster.getQuyu(mRegion);
+            PaiData paiData = new PaiData();
+            paiData.setPaiId((maxPai + 1));
+            paiData.setQyid(Integer.parseInt(mRegion));
+            paiData.setStartDelay(totaldelay+"");
+            paiData.setKongNum((totalNum-dangqianNum));
+            paiData.setKongDelay("0");
+            paiData.setNeiDelay("0");
+            paiData.setDiJian(false);
+            paiData.setPaiDelay(quYu_choice.getPaiDelay());
+            paiData.setDelayMin(totaldelay+"");
+            paiData.setDelayMax(totaldelay+"");
+            paiData.setSum((totalNum-dangqianNum)+"");
+            paiData.setFanZhuan(0);
+            getDaoSession().getPaiDataDao().insert(paiData);
+            Log.e("新建排", "新建排pai: "+(maxPai + 1) );
+        }else {
+            pai_sj.setQyid(Integer.parseInt(mRegion));
+            pai_sj.setStartDelay(totaldelay+"");
+            pai_sj.setKongNum((totalNum-dangqianNum));
+            pai_sj.setKongDelay("0");
+            pai_sj.setNeiDelay("0");
+            pai_sj.setDelayMin(totaldelay+"");
+            pai_sj.setDelayMax(totaldelay+"");
+            pai_sj.setSum((totalNum-dangqianNum)+"");
+            pai_sj.setFanZhuan(0);
+            getDaoSession().getPaiDataDao().update(pai_sj);
+            Log.e("更新排", "更新排pai: "+pai_sj.getPaiId() );
+        }
         int start = dangqianNum + 1;//起始序号
         int no = 1;
         for (int i = start; i <= totalNum; i++) {
             ContentValues values = new ContentValues();
             values.put("delay", totaldelay);
-            values.put("sithole", duan + "-" + no);
-            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "blastserial=? and piece =? ", new String[]{String.valueOf(i),mRegion});
+//            values.put("sithole", duan + "-" + no);
+            values.put("pai",duan);
+            values.put("blastserial",no);
+            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "sithole =? and piece =? ", new String[]{String.valueOf(i),mRegion});
             no++;
         }
 

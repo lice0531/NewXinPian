@@ -1825,10 +1825,47 @@ public class Utils {
                 getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
             }
         }
-        deleteDataforXuHao(mRegion);
+//        deleteDataforXuHao(mRegion);
     }
 
 
+    /**
+     * 重新排序雷管(序号)
+     */
+    public static void deleteDataforXuHao(String mRegion,int pai) {
+
+//        Log.e("排序雷管", "list_lg: " + list_lg.size());
+        List<DenatorBaseinfo> list_lg = new GreenDaoMaster().queryDetonatorRegionAsc(mRegion,pai);
+        for (int i = 0; i < list_lg.size(); i++) {
+            DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
+            denatorBaseinfo.setId(list_lg.get(i).getId());
+            denatorBaseinfo.setBlastserial(list_lg.get(i).getBlastserial());
+            denatorBaseinfo.setSithole((i + 1) + "");
+            denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
+            denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
+            denatorBaseinfo.setDelay(list_lg.get(i).getDelay());
+            denatorBaseinfo.setStatusCode(list_lg.get(i).getStatusCode());
+            denatorBaseinfo.setStatusName(list_lg.get(i).getStatusName());
+            denatorBaseinfo.setErrorCode(list_lg.get(i).getErrorCode());
+            denatorBaseinfo.setErrorName(list_lg.get(i).getErrorName());
+            denatorBaseinfo.setAuthorization(list_lg.get(i).getAuthorization());
+            denatorBaseinfo.setRemark(list_lg.get(i).getRemark());
+            denatorBaseinfo.setRegdate(list_lg.get(i).getRegdate());
+            denatorBaseinfo.setWire(list_lg.get(i).getWire());
+            denatorBaseinfo.setName(list_lg.get(i).getName());
+            denatorBaseinfo.setDenatorIdSup(list_lg.get(i).getDenatorIdSup());
+            denatorBaseinfo.setZhu_yscs(list_lg.get(i).getZhu_yscs());
+            denatorBaseinfo.setCong_yscs(list_lg.get(i).getCong_yscs());
+            denatorBaseinfo.setPiece(list_lg.get(i).getPiece());
+            denatorBaseinfo.setDuan(list_lg.get(i).getDuan());
+            denatorBaseinfo.setDuanNo(list_lg.get(i).getDuanNo());
+            denatorBaseinfo.setFanzhuan(list_lg.get(i).getFanzhuan());
+            denatorBaseinfo.setPai(list_lg.get(i).getPai());
+
+            getDaoSession().getDenatorBaseinfoDao().update(denatorBaseinfo);
+        }
+        Utils.saveFile();//把软存中的数据存入磁盘中
+    }
     /**
      * 重新排序雷管(序号)
      */
@@ -1839,7 +1876,7 @@ public class Utils {
         for (int i = 0; i < list_lg.size(); i++) {
             DenatorBaseinfo denatorBaseinfo = new DenatorBaseinfo();
             denatorBaseinfo.setId(list_lg.get(i).getId());
-            denatorBaseinfo.setBlastserial(i + 1);
+            denatorBaseinfo.setBlastserial(list_lg.get(i).getBlastserial());
             denatorBaseinfo.setSithole((i + 1) + "");
             denatorBaseinfo.setShellBlastNo(list_lg.get(i).getShellBlastNo());
             denatorBaseinfo.setDenatorId(list_lg.get(i).getDenatorId());
@@ -1865,7 +1902,6 @@ public class Utils {
         }
         Utils.saveFile();//把软存中的数据存入磁盘中
     }
-
     /**
      * 重新排序雷管(段)
      */
@@ -1927,17 +1963,17 @@ public class Utils {
                 lg.setDuan(duan);
                 lg.setDuanNo(duanNo);
                 lg.setFanzhuan(fanzhuan);
-                Log.e("插入排序", "shellBlastNo: " + shellBlastNo);
-                Log.e("插入排序", "blastserial+1: " + (blastserial + 1));
-                Log.e("插入排序", "db_charu.getBlastserial(): " + db_charu.getBlastserial());
-                Log.e("插入排序", "sithole: " + sithole);
-                Log.e("插入排序", "db_charu.getSithole(): " + db_charu.getSithole());
-                Log.e("插入排序", "flag_t1_local: " + flag_t1_local);
-                Log.e("插入排序", "pai: " + pai);
-                Log.e("插入排序", "pai_in: " + pai_in);
-                Log.e("插入排序", "db_charu.getDuanNo(): " + db_charu.getDuanNo());
-                Log.e("插入排序", "duanNo: " + duanNo);
-                Log.e("插入排序", "flag_t1: " + flag_t1);
+//                Log.e("插入排序", "shellBlastNo: " + shellBlastNo);
+//                Log.e("插入排序", "blastserial+1: " + (blastserial + 1));
+//                Log.e("插入排序", "db_charu.getBlastserial(): " + db_charu.getBlastserial());
+//                Log.e("插入排序", "sithole: " + sithole);
+//                Log.e("插入排序", "db_charu.getSithole(): " + db_charu.getSithole());
+//                Log.e("插入排序", "flag_t1_local: " + flag_t1_local);
+//                Log.e("插入排序", "pai: " + pai);
+//                Log.e("插入排序", "pai_in: " + pai_in);
+//                Log.e("插入排序", "db_charu.getDuanNo(): " + db_charu.getDuanNo());
+//                Log.e("插入排序", "duanNo: " + duanNo);
+//                Log.e("插入排序", "flag_t1: " + flag_t1);
 
                 if (!flag_t1) {
                     lg.setBlastserial(blastserial);

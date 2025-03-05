@@ -15,7 +15,7 @@ public class PaiData {
     private int paiId;
     @Property(nameInDb = "qyid")
     private int qyid;
-    @Property(nameInDb = "sum")
+    @Property(nameInDb = "sum")//雷管数量
     private String sum;
     @Property(nameInDb = "delayMin")
     private String delayMin;
@@ -31,7 +31,7 @@ public class PaiData {
     private String neiDelay;
     @Property(nameInDb = "paiDelay")
     private String paiDelay;
-    @Property(nameInDb = "kongNum")
+    @Property(nameInDb = "kongNum")//同孔数量
     private int kongNum;
     @Property(nameInDb = "diJian")
     private boolean diJian;

@@ -826,7 +826,21 @@ public class GreenDaoMaster {
                         DenatorBaseinfoDao.Properties.Blastserial)
                 .list();
     }
-
+    /**
+     * 查询雷管 按区域、排、序号正序排列
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public List<DenatorBaseinfo> queryDetonatorRegionAsc(String piece,int pai) {
+        return mDeantorBaseDao
+                .queryBuilder()
+                .where(DenatorBaseinfoDao.Properties.Piece.eq(piece))
+                .where(DenatorBaseinfoDao.Properties.Pai.eq(pai))
+                .where(DenatorBaseinfoDao.Properties.ShellBlastNo.notEq(""))
+                .orderAsc(DenatorBaseinfoDao.Properties.Piece,DenatorBaseinfoDao.Properties.Pai,
+                        DenatorBaseinfoDao.Properties.Blastserial)
+                .list();
+    }
     /**
      * 查询ShellBlastNo不为空的所有雷管  按区域、排、序号正序排列
      */
@@ -2191,6 +2205,16 @@ public class GreenDaoMaster {
         result = result.where(PaiDataDao.Properties.Qyid.eq(qyId));
         return result.list();
     }
+
+    /**
+     * 查询排
+     */
+    public  PaiData queryPai(String qyId,int pai) {
+
+        return getDaoSession().getPaiDataDao().queryBuilder().where(PaiDataDao.Properties.Qyid.eq(qyId))
+                .where(PaiDataDao.Properties.PaiId.eq(pai)).unique();
+    }
+
     public  List<PaiDataSelect> queryPaiSelect(String qyId) {
         QueryBuilder<PaiData> result = getDaoSession().getPaiDataDao()
                 .queryBuilder()

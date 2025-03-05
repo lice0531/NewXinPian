@@ -16,6 +16,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -1088,8 +1089,25 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast("延时不能小于0ms");
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
             } else if (msg.what == 14) {
+                TextView view = new TextView(this);
+                view.setTextSize(25);
+                view.setTextColor(Color.RED);
+                view.setText(getResources().getString(R.string.text_tip2));
+                view.setTypeface(null, Typeface.BOLD);
+                LayoutInflater inflater = getLayoutInflater();
+                View customTitleView = inflater.inflate(R.layout.custom_dialog_title, null);
+
+                AlertDialog dialog;
+                dialog = new AlertDialog.Builder(this)
+                        .setCustomTitle(customTitleView)
+                        .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
+                        .setView(view)
+                        .setPositiveButton(R.string.text_qd, (dialog2, which) -> {
+                        })
+                        .create();
+                dialog.show();
+
                 SoundPlayUtils.play(4);
-                show_Toast("当前排处于翻转状态,不能进行注册,删除,修改等操作,请复位后再进行操作.");
             } else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
                 show_Toast("共有" + xiangHao_errNum + "盒重复");
@@ -2038,22 +2056,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     .setMessage(getResources().getString(R.string.text_queryHis_dialog2))//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
                     .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which1) -> dialog1.dismiss())
-                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
-                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
-                            } else {
-                                // TODO 开启进度条
-                                runPbDialog();
-                                new Thread(() -> {
-                                    if (info.getShellBlastNo().length() != 13) {
-                                        new GreenDaoMaster().deleteDetonator(info.getId());
-                                    } else {
-                                        new GreenDaoMaster().deleteDetonator(info.getShellBlastNo());
-                                    }
-                                    //先更新排数据,再删除排
-                                    updataPaiData();
+                    .setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog12, which12) -> {
+//                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
+//                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
+//                            } else {
+                            // TODO 开启进度条
+                            runPbDialog();
+                            new Thread(() -> {
+                                if (info.getShellBlastNo().length() != 13) {
+                                    new GreenDaoMaster().deleteDetonator(info.getId());
+                                } else {
+                                    new GreenDaoMaster().deleteDetonator(info.getShellBlastNo());
+                                }
+                                //先更新排数据,再删除排
+                                updataPaiData();
+//                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
+                                Utils.deleteDataforXuHao(mRegion, paiChoice);//重新排序雷管孔号(代替序号)
 //                                    // 删除某一发雷管
 //                                    int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
 //                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
@@ -2064,18 +2082,17 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                                    Message msg = new Message();
 //                                    msg.arg1 = duan_guan;
 //                                    mHandler_showNum.sendMessage(msg);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            show_Toast(getResources().getString(R.string.text_del_ok));
-                                        }
-                                    });
-                                    // 区域 更新视图
-                                    mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));//删除后更新视图
-                                    pb_show = 0;
-                                }).start();
-                            }
-                        }
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        show_Toast(getResources().getString(R.string.text_del_ok));
+                                    }
+                                });
+                                // 区域 更新视图
+                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));//删除后更新视图
+                                pb_show = 0;
+                            }).start();
+//                            }
                     }).create();
             dialog2.show();
         });
@@ -2655,7 +2672,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
             Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
             duanNo1 = duanNo1 + 1;
-            denatorBaseinfo.setSithole(kong + "");
+//            denatorBaseinfo.setSithole(kong + "");
             denatorBaseinfo.setBlastserial(kong);
             denatorBaseinfo.setDuanNo((duanNo1));
             if (duanNo1 > 1) {
@@ -2688,14 +2705,28 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("插入--单发输入--插入标志", "db_charu: " + db_charu.toString());
             int konghao = db_charu.getBlastserial() + 1;
 
-            denatorBaseinfo.setSithole(konghao + "");
+//            denatorBaseinfo.setSithole(konghao + "");
             Log.e(TAG, "插入--选中插入的雷管: " + db_charu.getShellBlastNo() + " 延时:" + db_charu.getDelay());
-            Log.e(TAG, "插入--插入孔前一发延时: " + db_charu.getDelay());
+
             Log.e("插入--单发输入--插入孔号", "konghao: " + konghao);
+            Log.e("插入--单发输入--插入孔号", "duanNo1: " + duanNo1);
             if (!flag_t1) {//插入位
                 denatorBaseinfo.setBlastserial(db_charu.getBlastserial());
                 denatorBaseinfo.setDuanNo((db_charu.getDuanNo() + 1));
-                denatorBaseinfo.setDelay(db_charu.getDelay());
+//                denatorBaseinfo.setDelay(db_charu.getDelay());
+                if (duanNo1 > 1) {
+                    if (!flag_jh_f1) {//孔内是否递减
+                        denatorBaseinfo.setDelay((db_charu.getDelay() - Integer.parseInt(f2_delay_data)));
+                        Log.e("扫码-单孔多发判断", "延时递减: " + (db_charu.getDelay() - Integer.parseInt(f2_delay_data)));
+                    } else {
+                        denatorBaseinfo.setDelay((db_charu.getDelay() + Integer.parseInt(f2_delay_data)));
+                        Log.e("扫码-单孔多发判断", "延时递加: " + (db_charu.getDelay() + Integer.parseInt(f2_delay_data)));
+                    }
+                }else {
+                    denatorBaseinfo.setDelay(db_charu.getDelay());
+                }
+
+
                 Log.e("插入--单发输入--插入孔号", "konghao: " + konghao);
             } else {
                 if (!flag_jh_f1) {
@@ -2916,7 +2947,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("扫码-单孔多发判断", "delay_start: " + delay_start);
             Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
             duanNo1 = duanNo1 + 1;
-            denatorBaseinfo.setSithole(kong + "");
+//            denatorBaseinfo.setSithole(kong + "");
             denatorBaseinfo.setBlastserial(kong);
             denatorBaseinfo.setDuanNo((duanNo1));
             if (duanNo1 > 1) {
@@ -2965,7 +2996,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int xuhao = db_charu.getBlastserial() + 1;
             int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
             denatorBaseinfo.setBlastserial(konghao);
-            denatorBaseinfo.setSithole(konghao + "");
+//            denatorBaseinfo.setSithole(konghao + "");
             denatorBaseinfo.setDuan(db_charu.getDuan());
 
 
@@ -3176,7 +3207,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
             Log.e("扫码-单孔多发判断", "--------------: ");
             duanNo1 = duanNo1 + 1;
-            denatorBaseinfo.setSithole(kong + "");
+//            denatorBaseinfo.setSithole(kong + "");
             denatorBaseinfo.setBlastserial(kong);
             denatorBaseinfo.setDuanNo((duanNo1));
             if (duanNo1 > 1) {
@@ -3221,7 +3252,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             int xuhao = db_charu.getBlastserial() + 1;
             int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
             denatorBaseinfo.setBlastserial(konghao);
-            denatorBaseinfo.setSithole(konghao + "");
+//            denatorBaseinfo.setSithole(konghao + "");
             denatorBaseinfo.setDuan(db_charu.getDuan());
 
 
@@ -3429,7 +3460,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 Log.e("扫码-单孔多发判断", "f2_delay_data: " + f2_delay_data);
                 Log.e("扫码-单孔多发判断", "--------------: ");
                 duanNo1 = duanNo1 + 1;
-                denatorBaseinfo.setSithole(kong + "");
+//                denatorBaseinfo.setSithole(kong + "");
                 denatorBaseinfo.setBlastserial(kong);
                 denatorBaseinfo.setDuanNo((duanNo1));
                 if (duanNo1 > 1) {
@@ -3470,7 +3501,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 int xuhao = db_charu.getBlastserial() + 1;
                 int konghao = Integer.parseInt(db_charu.getSithole()) + 1;
                 denatorBaseinfo.setBlastserial(konghao);
-                denatorBaseinfo.setSithole(konghao + "");
+//                denatorBaseinfo.setSithole(konghao + "");
                 denatorBaseinfo.setDuan(db_charu.getDuan());
 
                 charu = false;
@@ -3592,6 +3623,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         Log.e(TAG, "flag_jh_f1: "+flag_jh_f1 );
         Log.e(TAG, "delay_set: "+delay_set );
+        Log.e(TAG, "db_charu.getDelay(): "+db_charu.getDelay() );
 
         if (!flag_jh_f1) {
             Log.e(TAG, "getDelay: " + 1);
@@ -3633,11 +3665,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "getDelay: " + 222);
                         delay_max = delay_max + f1 * (tk_num + 1);
                     }else if (flag_t1&&kongSum!=1) {
-//                        Log.e(TAG, "getDelay: " + 223);
-//                        Log.e(TAG, "delay_max: " + delay_max);
-//                        Log.e(TAG, "f1: " + f1);
-//                        Log.e(TAG, "(kongSum - 1)*f2: " + ((kongSum - 1)*f2));
-                        delay_max = delay_max + f1 + (kongSum - 1)*f2;
+                        Log.e(TAG, "getDelay: " + 223);
+                        Log.e(TAG, "delay_max: " + delay_max);
+                        Log.e(TAG, "f1: " + f1);
+                        Log.e(TAG, "f2: " + f2);
+                        Log.e(TAG, "(kongSum - 1): " + ((kongSum - 1)));
+                        delay_max = delay_max + f1 ;
                     } else {
                         Log.e(TAG, "getDelay: " + 224);
                         delay_max = delay_max + f1;
@@ -3955,6 +3988,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 });
                 item_4.setOnClickListener(v -> {
                     popupWindow.dismiss();
+                    if (checkDelay()) return;
                     startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));
                 });
                 popupWindow.showAsDropDown(titleRight2);
@@ -4046,6 +4080,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                         }
                                     }
                                 }
+                                Utils.deleteDataforXuHao(mRegion, paiChoice);//重新排序雷管孔号(代替序号)
                                 Log.e(TAG, "paiChoice: " + paiChoice);
                                 Log.e(TAG, "kongChoice: " + kongChoice);
                                 Log.e(TAG, "groupListChoice: " + groupListChoice);
