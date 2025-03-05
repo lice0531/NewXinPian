@@ -153,10 +153,10 @@
                 android:id="@+id/tv_check_all"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:foreground="@drawable/bg_white"
                 android:gravity="center"
-                android:text="全选"
+                android:text="@string/text_qx"
                 android:textColor="@color/white"
                 style="@style/alltextstyle"
                 />
@@ -176,7 +176,22 @@
                 android:text="@string/text_shanchu"
                 android:textColor="@color/white"
                 style="@style/alltextstyle" />
-
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/app_bg_color" />
+            <TextView
+                android:id="@+id/tv_upload"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.4"
+                android:foreground="@drawable/bg_white"
+                android:gravity="center"
+                android:text="@string/text_plsc"
+                android:textColor="@color/white"
+                style="@style/alltextstyle" />
         </LinearLayout>
     </RelativeLayout>
 

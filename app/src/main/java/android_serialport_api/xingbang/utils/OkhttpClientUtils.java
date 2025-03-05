@@ -26,9 +26,9 @@ public class OkhttpClientUtils {
                 if (client == null) {
                     client = new OkHttpClient.Builder()
                             .connectionPool(new ConnectionPool(5, 5, TimeUnit.MINUTES))
-                            .connectTimeout(30, TimeUnit.SECONDS)
-                            .readTimeout(30, TimeUnit.SECONDS)
-                            .writeTimeout(30, TimeUnit.SECONDS)
+                            .connectTimeout(50, TimeUnit.SECONDS)
+                            .readTimeout(50, TimeUnit.SECONDS)
+                            .writeTimeout(50, TimeUnit.SECONDS)
                             .build();
                 }
             }

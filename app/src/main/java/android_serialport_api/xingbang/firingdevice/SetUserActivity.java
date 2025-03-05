@@ -362,7 +362,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 					String[] whereArgs={String.valueOf(id)};
 					db.delete(DatabaseHelper.TABLE_USER_MAIN, whereClause, whereArgs);
 					getLoaderManager().restartLoader(1, null, SetUserActivity.this);
-					show_Toast("删除成功");
+					show_Toast(getResources().getString(R.string.text_del_ok));
 				}else {
 					show_Toast("旧密码错误,请重新输入");
 				}

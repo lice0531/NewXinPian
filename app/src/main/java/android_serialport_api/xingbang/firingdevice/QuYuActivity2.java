@@ -263,6 +263,9 @@ public class QuYuActivity2 extends BaseActivity {
                 isDelete = true;
                 layBottom.setVisibility(View.GONE);
                 quyuAdapter.showCheckBox(false);
+                tv_check_all.setText(getResources().getString(R.string.text_qx));
+                isSelectAll = true;
+                setAllItemChecked(false);
                 break;
             case R.id.title_right1:
                 if (mListData.isEmpty()) {
@@ -339,7 +342,7 @@ public class QuYuActivity2 extends BaseActivity {
                                 master.cancelQyQbStataus(qyIdList);
                                 //取消区域”已组网“状态
                                 master.setQyZwStataus(qyIdList,"false");
-                                show_Toast("删除成功");
+                                show_Toast(getResources().getString(R.string.text_del_ok));
                                 mHandle.sendMessage(mHandle.obtainMessage(2));
                                 qyIdList.clear();
                                 Utils.saveFile();//把软存中的数据存入磁盘中
@@ -357,7 +360,7 @@ public class QuYuActivity2 extends BaseActivity {
 
                                     }
                                 }
-                                show_Toast("删除成功");
+                                show_Toast(getResources().getString(R.string.text_del_ok));
                                 mHandle.sendMessage(mHandle.obtainMessage(2));
                                 qyIdList.clear();
                                 Utils.saveFile();//把软存中的数据存入磁盘中

@@ -110,7 +110,7 @@ public class AppLogUtils {
             // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentLogFile = files[0];
             if (currentLogFile.length() > MAX_FILE_SIZE) {
-                //如果当前文件已大于1MB  就重新生成文件
+                //如果当前文件已大于10MB  就重新生成文件
                 renameLogFile();
             }
         } else {
@@ -119,7 +119,8 @@ public class AppLogUtils {
             currentLogFile = new File(LOG_DIRECTORY + currentTimestamp + ".txt");
             try {
                 if (currentLogFile.createNewFile()) {
-                    Log.e(TAG, "APP程序运行日志文件已创建: " + currentLogFile.getName());
+                    Log.e(TAG, "APP程序运行日志文件已创建: " + currentLogFile.getName() +
+                            "--完整路径:" + logDirectory.getAbsolutePath());
                 }
             } catch (IOException e) {
                 Log.e(TAG, "无法创建APP程序运行日志文件: " + e.getMessage());
@@ -136,10 +137,10 @@ public class AppLogUtils {
         // 创建一个新的日志文件
         try {
             if (currentLogFile.createNewFile()) {
-                Log.e(TAG, "现有txt大于1MB，新APP程序运行日志文件已创建: " + currentLogFile.getName());
+                Log.e(TAG, "现有txt大于10MB，新APP程序运行日志文件已创建: " + currentLogFile.getName());
             }
         } catch (IOException e) {
-            Log.e(TAG, "现有txt大于1MB，无法创建新APP程序运行日志文件: " + e.getMessage());
+            Log.e(TAG, "现有txt大于10MB，无法创建新APP程序运行日志文件: " + e.getMessage());
         }
     }
 
@@ -177,7 +178,7 @@ public class AppLogUtils {
             // 如果已有当天日期开头的文件，选择第一个文件作为当前日志文件
             currentXBLogFile = files[0];
             if (currentXBLogFile.length() > MAX_FILE_SIZE) {
-                //如果当前文件已大于1MB  就重新生成文件
+                //如果当前文件已大于10MB  就重新生成文件
                 renameXBLogFile();
             }
         } else {
@@ -186,7 +187,8 @@ public class AppLogUtils {
             currentXBLogFile = new File(LOG_XBDIRECTORY + currentTimestamp + ".txt");
             try {
                 if (currentXBLogFile.createNewFile()) {
-                    Log.e(TAG, "新APP-XB程序运行日志文件已创建: " + currentXBLogFile.getName());
+                    Log.e(TAG, "新APP-XB程序运行日志文件已创建: " + currentXBLogFile.getName() +
+                            "--完整路径:" + logDirectory.getAbsolutePath());
                 }
             } catch (IOException e) {
                 Log.e(TAG, "无法创建APP-XB程序运行日志文件: " + e.getMessage());
@@ -203,10 +205,10 @@ public class AppLogUtils {
         // 创建一个新的日志文件
         try {
             if (currentXBLogFile.createNewFile()) {
-                Log.e(TAG, "现有txt大于1MB，新APP-XB程序日志文件已创建: " + currentXBLogFile.getName());
+                Log.e(TAG, "现有txt大于10MB，新APP-XB程序日志文件已创建: " + currentXBLogFile.getName());
             }
         } catch (IOException e) {
-            Log.e(TAG, "现有txt大于1MB，无法创建新APP-XB程序日志文件: " + e.getMessage());
+            Log.e(TAG, "现有txt大于10MB，无法创建新APP-XB程序日志文件: " + e.getMessage());
         }
     }
 

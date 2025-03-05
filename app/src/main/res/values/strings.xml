@@ -1083,4 +1083,9 @@
     <string name="text_mmts">友情提示:密码123</string>
     <string name="text_tip1">提示</string>
     <string name="text_tip2">当前排处于翻转状态,不能进行注册,删除,修改等操作,请复位后再进行操作.</string>
+    <string name="text_plsc">批量上传</string>
+    <string name="text_scts">上传提示</string>
+    <string name="text_scshjl">是否上传选中的起爆记录?</string>
+    <string name="text_scjs">上传已结束</string>
+    <string name="text_nodata">当前没有需要上传的数据</string>
 </resources>

@@ -119,7 +119,7 @@ public class DownProjectActivity extends BaseActivity implements ItemProjectAdap
         }
         Log.e("删除项目", "history_projectName: " + sb.toString());
         sp.edit().putString("history_projectName", sb.toString()).apply();
-        show_Toast("删除成功");
+        show_Toast(getResources().getString(R.string.text_del_ok));
 //        initAutoComplete("history_projectName", at_projectName);
         return 0;
     }
