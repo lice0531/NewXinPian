@@ -4,12 +4,21 @@ apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android'
 //apply plugin: 'io.objectbox'
 def spider_man = "v1.1.8"
+// 获取 strings.xml 中的字符串值
+def getStringResourceValue(String key) {
+    def xmlFile = file("src/main/res/values/strings.xml")
+    def xmlText = xmlFile.getText()
+    def matcher = xmlText =~ /<string name="${key}">([^<]+)<\/string>/
+    return matcher ? matcher[0][1] : ""
+}
+def app_version_name = getStringResourceValue('app_version_name')
 android {
 
 //    dexOptions {
 //        javaMaxHeapSize "4g"
 //    }
     defaultConfig {
+
         applicationId "android_serialport_api.xingbang"
         minSdkVersion 21
         targetSdkVersion 29
@@ -21,6 +30,7 @@ android {
         }
         multiDexEnabled true //防止方法数量超过65536导致错误
         consumerProguardFiles 'lib-proguard-rules.txt'
+
     }
     signingConfigs {
         release {
@@ -54,21 +64,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-//    /**
-//     * 生成outputFileName： xingbang_new-2020-11-20 10/38.apk
-//     */
-//    android.applicationVariants.all { variant ->
-//        variant.outputs.all { output ->
-//            def outputFile = output.outputFile
-//            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//
-//                outputFileName = defaultConfig.applicationId.subSequence(
-//                        defaultConfig.applicationId.lastIndexOf(".") + 1,
-//                        defaultConfig.applicationId.length()) +
-//                        "-" + releaseTime() + ".apk"
-//            }
-//        }
-//    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -80,8 +75,22 @@ android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
 
+/**
+ * 生成outputFileName：
+ */
 
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                outputFileName = "M900_PT_TY_V2.1_250304" + ".apk"
+            }
+        }
+    }
 }
+
+
+
 
 dependencies {
     implementation fileTree(include: '*.*', dir: 'libs')
