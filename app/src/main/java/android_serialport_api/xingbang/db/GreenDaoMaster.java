@@ -11,6 +11,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -1095,6 +1096,36 @@ public class GreenDaoMaster {
             return 0;
         }
     }
+
+    /**
+     * 获取 该区域 所有排的最大延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPaiMaxDelay(int piece) {
+        int paiCount = paiDataDao.loadAll().size();
+        int delay = 0;
+        if (paiCount > 0) {
+            List<PaiData> paiDataList = paiDataDao.queryBuilder()
+                    .where(PaiDataDao.Properties.Qyid.eq(piece))
+                    .list();
+            if (!paiDataList.isEmpty()) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    PaiData maxDelay = paiDataList.stream()
+                            .max(Comparator.comparingInt(p -> Integer.parseInt(p.getDelayMax())))
+                            .orElse(null);
+                    Log.e("getPaiMaxDelay", piece + "区域中最大延时: " + maxDelay.getDelayMax());
+                    delay = Integer.parseInt(maxDelay.getDelayMax());
+                }
+            } else {
+                delay = 0;
+            }
+        } else {
+            delay = 0;
+        }
+        return delay;
+    }
+
     /**
      * 获取 该区域 最大序号 的延时
      *
@@ -2034,9 +2065,38 @@ public class GreenDaoMaster {
     public void updataPaiFroPiace(String qyid) {
         List<PaiData> result = getDaoSession().getPaiDataDao().queryBuilder().where(PaiDataDao.Properties.Qyid.eq(qyid)).list();
         for (PaiData item : result) {
-            item.setSum(0+"");
+            item.setSum("0");
             getDaoSession().getPaiDataDao().update(item);
         }
+    }
+
+    /**
+     * 获取 该区域 所有排的最小延时
+     *
+     * @param piece 区域号 1 2 3 4 5
+     */
+    public int getPaiMinDelay(int piece) {
+        int paiCount = paiDataDao.loadAll().size();
+        int delay = 0;
+        if (paiCount > 0) {
+            List<PaiData> paiDataList = paiDataDao.queryBuilder()
+                    .where(PaiDataDao.Properties.Qyid.eq(piece))
+                    .list();
+            if (!paiDataList.isEmpty()) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    PaiData minDelay = paiDataList.stream()
+                            .min(Comparator.comparingInt(p -> Integer.parseInt(p.getDelayMin())))
+                            .orElse(null);
+                    Log.e("getPaiMinDelay", piece + "区域中最小延时: " + minDelay.getDelayMin());
+                    delay = Integer.parseInt(minDelay.getDelayMin());
+                }
+            } else {
+                delay = 0;
+            }
+        } else {
+            delay = 0;
+        }
+        return delay;
     }
 
     /**

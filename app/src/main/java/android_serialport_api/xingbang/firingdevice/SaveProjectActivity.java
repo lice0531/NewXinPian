@@ -499,6 +499,9 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                                 layBottom.setVisibility(View.GONE);
                                 titleRight1.setText(getResources().getString(R.string.text_gl));
                                 SoundPlayUtils.play(1);
+                                isSelectAll = true;
+                                mAdapter.AllCheckBox(false);
+                                tvCheckAll.setText(getResources().getString(R.string.text_qx));
                                 AppLogUtils.writeAppLog("点击了多选删除项目按钮");
                             }).create();
                     dialog.setCanceledOnTouchOutside(false);

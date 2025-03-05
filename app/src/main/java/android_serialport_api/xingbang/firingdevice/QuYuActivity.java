@@ -334,7 +334,7 @@ public class QuYuActivity extends BaseActivity {
                             master.deleteLeiGuanFroPiece(data.getQyid() + "");
                         }
                     }
-                    show_Toast("删除成功");
+                    show_Toast(getResources().getString(R.string.text_del_ok));
                     mHandle.sendMessage(mHandle.obtainMessage(2));
                     Utils.saveFile();//把软存中的数据存入磁盘中
                 } else {

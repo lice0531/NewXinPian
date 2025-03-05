@@ -140,6 +140,7 @@ public class QueryHisDetail extends BaseActivity {
     private SQLiteDatabase db;
     private PropertiesUtil mProp;
     private String changjia = "TY";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,11 +148,11 @@ public class QueryHisDetail extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(QueryHisDetail.this);
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        Log.e("上传", "changjia: "+changjia );
+        Log.e("上传", "changjia: " + changjia);
         AppLogUtils.writeAppLog("---进入起爆历史记录上传页面");
         getUserMessage();//获取用户信息
         getPropertiesData();//第二种获取用户信息
@@ -173,9 +174,9 @@ public class QueryHisDetail extends BaseActivity {
         // 线性布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         denatorQueryHisListview.setLayoutManager(linearLayoutManager);
-        hisAdapter = new LoadHisDetailRecyclerAdapter(R.layout.item_query_his,list_savedate);
+        hisAdapter = new LoadHisDetailRecyclerAdapter(R.layout.item_query_his, list_savedate);
         denatorQueryHisListview.setAdapter(hisAdapter);
-        hisAdapter.setStatus(this,Shangchuan);
+        hisAdapter.setStatus(this, Shangchuan);
         hisAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
@@ -223,17 +224,18 @@ public class QueryHisDetail extends BaseActivity {
                                 show_Toast(getResources().getString(R.string.text_error_tip55));
                                 return;
                             }
-                            String fireDate =Utils.getDateFormatLong(new Date());
+                            String fireDate = Utils.getDateFormatLong(new Date());
                             saveFireResult(fireDate);
                             blastdate = fireDate;
                         }
 //                        Utils.writeLog("项目上传信息:" + list_savedate.get(pos));
-                        Log.e("上传-经纬度", "pro_coordxy: "+pro_coordxy );
-                        Log.e("上传-经纬度", "jd: "+jd );
+                        Log.e("上传-经纬度", "pro_coordxy: " + pro_coordxy);
+                        Log.e("上传-经纬度", "jd: " + jd);
                         if (pro_coordxy.length() < 2 && jd == null) {
                             show_Toast(getResources().getString(R.string.text_his_jwdwk));
                             return;
-                        }if (equ_no.length() < 1 ) {
+                        }
+                        if (equ_no.length() < 1) {
                             show_Toast(getResources().getString(R.string.text_down_err2));
                             return;
                         }
@@ -250,7 +252,7 @@ public class QueryHisDetail extends BaseActivity {
                         if (server_type2.equals("2")) {
                             performUp(blastdate, position, htbh, jd, wd);//中爆上传
                         }
-                        upload_xingbang(blastdate, position, htbh, jd, wd, xmbh, dwdm, qbxm_name,log);//我们自己的网址
+                        upload_xingbang(blastdate, position, htbh, jd, wd, xmbh, dwdm, qbxm_name, log);//我们自己的网址
 
                         break;
                     case R.id.bt_delete:
@@ -261,33 +263,33 @@ public class QueryHisDetail extends BaseActivity {
 //                                .setNeutralButton(getResources().getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
 //                                .setPositiveButton(getResources().getString(R.string.text_queryHis_dialog10), (dialog12, which) -> {
 //                                    dialog12.dismiss();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
-                                    builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
-                                    View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
-                                    TextView tvTitle = view.findViewById(R.id.tvTitle);
-                                    tvTitle.setText("请输入密码后,再进行删除记录操作");
-                                    builder.setView(view);
-                                    final EditText password = view.findViewById(R.id.password);
-                                    builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            String b = password.getText().toString().trim();
-                                            if (b == null || b.trim().length() < 1) {
-                                                show_Toast(getString(R.string.text_alert_password));
-                                                return;
-                                            }
-                                            if (b.equals("123")) {
-                                                String t = (String) v.getTag(R.id.bt_delete);
-                                                if (delHisInfo(t) == 0) {
-                                                    show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
-                                                }
-                                            } else {
-                                                show_Toast(getResources().getString(R.string.text_mmcw));
-                                            }
-                                            dialog.dismiss();
-                                        }
-                                    });
-                                    builder.show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
+                        builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+                        View view = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                        TextView tvTitle = view.findViewById(R.id.tvTitle);
+                        tvTitle.setText("请输入密码后,再进行删除记录操作");
+                        builder.setView(view);
+                        final EditText password = view.findViewById(R.id.password);
+                        builder.setPositiveButton(getString(R.string.text_alert_sure), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String b = password.getText().toString().trim();
+                                if (b == null || b.trim().length() < 1) {
+                                    show_Toast(getString(R.string.text_alert_password));
+                                    return;
+                                }
+                                if (b.equals("123")) {
+                                    String t = (String) v.getTag(R.id.bt_delete);
+                                    if (delHisInfo(t) == 0) {
+                                        show_Toast(getString(R.string.xingbang_main_page_btn_del) + t + getString(R.string.text_success));
+                                    }
+                                } else {
+                                    show_Toast(getResources().getString(R.string.text_mmcw));
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.show();
 //                                }).create();
 //                        dialog.show();
 
@@ -319,7 +321,7 @@ public class QueryHisDetail extends BaseActivity {
         };
         mHandler_tip = new Handler(msg -> {
 
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     show_Toast(getResources().getString(R.string.text_xzsb16));
                     break;
@@ -333,34 +335,34 @@ public class QueryHisDetail extends BaseActivity {
                     show_Toast(getResources().getString(R.string.text_uploda_tip3));
                     break;
                 case 5:
-                    String tip ="";
-                    switch (msg.obj.toString()){
+                    String tip = "";
+                    switch (msg.obj.toString()) {
                         case "0":
-                            tip="成功";
+                            tip = "成功";
                             break;
                         case "1":
-                            tip="非法的申请信息";
+                            tip = "非法的申请信息";
                             break;
                         case "2":
-                            tip="未找到该起爆器设备信息";
+                            tip = "未找到该起爆器设备信息";
                             break;
                         case "3":
-                            tip="该起爆器未设置作业任务";
+                            tip = "该起爆器未设置作业任务";
                             break;
                         case "4":
-                            tip="起爆器在黑名单中";
+                            tip = "起爆器在黑名单中";
                             break;
                         case "5":
-                            tip="起爆位置不在起爆区域内";
+                            tip = "起爆位置不在起爆区域内";
                             break;
                         case "6":
-                            tip="起爆位置在禁爆区域内";
+                            tip = "起爆位置在禁爆区域内";
                             break;
                         case "7":
-                            tip="该起爆器已注销/报废";
+                            tip = "该起爆器已注销/报废";
                             break;
                         case "8":
-                            tip="禁爆任务";
+                            tip = "禁爆任务";
                             break;
                     }
                     show_Toast(tip);
@@ -391,16 +393,16 @@ public class QueryHisDetail extends BaseActivity {
 
     //获取配置文件中的值
     private void getPropertiesData() {
-        Shangchuan = (String) MmkvUtils.getcode("Shangchuan","否");
+        Shangchuan = (String) MmkvUtils.getcode("Shangchuan", "否");
 //        if(changjia.equals("XJ")){
 //            Shangchuan="否";
 //        }else {
 //            Shangchuan="是";
 //        }
-        Log.e("是否上传错误雷管", "changjia: "+changjia );
-        Log.e("是否上传错误雷管", "Shangchuan: "+Shangchuan );
-        Utils.writeRecord("==是否上传错误雷管:"+Shangchuan);
-        AppLogUtils.writeAppLog("==是否上传错误雷管:"+Shangchuan);
+        Log.e("是否上传错误雷管", "changjia: " + changjia);
+        Log.e("是否上传错误雷管", "Shangchuan: " + Shangchuan);
+        Utils.writeRecord("==是否上传错误雷管:" + Shangchuan);
+        AppLogUtils.writeAppLog("==是否上传错误雷管:" + Shangchuan);
     }
 
     private void getUserMessage() {
@@ -530,6 +532,7 @@ public class QueryHisDetail extends BaseActivity {
         return Utils.uploadFireData(QueryHisDetail.this, list_uid, pro_bprysfz, htid, pro_xmbh, (jd + "," + wd), server_type2, equ_no, server_ip, server_port, server_http, blastdate);
 
     }
+
     /**
      * 删除历史记录
      */
@@ -689,11 +692,11 @@ public class QueryHisDetail extends BaseActivity {
 
     /**
      * 添加错误日志
-     * */
-    private void updatalog(String blastdate,String err) {
+     */
+    private void updatalog(String blastdate, String err) {
         GreenDaoMaster master = new GreenDaoMaster();
-        DenatorHis_Main his_main=master.queryDetonatorForMainHis(blastdate);
-        his_main.setLog(his_main.getLog()+"\n"+err);
+        DenatorHis_Main his_main = master.queryDetonatorForMainHis(blastdate);
+        his_main.setLog(his_main.getLog() + "\n" + err);
         getDaoSession().getDenatorHis_MainDao().update(his_main);
     }
 
@@ -715,8 +718,8 @@ public class QueryHisDetail extends BaseActivity {
         if (count > 0) count -= 1;
         txtView.setText(getString(R.string.text_alert_tip4) + count);//"雷管总数:"
         SimpleAdapter adapter = new SimpleAdapter(QueryHisDetail.this, hisListData, R.layout.query_his_detail_item,
-                new String[]{"no", "piece","kongNo","shellNo", "delay", "errorName"},
-                new int[]{R.id.X_item_no, R.id.X_item_piece,R.id.X_item_kongNo,R.id.X_item_shellno,
+                new String[]{"no", "piece", "kongNo", "shellNo", "delay", "errorName"},
+                new int[]{R.id.X_item_no, R.id.X_item_piece, R.id.X_item_kongNo, R.id.X_item_shellno,
                         R.id.X_item_delay, R.id.X_item_errorname});
         // 给listview加入适配器
         listview.setAdapter(adapter);
@@ -738,6 +741,7 @@ public class QueryHisDetail extends BaseActivity {
         builder.create().show();
 
     }
+
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
@@ -936,7 +940,7 @@ public class QueryHisDetail extends BaseActivity {
             } else {
                 object.put("xmbh", pro_xmbh);//项目编号
             }
-            object.put("bpsj", "20"+blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
+            object.put("bpsj", "20" + blastdate.replace("/", "-").replace(",", " "));//爆破时间blastdate.replace("/","-").replace(","," ")
             object.put("bprysfz", pro_bprysfz);//人员身份证
             object.put("uid", uid);//雷管uid
 
@@ -988,8 +992,8 @@ public class QueryHisDetail extends BaseActivity {
                     } else if (success.equals("fail")) {
                         String cwxx = object.getString("cwxx");
                         Message msg = new Message();
-                        msg.what=5;
-                        msg.obj=cwxx;
+                        msg.what = 5;
+                        msg.obj = cwxx;
                         mHandler_tip.sendMessage(msg);
 //                        if (cwxx.equals("1")) {
 //                            Message msg = new Message();
@@ -1026,25 +1030,25 @@ public class QueryHisDetail extends BaseActivity {
         String uid = list_uid.toString().replace("[", "").replace("]", "").replace(" ", "").trim();
         Log.e("上传uid", uid);
         String xy[] = pro_coordxy.split(",");//经纬度
-        String app_verson_name ;
+        String app_verson_name;
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
-        if(changjia.equals("XJ")){
-            app_verson_name =getString(R.string.app_version_name2);
-        }else if(changjia.equals("CQ")){
-            app_verson_name =getString(R.string.app_version_name3);
-        }else {
-            app_verson_name =getString(R.string.app_version_name);
+        if (changjia.equals("XJ")) {
+            app_verson_name = getString(R.string.app_version_name2);
+        } else if (changjia.equals("CQ")) {
+            app_verson_name = getString(R.string.app_version_name3);
+        } else {
+            app_verson_name = getString(R.string.app_version_name);
         }
         try {
             object.put("sbbh", equ_no);//起爆器设备编号
             if (jd != null) {
                 object.put("jd", jd);//经度
-            } else if(pro_coordxy.length()>5){
+            } else if (pro_coordxy.length() > 5) {
                 object.put("jd", xy[0]);//经度
             }
             if (wd != null) {
                 object.put("wd", wd);//纬度
-            } else if(pro_coordxy.length()>5){
+            } else if (pro_coordxy.length() > 5) {
                 object.put("wd", xy[1]);//纬度
             }
             if (htid != null) {
@@ -1058,20 +1062,20 @@ public class QueryHisDetail extends BaseActivity {
             object.put("dwdm", pro_dwdm);//单位代码
             object.put("xmbh", pro_xmbh);//项目编号
             object.put("log", log);//日志
-            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/","-")));//日志
+            object.put("log_cmd", Utils.readLog_cmd(blastdate.split(" ")[0].replace("/", "-")));//日志
             object.put("yj_version", MmkvUtils.getcode("yj_version", "KT50_V1.3_17V_V1.3.18.bin"));//硬件版本
             PackageInfo pi = this.getPackageManager().getPackageInfo(Application.getContext().getPackageName(), 0);
             object.put("rj_version", app_verson_name);//软件版本
             object.put("name", qbxm_name);//项目名称
             Log.e("上传信息-项目名称", qbxm_name);
-        } catch (JSONException| PackageManager.NameNotFoundException e) {
+        } catch (JSONException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         //3des加密
         String json = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), object.toString().getBytes()));
         JSONObject object2 = new JSONObject();
         try {
-            object2.put("param",json);
+            object2.put("param", json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1088,12 +1092,12 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("上传公司网络请求", "IOException: " + e);
-                Utils.writeLog("煋邦网络上传错误-IOException:"+e);
-                AppLogUtils.writeAppXBLog("煋邦网络上传错误-IOException:"+e);
-                updatalog(blastdate,"煋邦网络上传错误-IOException:"+e);
+                Utils.writeLog("煋邦网络上传错误-IOException:" + e);
+                AppLogUtils.writeAppXBLog("煋邦网络上传错误-IOException:" + e);
+                updatalog(blastdate, "煋邦网络上传错误-IOException:" + e);
                 Message msg = new Message();
-                msg.what=5;
-                msg.obj=getResources().getString(R.string.text_xbscsb);
+                msg.what = 5;
+                msg.obj = getResources().getString(R.string.text_xbscsb);
                 mHandler_tip.sendMessage(msg);
             }
 
@@ -1106,7 +1110,8 @@ public class QueryHisDetail extends BaseActivity {
     }
 
     private boolean isSelectAll = true;//是否全选
-    @OnClick({R.id.btn_del_return, R.id.btn_del_all,R.id.tv_check_all, R.id.tv_input,R.id.tv_cancel})
+
+    @OnClick({R.id.btn_del_return, R.id.btn_del_all, R.id.tv_check_all, R.id.tv_input, R.id.tv_cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_del_return:
@@ -1140,6 +1145,10 @@ public class QueryHisDetail extends BaseActivity {
             case R.id.tv_cancel:
                 layBottom.setVisibility(View.GONE);
                 hisAdapter.showCheckBox(false);
+                layBottom.setVisibility(View.GONE);
+                tv_check_all.setText(getResources().getString(R.string.text_qx));
+                isSelectAll = true;
+                setAllItemChecked(false);
                 break;
             case R.id.tv_check_all://全选
                 if (isSelectAll) {
@@ -1167,32 +1176,48 @@ public class QueryHisDetail extends BaseActivity {
                     show_Toast(getResources().getString(R.string.text_selectjl));
                     return;
                 }
-                if (!QueryHisDetail.this.isFinishing()) {
-                    AlertDialog sAialog = new AlertDialog.Builder(QueryHisDetail.this)
-                            .setTitle(getResources().getString(R.string.text_fir_dialog2))//设置对话框的标题
-                            .setMessage(getResources().getString(R.string.text_sclsjl))//设置对话框的内容
-                            //设置对话框的按钮
-                            .setNeutralButton(getResources().getString(R.string.text_dialog_qx), (dialog1, which) -> {
-                                dialog1.dismiss();
-                            })
-                            .setNegativeButton(R.string.text_tip_delete, (dialog1, which) -> {
-                                for (VoFireHisMain data : selectList) {
-                                    if (data.isSelect()) {
-                                        GreenDaoMaster master = new GreenDaoMaster();
-                                        master.deleteType(data.getBlastdate());//删除生产数据中对应的雷管
-                                        master.deleteForHis(data.getBlastdate());
-                                        master.deleteForDetail(data.getBlastdate());
-                                    }
-                                }
-                                show_Toast("删除成功");
-                                loadMoreData(currentPage);//读取数据
-                                showLoadMore();
-                                dialog1.dismiss();
-                                AppLogUtils.writeAppLog("点击了多选删除起爆历史记录按钮");
-                            }).create();
-                    sAialog.setCanceledOnTouchOutside(false);
-                    sAialog.show();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(QueryHisDetail.this);
+                builder.setTitle(getResources().getString(R.string.text_queryHis_dialog1));//"请输入用户名和密码"
+                View v = LayoutInflater.from(QueryHisDetail.this).inflate(R.layout.userlogindialog_delete, null);
+                builder.setView(v);
+                final EditText password = v.findViewById(R.id.password);
+                builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog1, which) -> {
+
+                    String b = password.getText().toString().trim();
+                    if (b == null || b.trim().length() < 1) {
+                        show_Toast(getString(R.string.text_alert_password));
+                        return;
+                    }
+                    Log.e("删除已上传记录", "list_savedate.size() : " + list_savedate.size());
+                    if (b.equals("123")) {
+                        for (VoFireHisMain data : selectList) {
+                            if (data.isSelect()) {
+                                GreenDaoMaster master = new GreenDaoMaster();
+                                master.deleteType(data.getBlastdate());//删除生产数据中对应的雷管
+                                master.deleteForHis(data.getBlastdate());
+                                master.deleteForDetail(data.getBlastdate());
+                            }
+                        }
+                        show_Toast(getResources().getString(R.string.text_del_ok));
+                        loadMoreData(currentPage);//读取数据
+                        showLoadMore();
+                        dialog1.dismiss();
+                        loadMoreData(currentPage);//读取数据
+                        showLoadMore();
+                        AppLogUtils.writeAppLog("点击了多选删除起爆历史记录按钮");
+                        layBottom.setVisibility(View.GONE);
+                        hisAdapter.showCheckBox(false);
+                        layBottom.setVisibility(View.GONE);
+                        tv_check_all.setText(getResources().getString(R.string.text_qx));
+                        isSelectAll = true;
+                        setAllItemChecked(false);
+                    } else {
+                        show_Toast(getResources().getString(R.string.text_mmcw));
+                    }
+                    dialog1.dismiss();
+                });
+                builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog2, which) -> dialog2.dismiss());
+                builder.show();
                 break;
         }
     }
@@ -1250,13 +1275,13 @@ public class QueryHisDetail extends BaseActivity {
                         show_Toast(getString(R.string.text_alert_password));
                         return;
                     }
-                    Log.e("删除已上传记录", "list_savedate.size() : "+list_savedate.size() );
-                    if ( b.equals("123")) {
+                    Log.e("删除已上传记录", "list_savedate.size() : " + list_savedate.size());
+                    if (b.equals("123")) {
                         AppLogUtils.writeAppLog("点击了'删除所有已上传记录'按钮");
                         List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
                         GreenDaoMaster master = new GreenDaoMaster();
-                        for (DenatorHis_Main his:list) {
-                            if(his.getUploadStatus().equals("已上传")){
+                        for (DenatorHis_Main his : list) {
+                            if (his.getUploadStatus().equals("已上传")) {
                                 master.deleteType(his.getBlastdate());//删除生产数据中对应的雷管
                                 master.deleteForHis(his.getBlastdate());
                                 master.deleteForDetail(his.getBlastdate());

@@ -154,6 +154,8 @@ public class QuYuActivity2 extends BaseActivity {
                         qyData.setPaiDelay(item.getPaiDelay());
                         qyData.setStartDelay(item.getStartDelay());
                         qyData.setSelected(item.getSelected());
+                        qyData.setDelayMin(item.getDelayMin());
+                        qyData.setDelayMax(item.getDelayMax());
                         qyData.setIsQb(item.getIsQb());
                         if (!mQuYuList.contains(qyData)) {
                             mQuYuList.add(qyData);
@@ -208,6 +210,8 @@ public class QuYuActivity2 extends BaseActivity {
                         qyData.setPaiDelay(item.getPaiDelay());
                         qyData.setStartDelay(item.getStartDelay());
                         qyData.setSelected(item.getSelected());
+                        qyData.setDelayMin(item.getDelayMin());
+                        qyData.setDelayMax(item.getDelayMax());
                         qyData.setIsQb(item.getIsQb());
                         if (!mQuYuList.contains(qyData)) {
                             mQuYuList.add(qyData);
@@ -263,6 +267,9 @@ public class QuYuActivity2 extends BaseActivity {
                 isDelete = true;
                 layBottom.setVisibility(View.GONE);
                 quyuAdapter.showCheckBox(false);
+                tv_check_all.setText(getResources().getString(R.string.text_qx));
+                isSelectAll = true;
+                setAllItemChecked(false);
                 break;
             case R.id.title_right1:
                 if (mListData.isEmpty()) {
@@ -329,6 +336,7 @@ public class QuYuActivity2 extends BaseActivity {
                                 for (QuYuData data : mQuYuList) {
                                     if (data.isSelect()) {
                                         GreenDaoMaster master = new GreenDaoMaster();
+//                                        saveQyMinAndMaxDelay();
                                         master.deleteLeiGuanFroPiece(data.getQyid() + "");
                                         master.updataPaiFroPiace(data.getQyid() + "");
                                     }
@@ -339,7 +347,7 @@ public class QuYuActivity2 extends BaseActivity {
                                 master.cancelQyQbStataus(qyIdList);
                                 //取消区域”已组网“状态
                                 master.setQyZwStataus(qyIdList,"false");
-                                show_Toast("删除成功");
+                                show_Toast(getResources().getString(R.string.text_del_ok));;
                                 mHandle.sendMessage(mHandle.obtainMessage(2));
                                 qyIdList.clear();
                                 Utils.saveFile();//把软存中的数据存入磁盘中
@@ -357,7 +365,7 @@ public class QuYuActivity2 extends BaseActivity {
 
                                     }
                                 }
-                                show_Toast("删除成功");
+                                show_Toast(getResources().getString(R.string.text_del_ok));
                                 mHandle.sendMessage(mHandle.obtainMessage(2));
                                 qyIdList.clear();
                                 Utils.saveFile();//把软存中的数据存入磁盘中
@@ -420,6 +428,17 @@ public class QuYuActivity2 extends BaseActivity {
         }
     }
 
+    //只删除雷管时，保存下所删区域的最大最小延时并更新至改quyu表中
+    private void saveQyMinAndMaxDelay() {
+        for (QuYuData data : mQuYuList) {
+            if (data.isSelect()) {
+                data.setDelayMin(data.getDelayMin());
+                data.setDelayMax(data.getDelayMax());
+                getDaoSession().getQuYuDao().update(data);
+            }
+        }
+    }
+
     private void carteQuYu() {
 
         myDialog = new MyAlertDialog(this).builder();
@@ -441,6 +460,8 @@ public class QuYuActivity2 extends BaseActivity {
                     quYu.setName((maxNo + 1) + "");
                     quYu.setQyid((maxNo + 1));
                     quYu.setStartDelay("0");
+                    quYu.setDelayMin("0");
+                    quYu.setDelayMax(kongDelay.getText().toString());
                     quYu.setKongDelay(kongDelay.getText().toString());
                     quYu.setPaiDelay(paiDelay.getText().toString());
                     if (mListData.size() < 1) {
