@@ -83,7 +83,7 @@ android {
         variant.outputs.all { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                outputFileName = "M900_PT_TY_V2.1_250304" + ".apk"
+                outputFileName = "M900_PT_V2.1_" + ".apk"
             }
         }
     }
