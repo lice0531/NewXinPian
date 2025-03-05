@@ -39,17 +39,6 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         notifyDataSetChanged();
     }
 
-    //是否更新区域最大最小延时信息
-    private boolean isUpdateDelay = false;
-    private int minDelay, maxDelay;
-    //当前区域被删除时，保留页面上的最大最小延时数据
-    public void updateQyDelay(boolean isUpdate,int min,int max) {
-        this.isUpdateDelay = isUpdate;
-        this.minDelay = min;
-        this.maxDelay = max;
-        notifyDataSetChanged();
-    }
-
     @Override
     protected void convert(BaseViewHolder helper, QuYuData item) {
         int position = helper.getLayoutPosition();
@@ -69,8 +58,8 @@ public class QuYuAdapter extends BaseQuickAdapter<QuYuData, BaseViewHolder> {
         GreenDaoMaster master = new GreenDaoMaster();
         int total=new GreenDaoMaster().queryDetonatorSize(item.getQyid()+"");
         int paisum = master.getPaisum(item.getQyid()+"");
-        int max = master.getPaiMaxDelay(item.getQyid());
-        int min = master.getPaiMinDelay(item.getQyid());
+        int max = master.getPieceMaxNumDelay(item.getQyid()+"");
+        int min = master.getPieceMinNumDelay(item.getQyid()+"");
         int kong = master.querytotalKongNew(item.getQyid()+"");
         TextView tv_yzw = helper.getView(R.id.tv_yzw);
         tv_yzw.setVisibility("true".equals(item.getSelected()) ? View.VISIBLE : View.GONE);
